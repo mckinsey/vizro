@@ -1,3 +1,14 @@
+// Equivalent to the following Python code:
+// def encode_to_base64(ids, values):
+//    result = []
+//    for id, value in zip(ids, values):
+//        json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
+//        b64_bytes = base64.urlsafe_b64encode(json_bytes)
+//        result.append((id, f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"))
+//    return result
+//
+// Example inputs: ['asd', 'qwe'], ['123', 234]
+// Example outputs: [('asd', 'b64_IjEyMyI'), ('qwe', 'b64_MjM0')]
 function encodeUrlParams(ids, values) {
   return ids.map((id, i) => [
     id,
@@ -13,6 +24,19 @@ function encodeUrlParams(ids, values) {
   ]);
 }
 
+// Equivalent to the following Python code:
+//    def decode_url_params(params):
+//        ids, values = [], []
+//        for k, v in params.items():
+//            ids.append(k)
+//            if isinstance(v, str) and v.startswith("b64_"):
+//                b64 = v[4:].replace('-', '+').replace('_', '/')
+//                b64 += '=' * (-len(b64) % 4)
+//                v = json.loads(base64.b64decode(b64).decode())
+//            values.append(v)
+//        return {'ids': ids, 'values': values}
+// Example inputs: {'asd': 'b64_IjEyMyI', 'qwe': 'b64_MjM0'}
+// Example outputs: {'ids': ['asd', 'qwe'], 'values': ['123', 234]}
 function decodeUrlParams(params) {
   function decodeParam(encoded) {
     let base64 = encoded.slice(4).replace(/-/g, "+").replace(/_/g, "/");
@@ -44,7 +68,7 @@ function sync_url_query_params_and_controls(...values_ids) {
   // Control IDs are required due to Dash's limitations on clientside callback flexible signatures, so that we can:
   //   1. Map url query parameters to control selector value outputs properly.
   //   2. Map control selector value input to url query parameters properly.
-  // The Solution relies on the fact that the order of control IDs matches the order of the
+  // The solution relies on the fact that the order of control IDs matches the order of the
   // control selector value inputs and their corresponding outputs.
 
   // Split control inputs and selector values that are in format:

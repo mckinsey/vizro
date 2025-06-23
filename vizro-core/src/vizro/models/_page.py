@@ -184,6 +184,12 @@ class Page(VizroBaseModel):
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
             control_ids_states = [State(control.id, "id") for control in url_controls]
 
+            # The URL is updated in the clientside callback with the `history.replaceState`, instead of using a
+            # dcc.Location as a callback Output. Do it because the dcc.Location uses `history.pushState` under the hood
+            # which causes destroying the history. With `history.replaceState`, we partially maintain the history.
+            # Similarly, we read the URL query parameters in the clientside callback with the window.location.pathname,
+            # instead of using dcc.Location as a callback Input. Do it to align the behavior with the outputs and to
+            # simplify the function inputs handling.
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
