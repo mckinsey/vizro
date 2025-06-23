@@ -24,7 +24,7 @@ class DynamicallyInspect(griffe.Extension):
 
         try:
             # For mysterious reasons we seem to need to do this even though we don't use the result anywhere.
-            # Otherwise the below griffe.inspect doesn't work.
+            # Otherwise the below griffe.inspect gives mkdocstrings: vizro.figures could not be found.
             griffe.dynamic_import(obj.path)
         except ImportError as error:
             logger.warning(f"Could not import {obj.path}: {error}")
