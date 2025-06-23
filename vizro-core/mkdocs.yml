@@ -150,7 +150,8 @@ plugins:
               returns_named_value: false
             extensions:
               - docs/griffe_extensions.py:
-                  paths: [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
+                  paths:
+                    [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false

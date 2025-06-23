@@ -102,8 +102,8 @@ dependencies = [
   "linkchecker",
   "mkdocs-pycafe"
 ]
-template = "docs" # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
 installer = "uv"
+template = "docs"  # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
 
 [envs.docs.scripts]
 build = "mkdocs build --strict"
