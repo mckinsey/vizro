@@ -42,7 +42,7 @@ def kpi_card(
 
         agg_func: String function name to be used for aggregating the data. Common options include
             "sum", "mean" or "median". Default is "sum". [More information on possible
-            functions](https://stackoverflow.com/questions/65877567).
+            functions](https://stackoverflow.com/q/65877567).
         title: KPI title displayed on top of the card. If not provided, it defaults to the capitalized
             `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
@@ -112,7 +112,7 @@ def kpi_card_reference(  # noqa: PLR0913
             see docstring on `value_format`. Defaults to "{delta_relative:+.1%} vs. reference ({reference})".
         agg_func: String function name to be used for aggregating the data. Common options include
             "sum", "mean" or "median". Default is "sum". [More information on possible
-            functions](https://stackoverflow.com/questions/65877567).
+            functions](https://stackoverflow.com/q/65877567).
         title: KPI title displayed on top of the card. If not provided, it defaults to the capitalized
             `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
