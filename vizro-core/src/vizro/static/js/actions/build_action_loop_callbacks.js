@@ -25,7 +25,8 @@ function gateway(
   ) {
     // If there's no more actions to execute, stop the loop perform.
     if (remaining_actions.length == 0) {
-      console.debug("Actions loop: All actions executed.\n");
+      console.debug("Actions loop: All actions executed.");
+      console.debug("");
       throw dash_clientside.PreventUpdate;
     }
   }

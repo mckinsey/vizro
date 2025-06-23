@@ -1,67 +1,59 @@
-// Equivalent to the following Python code:
-// def encode_to_base64(ids, values):
-//    result = []
-//    for id, value in zip(ids, values):
+// Python equivalent to the following JavaScript code:
+// def encode_url_params(decoded_map):
+//    encoded_map = {}
+//    for id, value in decoded_map.items():
 //        json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
 //        b64_bytes = base64.urlsafe_b64encode(json_bytes)
-//        result.append((id, f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"))
-//    return result
+//        b64_str = b64_bytes.decode("utf-8").rstrip("=")
+//        encoded_map[id] = f"b64_{b64_str}"
+//    return encoded_map
 //
-// Example inputs: ['asd', 'qwe'], ['123', 234]
-// Example outputs: [('asd', 'b64_IjEyMyI'), ('qwe', 'b64_MjM0')]
-function encodeUrlParams(ids, values) {
-  return ids.map((id, i) => [
-    id,
-    "b64_" +
-      btoa(
-        String.fromCharCode(
-          ...new TextEncoder().encode(JSON.stringify(values[i])),
-        ),
-      )
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, ""),
-  ]);
+// Example inputs: {'foo': 123, 'bar': ['a', 'b']}
+// Example output: {'foo': 'b64_IjEyMyI', 'bar': 'b64_WyJhIiwiYiJd'}
+function encodeUrlParams(decodedMap) {
+  const encodedMap = new Map();
+  for (const [id, value] of decodedMap.entries()) {
+    const json = JSON.stringify(value);
+    const encoded = btoa(String.fromCharCode(...new TextEncoder().encode(json)))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+    encodedMap.set(id, "b64_" + encoded);
+  }
+  return encodedMap;
 }
 
-// Equivalent to the following Python code:
-//    def decode_url_params(params):
-//        ids, values = [], []
-//        for k, v in params.items():
-//            ids.append(k)
-//            if isinstance(v, str) and v.startswith("b64_"):
-//                b64 = v[4:].replace('-', '+').replace('_', '/')
-//                b64 += '=' * (-len(b64) % 4)
-//                v = json.loads(base64.b64decode(b64).decode())
-//            values.append(v)
-//        return {'ids': ids, 'values': values}
-// Example inputs: {'asd': 'b64_IjEyMyI', 'qwe': 'b64_MjM0'}
-// Example outputs: {'ids': ['asd', 'qwe'], 'values': ['123', 234]}
-function decodeUrlParams(params) {
+// Python equivalent to the following JavaScript code:
+// def decode_url_params(encoded_map):
+//    decoded_map = {}
+//    for key, val in encoded_map.items():
+//        if val.startswith("b64_"):
+//            b64 = val[4:].replace("-", "+").replace("_", "/")
+//            b64 += "=" * ((4 - len(b64) % 4) % 4)
+//            decoded = json.loads(base64.b64decode(b64).decode("utf-8"))
+//        else:
+//            decoded = val
+//        decoded_map[key] = decoded
+//    return decoded_map
+//
+// Example inputs: {'foo': 'b64_IjEyMyI', 'bar': 'b64_WyJhIiwiYiJd', 'external': 'raw_value'}
+// Example output: {'foo': '123', 'bar': ['a', 'b'], 'external': 'raw_value'}
+function decodeUrlParams(encodedMap) {
   function decodeParam(encoded) {
     let base64 = encoded.slice(4).replace(/-/g, "+").replace(/_/g, "/");
-    while (base64.length % 4 !== 0) {
-      base64 += "=";
-    }
-    const str = atob(base64);
-    const bytes = Uint8Array.from(str, (c) => c.charCodeAt(0));
+    base64 += "=".repeat((4 - (base64.length % 4)) % 4);
+    const binary = atob(base64);
+    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
     return JSON.parse(new TextDecoder().decode(bytes));
   }
 
-  const ids = [];
-  const values = [];
-
-  for (const [key, val] of params.entries()) {
-    ids.push(key);
-    // Decode only if the value starts with "b64_". Otherwise, we assume they are external query parameters.
-    if (val.startsWith("b64_")) {
-      values.push(decodeParam(val));
-    } else {
-      values.push(val);
-    }
+  const decodedMap = new Map();
+  for (const [key, val] of encodedMap) {
+    const decoded = val.startsWith("b64_") ? decodeParam(val) : val;
+    decodedMap.set(key, decoded);
   }
 
-  return { ids, values };
+  return decodedMap;
 }
 
 function sync_url_query_params_and_controls(...values_ids) {
@@ -73,49 +65,45 @@ function sync_url_query_params_and_controls(...values_ids) {
 
   // Split control inputs and selector values that are in format:
   // [selector-1-value, selector-2-value, selector-N-value, ..., control-1-id, control-2-id, control-N-id, ...]
-  const count = values_ids.length / 2;
-  let controlValues = values_ids.slice(0, count);
-  const controlIds = values_ids.slice(count);
+
+  const half = values_ids.length / 2;
+  const controlMap = new Map(values_ids.slice(half).map((id, i) => [id, values_ids[i]]));
 
   const urlParams = new URLSearchParams(window.location.search);
 
-  const isPageOpened =
-    dash_clientside.callback_context.triggered_id === undefined;
-
+  // Flag to check if the page is opened or a control has changed.
+  const isPageOpened = dash_clientside.callback_context.triggered_id === undefined;
   // Conditionally trigger the OPL action: return `null` to trigger it, or dash_clientside.no_update to skip.
   const triggerOPL = isPageOpened ? null : dash_clientside.no_update;
-
   // Prepare default selector values outputs
-  const outputSelectorValues = controlIds.map(() => dash_clientside.no_update);
+  const outputSelectorValues = new Array(controlMap.size).fill(dash_clientside.no_update);
 
   if (isPageOpened) {
     console.debug("sync_url_query_params_and_controls: Page opened");
 
-    const { ids: decodedParamIds, values: decodedParamValues } =
-      decodeUrlParams(urlParams);
+    // Decoded URL parameters in format: Map<controlId, controlSelectorValue>
+    const decodedParamMap = decodeUrlParams(urlParams);
 
-    // Overwrite control selector input and output values with the values from the URL.
-    controlIds.forEach((controlId, i) => {
-      const index = decodedParamIds.indexOf(controlId);
-      // Update only if the control ID is found in the URL parameters.
-      if (index !== -1) {
-        controlValues[i] = decodedParamValues[index];
-        outputSelectorValues[i] = decodedParamValues[index];
+    // Values from the URL take precedence if page is just opened.
+    // Overwrite controlMap and prepare callback control outputs by setting the values from the URL.
+    Array.from(controlMap.keys()).forEach((id, index) => {
+      if (decodedParamMap.has(id)) {
+        const value = decodedParamMap.get(id);
+        controlMap.set(id, value);
+        outputSelectorValues[index] = value;
       }
     });
   } else {
     console.debug("sync_url_query_params_and_controls: Control changed");
   }
 
-  // Update urlParams with updated control values
-  const encodedControlsIdsValues = encodeUrlParams(controlIds, controlValues);
-  encodedControlsIdsValues.forEach(([id, value]) => urlParams.set(id, value));
+  // Encode controlMap to URL parameters.
+  encodeUrlParams(controlMap).forEach((value, id) => urlParams.set(id, value));
 
   // Directly `replace` the URL instead of using a dcc.Location as a callback Output. Do it because the dcc.Location
   // uses history.pushState under the hood which causes destroying the history. With replaceState, we partially
   // maintain the history.
-  const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-  history.replaceState(null, "", newUrl);
+  history.replaceState(null, "", `${window.location.pathname}?${urlParams.toString()}`);
 
   return [triggerOPL, ...outputSelectorValues];
 }

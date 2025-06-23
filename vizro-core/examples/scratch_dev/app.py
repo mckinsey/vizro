@@ -83,13 +83,13 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
     5.5 Test order of URL parameters (Open each link in the new browser tab + Navigate to Page-1 and back to Page-4):
         Test cases:
         (URL in the same order as control outputs)
-        - http://localhost:8050/page_4?page_4_filter_species=WyJ2ZXJzaWNvbG9yIl0&page_4_filter_sepal_width=WzMsNC40XQ&page_4_dfp=InZlcnNpY29sb3Ii
+        - http://localhost:8050/page_4?page_4_filter_species=b64_WyJ2ZXJzaWNvbG9yIl0&page_4_filter_sepal_width=b64_WzMsNC40XQ&page_4_dfp=b64_InZlcnNpY29sb3Ii
             - ✅Results: ["versicolor"], [3, 4.4], "versicolor"
         (different order)
-        - http://localhost:8050/page_4?page_4_filter_sepal_width=WzMsNC40XQ&page_4_filter_species=WyJ2ZXJzaWNvbG9yIl0&page_4_dfp=InZlcnNpY29sb3Ii
+        - http://localhost:8050/page_4?page_4_filter_sepal_width=b64_WzMsNC40XQ&page_4_filter_species=b64_WyJ2ZXJzaWNvbG9yIl0&page_4_dfp=b64_InZlcnNpY29sb3Ii
             - ✅Results: ["versicolor"], [3, 4.4], "versicolor"
         (missing species filter)
-        - http://localhost:8050/page_4?page_4_filter_sepal_width=WzMsNC40XQ&page_4_dfp=InZlcnNpY29sb3Ii
+        - http://localhost:8050/page_4?page_4_filter_sepal_width=b64_WzMsNC40XQ&page_4_dfp=b64_InZlcnNpY29sb3Ii
             - ✅Results: ["ALL"], [3, 4.4], "versicolor"
             - ✅Confirm that the `page_4_filter_species=WyJBTEwiXQ` is added to the URL.
         (unknown query parameter ID)
