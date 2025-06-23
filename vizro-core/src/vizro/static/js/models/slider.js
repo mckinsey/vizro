@@ -1,5 +1,5 @@
 function update_slider_values(start, slider, input_store, self_data) {
-  console.log("update_slider_values");
+  console.debug("update_slider_values");
   var end_value, trigger_id;
 
   trigger_id = dash_clientside.callback_context.triggered;

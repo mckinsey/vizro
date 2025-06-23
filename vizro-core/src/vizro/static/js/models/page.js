@@ -89,7 +89,7 @@ function sync_url_query_params_and_controls(...values_ids) {
   const outputSelectorValues = controlIds.map(() => dash_clientside.no_update);
 
   if (isPageOpened) {
-    console.log("CS:CB Page opened (url -> controls -> url)");
+    console.debug("sync_url_query_params_and_controls: Page opened");
 
     const { ids: decodedParamIds, values: decodedParamValues } =
       decodeUrlParams(urlParams);
@@ -104,7 +104,7 @@ function sync_url_query_params_and_controls(...values_ids) {
       }
     });
   } else {
-    console.log("CS:CB Control is changed (controls -> url)");
+    console.debug("sync_url_query_params_and_controls: Control changed");
   }
 
   // Update urlParams with updated control values
@@ -117,7 +117,6 @@ function sync_url_query_params_and_controls(...values_ids) {
   const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
   history.replaceState(null, "", newUrl);
 
-  console.log("CS:CB Returns:", [triggerOPL, ...outputSelectorValues]);
   return [triggerOPL, ...outputSelectorValues];
 }
 
