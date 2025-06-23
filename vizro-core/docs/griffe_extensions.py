@@ -15,7 +15,7 @@ class DynamicallyInspect(griffe.Extension):
     """
 
     def __init__(self, paths: list[str]):
-        """Specifies path to dynamically inspect."""
+        """Specifies paths to dynamically inspect."""
         self.paths = paths
 
     def on_instance(self, *, obj: griffe.Object, **kwargs):  # noqa: D102
@@ -23,7 +23,7 @@ class DynamicallyInspect(griffe.Extension):
             return
 
         try:
-            # For mysterious reasons we seem to need to do this even though we don't use the result anywhere.
+            # Strangely we seem to need to do the dynamic import even though we don't use the result anywhere.
             # Otherwise the below griffe.inspect gives mkdocstrings: vizro.figures could not be found.
             griffe.dynamic_import(obj.path)
         except ImportError as error:
