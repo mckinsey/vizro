@@ -1,47 +1,60 @@
-"""Custom filter action."""
+import numpy as np
 
-import pandas as pd
-import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
+import vizro.models as vm
+import pandas as pd
+from vizro.tables import dash_ag_grid
+import string
 
 
-@capture("action")
-def custom_action(value):
-    return str(value)
+N = len(string.ascii_letters)
+df = pd.DataFrame(
+    {
+        "category 1": np.random.choice(list("abc"), N),
+        "category 2": np.random.choice(list("ABC"), N),
+        "long_words": [" ".join(list(string.ascii_letters[: n + 1])) for n in range(N)],
+        "numbers": np.random.randint(N, size=N),
+    }
+)
 
 
-df = px.data.iris()
+def dynamic_data(n=10):
+    return df.loc[:n]
 
 
-page = vm.Page(
-    title="Charts UI",
+def make_controls():
+    return [
+        vm.Filter(column="long_words"),
+        vm.Filter(
+            column="category 1",
+            selector=vm.Checklist(),
+        ),
+        vm.Filter(column="category 2", selector=vm.RadioItems()),
+        vm.Filter(column="numbers"),
+    ]
+
+
+page_1 = vm.Page(
+    title="Test page",
     components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
-        vm.Card(id="card-id", text="Blah"),
+        vm.Container(
+            components=[vm.AgGrid(id="grid", figure=dash_ag_grid(dynamic_data))],
+            controls=make_controls(),
+        ),
     ],
     controls=[
-        vm.Filter(
-            column="species",
-            selector=vm.RadioItems(
-                id="radio_items",
-                options=[1, 2, 3],
-                actions=[
-                    # Action is defined in the old fashion way so that the example can be easily reused with the
-                    # vizro==0.1.37 (Checkout to -> c01752a000d1b8a70fd310775358825215794fc7) to prove that it works.
-                    vm.Action(
-                        function=custom_action(),
-                        inputs=["radio_items.value"],
-                        outputs=["card-id.children"],
-                    )
-                ],
+        vm.Parameter(
+            targets=["grid.data_frame.n"],
+            selector=vm.Slider(
+                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
             ),
         ),
+        *make_controls(),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app = Vizro().build(dashboard)
+    app.run()

@@ -140,11 +140,11 @@ class Page(VizroBaseModel):
         #  get_all_targets_on_page() that's used in many actions. So maybe it makes sense to put it in the action for
         #  on_page_load/filter/parameter too.
         figure_targets = [
-            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, page=self))
+            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model=self))
         ]
         filter_targets = [
             filter.id
-            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, page=self))
+            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, root_model=self))
             if filter._dynamic
         ]
         targets = figure_targets + filter_targets

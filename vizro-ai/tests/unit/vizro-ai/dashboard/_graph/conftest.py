@@ -13,7 +13,7 @@ def dataframes():
 
 @pytest.fixture
 def df_metadata():
-    df_metadata = AllDfMetadata({})
+    df_metadata = AllDfMetadata()
     df_metadata.all_df_metadata["gdp_chart"] = DfMetadata(
         df_schema={"a": "int64", "b": "int64"},
         df=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),

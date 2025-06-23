@@ -82,7 +82,6 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
             "validator3": field_validator("targets", mode="before")(validate_targets_not_empty),
             "validator4": validate_date_picker_column,
         },
-        __base__=vm.Filter,
     )
 
 
@@ -153,30 +152,3 @@ Relevant prompt: {self.control_description}
 """
             )
             return None
-
-
-if __name__ == "__main__":
-    import pandas as pd
-    from dotenv import load_dotenv
-
-    from vizro_ai._llm_models import _get_llm_model
-    from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
-
-    load_dotenv()
-
-    model = _get_llm_model()
-
-    all_df_metadata = AllDfMetadata({})
-    all_df_metadata.all_df_metadata["gdp_chart"] = DfMetadata(
-        df_schema={"a": "int64", "b": "int64"},
-        df=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
-        df_sample=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
-    )
-    control_plan = ControlPlan(
-        control_type="Filter",
-        control_description="Create a filter that filters the data by column 'a'.",
-        df_name="gdp_chart",
-    )
-    control = control_plan.create(
-        model, ["gdp_chart"], all_df_metadata
-    )  # error: Target gdp_chart not found in model_manager.

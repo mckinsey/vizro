@@ -6,10 +6,8 @@ A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], a
 
 Unlike `Page`, the `Container` model offers additional visual customization options:
 
-- **`variant`**: Allows you to select a visual style for the container, making it stand out from the rest of the page content.
-- **`collapsed`**: Enables collapsible behavior, letting you define whether the container's contents are initially shown or hidden.
-
-More functionality will be introduced to `Container` soon, including container-specific controls to support better grouping and interaction of related components.
+- **`variant`**: Enables you to select a visual style for the container, making it stand out from the rest of the page content.
+- **`collapsed`**: Enables collapsible behavior. You can define whether the container's contents are initially shown or hidden.
 
 !!! note "Displaying multiple containers inside Tabs"
 
@@ -35,7 +33,7 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 - Different row and column spacing between sections
 - Apply a background color or borders to [visually distinguish your content](#styled-containers)
 - Make your [content collapsible](#collapsible-containers)
-- Apply controls to selected sections (will be supported soon)
+- Apply controls to selected sections
 
 ## Basic containers
 
@@ -45,6 +43,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 1. Configure your `components`, [read the overview page for various options](components.md)
 1. (optional) Set a `title` for your `Container`
 1. (optional) Configure your `layout`, see [the guide on layouts](layouts.md)
+1. (optional) Configure container specific [`controls`](#add-controls-to-container)
 
 !!! example "Container"
 
@@ -182,7 +181,7 @@ vm.Container(
 
 ## Styled containers
 
-To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `variant` argument.
+To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `variant` argument. This can be set to `"plain"` (the default), `"filled"` or `"outlined"`.
 
 !!! example "Container with different styles"
 
@@ -202,12 +201,12 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
                 vm.Container(
                     title="Container with background color",
                     components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-                    variant="filled"
+                    variant="filled",
                 ),
                 vm.Container(
                     title="Container with borders",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    variant="outlined"
+                    variant="outlined",
                 )
             ],
         )
@@ -265,6 +264,8 @@ To make a Container collapsible, use the `collapsed` argument:
 - Set `collapsed=False` to have it expanded (visible) by default.
 
 Once defined, dashboard users can toggle the container’s visibility interactively.
+
+By default, a collapsible container is [styled with `variant="outlined"`](#styled-containers) to make its border visible.
 
 Collapsible containers are supported in both `Grid` and `Flex` layouts. However, we recommend using them within a `Flex` layout for optimal behavior, as `Flex` is better suited to dynamic sizing and more efficient use of space when content is shown or hidden.
 
@@ -497,6 +498,99 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
         [![ContainerInfoIcon]][containerinfoicon]
 
+## Add controls to container
+
+The `Container` has a `controls` argument, where you can define container-specific controls to group related components for better interaction. Controls can only target components inside their own container.
+
+Here are a few cases where you might want to use `controls` within a `Container`:
+
+- displaying multiple datasets on the same page
+- isolating container-specific data without affecting the rest of the page
+- providing detailed views that don't influence page-level data
+
+!!! example "Container with controls"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="12-20"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+        gapminder = px.data.gapminder()
+
+        page = vm.Page(
+            title="Containers with controls",
+            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Container with gapminder data",
+                    components=[vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap"))],
+                    controls=[vm.Filter(column="continent", selector=vm.RadioItems())],
+                ),
+                vm.Container(
+                    title="Container with iris data",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                    controls=[vm.Filter(column="species", selector=vm.Checklist())],
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Containers with controls
+            layout:
+              grid: [[0, 1]]
+              type: grid
+            components:
+              - type: container
+                title: Container with gapminder data
+                components:
+                  - type: graph
+                    figure:
+                      _target_: bar
+                      data_frame: gapminder
+                      x: country
+                      y: gdpPercap
+                controls:
+                  - column: continent
+                    selector:
+                      type: radioitems
+                    type: filter
+              - type: container
+                title: Container with iris data
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
+                controls:
+                  - column: species
+                    selector:
+                      type: checklist
+                    type: filter
+        ```
+
+    === "Result"
+
+        [![ContainerWithControls]][containerwithcontrols]
+
+!!! tip "Container styles"
+
+    When you have multiple adjacent containers with controls, consider using [styled containers](#styled-containers) to make the separations between sections of your page clear. Containers with controls also work with [collapsible containers](#collapsible-containers) and inside [nested containers](#nested-containers).
+
 ## The `extra` argument
 
 The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass extra arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
@@ -511,4 +605,5 @@ For examples of how to use the `extra` argument, see an example in the documenta
 [collapsiblecontainergrid]: ../../assets/user_guides/components/collapsible-containers-grid.gif
 [container]: ../../assets/user_guides/components/containers.png
 [containerinfoicon]: ../../assets/user_guides/components/container-info-icon.png
+[containerwithcontrols]: ../../assets/user_guides/components/container-with-controls.png
 [stylecontainer]: ../../assets/user_guides/components/container-styled.png

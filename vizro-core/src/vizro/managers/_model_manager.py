@@ -69,17 +69,18 @@ class ModelManager:
     def _get_models(
         self,
         model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
-        page: Optional[Page] = None,
+        root_model: Optional[VizroBaseModel] = None,
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 
-        If `model_type` not given then look at all models. If `page` specified then only give models from that page.
+        If `model_type` is specified, return only models matching that type. Otherwise, include all types.
+        If `root_model` is specified, return only models that are descendants of the given `root_model`.
         """
         import vizro.models as vm
 
         if model_type is FIGURE_MODELS:
             model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
-        models = self.__get_model_children(page) if page is not None else self.__models.values()
+        models = self.__get_model_children(root_model) if root_model is not None else self.__models.values()
 
         # Convert to list to avoid changing size when looping through at runtime.
         for model in list(models):
@@ -87,35 +88,20 @@ class ModelManager:
                 yield model  # type: ignore[misc]
 
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
-        """Iterates through children of `model`.
-
-        Currently, this method looks only through certain fields (components, tabs, controls, actions, selector) and
-            their children so might miss some children models.
-        """
+        """Iterates through children of `model` with depth-first pre-order traversal."""
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
             yield model
+            for model_field in model.__class__.model_fields:
+                yield from self.__get_model_children(getattr(model, model_field))
         elif isinstance(model, Mapping):
             # We don't look through keys because Vizro models aren't hashable.
-            for single_model in model.values():
-                yield from self.__get_model_children(single_model)
+            for child in model.values():
+                yield from self.__get_model_children(child)
         elif isinstance(model, Collection) and not isinstance(model, str):
-            for single_model in model:
-                yield from self.__get_model_children(single_model)
-
-        # TODO: in future this list should not be maintained manually. Instead we should look through all model children
-        #  by looking at model.model_fields.
-        model_fields = ["components", "tabs", "controls", "actions", "selector"]
-
-        for model_field in model_fields:
-            if (model_field_value := getattr(model, model_field, None)) is not None:
-                yield from self.__get_model_children(model_field_value)
-
-        # TODO: Add navigation, accordions and other page objects. Won't be needed once have made whole model
-        #  manager work better recursively and have better ways to navigate the hierarchy. In pydantic v2 this would use
-        #  model_fields. Maybe we'd also use Page (or sometimes Dashboard) as the central model for navigating the
-        #  hierarchy rather than it being so generic.
+            for child in model:
+                yield from self.__get_model_children(child)
 
     def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
         """Gets the page containing `model`."""

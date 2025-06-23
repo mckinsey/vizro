@@ -5,8 +5,8 @@ from typing import Any
 import pandas as pd
 from dash import dash_table
 
+from vizro._vizro_utils import _set_defaults_nested
 from vizro.models.types import capture
-from vizro.tables._utils import _set_defaults_nested
 
 
 @capture("table")

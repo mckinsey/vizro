@@ -41,5 +41,5 @@ class _parameter(_AbstractAction):
         )
 
     @property
-    def outputs(self):
+    def outputs(self):  # type: ignore[override]
         return {target: target for target in self._target_ids}

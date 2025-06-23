@@ -35,6 +35,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  overflow: auto;
   padding: 24px;
   width: 100%;
 }
@@ -64,6 +65,7 @@
 }
 
 #page-components {
+  flex: 1;
   overflow: auto;
 }
 
@@ -114,7 +116,6 @@
   flex: 1 1 0;
   flex-direction: row;
   height: calc(100vh - 64px);
-  overflow: auto;
 }
 
 #dashboard-title,
@@ -206,9 +207,35 @@ Current logic:
   }
 
   #page-header,
-  #left-side,
-  #right-side {
+  #right-side,
+  #left-side {
     zoom: 80%;
+  }
+}
+
+@media screen and (width <= 576px) and (orientation: portrait) {
+  body:has(#collapsible-left-side.show) {
+    overflow: hidden;
+  }
+
+  #collapsible-left-side.show:has(#left-main:not([hidden]))
+    ~ .collapse-icon-div
+    #collapse-icon {
+    right: -7px;
+    z-index: 10;
+  }
+
+  #left-side:has(#left-main:not([hidden])) {
+    height: calc(100vh - 48px);
+    position: absolute;
+    width: 100vw;
+    z-index: 5;
+    zoom: 100%;
+  }
+
+  /* If #left-main is NOT hidden, apply this rule */
+  #left-main:not([hidden]) {
+    flex: 1;
   }
 }
 
