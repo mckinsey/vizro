@@ -67,16 +67,21 @@ function sync_url_query_params_and_controls(...values_ids) {
   // [selector-1-value, selector-2-value, selector-N-value, ..., control-1-id, control-2-id, control-N-id, ...]
 
   const half = values_ids.length / 2;
-  const controlMap = new Map(values_ids.slice(half).map((id, i) => [id, values_ids[i]]));
+  const controlMap = new Map(
+    values_ids.slice(half).map((id, i) => [id, values_ids[i]]),
+  );
 
   const urlParams = new URLSearchParams(window.location.search);
 
   // Flag to check if the page is opened or a control has changed.
-  const isPageOpened = dash_clientside.callback_context.triggered_id === undefined;
+  const isPageOpened =
+    dash_clientside.callback_context.triggered_id === undefined;
   // Conditionally trigger the OPL action: return `null` to trigger it, or dash_clientside.no_update to skip.
   const triggerOPL = isPageOpened ? null : dash_clientside.no_update;
   // Prepare default selector values outputs
-  const outputSelectorValues = new Array(controlMap.size).fill(dash_clientside.no_update);
+  const outputSelectorValues = new Array(controlMap.size).fill(
+    dash_clientside.no_update,
+  );
 
   if (isPageOpened) {
     console.debug("sync_url_query_params_and_controls: Page opened");
@@ -103,7 +108,11 @@ function sync_url_query_params_and_controls(...values_ids) {
   // Directly `replace` the URL instead of using a dcc.Location as a callback Output. Do it because the dcc.Location
   // uses history.pushState under the hood which causes destroying the history. With replaceState, we partially
   // maintain the history.
-  history.replaceState(null, "", `${window.location.pathname}?${urlParams.toString()}`);
+  history.replaceState(
+    null,
+    "",
+    `${window.location.pathname}?${urlParams.toString()}`,
+  );
 
   return [triggerOPL, ...outputSelectorValues];
 }
