@@ -67,6 +67,8 @@ function sync_url_query_params_and_controls(...values_ids) {
   // [selector-1-value, selector-2-value, selector-N-value, ..., control-1-id, control-2-id, control-N-id, ...]
 
   const half = values_ids.length / 2;
+
+  // controlMap is in format: Map<controlId, controlSelectorValue>
   const controlMap = new Map(
     values_ids.slice(half).map((id, i) => [id, values_ids[i]]),
   );
@@ -76,8 +78,10 @@ function sync_url_query_params_and_controls(...values_ids) {
   // Flag to check if the page is opened or a control has changed.
   const isPageOpened =
     dash_clientside.callback_context.triggered_id === undefined;
+
   // Conditionally trigger the OPL action: return `null` to trigger it, or dash_clientside.no_update to skip.
   const triggerOPL = isPageOpened ? null : dash_clientside.no_update;
+
   // Prepare default selector values outputs
   const outputSelectorValues = new Array(controlMap.size).fill(
     dash_clientside.no_update,
