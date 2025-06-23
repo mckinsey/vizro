@@ -90,12 +90,10 @@ It is possible to create custom React.js components and add them directly to any
 For more information, see the documentation on [using React.js components with Dash](https://dash.plotly.com/plugins)
 
 ## Using custom functions in `yaml`/`json` configuration
+
 !!! note "Exposing configuration to untrusted users"
 
-    Exposing Vizro configuration to untrusted users may pose a security risk. By choosing a specific import path for a custom function, it could be possible to inject malicious code that will be executed when the dashboard is run.
-    Note that for this to work, the malicious code would need to be executed on import, and it would need to be part of a dependency that is available at validation time.
-
-
+    Exposing Vizro configuration to untrusted users may pose a security risk. By choosing a specific import path for a custom function, it could be possible to inject malicious code that will be executed when the dashboard is run. Note that for this to work, the malicious code would need to be executed on import, and it would need to be part of a dependency that is available at validation time.
 
 It is possible to refer to custom functions that are used as `CapturedCallable` by their import path in a `yaml`/`json` configuration of the dashboard.
 
