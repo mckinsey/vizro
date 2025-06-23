@@ -103,9 +103,10 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
         - http://localhost:8050/page_4?UNKNOWN=asd
             - ✅Confirm that the bug is not raised and that the page can be opened.
 """
-from dash import dcc
 import json
 import base64
+
+from dash import callback, dcc, Input, Output, exceptions
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -127,10 +128,38 @@ def encode_to_base64(value):
     return b64_bytes.decode("utf-8").rstrip("=")
 
 
+# TODO-CHECK: 1. Drill-through to Page-3 - [WORKS]
 @capture("action")
 def custom_drill_through_action(clicked_point):
     species = clicked_point["points"][0]["customdata"][0]
     return f"/page_3", f"?page_3_filter_species={encode_to_base64(species)}"
+
+
+# TODO-CHECK: 2. Same page interaction over URL - [Doesn't work when the same point is clicked twice.]
+@capture("action")
+def same_page_interaction_over_url(clicked_point):
+    species = clicked_point["points"][0]["customdata"][0]
+    return f"?page_2_filter_species={encode_to_base64([species])}"
+
+
+# TODO-CHECK: 3. Same page interaction over controls - [Doesn't work as expected, because filter-action is not clicked]
+@capture("action")
+def same_page_interaction_over_controls(clicked_point):
+    species = clicked_point["points"][0]["customdata"][0]
+    return [species]
+
+
+# # TODO-CHECK: 4. Same page interaction over controls with dash callback - [WORKS]
+# @callback(
+#     Output("page_2_filter_selector_species", "value", allow_duplicate=True),
+#     Input("page_2_graph", "clickData"),
+#     prevent_initial_call=True,
+# )
+# def same_page_interaction_over_controls_dash_callback(click_data):
+#     if click_data is None:
+#         raise exceptions.PreventUpdate
+#     species = click_data["points"][0]["customdata"][0]
+#     return [species]
 
 
 page_1 = vm.Page(
@@ -149,6 +178,20 @@ page_1 = vm.Page(
 )
 
 
+# TODO-CHECK: Update two controls at once - [WORKS, but only one filter action is triggered]
+# @callback(
+#     Output("page_2_filter_selector_species", "value", allow_duplicate=True),
+#     Output("page_2_filter_selector_sepal_width", "value", allow_duplicate=True),
+#     Input("page_2_button", "n_clicks"),
+#     prevent_initial_call=True,
+# )
+# def update_two_controls(n_clicks):
+#     if n_clicks is None:
+#         raise exceptions.PreventUpdate
+#     # Set the values for the two controls
+#     return ["setosa", "versicolor"], [3, 4.4]
+
+
 page_2 = vm.Page(
     title="Page_2",
     components=[
@@ -165,11 +208,32 @@ page_2 = vm.Page(
             ),
             actions=[
                 vm.Action(
-                    function=custom_drill_through_action("page_2_graph.clickData"),
-                    outputs=["vizro_url_callback_nav.pathname", "vizro_url_callback_nav.search"],
+                    # TODO-CHECK: Drill-through to Page-3
+                    # function=custom_drill_through_action("page_2_graph.clickData"),
+                    # outputs=["vizro_url_callback_nav.pathname", "vizro_url_callback_nav.search"],
+                    # TODO-CHECK: Same page interaction over URL
+                    function=same_page_interaction_over_url("page_2_graph.clickData"),
+                    outputs=["vizro_url_callback_nav.search"],
+                    # TODO-CHECK: Same page interaction over controls
+                    # function=same_page_interaction_over_controls("page_2_graph.clickData"),
+                    # outputs=["page_2_filter_selector_species.value"],
                 )
             ],
         ),
+        vm.Button(
+            id="page_2_button",
+            text="Update two controls at once",
+            # TODO-CHECK: Update two controls at once - [Doesn't work as expected. URL is update, but filter action is not triggered]
+            actions=[
+                vm.Action(
+                    function=(capture("action")(lambda: (["setosa", "versicolor"], [3, 4.4]))()),
+                    outputs=[
+                        "page_2_filter_selector_species.value",
+                        "page_2_filter_selector_sepal_width.value",
+                    ]
+                )
+            ]
+        )
     ],
     controls=[
         vm.Filter(
