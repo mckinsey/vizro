@@ -125,7 +125,7 @@ df = px.data.iris()
 def encode_to_base64(value):
     json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
     b64_bytes = base64.urlsafe_b64encode(json_bytes)
-    return b64_bytes.decode("utf-8").rstrip("=")
+    return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
 
 # TODO-CHECK: 1. Drill-through to Page-3 - [WORKS]
@@ -139,7 +139,7 @@ def custom_drill_through_action(clicked_point):
 @capture("action")
 def same_page_interaction_over_url(clicked_point):
     species = clicked_point["points"][0]["customdata"][0]
-    return f"?page_2_filter_species={encode_to_base64([species])}"
+    return f"?page_2_filter_species={encode_to_base64(species)}"
 
 
 # TODO-CHECK: 3. Same page interaction over controls - [Doesn't work as expected, because filter-action is not clicked]
@@ -209,11 +209,11 @@ page_2 = vm.Page(
             actions=[
                 vm.Action(
                     # TODO-CHECK: Drill-through to Page-3
-                    # function=custom_drill_through_action("page_2_graph.clickData"),
-                    # outputs=["vizro_url_callback_nav.pathname", "vizro_url_callback_nav.search"],
+                    function=custom_drill_through_action("page_2_graph.clickData"),
+                    outputs=["vizro_url_callback_nav.pathname", "vizro_url_callback_nav.search"],
                     # TODO-CHECK: Same page interaction over URL
-                    function=same_page_interaction_over_url("page_2_graph.clickData"),
-                    outputs=["vizro_url_callback_nav.search"],
+                    # function=same_page_interaction_over_url("page_2_graph.clickData"),
+                    # outputs=["vizro_url_callback_nav.search"],
                     # TODO-CHECK: Same page interaction over controls
                     # function=same_page_interaction_over_controls("page_2_graph.clickData"),
                     # outputs=["page_2_filter_selector_species.value"],
@@ -230,10 +230,10 @@ page_2 = vm.Page(
                     outputs=[
                         "page_2_filter_selector_species.value",
                         "page_2_filter_selector_sepal_width.value",
-                    ]
+                    ],
                 )
-            ]
-        )
+            ],
+        ),
     ],
     controls=[
         vm.Filter(

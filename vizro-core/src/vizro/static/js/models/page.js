@@ -1,20 +1,21 @@
 function encodeUrlParams(ids, values) {
   return ids.map((id, i) => [
     id,
-    btoa(
-      String.fromCharCode(
-        ...new TextEncoder().encode(JSON.stringify(values[i])),
-      ),
-    )
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, ""),
+    "b64_" +
+      btoa(
+        String.fromCharCode(
+          ...new TextEncoder().encode(JSON.stringify(values[i])),
+        ),
+      )
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, ""),
   ]);
 }
 
 function decodeUrlParams(params) {
   function decodeParam(encoded) {
-    let base64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
+    let base64 = encoded.slice(4).replace(/-/g, "+").replace(/_/g, "/");
     while (base64.length % 4 !== 0) {
       base64 += "=";
     }
@@ -28,10 +29,10 @@ function decodeUrlParams(params) {
 
   for (const [key, val] of params.entries()) {
     ids.push(key);
-    // Silent the error if the value cannot be decoded. It's added for external query parameters.
-    try {
+    // Decode only if the value starts with "b64_". Otherwise, we assume they are external query parameters.
+    if (val.startsWith("b64_")) {
       values.push(decodeParam(val));
-    } catch {
+    } else {
       values.push(val);
     }
   }
