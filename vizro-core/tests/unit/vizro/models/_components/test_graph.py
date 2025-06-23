@@ -97,6 +97,12 @@ expected_code_pass_validation = """############ Imports ##############
 import vizro.models as vm
 
 
+####### Data Manager Settings #####
+#######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
+# data_manager["iris"] = ===> Fill in here <===
+
+
 ########### Model code ############
 model = vm.Graph(
     type="graph",

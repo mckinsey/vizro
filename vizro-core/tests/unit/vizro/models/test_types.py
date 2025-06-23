@@ -241,7 +241,9 @@ class TestModelFieldJSONConfig:
 
     def test_invalid_import(self):
         config = {"_target_": "invalid_function"}
-        with pytest.raises(ValidationError, match="_target_=invalid_function cannot be imported"):
+        with pytest.raises(
+            ValidationError, match="Failed to import function 'invalid_function' from any of the attempted paths"
+        ):
             ModelWithGraph(function=config)
 
     def test_invalid_arguments(self):
@@ -281,7 +283,7 @@ class TestModelFieldJSONConfig:
         config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
 
         with pytest.raises(
-            ValueError, match="_target_=decorated_graph_function cannot be imported from invalid.module."
+            ValueError, match="Failed to import function 'decorated_graph_function' from any of the attempted paths"
         ):
             ModelWithInvalidModule(function=config)
 

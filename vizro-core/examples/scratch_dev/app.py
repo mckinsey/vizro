@@ -120,16 +120,16 @@ if __name__ == "__main__":
     dashboard = vm.Dashboard.model_validate(
         dashboard_config, context={"callable_defs": [("custom_bar2", "graph"), ("weird_grid", "ag_grid")]}
     )
-    # print(dashboard._to_python())
+    print(dashboard._to_python())
     # config = dashboard.model_dump(exclude_unset=True)
     # print(config)
     # print("-" * 100)
     # model_manager._clear()
     # dashboard2 = vm.Dashboard.model_validate(config)
     # print(dashboard2._to_python())
-    app = Vizro().build(dashboard)
+    # app = Vizro().build(dashboard)
 
-    app.run(debug=True)
+    # app.run(debug=True)
 
     # What I ultimately want:
 

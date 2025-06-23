@@ -405,7 +405,8 @@ class CapturedCallable:
     def __repr_clean__(self):
         """Alternative __repr__ method with cleaned module paths."""
         if self._prevent_run:
-            return f"{self._function}({self._arguments})"
+            args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
+            return f"{self._function}({args})"
         args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
         original_module_path = f"{self._function.__module__}"
         return f"{_clean_module_string(original_module_path)}{self._function.__name__}({args})"
