@@ -366,69 +366,6 @@ pages:
         type: card
     title: Custom Figures
   - components:
-      - components:
-          - figure:
-              _target_: scatter
-              data_frame: iris
-              x: sepal_length
-              y: petal_width
-              color: species
-              title: Container I - Scatter
-            type: graph
-          - figure:
-              _target_: bar
-              data_frame: iris
-              x: sepal_length
-              y: petal_width
-              color: species
-              title: Container I - Bar
-            type: graph
-        layout:
-          grid: [[0, 1]]
-          type: grid
-        type: container
-        title: Container I
-      - components:
-          - figure:
-              _target_: scatter
-              data_frame: iris
-              x: sepal_width
-              y: sepal_length
-              color: species
-              marginal_y: violin
-              marginal_x: box
-              title: Container II - Scatter
-            type: graph
-        type: container
-        title: Container II
-    title: Containers
-  - components:
-      - components:
-          - figure:
-              _target_: scatter
-              data_frame: iris
-              x: sepal_width
-              y: sepal_length
-              color: species
-            type: graph
-        type: container
-        collapsed: true
-        title: Initially collapsed container
-      - components:
-          - figure:
-              _target_: box
-              data_frame: iris
-              x: species
-              y: sepal_length
-              color: species
-            type: graph
-        type: container
-        collapsed: false
-        title: Initially expanded container
-    layout:
-      type: flex
-    title: Collapsible containers
-  - components:
       - tabs:
           - title: Tab I
             type: container
@@ -634,6 +571,265 @@ pages:
     description: |
       This page provides overview of Tooltip functionality.
     title: Tooltip
+  - components:
+      - tabs:
+          - title: Default
+            type: container
+            components:
+              - type: container
+                components:
+                  - type: graph
+                    title: Container I - Scatter
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                      marginal_y: violin
+                      marginal_x: box
+              - type: container
+                layout:
+                  grid: [[0, 1]]
+                  type: grid
+                components:
+                  - type: graph
+                    title: Container II - Scatter
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_length
+                      y: petal_width
+                      color: species
+                  - type: graph
+                    title: Container II - Bar
+                    figure:
+                      _target_: bar
+                      data_frame: iris
+                      x: sepal_length
+                      y: petal_width
+                      color: species
+          - title: Styled
+            type: container
+            layout:
+              grid: [[0, 0], [1, 2]]
+              type: grid
+            components:
+              - type: container
+                variant: plain
+                components:
+                  - type: graph
+                    title: Container I - Scatter
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                      marginal_y: violin
+                      marginal_x: box
+              - type: container
+                variant: outlined
+                components:
+                  - type: graph
+                    title: Container II - Scatter
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_length
+                      y: petal_width
+                      color: species
+              - type: container
+                variant: filled
+                components:
+                  - type: graph
+                    title: Container II - Bar
+                    figure:
+                      _target_: bar
+                      data_frame: iris
+                      x: sepal_length
+                      y: petal_width
+                      color: species
+          - title: Collapsed
+            type: container
+            layout:
+              type: flex
+            components:
+              - type: container
+                title: Initially collapsed container
+                collapsed: True
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_length
+                      y: petal_width
+                      color: species
+              - type: container
+                title: Initially expanded container
+                collapsed: False
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                      marginal_y: violin
+                      marginal_x: box
+          - title: With controls
+            type: container
+            layout:
+              grid: [[0, 1]]
+              type: grid
+            components:
+              - type: container
+                components:
+                  - type: graph
+                    title: Container I - Scatter
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                      marginal_y: violin
+                      marginal_x: box
+                controls:
+                  - column: species
+                    selector:
+                      type: checklist
+                    type: filter
+              - type: container
+                layout:
+                  grid: [[0, 1]]
+                  type: grid
+                components:
+                  - type: graph
+                    title: Container II - Scatter
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_length
+                      y: petal_width
+                      color: species
+                  - type: graph
+                    title: Container II - Bar
+                    figure:
+                      _target_: bar
+                      data_frame: iris
+                      x: sepal_length
+                      y: petal_width
+                      color: species
+        type: tabs
+    controls:
+      - type: filter
+        column: species
+    title: Containers
+  - components:
+      - text: |
+          ### Card #1
+
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+          Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+        type: card
+      - text: |
+          ### Card #2
+
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+          Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+        type: card
+      - text: |
+          ### Card #3
+
+          Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+        type: card
+      - text: |
+          ### Card #4
+
+          Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+        type: card
+      - text: |
+          ### Card #5
+
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+        type: card
+      - text: |
+          ### Card #6
+
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+        type: card
+      - text: |
+          ### Card #7
+
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+        type: card
+    description: |
+      Use Grid when you have a specific layout in mind—like a dashboard with clearly defined sections
+      (e.g. top summary row, bottom detail view).
+    layout:
+      grid:
+        [[0, 0, 0, 0], [1, 1, 3, 3], [1, 1, 4, 4], [2, 2, 5, 5], [2, 2, 6, 6]]
+      type: grid
+    title: Grid layout
+  - components:
+      - text: |
+          ### Card #1
+
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+          Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+        type: card
+      - text: |
+          ### Card #2
+
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+          Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+        type: card
+      - text: |
+          ### Card #3
+
+          Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+        type: card
+      - text: |
+          ### Card #4
+
+          Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+        type: card
+      - text: |
+          ### Card #5
+
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+        type: card
+      - text: |
+          ### Card #6
+
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+        type: card
+      - text: |
+          ### Card #7
+
+          Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+          Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+        type: card
+    description: |
+      Use Flex when you want a responsive row of items that adjusts automatically — great for things like
+      dynamic card collections or tag-like elements that should flow naturally.
+    layout:
+      wrap: True
+      gap: 40px
+      type: flex
+    title: Flex layout
 navigation:
   nav_selector:
     type: nav_bar
@@ -653,13 +849,15 @@ navigation:
             - Figure
             - Button
             - Containers
-            - Collapsible containers
             - Tabs
             - Tooltip
           Controls:
             - Filters
             - Parameters
             - Selectors
+          Layout:
+            - Grid layout
+            - Flex layout
           Actions:
             - Export data
             - Chart interaction

@@ -1192,4 +1192,4 @@ if __name__ == "__main__":
         class_name="anchor-container",
     )
     app.dash.layout.children.append(banner)
-    app.run(port=8051)
+    app.run()
