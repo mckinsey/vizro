@@ -7,9 +7,10 @@ import functools
 import inspect
 import sys
 import warnings
+from collections import OrderedDict
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, cast, runtime_checkable
 
 from pydantic import ImportString, TypeAdapter, ValidationError
 
@@ -122,7 +123,7 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
     )
 
 
-# CapturedCallable now allows instatiation via string, which will instantiate an object with ._prevent_run = True.
+# CapturedCallable now allows instantiation via string, which will instantiate an object with ._prevent_run = True.
 # This allows us to instantiate dashboard objects without needing to execute/import the function definition.
 # Useful in the context of untrusted code generation (e.g. by LLMs).
 class CapturedCallable:
@@ -159,7 +160,12 @@ class CapturedCallable:
         # it more difficult to handle variadic keyword arguments due to https://bugs.python.org/issue41745.
         # Hence we abandon bound_arguments.args and bound_arguments.kwargs in favor of just using
         # self.__function(**bound_arguments.arguments).
-        if isinstance(function, Callable):
+
+        # Use this to declare the type of the attributes only once due to if clauses below.
+        self.__function: Union[Callable[..., Any], str]
+        self._model_example: Optional[str]
+
+        if callable(function):
             parameters = inspect.signature(function).parameters
             invalid_params = {
                 param.name
@@ -200,8 +206,9 @@ class CapturedCallable:
         else:
             self._prevent_run = True
             self.__function = function
-            self.__bound_arguments = kwargs
+            self.__bound_arguments = OrderedDict(kwargs)
             self._mode = args[0]
+            self._model_example = None
 
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
@@ -210,13 +217,19 @@ class CapturedCallable:
         provide additional arguments. You can still override arguments that were originally given
         as positional using their argument name.
         """
+        if self._prevent_run:
+            raise RuntimeError("Cannot call CapturedCallable when function is provided as string")
+
+        # At this point we know self.__function is callable because _prevent_run is False
+        function = cast(Callable[..., Any], self.__function)
+
         if args and kwargs:
             # In theory we could probably lift this restriction, but currently we don't need to and we'd need
             # to give careful thought on the right way to handle cases where there's ambiguity in the
-            # self.__function call as the same argument is potentially being provided through both *args and **kwargs.
+            # function call as the same argument is potentially being provided through both *args and **kwargs.
             raise ValueError("CapturedCallable does not support calling with both positional and keyword arguments.")
 
-        # In order to avoid any ambiguity in the call to self.__function, we cannot provide use the *args directly.
+        # In order to avoid any ambiguity in the call to function, we cannot provide use the *args directly.
         # Instead they must converted to keyword arguments and so we need to match them up with the right keywords.
         # Since positional-only or variadic positional parameters are not possible (they raise ValueError in __init__)
         # the only possible type of argument *args could be address is positional-or-keyword.
@@ -235,9 +248,9 @@ class CapturedCallable:
 
             # No need to handle case that len(args) < len(unbound_positional_arguments),
             # since this will already raise error in the following function call.
-            return self.__function(**dict(zip(unbound_positional_arguments, args)), **self.__bound_arguments)
+            return function(**dict(zip(unbound_positional_arguments, args)), **self.__bound_arguments)
 
-        return self.__function(**{**self.__bound_arguments, **kwargs})
+        return function(**{**self.__bound_arguments, **kwargs})
 
     def __getitem__(self, arg_name: str):
         """Gets the value of a bound argument."""
@@ -301,7 +314,7 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
         json_schema_extra: JsonSchemaExtraType,
-        callable_defs: list[str],
+        callable_defs: list[tuple[str, str]],
     ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
 
