@@ -47,7 +47,7 @@ trucks:
 ```
 
 1. The [minimum details needed](https://docs.kedro.org/en/stable/data/data_catalog.html#the-basics-of-catalog-yml) for a Kedro Data Catalog entry are the data source name (`cars`), the type of data (`type`), and the file's location (`filepath`).
-1. Vizro supports all [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) datasets. This includes, for example, CSV, Excel and Parquet files.
+1. Vizro supports all [`kedro_datasets.pandas`](https://docs.kedro.org/projects/kedro-datasets) datasets. This includes, for example, CSV, Excel and Parquet files.
 1. Kedro supports a [variety of data stores](https://docs.kedro.org/en/stable/data/data_catalog.html#dataset-filepath) including local file systems, network file systems and cloud object stores.
 1. You can [pass data loading arguments](https://docs.kedro.org/en/stable/data/data_catalog.html#load-save-and-filesystem-arguments) to specify how to load the data source.
 1. You can [securely inject credentials](https://docs.kedro.org/en/stable/configuration/credentials.html) into data loading functions using a [`credentials.yaml` file](https://docs.kedro.org/en/stable/data/data_catalog.html#dataset-access-credentials) or [environment variables](https://docs.kedro.org/en/stable/configuration/advanced_configuration.html#how-to-load-credentials-through-environment-variables).
@@ -75,7 +75,7 @@ for dataset_name, dataset_loader in kedro_integration.datasets_from_catalog(cata
     data_manager[dataset_name] = dataset_loader
 ```
 
-The code above registers all data sources of type [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) in the Kedro `catalog` with Vizro's `data_manager` . You can now [reference the data source](data.md#reference-by-name) by name. For example, given the [above `catalog.yaml` file](#create-a-kedro-data-catalog), you could use the data source names `"cars"`, `"motorbikes"`, `"trains"`, and `"trucks"` with `px.scatter("cars", ...)`.
+The code above registers all data sources of type [`kedro_datasets.pandas`](https://docs.kedro.org/projects/kedro-datasets) in the Kedro `catalog` with Vizro's `data_manager` . You can now [reference the data source](data.md#reference-by-name) by name. For example, given the [above `catalog.yaml` file](#create-a-kedro-data-catalog), you could use the data source names `"cars"`, `"motorbikes"`, `"trains"`, and `"trucks"` with `px.scatter("cars", ...)`.
 
 !!! note
 
