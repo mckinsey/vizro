@@ -146,8 +146,7 @@ In the [documentation sections on custom charts, tables, figures and actions](#v
     ```
 
     1. Define the custom chart either in `app.py` or in a separate file.
-    2. Parse the YAML or JSON configuration that refers to the custom chart with the **correct import path**. If the custom chart is defined in the `app.py`, then use `__main__` as the import path.
-
+    1. Parse the YAML or JSON configuration that refers to the custom chart with the **correct import path**. If the custom chart is defined in the `app.py`, then use `__main__` as the import path.
 
 ### Validating dashboards without executing `CapturedCallable` functions
 
@@ -155,10 +154,9 @@ It is possible to validate a dashboard configuration without executing the `Capt
 
 You can use this method when you want to check if the dashboard configuration is valid, but you don't want to execute the custom functions until run-time, which may be in a sandboxed environment. This is useful when the custom functions are not available at validation time, or when they originate from untrusted sources (e.g. when a large language model is used to generate that code).
 
-!!!note When starting the server
+!!! note When starting the server
 
     If you validate your dashboard configuration with a `CapturedCallable` function that is undefined, you will not be able to start the server. Hence when running the dashboard, you will need to recreate a dashboard object with all the `CapturedCallable` functions defined.
-
 
 !!! example "Validating dashboards without executing `CapturedCallable` functions"
 
@@ -194,7 +192,7 @@ You can use this method when you want to check if the dashboard configuration is
             ]
         },
     )
-    app = Vizro().build(dashboard) # (1)!
+    app = Vizro().build(dashboard)  # (1)!
     ```
 
     1. Because this dashboard configuration contains a `CapturedCallable` function that is undefined, you will not be able to start the server. Hence `app.run()` will raise an error.
