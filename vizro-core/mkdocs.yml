@@ -149,6 +149,10 @@ plugins:
               ignore_init_summary: true
               warn_unknown_params: false
               returns_named_value: false
+            extensions:
+              - docs/griffe_extensions.py:
+                  paths:
+                    [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
