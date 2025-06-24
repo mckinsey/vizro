@@ -155,6 +155,8 @@ class Vizro:
             # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
             # defined in the filter's pre_build method. Also, the calculation of the data_frame Parameter targets
             # depends on the filter targets, so they should be pre-built after the filters as well.
+            # It's also essential for filters to be pre-built before Container.pre_build runs or otherwise
+            # control.selector won't be set.
             filter.pre_build()
         for model_id in set(model_manager):
             model = model_manager[model_id]

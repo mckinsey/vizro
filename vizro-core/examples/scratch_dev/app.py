@@ -32,9 +32,7 @@ first_page = vm.Page(
                     footer="""SOURCE: **Plotly gapminder data set, 2024**""",
                 ),
             ],
-            controls=[
-                vm.Filter(column="continent", selector=vm.Checklist(title="Continent (checklist)"))
-            ]
+            controls=[vm.Filter(column="continent", selector=vm.Checklist(title="Continent (checklist)"))],
         )
     ],
     controls=[
@@ -64,4 +62,5 @@ first_page = vm.Page(
 dashboard = vm.Dashboard(pages=[first_page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app = Vizro().build(dashboard)
+    app.run()

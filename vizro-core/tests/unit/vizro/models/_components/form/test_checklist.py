@@ -175,6 +175,7 @@ class TestChecklistBuild:
                     id="checklist_id",
                     options=expected_options,
                     value=expected_value,
+                    inline=False,
                     persistence=True,
                     persistence_type="session",
                 ),
@@ -249,6 +250,33 @@ class TestChecklistBuild:
                 dbc.Checklist(
                     options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                     value=["A"],
+                    inline=False,
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ],
+        )
+        assert_component_equal(checklist, expected_checklist, keys_to_strip={"id"})
+
+    def test_checklist_in_container_build(self):
+        checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title", value=["A"])
+        checklist._in_container = True
+        checklist = checklist.build()
+
+        expected_checklist = html.Fieldset(
+            [
+                html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
+                dbc.Checkbox(
+                    value=False,
+                    label="Select All",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+                dbc.Checklist(
+                    id="checklist_id",
+                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                    value=["A"],
+                    inline=True,
                     persistence=True,
                     persistence_type="session",
                 ),

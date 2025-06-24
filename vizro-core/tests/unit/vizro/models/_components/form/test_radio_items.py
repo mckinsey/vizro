@@ -142,6 +142,7 @@ class TestRadioItemsBuild:
                     id="radio_items",
                     options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                     value="A",
+                    inline=False,
                     persistence=True,
                     persistence_type="session",
                 ),
@@ -203,6 +204,7 @@ class TestRadioItemsBuild:
                 dbc.RadioItems(
                     id="radio_items",
                     options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                    inline=False,
                     value="A",
                     persistence=True,
                     persistence_type="session",
@@ -210,4 +212,24 @@ class TestRadioItemsBuild:
             ]
         )
 
+        assert_component_equal(radio_items, expected_radio_items)
+
+    def test_radio_items_in_container_build(self):
+        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title", value="A")
+        radio_items._in_container = True
+        radio_items = radio_items.build()
+
+        expected_radio_items = html.Fieldset(
+            [
+                html.Legend([html.Span("Title", id="radio_items_id_title"), None], className="form-label"),
+                dbc.RadioItems(
+                    id="radio_items_id",
+                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                    value="A",
+                    inline=True,
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ],
+        )
         assert_component_equal(radio_items, expected_radio_items)

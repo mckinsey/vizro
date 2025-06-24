@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._controls._controls_utils import check_control_targets, set_container_control_default
+from vizro.models._controls._controls_utils import check_control_targets
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
@@ -199,8 +199,6 @@ class Filter(VizroBaseModel):
             # Categorical selector.
             self.selector = cast(CategoricalSelectorType, self.selector)
             self.selector.options = self.selector.options or self._get_options(targeted_data)
-
-        set_container_control_default(control=self)
 
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (

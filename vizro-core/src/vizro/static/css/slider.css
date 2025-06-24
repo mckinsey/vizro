@@ -95,9 +95,10 @@ input.dash-input:invalid {
 
 /* Slider Label + Input Container ---------------------- */
 .slider-label-input {
-  align-items: flex-start;
+  align-items: baseline;
   display: flex;
   flex-direction: row;
+  gap: 0.5rem;
   justify-content: space-between;
 }
 

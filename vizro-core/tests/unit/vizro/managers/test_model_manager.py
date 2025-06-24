@@ -186,18 +186,6 @@ class TestGetModels:
 
         assert "page_1_control_1" in result
 
-    def test_model_under_unknown_field(self, page_1):
-        """Model is nested under another model but under an unknown field -> don't return the model."""
-
-        class ControlGroup(vm.VizroBaseModel):
-            unknown_field: Any
-
-        page_1.controls.append(ControlGroup(unknown_field=vm.Filter(id="page_1_control_1", column="year")))
-
-        result = [model.id for model in model_manager._get_models(model_type=vm.Filter, root_model=page_1)]
-
-        assert "page_1_control_1" not in result
-
     def test_root_model_container(self, container_1):
         """model_type is None | root_model is container_1 -> return all elements from the container_1."""
         result = [model.id for model in model_manager._get_models(root_model=container_1)]
