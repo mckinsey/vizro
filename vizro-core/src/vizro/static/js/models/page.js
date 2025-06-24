@@ -28,16 +28,16 @@ function encodeUrlParams(decodedMap) {
 //    decoded_map = {}
 //    for key, val in encoded_map.items():
 //        if val.startswith("b64_"):
-//            b64 = val[4:].replace("-", "+").replace("_", "/")
-//            b64 += "=" * ((4 - len(b64) % 4) % 4)
-//            decoded = json.loads(base64.b64decode(b64).decode("utf-8"))
-//        else:
-//            decoded = val
-//        decoded_map[key] = decoded
+//            try:
+//                b64 = val[4:].replace("-", "+").replace("_", "/")
+//                b64 += "=" * ((4 - len(b64) % 4) % 4)
+//                decoded_map[key] = json.loads(base64.b64decode(b64).decode("utf-8"))
+//            except Exception as e:
+//                print(f"Failed to decode URL parameter: {key} {val}")
 //    return decoded_map
 //
-// Example inputs: {'foo': 'b64_IjEyMyI', 'bar': 'b64_WyJhIiwiYiJd', 'external': 'raw_value'}
-// Example output: {'foo': '123', 'bar': ['a', 'b'], 'external': 'raw_value'}
+// Example inputs: {'foo': 'b64_IjEyMyI', 'bar': 'b64_WyJhIiwiYiJd', 'external': 'raw_value', 'baz': 'b64_invalid'}
+// Example output: {'foo': '123', 'bar': ['a', 'b']}
 function decodeUrlParams(encodedMap) {
   function decodeParam(encoded) {
     let base64 = encoded.slice(4).replace(/-/g, "+").replace(/_/g, "/");
@@ -49,8 +49,13 @@ function decodeUrlParams(encodedMap) {
 
   const decodedMap = new Map();
   for (const [key, val] of encodedMap) {
-    const decoded = val.startsWith("b64_") ? decodeParam(val) : val;
-    decodedMap.set(key, decoded);
+    if (val.startsWith("b64_")) {
+      try {
+        decodedMap.set(key, decodeParam(val));
+      } catch (e) {
+        console.warn("Failed to decode URL parameter:", key, val);
+      }
+    }
   }
 
   return decodedMap;
