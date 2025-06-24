@@ -2,58 +2,96 @@ import numpy as np
 
 from vizro import Vizro
 import vizro.models as vm
-import pandas as pd
-from vizro.tables import dash_ag_grid
-import string
+import vizro.plotly.express as px
+from vizro.models.types import capture
+from dash import dcc
+
+iris = px.data.iris()
 
 
-N = len(string.ascii_letters)
-df = pd.DataFrame(
-    {
-        "category 1": np.random.choice(list("abc"), N),
-        "category 2": np.random.choice(list("ABC"), N),
-        "long_words": [" ".join(list(string.ascii_letters[: n + 1])) for n in range(N)],
-        "numbers": np.random.randint(N, size=N),
-    }
-)
+@capture("action")
+def my_custom_export(n_clicks):
+    if n_clicks:
+        print("my custom export action triggered-now!")
+        return dcc.send_data_frame(iris.to_csv, "mydf.csv")
 
 
-def dynamic_data(n=10):
-    return df.loc[:n]
-
-
-def make_controls():
-    return [
-        vm.Filter(column="long_words"),
-        vm.Filter(
-            column="category 1",
-            selector=vm.Checklist(),
-        ),
-        vm.Filter(column="category 2", selector=vm.RadioItems()),
-        vm.Filter(column="numbers"),
-    ]
+@capture("action")
+def my_custom_location(n_clicks):
+    if n_clicks:
+        print("my custom location change action triggered-now!")
+        return "/test-page-2"
 
 
 page_1 = vm.Page(
     title="Test page",
     components=[
         vm.Container(
-            components=[vm.AgGrid(id="grid", figure=dash_ag_grid(dynamic_data))],
-            controls=make_controls(),
+            components=[
+                vm.Graph(
+                    figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
+                ),
+                vm.Graph(
+                    id="graph",
+                    figure=px.bar(
+                        iris,
+                        x="sepal_length",
+                        y="sepal_width",
+                        color="species",
+                        title="Container I - Bar",
+                    ),
+                ),
+                vm.Button(
+                    id="button_download",
+                    text="Export data!",
+                    actions=[
+                        vm.Action(
+                            function=my_custom_export(),
+                            inputs=["button_download.n_clicks"],
+                            outputs=["vizro_download.data"],
+                        )
+                    ],
+                ),
+                vm.Button(
+                    id="button_location",
+                    text="Go to page 2!",
+                    actions=[
+                        vm.Action(
+                            function=my_custom_location(),
+                            inputs=["button_location.n_clicks"],
+                            outputs=["vizro_url.href"],
+                        )
+                    ],
+                ),
+            ],
         ),
     ],
     controls=[
-        vm.Parameter(
-            targets=["grid.data_frame.n"],
-            selector=vm.Slider(
-                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
-            ),
-        ),
-        *make_controls(),
+        vm.Filter(
+            column="species",
+        )
     ],
 )
 
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1])
+page_2 = vm.Page(
+    title="Test page 2",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
+                ),
+            ],
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+        )
+    ],
+)
+
+dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
