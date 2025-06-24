@@ -56,14 +56,14 @@ dashboard_config = {
                 #         "data_frame": "iris",
                 #     },
                 # },
-                {"type": "ag_grid", "figure": {"_target_": "__main__.custom_grid", "data_frame": "iris"}},
+                # {"type": "ag_grid", "figure": {"_target_": "__main__.custom_grid", "data_frame": "iris"}},
                 # {"type": "figure", "figure": {"_target_": "__main__.custom_kpi_card", "data_frame": "iris"}},
                 {
                     "type": "button",
                     "text": "Export data",
                     "actions": [
                         {"function": {"_target_": "export_data"}},
-                        {"function": {"_target_": "__main__.my_custom_action", "t": 5}},
+                        # {"function": {"_target_": "__main__.my_custom_action", "t": 5}},
                         {"function": {"_target_": "export_data", "file_format": "xlsx"}},
                     ],
                 },
