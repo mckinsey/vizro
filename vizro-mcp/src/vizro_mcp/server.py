@@ -14,7 +14,6 @@ from vizro import Vizro
 from vizro_mcp._schemas import (
     AgGridEnhanced,
     ChartPlan,
-    Dashboard,
     GraphEnhanced,
 )
 from vizro_mcp._utils import (
@@ -248,9 +247,13 @@ def validate_dashboard_config(
     Vizro._reset()
 
     try:
-        dashboard = Dashboard.model_validate(
+        dashboard = vm.Dashboard.model_validate(
             dashboard_config,
-            context={"custom_chart_defs": [custom_chart.chart_name for custom_chart in custom_charts]},
+            context={
+                "allowed_undefined_captured_callables": [
+                    (custom_chart.chart_name, "graph") for custom_chart in custom_charts
+                ]
+            },
         )
     except ValidationError as e:
         return ValidateResults(
