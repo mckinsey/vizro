@@ -22,15 +22,15 @@ dashboard_config = {
             "title": "Page 1",
             "components": [
                 # {"type": "card", "text": "Hello, world!"},
-                # {
-                #     "type": "graph",
-                #     "figure": {
-                #         "_target_": "scatter",
-                #         "data_frame": "iris",
-                #         "x": "sepal_length",
-                #         "y": "sepal_width",
-                #     },
-                # },
+                {
+                    "type": "graph",
+                    "figure": {
+                        "_target_": "scatter",
+                        "data_frame": "iris",
+                        "x": "sepal_length",
+                        "y": "sepal_width",
+                    },
+                },
                 # {
                 #     "type": "graph",
                 #     "figure": {
@@ -129,7 +129,13 @@ def my_custom_action(t: int):
 if __name__ == "__main__":
     dashboard = vm.Dashboard.model_validate(
         dashboard_config,
-        context={"allowed_undefined_captured_callables": [("custom_bar2", "graph"), ("weird_grid", "ag_grid", 3)]},
+        context={
+            "allowed_undefined_captured_callables": [
+                ("custom_bar2", "graph"),
+                ("weird_grid", "ag_grid"),
+                # ("scatter", "graph"),
+            ]
+        },
     )
     # print(dashboard._to_python())
     # config = dashboard.model_dump(exclude_unset=True)
@@ -138,9 +144,9 @@ if __name__ == "__main__":
     # model_manager._clear()
     # dashboard2 = vm.Dashboard.model_validate(config)
     # print(dashboard2._to_python())
-    # app = Vizro().build(dashboard)
+    app = Vizro().build(dashboard)
 
-    # app.run(debug=True)
+    app.run(debug=True)
 
     # What I ultimately want:
 

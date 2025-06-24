@@ -167,19 +167,19 @@ class CapturedCallable:
             ValueError if `function` contains positional-only or variadic positional parameters (*args).
 
         """
-        # It is difficult to get positional-only and variadic positional arguments working at the same time as
-        # variadic keyword arguments. Ideally we would do the __call__ as
-        # self.__function(*bound_arguments.args, **bound_arguments.kwargs) as in the
-        # Python documentation. This would handle positional-only and variadic positional arguments better but makes
-        # it more difficult to handle variadic keyword arguments due to https://bugs.python.org/issue41745.
-        # Hence we abandon bound_arguments.args and bound_arguments.kwargs in favor of just using
-        # self.__function(**bound_arguments.arguments).
 
         # Use this to declare the type of the attributes only once due to if clauses below.
         self.__function: Union[Callable[..., Any], str]
         self._model_example: Optional[str]
 
         if callable(function):
+            # It is difficult to get positional-only and variadic positional arguments working at the same time as
+            # variadic keyword arguments. Ideally we would do the __call__ as
+            # self.__function(*bound_arguments.args, **bound_arguments.kwargs) as in the
+            # Python documentation. This would handle positional-only and variadic positional arguments better but makes
+            # it more difficult to handle variadic keyword arguments due to https://bugs.python.org/issue41745.
+            # Hence we abandon bound_arguments.args and bound_arguments.kwargs in favor of just using
+            # self.__function(**bound_arguments.arguments).
             parameters = inspect.signature(function).parameters
             invalid_params = {
                 param.name
@@ -220,8 +220,9 @@ class CapturedCallable:
         else:
             self._prevent_run = True
             self.__function = function
+            mode = kwargs.pop("mode", None)  # we instantiate str proxy with mode as kwarg
+            self._mode = mode
             self.__bound_arguments = OrderedDict(kwargs)
-            self._mode = args[0]
             self._model_example = None
 
     def __call__(self, *args, **kwargs):
@@ -276,9 +277,6 @@ class CapturedCallable:
 
     @property
     def _arguments(self):
-        # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
-        # references are removed.
-        # Addition MS: this seems to be also used in model_post_init in _components/ag_grid.py
         # TODO-AV2 B 1: try to subclass Mapping. Check if anything requires MutableMapping (used in Vizro AI tests
         #  and to set data_frame only?). Try to remove these by making special method for setting data_frame. Then
         # can remove as many uses of _arguments as possible and use .items() where suitable instead.
@@ -343,7 +341,6 @@ class CapturedCallable:
         if not isinstance(captured_callable_config, dict):
             return captured_callable_config
 
-        # Try to import function given in _target_ from the import_path property of the pydantic field.
         try:
             function_name = captured_callable_config.pop("_target_")
         except KeyError as exc:
@@ -353,30 +350,24 @@ class CapturedCallable:
 
         import_path = json_schema_extra["import_path"]
 
-        # Try multiple approaches to import the function - order matters here.
-        import_attempts = [
-            import_path + ":" + function_name,
-            function_name,
-        ]
+        # Check if we skip proper instantiation due to undefined function.
+        if function_name in (def_name for def_name, _ in allowed_undefined_captured_callables):
+            # Find the mode from allowed_undefined_captured_callables tuples
+            mode = next(mode for def_name, mode in allowed_undefined_captured_callables if def_name == function_name)
+            return CapturedCallable(function_name, mode=mode, **captured_callable_config)
 
-        for import_string in import_attempts:
+        # Try multiple approaches to import the function - order matters here.
+        try:
+            function: CapturedCallable = TypeAdapter(ImportString).validate_python(import_path + ":" + function_name)
+        except ValidationError:
             try:
-                function: CapturedCallable = TypeAdapter(ImportString).validate_python(import_string)
-                break
+                function: CapturedCallable = TypeAdapter(ImportString).validate_python(function_name)
             except ValidationError:
-                continue
-        else:
-            if function_name in (def_name for def_name, _ in allowed_undefined_captured_callables):
-                # Find the mode from allowed_undefined_captured_callables tuples
-                mode = next(
-                    mode for def_name, mode in allowed_undefined_captured_callables if def_name == function_name
-                )
-                return CapturedCallable(function_name, mode, **captured_callable_config)
-            raise ValueError(
-                f"""Failed to import function '{function_name}' from any of the attempted paths:
-{import_attempts}.
+                raise ValueError(
+                    f"""Failed to import function '{function_name}' from any of the attempted paths:
+{import_path + ":" + function_name} or {function_name}.
 """
-            )
+                )
 
         # All the other items in figure are the keyword arguments to pass into function.
         function_kwargs = captured_callable_config
