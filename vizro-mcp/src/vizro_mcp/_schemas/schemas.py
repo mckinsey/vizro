@@ -1,14 +1,9 @@
 """Schema defining pydantic models for usage in the MCP server."""
 
-import importlib
-from typing import Annotated, Any, Optional, Union, cast
+from typing import Annotated, Any, Optional
 
 import vizro.models as vm
-from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationInfo, field_validator
-from vizro.models.types import (
-    CapturedCallable,
-    JsonSchemaExtraType,
-)
+from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationInfo
 
 from vizro_mcp._utils import DFMetaData
 
