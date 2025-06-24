@@ -25,7 +25,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Fixed
 
-- Fix dynamically calculated row height for `Dropdown` when it's used within `Container.controls`. ([#1238](https://github.com/mckinsey/vizro/pull/1238))
+- Fix dynamically calculated row height for `Dropdown` when used in `Container.controls`. ([#1238](https://github.com/mckinsey/vizro/pull/1238))
 
 <a id='changelog-0.1.40'></a>
 
