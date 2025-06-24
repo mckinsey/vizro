@@ -39,7 +39,7 @@ graph TD
     | Can be refreshed while dashboard is running                   | No               | Yes                                      |
     | Production-ready                                              | Yes              | Yes                                      |
 
-If you have a [Kedro](https://kedro.org/) project, you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md) to add [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) data to the Vizro data manager.
+If you have a [Kedro](https://kedro.org/) project, you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md) to add [`kedro_datasets.pandas`](https://docs.kedro.org/projects/kedro-datasets) data to the Vizro data manager.
 
 !!! note "Kedro Data Catalog as a data source registry"
 
