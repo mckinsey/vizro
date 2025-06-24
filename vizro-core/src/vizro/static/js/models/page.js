@@ -25,39 +25,36 @@ function encodeUrlParams(decodedMap) {
 
 // Python equivalent to the following JavaScript code:
 // def decode_url_params(encoded_map):
-//    decoded_map = {}
-//    for key, val in encoded_map.items():
-//        if val.startswith("b64_"):
-//            try:
-//                b64 = val[4:].replace("-", "+").replace("_", "/")
-//                b64 += "=" * ((4 - len(b64) % 4) % 4)
-//                decoded_map[key] = json.loads(base64.b64decode(b64).decode("utf-8"))
-//            except Exception as e:
-//                print(f"Failed to decode URL parameter: {key} {val}")
-//    return decoded_map
+//     decoded_map = {}
+//     for key, val in encoded_map.items():
+//         if val.startswith("b64_"):
+//             try:
+//                 b64 = val[4:].replace("-", "+").replace("_", "/")
+//                 b64 += "=" * ((4 - len(b64) % 4) % 4)
+//                 json_str = base64.b64decode(b64).decode("utf-8")
+//                 decoded_map[key] = json.loads(json_str)
+//             except Exception as e:
+//                 print(f"Failed to decode URL parameter: {key} {val}")
+//     return decoded_map
 //
 // Example inputs: {'foo': 'b64_IjEyMyI', 'bar': 'b64_WyJhIiwiYiJd', 'external': 'raw_value', 'baz': 'b64_invalid'}
 // Example output: {'foo': '123', 'bar': ['a', 'b']}
 function decodeUrlParams(encodedMap) {
-  function decodeParam(encoded) {
-    let base64 = encoded.slice(4).replace(/-/g, "+").replace(/_/g, "/");
-    base64 += "=".repeat((4 - (base64.length % 4)) % 4);
-    const binary = atob(base64);
-    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-    return JSON.parse(new TextDecoder().decode(bytes));
-  }
-
   const decodedMap = new Map();
-  for (const [key, val] of encodedMap) {
+  for (const [key, val] of encodedMap.entries()) {
     if (val.startsWith("b64_")) {
       try {
-        decodedMap.set(key, decodeParam(val));
+        let base64 = val.slice(4).replace(/-/g, "+").replace(/_/g, "/");
+        base64 += "=".repeat((4 - (base64.length % 4)) % 4);
+        const binary = atob(base64);
+        const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+        const json = new TextDecoder().decode(bytes);
+        decodedMap.set(key, JSON.parse(json));
       } catch (e) {
         console.warn("Failed to decode URL parameter:", key, val);
       }
     }
   }
-
   return decodedMap;
 }
 
