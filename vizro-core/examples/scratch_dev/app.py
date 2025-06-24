@@ -144,28 +144,4 @@ if __name__ == "__main__":
     # model_manager._clear()
     # dashboard2 = vm.Dashboard.model_validate(config)
     # print(dashboard2._to_python())
-    app = Vizro().build(dashboard)
-
-    app.run(debug=True)
-
-    # What I ultimately want:
-
-    # - import path is the clean and normal way to define custom additions to vizro, ie json in .json, python in .py
-    # - serializing a Dashboard object should be possible with external captured callables
-    #   - for pre-defined callables (like px or vizro functions), this would be just normal json
-    #   - for user-defined callables, LETS SEE
-    # - instantiation:
-
-    # ag_grid = {
-    #     "type": "ag_grid",
-    #     "figure": {
-    #         "_target_": "no_import_grid",
-    #         "data_frame": "iris",
-    #     },
-    # }
-
-    # model = vm.AgGrid.model_validate(
-    #     ag_grid, context={"allowed_undefined_captured_callables": [("no_import_grid", "ag_grid")]}
-    # )
-
-    # print(model._to_python())
+    Vizro().build(dashboard).run()

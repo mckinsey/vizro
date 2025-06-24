@@ -37,6 +37,8 @@ from vizro.charts._charts_utils import _DashboardReadyFigure
 
 
 class AllowedCapturedCallable(NamedTuple):
+    """Tuple to be used as validation context to allow undefined captured callables."""
+
     function_name: str
     mode: str
 
@@ -167,7 +169,6 @@ class CapturedCallable:
             ValueError if `function` contains positional-only or variadic positional parameters (*args).
 
         """
-
         # Use this to declare the type of the attributes only once due to if clauses below.
         self.__function: Union[Callable[..., Any], str]
         self._model_example: Optional[str]
