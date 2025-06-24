@@ -125,18 +125,18 @@ def my_custom_action(t: int):
 #     ],
 # )
 
+dashboard = vm.Dashboard.model_validate(
+    dashboard_config,
+    context={
+        "allowed_undefined_captured_callables": [
+            ("custom_bar2", "graph"),
+            ("weird_grid", "ag_grid"),
+            # ("scatter", "graph"),
+        ]
+    },
+)
 
 if __name__ == "__main__":
-    dashboard = vm.Dashboard.model_validate(
-        dashboard_config,
-        context={
-            "allowed_undefined_captured_callables": [
-                ("custom_bar2", "graph"),
-                ("weird_grid", "ag_grid"),
-                # ("scatter", "graph"),
-            ]
-        },
-    )
     # print(dashboard._to_python())
     # config = dashboard.model_dump(exclude_unset=True)
     # print(config)
