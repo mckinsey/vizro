@@ -81,6 +81,7 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
         - Note: Grid interaction is not currently reflected in the URL, New "interact" action will solve that.
 
     5.5 Test order of URL parameters (Open each link in the new browser tab + Navigate to Page-1 and back to Page-4):
+    - 🔒(expected) It only works with the latest and unreleased Dash version.
         Test cases:
         (URL in the same order as control outputs)
         - http://localhost:8050/page_4?page_4_filter_species=b64_WyJ2ZXJzaWNvbG9yIl0&page_4_filter_sepal_width=b64_WzMsNC40XQ&page_4_dfp=b64_InZlcnNpY29sb3Ii
