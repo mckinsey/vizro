@@ -5,7 +5,7 @@ from contextlib import suppress
 from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
-from dash import dcc
+from dash import dcc, html
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import Field, PrivateAttr
 

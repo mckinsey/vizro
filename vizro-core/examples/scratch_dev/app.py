@@ -27,115 +27,120 @@ def my_custom_action(t: int):
     sleep(t)
 
 
-page_1 = vm.Page(
-    title="My first dashboard",
-    components=[
-        vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-        vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
-    ],
-    controls=[
-        vm.Filter(column="continent"),
-    ],
-)
+#
+# page_1 = vm.Page(
+#     title="My first dashboard",
+#     components=[
+#         vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+#         vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
+#
+# page_2 = vm.Page(
+#     title="Simple custom action",
+#     components=[
+#         vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+#         vm.Button(
+#             text="Export data",
+#             actions=[
+#                 vm.Action(function=export_data()),
+#                 vm.Action(function=my_custom_action(t=2)),
+#                 vm.Action(function=export_data(file_format="xlsx")),
+#             ],
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
+#
+# page_3 = vm.Page(
+#     title="Filter interaction graph",
+#     components=[
+#         vm.Graph(
+#             figure=px.box(
+#                 df_gapminder,
+#                 x="continent",
+#                 y="lifeExp",
+#                 color="continent",
+#                 custom_data=["continent"],
+#             ),
+#             actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+#         ),
+#         vm.Graph(
+#             id="scatter_relation_2007",
+#             figure=px.scatter(
+#                 df_gapminder,
+#                 x="gdpPercap",
+#                 y="lifeExp",
+#                 size="pop",
+#                 color="continent",
+#             ),
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
+#
+# page_4 = vm.Page(
+#     title="Filter interaction grid",
+#     components=[
+#         vm.AgGrid(
+#             id="grid",
+#             figure=dash_ag_grid(data_frame=df_gapminder),
+#             actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007b"]))],
+#         ),
+#         vm.Graph(
+#             id="scatter_relation_2007b",
+#             figure=px.scatter(
+#                 df_gapminder,
+#                 x="gdpPercap",
+#                 y="lifeExp",
+#                 size="pop",
+#                 color="continent",
+#             ),
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
+#
+# page_5 = vm.Page(
+#     title="Dynamic filter",
+#     components=[
+#         vm.Graph(
+#             figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
 
-page_2 = vm.Page(
-    title="Simple custom action",
-    components=[
-        vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=export_data()),
-                vm.Action(function=my_custom_action(t=2)),
-                vm.Action(function=export_data(file_format="xlsx")),
-            ],
-        ),
-    ],
-    controls=[
-        vm.Filter(column="continent"),
-    ],
-)
-
-page_3 = vm.Page(
-    title="Filter interaction graph",
-    components=[
-        vm.Graph(
-            figure=px.box(
-                df_gapminder,
-                x="continent",
-                y="lifeExp",
-                color="continent",
-                custom_data=["continent"],
-            ),
-            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
-        ),
-        vm.Graph(
-            id="scatter_relation_2007",
-            figure=px.scatter(
-                df_gapminder,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="continent"),
-    ],
-)
-
-page_4 = vm.Page(
-    title="Filter interaction grid",
-    components=[
-        vm.AgGrid(
-            id="grid",
-            figure=dash_ag_grid(data_frame=df_gapminder),
-            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007b"]))],
-        ),
-        vm.Graph(
-            id="scatter_relation_2007b",
-            figure=px.scatter(
-                df_gapminder,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="continent"),
-    ],
-)
-
-page_5 = vm.Page(
-    title="Dynamic filter",
-    components=[
-        vm.Graph(
-            figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="continent"),
-    ],
-)
-
+# TODO: think about whether in future this case should be dealt with as a single serverside callback that updates
+# filter and relevant graphs on page (as now) or instead more like an interact with two chained callbacks
 page_6 = vm.Page(
     title="DataFrame Parameter",
     components=[
-        vm.Graph(id="page_6_graph", figure=px.box("dynamic_df_gapminder", x="continent", y="lifeExp", color="continent")),
+        vm.Graph(
+            id="page_6_graph", figure=px.box("dynamic_df_gapminder", x="continent", y="lifeExp", color="continent")
+        ),
     ],
     controls=[
-        vm.Filter(column="continent"),
+        vm.Filter(column="continent", selector=vm.Dropdown(id="filter")),
         vm.Parameter(
             targets=["page_6_graph.data_frame.continent"],
-            selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe"),
-        )
+            selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe", id="parameter"),
+        ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6])
+dashboard = vm.Dashboard(pages=[page_6])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)
