@@ -21,8 +21,9 @@ def kpi_card(
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value.
 
-    **Warning:** Note that the format string provided to `value_format` is being evaluated, so ensure that only trusted
-    user input is provided to prevent potential security risks.
+    !!!warning
+        Note that the format string provided to `value_format` is being evaluated, so ensure that only trusted
+        user input is provided to prevent potential security risks.
 
     Args:
         data_frame: DataFrame containing the data.
@@ -85,8 +86,9 @@ def kpi_card_reference(  # noqa: PLR0913
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value in comparison to a reference value.
 
-    **Warning:** Note that the format string provided to `value_format` and `reference_format` is being evaluated,
-    so ensure that only trusted user input is provided to prevent potential security risks.
+    !!!warning
+        Note that the format string provided to `value_format` and `reference_format` is being evaluated, so ensure that
+        only trusted user input is provided to prevent potential security risks.
 
     Args:
         data_frame: DataFrame containing the data.
