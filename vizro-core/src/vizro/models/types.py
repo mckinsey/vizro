@@ -358,11 +358,12 @@ class CapturedCallable:
             return CapturedCallable(function_name, mode=mode, **captured_callable_config)
 
         # Try multiple approaches to import the function - order matters here.
+        function: CapturedCallable
         try:
-            function: CapturedCallable = TypeAdapter(ImportString).validate_python(import_path + ":" + function_name)
+            function = TypeAdapter(ImportString).validate_python(import_path + ":" + function_name)
         except ValidationError:
             try:
-                function: CapturedCallable = TypeAdapter(ImportString).validate_python(function_name)
+                function = TypeAdapter(ImportString).validate_python(function_name)
             except ValidationError:
                 raise ValueError(
                     f"""Failed to import function '{function_name}' from any of the attempted paths:
