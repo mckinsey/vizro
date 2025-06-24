@@ -127,9 +127,10 @@ def my_custom_action(t: int):
 
 
 if __name__ == "__main__":
-    # dashboard = vm.Dashboard.model_validate(
-    #     dashboard_config, context={"callable_defs": [("custom_bar2", "graph"), ("weird_grid", "ag_grid")]}
-    # )
+    dashboard = vm.Dashboard.model_validate(
+        dashboard_config,
+        context={"allowed_undefined_captured_callables": [("custom_bar2", "graph"), ("weird_grid", "ag_grid", 3)]},
+    )
     # print(dashboard._to_python())
     # config = dashboard.model_dump(exclude_unset=True)
     # print(config)
@@ -149,14 +150,16 @@ if __name__ == "__main__":
     #   - for user-defined callables, LETS SEE
     # - instantiation:
 
-    ag_grid = {
-        "type": "ag_grid",
-        "figure": {
-            "_target_": "no_import_grid",
-            "data_frame": "iris",
-        },
-    }
+    # ag_grid = {
+    #     "type": "ag_grid",
+    #     "figure": {
+    #         "_target_": "no_import_grid",
+    #         "data_frame": "iris",
+    #     },
+    # }
 
-    model = vm.AgGrid.model_validate(ag_grid, context={"callable_defs": [("no_import_grid", "ag_grid")]})
+    # model = vm.AgGrid.model_validate(
+    #     ag_grid, context={"allowed_undefined_captured_callables": [("no_import_grid", "ag_grid")]}
+    # )
 
-    print(model._to_python())
+    # print(model._to_python())

@@ -19,6 +19,8 @@ if sys.version_info >= (3, 10):
 else:
     from typing_extensions import TypeAlias
 
+from typing import NamedTuple
+
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
@@ -32,6 +34,11 @@ from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
+
+
+class AllowedCapturedCallable(NamedTuple):
+    function_name: str
+    mode: str
 
 
 def _get_layout_discriminator(layout: Any) -> Optional[str]:
@@ -108,18 +115,25 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
         return value
 
     try:
-        # Downside of validation is that it gets raised multiple times if there are multiple graphs in the dashboard.
-        callable_defs: list[tuple[str, str]] = TypeAdapter(list[tuple[str, str]]).validate_python(
-            info.context.get("callable_defs", []) if info.context is not None else []
+        allowed_undefined_captured_callables: list[AllowedCapturedCallable] = TypeAdapter(
+            list[AllowedCapturedCallable]
+        ).validate_python(
+            info.context.get("allowed_undefined_captured_callables", []) if info.context is not None else []
         )
-    except ValidationError as e:
-        raise ValueError("Invalid context for CapturedCallable. `callable_defs` must be a list of strings.") from e
+    except ValidationError:
+        raise ValueError(
+            """Invalid `allowed_undefined_captured_callables`.
+Must be a list of namedtuples with (function_name: str, mode: str).
+"""
+        )
 
     # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
     # to get deprecated in V3
     json_schema_extra: JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra
     return CapturedCallable._validate_captured_callable(
-        captured_callable_config=value, json_schema_extra=json_schema_extra, callable_defs=callable_defs
+        captured_callable_config=value,
+        json_schema_extra=json_schema_extra,
+        allowed_undefined_captured_callables=allowed_undefined_captured_callables,
     )
 
 
@@ -280,12 +294,12 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
         json_schema_extra: JsonSchemaExtraType,
-        callable_defs: list[tuple[str, str]],
+        allowed_undefined_captured_callables: list[AllowedCapturedCallable],
     ):
         value = cls._parse_json(
             captured_callable_config=captured_callable_config,
             json_schema_extra=json_schema_extra,
-            callable_defs=callable_defs,
+            allowed_undefined_captured_callables=allowed_undefined_captured_callables,
         )
         value = cls._extract_from_attribute(value)
         value = cls._check_type(captured_callable=value, json_schema_extra=json_schema_extra)
@@ -314,7 +328,7 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
         json_schema_extra: JsonSchemaExtraType,
-        callable_defs: list[tuple[str, str]],
+        allowed_undefined_captured_callables: list[AllowedCapturedCallable],
     ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
 
@@ -352,9 +366,11 @@ class CapturedCallable:
             except ValidationError:
                 continue
         else:
-            if function_name in (def_name for def_name, _ in callable_defs):
-                # Find the mode from callable_defs tuple
-                mode = next(mode for def_name, mode in callable_defs if def_name == function_name)
+            if function_name in (def_name for def_name, _ in allowed_undefined_captured_callables):
+                # Find the mode from allowed_undefined_captured_callables tuples
+                mode = next(
+                    mode for def_name, mode in allowed_undefined_captured_callables if def_name == function_name
+                )
                 return CapturedCallable(function_name, mode, **captured_callable_config)
             raise ValueError(
                 f"""Failed to import function '{function_name}' from any of the attempted paths:
