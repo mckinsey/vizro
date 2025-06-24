@@ -167,7 +167,6 @@ class CapturedCallable:
             ValueError if `function` contains positional-only or variadic positional parameters (*args).
 
         """
-
         # Use this to declare the type of the attributes only once due to if clauses below.
         self.__function: Union[Callable[..., Any], str]
         self._model_example: Optional[str]
