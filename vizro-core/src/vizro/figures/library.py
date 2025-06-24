@@ -29,19 +29,19 @@ def kpi_card(
         value_column: Column name of the value to be shown.
         value_format: Format string to be applied to the value. It must be a
             [valid Python format](https://docs.python.org/3/library/string.html#format-specification-mini-language)
-            string where any of the below placeholders can be used. Defaults to "{value}".
+            string where any of the below placeholders can be used.
 
             - value: `value_column` aggregated by `agg_func`.
 
             **Common examples include:**
 
-             - "{value}": Displays the raw value.
-             - "${value:0.2f}": Formats the value as a currency with two decimal places.
-             - "{value:.0%}": Formats the value as a percentage without decimal places.
-             - "{value:,}": Formats the value with comma as a thousands separator.
+             - `"{value}"`: Displays the raw value.
+             - `"${value:0.2f}"`: Formats the value as a currency with two decimal places.
+             - `"{value:.0%}"`: Formats the value as a percentage without decimal places.
+             - `"{value:,}"`: Formats the value with comma as a thousands separator.
 
         agg_func: String function name to be used for aggregating the data. Common options include
-            "sum", "mean" or "median". Default is "sum". [More information on possible
+            `"sum"`, `"mean"` or `"median"`. [More information on possible
             functions](https://stackoverflow.com/q/65877567).
         title: KPI title displayed on top of the card. If not provided, it defaults to the capitalized
             `value_column`.
@@ -94,7 +94,7 @@ def kpi_card_reference(  # noqa: PLR0913
         reference_column: Column name of the reference value for comparison.
         value_format: Format string to be applied to the value. It must be a
             [valid Python format](https://docs.python.org/3/library/string.html#format-specification-mini-language)
-            string where any of the below placeholders can be used. Defaults to "{value}".
+            string where any of the below placeholders can be used.
 
             - value: `value_column` aggregated by `agg_func`.
             - reference: `reference_column` aggregated by `agg_func`.
@@ -103,15 +103,15 @@ def kpi_card_reference(  # noqa: PLR0913
 
             **Common examples include:**
 
-             - "{value}": Displays the raw value.
-             - "${value:0.2f}": Formats the value as a currency with two decimal places.
-             - "{value:.0%}": Formats the value as a percentage without decimal places.
-             - "{value:,}": Formats the value with comma as a thousands separator.
+             - `"{value}"`: Displays the raw value.
+             - `"${value:0.2f}"`: Formats the value as a currency with two decimal places.
+             - `"{value:.0%}"`: Formats the value as a percentage without decimal places.
+             - `"{value:,}"`: Formats the value with comma as a thousands separator.
 
         reference_format: Format string to be applied to the reference. For more details on possible placeholders,
-            see docstring on `value_format`. Defaults to "{delta_relative:+.1%} vs. reference ({reference})".
+            see docstring on `value_format`.
         agg_func: String function name to be used for aggregating the data. Common options include
-            "sum", "mean" or "median". Default is "sum". [More information on possible
+            `"sum"`, `"mean"` or `"median"`. [More information on possible
             functions](https://stackoverflow.com/q/65877567).
         title: KPI title displayed on top of the card. If not provided, it defaults to the capitalized
             `value_column`.
@@ -119,7 +119,7 @@ def kpi_card_reference(  # noqa: PLR0913
             to be displayed on the left side of the KPI title. If not provided, no icon is displayed.
         reverse_color: If `False`, a positive delta will be colored positively (e.g., blue) and a negative delta
             negatively (e.g., red). If `True`, the colors will be inverted: a positive delta will be colored
-            negatively (e.g., red) and a negative delta positively (e.g., blue). Defaults to `False`.
+            negatively (e.g., red) and a negative delta positively (e.g., blue).
 
 
 
