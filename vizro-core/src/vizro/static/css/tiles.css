@@ -14,6 +14,12 @@
   gap: 8px;
 }
 
+/* Needs to deviate from the default as the info-icon could be placed inside*/
+.figure-title {
+  align-items: center;
+  flex-direction: row;
+}
+
 .figure-footer {
   padding-top: 0.75rem;
 }

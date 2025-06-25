@@ -26,7 +26,72 @@ graphs = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[graphs])
+tooltip = vm.Page(
+    title="Tooltip",
+    layout=vm.Grid(grid=[[0], [0], [1], [1], [1], [1], [1], [1], [2]]),
+    components=[
+        vm.Card(
+            text="""
+                The `description` argument enables you to add helpful context to your components by displaying an
+                info icon next to its title. Hovering over the icon reveals a tooltip with the text you provide.
+
+                Tooltips can be added to any Vizro component that has a `title` argument.
+                You can provide a string to use the default info icon or `Tooltip` model to use any icon from the
+                [Google Material Icons library](https://fonts.google.com/icons).
+                Tooltips provide clean and lightweight way to add additional details to your dashboard.
+            """
+        ),
+        vm.Graph(
+            title="Relationships between Sepal Width and Sepal Length",
+            figure=px.scatter(
+                iris,
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                size="petal_length",
+            ),
+            description="""
+                **The Iris dataset** includes measurements of 150 iris flowers across three types: Setosa, Versicolor,
+                and Virginica.
+                While all samples are labeled by type, they can appear similar when looking at just some features -
+                 making it a useful dataset for exploring patterns and challenges in classification.
+            """,
+        ),
+        vm.Button(
+            text="Export data",
+            description="""
+                Use this button to export the filtered data from the Iris dataset.
+            """,
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                title="Species",
+                description="""
+                    Select one or more species to explore patterns
+                    specific to Setosa, Versicolor, or Virginica.
+                """,
+            ),
+        ),
+        vm.Filter(
+            column="sepal_width",
+            selector=vm.RangeSlider(
+                description="""
+                    Use the slider to filter flowers by sepal width.
+                    Only samples within the selected range will be shown.
+                """
+            ),
+        ),
+    ],
+    description="""
+        This page provides overview of Tooltip functionality.
+    """,
+)
+
+
+dashboard = vm.Dashboard(pages=[graphs, tooltip])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
