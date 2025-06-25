@@ -10,7 +10,6 @@ def _process_callable_data_frame(captured_callable):
     # Possibly all this validator's functionality should move into CapturedCallable (or a subclass of it) in the
     # future. This would mean that data is added to the data manager outside the context of a dashboard though,
     # which might not be desirable.
-
     data_frame = captured_callable["data_frame"]
 
     if isinstance(data_frame, str):

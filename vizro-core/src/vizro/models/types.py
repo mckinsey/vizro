@@ -10,24 +10,18 @@ import warnings
 from collections import OrderedDict
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, cast, runtime_checkable
-
-from pydantic import ImportString, TypeAdapter, ValidationError
-
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    from typing_extensions import TypeAlias
-
-from typing import NamedTuple
+from typing import Annotated, Any, Callable, Literal, NamedTuple, Optional, Protocol, Union, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
     Discriminator,
     Field,
+    ImportString,
     StrictBool,
     Tag,
+    TypeAdapter,
+    ValidationError,
     ValidationInfo,
 )
 from pydantic.json_schema import SkipJsonSchema
@@ -35,12 +29,10 @@ from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
-
-class AllowedCapturedCallable(NamedTuple):
-    """Tuple to be used as validation context to allow undefined captured callables."""
-
-    function_name: str
-    mode: str
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 
 
 def _get_layout_discriminator(layout: Any) -> Optional[str]:
@@ -104,6 +96,13 @@ class JsonSchemaExtraType(TypedDict):
     """Type that specifies the extra information needed to parse a CapturedCallable from JSON/YAML."""
 
     import_path: str
+    mode: str
+
+
+class AllowedCapturedCallable(NamedTuple):
+    """Tuple to be used as validation context to allow undefined captured callables."""
+
+    function_name: str
     mode: str
 
 
