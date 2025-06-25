@@ -148,7 +148,7 @@ In the [documentation sections on custom charts, tables, figures and actions](#v
     1. Define the custom chart either in `app.py` or in a separate file.
     1. Parse the YAML or JSON configuration that refers to the custom chart with the **correct import path**. If the custom chart is defined in the `app.py`, then use `__main__` as the import path.
 
-### Validating dashboards without executing `CapturedCallable` functions
+### Validate dashboards without defining `CapturedCallable` functions
 
 It is possible to validate a dashboard configuration without importing or executing some `CapturedCallable` functions.
 
