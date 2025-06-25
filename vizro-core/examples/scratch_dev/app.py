@@ -4,7 +4,8 @@ from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.models.types import capture
-from dash import dcc
+from dash import html, Input, Output, dcc, callback, ctx
+import dash
 
 iris = px.data.iris()
 
@@ -18,13 +19,16 @@ def my_custom_export(n_clicks):
 
 @capture("action")
 def my_custom_location(n_clicks):
+    # if n_clicks:
+    print("ctx.triggered_id ........................... ", ctx.triggered_id)
     if n_clicks:
         print("my custom location change action triggered-now!")
-        return "/test-page-2"
+        return "/page-2"
 
 
 page_1 = vm.Page(
-    title="Test page",
+    title="Test page - Vizro actions",
+    path="page-1",
     components=[
         vm.Container(
             components=[
@@ -74,12 +78,21 @@ page_1 = vm.Page(
 )
 
 page_2 = vm.Page(
-    title="Test page 2",
+    title="Test page - pure Dash callbacks",
+    path="page-2",
     components=[
         vm.Container(
             components=[
                 vm.Graph(
                     figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
+                ),
+                vm.Button(
+                    id="button_download_2",
+                    text="Export data!",
+                ),
+                vm.Button(
+                    id="button_location_2",
+                    text="Go to page 2!",
                 ),
             ],
         ),
@@ -90,6 +103,32 @@ page_2 = vm.Page(
         )
     ],
 )
+
+
+@callback(
+    Output("vizro_url", "href"),
+    Input("button_location_2", "n_clicks")
+)
+def change_location_callback(n_clicks):
+    print("............................................test location callback triggered", ctx.triggered_id)
+    # if ctx.triggered_id == "button_location_2":
+    if n_clicks:
+        return "/"
+    else:
+        raise dash.exceptions.PreventUpdate
+
+
+@callback(
+    Output("vizro_download", "data"),
+    Input("button_export_2", "n_clicks")
+)
+def export_callback(n_clicks):
+    print("............................................test download callback triggered", ctx.triggered_id)
+    if ctx.triggered_id == "button_download_2":
+        return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+    else:
+        raise dash.exceptions.PreventUpdate
+
 
 dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2])
 
