@@ -420,55 +420,6 @@ containers = vm.Page(
                         ),
                     ],
                 ),
-                vm.Container(
-                    title="With controls",
-                    layout=vm.Grid(grid=[[0, 1]]),
-                    components=[
-                        vm.Container(
-                            title="Container I",
-                            components=[
-                                vm.Graph(
-                                    title="Container I - Scatter",
-                                    figure=px.scatter(
-                                        iris,
-                                        x="sepal_width",
-                                        y="sepal_length",
-                                        color="species",
-                                        marginal_y="violin",
-                                        marginal_x="box",
-                                    ),
-                                )
-                            ],
-                            controls=[
-                                vm.Filter(column="species", selector=vm.Checklist()),
-                                vm.Filter(column="sepal_length"),
-                            ],
-                        ),
-                        vm.Container(
-                            title="Container II",
-                            components=[
-                                vm.Graph(
-                                    title="Container II - Scatter",
-                                    figure=px.scatter(
-                                        iris,
-                                        x="sepal_length",
-                                        y="petal_width",
-                                        color="species",
-                                    ),
-                                ),
-                                vm.Graph(
-                                    title="Container II - Bar",
-                                    figure=px.bar(
-                                        iris,
-                                        x="sepal_length",
-                                        y="sepal_width",
-                                        color="species",
-                                    ),
-                                ),
-                            ],
-                        ),
-                    ],
-                ),
             ]
         )
     ],
@@ -519,17 +470,20 @@ tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls
 
 tooltip = vm.Page(
     title="Tooltip",
-    layout=vm.Grid(grid=[[0], [0], [1], [1], [1], [1], [1], [1], [2]]),
+    layout=vm.Grid(grid=[[0], [0], [0], [1], [1], [1], [1], [1], [2]]),
     components=[
         vm.Card(
             text="""
-                The `description` argument enables you to add helpful context to your components by displaying an
-                info icon next to its title. Hovering over the icon reveals a tooltip with the text you provide.
+                The `description` argument allows you to add helpful context to your components by displaying a small
+                info icon next to the component's title.
+                When users hover over the icon, a tooltip appears showing the text you provide.
 
-                Tooltips can be added to any Vizro component that has a `title` argument.
-                You can provide a string to use the default info icon or `Tooltip` model to use any icon from the
-                [Google Material Icons library](https://fonts.google.com/icons).
-                Tooltips provide clean and lightweight way to add additional details to your dashboard.
+                You can add tooltips to any Vizro component that supports the title argument. The description accepts:
+                * A `string`, which uses the default info icon.
+                * A `Tooltip` model, which lets you customize the icon using any symbol from the
+                [Google Material Icons library](https://fonts.google.com/icons)
+
+                Tooltips are a clean, lightweight way to offer additional details without cluttering your dashboard.
             """
         ),
         vm.Graph(
@@ -715,6 +669,62 @@ selectors = vm.Page(
     ],
 )
 
+
+controls_in_containers = vm.Page(
+    title="Controls in containers",
+    components=[
+        vm.Container(
+            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(
+                                iris,
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                marginal_y="violin",
+                                marginal_x="box",
+                            ),
+                        )
+                    ],
+                    controls=[
+                        vm.Filter(column="species", selector=vm.Checklist()),
+                    ],
+                    variant="outlined",
+                ),
+                vm.Container(
+                    components=[
+                        vm.Graph(
+                            figure=px.box(
+                                gapminder_2007,
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                                custom_data=["continent"],
+                            ),
+                        ),
+                        vm.Graph(
+                            figure=px.scatter(
+                                gapminder_2007,
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                    controls=[
+                        vm.Filter(column="continent", selector=vm.RadioItems()),
+                    ],
+                    variant="outlined",
+                ),
+            ],
+        ),
+    ],
+)
+
 # LAYOUT ------------------------------------------------------------------
 
 grid_layout = vm.Page(
@@ -785,11 +795,11 @@ grid_layout = vm.Page(
 )
 
 flex_layout = vm.Page(
+    id="flex-layout",
     title="Flex layout",
     layout=vm.Flex(
-        direction="column",
+        direction="row",
         wrap=True,
-        gap="40px",
     ),
     components=[
         vm.Card(
@@ -852,7 +862,6 @@ flex_layout = vm.Page(
     description="""
         Use Flex when you want a responsive row of items that adjusts automatically—great for things like
         dynamic card collections or tag-like elements that should flow naturally.
-
     """,
 )
 
@@ -1137,7 +1146,7 @@ kpi_indicators = vm.Page(
 
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip]
-controls = [filters, parameters, selectors]
+controls = [filters, parameters, selectors, controls_in_containers]
 actions = [export_data_action, chart_interaction]
 layout = [grid_layout, flex_layout]
 extensions = [custom_charts, custom_tables, custom_actions, custom_figures, custom_components]
@@ -1163,9 +1172,9 @@ dashboard = vm.Dashboard(
                             "Tabs",
                             "Tooltip",
                         ],
-                        "Controls": ["Filters", "Parameters", "Selectors"],
+                        "Controls": ["Filters", "Parameters", "Selectors", "Controls in containers"],
+                        "Layout": ["Grid layout", "flex-layout"],
                         "Actions": ["Export data", "Chart interaction"],
-                        "Layout": ["Grid layout", "Flex layout"],
                         "Extensions": [
                             "Custom Charts",
                             "Custom Tables",

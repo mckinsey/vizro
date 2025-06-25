@@ -511,13 +511,16 @@ pages:
     title: Selectors
   - components:
       - text: |
-          The `description` argument enables you to add helpful context to your components by displaying an
-          info icon next to its title. Hovering over the icon reveals a tooltip with the text you provide.
+          The `description` argument allows you to add helpful context to your components by displaying a small
+          info icon next to the component's title.
+          When users hover over the icon, a tooltip appears showing the text you provide.
 
-          Tooltips can be added to any Vizro component that has a `title` argument.
-          You can provide a string to use the default info icon or `Tooltip` model to use any icon from the
-          [Google Material Icons library](https://fonts.google.com/icons).
-          Tooltips provide clean and lightweight way to add additional details to your dashboard.
+          You can add tooltips to any Vizro component that supports the title argument. The description accepts:
+          * A `string`, which uses the default info icon.
+          * A `Tooltip` model, which lets you customize the icon using any symbol from the
+          [Google Material Icons library](https://fonts.google.com/icons)
+
+          Tooltips are a clean, lightweight way to offer additional details without cluttering your dashboard.
         type: card
       - figure:
           _target_: scatter
@@ -679,50 +682,6 @@ pages:
                       color: species
                       marginal_y: violin
                       marginal_x: box
-          - title: With controls
-            type: container
-            layout:
-              grid: [[0, 1]]
-              type: grid
-            components:
-              - type: container
-                components:
-                  - type: graph
-                    title: Container I - Scatter
-                    figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: sepal_width
-                      y: sepal_length
-                      color: species
-                      marginal_y: violin
-                      marginal_x: box
-                controls:
-                  - column: species
-                    selector:
-                      type: checklist
-                    type: filter
-              - type: container
-                layout:
-                  grid: [[0, 1]]
-                  type: grid
-                components:
-                  - type: graph
-                    title: Container II - Scatter
-                    figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: sepal_length
-                      y: petal_width
-                      color: species
-                  - type: graph
-                    title: Container II - Bar
-                    figure:
-                      _target_: bar
-                      data_frame: iris
-                      x: sepal_length
-                      y: petal_width
-                      color: species
         type: tabs
     controls:
       - type: filter
@@ -826,10 +785,58 @@ pages:
       Use Flex when you want a responsive row of items that adjusts automatically — great for things like
       dynamic card collections or tag-like elements that should flow naturally.
     layout:
+      direction: row
       wrap: True
-      gap: 40px
       type: flex
     title: Flex layout
+  - components:
+      - type: container
+        components:
+          - figure:
+              _target_: scatter
+              data_frame: iris
+              x: sepal_width
+              y: sepal_length
+              color: species
+              marginal_y: violin
+              marginal_x: box
+            type: graph
+        controls:
+          - column: species
+            selector:
+              type: checklist
+            type: filter
+        variant: outlined
+      - type: container
+        components:
+          - figure:
+              _target_: box
+              data_frame: gapminder_2007
+              x: continent
+              y: lifeExp
+              color: continent
+            type: graph
+          - figure:
+              _target_: scatter
+              data_frame: gapminder_2007
+              x: gdpPercap
+              y: lifeExp
+              color: continent
+              size: pop
+            type: graph
+        controls:
+          - column: continent
+            selector:
+              type: radio_items
+            type: filter
+        variant: outlined
+        layout:
+          grid: [[0], [1]]
+          type: grid
+    layout:
+      grid: [[0, 1]]
+      type: grid
+    title: Controls in containers
 navigation:
   nav_selector:
     type: nav_bar
@@ -855,6 +862,7 @@ navigation:
             - Filters
             - Parameters
             - Selectors
+            - Controls in containers
           Layout:
             - Grid layout
             - Flex layout
