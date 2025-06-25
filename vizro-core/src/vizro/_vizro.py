@@ -146,7 +146,7 @@ class Vizro:
         if self._undefined_captured_callables:
             raise ValueError(
                 f"""Dashboard contains models with undefined CapturedCallable's: {self._undefined_captured_callables}.
-Provide a valid import path for the CapturedCallables in the dashboard config."""
+Provide a valid import path for these in your dashboard configuration."""
             )
 
         if kwargs.get("processes", 1) > 1 and type(data_manager.cache.cache) is SimpleCache:

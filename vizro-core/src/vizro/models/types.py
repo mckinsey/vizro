@@ -10,7 +10,7 @@ import warnings
 from collections import OrderedDict
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Callable, Literal, NamedTuple, Optional, Protocol, Union, cast, runtime_checkable
+from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -341,7 +341,6 @@ class CapturedCallable:
         if function_name in allowed_undefined_captured_callables:
             return CapturedCallable(function_name, **captured_callable_config)
 
-        # Try multiple approaches to import the function - order matters here.
         function: CapturedCallable
         try:
             function = TypeAdapter(ImportString).validate_python(import_path + ":" + function_name)

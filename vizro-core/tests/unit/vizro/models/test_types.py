@@ -244,7 +244,7 @@ class TestModelFieldJSONConfig:
         assert isinstance(model.function, CapturedCallable)
         assert model.function() == 1 + 2 + 3 + 4
 
-    def test_all_arguments_different_import_path(self):
+    def test_different_import_path(self):
         config = {"_target_": f"{__name__}.decorated_action_function", "a": 1, "b": 2, "c": 3}
         model = ModelWithActionDifferentImportPath(function=config)
         assert isinstance(model.function, CapturedCallable)
