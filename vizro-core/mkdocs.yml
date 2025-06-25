@@ -153,6 +153,8 @@ plugins:
               - docs/griffe_extensions.py:
                   paths:
                     [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
+              - griffe-pydantic:
+                  schema: true
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
