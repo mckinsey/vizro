@@ -19,7 +19,9 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add option to validate yaml/json configurations without importing `CapturedCallable` functions referenced in the configuration. See [the docs on extensions](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/) for more details. ([#1255](https://github.com/mckinsey/vizro/pull/1255))
+- yaml/json configurations can specify `_target_` functions with any import path rather than being restricted to built-in Vizro functions. ([#1255](https://github.com/mckinsey/vizro/pull/1255))
+
+- Add option to validate yaml/json configurations without importing `CapturedCallable` functions. See [the user guide on extensions](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/) for more details. ([#1255](https://github.com/mckinsey/vizro/pull/1255))
 
 
 <!--

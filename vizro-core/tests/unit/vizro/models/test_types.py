@@ -181,7 +181,6 @@ class ModelWithGraph(VizroBaseModel):
 class ModelWithInvalidModule(VizroBaseModel):
     # The import_path doesn't exist. This lets us also simulate importing the function from a different module.
     function: CapturedCallable = Field(json_schema_extra={"mode": "graph", "import_path": "invalid.module"})
-
     _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
 

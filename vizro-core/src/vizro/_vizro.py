@@ -114,14 +114,9 @@ class Vizro:
         self._pre_build()
         self.dash.layout = dashboard.build()
 
-        # Check if there are undefined captured callables in the dashboard.
-        self._undefined_captured_callables = {
-            model.figure._function
-            for model in cast(
-                Iterable[FigureType], model_manager._get_models(root_model=dashboard, model_type=FIGURE_MODELS)
-            )
-            if model.figure._prevent_run
-        }
+        # Store the dashboard object for later use in the run method.
+        self._dashboard = dashboard
+
         # Add data-bs-theme attribute that is always present, even for pages without theme selector,
         # i.e. the Dash "Loading..." screen.
         bootstrap_theme = dashboard.theme.removeprefix("vizro_")
@@ -143,7 +138,18 @@ class Vizro:
         data_manager._frozen_state = True
         model_manager._frozen_state = True
 
-        if self._undefined_captured_callables:
+        # Check if there are undefined captured callables in the dashboard.
+        # TODO: In the future we may want to try importing these, do users don't have to create an entirely
+        # new dashboard config.
+        _undefined_captured_callables = {
+            model.figure._function
+            for model in cast(
+                Iterable[FigureType], model_manager._get_models(root_model=self._dashboard, model_type=FIGURE_MODELS)
+            )
+            if model.figure._prevent_run
+        }
+
+        if _undefined_captured_callables:
             raise ValueError(
                 f"""Dashboard contains models with undefined CapturedCallable's: {self._undefined_captured_callables}.
 Provide a valid import path for these in your dashboard configuration."""

@@ -579,6 +579,7 @@ model = vm.Graph(
     figure=custom_scatter(data_frame="iris", x="sepal_length", y="sepal_width"),
 )
 """
+
 expected_code_pass_validation_via_json = """############ Imports ##############
 import vizro.models as vm
 
