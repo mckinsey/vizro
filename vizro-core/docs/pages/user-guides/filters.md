@@ -266,7 +266,77 @@ Below is an advanced example where we only target one page component, and where 
 
 To further customize selectors, see our [how-to-guide on creating custom components](custom-components.md).
 
+## Show in URL
+
+The `Filter` model now accepts an optional boolean argument `show_in_url` (default `False`). When `True`, the filter’s value is synchronized with the page URL as a query parameter, allowing the current control's state to be captured in the link. This makes it easy to share or bookmark specific `Page` settings.
+
+The URL query parameter uses the control’s id as its key, and the selected value, encoded in base64, as the URL query parameter value.
+
+!!! warning 
+
+    - PyCafe incompatibility: Vizro does not currently support external URL query parameters and they could be stripped or lost using the app. As a result, dashboards using this feature should not be embedded or deployed in PyCafe environments.
+    
+    - Page-specific only: Only filters on the currently opened page are reflected in the URL. It is not possible to share or bookmark the state of multi-page dashboards.
+
+Here's an example of how to use this feature:
+
+!!! example "Filer in URL"
+
+    === "app.py"
+
+        ```{.python hl_lines="15-16"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    id="filter-id",
+                    show_in_url=True, 
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml {hl_lines="14-15"}
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color: species
+                type: graph
+            controls:
+              - column: species
+                id: filter-id
+                show_in_url: true
+                type: filter
+            title: My first page
+        ```
+
+    === "Result"
+
+        [![filterInUrl]][filterinurl]
+
 [advanced]: ../../assets/user_guides/control/control3.png
 [filter]: ../../assets/user_guides/control/control1.png
 [filterdefault]: ../../assets/user_guides/control/controls_defaults.png
 [selector]: ../../assets/user_guides/control/control2.png
+[filterinurl]: ../../assets/user_guides/control/filter_in_url.png
