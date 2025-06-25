@@ -89,7 +89,7 @@ It is possible to create custom React.js components and add them directly to any
 
 For more information, see the documentation on [using React.js components with Dash](https://dash.plotly.com/plugins)
 
-## Using custom functions in `yaml`/`json` configuration
+## Use custom functions in `yaml`/`json` configuration
 
 !!! note "Exposing configuration to untrusted users"
 
