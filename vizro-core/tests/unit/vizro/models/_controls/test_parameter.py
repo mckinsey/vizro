@@ -11,7 +11,7 @@ from vizro.models._controls.parameter import Parameter
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
 class TestParameterInstantiation:
-    def test_instantiation(self):
+    def test_create_parameter_mandatory_only(self):
         parameter = Parameter(
             targets=["scatter_chart.x"],
             selector=vm.Dropdown(
@@ -21,6 +21,19 @@ class TestParameterInstantiation:
         assert parameter.type == "parameter"
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.type == "dropdown"
+
+    def test_create_parameter_mandatory_and_optional(self):
+        parameter = Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.Dropdown(
+                options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose x-axis"
+            ),
+            show_in_url=True,
+        )
+        assert parameter.type == "parameter"
+        assert parameter.targets == ["scatter_chart.x"]
+        assert parameter.selector.type == "dropdown"
+        assert parameter.show_in_url is True
 
     def test_check_dot_notation_failed(self):
         with pytest.raises(

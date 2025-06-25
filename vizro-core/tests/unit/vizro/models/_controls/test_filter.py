@@ -425,7 +425,6 @@ class TestFilterStaticMethods:
         assert result == expected
 
 
-@pytest.mark.usefixtures("managers_one_page_two_graphs")
 class TestFilterInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
@@ -438,14 +437,17 @@ class TestFilterInstantiation:
         assert filter._action_outputs == {"__default__": f"{filter.id}.children"}
 
     def test_create_filter_mandatory_and_optional(self):
-        filter = Filter(column="foo", targets=["scatter_chart", "bar_chart"], selector=vm.RadioItems())
+        filter = Filter(
+            column="foo",
+            targets=["scatter_chart", "bar_chart"],
+            selector=vm.RadioItems(),
+            show_in_url=True,
+        )
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == ["scatter_chart", "bar_chart"]
         assert isinstance(filter.selector, vm.RadioItems)
-
-    def test_check_target_present_valid(self):
-        Filter(column="foo", targets=["scatter_chart", "bar_chart"])
+        assert filter.show_in_url is True
 
 
 @pytest.mark.usefixtures("managers_column_only_exists_in_some")
