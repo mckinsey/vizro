@@ -57,7 +57,7 @@ dashboard_config = {
                 #     },
                 # },
                 # {"type": "ag_grid", "figure": {"_target_": "__main__.custom_grid", "data_frame": "iris"}},
-                # {"type": "figure", "figure": {"_target_": "__main__.custom_kpi_card", "data_frame": "iris"}},
+                {"type": "figure", "figure": {"_target_": "__main__.custom_kpi_card", "data_frame": "iris"}},
                 {
                     "type": "button",
                     "text": "Export data",
@@ -67,7 +67,7 @@ dashboard_config = {
                         {"function": {"_target_": "export_data", "file_format": "xlsx"}},
                     ],
                 },
-                # {"type": "ag_grid", "figure": {"_target_": "weird_grid", "data_frame": "iris"}},
+                {"type": "ag_grid", "figure": {"_target_": "weird_grid", "data_frame": "iris"}},
             ],
         }
     ],
@@ -138,10 +138,10 @@ dashboard = vm.Dashboard.model_validate(
 
 if __name__ == "__main__":
     # print(dashboard._to_python())
-    # config = dashboard.model_dump(exclude_unset=True)
-    # print(config)
+    config = dashboard.model_dump(exclude_unset=True)
+    print(config)
     # print("-" * 100)
     # model_manager._clear()
     # dashboard2 = vm.Dashboard.model_validate(config)
     # print(dashboard2._to_python())
-    Vizro().build(dashboard).run()
+    # Vizro().build(dashboard).run()

@@ -317,6 +317,21 @@ class TestModelFieldJSONConfig:
         assert model.function._prevent_run
 
 
+class TestCapturedCallableRepr:
+    @pytest.mark.parametrize(
+        "function_input, repr_method, expected_output",
+        [
+            (decorated_action_function, "__repr__", f"{__name__}.decorated_action_function(a=1, b=2, c=3)"),
+            (decorated_action_function, "__repr_clean__", "decorated_action_function(a=1, b=2, c=3)"),
+            ("not_importable_function", "__repr__", "not_importable_function(1, 2, c=3)"),
+            ("not_importable_function", "__repr_clean__", "not_importable_function(1, 2, c=3)"),
+        ],
+    )
+    def test_repr_methods(self, function_input, repr_method, expected_output):
+        function = CapturedCallable(function_input, 1, 2, c=3)
+        assert getattr(function, repr_method)() == expected_output
+
+
 @capture("graph")
 def decorated_graph_function_with_template(data_frame, template=None):
     fig = go.Figure()

@@ -218,6 +218,7 @@ class CapturedCallable:
             self._model_example = None
             self._prevent_run = False
         else:
+            self.__args_for_repr = args  # so that __repr__ methods work properly
             self._prevent_run = True
             self.__function = function
             mode = kwargs.pop("mode", None)  # we instantiate str proxy with mode as kwarg
@@ -418,19 +419,33 @@ class CapturedCallable:
 
         return captured_callable
 
-    def __repr__(self):
-        """String representation of the CapturedCallable."""
-        args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
-        return f"{self._function.__module__}.{self._function.__name__}({args})"
+    @staticmethod
+    def _format_args(
+        args_for_repr: Optional[Union[list[Any], tuple[Any, ...]]] = None, arguments: Optional[dict[str, Any]] = None
+    ) -> str:
+        """Format arguments for string representation."""
+        return ", ".join(
+            [f"{arg!r}" for arg in (args_for_repr or [])]
+            + [f"{key}={value!r}" for key, value in (arguments or {}).items()]
+        )
 
-    def __repr_clean__(self):
-        """Alternative __repr__ method with cleaned module paths."""
+    def _get_repr(self, clean: bool = False) -> str:
+        """Get string representation of the CapturedCallable."""
         if self._prevent_run:
-            args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
+            args = self._format_args(self.__args_for_repr, self._arguments)
             return f"{self._function}({args})"
-        args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
-        original_module_path = f"{self._function.__module__}"
-        return f"{_clean_module_string(original_module_path)}{self._function.__name__}({args})"
+
+        args = self._format_args(arguments=self._arguments)
+        module = _clean_module_string(self._function.__module__) if clean else f"{self._function.__module__}."
+        return f"{module}{self._function.__name__}({args})"
+
+    def __repr__(self) -> str:
+        """String representation of the CapturedCallable."""
+        return self._get_repr(clean=False)
+
+    def __repr_clean__(self) -> str:
+        """Alternative __repr__ method with cleaned module paths."""
+        return self._get_repr(clean=True)
 
 
 @contextmanager
