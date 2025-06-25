@@ -8,9 +8,9 @@
 .figure-title,
 .figure-header,
 .figure-footer {
-  align-items: center;
   display: flex;
   flex: 0 1 auto;
+  flex-direction: column;
   gap: 8px;
 }
 
