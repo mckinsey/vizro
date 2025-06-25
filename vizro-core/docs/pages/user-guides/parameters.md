@@ -195,10 +195,10 @@ The `Parameter` model now accepts an optional boolean argument `show_in_url` (de
 
 The URL query parameter uses the control’s id as its key, and the selected value, encoded in base64, as the URL query parameter value.
 
-!!! warning 
+!!! warning
 
     - PyCafe incompatibility: Vizro does not currently support external URL query parameters and they could be stripped or lost using the app. As a result, dashboards using this feature should not be embedded or deployed in PyCafe environments.
-    
+
     - Page-specific only: Only parameters on the currently opened page are reflected in the URL. It is not possible to share or bookmark the state of multi-page dashboards.
 
 Here's an example of how to use this feature:
@@ -270,8 +270,6 @@ Here's an example of how to use this feature:
     === "Result"
 
         [![parameterInUrl]][parameterinurl]
-
-
 
 [nested]: ../../assets/user_guides/control/control5.png
 [parameter]: ../../assets/user_guides/control/control4.png
