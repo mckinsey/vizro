@@ -8,10 +8,16 @@
 .figure-title,
 .figure-header,
 .figure-footer {
-  align-items: center;
   display: flex;
   flex: 0 1 auto;
+  flex-direction: column;
   gap: 8px;
+}
+
+/* Needs to deviate from the default as the info-icon could be placed inside */
+.figure-title {
+  align-items: center;
+  flex-direction: row;
 }
 
 .figure-footer {
