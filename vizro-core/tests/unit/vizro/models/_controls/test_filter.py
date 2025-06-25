@@ -4,7 +4,7 @@ from typing import Literal
 import pandas as pd
 import pytest
 from asserts import assert_component_equal
-from dash import dcc
+from dash import dcc, html
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -919,12 +919,12 @@ class TestFilterBuild:
         ],
     )
     def test_filter_build(self, test_column, test_selector):
-        filter = vm.Filter(column=test_column, selector=test_selector)
+        filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
 
         filter.pre_build()
         result = filter.build()
-        expected = test_selector.build()
+        expected = html.Div(id="filter-id", children=test_selector.build())
 
         assert_component_equal(result, expected)
 

@@ -1,5 +1,6 @@
 import pytest
 from asserts import assert_component_equal
+from dash import html
 
 import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
@@ -193,11 +194,11 @@ class TestParameterBuild:
         ],
     )
     def test_build_parameter(self, test_input):
-        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
+        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
         result = parameter.build()
-        expected = test_input.build()
+        expected = html.Div(id="parameter-id", children=test_input.build())
 
         assert_component_equal(result, expected)
