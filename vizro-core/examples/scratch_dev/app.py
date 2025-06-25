@@ -103,6 +103,18 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
         (unknown query parameter ID with value that is not base64 encoded)
         - http://localhost:8050/page_4?UNKNOWN=asd
             - ✅Confirm that the bug is not raised and that the page can be opened.
+
+    5.6 Test incorrect URL parameters:
+    - ✅Confirm that the bug is not raised and that the page can be opened. Values should be ["ALL"] & [2, 4.4]
+    - (URL with non base64 encoded value)
+        - http://localhost:8050/page_2?page_2_filter_sepal_width=PLAIN_TEXT
+        - http://localhost:8050/page_2?page_2_filter_species=PLAIN_TEXT
+    - (URL with incorrect base64 encoded value)
+        - http://localhost:8050/page_2?page_2_filter_sepal_width=b64_INCORRECT
+        - http://localhost:8050/page_2?page_2_filter_species=b64_INCORRECT
+    - (URL with missing query parameter value)
+        - http://localhost:8050/page_2?page_2_filter_sepal_width=
+        - http://localhost:8050/page_2?page_2_filter_species=
 """
 import json
 import base64

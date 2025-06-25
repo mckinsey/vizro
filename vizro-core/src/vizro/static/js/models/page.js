@@ -2,7 +2,7 @@
 //def encode_url_params(decoded_map, apply_on_keys=None):
 //    encoded_map = {}
 //    for key, value in decoded_map.items():
-//        if apply_on_keys is None or key in apply_on_keys:
+//        if key in apply_on_keys:
 //            json_str = json.dumps(value)
 //            encoded_bytes = base64.b64encode(json_str.encode("utf-8"))
 //            encoded_str = encoded_bytes.decode("utf-8") \
@@ -10,8 +10,6 @@
 //                .replace("/", "_") \
 //                .rstrip("=")
 //            encoded_map[key] = "b64_" + encoded_str
-//        else:
-//            encoded_map[key] = value
 //    return encoded_map
 //
 // Example inputs:
@@ -22,8 +20,7 @@
 function encodeUrlParams(decodedMap, applyOnKeys) {
   const encodedMap = new Map();
   for (const [key, value] of decodedMap.entries()) {
-    // If applyOnKeys is undefined, decode all base64 encoded values.
-    if (applyOnKeys === undefined || applyOnKeys.includes(key)) {
+    if (applyOnKeys.includes(key)) {
       const json = JSON.stringify(value);
       const encoded = btoa(
         String.fromCharCode(...new TextEncoder().encode(json)),
@@ -32,9 +29,6 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
         .replace(/\//g, "_")
         .replace(/=+$/, "");
       encodedMap.set(key, "b64_" + encoded);
-    } else {
-      // If the key doesn't come from Vizro, keep it as is.
-      encodedMap.set(key, value);
     }
   }
   return encodedMap;
@@ -44,7 +38,7 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
 //def decode_url_params(encoded_map, apply_on_keys=None):
 //    decoded_map = {}
 //    for key, val in encoded_map.items():
-//        if val.startswith("b64_") and (apply_on_keys is None or key in apply_on_keys):
+//        if val.startswith("b64_") and key in apply_on_keys:
 //            try:
 //                base64_str = val[4:].replace("-", "+").replace("_", "/")
 //                base64_str += "=" * ((4 - len(base64_str) % 4) % 4)
@@ -53,9 +47,6 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
 //                decoded_map[key] = json.loads(json_str)
 //            except Exception as e:
 //                print(f"Failed to decode URL parameter: {key}, {val} - {e}")
-//                decoded_map[key] = val  # Keep original if decoding fails
-//        else:
-//            decoded_map[key] = val
 //    return decoded_map
 //
 // Example inputs:
@@ -66,11 +57,7 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
 function decodeUrlParams(encodedMap, applyOnKeys) {
   const decodedMap = new Map();
   for (const [key, val] of encodedMap.entries()) {
-    // If applyOnKeys is undefined, decode all base64 encoded values.
-    if (
-      val.startsWith("b64_") &&
-      (applyOnKeys === undefined || applyOnKeys.includes(key))
-    ) {
+    if (val.startsWith("b64_") && applyOnKeys.includes(key)) {
       try {
         let base64 = val.slice(4).replace(/-/g, "+").replace(/_/g, "/");
         base64 += "=".repeat((4 - (base64.length % 4)) % 4);
@@ -80,11 +67,7 @@ function decodeUrlParams(encodedMap, applyOnKeys) {
         decodedMap.set(key, JSON.parse(json));
       } catch (e) {
         console.warn("Failed to decode URL parameter:", key, val);
-        decoded_map.set(key, val); // Keep the original value if decoding fails
       }
-    } else {
-      // If the key doesn't come from Vizro or the value is not base64 encoded, keep it as is.
-      decodedMap.set(key, val);
     }
   }
   return decodedMap;
@@ -106,6 +89,8 @@ function sync_url_query_params_and_controls(...values_ids) {
   const controlMap = new Map(
     values_ids.slice(half).map((id, i) => [id, values_ids[i]]),
   );
+
+  const relevantControlIds = Array.from(controlMap.keys());
 
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -130,7 +115,7 @@ function sync_url_query_params_and_controls(...values_ids) {
     // Decoded URL parameters in format: Map<controlId, controlSelectorValue>
     const decodedParamMap = decodeUrlParams(
       urlParams,
-      Array.from(controlMap.keys()), // Apply decoding only to control IDs
+      relevantControlIds, // Apply decoding only to control IDs
     );
 
     // Values from the URL take precedence if page is just opened.
@@ -147,7 +132,9 @@ function sync_url_query_params_and_controls(...values_ids) {
   }
 
   // Encode controlMap to URL parameters.
-  encodeUrlParams(controlMap).forEach((value, id) => urlParams.set(id, value));
+  encodeUrlParams(controlMap, relevantControlIds).forEach((value, id) =>
+    urlParams.set(id, value),
+  );
 
   // Directly `replace` the URL instead of using a dcc.Location as a callback Output. Do it because the dcc.Location
   // uses history.pushState under the hood which causes destroying the history. With replaceState, we partially
