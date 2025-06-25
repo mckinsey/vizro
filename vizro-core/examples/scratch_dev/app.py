@@ -92,7 +92,7 @@ page_2 = vm.Page(
                 ),
                 vm.Button(
                     id="button_location_2",
-                    text="Go to page 2!",
+                    text="Go to page 1!",
                 ),
             ],
         ),
@@ -106,28 +106,52 @@ page_2 = vm.Page(
 
 
 @callback(
-    Output("vizro_url", "href"),
-    Input("button_location_2", "n_clicks")
+    Output("vizro_url", "href", allow_duplicate=True),
+    Input("button_location_2", "n_clicks"),
+    prevent_initial_call="initial_duplicate",
 )
 def change_location_callback(n_clicks):
-    print("............................................test location callback triggered", ctx.triggered_id)
-    # if ctx.triggered_id == "button_location_2":
-    if n_clicks:
+    if ctx.triggered_id == "button_location_2":
         return "/"
     else:
         raise dash.exceptions.PreventUpdate
 
 
 @callback(
-    Output("vizro_download", "data"),
-    Input("button_export_2", "n_clicks")
+    Output("vizro_download", "data", allow_duplicate=True),
+    Input("button_download_2", "n_clicks"),
+    prevent_initial_call="initial_duplicate",
 )
 def export_callback(n_clicks):
-    print("............................................test download callback triggered", ctx.triggered_id)
     if ctx.triggered_id == "button_download_2":
         return dcc.send_data_frame(iris.to_csv, "mydf.csv")
     else:
         raise dash.exceptions.PreventUpdate
+
+
+# @callback(
+#     Output("vizro_url", "href", allow_duplicate=True),
+#     Input("button_location", "n_clicks"),
+#     prevent_initial_call='initial_duplicate'
+# )
+# def change_location_callback1(n_clicks):
+#     if ctx.triggered_id == "button_location":
+#         return "/page-2"
+#     else:
+#         raise dash.exceptions.PreventUpdate
+#
+#
+# @callback(
+#     Output("vizro_download", "data", allow_duplicate=True),
+#     Input("button_download", "n_clicks"),
+#     prevent_initial_call='initial_duplicate'
+# )
+# def export_callback1(n_clicks):
+#     if ctx.triggered_id == "button_download":
+#         return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+#     else:
+#         raise dash.exceptions.PreventUpdate
+#
 
 
 dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2])

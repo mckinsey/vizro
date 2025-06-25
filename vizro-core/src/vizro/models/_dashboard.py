@@ -179,8 +179,6 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-                # dcc.Download(id="vizro_download"),
-                # dcc.Location(id="vizro_url", refresh="callback-nav"),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
