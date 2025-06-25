@@ -21,7 +21,7 @@
 //  {'foo': 'b64_IjEyMyI', 'bar': ['a', 'b']}
 function encodeUrlParams(decodedMap, applyOnKeys) {
   const encodedMap = new Map();
-  for (const [id, value] of decodedMap.entries()) {
+  for (const [key, value] of decodedMap.entries()) {
     // If applyOnKeys is undefined, decode all base64 encoded values.
     if (applyOnKeys === undefined || applyOnKeys.includes(key)) {
       const json = JSON.stringify(value);
@@ -31,10 +31,10 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
         .replace(/\+/g, "-")
         .replace(/\//g, "_")
         .replace(/=+$/, "");
-      encodedMap.set(id, "b64_" + encoded);
+      encodedMap.set(key, "b64_" + encoded);
     } else {
       // If the key doesn't come from Vizro, keep it as is.
-      encodedMap.set(id, value);
+      encodedMap.set(key, value);
     }
   }
   return encodedMap;
