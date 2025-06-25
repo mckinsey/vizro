@@ -152,7 +152,7 @@ In the [documentation sections on custom charts, tables, figures and actions](#v
 
 It is possible to validate a dashboard configuration without executing the `CapturedCallable` functions.
 
-You can use this method when you want to check if the dashboard configuration is valid, but you don't want to execute the custom functions until run-time, which may be in a sandboxed environment. This is useful when the custom functions are not available at validation time, or when they originate from untrusted sources (e.g. when a large language model is used to generate that code).
+You can use this method when you want to check if the dashboard configuration is valid, but you don't want to import or execute the custom functions until run-time, which may be in a sandboxed environment. This is useful when the custom functions are not available at validation time, or when they originate from untrusted sources (e.g. when a large language model is used to generate that code).
 
 !!! note When starting the server
 
