@@ -70,11 +70,11 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
         [![AGGrid]][aggrid]
 
-### Enable pagination
+### Disable pagination
 
-Pagination is a visual alternative to using vertical scroll. It can also improve loading time if you have many rows. You can turn it on by setting `dashGridOptions={"pagination": True}`.
+By default, pagination is enabled in AG Grid to improve performance and usability with large datasets. If you prefer to show all rows in a single scrollable table (for example, to allow users to scroll vertically through all data), you can disable pagination by setting `dashGridOptions={"pagination": False}`.
 
-!!! example "Basic Dash AG Grid"
+!!! example "Dash AG Grid without pagination"
 
     === "app.py"
 
@@ -88,7 +88,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
 
         page = vm.Page(
             title="Dash AG Grid with pagination",
-            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True}))]
+            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": False}))]
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -106,7 +106,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
                   _target_: dash_ag_grid
                   data_frame: gapminder
                   dashGridOptions:
-                    pagination: true
+                    pagination: false
                 type: ag_grid
             title: Dash AG Grid with pagination
         ```

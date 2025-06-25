@@ -16,12 +16,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Add `description` argument to `Button` to enable tooltip next to button text. See the [user guide on button](https://vizro.readthedocs.io/en/stable/pages/user-guides/buttons/#add-a-tooltip) for an example. ([#1225](https://github.com/mckinsey/vizro/pull/1225))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
+-->
 <!--
 ### Changed
 
