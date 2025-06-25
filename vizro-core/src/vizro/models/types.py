@@ -99,13 +99,6 @@ class JsonSchemaExtraType(TypedDict):
     mode: str
 
 
-class AllowedCapturedCallable(NamedTuple):
-    """Tuple to be used as validation context to allow undefined captured callables."""
-
-    function_name: str
-    mode: str
-
-
 def validate_captured_callable(cls, value: Any, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
     # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
@@ -116,17 +109,11 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
         return value
 
     try:
-        allowed_undefined_captured_callables: list[AllowedCapturedCallable] = TypeAdapter(
-            list[AllowedCapturedCallable]
-        ).validate_python(
+        allowed_undefined_captured_callables: list[str] = TypeAdapter(list[str]).validate_python(
             info.context.get("allowed_undefined_captured_callables", []) if info.context is not None else []
         )
     except ValidationError:
-        raise ValueError(
-            """Invalid `allowed_undefined_captured_callables`.
-Must be a list of namedtuples with (function_name: str, mode: str).
-"""
-        )
+        raise ValueError("""Invalid `allowed_undefined_captured_callables`. Must be a list of strings.""")
 
     # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
     # to get deprecated in V3
@@ -218,13 +205,12 @@ class CapturedCallable:
             self._model_example = None
             self._prevent_run = False
         else:
-            self.__args_for_repr = args  # so that __repr__ methods work properly
-            self._prevent_run = True
             self.__function = function
-            mode = kwargs.pop("mode", None)  # we instantiate str proxy with mode as kwarg
-            self._mode = mode
+            self.__args_for_repr = args  # so that __repr__ methods work properly
             self.__bound_arguments = OrderedDict(kwargs)
+            self._mode = None
             self._model_example = None
+            self._prevent_run = True
 
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
@@ -293,7 +279,7 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
         json_schema_extra: JsonSchemaExtraType,
-        allowed_undefined_captured_callables: list[AllowedCapturedCallable],
+        allowed_undefined_captured_callables: list[str],
     ):
         value = cls._parse_json(
             captured_callable_config=captured_callable_config,
@@ -327,7 +313,7 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
         json_schema_extra: JsonSchemaExtraType,
-        allowed_undefined_captured_callables: list[AllowedCapturedCallable],
+        allowed_undefined_captured_callables: list[str],
     ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
 
@@ -352,10 +338,8 @@ class CapturedCallable:
         import_path = json_schema_extra["import_path"]
 
         # Check if we skip proper instantiation due to undefined function.
-        if function_name in (def_name for def_name, _ in allowed_undefined_captured_callables):
-            # Find the mode from allowed_undefined_captured_callables tuples
-            mode = next(mode for def_name, mode in allowed_undefined_captured_callables if def_name == function_name)
-            return CapturedCallable(function_name, mode=mode, **captured_callable_config)
+        if function_name in allowed_undefined_captured_callables:
+            return CapturedCallable(function_name, **captured_callable_config)
 
         # Try multiple approaches to import the function - order matters here.
         function: CapturedCallable
@@ -410,8 +394,7 @@ class CapturedCallable:
                 f"Invalid CapturedCallable. Supply a function imported from {import_path} or defined with "
                 f"decorator @capture('{expected_mode}')."
             )
-
-        if (mode := captured_callable._mode) != expected_mode:
+        if (mode := captured_callable._mode) and mode != expected_mode:
             raise ValueError(
                 f"CapturedCallable was defined with @capture('{mode}') rather than @capture('{expected_mode}') and so "
                 "is not compatible with the model."

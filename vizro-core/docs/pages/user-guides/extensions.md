@@ -165,7 +165,6 @@ You can use this method when you want to check if the dashboard configuration is
     import vizro.plotly.express as px
     from vizro import Vizro
     from vizro.managers import data_manager
-    from vizro.models.types import AllowedCapturedCallable
 
     data_manager["iris"] = px.data.iris()
 
@@ -188,7 +187,7 @@ You can use this method when you want to check if the dashboard configuration is
         dashboard_config,
         context={
             "allowed_undefined_captured_callables": [
-                AllowedCapturedCallable(function_name="llm_generated_grid", mode="ag_grid")
+                "llm_generated_grid",
             ]
         },
     )

@@ -679,7 +679,7 @@ class TestPydanticPythonAfterJSONInstantiation:
         }
 
         graph = vm.Graph.model_validate(
-            graph_config, context={"allowed_undefined_captured_callables": [("not_importable_scatter", "graph")]}
+            graph_config, context={"allowed_undefined_captured_callables": ["not_importable_scatter"]}
         )
         result = graph._to_python()
         assert result == expected_code

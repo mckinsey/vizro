@@ -38,7 +38,7 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        self._undefined_captured_callables: set[tuple[str, str]]
+        self._undefined_captured_callables: set[str]
 
         # Set suppress_callback_exceptions=True for the following reasons:
         # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
@@ -116,7 +116,7 @@ class Vizro:
 
         # Check if there are undefined captured callables in the dashboard.
         self._undefined_captured_callables = {
-            (model.figure._function, model.figure._mode)
+            model.figure._function
             for model in cast(
                 Iterable[FigureType], model_manager._get_models(root_model=dashboard, model_type=FIGURE_MODELS)
             )
