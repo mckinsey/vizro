@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.41'></a>
+
+# 0.1.41 — 2025-06-24
+
+## Added
+
+- Add `description` argument to `Button` to enable tooltip next to button text. See the [user guide on button](https://vizro.readthedocs.io/en/stable/pages/user-guides/buttons/#add-a-tooltip) for an example. ([#1225](https://github.com/mckinsey/vizro/pull/1225))
+
+## Changed
+
+- Update the default settings for `dash_ag_grid` to enhance layout compatibility and performance. The grid now uses `"domLayout": "autoHeight"` and [enables pagination by default](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#disable-pagination). ([#1226](https://github.com/mckinsey/vizro/pull/1226))
+
+## Fixed
+
+- Fix dynamically calculated row height for `Dropdown` when used in `Container.controls`. ([#1238](https://github.com/mckinsey/vizro/pull/1238))
+
 <a id='changelog-0.1.40'></a>
 
 # 0.1.40 — 2025-06-03

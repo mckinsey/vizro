@@ -101,11 +101,10 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe",
-  "griffe==1.6.0"  # Required for hatch run docs:build to work.
+  "mkdocs-pycafe"
 ]
-detached = true
 installer = "uv"
+template = "docs"  # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
 
 [envs.docs.scripts]
 build = "mkdocs build --strict"
