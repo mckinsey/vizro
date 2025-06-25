@@ -1,10 +1,8 @@
-import numpy as np
-
 from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.models.types import capture
-from dash import html, Input, Output, dcc, callback, ctx
+from dash import Input, Output, dcc, callback, ctx
 import dash
 
 iris = px.data.iris()
@@ -13,16 +11,12 @@ iris = px.data.iris()
 @capture("action")
 def my_custom_export(n_clicks):
     if n_clicks:
-        print("my custom export action triggered-now!")
         return dcc.send_data_frame(iris.to_csv, "mydf.csv")
 
 
 @capture("action")
 def my_custom_location(n_clicks):
-    # if n_clicks:
-    print("ctx.triggered_id ........................... ", ctx.triggered_id)
     if n_clicks:
-        print("my custom location change action triggered-now!")
         return "/page-2"
 
 
