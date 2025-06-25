@@ -8,7 +8,9 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import Input, Output, State, callback, html
+import dash
+from dash import ctx
+from dash import Input, Output, State, callback, html, clientside_callback
 from dash.development.base_component import Component
 from pydantic import Field, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -316,7 +318,7 @@ class _BaseAction(VizroBaseModel):
 
         callback_inputs = {
             "external": external_callback_inputs,
-            "internal": {"trigger": Input(*self.trigger.split("."))},
+            "internal": {"trigger": Input(f"{self.id}_trigger", "data")},
         }
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
             "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
@@ -339,6 +341,19 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback inputs:\n%s", pformat(callback_inputs["external"], width=200))
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
+        # would be clientside eventually
+        @callback(
+            Output(f"{self.id}_trigger", "data", allow_duplicate=True),
+            Output("filter_loading", "data", allow_duplicate=True),
+            Input(*self.trigger.split(".")),
+            State("filter_loading", "data"),
+            prevent_initial_call=True,
+        )
+        def f(value, loading):
+            if loading:
+                return dash.no_update, False
+            return value, False
+
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             # This is not needed if all components Outputs and Inputs are produced in page_container.
@@ -353,6 +368,7 @@ class _BaseAction(VizroBaseModel):
             #     print(f"Cancelled {self._action_name}")
             #     raise PreventUpdate
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
+            time.sleep(3)
             if "external" in callback_outputs:
                 return {"internal": {"action_finished": time.time()}, "external": return_value}
             return {"internal": {"action_finished": time.time()}}

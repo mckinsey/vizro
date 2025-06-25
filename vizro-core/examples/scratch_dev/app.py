@@ -132,7 +132,7 @@ page_6 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="continent", selector=vm.Dropdown(id="filter")),
+        vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
         vm.Parameter(
             targets=["page_6_graph.data_frame.continent"],
             selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe", id="parameter"),

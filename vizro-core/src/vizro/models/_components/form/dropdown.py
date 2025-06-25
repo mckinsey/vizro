@@ -158,13 +158,10 @@ class Dropdown(VizroBaseModel):
             "className": "dropdown",
         }
 
-        action_finished_stores = [dcc.Store(id=f"{action.id}_finished") for action in self.actions]
-
         return html.Div(
             children=[
                 dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
                 dcc.Dropdown(**(defaults | self.extra)),
-                *action_finished_stores,
             ]
         )
 

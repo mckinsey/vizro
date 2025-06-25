@@ -5,7 +5,7 @@ from contextlib import suppress
 from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
-from dash import dcc, html
+from dash import dcc, html, clientside_callback, Input, Output, callback
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import Field, PrivateAttr
 
@@ -221,7 +221,17 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        # Cast is justified as the selector is set in pre_build and is not None.
+        if self._dynamic:
+            # would be clientside eventually
+            @callback(
+                Output("filter_loading", "data", allow_duplicate=True),
+                Input(self.id, "data-dash-is-loading"),
+                prevent_initial_call=True,
+            )
+            def f(value):
+                return True
+
+            # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
         selector_build_obj = selector.build()
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
@@ -243,8 +253,7 @@ class Filter(VizroBaseModel):
             selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
 
         return dcc.Loading(
-            id=self.id,
-            children=selector_build_obj,
+            html.Div(id=self.id, children=selector_build_obj),
             color="grey",
             overlay_style={"visibility": "visible"},
         )
