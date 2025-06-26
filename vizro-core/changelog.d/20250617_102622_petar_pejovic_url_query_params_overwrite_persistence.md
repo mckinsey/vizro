@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- The current state of your app can be shared by sharing its URL. Set `show_in_url=True` inside `Filter` and `Parameter` to include their values in the URL. See the [user guide on filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#show-in-url) for more information. ([#1243](https://github.com/mckinsey/vizro/pull/1243))
+- The current state of a page in your app can be shared by sharing its URL. Set `show_in_url=True` in `Filter` and `Parameter` to include their values in the URL. See the [user guide on filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#show-in-url) for more information. ([#1243](https://github.com/mckinsey/vizro/pull/1243))
 
 <!--
 ### Removed
