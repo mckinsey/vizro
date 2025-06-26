@@ -181,46 +181,53 @@ def parse_sse_chunks(animation_data):
         if isinstance(animation_data, list):
             return [json.loads(msg) for msg in animation_data]
         elif isinstance(animation_data, str):
-            # Handle concatenated JSON objects
-            chunks = animation_data.replace('}{', '}\n{')
-            lines = [line.strip() for line in chunks.splitlines() if line.strip()]
-            return [json.loads(line) for line in lines if line]
+            # Handle concatenated JSON objects by finding complete JSON boundaries
+            chunks = []
+            buffer = ""
+            brace_count = 0
+            in_string = False
+            escape_next = False
+            
+            for char in animation_data:
+                buffer += char
+                
+                # Track if we're inside a string to ignore braces there
+                if not escape_next:
+                    if char == '"' and not in_string:
+                        in_string = True
+                    elif char == '"' and in_string:
+                        in_string = False
+                    elif char == '\\':
+                        escape_next = True
+                        continue
+                else:
+                    escape_next = False
+                    continue
+                
+                # Count braces only outside of strings
+                if not in_string:
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        
+                        # When brace count returns to 0, we have a complete JSON object
+                        if brace_count == 0 and buffer.strip():
+                            try:
+                                chunks.append(json.loads(buffer))
+                                buffer = ""
+                            except json.JSONDecodeError:
+                                # If we can't parse it, keep accumulating
+                                pass
+            
+            return chunks
         else:
             return [json.loads(animation_data)]
     except (json.JSONDecodeError, TypeError):
         return []
 
 
-def render_streaming_message(component_id):
-    """Create a streaming message container with smooth rendering."""
-    markdown_id = f"{component_id}-streaming-markdown"
-    return html.Div([
-        # Stores for managing the streaming state
-        dcc.Store(id=f"{component_id}-stream-buffer", data=""),
-        dcc.Store(id=f"{component_id}-render-buffer", data=""),
-        dcc.Store(id=f"{component_id}-render-position", data=0),
-        
-        # Timer for smooth rendering
-        dcc.Interval(
-            id=f"{component_id}-render-timer", 
-            interval=33,  # ~30fps for smooth animation
-            n_intervals=0,
-            disabled=True
-        ),
-        
-        # The content container with code block styling
-        dcc.Markdown(
-            id=markdown_id,
-            children="",
-            className="markdown-container",
-            style={
-                "minHeight": "20px",
-                "margin": 0,
-            },
-            # Enable code highlighting and custom styling
-            # highlight_config={"theme": "dark"},
-        ),
-    ])
+
 
 
 class Chat(VizroBaseModel):
@@ -240,6 +247,8 @@ class Chat(VizroBaseModel):
         input_height (str): Height of the input field. Defaults to `"80px"`.
         button_text (str): Text displayed on the send button. Defaults to `"Send"`.
         initial_message (str): Initial message displayed in the chat. Defaults to `"Hello! How can I help you today?"`.
+        height (str): Height of the chat component wrapper. Defaults to `"100%"`.
+        storage_type (Literal["memory", "session", "local"]): Storage type for chat history persistence. Defaults to `"session"`.
         processor (ChatProcessor): Chat processor for generating responses. Defaults to `EchoProcessor()`.
         
     Example:
@@ -264,6 +273,7 @@ class Chat(VizroBaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
+    # TODO: make initial_message optional
     type: Literal["chat"] = "chat"
     id: str
     input_placeholder: str = Field(default="Ask me a question...", description="Placeholder text for the input field")
@@ -271,6 +281,7 @@ class Chat(VizroBaseModel):
     button_text: str = Field(default="Send", description="Text displayed on the send button")
     initial_message: str = Field(default="Hello! How can I help you today!", description="Initial message displayed in the chat")
     height: str = Field(default="100%", description="Height of the chat component wrapper")
+    storage_type: Literal["memory", "session", "local"] = Field(default="session", description="Storage type for chat history persistence")
     processor: ChatProcessor = Field(default_factory=EchoProcessor, description="Chat processor for generating responses")
 
     @property 
@@ -315,12 +326,21 @@ class Chat(VizroBaseModel):
                     try:
                         for chat_message in self.processor.get_response(messages, user_prompt):
                             yield sse_message(chat_message.to_json())
-                        yield sse_message()  # Final empty message to signal completion
+                        # Send explicit completion message
+                        completion_msg = ChatMessage(type="text", content="__STREAM_COMPLETE__")
+                        yield sse_message(completion_msg.to_json())
+                        # Properly close the SSE stream
+                        yield "event: close\ndata: Stream closed\n\n"
                     except Exception as e:
                         error_msg = ChatMessage(type="error", content=f"Error: {e!s}")
                         yield sse_message(error_msg.to_json())
+                        yield "event: error\ndata: {}\n\n".format(json.dumps({"error": str(e)}))
 
-                return Response(response_stream(), mimetype="text/event-stream")
+                # Use Response with proper headers for SSE
+                response = Response(response_stream(), mimetype="text/event-stream")
+                response.headers['Cache-Control'] = 'no-cache'
+                response.headers['X-Accel-Buffering'] = 'no'
+                return response
             except Exception as e:
                 return Response(f"Error: {e!s}", status=500)
 
@@ -356,8 +376,69 @@ class Chat(VizroBaseModel):
         def initialize_messages(current_messages):
             """Initialize messages if they don't exist."""
             if not current_messages:
-                return json.dumps([{"role": "assistant", "content": self.initial_message}])
+                initial_data = json.dumps([{"role": "assistant", "content": self.initial_message}])
+                return initial_data
             return current_messages
+
+        # Add callback to rebuild visual history from stored messages on initial load
+        @callback(
+            Output(f"{self.id}-history", "children", allow_duplicate=True),
+            Input(f"{self.id}-messages", "data"),
+            State(f"{self.id}-history", "children"),
+            prevent_initial_call="initial_duplicate",
+        )
+        def rebuild_history_from_storage(messages_data, current_history):
+            """Rebuild the visual chat history from stored messages on initial load only."""
+            # Only rebuild if history is empty (initial load)
+            if current_history:
+                return dash.no_update
+                
+            if not messages_data:
+                return []
+            
+            try:
+                messages = json.loads(messages_data)
+                history_divs = []
+                
+                for message in messages:
+                    role = message.get("role", "")
+                    content = message.get("content", "")
+                    
+                    if role == "user":
+                        # Create user message div
+                        div = html.Div(
+                            content,
+                            style={
+                                **MESSAGE_STYLE,
+                                "backgroundColor": "var(--surfaces-bg-card)",
+                                "borderLeft": "4px solid #aaa9ba",
+                            }
+                        )
+                    elif role == "assistant":
+                        # Skip empty assistant messages (placeholders)
+                        if not content.strip():
+                            continue
+                        # Create assistant message div with markdown support
+                        div = html.Div(
+                            dcc.Markdown(
+                                content,
+                                className="markdown-container",
+                                style={"minHeight": "20px", "margin": 0},
+                            ),
+                            style={
+                                **MESSAGE_STYLE,
+                                "backgroundColor": "var(--right-side-bg)",
+                                "borderLeft": "4px solid #00b4ff",
+                            }
+                        )
+                    else:
+                        continue
+                    
+                    history_divs.append(div)
+                
+                return history_divs
+            except (json.JSONDecodeError, TypeError):
+                return []
 
         # Add callback to handle SSE URL and options
         @callback(
@@ -366,7 +447,7 @@ class Chat(VizroBaseModel):
             Output(f"{self.id}-history", "children"),
             Output(f"{self.id}-messages", "data", allow_duplicate=True),
             Output(f"{self.id}-stream-buffer", "data", allow_duplicate=True),
-            Output(f"{self.id}-render-position", "data", allow_duplicate=True),
+            Output(f"{self.id}-completion-trigger", "data", allow_duplicate=True),
             Input(f"{self.id}-submit", "n_clicks"),
             Input(f"{self.id}-input", "n_submit"),
             State(f"{self.id}-input", "value"),
@@ -377,10 +458,16 @@ class Chat(VizroBaseModel):
         def start_streaming(n_clicks, n_submit, value, messages, current_history):
             if (not n_clicks and not n_submit) or not value or not value.strip():
                 return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
-
+            
             messages_array = json.loads(messages)
             user_message = {"role": "user", "content": value.strip()}
             messages_array.append(user_message)
+            
+            # Add placeholder assistant message immediately to ensure persistence
+            assistant_placeholder = {"role": "assistant", "content": ""}
+            messages_array.append(assistant_placeholder)
+            
+            updated_messages = json.dumps(messages_array)
 
             # Create user message div
             user_div = html.Div(
@@ -395,7 +482,12 @@ class Chat(VizroBaseModel):
             # Create assistant div for streaming
             assistant_div = html.Div(
                 id=f"{self.id}-streaming-content",
-                children=render_streaming_message(self.id),  # Streaming container
+                children=dcc.Markdown(
+                    id=f"{self.id}-streaming-markdown",
+                    children="",
+                    className="markdown-container",
+                    style={"minHeight": "20px", "margin": 0},
+                ),
                 style={
                     **MESSAGE_STYLE,
                     "backgroundColor": "var(--right-side-bg)",
@@ -418,80 +510,22 @@ class Chat(VizroBaseModel):
                     method="POST"
                 ),
                 new_history,
-                json.dumps(messages_array),
+                updated_messages,
                 "",  # Reset stream buffer
-                0,   # Reset render position
+                False,  # Reset completion trigger
             )
 
-                # Client-side callback for smooth streaming rendering
-        clientside_callback(
-            """
-            function(n_intervals, stream_buffer, render_position, timer_disabled) {
-                // Stop processing if timer is disabled
-                if (timer_disabled || !stream_buffer || stream_buffer.length === 0) {
-                    return [window.dash_clientside.no_update, window.dash_clientside.no_update];
-                }
-                
-                // Safe markdown parsing - handle incomplete code blocks
-                function safeParseMarkdown(content) {
-                    const fenceCount = (content.match(/```/g) || []).length;
-                    if (fenceCount % 2 !== 0) {
-                        // Find last complete fence pair
-                        const lines = content.split('\\n');
-                        let fenceIndices = [];
-                        for (let i = 0; i < lines.length; i++) {
-                            if (lines[i].trim().startsWith('```')) {
-                                fenceIndices.push(i);
-                            }
-                        }
-                        if (fenceIndices.length >= 2 && fenceIndices.length % 2 !== 0) {
-                            const safeCutoff = fenceIndices[fenceIndices.length - 1];
-                            return lines.slice(0, safeCutoff).join('\\n');
-                        }
-                    }
-                    return content;
-                }
-                
-                const safeContent = safeParseMarkdown(stream_buffer);
-                const targetLength = safeContent.length;
-                
-                if (render_position < targetLength) {
-                    // Add 2-4 characters per frame for smooth streaming
-                    const charsToAdd = Math.min(Math.max(2, Math.floor(targetLength / 100)), 4);
-                    const newPosition = Math.min(render_position + charsToAdd, targetLength);
-                    const displayContent = safeContent.slice(0, newPosition);
-                    
-                    return [newPosition, displayContent];
-                }
-                
-                // Animation complete - return no update to stop triggering
-                return [window.dash_clientside.no_update, window.dash_clientside.no_update];
-            }
-            """,
-            [Output(f"{self.id}-render-position", "data"),
-             Output(f"{self.id}-streaming-markdown", "children")],
-            Input(f"{self.id}-render-timer", "n_intervals"),
-            [State(f"{self.id}-stream-buffer", "data"),
-             State(f"{self.id}-render-position", "data"),
-             State(f"{self.id}-render-timer", "disabled")]
-        )
-
-        # Callback to disable timer when rendering is complete
+        # Simple callback to update streaming markdown directly from buffer
         @callback(
-            Output(f"{self.id}-render-timer", "disabled", allow_duplicate=True),
-            Input(f"{self.id}-render-position", "data"),
-            State(f"{self.id}-stream-buffer", "data"),
+            Output(f"{self.id}-streaming-markdown", "children"),
+            Input(f"{self.id}-stream-buffer", "data"),
             prevent_initial_call=True,
         )
-        def disable_timer_when_complete(render_position, stream_buffer):
-            if not stream_buffer:
-                return True
-            
-            # If we've rendered all the content, disable the timer
-            if render_position >= len(stream_buffer):
-                return True
-            
-            return dash.no_update
+        def update_streaming_display(buffer_content):
+            """Update the streaming markdown display directly."""
+            if buffer_content:
+                return buffer_content
+            return ""
 
         # Add clientside callback to handle clipboard functionality for code blocks
         clientside_callback(
@@ -601,7 +635,7 @@ class Chat(VizroBaseModel):
 
         @callback(
             Output(f"{self.id}-stream-buffer", "data"),
-            Output(f"{self.id}-render-timer", "disabled"),
+            Output(f"{self.id}-completion-trigger", "data"),
             Input(f"{self.id}-sse", "animation"),
             prevent_initial_call=True,
         )
@@ -611,39 +645,118 @@ class Chat(VizroBaseModel):
 
             messages = parse_sse_chunks(animation)
             if not messages:
-                return "", True
+                return dash.no_update, dash.no_update
 
             # Build content from scratch each time (no accumulation to avoid duplication)
             aggregated_content = ""
+            stream_completed = False
+            
             for msg in messages:
                 msg_type = msg.get("type", "text")
                 msg_content = msg.get("content", "")
+                
+                # Check for completion signal
+                if msg_content == "__STREAM_COMPLETE__":
+                    stream_completed = True
+                    continue
                 
                 if msg_type == "code":
                     aggregated_content += f"```{msg_content}```\n\n"
                 else:
                     aggregated_content += msg_content
             
-            return aggregated_content, False
+            # If stream is completed, trigger the messages store update manually
+            if stream_completed:
+                # Trigger completion via the completion store
+                return aggregated_content, True  # content, trigger_completion
+            
+            return aggregated_content, dash.no_update
 
-        # Add callback to update messages store after streaming completes
+        # Add callback to update messages store when completion is triggered
         @callback(
             Output(f"{self.id}-messages", "data", allow_duplicate=True),
-            Output(f"{self.id}-render-timer", "disabled", allow_duplicate=True),
-            Output(f"{self.id}-render-position", "data", allow_duplicate=True),
-            Input(f"{self.id}-sse", "completed"),
+            Output(f"{self.id}-completion-trigger", "data", allow_duplicate=True),
+            Input(f"{self.id}-completion-trigger", "data"),
             State(f"{self.id}-stream-buffer", "data"),
             State(f"{self.id}-messages", "data"),
             prevent_initial_call="initial_duplicate",
         )
-        def update_messages_store(completed, content, messages):
-            if not completed or not content:
-                return dash.no_update, dash.no_update, dash.no_update
+        def update_messages_store_on_completion(completion_triggered, content, messages):
+            if not completion_triggered or not content:
+                return dash.no_update, dash.no_update
 
             messages_array = json.loads(messages)
-            assistant_message = {"role": "assistant", "content": content}
-            messages_array.append(assistant_message)
-            return json.dumps(messages_array), True, 0
+            # Find and update the last assistant message (placeholder) instead of adding new one
+            updated = False
+            for i in range(len(messages_array) - 1, -1, -1):
+                if messages_array[i].get("role") == "assistant":
+                    messages_array[i]["content"] = content
+                    updated = True
+                    break
+            
+            if not updated:
+                # Fallback: add new message if no placeholder found
+                assistant_message = {"role": "assistant", "content": content}
+                messages_array.append(assistant_message)
+            
+            final_messages = json.dumps(messages_array)
+            return final_messages, False  # Reset completion trigger
+
+        # Add callback to handle SSE errors
+        @callback(
+            Output(f"{self.id}-history", "children", allow_duplicate=True),
+            Input(f"{self.id}-sse", "error"),
+            State(f"{self.id}-history", "children"),
+            prevent_initial_call=True,
+        )
+        def handle_sse_error(error, current_history):
+            """Handle SSE streaming errors."""
+            if not error:
+                return dash.no_update
+            
+            # Add error message to history
+            error_div = html.Div(
+                f"Error: {error}",
+                style={
+                    **MESSAGE_STYLE,
+                    "backgroundColor": "#ff4444",
+                    "borderLeft": "4px solid #cc0000",
+                    "color": "white",
+                }
+            )
+            
+            new_history = current_history or []
+            new_history = new_history + [error_div]
+            return new_history
+        
+        # Add callback to handle SSE completion (as backup)
+        @callback(
+            Output(f"{self.id}-completion-trigger", "data", allow_duplicate=True),
+            Input(f"{self.id}-sse", "completed"),
+            prevent_initial_call=True,
+        )
+        def handle_sse_completed(completed):
+            """Handle SSE stream completion."""
+            if completed:
+                return True
+            return dash.no_update
+        
+        # Add clientside callback to scroll to bottom when history updates
+        clientside_callback(
+            """
+            function(children) {
+                setTimeout(function() {
+                    const historyDiv = document.getElementById('%s-history');
+                    if (historyDiv) {
+                        historyDiv.scrollTop = historyDiv.scrollHeight;
+                    }
+                }, 100);
+                return window.dash_clientside.no_update;
+            }
+            """ % self.id,
+            Output(f"{self.id}-history", "data-scroll"),
+            Input(f"{self.id}-history", "children")
+        )
 
     @_log_call
     def build(self):
@@ -671,15 +784,9 @@ class Chat(VizroBaseModel):
     def _build_data_stores(self):
         """Build the data store components for the chat."""
         return [
-            dcc.Store(id=f"{self.id}-messages", storage_type="session"),
+            dcc.Store(id=f"{self.id}-messages", storage_type=self.storage_type),
             dcc.Store(id=f"{self.id}-stream-buffer", data=""),
-            dcc.Store(id=f"{self.id}-render-position", data=0),
-            dcc.Interval(
-                id=f"{self.id}-render-timer", 
-                interval=33,  # ~30fps
-                n_intervals=0,
-                disabled=True
-            ),
+            dcc.Store(id=f"{self.id}-completion-trigger", data=False),
         ]
 
     def _build_chat_interface(self):

@@ -42,6 +42,7 @@ chat_component3 = vam.Chat(
     id="my_chat3",
     processor=vam.EchoProcessor(),
     height="400px",
+    storage_type="local",
 )
 # Register the component type with Vizro
 vm.Page.add_type("components", vam.Chat)
@@ -69,9 +70,12 @@ page3 = vm.Page(
 )
 
 # Create the dashboard
-dashboard = vm.Dashboard(pages=[page1, page2, page3])
+dashboard = vm.Dashboard(
+    pages=[page1, page2, page3],
+    theme="vizro_light",
+    )
 
 # IMPORTANT: Pass the chat component as a plugin to Vizro
 # This ensures the streaming routes are properly registered during app initialization
 app = Vizro(plugins=[chat_component1, chat_component2, chat_component3])
-app.build(dashboard).run() 
+app.build(dashboard).run()

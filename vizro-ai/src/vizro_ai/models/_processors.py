@@ -1,6 +1,5 @@
 """Chat processors for generating responses to user prompts."""
 
-import json
 import re
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -70,29 +69,37 @@ def parse_markdown_stream(token_stream: Generator[str, None, None]) -> Generator
     code_language = ""
     
     for token in token_stream:
-        buffer += token
-        
-        # Check for complete code block delimiters
-        while "```" in buffer:
-            before, delimiter, after = buffer.partition("```")
+        if in_code_block:
+            # In code block, buffer until we find the closing delimiter
+            buffer += token
             
-            if in_code_block:
-                # End of code block - yield the code content
-                yield ChatMessage(
-                    type=MessageType.CODE,
-                    content=before,
-                    metadata={"language": code_language}
-                )
+            # Check if we have the closing delimiter
+            if "```" in buffer:
+                before, delimiter, after = buffer.partition("```")
+                # Extract the actual code content (remove the delimiter)
+                code_content = before
+                if code_content:
+                    yield ChatMessage(
+                        type=MessageType.CODE,
+                        content=code_content,
+                        metadata={"language": code_language}
+                    )
                 in_code_block = False
                 code_language = ""
                 buffer = after
-            else:
-                # Start of code block
-                if before.strip():
-                    # Yield any text before the code block
+        else:
+            # Not in code block - check for opening delimiter
+            buffer += token
+            
+            # Check for code block start
+            if "```" in buffer:
+                before, delimiter, after = buffer.partition("```")
+                
+                # Yield any text before the code block
+                if before:
                     yield ChatMessage(type=MessageType.TEXT, content=before)
                 
-                # Extract language from the next line
+                # Extract language from the next portion
                 lines = after.split('\n', 1)
                 if lines and re.match(r"^\w+$", lines[0].strip()):
                     code_language = lines[0].strip()
@@ -102,16 +109,22 @@ def parse_markdown_stream(token_stream: Generator[str, None, None]) -> Generator
                     buffer = after
                 
                 in_code_block = True
+            else:
+                # No code block delimiter - yield the token immediately for streaming
+                yield ChatMessage(type=MessageType.TEXT, content=token)
+                buffer = ""  # Clear buffer since we yielded the content
     
     # Handle remaining buffer
-    if buffer.strip():
+    if buffer:
         if in_code_block:
+            # Incomplete code block
             yield ChatMessage(
                 type=MessageType.CODE,
                 content=buffer,
                 metadata={"language": code_language}
             )
-        else:
+        elif buffer.strip():
+            # Remaining text
             yield ChatMessage(type=MessageType.TEXT, content=buffer)
 
 
@@ -125,7 +138,7 @@ class EchoProcessor(ChatProcessor):
                 raise ValueError("Prompt cannot be empty")
 
             # Simulate streaming by yielding the prompt character by character
-            for i, char in enumerate(f"You said: {prompt}"):
+            for char in f"You said: {prompt}":
                 yield ChatMessage(type=MessageType.TEXT, content=char)
                 
             # Add a final newline

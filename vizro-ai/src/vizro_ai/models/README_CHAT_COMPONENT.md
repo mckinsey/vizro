@@ -134,9 +134,9 @@ sequenceDiagram
         ↓
 [Chat Component Callbacks]
         ↓
-[Client-side Buffer]
+[Stream Buffer Store]
         ↓
-[Smooth Animation]
+[Direct Markdown Update]
         ↓
 [Rendered UI]
 ```
@@ -148,39 +148,36 @@ sequenceDiagram
 3. **Serialization** → Converts to JSON for network transmission
 4. **SSE Streaming** → Real-time streaming to browser
 5. **Component Callbacks** → Server-side Dash callbacks receive data
-6. **Buffer Management** → Accumulates content in client-side buffer
-7. **Animation Engine** → Smooth character-by-character rendering
+6. **Buffer Management** → Accumulates content in stream buffer store
+7. **Direct Update** → Updates markdown component directly as content arrives
 8. **UI Rendering** → Final display with markdown, syntax highlighting, clipboard
 
 ## 🔧 Special Design Features
 
-### 1. Streaming Buffer System
+### 1. Simplified Streaming System
 
-**Purpose**: Provide smooth, consistent animation regardless of irregular token arrival from LLMs.
+**Purpose**: Provide real-time streaming display of AI responses as they arrive.
 
 **How It Works**:
 ```python
-# Server-side: Accumulate all received content
-stream_buffer = ""
-for message in sse_stream:
-    stream_buffer += message.content
+# Server-side: Stream individual tokens/messages
+for chat_message in processor.get_response(messages, prompt):
+    yield sse_message(chat_message.to_json())
 
-# Client-side: Smooth character-by-character rendering
-render_position = 0
-timer_interval = 33ms  # ~30fps
-
-def animate_frame():
-    if render_position < len(stream_buffer):
-        chars_to_add = min(4, len(stream_buffer) - render_position)
-        render_position += chars_to_add
-        display_content = stream_buffer[:render_position]
-        update_ui(display_content)
+# Client-side: Direct update to markdown component
+@callback(
+    Output("streaming-markdown", "children"),
+    Input("stream-buffer", "data")
+)
+def update_streaming_display(buffer_content):
+    return buffer_content
 ```
 
 **Benefits**:
-- Consistent typing speed regardless of network irregularities
-- Smooth visual experience similar to ChatGPT/Claude
-- Decouples data arrival from visual presentation
+- Real-time display of content as it arrives from the AI
+- Simple and robust implementation
+- No complex client-side animation logic needed
+- Natural typing effect from token-by-token streaming
 
 ### 2. Server-Sent Events (SSE) Integration
 
@@ -206,72 +203,45 @@ def streaming_chat():
 <SSE id="sse-component" url="/streaming-endpoint" />
 ```
 
-### 3. Client-Side Animation Engine
+### 3. Persistence and Storage
 
-**Smooth Rendering Algorithm**:
-```javascript
-function animate_stream(n_intervals, stream_buffer, render_position) {
-    if (render_position < stream_buffer.length) {
-        // Adaptive speed: faster for longer content
-        const charsToAdd = Math.min(
-            Math.max(2, Math.floor(stream_buffer.length / 100)), 
-            4
-        );
-        const newPosition = Math.min(
-            render_position + charsToAdd, 
-            stream_buffer.length
-        );
-        
-        return [newPosition, stream_buffer.slice(0, newPosition)];
-    }
-    
-    // Animation complete
-    return [no_update, no_update];
-}
-```
+**Message Storage**:
+- Uses `dcc.Store` with `storage_type="local"` for persistence
+- Messages stored immediately, including placeholders for assistant responses
+- Visual history rebuilt from storage on page load
 
-**Timer Management**:
-- **Start**: When new content arrives
-- **Stop**: When rendering is complete
-- **Performance**: Uses `no_update` to prevent unnecessary re-renders
+**Flow**:
+1. User message → Stored immediately
+2. Assistant placeholder → Added immediately to ensure persistence
+3. Streaming content → Updates buffer in real-time
+4. Completion signal → Updates stored assistant message with final content
 
 ### 4. Safe Markdown Parsing During Streaming
 
-**Challenge**: Incomplete markdown blocks can break rendering during streaming.
+**Challenge**: Handle both regular text and code blocks during streaming.
 
-**Solution**: Parse incrementally with rollback capability:
+**Solution**: The `parse_markdown_stream` function yields tokens immediately for text:
 
 ```python
 def parse_markdown_stream(token_stream):
-    buffer = ""
-    in_code_block = False
-    
     for token in token_stream:
-        buffer += token
-        
-        # Check for complete code block delimiters
-        while "```" in buffer:
-            before, delimiter, after = buffer.partition("```")
-            
-            if in_code_block:
-                # Complete code block - safe to render
-                yield ChatMessage(
-                    type=MessageType.CODE,
-                    content=before,
-                    metadata={"language": code_language}
-                )
-                in_code_block = False
+        if in_code_block:
+            # Buffer code until closing delimiter
+            buffer += token
+            if "```" in buffer:
+                # Yield complete code block
+        else:
+            if "```" in buffer:
+                # Start code block
             else:
-                # Starting code block
-                if before.strip():
-                    yield ChatMessage(type=MessageType.TEXT, content=before)
-                in_code_block = True
+                # Yield text token immediately
+                yield ChatMessage(type=MessageType.TEXT, content=token)
 ```
 
 **Benefits**:
-- No broken markdown rendering during streaming
-- Smooth transitions between text and code blocks
-- Maintains syntax highlighting throughout the stream
+- Real-time text streaming
+- Proper code block handling
+- Clean separation of text and code content
 
 ### 5. Dynamic Clipboard System
 
@@ -365,18 +335,19 @@ class ChatMessage(BaseModel):
 
 ### 1. **Efficient Re-rendering Prevention**
 - Uses `dash.no_update` to prevent unnecessary component updates
-- Separates buffer updates from visual rendering
-- Client-side animation reduces server round-trips
+- Direct markdown updates minimize re-renders
+- Completion trigger prevents duplicate store updates
 
 ### 2. **Memory Management**
 - Streaming buffer is cleared between messages
 - Clipboard buttons are cleaned up and recreated to prevent memory leaks
-- Timer is properly disabled when animation completes
+- Messages stored efficiently with immediate persistence
 
 ### 3. **Network Efficiency**
 - SSE provides persistent connection for streaming
 - JSON serialization minimizes payload size
 - Graceful error handling prevents connection drops
+- Proper cache control headers for optimal streaming
 
 ## 🔧 Configuration Options
 
@@ -400,14 +371,12 @@ The component uses CSS variables for theming:
 - `--text-primary`: Primary text color
 - `--border-subtleAlpha01`: Border colors
 
-### Animation Tuning
+### Streaming Configuration
 
-```javascript
-// In client-side callback
-const interval = 33;        // ~30fps animation
-const charsPerFrame = 2-4;  // Adaptive speed
-const maxIntervals = content_length / charsPerFrame;
-```
+The streaming behavior is controlled by:
+- **SSE Animation**: `animate_chunk=5` - Process chunks every 5ms
+- **Token Yield Rate**: Controlled by the ChatProcessor implementation
+- **Buffer Updates**: Direct updates as tokens arrive for real-time display
 
 ## 🚀 Getting Started
 
@@ -529,9 +498,9 @@ The component logs useful information to browser console:
 console.log('Found code blocks:', codeBlocks.length);
 console.log('Processing code block:', pre);
 
-// Monitor animation state  
-console.log('Animation position:', render_position);
-console.log('Buffer length:', stream_buffer.length);
+// Server-side logs (Python)
+print(f"[{self.id}] Streaming message: {message}")
+print(f"[{self.id}] Buffer content: {buffer_content}")
 ```
 
 ### Route Registration Verification
@@ -571,13 +540,13 @@ verify_routes(app)  # Check before running
    - ❌ **Cause**: Routes registered after worker fork
    - ✅ **Fix**: Use plugin pattern for early route registration
 
-4. **No streaming animation**: Check that timer is enabled and `supports_streaming=True`
+4. **No streaming effect**: Check that processor yields tokens individually, not all at once
 
 5. **Clipboard not working**: Ensure HTTPS or localhost for clipboard API
 
 6. **Markdown not rendering**: Verify CSS classes and selectors
 
-7. **Memory leaks**: Check that timers are properly disabled
+7. **Completion not detected**: Check that completion signal is sent and parsed correctly
 
 ### Plugin Pattern Troubleshooting
 
