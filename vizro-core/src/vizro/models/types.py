@@ -157,6 +157,7 @@ class CapturedCallable:
         """
         # Use this to declare the type of the attributes only once due to if clauses below.
         self.__function: Union[Callable[..., Any], str]
+        self._mode: Optional[Literal["graph", "action", "table", "ag_grid", "figure"]]
         self._model_example: Optional[str]
 
         if callable(function):
