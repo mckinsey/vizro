@@ -63,7 +63,7 @@ In the [above guides](#vizro-customizations), you will find examples on how the 
 
         data_manager["iris"] = px.data.iris()
 
-        dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8")) # (1)!
+        dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))  # (1)!
         dashboard = Dashboard(**dashboard)
 
         if __name__ == "__main__":
@@ -87,9 +87,7 @@ In the [above guides](#vizro-customizations), you will find examples on how the 
                 y: "sepal_width"
         ```
 
-        1. Here we refer to the import path of the custom chart function. If you define the
-        custom chart in `app.py`, then use `__main__` as the import path. Note that the import path
-        will be interpreted by pydantics [`ImportString` type](https://docs.pydantic.dev/dev/usage/types/string_types/#importstring).
+        1. Here we refer to the import path of the custom chart function. If you define the custom chart in `app.py`, then use `__main__` as the import path. Note that the import path will be interpreted by pydantics [`ImportString` type](https://docs.pydantic.dev/dev/usage/types/string_types/#importstring).
 
     === "custom_charts.py"
 
@@ -100,7 +98,7 @@ In the [above guides](#vizro-customizations), you will find examples on how the 
 
 
         @capture("graph")
-        def custom_bar(data_frame: pd.DataFrame, x: str, y: str) -> go.Figure: # (1)!
+        def custom_bar(data_frame: pd.DataFrame, x: str, y: str) -> go.Figure:  # (1)!
             """Custom bar chart."""
             return go.Figure(data=[go.Bar(x=data_frame[x], y=data_frame[y])])
         ```
@@ -158,7 +156,7 @@ You can use this method when you want to check if the dashboard configuration is
     ```
 
     1. The dashboard configuration contains a `CapturedCallable` function that is undefined but allowed by `allowed_undefined_captured_callables`. The app can still be built without raising any errors.
-    2. However, it is not possible to run the app without undefined `CapturedCallable`s. This raises an error.
+    1. However, it is not possible to run the app without undefined `CapturedCallable`s. This raises an error.
 
 ## Dash customizations
 
