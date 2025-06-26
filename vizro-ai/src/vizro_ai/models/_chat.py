@@ -64,6 +64,12 @@ CHAT_HISTORY_STYLE = {
     "overflow": "auto",
 }
 
+CODE_BLOCK_CONTAINER_STYLE = {
+    "position": "relative",
+    "backgroundColor": "var(--surfaces-bg-card)",
+    "borderRadius": "10px",
+}
+
 MESSAGE_STYLE = {
     "color": "var(--text-primary)",
     "padding": "10px 15px",
@@ -88,88 +94,6 @@ TEXTAREA_STYLE = {
     "boxShadow": "none",
     "border": "1px solid var(--border-subtleAlpha01)",
 }
-
-# Code block styling for markdown with Claude-style clipboard buttons
-CODE_BLOCK_STYLE = """
-/* Force code block styling with maximum specificity */
-pre,
-div pre,
-.dash-graph pre,
-.markdown-container pre,
-div.markdown-container pre,
-[class*="markdown"] pre {
-    background: #1e1e1e !important;
-    background-color: #1e1e1e !important;
-    padding: 10px !important;
-    margin: 0 !important;
-    border-radius: 6px !important;
-    border: 1px solid #333 !important;
-    overflow-x: auto !important;
-    position: relative !important;
-    color: #e5e5e5 !important;
-}
-
-.markdown-container code,
-div.markdown-container code {
-    background: var(--surfaces-bg-card) !important;
-    padding: 2px 4px !important;
-    border-radius: 3px !important;
-    font-family: 'Monaco', 'SF Mono', 'Consolas', monospace !important;
-}
-
-.markdown-container pre code,
-div.markdown-container pre code {
-    background: transparent !important;
-    padding: 0 !important;
-}
-
-/* Claude-style clipboard button with higher specificity */
-.code-clipboard-btn,
-div .code-clipboard-btn {
-    position: absolute !important;
-    top: 5px !important;
-    right: 5px !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: none !important;
-    border-radius: 4px !important;
-    padding: 4px 6px !important;
-    cursor: pointer !important;
-    font-size: 14px !important;
-    color: var(--text-secondary, #888) !important;
-    opacity: 0 !important;
-    transition: all 0.15s ease !important;
-    user-select: none !important;
-    z-index: 1001 !important;
-    width: auto !important;
-    height: auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.markdown-container pre:hover .code-clipboard-btn,
-div.markdown-container pre:hover .code-clipboard-btn {
-    opacity: 1 !important;
-}
-
-.code-clipboard-btn:hover,
-div .code-clipboard-btn:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: var(--text-primary, #fff) !important;
-}
-
-.code-clipboard-btn:active,
-div .code-clipboard-btn:active {
-    transform: scale(0.9) !important;
-}
-
-.code-clipboard-btn.copied,
-div .code-clipboard-btn.copied {
-    color: #10b981 !important;
-    opacity: 1 !important;
-    background: rgba(16, 185, 129, 0.1) !important;
-}
-"""
 
 
 def parse_sse_chunks(animation_data):
@@ -225,6 +149,36 @@ def parse_sse_chunks(animation_data):
             return [json.loads(animation_data)]
     except (json.JSONDecodeError, TypeError):
         return []
+    
+
+def create_code_block_component(code_content, code_id):
+    """Create a consistent code block component with clipboard functionality."""
+    return html.Div([
+        dcc.Clipboard(
+            target_id=code_id,
+            className="code-clipboard",
+            style={
+                "position": "absolute",
+                "top": "8px",
+                "right": "8px",
+                "opacity": 0.7,
+                "zIndex": 1000,
+                "transition": "opacity 0.2s ease",
+                "padding": "4px 6px",
+                "cursor": "pointer",
+            },
+            title="Copy code"
+        ),
+        dcc.Markdown(
+            f"```\n{code_content}\n```",
+            id=code_id,
+            className="markdown-container code-block-container",
+            style={
+                "fontFamily": "monospace",
+                "padding": "10px",
+                }
+        ),
+    ], style=CODE_BLOCK_CONTAINER_STYLE)
 
 
 
@@ -351,6 +305,33 @@ class Chat(VizroBaseModel):
 
     def _register_streaming_callback(self):
         """Register callbacks for chat functionality."""
+        
+        # TODO: double check whether this is needed, if so, move to other place
+        def create_message_components(content, message_id):
+            """Parse markdown content and create components with dcc.Clipboard for code blocks."""
+            import re
+            
+            # Simple regex to find code blocks
+            code_pattern = r'```(.*?)```'
+            parts = re.split(code_pattern, content, flags=re.DOTALL)
+            
+            components = []
+            for i, part in enumerate(parts):
+                if i % 2 == 0:  # Text content
+                    if part.strip():
+                        components.append(
+                            dcc.Markdown(
+                                part,
+                                className="markdown-container",
+                                style={"margin": 0}
+                            )
+                        )
+                else:  # Code content
+                    code_id = f"{message_id}-code-{i // 2}"
+                    components.append(create_code_block_component(part.strip(), code_id))
+                    components.append(html.Br())
+            
+            return html.Div(components) if components else ""
 
         # Add callback to clear input immediately on submit
         @callback(
@@ -400,7 +381,7 @@ class Chat(VizroBaseModel):
                 messages = json.loads(messages_data)
                 history_divs = []
                 
-                for message in messages:
+                for idx, message in enumerate(messages):
                     role = message.get("role", "")
                     content = message.get("content", "")
                     
@@ -418,13 +399,10 @@ class Chat(VizroBaseModel):
                         # Skip empty assistant messages (placeholders)
                         if not content.strip():
                             continue
-                        # Create assistant message div with markdown support
+                        # Create assistant message div with parsed components
+                        message_id = f"{self.id}-history-msg-{idx}"
                         div = html.Div(
-                            dcc.Markdown(
-                                content,
-                                className="markdown-container",
-                                style={"minHeight": "20px", "margin": 0},
-                            ),
+                            create_message_components(content, message_id),
                             style={
                                 **MESSAGE_STYLE,
                                 "backgroundColor": "var(--right-side-bg)",
@@ -482,11 +460,9 @@ class Chat(VizroBaseModel):
             # Create assistant div for streaming
             assistant_div = html.Div(
                 id=f"{self.id}-streaming-content",
-                children=dcc.Markdown(
-                    id=f"{self.id}-streaming-markdown",
-                    children="",
-                    className="markdown-container",
-                    style={"minHeight": "20px", "margin": 0},
+                children=html.Div(
+                    id=f"{self.id}-streaming-components",
+                    children=[],  # Will hold mixed content: streaming text and code blocks
                 ),
                 style={
                     **MESSAGE_STYLE,
@@ -517,121 +493,38 @@ class Chat(VizroBaseModel):
 
         # Simple callback to update streaming markdown directly from buffer
         @callback(
-            Output(f"{self.id}-streaming-markdown", "children"),
+            Output(f"{self.id}-streaming-components", "children"),
             Input(f"{self.id}-stream-buffer", "data"),
+            State(f"{self.id}-streaming-components", "children"),
             prevent_initial_call=True,
         )
-        def update_streaming_display(buffer_content):
-            """Update the streaming markdown display directly."""
-            if buffer_content:
-                return buffer_content
-            return ""
-
-        # Add clientside callback to handle clipboard functionality for code blocks
-        clientside_callback(
-            """
-            function(children) {
-                setTimeout(function() {
-                    // Remove existing clipboard buttons
-                    const existingButtons = document.querySelectorAll('.code-clipboard-btn');
-                    existingButtons.forEach(btn => btn.remove());
-                    
-                    // Find all code blocks with multiple selectors
-                    const codeBlocks = document.querySelectorAll('pre, .markdown-container pre, [class*="markdown"] pre');
-                    
-                    // Debug: log what we found
-                    console.log('Found code blocks:', codeBlocks.length);
-                    
-                    codeBlocks.forEach(function(pre, index) {
-                        // Debug: log the element
-                        console.log('Processing code block:', pre);
-                        
-                        // Force styling directly on the element
-                        pre.style.background = '#1e1e1e';
-                        pre.style.backgroundColor = '#1e1e1e';
-                        pre.style.padding = '10px';
-                        pre.style.margin = '0';
-                        pre.style.borderRadius = '6px';
-                        pre.style.border = '1px solid #333';
-                        pre.style.position = 'relative';
-                        pre.style.color = '#e5e5e5';
-                        // Skip if button already exists
-                        if (pre.querySelector('.code-clipboard-btn')) return;
-                        
-                        // Create clipboard button with SVG icon (Claude-style)
-                        const clipboardBtn = document.createElement('button');
-                        clipboardBtn.className = 'code-clipboard-btn';
-                        clipboardBtn.title = 'Copy code';
-                        
-                        // Clean clipboard SVG icon
-                        clipboardBtn.innerHTML = `
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                            </svg>
-                        `.replace(/\\s+/g, ' ').trim();
-                        
-                        // Ensure proper positioning 
-                        clipboardBtn.style.position = 'absolute';
-                        clipboardBtn.style.top = '5px';
-                        clipboardBtn.style.right = '5px';
-                        clipboardBtn.style.zIndex = '1001';
-                        
-                        // Add click handler
-                        clipboardBtn.onclick = function(e) {
-                            e.stopPropagation();
-                            const code = pre.querySelector('code');
-                            if (code) {
-                                const codeText = code.textContent || code.innerText;
-                                navigator.clipboard.writeText(codeText).then(function() {
-                                    // Visual feedback - checkmark icon
-                                    clipboardBtn.innerHTML = `
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20,6 9,17 4,12"></polyline>
-                                        </svg>
-                                    `.replace(/\\s+/g, ' ').trim();
-                                    clipboardBtn.classList.add('copied');
-                                    
-                                    setTimeout(function() {
-                                        clipboardBtn.innerHTML = `
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                                            </svg>
-                                        `.replace(/\\s+/g, ' ').trim();
-                                        clipboardBtn.classList.remove('copied');
-                                    }, 1500);
-                                }).catch(function(err) {
-                                    console.error('Failed to copy: ', err);
-                                    clipboardBtn.innerHTML = `
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="15" y1="9" x2="9" y2="15"></line>
-                                            <line x1="9" y1="9" x2="15" y2="15"></line>
-                                        </svg>
-                                    `.replace(/\\s+/g, ' ').trim();
-                                    setTimeout(function() {
-                                        clipboardBtn.innerHTML = `
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                                            </svg>
-                                        `.replace(/\\s+/g, ' ').trim();
-                                    }, 1500);
-                                });
-                            }
-                        };
-                        
-                        // Append button to code block
-                        pre.appendChild(clipboardBtn);
-                    });
-                }, 100);
-                return window.dash_clientside.no_update;
-            }
-            """,
-            Output(f"{self.id}-streaming-markdown", "style"),
-            Input(f"{self.id}-streaming-markdown", "children")
-        )
+        def update_streaming_display(buffer_data, current_components):
+            """Update the streaming display with mixed text and code components."""
+            if not buffer_data:
+                return []
+            
+            # buffer_data should now be a list of component specifications
+            if isinstance(buffer_data, str):
+                # Fallback for string data
+                return [dcc.Markdown(buffer_data, className="markdown-container")]
+            
+            # Build components from the buffer data
+            components = []
+            for item in buffer_data:
+                if item["type"] == "text":
+                    components.append(
+                        dcc.Markdown(
+                            item["content"],
+                            className="markdown-container",
+                            style={"margin": 0}
+                        )
+                    )
+                elif item["type"] == "code":
+                    code_id = f"{self.id}-code-{item['index']}"
+                    components.append(create_code_block_component(item["content"], code_id))
+                    components.append(html.Br())
+            
+            return components
 
         @callback(
             Output(f"{self.id}-stream-buffer", "data"),
@@ -647,9 +540,11 @@ class Chat(VizroBaseModel):
             if not messages:
                 return dash.no_update, dash.no_update
 
-            # Build content from scratch each time (no accumulation to avoid duplication)
-            aggregated_content = ""
+            # Build structured content for mixed text/code display
+            content_items = []
+            current_text = ""
             stream_completed = False
+            code_block_index = 0
             
             for msg in messages:
                 msg_type = msg.get("type", "text")
@@ -661,16 +556,37 @@ class Chat(VizroBaseModel):
                     continue
                 
                 if msg_type == "code":
-                    aggregated_content += f"```{msg_content}```\n\n"
+                    # If we have accumulated text, add it first
+                    if current_text:
+                        content_items.append({
+                            "type": "text",
+                            "content": current_text
+                        })
+                        current_text = ""
+                    
+                    # Add code block as a separate item
+                    content_items.append({
+                        "type": "code",
+                        "content": msg_content,
+                        "index": code_block_index
+                    })
+                    code_block_index += 1
                 else:
-                    aggregated_content += msg_content
+                    # Accumulate text content
+                    current_text += msg_content
             
-            # If stream is completed, trigger the messages store update manually
+            # Add any remaining text
+            if current_text:
+                content_items.append({
+                    "type": "text",
+                    "content": current_text
+                })
+            
+            # If stream is completed, trigger the messages store update
             if stream_completed:
-                # Trigger completion via the completion store
-                return aggregated_content, True  # content, trigger_completion
+                return content_items, True  # content, trigger_completion
             
-            return aggregated_content, dash.no_update
+            return content_items, dash.no_update
 
         # Add callback to update messages store when completion is triggered
         @callback(
@@ -685,18 +601,31 @@ class Chat(VizroBaseModel):
             if not completion_triggered or not content:
                 return dash.no_update, dash.no_update
 
+            # Convert structured content back to markdown for storage
+            markdown_content = ""
+            if isinstance(content, list):
+                for item in content:
+                    if item["type"] == "text":
+                        markdown_content += item["content"]
+                    elif item["type"] == "code":
+                        # Store code blocks in markdown format
+                        markdown_content += f"\n```\n{item['content']}\n```\n"
+            else:
+                # Fallback for string content
+                markdown_content = content
+
             messages_array = json.loads(messages)
             # Find and update the last assistant message (placeholder) instead of adding new one
             updated = False
             for i in range(len(messages_array) - 1, -1, -1):
                 if messages_array[i].get("role") == "assistant":
-                    messages_array[i]["content"] = content
+                    messages_array[i]["content"] = markdown_content.strip()
                     updated = True
                     break
             
             if not updated:
                 # Fallback: add new message if no placeholder found
-                assistant_message = {"role": "assistant", "content": content}
+                assistant_message = {"role": "assistant", "content": markdown_content.strip()}
                 messages_array.append(assistant_message)
             
             final_messages = json.dumps(messages_array)
@@ -762,13 +691,7 @@ class Chat(VizroBaseModel):
     def build(self):
         """Build the chat component layout."""
         components = []
-        
-        # Add CSS styling for code blocks
-        components.append(dcc.Markdown(
-            f"<style>{CODE_BLOCK_STYLE}</style>",
-            dangerously_allow_html=True
-        ))
-        
+
         components.extend(self._build_data_stores())
         components.append(self._build_chat_interface())
         components.append(SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10))
