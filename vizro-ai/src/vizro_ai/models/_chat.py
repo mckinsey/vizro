@@ -218,7 +218,7 @@ def render_streaming_message(component_id):
                 "margin": 0,
             },
             # Enable code highlighting and custom styling
-            highlight_config={"theme": "dark"},
+            # highlight_config={"theme": "dark"},
         ),
     ])
 
@@ -270,6 +270,7 @@ class Chat(VizroBaseModel):
     input_height: str = Field(default="80px", description="Height of the input field")
     button_text: str = Field(default="Send", description="Text displayed on the send button")
     initial_message: str = Field(default="Hello! How can I help you today!", description="Initial message displayed in the chat")
+    height: str = Field(default="100%", description="Height of the chat component wrapper")
     processor: ChatProcessor = Field(default_factory=EchoProcessor, description="Chat processor for generating responses")
 
     @property 
@@ -661,7 +662,10 @@ class Chat(VizroBaseModel):
         
         return html.Div(
             components,
-            style=WRAPPER,
+            style={
+                **WRAPPER,
+                "height": self.height,
+            },
         )
 
     def _build_data_stores(self):

@@ -125,8 +125,7 @@ class EchoProcessor(ChatProcessor):
                 raise ValueError("Prompt cannot be empty")
 
             # Simulate streaming by yielding the prompt character by character
-            for i, char in enumerate(prompt):
-                sleep(0.05)  # Simulate network delay
+            for i, char in enumerate(f"You said: {prompt}"):
                 yield ChatMessage(type=MessageType.TEXT, content=char)
                 
             # Add a final newline
