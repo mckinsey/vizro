@@ -162,6 +162,7 @@ class Dropdown(VizroBaseModel):
             children=[
                 dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
                 dcc.Dropdown(**(defaults | self.extra)),
+                dcc.Store(id=f"{self.id}_created", data=True, storage_type="local"),
             ]
         )
 

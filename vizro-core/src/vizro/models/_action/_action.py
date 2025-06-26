@@ -12,6 +12,7 @@ import dash
 from dash import ctx
 from dash import Input, Output, State, callback, html, clientside_callback
 from dash.development.base_component import Component
+from dash.exceptions import PreventUpdate
 from pydantic import Field, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
@@ -344,13 +345,15 @@ class _BaseAction(VizroBaseModel):
         # would be clientside eventually
         @callback(
             Output(f"{self.id}_trigger", "data", allow_duplicate=True),
-            Output("filter_loading", "data", allow_duplicate=True),
+            Output(f"{self.trigger.split(".")[0]}_created", "data", allow_duplicate=True),
             Input(*self.trigger.split(".")),
-            State("filter_loading", "data"),
+            State(f"{self.trigger.split(".")[0]}_created", "data"),
             prevent_initial_call=True,
         )
-        def f(value, loading):
-            if loading:
+        def gateway(value, created):
+            if created == "not_dynamic":
+                return value, dash.no_update
+            if created:
                 return dash.no_update, False
             return value, False
 

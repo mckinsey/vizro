@@ -190,7 +190,6 @@ class Dashboard(VizroBaseModel):
                 dcc.Store("output_needed_to_trigger_on_page_load"),
                 # ActionLoop._create_app_callbacks(),
                 dash.page_container,
-                dcc.Store("filter_loading", storage_type="local"),
             ],
         )
 
@@ -338,9 +337,14 @@ class Dashboard(VizroBaseModel):
         action_components = []
 
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
-            # action_trigger_already_there = f"{action.id}_trigger" in page_layout
+            action_trigger_already_there = f"{action.id}_created" in page_layout
             # print(f"{action.id}_trigger is in page layout?", action_trigger_already_there)
-            # if not action_trigger_already_there:
+
+            # ideally this would be allow_optional=True Input so we don't need to create it
+            # just create it for every component in the page for now because I don't have time to do it a better way...
+            for component in page_layout._traverse_ids():
+                if f"{component.id}_created" not in page_layout:
+                    action_components.append(dcc.Store(id=f"{component.id}_created", data="not_dynamic"))
             action_components.append(dcc.Store(id=f"{action.id}_trigger"))
             action_components.append(dcc.Store(id=f"{action.id}_finished"))
             action_components.extend(action._dash_components)  # hopefully not needed in future
