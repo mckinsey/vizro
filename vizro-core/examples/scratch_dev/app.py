@@ -55,7 +55,7 @@ dashboard_config = {
                 #     },
                 # },
                 # {"type": "ag_grid", "figure": {"_target_": "__main__.custom_grid", "data_frame": "iris"}},
-                {"type": "figure", "figure": {"_target_": "__main__.custom_kpi_card", "data_frame": "iris"}},
+                # {"type": "figure", "figure": {"_target_": "__main__.custom_kpi_card", "data_frame": "iris"}},
                 {
                     "type": "button",
                     "text": "Export data",
