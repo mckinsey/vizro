@@ -43,7 +43,7 @@ def check_control_targets(control: ControlType) -> None:
     _validate_targets(targets=control.targets, root_model=root_model)
 
 
-def warn_missing_id_for_url_control(control: ControlType):
+def warn_missing_id_for_url_control(control: ControlType) -> None:
     if control.show_in_url and "id" not in control.model_fields_set:
         warnings.warn(
             "The `show_in_url=True` is set but no `id` was provided. "
