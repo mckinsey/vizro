@@ -2,6 +2,8 @@ import logging
 import textwrap
 from typing import Annotated, Literal, Optional, Union
 
+import pandas as pd
+import plotly.graph_objects as go
 import pytest
 from pydantic import (
     Field,
@@ -536,6 +538,70 @@ model = vm.Dashboard(
 )
 """
 
+expected_code_px_via_json = """############ Imports ##############
+import vizro.plotly.express as px
+import vizro.models as vm
+
+
+####### Data Manager Settings #####
+#######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
+# data_manager["iris"] = ===> Fill in here <===
+
+
+########### Model code ############
+model = vm.Graph(
+    type="graph",
+    figure=px.scatter(data_frame="iris", x="sepal_length", y="sepal_width"),
+)
+"""
+
+expected_code_custom_via_json = """############ Imports ##############
+import vizro.models as vm
+from vizro.models.types import capture
+
+
+####### Function definitions ######
+@capture("graph")
+def custom_scatter(data_frame: pd.DataFrame, x: str, y: str):
+    return go.Figure(data=[go.Scatter(x=data_frame[x], y=data_frame[y])])
+
+
+####### Data Manager Settings #####
+#######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
+# data_manager["iris"] = ===> Fill in here <===
+
+
+########### Model code ############
+model = vm.Graph(
+    type="graph",
+    figure=custom_scatter(data_frame="iris", x="sepal_length", y="sepal_width"),
+)
+"""
+
+expected_code_pass_validation_via_json = """############ Imports ##############
+import vizro.models as vm
+
+
+####### Data Manager Settings #####
+#######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
+# data_manager["iris"] = ===> Fill in here <===
+
+
+########### Model code ############
+model = vm.Graph(
+    type="graph",
+    figure=not_importable_scatter(data_frame="iris", x="sepal_length", y="sepal_width"),
+)
+"""
+
+
+@capture("graph")
+def custom_scatter(data_frame: pd.DataFrame, x: str, y: str):
+    return go.Figure(data=[go.Scatter(x=data_frame[x], y=data_frame[y])])
+
 
 class TestPydanticPython:
     def test_to_python_basic(self):
@@ -590,6 +656,48 @@ class TestPydanticPython:
         # Test more complete and nested model
         result = complete_dashboard._to_python(extra_imports={"from typing import Optional"})
         assert result == expected_complete_dashboard
+
+
+class TestPydanticPythonAfterJSONInstantiation:
+    @pytest.mark.parametrize(
+        "target,expected_code,context",
+        [
+            ("scatter", expected_code_px_via_json, None),
+            ("vizro.plotly.express.scatter", expected_code_px_via_json, None),
+            (f"{__name__}.custom_scatter", expected_code_custom_via_json, None),
+            (
+                "not_importable_scatter",
+                expected_code_pass_validation_via_json,
+                {"allow_undefined_captured_callable": ["not_importable_scatter"]},
+            ),
+            # ("not_importable_scatter", expected_code_pass_validation_via_json, None),
+        ],
+    )
+    def test_graph_import_paths(self, target, expected_code, context):
+        graph_config = {
+            "type": "graph",
+            "figure": {
+                "_target_": target,
+                "data_frame": "iris",
+                "x": "sepal_length",
+                "y": "sepal_width",
+            },
+        }
+
+        graph = vm.Graph.model_validate(graph_config, context=context)
+        result = graph._to_python()
+        assert result == expected_code
+
+    def test_graph_import_missing_context(self):
+        graph_config = {
+            "type": "graph",
+            "figure": {
+                "_target_": "not_importable_scatter",
+                "data_frame": "iris",
+            },
+        }
+        with pytest.raises(ValueError, match="Value error, Failed to import function 'not_importable_scatter'"):
+            vm.Graph.model_validate(graph_config)
 
 
 class TestAddingDuplicateDiscriminator:

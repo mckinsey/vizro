@@ -1,98 +1,141 @@
-import numpy as np
+from time import sleep
 
-from vizro import Vizro
-import vizro.models as vm
+import dash_ag_grid as dag
+import dash_bootstrap_components as dbc
 import pandas as pd
+import plotly.graph_objects as go
+import vizro.models as vm
 import vizro.plotly.express as px
+from dash import html
+from vizro import Vizro
+from vizro.managers import data_manager
+from vizro.models.types import capture
 
-iris = px.data.iris()
+data_manager["iris"] = px.data.iris()
 
-
-graphs = vm.Page(
-    title="Graphs",
-    components=[
-        vm.Graph(
-            figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
-            title="Relationships between Sepal Width and Sepal Length",
-            header="""
-                Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their
-                types. The Setosa type is easily identifiable by its short and wide sepals.
-
-                However, there is still overlap between the Versicolor and Virginica types when considering only sepal
-                width and length.
-                """,
-            footer="""SOURCE: **Plotly iris data set, 2024**""",
-        ),
+dashboard_config = {
+    "title": "Test dashboard",
+    "pages": [
+        {
+            "title": "Page 1",
+            "components": [
+                # {"type": "card", "text": "Hello, world!"},
+                {
+                    "type": "graph",
+                    "figure": {
+                        "_target_": "scatter",
+                        "data_frame": "iris",
+                        "x": "sepal_length",
+                        "y": "sepal_width",
+                    },
+                },
+                # {
+                #     "type": "graph",
+                #     "figure": {
+                #         "_target_": "charts.custom_scatter",
+                #         "data_frame": "iris",
+                #         "x": "sepal_length",
+                #         "y": "sepal_width",
+                #     },
+                # },
+                # {
+                #     "type": "graph",
+                #     "figure": {
+                #         "_target_": "__main__.custom_bar",
+                #         "data_frame": "iris",
+                #         "x": "sepal_length",
+                #         "y": "sepal_width",
+                #     },
+                # },
+                # {
+                #     "type": "graph",
+                #     "figure": {
+                #         "_target_": "custom_bar2",
+                #         "data_frame": "iris",
+                #     },
+                # },
+                # {"type": "ag_grid", "figure": {"_target_": "__main__.custom_grid", "data_frame": "iris"}},
+                # {"type": "figure", "figure": {"_target_": "__main__.custom_kpi_card", "data_frame": "iris"}},
+                {
+                    "type": "button",
+                    "text": "Export data",
+                    "actions": [
+                        {"function": {"_target_": "export_data"}},
+                        # {"function": {"_target_": "__main__.my_custom_action", "t": 5}},
+                        {"function": {"_target_": "export_data", "file_format": "xlsx"}},
+                    ],
+                },
+                # {"type": "ag_grid", "figure": {"_target_": "weird_grid", "data_frame": "iris"}},
+            ],
+        }
     ],
+}
+
+
+@capture("graph")
+def custom_bar(data_frame: str, x: str, y: str):
+    return go.Figure(data=[go.Bar(x=data_frame[x], y=data_frame[y])])
+
+
+@capture("ag_grid")
+def custom_grid(data_frame: pd.DataFrame) -> dag.AgGrid:
+    defaults = {
+        "columnDefs": [{"field": col} for col in data_frame.columns],
+        "rowData": data_frame.to_dict("records"),
+    }
+    return dag.AgGrid(**defaults)
+
+
+@capture("figure")
+def custom_kpi_card(
+    data_frame: pd.DataFrame,
+) -> dbc.Card:
+    """Creates a custom KPI card."""
+    value = data_frame.info()
+
+    header = dbc.CardHeader(
+        [
+            html.H4("Info", className="card-kpi-title"),
+        ]
+    )
+    body = dbc.CardBody([value])
+    return dbc.Card([header, body], class_name="card-kpi")
+
+
+@capture("action")
+def my_custom_action(t: int):
+    sleep(t)
+
+
+# dashboard = vm.Dashboard(
+#     title="Test dashboard",
+#     pages=[
+#         vm.Page(
+#             title="Page 1",
+#             components=[
+#                 vm.Card(text="Hello, world!"),
+#                 vm.Graph(figure=px.scatter(data_frame="iris", x="sepal_length", y="sepal_width")),
+#                 vm.Graph(figure=custom_scatter(data_frame="iris", x="sepal_length", y="sepal_width")),
+#                 vm.AgGrid(figure=custom_grid(data_frame="iris")),
+#             ],
+#             controls=[vm.Filter(column="sepal_length")],
+#         )
+#     ],
+# )
+
+dashboard = vm.Dashboard.model_validate(
+    dashboard_config,
+    context={
+        "allow_undefined_captured_callable": [
+            "custom_bar2",
+            "weird_grid",
+            # "scatter",
+        ]
+    },
 )
-
-tooltip = vm.Page(
-    title="Tooltip",
-    layout=vm.Grid(grid=[[0], [0], [1], [1], [1], [1], [1], [1], [2]]),
-    components=[
-        vm.Card(
-            text="""
-                The `description` argument enables you to add helpful context to your components by displaying an
-                info icon next to its title. Hovering over the icon reveals a tooltip with the text you provide.
-
-                Tooltips can be added to any Vizro component that has a `title` argument.
-                You can provide a string to use the default info icon or `Tooltip` model to use any icon from the
-                [Google Material Icons library](https://fonts.google.com/icons).
-                Tooltips provide clean and lightweight way to add additional details to your dashboard.
-            """
-        ),
-        vm.Graph(
-            title="Relationships between Sepal Width and Sepal Length",
-            figure=px.scatter(
-                iris,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                size="petal_length",
-            ),
-            description="""
-                **The Iris dataset** includes measurements of 150 iris flowers across three types: Setosa, Versicolor,
-                and Virginica.
-                While all samples are labeled by type, they can appear similar when looking at just some features -
-                 making it a useful dataset for exploring patterns and challenges in classification.
-            """,
-        ),
-        vm.Button(
-            text="Export data",
-            description="""
-                Use this button to export the filtered data from the Iris dataset.
-            """,
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            column="species",
-            selector=vm.Dropdown(
-                title="Species",
-                description="""
-                    Select one or more species to explore patterns
-                    specific to Setosa, Versicolor, or Virginica.
-                """,
-            ),
-        ),
-        vm.Filter(
-            column="sepal_width",
-            selector=vm.RangeSlider(
-                description="""
-                    Use the slider to filter flowers by sepal width.
-                    Only samples within the selected range will be shown.
-                """
-            ),
-        ),
-    ],
-    description="""
-        This page provides overview of Tooltip functionality.
-    """,
-)
-
-
-dashboard = vm.Dashboard(pages=[graphs, tooltip])
 
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
-    app.run()
+    # print(dashboard._to_python())
+    # config = dashboard.model_dump(exclude_unset=True)
+    # print(config)
+    Vizro().build(dashboard).run()
