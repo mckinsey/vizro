@@ -77,7 +77,13 @@ class Parameter(VizroBaseModel):
         AfterValidator(check_duplicate_parameter_target),
     ]
     selector: SelectorType
-    show_in_url: bool = False
+    show_in_url: bool = Field(
+        default=False,
+        description=(
+            "Whether the parameter should be included in the URL query string. Defaults to `False`."
+            "Useful for bookmarking or sharing dashboards with specific parameter values pre-set."
+        ),
+    )
 
     @_log_call
     def pre_build(self):

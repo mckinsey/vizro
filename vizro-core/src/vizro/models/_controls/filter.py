@@ -92,7 +92,13 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: Optional[SelectorType] = None
-    show_in_url: bool = False
+    show_in_url: bool = Field(
+        default=False,
+        description=(
+            "Whether the filter should be included in the URL query string. Defaults to `False`."
+            "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
+        ),
+    )
 
     _dynamic: bool = PrivateAttr(False)
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()

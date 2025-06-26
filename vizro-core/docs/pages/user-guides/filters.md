@@ -268,19 +268,17 @@ To further customize selectors, see our [how-to-guide on creating custom compone
 
 ## Show in URL
 
-The `Filter` model now accepts an optional boolean argument `show_in_url` (default `False`). When `True`, the filter’s value is synchronized with the page URL as a query parameter, allowing the current control's state to be captured in the link. This makes it easy to share or bookmark specific `Page` settings.
+The `Filter` model accepts an optional argument `show_in_url`. When `show_in_url=True`, the filter’s value is synchronized with the page URL as a query parameter, allowing the current control's state to be captured in the link. This makes it easy to share or bookmark specific `Page` filter settings.
 
-The URL query parameter uses the control’s id as its key, and the selected value, encoded in base64, as the URL query parameter value.
+The URL query parameter uses the control’s id as its key and the selected value, encoded in base64, as the URL query parameter value.
 
 !!! warning
 
-    - PyCafe incompatibility: Vizro does not currently support external URL query parameters and they could be stripped or lost using the app. As a result, dashboards using this feature should not be embedded or deployed in PyCafe environments.
+    - [PyCafe](https://vizro.readthedocs.io/en/stable/pages/user-guides/run-deploy/#develop-in-pycafe) incompatibility: Vizro does not currently support external URL query parameters and they could be stripped or lost using the app. As a result, dashboards using this feature should not be embedded or deployed in PyCafe environments.
 
-    - Page-specific only: Only filters on the currently opened page are reflected in the URL. It is not possible to share or bookmark the state of multi-page dashboards.
+    - Page-specific only: Only filters on the currently opened page are reflected in the URL. It is not yet possible to share or bookmark the global state of a multi-page dashboard.
 
-Here's an example of how to use this feature:
-
-!!! example "Filer in URL"
+!!! example "Filter in URL"
 
     === "app.py"
 

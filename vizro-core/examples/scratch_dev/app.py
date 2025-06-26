@@ -105,7 +105,8 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
             - ✅Confirm that the bug is not raised and that the page can be opened.
 
     5.6 Test incorrect URL parameters:
-    - ✅Confirm that the bug is not raised and that the page can be opened. Values should be ["ALL"] & [2, 4.4]
+    - ✅Confirm that the bug is not raised and that the page can be opened. Values should be ["ALL"] & [2, 4.4].
+        Url should be updated to: b64_WzIsNC40XQ & b64_IkFMTCI
     - (URL with non base64 encoded value)
         - http://localhost:8050/page_2?page_2_filter_sepal_width=PLAIN_TEXT
         - http://localhost:8050/page_2?page_2_filter_species=PLAIN_TEXT

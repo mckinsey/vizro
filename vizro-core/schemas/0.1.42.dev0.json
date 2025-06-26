@@ -932,6 +932,7 @@
         },
         "show_in_url": {
           "default": false,
+          "description": "Whether the filter should be included in the URL query string. Defaults to `False`.Useful for bookmarking or sharing dashboards with specific filter values pre-set.",
           "title": "Show In Url",
           "type": "boolean"
         }
@@ -1553,6 +1554,7 @@
         },
         "show_in_url": {
           "default": false,
+          "description": "Whether the parameter should be included in the URL query string. Defaults to `False`.Useful for bookmarking or sharing dashboards with specific parameter values pre-set.",
           "title": "Show In Url",
           "type": "boolean"
         }

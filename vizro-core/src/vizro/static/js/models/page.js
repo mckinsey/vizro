@@ -1,22 +1,26 @@
-// Python equivalent to the following JavaScript code:
-//def encode_url_params(decoded_map, apply_on_keys=None):
-//    encoded_map = {}
-//    for key, value in decoded_map.items():
-//        if key in apply_on_keys:
-//            json_str = json.dumps(value)
-//            encoded_bytes = base64.b64encode(json_str.encode("utf-8"))
-//            encoded_str = encoded_bytes.decode("utf-8") \
-//                .replace("+", "-") \
-//                .replace("/", "_") \
-//                .rstrip("=")
-//            encoded_map[key] = "b64_" + encoded_str
-//    return encoded_map
-//
-// Example inputs:
-//  {'vizro_1': 123, 'foo': ['a', 'b']},
-//  ['vizro_1']
-// Example output:
-//  {'foo': 'b64_IjEyMyI', 'bar': ['a', 'b']}
+/*
+Python equivalent to the following JavaScript code:
+def encode_url_params(decoded_map, apply_on_keys=None):
+    encoded_map = {}
+    for key, value in decoded_map.items():
+        if key in apply_on_keys:
+            # This manual base64 encoding could be simplified with base64.urlsafe_b64encode.
+            # It's kept here to match the javascript implementation.
+            json_str = json.dumps(value)
+            encoded_bytes = base64.b64encode(json_str.encode("utf-8"))
+            encoded_str = encoded_bytes.decode("utf-8") \
+                .replace("+", "-") \
+                .replace("/", "_") \
+                .rstrip("=")
+            encoded_map[key] = "b64_" + encoded_str
+    return encoded_map
+
+Example inputs:
+  {'vizro_1': 123, 'foo': ['a', 'b']},
+  ['vizro_1']
+Example output:
+  {'foo': 'b64_IjEyMyI', 'bar': ['a', 'b']}
+*/
 function encodeUrlParams(decodedMap, applyOnKeys) {
   const encodedMap = new Map();
   for (const [key, value] of decodedMap.entries()) {
@@ -34,26 +38,30 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
   return encodedMap;
 }
 
-// Python equivalent to the following JavaScript code:
-//def decode_url_params(encoded_map, apply_on_keys=None):
-//    decoded_map = {}
-//    for key, val in encoded_map.items():
-//        if val.startswith("b64_") and key in apply_on_keys:
-//            try:
-//                base64_str = val[4:].replace("-", "+").replace("_", "/")
-//                base64_str += "=" * ((4 - len(base64_str) % 4) % 4)
-//                binary_data = base64.b64decode(base64_str)
-//                json_str = binary_data.decode("utf-8")
-//                decoded_map[key] = json.loads(json_str)
-//            except Exception as e:
-//                print(f"Failed to decode URL parameter: {key}, {val} - {e}")
-//    return decoded_map
-//
-// Example inputs:
-//  {'vizro_1': 'raw_value', 'vizro_2': 'b64_IjEyMyI', 'foo': 'raw_value', 'bar': 'b64_IjEyMyI', 'baz': 'b64_invalid'},
-//  ['vizro_1', 'vizro_2']
-// Example output (only vizro_2 is decoded):
-//  {'vizro_1': 'raw_value', 'vizro_2': '123', 'foo': 'raw_value', 'bar': 'b64_IjEyMyI', 'baz': 'b64_invalid'}
+/*
+Python equivalent to the following JavaScript code:
+def decode_url_params(encoded_map, apply_on_keys=None):
+    decoded_map = {}
+    for key, val in encoded_map.items():
+        if val.startswith("b64_") and key in apply_on_keys:
+            try:
+                # This manual base64 decoding could be simplified with base64.urlsafe_b64decode.
+                # It's kept here to match the javascript implementation.
+                base64_str = val[4:].replace("-", "+").replace("_", "/")
+                base64_str += "=" * ((4 - len(base64_str) % 4) % 4)
+                binary_data = base64.b64decode(base64_str)
+                json_str = binary_data.decode("utf-8")
+                decoded_map[key] = json.loads(json_str)
+            except Exception as e:
+                print(f"Failed to decode URL parameter: {key}, {val} - {e}")
+    return decoded_map
+
+Example inputs:
+  {'vizro_1': 'raw_value', 'vizro_2': 'b64_IjEyMyI', 'foo': 'raw_value', 'bar': 'b64_IjEyMyI', 'baz': 'b64_invalid'},
+  ['vizro_1', 'vizro_2']
+Example output (only vizro_2 is decoded):
+  {'vizro_1': 'raw_value', 'vizro_2': '123', 'foo': 'raw_value', 'bar': 'b64_IjEyMyI', 'baz': 'b64_invalid'}
+*/
 function decodeUrlParams(encodedMap, applyOnKeys) {
   const decodedMap = new Map();
   for (const [key, val] of encodedMap.entries()) {
