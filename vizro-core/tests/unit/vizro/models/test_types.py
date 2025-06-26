@@ -309,7 +309,7 @@ class TestModelFieldJSONConfig:
     def test_captured_callable_without_import_possible(self):
         config = {"function": {"_target_": "not_importable_function", "data_frame": "data_source_name"}}
         model = ModelWithGraph.model_validate(
-            config, context={"allowed_undefined_captured_callables": ["not_importable_function"]}
+            config, context={"allow_undefined_captured_callable": ["not_importable_function"]}
         )
         assert isinstance(model.function, CapturedCallable)
         assert isinstance(model.function._function, str)

@@ -120,7 +120,7 @@ def _extract_captured_callable_source() -> set[str]:
                     for new in REPLACEMENT_STRINGS.values()
                 )
                 # If _function is a string, then we cannot import the code, and the user needs to use
-                # `allowed_undefined_captured_callables` in validation to even instantiate the dashboard model
+                # `allow_undefined_captured_callable` in validation to even instantiate the dashboard model
                 and not value._prevent_run
             ):
                 try:

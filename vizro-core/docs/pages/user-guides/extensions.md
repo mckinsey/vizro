@@ -143,7 +143,7 @@ You can use this method when you want to check if the dashboard configuration is
     dashboard = vm.Dashboard.model_validate(
         dashboard_config,
         context={
-            "allowed_undefined_captured_callables": [
+            "allow_undefined_captured_callable": [
                 "llm_generated_grid",
             ]
         },
@@ -155,7 +155,7 @@ You can use this method when you want to check if the dashboard configuration is
         print(exc)
     ```
 
-    1. The dashboard configuration contains a `CapturedCallable` function that is undefined but allowed by `allowed_undefined_captured_callables`. The app can still be built without raising any errors.
+    1. The dashboard configuration contains a `CapturedCallable` function that is undefined but allowed by `allow_undefined_captured_callable`. The app can still be built without raising any errors.
     1. However, it is not possible to run the app without undefined `CapturedCallable`s. This raises an error.
 
 ## Dash customizations

@@ -109,11 +109,11 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
         return value
 
     try:
-        allowed_undefined_captured_callables: list[str] = TypeAdapter(list[str]).validate_python(
-            info.context.get("allowed_undefined_captured_callables", []) if info.context is not None else []
+        allow_undefined_captured_callable: list[str] = TypeAdapter(list[str]).validate_python(
+            info.context.get("allow_undefined_captured_callable", []) if info.context is not None else []
         )
     except ValidationError:
-        raise ValueError("""Invalid `allowed_undefined_captured_callables`. Must be a list of strings.""")
+        raise ValueError("""Invalid `allow_undefined_captured_callable`. Must be a list of strings.""")
 
     # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
     # to get deprecated in V3
@@ -121,7 +121,7 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
     return CapturedCallable._validate_captured_callable(
         captured_callable_config=value,
         json_schema_extra=json_schema_extra,
-        allowed_undefined_captured_callables=allowed_undefined_captured_callables,
+        allow_undefined_captured_callable=allow_undefined_captured_callable,
     )
 
 
@@ -280,12 +280,12 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
         json_schema_extra: JsonSchemaExtraType,
-        allowed_undefined_captured_callables: list[str],
+        allow_undefined_captured_callable: list[str],
     ):
         value = cls._parse_json(
             captured_callable_config=captured_callable_config,
             json_schema_extra=json_schema_extra,
-            allowed_undefined_captured_callables=allowed_undefined_captured_callables,
+            allow_undefined_captured_callable=allow_undefined_captured_callable,
         )
         value = cls._extract_from_attribute(value)
         value = cls._check_type(captured_callable=value, json_schema_extra=json_schema_extra)
@@ -314,7 +314,7 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
         json_schema_extra: JsonSchemaExtraType,
-        allowed_undefined_captured_callables: list[str],
+        allow_undefined_captured_callable: list[str],
     ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
 
@@ -339,7 +339,7 @@ class CapturedCallable:
         import_path = json_schema_extra["import_path"]
 
         # Check if we skip proper instantiation due to undefined function.
-        if function_name in allowed_undefined_captured_callables:
+        if function_name in allow_undefined_captured_callable:
             return CapturedCallable(function_name, **captured_callable_config)
 
         function: CapturedCallable

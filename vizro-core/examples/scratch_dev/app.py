@@ -126,7 +126,7 @@ def my_custom_action(t: int):
 dashboard = vm.Dashboard.model_validate(
     dashboard_config,
     context={
-        "allowed_undefined_captured_callables": [
+        "allow_undefined_captured_callable": [
             "custom_bar2",
             "weird_grid",
             # "scatter",

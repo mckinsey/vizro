@@ -130,7 +130,7 @@ class TestRun:
         }
         dashboard = vm.Dashboard.model_validate(
             dashboard_config,
-            context={"allowed_undefined_captured_callables": ["llm_generated_grid"]},
+            context={"allow_undefined_captured_callable": ["llm_generated_grid"]},
         )
         app = Vizro().build(dashboard)
         with pytest.raises(ValueError, match="Dashboard contains models with undefined CapturedCallable's"):

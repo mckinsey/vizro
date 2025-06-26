@@ -668,7 +668,7 @@ class TestPydanticPythonAfterJSONInstantiation:
             (
                 "not_importable_scatter",
                 expected_code_pass_validation_via_json,
-                {"allowed_undefined_captured_callables": ["not_importable_scatter"]},
+                {"allow_undefined_captured_callable": ["not_importable_scatter"]},
             ),
             # ("not_importable_scatter", expected_code_pass_validation_via_json, None),
         ],
