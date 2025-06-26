@@ -539,8 +539,20 @@ class TestFilterCall:
 
 class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object"):
+        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object."):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
+
+    def test_missing_id_for_url_control_warning_raised(self, managers_column_only_exists_in_some):
+        filter = vm.Filter(column="column_numerical", show_in_url=True)
+        model_manager["test_page"].controls = [filter]
+
+        with pytest.warns(
+            UserWarning,
+            match="The `show_in_url=True` is set but no `id` was provided. "
+            "This can lead to unstable URLs, especially if the dashboard layout changes. "
+            "Set a fixed `id` to ensure links remain consistent and shareable.",
+        ):
+            filter.pre_build()
 
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
         # Core of tests is still interface level

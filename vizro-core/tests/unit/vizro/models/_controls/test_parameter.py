@@ -64,12 +64,29 @@ class TestParameterInstantiation:
 
 class TestPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control parameter_id should be defined within a Page object"):
+        with pytest.raises(ValueError, match="Control parameter_id should be defined within a Page object."):
             Parameter(
                 id="parameter_id",
                 targets=["scatter_chart.x"],
                 selector=vm.Dropdown(options=["lifeExp", "pop"]),
             ).pre_build()
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    def test_missing_id_for_url_control_warning_raised(self):
+        parameter = Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.Dropdown(options=["lifeExp", "pop"]),
+            show_in_url=True,
+        )
+        model_manager["test_page"].controls = [parameter]
+
+        with pytest.warns(
+            UserWarning,
+            match="The `show_in_url=True` is set but no `id` was provided. "
+            "This can lead to unstable URLs, especially if the dashboard layout changes. "
+            "Set a fixed `id` to ensure links remain consistent and shareable.",
+        ):
+            parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize(
