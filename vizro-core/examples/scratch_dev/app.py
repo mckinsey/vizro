@@ -251,13 +251,13 @@ page_2 = vm.Page(
     ],
     controls=[
         vm.Filter(
-            # id="page_2_filter_species",
+            id="page_2_filter_species",
             column="species",
             show_in_url=True,
             selector=vm.Dropdown(id="page_2_filter_selector_species"),
         ),
         vm.Filter(
-            # id="page_2_filter_sepal_width",
+            id="page_2_filter_sepal_width",
             column="sepal_width",
             show_in_url=True,
             selector=vm.RangeSlider(id="page_2_filter_selector_sepal_width"),
