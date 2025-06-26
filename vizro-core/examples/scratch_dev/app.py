@@ -9,15 +9,13 @@ iris = px.data.iris()
 
 
 @capture("action")
-def my_custom_export(n_clicks):
-    if n_clicks:
-        return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+def my_custom_export():
+    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
 
 
 @capture("action")
-def my_custom_location(n_clicks):
-    if n_clicks:
-        return "/page-2"
+def my_custom_location():
+    return "/page-2"
 
 
 page_1 = vm.Page(
@@ -45,7 +43,6 @@ page_1 = vm.Page(
                     actions=[
                         vm.Action(
                             function=my_custom_export(),
-                            inputs=["button_download.n_clicks"],
                             outputs=["vizro_download.data"],
                         )
                     ],
@@ -56,7 +53,6 @@ page_1 = vm.Page(
                     actions=[
                         vm.Action(
                             function=my_custom_location(),
-                            inputs=["button_location.n_clicks"],
                             outputs=["vizro_url.href"],
                         )
                     ],
