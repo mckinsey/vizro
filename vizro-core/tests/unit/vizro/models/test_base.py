@@ -660,15 +660,20 @@ class TestPydanticPython:
 
 class TestPydanticPythonAfterJSONInstantiation:
     @pytest.mark.parametrize(
-        "target,expected_code",
+        "target,expected_code,context",
         [
-            ("scatter", expected_code_px_via_json),
-            ("vizro.plotly.express.scatter", expected_code_px_via_json),
-            (f"{__name__}.custom_scatter", expected_code_custom_via_json),
-            ("not_importable_scatter", expected_code_pass_validation_via_json),
+            ("scatter", expected_code_px_via_json, None),
+            ("vizro.plotly.express.scatter", expected_code_px_via_json, None),
+            (f"{__name__}.custom_scatter", expected_code_custom_via_json, None),
+            (
+                "not_importable_scatter",
+                expected_code_pass_validation_via_json,
+                {"allowed_undefined_captured_callables": ["not_importable_scatter"]},
+            ),
+            # ("not_importable_scatter", expected_code_pass_validation_via_json, None),
         ],
     )
-    def test_graph_import_paths(self, target, expected_code):
+    def test_graph_import_paths(self, target, expected_code, context):
         graph_config = {
             "type": "graph",
             "figure": {
@@ -679,11 +684,20 @@ class TestPydanticPythonAfterJSONInstantiation:
             },
         }
 
-        graph = vm.Graph.model_validate(
-            graph_config, context={"allowed_undefined_captured_callables": ["not_importable_scatter"]}
-        )
+        graph = vm.Graph.model_validate(graph_config, context=context)
         result = graph._to_python()
         assert result == expected_code
+
+    def test_graph_import_missing_context(self):
+        graph_config = {
+            "type": "graph",
+            "figure": {
+                "_target_": "not_importable_scatter",
+                "data_frame": "iris",
+            },
+        }
+        with pytest.raises(ValueError, match="Value error, Failed to import function 'not_importable_scatter'"):
+            vm.Graph.model_validate(graph_config)
 
 
 class TestAddingDuplicateDiscriminator:
