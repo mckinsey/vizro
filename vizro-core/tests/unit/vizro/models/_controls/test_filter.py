@@ -438,16 +438,27 @@ class TestFilterInstantiation:
 
     def test_create_filter_mandatory_and_optional(self):
         filter = Filter(
+            id="filter_id",
             column="foo",
             targets=["scatter_chart", "bar_chart"],
             selector=vm.RadioItems(),
             show_in_url=True,
         )
+        assert filter.id == "filter_id"
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == ["scatter_chart", "bar_chart"]
         assert isinstance(filter.selector, vm.RadioItems)
         assert filter.show_in_url is True
+
+    def test_missing_id_for_url_control_warning_raised(self):
+        with pytest.warns(
+            UserWarning,
+            match="The `show_in_url=True` is set but no `id` was provided. "
+            "This can lead to unstable URLs, especially if the dashboard layout changes. "
+            "Set a fixed `id` to ensure links remain consistent and shareable.",
+        ):
+            Filter(column="column_numerical", show_in_url=True)
 
 
 @pytest.mark.usefixtures("managers_column_only_exists_in_some")
@@ -541,18 +552,6 @@ class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
         with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object."):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
-
-    def test_missing_id_for_url_control_warning_raised(self, managers_column_only_exists_in_some):
-        filter = vm.Filter(column="column_numerical", show_in_url=True)
-        model_manager["test_page"].controls = [filter]
-
-        with pytest.warns(
-            UserWarning,
-            match="The `show_in_url=True` is set but no `id` was provided. "
-            "This can lead to unstable URLs, especially if the dashboard layout changes. "
-            "Set a fixed `id` to ensure links remain consistent and shareable.",
-        ):
-            filter.pre_build()
 
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
         # Core of tests is still interface level

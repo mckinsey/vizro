@@ -85,10 +85,14 @@ class Parameter(VizroBaseModel):
         ),
     )
 
+    def model_post_init(self, context) -> None:
+        super().model_post_init(context)
+        # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
+        warn_missing_id_for_url_control(control=self)
+
     @_log_call
     def pre_build(self):
         check_control_targets(control=self)
-        warn_missing_id_for_url_control(control=self)
         self._check_numerical_and_temporal_selectors_values()
         self._check_categorical_selectors_options()
         self._set_selector_title()

@@ -24,12 +24,14 @@ class TestParameterInstantiation:
 
     def test_create_parameter_mandatory_and_optional(self):
         parameter = Parameter(
+            id="parameter_id",
             targets=["scatter_chart.x"],
             selector=vm.Dropdown(
                 options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose x-axis"
             ),
             show_in_url=True,
         )
+        assert parameter.id == "parameter_id"
         assert parameter.type == "parameter"
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.type == "dropdown"
@@ -61,6 +63,19 @@ class TestParameterInstantiation:
             Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
             Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
+    def test_missing_id_for_url_control_warning_raised(self):
+        with pytest.warns(
+            UserWarning,
+            match="The `show_in_url=True` is set but no `id` was provided. "
+            "This can lead to unstable URLs, especially if the dashboard layout changes. "
+            "Set a fixed `id` to ensure links remain consistent and shareable.",
+        ):
+            Parameter(
+                targets=["scatter_chart.x"],
+                selector=vm.Dropdown(options=["lifeExp", "pop"]),
+                show_in_url=True,
+            )
+
 
 class TestPreBuildMethod:
     def test_filter_not_in_page(self):
@@ -70,23 +85,6 @@ class TestPreBuildMethod:
                 targets=["scatter_chart.x"],
                 selector=vm.Dropdown(options=["lifeExp", "pop"]),
             ).pre_build()
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    def test_missing_id_for_url_control_warning_raised(self):
-        parameter = Parameter(
-            targets=["scatter_chart.x"],
-            selector=vm.Dropdown(options=["lifeExp", "pop"]),
-            show_in_url=True,
-        )
-        model_manager["test_page"].controls = [parameter]
-
-        with pytest.warns(
-            UserWarning,
-            match="The `show_in_url=True` is set but no `id` was provided. "
-            "This can lead to unstable URLs, especially if the dashboard layout changes. "
-            "Set a fixed `id` to ensure links remain consistent and shareable.",
-        ):
-            parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize(

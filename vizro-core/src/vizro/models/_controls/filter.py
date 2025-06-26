@@ -103,6 +103,11 @@ class Filter(VizroBaseModel):
     _dynamic: bool = PrivateAttr(False)
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
+    def model_post_init(self, context) -> None:
+        super().model_post_init(context)
+        # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
+        warn_missing_id_for_url_control(control=self)
+
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         # TODO-AV2 E: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.
@@ -141,9 +146,6 @@ class Filter(VizroBaseModel):
         # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
         check_control_targets(control=self)
-
-        # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
-        warn_missing_id_for_url_control(control=self)
 
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
