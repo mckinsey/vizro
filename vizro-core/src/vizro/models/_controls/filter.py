@@ -95,7 +95,7 @@ class Filter(VizroBaseModel):
     show_in_url: bool = Field(
         default=False,
         description=(
-            "Whether the filter should be included in the URL query string. Defaults to `False`."
+            "Whether the filter should be included in the URL query string. Defaults to `False`. "
             "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
         ),
     )
