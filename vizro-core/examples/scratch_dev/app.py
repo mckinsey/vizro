@@ -1,5 +1,4 @@
 from time import sleep
-from typing import Any
 
 import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
@@ -7,10 +6,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
-from charts import custom_scatter
 from dash import html
 from vizro import Vizro
-from vizro.managers import data_manager, model_manager
+from vizro.managers import data_manager
 from vizro.models.types import capture
 
 data_manager["iris"] = px.data.iris()
