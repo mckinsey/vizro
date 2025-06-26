@@ -93,7 +93,7 @@ For more information, see the documentation on [using React.js components with D
 
 !!! note "Exposing configuration to untrusted users"
 
-    Exposing Vizro configuration to untrusted users may pose a security risk. By choosing a specific import path for a custom function, it could be possible to inject malicious code that will be executed when the dashboard is run. Note that for this to work, the malicious code would need to be executed on import, and it would need to be part of a dependency that is available at validation time.
+    Exposing Vizro configuration to untrusted users may pose a security risk. A user with access to YAML/JSON configuration can potentially execute arbitrary Python code when the dashboard is run. The security of your `yaml`/`json` configuration should be regarded as equivalent to the security of your `app.py` file.
 
 It is possible to refer to custom functions that are used as `CapturedCallable` by their import path in a `yaml`/`json` configuration of the dashboard.
 
@@ -101,52 +101,62 @@ In the [documentation sections on custom charts, tables, figures and actions](#v
 
 !!! example "Custom charts with YAML config example"
 
-    ```{.python hl_lines="27 28"}
-    import pandas as pd
-    import plotly.graph_objects as go
-    import vizro.models as vm
-    import vizro.plotly.express as px
-    import yaml
-    from vizro import Vizro
-    from vizro.managers import data_manager
-    from vizro.models.types import capture
+    === "app.py"
 
-    data_manager["iris"] = px.data.iris()
+        ```python
+        from pathlib import Path
 
+        import vizro.plotly.express as px
+        import yaml
+        from vizro import Vizro
+        from vizro.managers import data_manager
+        from vizro.models import Dashboard
 
-    @capture("graph")
-    def custom_bar(data_frame: pd.DataFrame, x: str, y: str) -> go.Figure: # (1)!
-        """Custom bar chart using Plotly Graph Objects."""
-        return go.Figure(data=[go.Bar(x=data_frame[x], y=data_frame[y])])
+        data_manager["iris"] = px.data.iris()
 
+        dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8")) # (1)!
+        dashboard = Dashboard(**dashboard)
 
-    # Dashboard configuration in YAML format
-    dashboard_yaml = """
-    title: "Custom Chart Example"
-    pages:
+        if __name__ == "__main__":
+            Vizro().build(dashboard).run()
+        ```
+
+        1. Parse the YAML or JSON configuration that lies in a separate file.
+
+    === "dashboard.yaml"
+
+        ```yaml
+        title: "Dashboard Example"
+        pages:
         - title: "Custom Bar Chart"
             components:
-                - type: "graph"
-                    figure:
-                        _target_: "__main__.custom_bar"
-                        data_frame: "iris"
-                        x: "sepal_length"
-                        y: "sepal_width"
-    """
+            - type: "graph"
+                figure:
+                _target_: "custom_charts.custom_bar" # (1)!
+                data_frame: "iris"
+                x: "sepal_length"
+                y: "sepal_width"
+        ```
 
-    # Load dashboard from YAML
-    dashboard_config = yaml.safe_load(dashboard_yaml)# (2)!
-    dashboard = vm.Dashboard(**dashboard_config)
+        1. Here we refer to the import path of the custom chart function. If you define the
+        custom chart in `app.py`, then use `__main__` as the import path. Note that the import path
+        will be interpreted by pydantics [`ImportString` type](https://docs.pydantic.dev/dev/usage/types/string_types/#importstring).
 
-    # Build and run the dashboard
-    app = Vizro().build(dashboard)
+    === "custom_charts.py"
 
-    if __name__ == "__main__":
-        app.run()
-    ```
+        ```python
+        import pandas as pd
+        import plotly.graph_objects as go
+        from vizro.models.types import capture
 
-    1. Define the custom chart either in `app.py` or in a separate file.
-    1. Parse the YAML or JSON configuration that refers to the custom chart with the **correct import path**. If the custom chart is defined in the `app.py`, then use `__main__` as the import path.
+
+        @capture("graph")
+        def custom_bar(data_frame: pd.DataFrame, x: str, y: str) -> go.Figure: # (1)!
+            """Custom bar chart."""
+            return go.Figure(data=[go.Bar(x=data_frame[x], y=data_frame[y])])
+        ```
+
+        1. Definition of the custom chart function as usual.
 
 ### Validate dashboards without defining `CapturedCallable` functions
 
@@ -192,6 +202,11 @@ You can use this method when you want to check if the dashboard configuration is
         },
     )
     app = Vizro().build(dashboard)  # (1)!
+    try:
+        app.run()  # (2)!
+    except ValueError as exc:
+        print(exc)
     ```
 
-    1. Because this dashboard configuration contains a `CapturedCallable` function that is undefined, you will not be able to start the server. Hence `app.run()` will raise an error.
+    1. The dashboard configuration contains a `CapturedCallable` function that is undefined but allowed by `allowed_undefined_captured_callables`. The app can still be built without raising any errors.
+    2. However, it is not possible to run the app without undefined `CapturedCallable`s. This raises an error.

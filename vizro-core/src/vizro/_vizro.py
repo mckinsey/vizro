@@ -141,7 +141,7 @@ class Vizro:
         # Check if there are undefined captured callables in the dashboard.
         # TODO: In the future we may want to try importing these, do users don't have to create an entirely
         # new dashboard config.
-        _undefined_captured_callables = {
+        _undefined_captured_callables: set[str] = {
             model.figure._function
             for model in cast(
                 Iterable[FigureType], model_manager._get_models(root_model=self._dashboard, model_type=FIGURE_MODELS)
@@ -151,7 +151,7 @@ class Vizro:
 
         if _undefined_captured_callables:
             raise ValueError(
-                f"""Dashboard contains models with undefined CapturedCallable's: {self._undefined_captured_callables}.
+                f"""Dashboard contains models with undefined CapturedCallable's: {_undefined_captured_callables}.
 Provide a valid import path for these in your dashboard configuration."""
             )
 
