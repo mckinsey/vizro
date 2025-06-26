@@ -111,11 +111,17 @@ def _extract_captured_callable_source() -> set[str]:
     captured_callable_sources = set()
     for model_id in model_manager:
         for _, value in model_manager[model_id]:
-            if isinstance(value, CapturedCallable) and not any(
-                # Check to see if the captured callable does use a cleaned module string, if yes then
-                # we can assume that the source code can be imported via Vizro, and thus does not need to be defined
-                value.__repr_clean__().startswith(new)
-                for new in REPLACEMENT_STRINGS.values()
+            if (
+                isinstance(value, CapturedCallable)
+                and not any(
+                    # Check to see if the captured callable does use a cleaned module string, if yes then
+                    # we can assume that the source code can be imported via Vizro, and thus does not need to be defined
+                    value.__repr_clean__().startswith(new)
+                    for new in REPLACEMENT_STRINGS.values()
+                )
+                # If _function is a string, then we cannot import the code, and the user needs to use
+                # `allow_undefined_captured_callable` in validation to even instantiate the dashboard model
+                and not value._prevent_run
             ):
                 try:
                     source = textwrap.dedent(inspect.getsource(value._function))
