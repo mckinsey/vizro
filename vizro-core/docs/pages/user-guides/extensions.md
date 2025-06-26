@@ -38,58 +38,7 @@ Custom figures are useful when you need a component that reacts to [filter](filt
 
 Vizro's [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where you can enter _any_ custom figure function as described in the [how-to guide for figures](figure.md).
 
-## Dash customizations
-
-Since Vizro is built using Dash, it is possible to use [Dash callbacks](https://dash.plotly.com/basic-callbacks) directly in any Vizro dashboard. This enables you to code beneath the Vizro layer and control Dash directly, which is especially useful when working with callbacks
-
-Here is an example showing a Dash callback within Vizro, enabling an interaction between data points in a scatter plot and the content of a text card:
-
-!!! example "Dash callback example"
-
-    === "app.py"
-
-        ```{.python pycafe-link}
-        from dash import callback, Input, Output
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-
-        @callback(
-            Output("card_id", "children"),
-            Input("source_chart", "clickData")
-        )
-        def update_card(click_data):
-            if click_data is None:
-                return "Click on the graph to select a data point."
-            return f"Clicked species: '{click_data['points'][0]['customdata'][0]}'"
-
-        page = vm.Page(
-            title="Example: Dash callback within Vizro",
-            components=[
-                vm.Graph(id="source_chart",
-                         figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"])),
-                vm.Card(id="card_id",
-                        text="Click on the graph to apply filter interaction."),
-            ]
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-## CSS customizations
-
-Vizro is opinionated about visual formatting, and some elements, such as the layout of the navigation and controls, are fixed. You can customize some settings such as background colors, fonts, and other styles via CSS overrides.
-
-For more information, see our documentation on [customizing CSS](custom-css.md)
-
-## React.js customizations
-
-It is possible to create custom React.js components and add them directly to any Vizro dashboard so enabling you to code beneath both the Vizro and Dash layers and control React.js directly
-
-For more information, see the documentation on [using React.js components with Dash](https://dash.plotly.com/plugins)
-
-## Use custom functions in `yaml`/`json` configuration
+### Use custom functions in `yaml`/`json` configuration
 
 !!! note "Exposing configuration to untrusted users"
 
@@ -97,7 +46,7 @@ For more information, see the documentation on [using React.js components with D
 
 It is possible to refer to custom functions that are used as `CapturedCallable` by their import path in a `yaml`/`json` configuration of the dashboard.
 
-In the [documentation sections on custom charts, tables, figures and actions](#vizro-customizations), you will find examples on how the Vizro schema can be extended by using custom Python code. It is possible to refer to these custom functions in the `yaml`/`json` configuration by using the `_target_` key and the correct import path.
+In the [above guides](#vizro-customizations), you will find examples on how the Vizro schema can be extended by using custom Python code. It is possible to refer to these custom functions in the `yaml`/`json` configuration by using the `_target_` key and the correct import path.
 
 !!! example "Custom charts with YAML config example"
 
@@ -158,7 +107,7 @@ In the [documentation sections on custom charts, tables, figures and actions](#v
 
         1. Definition of the custom chart function as usual.
 
-### Validate dashboards without defining `CapturedCallable` functions
+#### Validate dashboards without defining `CapturedCallable` functions
 
 It is possible to validate a dashboard configuration without importing or executing some `CapturedCallable` functions.
 
@@ -210,3 +159,54 @@ You can use this method when you want to check if the dashboard configuration is
 
     1. The dashboard configuration contains a `CapturedCallable` function that is undefined but allowed by `allowed_undefined_captured_callables`. The app can still be built without raising any errors.
     2. However, it is not possible to run the app without undefined `CapturedCallable`s. This raises an error.
+
+## Dash customizations
+
+Since Vizro is built using Dash, it is possible to use [Dash callbacks](https://dash.plotly.com/basic-callbacks) directly in any Vizro dashboard. This enables you to code beneath the Vizro layer and control Dash directly, which is especially useful when working with callbacks
+
+Here is an example showing a Dash callback within Vizro, enabling an interaction between data points in a scatter plot and the content of a text card:
+
+!!! example "Dash callback example"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        from dash import callback, Input, Output
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        @callback(
+            Output("card_id", "children"),
+            Input("source_chart", "clickData")
+        )
+        def update_card(click_data):
+            if click_data is None:
+                return "Click on the graph to select a data point."
+            return f"Clicked species: '{click_data['points'][0]['customdata'][0]}'"
+
+        page = vm.Page(
+            title="Example: Dash callback within Vizro",
+            components=[
+                vm.Graph(id="source_chart",
+                         figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"])),
+                vm.Card(id="card_id",
+                        text="Click on the graph to apply filter interaction."),
+            ]
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+## CSS customizations
+
+Vizro is opinionated about visual formatting, and some elements, such as the layout of the navigation and controls, are fixed. You can customize some settings such as background colors, fonts, and other styles via CSS overrides.
+
+For more information, see our documentation on [customizing CSS](custom-css.md)
+
+## React.js customizations
+
+It is possible to create custom React.js components and add them directly to any Vizro dashboard so enabling you to code beneath both the Vizro and Dash layers and control React.js directly
+
+For more information, see the documentation on [using React.js components with Dash](https://dash.plotly.com/plugins)
