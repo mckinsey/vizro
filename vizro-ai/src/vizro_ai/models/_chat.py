@@ -238,16 +238,6 @@ class Chat(VizroBaseModel):
     storage_type: Literal["memory", "session", "local"] = Field(default="session", description="Storage type for chat history persistence")
     processor: ChatProcessor = Field(default_factory=EchoProcessor, description="Chat processor for generating responses")
 
-    @property 
-    def _action_outputs(self) -> dict[str, _IdProperty]:
-        """Define action outputs for the chat component."""
-        return {"__default__": f"{self.id}-history.children"}
-
-    @property
-    def _action_inputs(self) -> dict[str, _IdProperty]:
-        """Define action inputs for the chat component."""
-        return {"input": f"{self.id}-input.value"}
-
     def plug(self, app):
         """Plugin method called by Dash to register routes and other app-level configurations.
         
@@ -269,6 +259,7 @@ class Chat(VizroBaseModel):
                     raise ValueError("Empty prompt")
 
                 # Initialize processor with API settings if available
+                # TODO: move this to processor?
                 api_settings = data.get("api_settings", {})
                 if api_settings and hasattr(self.processor, "initialize_client"):
                     api_key = api_settings.get("api_key")
@@ -291,6 +282,7 @@ class Chat(VizroBaseModel):
                         yield "event: error\ndata: {}\n\n".format(json.dumps({"error": str(e)}))
 
                 # Use Response with proper headers for SSE
+                # TODO: revisit these 2 headers - are they needed?
                 response = Response(response_stream(), mimetype="text/event-stream")
                 response.headers['Cache-Control'] = 'no-cache'
                 response.headers['X-Accel-Buffering'] = 'no'
