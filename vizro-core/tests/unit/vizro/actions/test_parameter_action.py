@@ -268,9 +268,8 @@ class TestParameter:
             (["NONE"], [None]),
             (["NONE", "pop"], ["pop"]),
             (["NONE", "NONE"], [None]),
-            (["ALL"], ["lifeExp", "pop", "gdpPercap"]),
-            (["ALL", "lifeExp"], ["lifeExp", "pop", "gdpPercap"]),
-            (["ALL", "NONE"], ["lifeExp", "pop", "gdpPercap"]),
+            (["lifeExp", "pop", "gdpPercap"], ["lifeExp", "pop", "gdpPercap"]),
+            (["lifeExp", "pop", "gdpPercap", "NONE"], ["lifeExp", "pop", "gdpPercap"]),
         ],
         indirect=True,
     )
@@ -583,14 +582,20 @@ class TestParameter:
     @pytest.mark.usefixtures("managers_one_page_one_graph_with_dict_param_input")
     @pytest.mark.parametrize(
         "ctx_parameter_dimensions, target_scatter_matrix_parameter_dimensions",
-        [("ALL", ["sepal_length", "sepal_width", "petal_length", "petal_width"]), (["sepal_width"], ["sepal_width"])],
+        [
+            (
+                ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+                ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+            ),
+            (["sepal_width"], ["sepal_width"]),
+        ],
         indirect=True,
     )
     def test_one_parameter_with_dict_input_as_options(
         self, ctx_parameter_dimensions, target_scatter_matrix_parameter_dimensions
     ):
         # If the options are provided as a list of dictionaries, the value should be correctly passed to the
-        # target as a list. So when "ALL" is selected, a list of all possible values should be returned.
+        # target as a list. So when "Select All" is selected, a list of all possible values should be returned.
         dimensions_parameter = vm.Parameter(
             id="test_parameter_dimensions",
             targets=["scatter_matrix_chart.dimensions"],

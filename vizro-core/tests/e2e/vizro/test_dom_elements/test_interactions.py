@@ -1,7 +1,7 @@
 import pytest
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_graph_is_loaded
-from e2e.vizro.navigation import page_select, select_dropdown_value
+from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
 from e2e.vizro.paths import categorical_components_value_path
 
 
@@ -19,7 +19,8 @@ def test_interactions(dash_br):
     dash_br.wait_for_element(f"div[id='{cnst.BOX_INTERACTIONS_ID}'] path[style*='rgb(0, 180, 255)']:nth-of-type(14)")
 
     # select 'setosa' in dropdown filter and check result for box graph
-    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_INTER_FILTER)
+    clear_dropdown(dash_br, cnst.DROPDOWN_INTER_FILTER)
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_INTER_FILTER, value="setosa")
     check_graph_is_loaded(dash_br, cnst.BOX_INTERACTIONS_ID)
     dash_br.wait_for_element(f"div[id='{cnst.BOX_INTERACTIONS_ID}'] path[style*='rgb(0, 180, 255)']:nth-of-type(14)")
 

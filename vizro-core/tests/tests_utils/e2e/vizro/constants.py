@@ -60,6 +60,13 @@ RADIO_ITEMS_PARAMETERS_TWO = "radio items parameters two"
 SLIDER_PARAMETERS = "slider parameters"
 RANGE_SLIDER_PARAMETERS = "range slider parameters"
 
+PARAMETERS_MULTI_PAGE = "parameters_p@ge! (multi selectors)"
+PARAMETERS_MULTI_PAGE_PATH = "/parameters_pge-multi-selectors"
+TABLE_DROPDOWN = "table_dropdown"
+TABLE_CHECKLIST = "table_checklist"
+DROPDOWN_PARAM_MULTI = "dropdown_multi_param"
+CHECKLIST_PARAM = "checklist_param"
+
 FILTER_INTERACTIONS_PAGE = "filter-interactions-page"
 SCATTER_INTERACTIONS_ID = "scatter_inter"
 BOX_INTERACTIONS_ID = "box_inter"

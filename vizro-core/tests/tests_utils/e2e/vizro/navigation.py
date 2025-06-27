@@ -55,15 +55,18 @@ def page_select_selenium(driver, page_path, page_name, timeout=cnst.SELENIUM_WAI
         )
 
 
-def select_dropdown_value(driver, value, dropdown_id, multi=True):
-    """Steps to select value in dropdown."""
-    dropdown_path = f"div[id='{dropdown_id}']"
-    if multi:
-        driver.multiple_click(f"{dropdown_path} .Select-clear", 1)
-    driver.multiple_click(f"{dropdown_path} .Select-arrow", 1)
-    driver.multiple_click(f"{dropdown_path} .ReactVirtualized__Grid__innerScrollContainer div:nth-of-type({value})", 1)
-
-
 def select_slider_handler(driver, elem_id, value, handler_class="rc-slider-handle"):
     driver.multiple_click(slider_value_path(elem_id=elem_id, value=value), 1)
     driver.multiple_click(slider_handler_path(elem_id=elem_id, handler_class=handler_class), 1)
+
+
+def clear_dropdown(driver, dropdown_id):
+    selected_options = driver.find_elements(f"div[id='{dropdown_id}'] span[class='Select-value-label']")
+    selected_options_list = ["".join(option.text.split()) for option in selected_options]
+    for option in range(0, len(selected_options_list)):
+        driver.clear_input(f"div[id='{dropdown_id}']")
+
+
+def select_dropdown_value(driver, dropdown_id, value):
+    """Steps to select value in dropdown."""
+    driver.select_dcc_dropdown(f"div[id='{dropdown_id}']", value)
