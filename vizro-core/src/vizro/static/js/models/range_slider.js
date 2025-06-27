@@ -5,6 +5,7 @@ function update_range_slider_values(
   input_store,
   self_data,
 ) {
+  console.debug("update_range_slider_values");
   var end_text_value,
     end_value,
     slider_value,
