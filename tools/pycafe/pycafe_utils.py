@@ -250,7 +250,7 @@ def test_pycafe_link(url: str, wait_for_text: [str, bool], wait_for_locator: [st
             return True
 
         except Exception as e:
-            print("❌ Failed to verify PyCafe link")  # noqa
+            print(f"❌ Failed to verify PyCafe link: {url}")  # noqa
             print(f"Error: {str(e)}")  # noqa
             return False
 
