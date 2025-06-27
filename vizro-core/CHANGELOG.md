@@ -21,6 +21,10 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Add option to validate yaml/json configurations without importing `CapturedCallable` functions. See [the user guide on extensions](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/) for more details. ([#1255](https://github.com/mckinsey/vizro/pull/1255))
 
+## Fixed
+
+- Temporarily limit the upper bound of `dash` to `<3.1.0` to investigate [a bug in `dash==3.1.0`](https://github.com/plotly/dash/issues/3349). ([#1259](https://github.com/mckinsey/vizro/pull/1259))
+
 <a id='changelog-0.1.41'></a>
 
 # 0.1.41 — 2025-06-24
