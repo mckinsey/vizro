@@ -1,3 +1,8 @@
 #page-header {
   padding-left: 8px;
 }
+
+.flex-item .card-kpi {
+    width: 300px;
+    height: 150px;
+}
