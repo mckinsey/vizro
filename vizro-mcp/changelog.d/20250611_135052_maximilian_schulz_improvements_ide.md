@@ -24,7 +24,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Update Vizro version to `>=0.1.40` ([#1227](https://github.com/mckinsey/vizro/pull/1227))
+- Update Vizro version to `>=0.1.42` ([#1227](https://github.com/mckinsey/vizro/pull/1227))
 - Improve usability of MCP server in IDE environments like Cursor ([#1227](https://github.com/mckinsey/vizro/pull/1227))
 
 <!--

@@ -249,11 +249,7 @@ def validate_dashboard_config(
     try:
         dashboard = vm.Dashboard.model_validate(
             dashboard_config,
-            context={
-                "allowed_undefined_captured_callables": [
-                    (custom_chart.chart_name, "graph") for custom_chart in custom_charts
-                ]
-            },
+            context={"allow_undefined_captured_callable": [custom_chart.chart_name for custom_chart in custom_charts]},
         )
     except ValidationError as e:
         return ValidateResults(
