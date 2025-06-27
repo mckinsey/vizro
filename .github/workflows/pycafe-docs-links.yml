@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - main
+  #schedule:
+  #    - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
+  #  workflow_dispatch: # helps to run this job manually from GitHub Actions UI
 
 defaults:
   run:
@@ -19,16 +22,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+
       - name: Install Hatch
         run: pip install hatch
+
       - name: Install Playwright and browser
         run: |
           hatch run pip install playwright
           hatch run playwright install --with-deps chromium
+
       - name: Check PyCafe docs links
         run: |
           hatch run python ../tools/pycafe/test_pycafe_predefined_links.py \
@@ -38,3 +45,15 @@ jobs:
           grep -vE '^https://py\.cafe/?$' |\
           grep -vE '^https://py\.cafe/docs/apps/vizro/?$' |\
           grep -vE '^https://py\.cafe/logo\.png')
+
+      - name: Send custom JSON data to Slack
+        uses: slackapi/slack-github-action@v1.26.0
+        if: failure()
+        with:
+          payload: |
+            {
+              "text": "PyCafe docs links checker build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
