@@ -172,7 +172,7 @@ page_3 = vm.Page(
                     actions=[
                         vm.Action(
                             function=my_custom_export(),
-                            outputs=["vizro_download.data"],
+                            outputs=["dashboard_vizro_download.data"],
                         )
                     ],
                 ),
@@ -182,7 +182,7 @@ page_3 = vm.Page(
                     actions=[
                         vm.Action(
                             function=my_custom_export(),
-                            outputs=["vizro_download.data"],
+                            outputs=["dashboard_vizro_download.data"],
                         )
                     ],
                 ),
@@ -192,7 +192,7 @@ page_3 = vm.Page(
                     actions=[
                         vm.Action(
                             function=my_custom_location(x=4),
-                            outputs=["vizro_url.href"],
+                            outputs=["dashboard_vizro_url.href"],
                         )
                     ],
                 ),
@@ -202,7 +202,7 @@ page_3 = vm.Page(
                     actions=[
                         vm.Action(
                             function=my_custom_location(x=4),
-                            outputs=["vizro_url.href"],
+                            outputs=["dashboard_vizro_url.href"],
                         )
                     ],
                 ),
