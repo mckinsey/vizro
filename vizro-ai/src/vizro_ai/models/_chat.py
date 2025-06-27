@@ -13,7 +13,6 @@ from pydantic import ConfigDict, Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import _IdProperty
 from vizro_ai.models._processors import ChatMessage, ChatProcessor, EchoProcessor
 
 # Styling constants
@@ -96,14 +95,21 @@ TEXTAREA_STYLE = {
 }
 
 
-def parse_sse_chunks(animation_data):
-    """Parse SSE animation data and return complete JSON objects."""
+def parse_sse_chunks(animation_data) -> list[dict]:
+    """Parse SSE animation data and return complete JSON objects.
+    
+    Args:
+        animation_data: Raw SSE data from the streaming endpoint
+        
+    Returns:
+        List of parsed JSON objects from the SSE stream
+    """
     if not animation_data:
         return []
     
     try:
         if isinstance(animation_data, list):
-            return [json.loads(msg) for msg in animation_data]
+            return [json.loads(msg) for msg in animation_data if msg]
         elif isinstance(animation_data, str):
             # Handle concatenated JSON objects by finding complete JSON boundaries
             chunks = []
@@ -151,8 +157,16 @@ def parse_sse_chunks(animation_data):
         return []
     
 
-def create_code_block_component(code_content, code_id):
-    """Create a consistent code block component with clipboard functionality."""
+def create_code_block_component(code_content, code_id) -> html.Div:
+    """Create a consistent code block component with clipboard functionality.
+    
+    Args:
+        code_content: The code content to display
+        code_id: Unique ID for the code block
+        
+    Returns:
+        Dash HTML component with code block and clipboard button
+    """
     return html.Div([
         dcc.Clipboard(
             target_id=code_id,
@@ -211,7 +225,7 @@ class Chat(VizroBaseModel):
         import vizro_ai.models as vam
         
         # Create component
-        chat_component = vam.Chat(id="my_chat")
+        chat_component = vam.Chat(processor=vam.EchoProcessor())
         
         # Register component type
         vm.Page.add_type("components", vam.Chat)
@@ -237,7 +251,7 @@ class Chat(VizroBaseModel):
     processor: ChatProcessor = Field(default_factory=EchoProcessor, description="Chat processor for generating responses")
 
     def plug(self, app):
-        """Plugin method called by Dash to register routes and other app-level configurations.
+        """Register streaming routes with the Dash app.
         
         This method is called automatically when the component is passed as a plugin
         to Dash (via Vizro). It registers the streaming endpoint needed for the chat
@@ -260,21 +274,16 @@ class Chat(VizroBaseModel):
                     try:
                         for chat_message in self.processor.get_response(messages, user_prompt):
                             yield sse_message(chat_message.to_json())
-                        # Send explicit completion message
-                        completion_msg = ChatMessage(type="text", content="__STREAM_COMPLETE__")
-                        yield sse_message(completion_msg.to_json())
-                        # Properly close the SSE stream
-                        yield "event: close\ndata: Stream closed\n\n"
+                        # Send standard SSE completion signal
+                        # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
+                        yield sse_message("[DONE]")
                     except Exception as e:
                         error_msg = ChatMessage(type="error", content=f"Error: {e!s}")
                         yield sse_message(error_msg.to_json())
-                        yield "event: error\ndata: {}\n\n".format(json.dumps({"error": str(e)}))
+                        yield sse_message("[DONE]")
 
-                # Use Response with proper headers for SSE
-                # TODO: revisit these 2 headers - are they needed?
+                # Use Response with SSE content type
                 response = Response(response_stream(), mimetype="text/event-stream")
-                response.headers['Cache-Control'] = 'no-cache'
-                response.headers['X-Accel-Buffering'] = 'no'
                 return response
             except Exception as e:
                 return Response(f"Error: {e!s}", status=500)
@@ -342,7 +351,6 @@ class Chat(VizroBaseModel):
                 return initial_data
             return current_messages
 
-        # Add callback to rebuild visual history from stored messages on initial load
         @callback(
             Output(f"{self.id}-history", "children", allow_duplicate=True),
             Input(f"{self.id}-messages", "data"),
@@ -399,7 +407,6 @@ class Chat(VizroBaseModel):
             except (json.JSONDecodeError, TypeError):
                 return []
 
-        # Add callback to handle SSE URL and options
         @callback(
             Output(f"{self.id}-sse", "url"),
             Output(f"{self.id}-sse", "options"),
@@ -415,6 +422,7 @@ class Chat(VizroBaseModel):
             prevent_initial_call=True,
         )
         def start_streaming(n_clicks, n_submit, value, messages, current_history):
+            """Start streaming when user submits a message."""
             if (not n_clicks and not n_submit) or not value or not value.strip():
                 return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
             
@@ -472,14 +480,12 @@ class Chat(VizroBaseModel):
                 False,  # Reset completion trigger
             )
 
-        # Simple callback to update streaming markdown directly from buffer
         @callback(
             Output(f"{self.id}-streaming-components", "children"),
             Input(f"{self.id}-stream-buffer", "data"),
-            State(f"{self.id}-streaming-components", "children"),
             prevent_initial_call=True,
         )
-        def update_streaming_display(buffer_data, current_components):
+        def update_streaming_display(buffer_data):
             """Update the streaming display with mixed text and code components."""
             if not buffer_data:
                 return []
@@ -511,9 +517,11 @@ class Chat(VizroBaseModel):
             Output(f"{self.id}-stream-buffer", "data"),
             Output(f"{self.id}-completion-trigger", "data"),
             Input(f"{self.id}-sse", "animation"),
+            Input(f"{self.id}-sse", "done"),
             prevent_initial_call=True,
         )
-        def update_streaming_buffer(animation):
+        def update_streaming_buffer(animation, done):
+            """Update streaming buffer with parsed SSE data and detect completion."""
             if not animation:
                 return dash.no_update, dash.no_update
 
@@ -524,17 +532,11 @@ class Chat(VizroBaseModel):
             # Build structured content for mixed text/code display
             content_items = []
             current_text = ""
-            stream_completed = False
             code_block_index = 0
             
             for msg in messages:
                 msg_type = msg.get("type", "text")
                 msg_content = msg.get("content", "")
-                
-                # Check for completion signal
-                if msg_content == "__STREAM_COMPLETE__":
-                    stream_completed = True
-                    continue
                 
                 if msg_type == "code":
                     # If we have accumulated text, add it first
@@ -563,8 +565,8 @@ class Chat(VizroBaseModel):
                     "content": current_text
                 })
             
-            # If stream is completed, trigger the messages store update
-            if stream_completed:
+            # Use SSE done property for completion detection
+            if done:
                 return content_items, True  # content, trigger_completion
             
             return content_items, dash.no_update
@@ -579,6 +581,7 @@ class Chat(VizroBaseModel):
             prevent_initial_call="initial_duplicate",
         )
         def update_messages_store_on_completion(completion_triggered, content, messages):
+            """Update messages store with final content when streaming completes."""
             if not completion_triggered or not content:
                 return dash.no_update, dash.no_update
 
@@ -639,43 +642,40 @@ class Chat(VizroBaseModel):
             new_history = new_history + [error_div]
             return new_history
         
-        # Add callback to handle SSE completion (as backup)
-        @callback(
-            Output(f"{self.id}-completion-trigger", "data", allow_duplicate=True),
-            Input(f"{self.id}-sse", "completed"),
-            prevent_initial_call=True,
-        )
-        def handle_sse_completed(completed):
-            """Handle SSE stream completion."""
-            if completed:
-                return True
-            return dash.no_update
-        
-        # Add clientside callback to scroll to bottom when history updates
+        # this clientside callback scrolls the chat history so
+        # that the user message is visible.
+        # ideally the user message is at the current screen,
+        # but this version scrolls to the offset of the user message top.
         clientside_callback(
             """
-            function(children) {
-                setTimeout(function() {
+            function(n_clicks, n_submit) {
+                if (!n_clicks && !n_submit) return window.dash_clientside.no_update;
+                setTimeout(() => {
                     const historyDiv = document.getElementById('%s-history');
-                    if (historyDiv) {
-                        historyDiv.scrollTop = historyDiv.scrollHeight;
-                    }
-                }, 100);
+                    const children = historyDiv?.children;
+                    const userMessage = children?.[children.length - 2];
+                    if (userMessage) historyDiv.scrollTop = userMessage.offsetTop;
+                }, 200);
                 return window.dash_clientside.no_update;
             }
             """ % self.id,
-            Output(f"{self.id}-history", "data-scroll"),
-            Input(f"{self.id}-history", "children")
+            Output(f"{self.id}-history", "data-smart-scroll"),
+            Input(f"{self.id}-submit", "n_clicks"),
+            Input(f"{self.id}-input", "n_submit")
         )
 
     @_log_call
     def build(self):
-        """Build the chat component layout."""
+        """Build the chat component layout.
+        
+        Returns:
+            Dash HTML component containing the complete chat interface
+        """
         components = []
 
         components.extend(self._build_data_stores())
         components.append(self._build_chat_interface())
-        components.append(SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10))
+        components.append(SSE(id=f"{self.id}-sse", concat=True, animate_chunk=20, animate_delay=5))
         
         return html.Div(
             components,
@@ -686,7 +686,11 @@ class Chat(VizroBaseModel):
         )
 
     def _build_data_stores(self):
-        """Build the data store components for the chat."""
+        """Build the data store components for the chat.
+        
+        Returns:
+            List of dcc.Store components for chat data persistence
+        """
         return [
             dcc.Store(id=f"{self.id}-messages", storage_type=self.storage_type),
             dcc.Store(id=f"{self.id}-stream-buffer", data=""),
@@ -694,7 +698,11 @@ class Chat(VizroBaseModel):
         ]
 
     def _build_chat_interface(self):
-        """Build the main chat interface."""
+        """Build the main chat interface.
+        
+        Returns:
+            Dash HTML component containing the chat history and input area
+        """
         return html.Div(
             [
                 html.Div(
