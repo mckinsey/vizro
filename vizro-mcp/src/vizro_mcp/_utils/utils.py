@@ -130,6 +130,7 @@ def create_pycafe_url(python_code: str) -> str:
     return pycafe_url
 
 
+# TODO: is this still needed after 0.1.42
 def remove_figure_quotes(code_string: str) -> str:
     """Remove quotes around all figure argument values."""
     return _format_and_lint(re.sub(r'figure="([^"]*)"', r"figure=\1", code_string))
