@@ -108,6 +108,18 @@ class Filter(VizroBaseModel):
         # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
 
+    # TODO NOW: think about whether setting these shortcuts is a good idea or if there could be any problems.
+    # Add comment on url update CSCB that this translation doesn't work for those so provide control.id manually.
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.selector.id}.value",
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.selector.id}.value"}
+
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         # TODO-AV2 E: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.

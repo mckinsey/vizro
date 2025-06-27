@@ -184,8 +184,10 @@ class _BaseAction(VizroBaseModel):
                 "filters": self._get_control_states(control_type=Filter),
                 "parameters": self._get_control_states(control_type=Parameter),
                 "filter_interaction": self._get_filter_interaction_states(),
-            }
+            },
+            # "trigger":
         }
+        # TODO NOW: add tirgger
 
         # Work out which built in arguments are actually required for this function.
         builtin_args = {
@@ -225,7 +227,8 @@ class _BaseAction(VizroBaseModel):
             # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
             return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
-        if isinstance(self.outputs, list):
+        # TODO NOW: do isinstance better
+        if isinstance(self.outputs, (list, tuple)):
             callback_outputs = [_transform_output(output) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case

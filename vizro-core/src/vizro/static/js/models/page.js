@@ -150,7 +150,8 @@ function sync_url_query_params_and_controls(...values_ids) {
   history.replaceState(
     null,
     "",
-    `${window.location.pathname}?${urlParams.toString()}`,
+    // TODO NOW: CHECK THIS. Use location.origin?
+    `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`,
   );
 
   return [triggerOPL, ...outputSelectorValues];
