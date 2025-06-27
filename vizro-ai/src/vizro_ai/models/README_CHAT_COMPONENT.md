@@ -33,6 +33,39 @@ The Chat component (formerly VizroChatComponent) is a chat interface built for V
 - **Format**: JSON-serialized `ChatMessage` objects
 - **Benefits**: Low latency, automatic reconnection, browser-native support
 
+### 🎯 **Separation of Concerns Principle**
+
+**Chat Model Focus**: The Chat component should remain focused on **UI/UX concerns**:
+- Rendering messages and markdown content
+- Handling streaming animations and user interactions  
+- Managing chat history and persistence
+- Providing clipboard functionality and visual feedback
+
+**Processor Focus**: ChatProcessors handle their own **configuration and response generation logic**:
+- API key management and authentication
+- Model-specific configuration (temperature, model selection, etc.)
+- Raw data processing and token generation
+- Error handling for their specific AI service
+
+This separation ensures:
+- **Clean Architecture**: Each component has a single, well-defined responsibility
+- **Reusability**: Processors can be swapped without affecting UI logic
+- **Testability**: UI and AI logic can be tested independently
+- **Maintainability**: Changes to AI services don't require UI modifications
+
+**Example of Good Separation**:
+```python
+# ✅ Chat focuses on UI/UX
+chat = Chat(
+    id="my-chat",
+    input_placeholder="Ask me anything...",
+    processor=OpenAIProcessor(api_key="sk-...")  # Processor handles config
+)
+
+# ❌ Avoid: Chat handling processor-specific concerns
+# chat = Chat(api_key="sk-...", model="gpt-4")  # Don't do this
+```
+
 ## 🔌 Dash Plugin Pattern
 
 ### Why We Use the Plugin Pattern

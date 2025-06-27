@@ -19,35 +19,30 @@ Then customize and deploy your app to production at scale.
 In just a few lines of simple low-code configuration, with in-built visual design best practices, you can quickly assemble high-quality, multi-page prototypes, that are production-ready.
 """
 
+example_llm_processor = vam.OpenAIProcessor(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    api_base=os.getenv("OPENAI_BASE_URL"),
+)
+
 # Create the chat component
 chat_component1 = vam.Chat(
-    id="my_chat",
     input_placeholder="Ask me a question...",
-    initial_message="Hello! I'm your AI assistant. How can I help you today?",
-    # You can use either EchoProcessor or OpenAIProcessor
-    # processor=vam.EchoProcessor(),  # Default processor
-    # For OpenAI, uncomment the following:
-    processor=vam.OpenAIProcessor(
-        api_key=os.getenv("OPENAI_API_KEY"),
-        api_base=os.getenv("OPENAI_BASE_URL"),
-    ),
+    initial_message="",
+    processor=example_llm_processor,
 )
 
 chat_component2 = vam.Chat(
-    id="my_chat2",
     processor=vam.EchoProcessor(),
 )
 
 chat_component3 = vam.Chat(
-    id="my_chat3",
     processor=vam.EchoProcessor(),
     height="400px",
     storage_type="local",
 )
-# Register the component type with Vizro
+
 vm.Page.add_type("components", vam.Chat)
 
-# Create a page with the chat component
 page1 = vm.Page(
     title="Vizro Chat Demo",
     components=[chat_component1],
@@ -56,7 +51,6 @@ page1 = vm.Page(
 page2 = vm.Page(
     title="Vizro Chat with Grid Layout",
     components=[vm.Card(text=demo_text), chat_component2],
-    # layout=vm.Flex(direction="row"),
     layout=vm.Grid(grid=[[0, 1]]),
 )
 

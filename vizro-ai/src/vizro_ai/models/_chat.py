@@ -196,7 +196,6 @@ class Chat(VizroBaseModel):
 
     Args:
         type (Literal["chat"]): Defaults to `"chat"`.
-        id (str): Unique identifier for the component.
         input_placeholder (str): Placeholder text for the input field. Defaults to `"Ask me a question..."`.
         input_height (str): Height of the input field. Defaults to `"80px"`.
         button_text (str): Text displayed on the send button. Defaults to `"Send"`.
@@ -229,7 +228,6 @@ class Chat(VizroBaseModel):
 
     # TODO: make initial_message optional
     type: Literal["chat"] = "chat"
-    id: str
     input_placeholder: str = Field(default="Ask me a question...", description="Placeholder text for the input field")
     input_height: str = Field(default="80px", description="Height of the input field")
     button_text: str = Field(default="Send", description="Text displayed on the send button")
@@ -257,15 +255,6 @@ class Chat(VizroBaseModel):
 
                 if not user_prompt:
                     raise ValueError("Empty prompt")
-
-                # Initialize processor with API settings if available
-                # TODO: move this to processor?
-                api_settings = data.get("api_settings", {})
-                if api_settings and hasattr(self.processor, "initialize_client"):
-                    api_key = api_settings.get("api_key")
-                    api_base = api_settings.get("api_base")
-                    if api_key:
-                        self.processor.initialize_client(api_key=api_key, api_base=api_base)
 
                 def response_stream():
                     try:
