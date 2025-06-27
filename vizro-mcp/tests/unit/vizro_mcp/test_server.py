@@ -298,10 +298,7 @@ class TestValidateModelConfig:
         )
 
         assert result.valid is False
-        assert (
-            "custom_scatter cannot be imported from vizro.plotly.express nor is it defined as a `custom_chart`"
-            in result.message
-        )
+        assert "Failed to import function 'custom_scatter' from any of the attempted paths" in result.message
 
 
 class TestValidateChartCode:

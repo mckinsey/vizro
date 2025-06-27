@@ -1331,7 +1331,7 @@ wheels = [
 
 [[package]]
 name = "vizro"
-version = "0.1.40"
+version = "0.1.42"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "autoflake" },
@@ -1347,9 +1347,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/20/80/9f26538e55413adf060e3fcf27d92062d6ed341a632daa9a048e3a156b9e/vizro-0.1.40.tar.gz", hash = "sha256:c58e1930ebbeeddbf21a9fe59607088c31c91fe117bb1f10fe06d520bf8daed7", size = 72420805, upload-time = "2025-06-03T11:11:59.833Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/98/5abae0fe61a437342127e948b561f3a0a5620c1ee11bb8a34ff28356787c/vizro-0.1.42.tar.gz", hash = "sha256:6e687e13d72686663a3646540a5e377d4c9ec1fe82e61d4365b75bf8cee0ac6c", size = 72632171, upload-time = "2025-06-27T11:53:45.414Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e0/cf/ac1587e49bf709fe3c339e0baae5fb3df3eaec771296f9673f38b1e4ced5/vizro-0.1.40-py3-none-any.whl", hash = "sha256:3743813a88ff6c16dca2bb3ae2df83642a5542e91952c43aa7ab85e8c4fc123b", size = 915327, upload-time = "2025-06-03T11:11:56.168Z" },
+    { url = "https://files.pythonhosted.org/packages/68/66/4d812dd0f13d4ebd9d5ca83db10a1c92936b66e021b900d0cea53350daff/vizro-0.1.42-py3-none-any.whl", hash = "sha256:9e75765b646204ee4022d4f122a1e0ee02f9c6cc0867e9f6fed145eb85c1a180", size = 917279, upload-time = "2025-06-27T11:53:43.022Z" },
 ]
 
 [[package]]
@@ -1369,7 +1369,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
     { name = "pandas", extras = ["excel", "html", "parquet"] },
-    { name = "vizro", specifier = ">=0.1.40" },
+    { name = "vizro", specifier = ">=0.1.42" },
 ]
 
 [[package]]
