@@ -1,12 +1,21 @@
-<a href="https://glama.ai/mcp/servers/@mckinsey/vizro">
+<!-- <a href="https://glama.ai/mcp/servers/@mckinsey/vizro">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@mckinsey/vizro/badge" />
-</a>
+</a> -->
 
 # Vizro MCP server
 
 Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts.
 
-![Vizro MCP Demo](assets/vizro-mcp.gif)
+<img src="assets/vizro-mcp.gif" width="600" alt="Vizro MCP Demo">
+
+### Quick install
+
+| Host                                      | Prerequisite                                                  | Link                                                                                                                                                                                                                                                                                                                                   | Notes                                                                   |
+| ----------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [Cursor](https://www.cursor.com/)         | [uv](https://docs.astral.sh/uv/getting-started/installation/) | [![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)                                                                                                 |                                                                         |
+| [VS Code](https://code.visualstudio.com/) | [uv](https://docs.astral.sh/uv/guides/tools/)                 | [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)                                             |                                                                         |
+| [Cursor](https://www.cursor.com/)         | [Docker](https://www.docker.com/get-started/)                 | [![Install with Docker in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoiZG9ja2VyIHJ1biAtaSAtLXJtIG1jcC92aXpybyJ9)                                                                          | For local data access, [mount your data directory](#setup-instructions) |
+| [VS Code](https://code.visualstudio.com/) | [Docker](https://www.docker.com/get-started/)                 | [![Install with Docker in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22docker%22%2C%22args%22%3A%5B%22run%22%2C%22-i%22%2C%22--rm%22%2C%22mcp%2Fvizro%22%5D%7D) | For local data access, [mount your data directory](#setup-instructions) |
 
 ## Features of Vizro-MCP
 
@@ -99,7 +108,7 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 - Restart Claude Desktop. After a few moments, you should see the vizro-mcp menu in the settings/context menu:
 
-    ![Claude Desktop MCP Server Icon](assets/claude_working.png)
+    <img src="assets/claude_working.png" alt="Claude Desktop MCP Server Icon" width="300"/>
 
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
@@ -107,8 +116,11 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 <details>
 <summary><strong>Cursor</strong></summary>
+<br >
 
-- Add the above configuration to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
+[![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)
+
+- Add the above configuration to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)) or click the button above.
 
 - After a short pause, you should see a green light in the MCP menu:
 
@@ -119,6 +131,10 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 <details>
 <summary><strong>Other MCP Clients</strong></summary>
 
+<br />
+
+[![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install_all-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)
+
 - Add the configuration as per your client's documentation.
 
 - Check your client's documentation for where to place the config and how to verify the server is running.
@@ -126,6 +142,8 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 </details>
 
 ## 💻 Usage
+
+The MCP server is designed to get you started on Vizro dashboards and charts by creating beautiful working dashboards based on the core Vizro features. It is not designed to replace a human developer when going beyond the core features, e.g. when building an application that requires custom CSS or bespoke Dash components.
 
 ### Use prompt templates to get specific dashboards quickly
 
@@ -153,7 +171,7 @@ In general, it helps to specify Vizro in the prompt and to keep it as precise (a
 
 ### Get a live preview of your dashboard
 
-When the LLM chooses to use the tool `validate_model_config`, and the tool executes successfully, the LLM will return a link to a live preview of the dashboard if only public data accessed via URL is used. By default, the LLM will even open the link in your browser for you unless you tell it not to. In Claude Desktop, you can see the output of the tool by opening the tool collapsible and scrolling down to the very bottom.
+When the LLM chooses to use the tool `validate_dashboard_config`, and the tool executes successfully, the LLM will return a link to a live preview of the dashboard if only public data accessed via URL is used. By default, the LLM will even open the link in your browser for you unless you tell it not to. In Claude Desktop, you can see the output of the tool by opening the tool collapsible and scrolling down to the very bottom.
 
 <img src="assets/claude_validate.png" width="300"/>
 
@@ -177,7 +195,7 @@ MCP servers are a relatively new concept, and it is important to be transparent 
 
 In general the most critical part of the process is the `load_and_analyze_data` tool. This tool, running on your machine, will load local or remote data into a pandas DataFrame and provide a detailed analysis of its structure and content. It only uses `pd.read_xxx`, so in general there is no need to worry about privacy or data security. However, you should only run Vizro-MCP locally, not as a hosted server, because there is currently no authentication to manage access.
 
-The second most critical part is the `validate_model_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return and attempt to open a link to a live preview of the dashboard, which will take you to [PyCafe](https://py.cafe). If you don't want to open the link, you can tell the LLM to not do so.
+The second most critical part is the `validate_dashboard_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return and attempt to open a link to a live preview of the dashboard, which will take you to [PyCafe](https://py.cafe). If you don't want to open the link, you can tell the LLM to not do so.
 
 ## Available Tools (if client allows)
 
@@ -185,7 +203,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 
 - `get_vizro_chart_or_dashboard_plan` - Get a structured step-by-step plan for creating either a chart or dashboard. Provides guidance on the entire creation process.
 - `get_model_json_schema` - Retrieves the complete JSON schema for any specified Vizro model, useful for understanding required and optional parameters.
-- `validate_model_config` - Tests Vizro model configurations by attempting to instantiate them. Returns Python code and visualization links for valid configurations.
+- `validate_dashboard_config` - Tests Vizro model configurations by attempting to instantiate them. Returns Python code and visualization links for valid configurations.
 - `load_and_analyze_data` - Loads a CSV file from a local path or URL into a pandas DataFrame and provides detailed analysis of its structure and content.
 - `validate_chart_code` - Validates the code created for a chart and returns feedback on its correctness.
 - `get_sample_data_info` - Provides information about sample datasets that can be used for testing and development.
@@ -193,7 +211,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 ## Available Prompts (if client allows)
 
 - `create_starter_dashboard` - Use this prompt template to get started with Vizro dashboards.
-- `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Analysis (EDA) dashboard based on a local or remote CSV dataset.
+- `create_dashboard` - Use this prompt template to create a dashboard based on a local or remote CSV dataset.
 - `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset.
 
 ## Development or running from source
