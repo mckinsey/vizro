@@ -11,6 +11,16 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.42'></a>
+
+# 0.1.42 — 2025-06-27
+
+## Added
+
+- yaml/json configurations can specify `_target_` functions with any import path rather than being restricted to built-in Vizro functions. ([#1255](https://github.com/mckinsey/vizro/pull/1255))
+
+- Add option to validate yaml/json configurations without importing `CapturedCallable` functions. See [the user guide on extensions](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/) for more details. ([#1255](https://github.com/mckinsey/vizro/pull/1255))
+
 <a id='changelog-0.1.41'></a>
 
 # 0.1.41 — 2025-06-24
