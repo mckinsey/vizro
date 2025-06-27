@@ -130,15 +130,20 @@ class Checklist(VizroBaseModel):
                 )
                 if self.title
                 else None,
-                dbc.Checkbox(
-                    id=f"{self.id}_select_all",
-                    value=len(value) == len(dict_options),  # type: ignore[arg-type]
-                    label="Select All",
-                    persistence=True,
-                    persistence_type="session",
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            id=f"{self.id}_select_all",
+                            value=len(value) == len(dict_options),  # type: ignore[arg-type]
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(**(defaults | self.extra)),
+                    ],
+                    className="checklist-inline" if self._in_container else None,
                 ),
-                dbc.Checklist(**(defaults | self.extra)),
-            ]
+            ],
         )
 
     def _build_dynamic_placeholder(self):
