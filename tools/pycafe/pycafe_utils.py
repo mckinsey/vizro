@@ -229,8 +229,12 @@ def get_example_directories() -> dict[str, Optional[list[str]]]:
     }
 
 
-def test_pycafe_link(url: str, wait_for_text: Union[str, bool], wait_for_locator: Union[str, bool]):
-    """Test if a PyCafe link loads and renders correctly."""
+def test_pycafe_link(url: str, wait_for_text: Union[str, bool], wait_for_locator: Union[str, bool]) -> int:
+    """Test if a PyCafe link loads and renders correctly.
+
+    Return code is showing appropriate exit code.
+    Success = 0, Failure = 1.
+    """
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -247,12 +251,12 @@ def test_pycafe_link(url: str, wait_for_text: Union[str, bool], wait_for_locator
                 frame.locator(wait_for_locator).wait_for(timeout=90000)
 
             print(f"✅ Successfully verified PyCafe link: {url}")  # noqa
-            return 1
+            return 0
 
         except Exception as e:
             print(f"❌ Failed to verify PyCafe link: {url}")  # noqa
             print(f"Error: {str(e)}")  # noqa
-            return 0
+            return 1
 
         finally:
             browser.close()

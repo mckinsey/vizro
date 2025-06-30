@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     links = sys.argv[1:]
 
-    # # Test the link
+    # Test the link
     exit_codes = (
         test_pycafe_link(url=link, wait_for_locator="#dashboard-container", wait_for_text=False) for link in links
     )
