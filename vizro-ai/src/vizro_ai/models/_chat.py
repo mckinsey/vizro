@@ -16,60 +16,17 @@ import plotly.graph_objects as go
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro_ai.models._processors import ChatMessage, ChatProcessor, EchoProcessor
-
-# Styling constants
-WRAPPER = {
-    "width": "100%",
-    "height": "100%",
-    "display": "flex",
-    "flexDirection": "column",
-}
-
-CHAT_CONTAINER_STYLE = {
-    "display": "flex",
-    "flexDirection": "column",
-    "flex": "1",
-    "width": "100%",
-    "height": "100%",
-}
-
-CHAT_INPUT_WRAPPER_STYLE = {
-    "display": "flex",
-    "justifyContent": "center",
-    "width": "100%",
-    "marginTop": "auto",
-}
-
-CHAT_INPUT_CONTAINER_STYLE = {
-    "borderRadius": "10px",
-    "height": "80px",
-    "backgroundColor": "var(--surfaces-bg-card)",
-    "zIndex": "1",
-    "width": "100%",
-    "maxWidth": "760px",
-}
-
-CHAT_HISTORY_WRAPPER_STYLE = {
-    "display": "flex",
-    "justifyContent": "center",
-    "width": "100%",
-    "flex": "1",
-    "overflow": "hidden",
-}
-
-CHAT_HISTORY_STYLE = {
-    "width": "100%",
-    "paddingBottom": "20px",
-    "paddingLeft": "5px",
-    "maxWidth": "760px",
-    "overflow": "auto",
-}
-
-CODE_BLOCK_CONTAINER_STYLE = {
-    "position": "relative",
-    "backgroundColor": "var(--surfaces-bg-card)",
-    "borderRadius": "10px",
-}
+from vizro_ai.models._chat_utils import _parse_sse_chunks, _create_code_block_component, _flush_accumulated_text, _create_message_components
+from vizro_ai.models._chat_constants import (
+    WRAPPER,
+    CHAT_CONTAINER_STYLE,
+    CHAT_INPUT_WRAPPER_STYLE,
+    CHAT_INPUT_CONTAINER_STYLE,
+    CHAT_HISTORY_WRAPPER_STYLE,
+    CHAT_HISTORY_STYLE,
+    MESSAGE_STYLE,
+    TEXTAREA_STYLE,
+)
 
 MESSAGE_STYLE = {
     "color": "var(--text-primary)",
@@ -95,109 +52,6 @@ TEXTAREA_STYLE = {
     "boxShadow": "none",
     "border": "1px solid var(--border-subtleAlpha01)",
 }
-
-
-def parse_sse_chunks(animation_data) -> list[dict]:
-    """Parse SSE animation data and return complete JSON objects.
-    
-    Args:
-        animation_data: Raw SSE data from the streaming endpoint
-        
-    Returns:
-        List of parsed JSON objects from the SSE stream
-    """
-    if not animation_data:
-        return []
-    
-    try:
-        if isinstance(animation_data, list):
-            return [json.loads(msg) for msg in animation_data if msg]
-        elif isinstance(animation_data, str):
-            # Handle concatenated JSON objects by finding complete JSON boundaries
-            chunks = []
-            buffer = ""
-            brace_count = 0
-            in_string = False
-            escape_next = False
-            
-            for char in animation_data:
-                buffer += char
-                
-                # Track if we're inside a string to ignore braces there
-                if not escape_next:
-                    if char == '"' and not in_string:
-                        in_string = True
-                    elif char == '"' and in_string:
-                        in_string = False
-                    elif char == '\\':
-                        escape_next = True
-                        continue
-                else:
-                    escape_next = False
-                    continue
-                
-                # Count braces only outside of strings
-                if not in_string:
-                    if char == '{':
-                        brace_count += 1
-                    elif char == '}':
-                        brace_count -= 1
-                        
-                        # When brace count returns to 0, we have a complete JSON object
-                        if brace_count == 0 and buffer.strip():
-                            try:
-                                chunks.append(json.loads(buffer))
-                                buffer = ""
-                            except json.JSONDecodeError:
-                                # If we can't parse it, keep accumulating
-                                pass
-            
-            return chunks
-        else:
-            return [json.loads(animation_data)]
-    except (json.JSONDecodeError, TypeError):
-        return []
-    
-
-def create_code_block_component(code_content, code_id) -> html.Div:
-    """Create a consistent code block component with clipboard functionality.
-    
-    Args:
-        code_content: The code content to display
-        code_id: Unique ID for the code block
-        
-    Returns:
-        Dash HTML component with code block and clipboard button
-    """
-    return html.Div([
-        dcc.Clipboard(
-            target_id=code_id,
-            className="code-clipboard",
-            style={
-                "position": "absolute",
-                "top": "8px",
-                "right": "8px",
-                "opacity": 0.7,
-                "zIndex": 1000,
-                "transition": "opacity 0.2s ease",
-                "padding": "4px 6px",
-                "cursor": "pointer",
-            },
-            title="Copy code"
-        ),
-        dcc.Markdown(
-            f"```\n{code_content}\n```",
-            id=code_id,
-            className="markdown-container code-block-container",
-            style={
-                "fontFamily": "monospace",
-                "padding": "10px",
-                }
-        ),
-    ], style=CODE_BLOCK_CONTAINER_STYLE)
-
-
-
 
 
 class Chat(VizroBaseModel):
@@ -294,43 +148,6 @@ class Chat(VizroBaseModel):
 
     def _register_streaming_callback(self):
         """Register callbacks for chat functionality."""
-        
-        # TODO: double check whether this is needed, if so, move to other place
-        def create_message_components(content, message_id):
-            """Parse structured content and create components."""
-            
-            # Handle structured content (list of content items)
-            if isinstance(content, list):
-                components = []
-                
-                for item in content:
-                    item_type = item.get("type", "text")
-                    item_content = item.get("content", "")
-                    
-                    if item_type == "text" and item_content.strip():
-                        components.append(
-                            dcc.Markdown(
-                                item_content,
-                                className="markdown-container",
-                                style={"margin": 0}
-                            )
-                        )
-                    elif item_type == "code":
-                        code_id = f"{message_id}-code-{uuid.uuid4()}"
-                        components.append(create_code_block_component(item_content, code_id))
-                        components.append(html.Br())
-                    elif item_type == "plotly_graph":
-                        fig_data = json.loads(item_content)
-                        components.append(
-                            dcc.Graph(
-                                figure=go.Figure(fig_data),
-                            )
-                        )
-                        components.append(html.Br())
-                
-                return html.Div(components) if components else ""
-            
-            return ""
 
         # Add callback to clear input immediately on submit
         @callback(
@@ -402,7 +219,7 @@ class Chat(VizroBaseModel):
                         # Create assistant message div with parsed components
                         message_id = f"{self.id}-history-msg-{idx}"
                         div = html.Div(
-                            create_message_components(content, message_id),
+                            _create_message_components(content, message_id),
                             style={
                                 **MESSAGE_STYLE,
                                 "backgroundColor": "var(--right-side-bg)",
@@ -511,7 +328,7 @@ class Chat(VizroBaseModel):
                     )
                 elif item["type"] == "code":
                     code_id = f"{self.id}-code-{uuid.uuid4()}"
-                    components.append(create_code_block_component(item["content"], code_id))
+                    components.append(_create_code_block_component(item["content"], code_id))
                     components.append(html.Br())
                 elif item["type"] == "plotly_graph":
                     fig_data = json.loads(item["content"])
@@ -536,11 +353,10 @@ class Chat(VizroBaseModel):
             if not animation:
                 return dash.no_update, dash.no_update
 
-            messages = parse_sse_chunks(animation)
+            messages = _parse_sse_chunks(animation)
             if not messages:
                 return dash.no_update, dash.no_update
 
-            # Build structured content for mixed text/code display
             content_items = []
             current_text = ""
             
@@ -550,44 +366,22 @@ class Chat(VizroBaseModel):
                 msg_metadata = msg.get("metadata", {})
                 
                 if msg_type == "code":
-                    # If we have accumulated text, add it first
-                    if current_text:
-                        content_items.append({
-                            "type": "text",
-                            "content": current_text
-                        })
-                        current_text = ""
-                    
-                    # Add code block as a separate item
+                    current_text = _flush_accumulated_text(current_text, content_items)
                     content_items.append({
                         "type": "code",
                         "content": msg_content,
                     })
                 elif msg_type == "plotly_graph":
-                    # If we have accumulated text, add it first
-                    if current_text:
-                        content_items.append({
-                            "type": "text",
-                            "content": current_text
-                        })
-                        current_text = ""
-                    
-                    # Add graph as a separate item
+                    current_text = _flush_accumulated_text(current_text, content_items)
                     content_items.append({
                         "type": "plotly_graph",
                         "content": msg_content,
                         "metadata": msg_metadata
                     })
                 else:
-                    # Accumulate text content
                     current_text += msg_content
             
-            # Add any remaining text
-            if current_text:
-                content_items.append({
-                    "type": "text",
-                    "content": current_text
-                })
+            current_text = _flush_accumulated_text(current_text, content_items)
             
             # Use SSE done property for completion detection
             if done:
