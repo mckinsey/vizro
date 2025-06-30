@@ -16,7 +16,7 @@ classifiers = [
 dependencies = [
   "httpx>=0.28.1",
   "mcp[cli]>=1.6.0",
-  "vizro==0.1.38",  # keep in sync with version in create_pycafe_url in utils.py
+  "vizro>=0.1.42",
   "click>=8.1.7",
   "pandas[html,parquet,excel]"
 ]

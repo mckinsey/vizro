@@ -7,11 +7,19 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal, Optional, Union
 from urllib.parse import quote, urlencode
 
 import pandas as pd
+import vizro
 import vizro.models as vm
+from pydantic.json_schema import GenerateJsonSchema
+from vizro.models._base import _format_and_lint
+
+from vizro_mcp._utils.configs import DFInfo, DFMetaData
+
+if TYPE_CHECKING:
+    from vizro_mcp._schemas.schemas import ChartPlan
 
 # PyCafe URL for Vizro snippets
 PYCAFE_URL = "https://py.cafe"
@@ -21,139 +29,6 @@ PYCAFE_URL = "https://py.cafe"
 class VizroCodeAndPreviewLink:
     python_code: str
     pycafe_url: str
-
-
-@dataclass
-class DFMetaData:
-    file_name: str
-    file_path_or_url: str
-    file_location_type: Literal["local", "remote"]
-    read_function_string: Literal["pd.read_csv", "pd.read_json", "pd.read_html", "pd.read_parquet", "pd.read_excel"]
-    column_names_types: Optional[dict[str, str]] = None
-
-
-@dataclass
-class DFInfo:
-    general_info: str
-    sample: dict[str, Any]
-
-
-IRIS = DFMetaData(
-    file_name="iris_data",
-    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv",
-    file_location_type="remote",
-    read_function_string="pd.read_csv",
-    column_names_types={
-        "sepal_length": "float",
-        "sepal_width": "float",
-        "petal_length": "float",
-        "petal_width": "float",
-        "species": "str",
-    },
-)
-
-TIPS = DFMetaData(
-    file_name="tips_data",
-    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/tips.csv",
-    file_location_type="remote",
-    read_function_string="pd.read_csv",
-    column_names_types={
-        "total_bill": "float",
-        "tip": "float",
-        "sex": "str",
-        "smoker": "str",
-        "day": "str",
-        "time": "str",
-        "size": "int",
-    },
-)
-
-STOCKS = DFMetaData(
-    file_name="stocks_data",
-    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/stockdata.csv",
-    file_location_type="remote",
-    read_function_string="pd.read_csv",
-    column_names_types={
-        "Date": "str",
-        "IBM": "float",
-        "MSFT": "float",
-        "SBUX": "float",
-        "AAPL": "float",
-        "GSPC": "float",
-    },
-)
-
-GAPMINDER = DFMetaData(
-    file_name="gapminder_data",
-    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv",
-    file_location_type="remote",
-    read_function_string="pd.read_csv",
-    column_names_types={
-        "country": "str",
-        "continent": "str",
-        "year": "int",
-        "lifeExp": "float",
-        "pop": "int",
-        "gdpPercap": "float",
-    },
-)
-
-SAMPLE_DASHBOARD_CONFIG = """
-{
-  `config`: {
-    `pages`: [
-      {
-        `title`: `Iris Data Analysis`,
-        `controls`: [
-          {
-            `id`: `species_filter`,
-            `type`: `filter`,
-            `column`: `species`,
-            `targets`: [
-              `scatter_plot`
-            ],
-            `selector`: {
-              `type`: `dropdown`,
-              `multi`: true
-            }
-          }
-        ],
-        `components`: [
-          {
-            `id`: `scatter_plot`,
-            `type`: `graph`,
-            `title`: `Sepal Dimensions by Species`,
-            `figure`: {
-              `x`: `sepal_length`,
-              `y`: `sepal_width`,
-              `color`: `species`,
-              `_target_`: `scatter`,
-              `data_frame`: `iris_data`,
-              `hover_data`: [
-                `petal_length`,
-                `petal_width`
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    `theme`: `vizro_dark`,
-    `title`: `Iris Dashboard`
-  },
-  `data_infos`: `
-[
-    {
-        \"file_name\": \"iris_data\",
-        \"file_path_or_url\": \"https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv\",
-        \"file_location_type\": \"remote\",
-        \"read_function_string\": \"pd.read_csv\",
-    }
-]
-`
-}
-
-"""
 
 
 def convert_github_url_to_raw(path_or_url: str) -> str:
@@ -241,7 +116,7 @@ def create_pycafe_url(python_code: str) -> str:
     # Create JSON object for py.cafe
     json_object = {
         "code": python_code,
-        "requirements": "vizro==0.1.38",
+        "requirements": f"vizro=={vizro.__version__}",
         "files": [],
     }
 
@@ -255,26 +130,38 @@ def create_pycafe_url(python_code: str) -> str:
     return pycafe_url
 
 
+# TODO: is this still needed after 0.1.42
+def remove_figure_quotes(code_string: str) -> str:
+    """Remove quotes around all figure argument values."""
+    return _format_and_lint(re.sub(r'figure="([^"]*)"', r"figure=\1", code_string))
+
+
 def get_python_code_and_preview_link(
-    model_object: vm.VizroBaseModel, data_infos: list[DFMetaData]
+    model_object: vm.VizroBaseModel,
+    data_infos: list[DFMetaData],
+    custom_charts: list["ChartPlan"],
 ) -> VizroCodeAndPreviewLink:
     """Get the Python code and preview link for a Vizro model object."""
     # Get the Python code
-    python_code = model_object._to_python()
+    python_code = model_object._to_python(
+        extra_callable_defs={custom_chart.get_chart_code(vizro=True) for custom_chart in custom_charts}
+    )
 
-    # Add imports after the first empty line
+    # Gather all imports (static + custom), deduplicate, and insert at the first empty line
+    static_imports = [
+        "from vizro import Vizro",
+        "import pandas as pd",
+        "from vizro.managers import data_manager",
+    ]
+    custom_imports = [
+        imp for custom_chart in custom_charts for imp in custom_chart.get_imports(vizro=True).split("\n") if imp.strip()
+    ]
+    all_imports = list(dict.fromkeys(static_imports + custom_imports))
     lines = python_code.splitlines()
     for i, line in enumerate(lines):
         if not line.strip():
-            # Found first empty line, insert imports here
-            imports_to_add = [
-                "from vizro import Vizro",
-                "import pandas as pd",
-                "from vizro.managers import data_manager",
-            ]
-            lines[i:i] = imports_to_add
+            lines[i:i] = all_imports
             break
-
     python_code = "\n".join(lines)
 
     # Prepare data loading code
@@ -295,6 +182,36 @@ def get_python_code_and_preview_link(
     # Add final run line
     python_code += "\n\nVizro().build(model).run()"
 
+    python_code = remove_figure_quotes(python_code)
+
     pycafe_url = create_pycafe_url(python_code)
 
     return VizroCodeAndPreviewLink(python_code=python_code, pycafe_url=pycafe_url)
+
+
+class NoDefsGenerateJsonSchema(GenerateJsonSchema):
+    """Custom schema generator that handles reference cases appropriately."""
+
+    def generate(self, schema, mode="validation"):
+        """Generate schema and resolve references if needed."""
+        json_schema = super().generate(schema, mode=mode)
+
+        # If schema is a reference (has $ref but no properties)
+        if "$ref" in json_schema and "properties" not in json_schema:
+            # Extract the reference path - typically like "#/$defs/ModelName"
+            ref_path = json_schema["$ref"]
+            if ref_path.startswith("#/$defs/"):
+                model_name = ref_path.split("/")[-1]
+                # Get the referenced definition from $defs
+                # Simply copy the referenced definition content to the top level
+                json_schema.update(json_schema["$defs"][model_name])
+                # Remove the $ref since we've resolved it
+                json_schema.pop("$ref", None)
+
+        # Remove the $defs section if it exists
+        json_schema.pop("$defs", None)
+        return json_schema
+
+
+# if __name__ == "__main__":
+# print(vm.Dashboard.model_json_schema(schema_generator=NoDefsGenerateJsonSchema).keys())
