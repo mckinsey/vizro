@@ -39,6 +39,9 @@ class export_data(_AbstractAction):
         # TODO-AV2 A 4: work out where this duplicated get_all_targets_on_page logic should live. Do we even want to
         #  keep behavior that not specifying targets downloads everything on the page? We'd still want the validation
         #  using the model_manager though.
+
+        # TODO-AV2 G 1: work out how this should work if export_data button is inside a container. Should it download
+        #  everything in that container or everything in the page.
         figure_ids_on_page = [
             model.id
             for model in cast(
@@ -83,8 +86,6 @@ class export_data(_AbstractAction):
     #  If it turns out in https://github.com/McK-Internal/vizro-internal/issues/1612 that we need dash_components anyway
     #  to do e.g. synced filters between pages then this change becomes basically pointless.
 
-    # TODO-AV2 G 1: work out how this should work if export_data button is inside a container. Should it download
-    #  everything in that container or everything in the page.
     @property
     def _transformed_outputs(self) -> dict[str, Output]:
         return {

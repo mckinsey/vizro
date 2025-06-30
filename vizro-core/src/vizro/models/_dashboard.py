@@ -180,9 +180,6 @@ class Dashboard(VizroBaseModel):
                     },
                 ),
                 ActionLoop._create_app_callbacks(),
-                # TODO-NOW: Remove these components
-                dcc.Download(id="dashboard_vizro_download"),
-                dcc.Location(id="dashboard_vizro_url", refresh="callback-nav"),
                 dash.page_container,
             ],
         )
