@@ -1,16 +1,13 @@
-from typing import Any, Callable, Literal
+from typing import Any, Literal
 
+from dash import dash
 from dash.exceptions import PreventUpdate
 from glom import glom
-import pandas as pd
-from dash import ctx, dash
-from pydantic import Field
 
 from vizro.actions._abstract_action import _AbstractAction
-from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.actions.utils import b64_encode_value
 from vizro.managers import model_manager
-from vizro.models.types import ModelID, _Controls
+from vizro.models.types import ModelID
 
 
 # TODO NOW: maybe handle multiple controls to begin with. This is singular for simplicity as a PoC.
@@ -67,16 +64,16 @@ class update_control(_AbstractAction):
 """
 Current thoughts:
 
-- AgGrid and Graph update_control done in same Action rather than update_control_ag_grid/update_control_graph - 
+- AgGrid and Graph update_control done in same Action rather than update_control_ag_grid/update_control_graph -
 definitely this is what we want.
 - Think about whether glom is best approach for graph. Definitely something like this better than needing to use
 customdata (which is still possible), since can do e.g. `pointsData.x` which might be what you need without customdata.
-Maybe glom not best language for it, not sure. Or maybe offer user-friendly shortcuts to glom like just "x", 
+Maybe glom not best language for it, not sure. Or maybe offer user-friendly shortcuts to glom like just "x",
 "customdata" etc. Is there every anything outside points?
-- Think about what we actually want to do with AgGrid. Is it sufficient just to provide clicked value or the ID and 
+- Think about what we actually want to do with AgGrid. Is it sufficient just to provide clicked value or the ID and
 restrict control selector to just use those ID values? Maybe. Note we don't want to load data_frame again on serverside.
-- Problem with current approach is it sends all rowData to server. Alternative: CS callback which merges cellClicked 
+- Problem with current approach is it sends all rowData to server. Alternative: CS callback which merges cellClicked
 and only relevant part of rowData. This would then be trigger for update_controls rather than using flexible callback signature.
-- When action loop resolved, try to do same page update_controls directly to control.value rather than going 
+- When action loop resolved, try to do same page update_controls directly to control.value rather than going
 through URL.
 """

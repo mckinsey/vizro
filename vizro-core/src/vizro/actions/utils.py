@@ -2,7 +2,6 @@
 import base64
 import json
 
-
 # TODO NOW: think about exactly what function to expose here - a single value encoding or multiple? Compare to Python
 # built-in urlparse stuff.
 # def encode_url_params(decoded_map, apply_on_keys):
