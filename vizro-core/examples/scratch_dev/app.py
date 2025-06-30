@@ -213,7 +213,7 @@ page_2 = vm.Page(
     components=[
         vm.AgGrid(
             figure=dash_ag_grid(df),
-            actions=[update_control(target="page_2_filter_species", lookup="species", mode="ag_grid")],
+            actions=[update_control(target="page_3_filter_species", lookup="species", mode="ag_grid")],
             # Same page over URL also works:
             # actions=[update_control(target="page_2_filter_species", lookup="species", mode="ag_grid")],
         ),
@@ -229,7 +229,8 @@ page_2 = vm.Page(
                 color_discrete_map=SPECIES_COLORS,
             ),
             actions=[
-                update_control(target="page_2_filter_species", lookup="points.0.customdata.0"),
+                update_control(target="page_3_filter_species", lookup="points.0.customdata.0"),
+                # Same page over URL also works:
                 # update_control(target="page_2_filter_species", lookup="points.0.customdata.0"),
                 # vm.Action(
                 # Done in above lines:
