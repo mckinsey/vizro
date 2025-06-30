@@ -6,7 +6,7 @@ import json
 import re
 import textwrap
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 from urllib.parse import quote, urlencode
 
 import requests
@@ -229,7 +229,7 @@ def get_example_directories() -> dict[str, Optional[list[str]]]:
     }
 
 
-def test_pycafe_link(url: str, wait_for_text: [str, bool], wait_for_locator: [str, bool]):
+def test_pycafe_link(url: str, wait_for_text: Union[str, bool], wait_for_locator: Union[str, bool]):
     """Test if a PyCafe link loads and renders correctly."""
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -247,12 +247,12 @@ def test_pycafe_link(url: str, wait_for_text: [str, bool], wait_for_locator: [st
                 frame.locator(wait_for_locator).wait_for(timeout=90000)
 
             print(f"✅ Successfully verified PyCafe link: {url}")  # noqa
-            return True
+            return 1
 
         except Exception as e:
             print(f"❌ Failed to verify PyCafe link: {url}")  # noqa
             print(f"Error: {str(e)}")  # noqa
-            return False
+            return 0
 
         finally:
             browser.close()

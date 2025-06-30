@@ -51,11 +51,11 @@ if __name__ == "__main__":
     url_generated = generate_link(config, dev_directory, extra_requirements, use_latest_release=False)
 
     # Test the link
-    success = test_pycafe_link(url=url_generated, wait_for_text="Tips Dashboard", wait_for_locator=False)
+    exit_code = test_pycafe_link(url=url_generated, wait_for_text="Vizro Features", wait_for_locator=False)
 
     # Only create a status check if the test fails. On success, the status check will be created
     # by the create_pycafe_links_comments.py script when it posts the comment.
-    if not success:
+    if exit_code == 0:
         create_status_check(
             commit,
             dev_directory,
@@ -65,4 +65,4 @@ if __name__ == "__main__":
         )
 
     # Exit with appropriate status code
-    sys.exit(0 if success else 1)
+    sys.exit(exit_code)
