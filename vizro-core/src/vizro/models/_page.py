@@ -52,20 +52,7 @@ def set_path(path: str, info: ValidationInfo) -> str:
 
 
 class Page(VizroBaseModel):
-    """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
-
-    Args:
-        components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
-            has to be provided.
-        title (str): Title of the `Page`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
-        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        path (str): Path to navigate to page. Defaults to `""`.
-
-    """
+    """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`."""
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]

@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -22,7 +22,16 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 from typing_extensions import TypedDict
 
 import vizro
@@ -39,6 +48,45 @@ if TYPE_CHECKING:
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
+
+
+def random_add(v: str) -> str:
+    return v + "1"
+
+
+class ExampleModel(BaseModel):
+    """An example model."""
+
+    model_config = ConfigDict(frozen=False)
+
+    field_without_default: Annotated[str, AfterValidator(random_add)]
+    """Shows the *[Required]* marker in the signature."""
+
+    field_plain_with_validator: int = 100
+    """Show standard field with type annotation."""
+
+    field_with_validator_and_alias: str = Field("FooBar", alias="BarFoo", validation_alias="BarFoo")
+    """Shows corresponding validator with link/anchor."""
+
+    field_with_constraints_and_description: int = Field(
+        default=5, ge=0, le=100, description="Shows constraints within doc string."
+    )
+
+    @field_validator("field_with_validator_and_alias", "field_without_default", mode="before")
+    @classmethod
+    def check_max_length_ten(cls, v) -> str:
+        """Show corresponding field with link/anchor."""
+        if len(v) >= 10:
+            raise ValueError("No more than 10 characters allowed")
+        return v
+
+    @model_validator(mode="before")
+    @classmethod
+    def lowercase_only(cls, data: dict[str, Any]) -> dict[str, Any]:
+        """Ensure that the field without a default is lowercase."""
+        if isinstance(data.get("field_without_default"), str):
+            data["field_without_default"] = data["field_without_default"].lower()
+        return data
 
 
 def _all_hidden(components: list[Component]):
@@ -82,19 +130,7 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
 
 
 class Dashboard(VizroBaseModel):
-    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
-
-    Args:
-        pages (list[Page]): See [`Page`][vizro.models.Page].
-        theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
-            Defaults to `vizro_dark`.
-        navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-
-    """
+    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build]."""
 
     pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
