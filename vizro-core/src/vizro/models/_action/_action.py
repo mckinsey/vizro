@@ -319,7 +319,7 @@ class _BaseAction(VizroBaseModel):
 
         callback_inputs = {
             "external": external_callback_inputs,
-            "internal": {"trigger": Input(f"{self.id}_trigger", "data")},
+            "internal": {"trigger": Input(f"{self.id}_trigger_for_actual_callback", "data")},
         }
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
             "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
@@ -344,7 +344,7 @@ class _BaseAction(VizroBaseModel):
 
         # would be clientside eventually
         @callback(
-            Output(f"{self.id}_trigger", "data", allow_duplicate=True),
+            Output(f"{self.id}_trigger_for_actual_callback", "data", allow_duplicate=True),
             Output(f"{self.trigger.split(".")[0]}_created", "data", allow_duplicate=True),
             Input(*self.trigger.split(".")),
             State(f"{self.trigger.split(".")[0]}_created", "data"),
@@ -371,7 +371,7 @@ class _BaseAction(VizroBaseModel):
             #     print(f"Cancelled {self._action_name}")
             #     raise PreventUpdate
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
-            time.sleep(3)
+            # time.sleep(3)
             if "external" in callback_outputs:
                 return {"internal": {"action_finished": time.time()}, "external": return_value}
             return {"internal": {"action_finished": time.time()}}

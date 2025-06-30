@@ -345,7 +345,7 @@ class Dashboard(VizroBaseModel):
             for component in page_layout._traverse_ids():
                 if f"{component.id}_created" not in page_layout:
                     action_components.append(dcc.Store(id=f"{component.id}_created", data="not_dynamic"))
-            action_components.append(dcc.Store(id=f"{action.id}_trigger"))
+            action_components.append(dcc.Store(id=f"{action.id}_trigger_for_actual_callback"))
             action_components.append(dcc.Store(id=f"{action.id}_finished"))
             action_components.extend(action._dash_components)  # hopefully not needed in future
 

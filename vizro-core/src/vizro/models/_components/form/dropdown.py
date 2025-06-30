@@ -162,7 +162,8 @@ class Dropdown(VizroBaseModel):
             children=[
                 dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
                 dcc.Dropdown(**(defaults | self.extra)),
-                dcc.Store(id=f"{self.id}_created", data=True, storage_type="local"),
+                dcc.Store(id=f"{self.id}_created", data=True, storage_type="local") if self._dynamic else None,
+                # Actually do we need to always create this and give it data="not_dynamic" if self._dynamic is False?
             ]
         )
 

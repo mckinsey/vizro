@@ -28,6 +28,7 @@ def my_custom_action(t: int):
 
 
 #
+
 # page_1 = vm.Page(
 #     title="My first dashboard",
 #     components=[
@@ -38,24 +39,24 @@ def my_custom_action(t: int):
 #         vm.Filter(column="continent"),
 #     ],
 # )
-#
-# page_2 = vm.Page(
-#     title="Simple custom action",
-#     components=[
-#         vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-#         vm.Button(
-#             text="Export data",
-#             actions=[
-#                 vm.Action(function=export_data()),
-#                 vm.Action(function=my_custom_action(t=2)),
-#                 vm.Action(function=export_data(file_format="xlsx")),
-#             ],
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(column="continent"),
-#     ],
-# )
+
+page_2 = vm.Page(
+    title="Simple custom action",
+    components=[
+        vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+                vm.Action(function=my_custom_action(t=2)),
+                vm.Action(function=export_data(file_format="xlsx")),
+            ],
+        ),
+    ],
+    controls=[
+        vm.Filter(column="continent"),
+    ],
+)
 #
 # page_3 = vm.Page(
 #     title="Filter interaction graph",
@@ -122,25 +123,31 @@ def my_custom_action(t: int):
 #     ],
 # )
 
-# TODO: think about whether in future this case should be dealt with as a single serverside callback that updates
+# TODO NOW: think about whether in future this case should be dealt with as a single serverside callback that updates
 # filter and relevant graphs on page (as now) or instead more like an interact with two chained callbacks
-page_6 = vm.Page(
-    title="DataFrame Parameter",
-    components=[
-        vm.Graph(
-            id="page_6_graph", figure=px.box("dynamic_df_gapminder", x="continent", y="lifeExp", color="continent")
-        ),
-    ],
-    controls=[
-        vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
-        vm.Parameter(
-            targets=["page_6_graph.data_frame.continent"],
-            selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe", id="parameter"),
-        ),
-    ],
-)
+# page_6 = vm.Page(
+#     title="DataFrame Parameter",
+#     components=[
+#         vm.Graph(
+#             id="page_6_graph", figure=px.box("dynamic_df_gapminder", x="continent", y="lifeExp", color="continent")
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
+#         vm.Parameter(
+#             targets=["page_6_graph.data_frame.continent"],
+#             selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe", id="parameter"),
+#         ),
+#     ],
+# )
+#  page_2, page_3, page_4, page_5,
+dashboard = vm.Dashboard(pages=[page_2])
 
-dashboard = vm.Dashboard(pages=[page_6])
+"""Problems:
+- chain of actions (page_2) doesn't work because we don't create finished_created stores.
+- multiple pages gives unknown Output error
+- minor: on page load trigger system can probably be simplified
+"""
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run(dev_tools_hot_reload=False, debug=True)

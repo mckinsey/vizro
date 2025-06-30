@@ -93,7 +93,7 @@ class AgGrid(VizroBaseModel):
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         figure = self.figure(**kwargs)
         figure.id = self._input_component_id
-        return figure
+        return html.Div([figure, dcc.Store(id=f"{self.id}_created", data=True, storage_type="local")])
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
@@ -185,7 +185,9 @@ class AgGrid(VizroBaseModel):
                     # The `id=self._input_component_id` is set to avoid the "Non-existing object" Dash exception.
                     html.Div(
                         id=self.id,
-                        children=[html.Div(id=self._input_component_id)],
+                        children=[
+                            html.Div(id=self._input_component_id),
+                        ],
                         className="table-container",
                     ),
                     dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
