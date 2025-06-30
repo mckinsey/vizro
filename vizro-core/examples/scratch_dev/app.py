@@ -37,10 +37,9 @@ first_page = vm.Page(
     ],
     controls=[
         # vm.Filter(column="continent"),
+        vm.Filter(column="year", selector=vm.Dropdown()),
         vm.Filter(column="continent", selector=vm.Checklist()),
-        # vm.Filter(column="country"),
-        # vm.Filter(column="country", selector=vm.Checklist()),
-        # vm.Filter(column="country", selector=vm.Dropdown(multi=False)),
+        vm.Filter(column="country", selector=vm.Dropdown(multi=False)),
         # vm.Filter(
         #     column="continent",
         #     selector=vm.Dropdown(
