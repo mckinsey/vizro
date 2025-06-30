@@ -19,7 +19,7 @@ You can also set `targets` to specify which components on the page the filter sh
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="12-14"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -76,7 +76,7 @@ The following example demonstrates these default selector types.
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="24-26"}
         import pandas as pd
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -146,7 +146,7 @@ If you want to have a different selector for your filter, you can give the `sele
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="13"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -205,7 +205,7 @@ Below is an advanced example where we only target one page component, and where 
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10 14"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm

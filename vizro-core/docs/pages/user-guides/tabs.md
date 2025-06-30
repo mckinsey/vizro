@@ -18,6 +18,8 @@ By using [`Tabs`][vizro.models.Tabs], the following applies:
 - [`Filters`][vizro.models.Filter] affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
 - The `title` of the [`Container`][vizro.models.Container] inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
 
+## Add tabs
+
 To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
 1. Insert the [`Tabs`][vizro.models.Tabs] into the `components` argument of the [`Page`][vizro.models.Page]

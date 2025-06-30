@@ -20,7 +20,7 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="15-23"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -90,7 +90,7 @@ If you want to change nested parameters, you can specify the `targets` argument 
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="34"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
