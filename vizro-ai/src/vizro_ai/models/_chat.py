@@ -1,6 +1,7 @@
 """Vizro-AI chat model following vizro-core patterns."""
 
 import json
+import uuid
 from typing import Literal, Optional
 
 import dash
@@ -296,30 +297,40 @@ class Chat(VizroBaseModel):
         
         # TODO: double check whether this is needed, if so, move to other place
         def create_message_components(content, message_id):
-            """Parse markdown content and create components with dcc.Clipboard for code blocks."""
-            import re
+            """Parse structured content and create components."""
             
-            # Simple regex to find code blocks
-            code_pattern = r'```(.*?)```'
-            parts = re.split(code_pattern, content, flags=re.DOTALL)
-            
-            components = []
-            for i, part in enumerate(parts):
-                if i % 2 == 0:  # Text content
-                    if part.strip():
+            # Handle structured content (list of content items)
+            if isinstance(content, list):
+                components = []
+                
+                for item in content:
+                    item_type = item.get("type", "text")
+                    item_content = item.get("content", "")
+                    
+                    if item_type == "text" and item_content.strip():
                         components.append(
                             dcc.Markdown(
-                                part,
+                                item_content,
                                 className="markdown-container",
                                 style={"margin": 0}
                             )
                         )
-                else:  # Code content
-                    code_id = f"{message_id}-code-{i // 2}"
-                    components.append(create_code_block_component(part.strip(), code_id))
-                    components.append(html.Br())
+                    elif item_type == "code":
+                        code_id = f"{message_id}-code-{uuid.uuid4()}"
+                        components.append(create_code_block_component(item_content, code_id))
+                        components.append(html.Br())
+                    elif item_type == "plotly_graph":
+                        fig_data = json.loads(item_content)
+                        components.append(
+                            dcc.Graph(
+                                figure=go.Figure(fig_data),
+                            )
+                        )
+                        components.append(html.Br())
+                
+                return html.Div(components) if components else ""
             
-            return html.Div(components) if components else ""
+            return ""
 
         # Add callback to clear input immediately on submit
         @callback(
@@ -345,7 +356,10 @@ class Chat(VizroBaseModel):
         def initialize_messages(current_messages):
             """Initialize messages if they don't exist."""
             if not current_messages:
-                initial_data = json.dumps([{"role": "assistant", "content": self.initial_message}])
+                if not self.initial_message:
+                    return json.dumps([])
+                initial_content = [{"type": "text", "content": self.initial_message}]
+                initial_data = json.dumps([{"role": "assistant", "content": initial_content}])
                 return initial_data
             return current_messages
 
@@ -373,7 +387,6 @@ class Chat(VizroBaseModel):
                     content = message.get("content", "")
                     
                     if role == "user":
-                        # Create user message div
                         div = html.Div(
                             content,
                             style={
@@ -384,7 +397,7 @@ class Chat(VizroBaseModel):
                         )
                     elif role == "assistant":
                         # Skip empty assistant messages (placeholders)
-                        if not content.strip():
+                        if not content:
                             continue
                         # Create assistant message div with parsed components
                         message_id = f"{self.id}-history-msg-{idx}"
@@ -434,7 +447,6 @@ class Chat(VizroBaseModel):
             
             updated_messages = json.dumps(messages_array)
 
-            # Create user message div
             user_div = html.Div(
                 value.strip(),
                 style={
@@ -444,7 +456,6 @@ class Chat(VizroBaseModel):
                 }
             )
 
-            # Create assistant div for streaming
             assistant_div = html.Div(
                 id=f"{self.id}-streaming-content",
                 children=html.Div(
@@ -499,7 +510,7 @@ class Chat(VizroBaseModel):
                         )
                     )
                 elif item["type"] == "code":
-                    code_id = f"{self.id}-code-{item['index']}"
+                    code_id = f"{self.id}-code-{uuid.uuid4()}"
                     components.append(create_code_block_component(item["content"], code_id))
                     components.append(html.Br())
                 elif item["type"] == "plotly_graph":
@@ -532,8 +543,6 @@ class Chat(VizroBaseModel):
             # Build structured content for mixed text/code display
             content_items = []
             current_text = ""
-            code_block_index = 0
-            graph_index = 0
             
             for msg in messages:
                 msg_type = msg.get("type", "text")
@@ -553,9 +562,7 @@ class Chat(VizroBaseModel):
                     content_items.append({
                         "type": "code",
                         "content": msg_content,
-                        "index": code_block_index
                     })
-                    code_block_index += 1
                 elif msg_type == "plotly_graph":
                     # If we have accumulated text, add it first
                     if current_text:
@@ -569,10 +576,8 @@ class Chat(VizroBaseModel):
                     content_items.append({
                         "type": "plotly_graph",
                         "content": msg_content,
-                        "index": graph_index,
                         "metadata": msg_metadata
                     })
-                    graph_index += 1
                 else:
                     # Accumulate text content
                     current_text += msg_content
@@ -604,35 +609,21 @@ class Chat(VizroBaseModel):
             if not completion_triggered or not content:
                 return dash.no_update, dash.no_update
 
-            # Convert structured content back to markdown for storage
-            markdown_content = ""
-            if isinstance(content, list):
-                for item in content:
-                    if item["type"] == "text":
-                        markdown_content += item["content"]
-                    elif item["type"] == "code":
-                        # Store code blocks in markdown format
-                        markdown_content += f"\n```\n{item['content']}\n```\n"
-                    elif item["type"] == "plotly_graph":
-                        # Store graphs as special markdown blocks with JSON data
-                        title = item.get("metadata", {}).get("title", "Chart")
-                        markdown_content += f"\n**{title}**\n*[Interactive chart rendered in chat]*\n\n"
-            else:
-                # Fallback for string content
-                markdown_content = content
+            # Store structured content to preserve plotly graphs and other rich content
+            structured_content = content if isinstance(content, list) else [{"type": "text", "content": str(content)}]
 
             messages_array = json.loads(messages)
             # Find and update the last assistant message (placeholder) instead of adding new one
             updated = False
             for i in range(len(messages_array) - 1, -1, -1):
                 if messages_array[i].get("role") == "assistant":
-                    messages_array[i]["content"] = markdown_content.strip()
+                    messages_array[i]["content"] = structured_content
                     updated = True
                     break
             
             if not updated:
                 # Fallback: add new message if no placeholder found
-                assistant_message = {"role": "assistant", "content": markdown_content.strip()}
+                assistant_message = {"role": "assistant", "content": structured_content}
                 messages_array.append(assistant_message)
             
             final_messages = json.dumps(messages_array)
