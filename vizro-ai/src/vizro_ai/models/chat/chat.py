@@ -1,4 +1,4 @@
-"""Vizro-AI chat model following vizro-core patterns."""
+"""Chat model."""
 
 import json
 import uuid
@@ -30,67 +30,33 @@ from vizro_ai.models.chat._constants import (
 
 
 class Chat(VizroBaseModel):
-    """A chat component for Vizro dashboards that implements the plugin interface.
-
-    This component provides interactive chat functionality that can be
-    integrated into Vizro dashboards. It supports different processors
-    for handling chat responses, including simple echoing and OpenAI integration.
-
-    To use this component, it must be passed as a plugin to Vizro to properly
-    register its streaming routes.
+    """Chat component.
 
     Args:
         type (Literal["chat"]): Defaults to `"chat"`.
         input_placeholder (str): Placeholder text for the input field. Defaults to `"Ask me a question..."`.
         input_height (str): Height of the input field. Defaults to `"80px"`.
         button_text (str): Text displayed on the send button. Defaults to `"Send"`.
-        initial_message (str): Initial message displayed in the chat. Defaults to `"Hello! How can I help you today?"`.
+        initial_message (Optional[str]): Initial message displayed in the chat. Defaults to None.
         height (str): Height of the chat component wrapper. Defaults to `"100%"`.
         storage_type (Literal["memory", "session", "local"]): Storage type for chat history persistence. Defaults to `"session"`.
         processor (ChatProcessor): Chat processor for generating responses. Defaults to `EchoProcessor()`.
-        
-    Example:
-        ```python
-        import vizro.models as vm
-        from vizro import Vizro
-        import vizro_ai.models as vam
-        
-        # Create component
-        chat_component = vam.Chat(processor=vam.EchoProcessor())
-        
-        # Register component type
-        vm.Page.add_type("components", vam.Chat)
-        
-        # Create dashboard
-        dashboard = vm.Dashboard(pages=[vm.Page(components=[chat_component])])
-        
-        # Pass component as plugin to Vizro
-        Vizro(plugins=[chat_component]).build(dashboard).run()
-        ```
+
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    # TODO: make initial_message optional
     type: Literal["chat"] = "chat"
     input_placeholder: str = Field(default="Ask me a question...", description="Placeholder text for the input field")
     input_height: str = Field(default="80px", description="Height of the input field")
     button_text: str = Field(default="Send", description="Text displayed on the send button")
-    initial_message: str = Field(default="Hello! How can I help you today!", description="Initial message displayed in the chat")
+    initial_message: Optional[str] = Field(default=None, description="Initial message displayed in the chat")
     height: str = Field(default="100%", description="Height of the chat component wrapper")
     storage_type: Literal["memory", "session", "local"] = Field(default="session", description="Storage type for chat history persistence")
     processor: ChatProcessor = Field(default_factory=EchoProcessor, description="Chat processor for generating responses")
 
     def plug(self, app):
-        """Register streaming routes with the Dash app.
-        
-        This method is called automatically when the component is passed as a plugin
-        to Dash (via Vizro). It registers the streaming endpoint needed for the chat
-        functionality.
-        
-        Args:
-            app: The Dash application instance.
-        """
+        """Register streaming routes with the Dash app."""
         @app.server.route(f"/streaming-{self.id}", methods=["POST"], endpoint=f"streaming_chat_{self.id}")
         def streaming_chat():
             try:
@@ -422,11 +388,7 @@ class Chat(VizroBaseModel):
 
     @_log_call
     def build(self):
-        """Build the chat component layout.
-        
-        Returns:
-            Dash HTML component containing the complete chat interface
-        """
+        """Build the chat component layout."""
         components = []
 
         components.extend(self._build_data_stores())
@@ -442,11 +404,7 @@ class Chat(VizroBaseModel):
         )
 
     def _build_data_stores(self):
-        """Build the data store components for the chat.
-        
-        Returns:
-            List of dcc.Store components for chat data persistence
-        """
+        """Build the data store components for the chat."""
         return [
             dcc.Store(id=f"{self.id}-messages", storage_type=self.storage_type),
             dcc.Store(id=f"{self.id}-stream-buffer", data=""),
@@ -454,11 +412,7 @@ class Chat(VizroBaseModel):
         ]
 
     def _build_chat_interface(self):
-        """Build the main chat interface.
-        
-        Returns:
-            Dash HTML component containing the chat history and input area
-        """
+        """Build the main chat interface."""
         return html.Div(
             [
                 html.Div(

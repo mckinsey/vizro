@@ -27,12 +27,12 @@ example_llm_processor = vam.OpenAIProcessor(
 # Create the chat component
 chat_component1 = vam.Chat(
     input_placeholder="Ask me a question...",
-    initial_message="",
     processor=example_llm_processor,
 )
 
 chat_component2 = vam.Chat(
     processor=vam.EchoProcessor(),
+    initial_message="I'm an echo processor",
 )
 
 chat_component3 = vam.Chat(
