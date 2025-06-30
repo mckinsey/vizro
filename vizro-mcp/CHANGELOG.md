@@ -1,3 +1,19 @@
+<a id='changelog-0.1.2'></a>
+
+# 0.1.2 — 2025-06-30
+
+## Added
+
+- Add Dockerfile for Vizro MCP server to enable containerized local setup. ([#1184](https://github.com/mckinsey/vizro/pull/1184))
+
+- Add capability to create custom charts (beyond Plotly Express) with Vizro-MCP. ([#1227](https://github.com/mckinsey/vizro/pull/1227))
+
+## Changed
+
+- Update Vizro version to `>=0.1.42`. ([#1227](https://github.com/mckinsey/vizro/pull/1227))
+
+- Improve usability of MCP server in IDE environments like Cursor. ([#1227](https://github.com/mckinsey/vizro/pull/1227))
+
 <a id='changelog-0.1.1'></a>
 
 # 0.1.1 — 2025-05-15
