@@ -4,7 +4,7 @@ import json
 import uuid
 from dash import dcc, html
 import plotly.graph_objects as go
-from vizro_ai.models._chat_constants import CODE_BLOCK_CONTAINER_STYLE
+from vizro_ai.models.chat._constants import CODE_BLOCK_CONTAINER_STYLE
 
 
 def _parse_sse_chunks(animation_data) -> list[dict]:

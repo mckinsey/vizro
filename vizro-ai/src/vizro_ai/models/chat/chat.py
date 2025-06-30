@@ -15,9 +15,9 @@ import plotly.graph_objects as go
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro_ai.models._processors import ChatMessage, ChatProcessor, EchoProcessor
-from vizro_ai.models._chat_utils import _parse_sse_chunks, _create_code_block_component, _flush_accumulated_text, _create_message_components
-from vizro_ai.models._chat_constants import (
+from vizro_ai.models.chat.processors import ChatMessage, ChatProcessor, EchoProcessor
+from vizro_ai.models.chat._utils import _parse_sse_chunks, _create_code_block_component, _flush_accumulated_text, _create_message_components
+from vizro_ai.models.chat._constants import (
     WRAPPER,
     CHAT_CONTAINER_STYLE,
     CHAT_INPUT_WRAPPER_STYLE,
@@ -27,31 +27,6 @@ from vizro_ai.models._chat_constants import (
     MESSAGE_STYLE,
     TEXTAREA_STYLE,
 )
-
-MESSAGE_STYLE = {
-    "color": "var(--text-primary)",
-    "padding": "10px 15px",
-    "maxWidth": "96%",
-    "marginLeft": "0",
-    "marginRight": "auto",
-    "marginBottom": "15px",
-    "whiteSpace": "pre-wrap",
-    "wordBreak": "break-word",
-    "width": "fit-content",
-    "minWidth": "100px",
-    "lineHeight": "1.5",
-    "letterSpacing": "0.2px",
-    "borderRadius": "10px",
-}
-
-TEXTAREA_STYLE = {
-    "height": "80px",  # This will be overridden by self.input_height
-    "resize": "none",
-    "borderBottomLeftRadius": "10px",
-    "borderTopLeftRadius": "10px",
-    "boxShadow": "none",
-    "border": "1px solid var(--border-subtleAlpha01)",
-}
 
 
 class Chat(VizroBaseModel):
