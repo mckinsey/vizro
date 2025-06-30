@@ -164,20 +164,25 @@ class TestChecklistBuild:
         expected_checklist = html.Fieldset(
             [
                 html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
-                dbc.Checkbox(
-                    id="checklist_id_select_all",
-                    value=expected_checkbox_value,
-                    label="Select All",
-                    persistence=True,
-                    persistence_type="session",
-                ),
-                dbc.Checklist(
-                    id="checklist_id",
-                    options=expected_options,
-                    value=expected_value,
-                    inline=False,
-                    persistence=True,
-                    persistence_type="session",
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            id="checklist_id_select_all",
+                            value=expected_checkbox_value,
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(
+                            id="checklist_id",
+                            options=expected_options,
+                            value=expected_value,
+                            inline=False,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                    ],
+                    className=None,
                 ),
             ],
         )
@@ -200,21 +205,30 @@ class TestChecklistBuild:
         expected_checklist = html.Fieldset(
             [
                 html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
-                dbc.Checkbox(
-                    id="checklist_id_select_all",
-                    value=False,
-                    label="Select All",
-                    persistence=True,
-                    persistence_type="session",
-                ),
-                dbc.Checklist(
-                    id="overridden_id",
-                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
-                    value=["A"],
-                    persistence=True,
-                    persistence_type="session",
-                    switch=True,
-                    inline=True,
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            id="checklist_id_select_all",
+                            value=False,
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(
+                            id="overridden_id",
+                            options=[
+                                {"label": "A", "value": "A"},
+                                {"label": "B", "value": "B"},
+                                {"label": "C", "value": "C"},
+                            ],
+                            value=["A"],
+                            persistence=True,
+                            persistence_type="session",
+                            switch=True,
+                            inline=True,
+                        ),
+                    ],
+                    className=None,
                 ),
             ],
         )
@@ -241,18 +255,27 @@ class TestChecklistBuild:
         expected_checklist = html.Fieldset(
             [
                 html.Legend([html.Span("Title"), *expected_description], className="form-label"),
-                dbc.Checkbox(
-                    value=False,
-                    label="Select All",
-                    persistence=True,
-                    persistence_type="session",
-                ),
-                dbc.Checklist(
-                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
-                    value=["A"],
-                    inline=False,
-                    persistence=True,
-                    persistence_type="session",
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            value=False,
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(
+                            options=[
+                                {"label": "A", "value": "A"},
+                                {"label": "B", "value": "B"},
+                                {"label": "C", "value": "C"},
+                            ],
+                            value=["A"],
+                            inline=False,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                    ],
+                    className=None,
                 ),
             ],
         )
@@ -266,19 +289,28 @@ class TestChecklistBuild:
         expected_checklist = html.Fieldset(
             [
                 html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
-                dbc.Checkbox(
-                    value=False,
-                    label="Select All",
-                    persistence=True,
-                    persistence_type="session",
-                ),
-                dbc.Checklist(
-                    id="checklist_id",
-                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
-                    value=["A"],
-                    inline=True,
-                    persistence=True,
-                    persistence_type="session",
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            value=False,
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(
+                            id="checklist_id",
+                            options=[
+                                {"label": "A", "value": "A"},
+                                {"label": "B", "value": "B"},
+                                {"label": "C", "value": "C"},
+                            ],
+                            value=["A"],
+                            inline=True,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                    ],
+                    className="checklist-inline",
                 ),
             ],
         )
