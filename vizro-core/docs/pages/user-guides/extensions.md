@@ -48,7 +48,7 @@ Here is an example showing a Dash callback within Vizro, enabling an interaction
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="6-13 18 20"}
         from dash import callback, Input, Output
         import vizro.models as vm
         import vizro.plotly.express as px
