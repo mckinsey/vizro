@@ -41,6 +41,12 @@ chat_component3 = vam.Chat(
     storage_type="local",
 )
 
+chat_component4 = vam.Chat(
+    input_placeholder="Ask me anything to see mixed content...",
+    processor=vam.GraphProcessor(),
+    initial_message="Hello! I can show you text, code, and interactive charts. Try asking me anything!",
+)
+
 vm.Page.add_type("components", vam.Chat)
 
 page1 = vm.Page(
@@ -63,13 +69,18 @@ page3 = vm.Page(
     layout=vm.Flex(direction="row"),
 )
 
+page4 = vm.Page(
+    title="Chat with Graphs & Mixed Content",
+    components=[chat_component4],
+)
+
 # Create the dashboard
 dashboard = vm.Dashboard(
-    pages=[page1, page2, page3],
+    pages=[page1, page2, page3, page4],
     theme="vizro_light",
     )
 
 # IMPORTANT: Pass the chat component as a plugin to Vizro
 # This ensures the streaming routes are properly registered during app initialization
-app = Vizro(plugins=[chat_component1, chat_component2, chat_component3])
+app = Vizro(plugins=[chat_component1, chat_component2, chat_component3, chat_component4])
 app.build(dashboard).run()

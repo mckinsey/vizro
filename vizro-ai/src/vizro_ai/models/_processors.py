@@ -3,16 +3,11 @@
 import re
 from abc import ABC, abstractmethod
 from enum import Enum
-from time import sleep
+import time
 from typing import Any, Dict, Generator, List, Optional
 
 from pydantic import BaseModel, Field
 
-# Try to import OpenAI, but make it optional
-try:
-    from openai import OpenAI
-except ImportError:
-    OpenAI = None
 
 
 class MessageType(str, Enum):
@@ -20,6 +15,7 @@ class MessageType(str, Enum):
     TEXT = "text"
     CODE = "code"
     ERROR = "error"
+    PLOTLY_GRAPH = "plotly_graph"
 
 
 class ChatMessage(BaseModel):
@@ -169,6 +165,13 @@ class OpenAIProcessor(ChatProcessor):
             api_key: Optional API key. If not provided, will look for OPENAI_API_KEY env var
             api_base: Optional API base URL
         """
+        # Import OpenAI only when needed
+        try:
+            from openai import OpenAI
+            self._OpenAI = OpenAI
+        except ImportError:
+            raise ImportError("OpenAI package is required for OpenAIProcessor. Install it with: pip install openai")
+        
         self.model = model
         self.temperature = temperature
         self._api_key = api_key
@@ -190,12 +193,11 @@ class OpenAIProcessor(ChatProcessor):
             kwargs = {"api_key": self._api_key}
             if self._api_base:
                 kwargs["base_url"] = self._api_base
-            self.client = OpenAI(**kwargs)
+            self.client = self._OpenAI(**kwargs)
 
     def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
         """Get a streaming response from OpenAI."""
         try:
-            # Format messages for OpenAI API
             formatted_messages = [
                 {"role": msg["role"], "content": msg["content"]}
                 for msg in messages
@@ -223,37 +225,68 @@ class OpenAIProcessor(ChatProcessor):
         except Exception as e:
             yield ChatMessage(
                 type=MessageType.ERROR,
-                content=f"OpenAI API Error: {e!s}"
+                content=f"Error in OpenAI Processor: {e!s}"
             )
 
 
-class NonStreamingProcessor(ChatProcessor):
-    """Base class for processors that don't support streaming but want to simulate it."""
-    
-    @property
-    def supports_streaming(self) -> bool:
-        """Non-streaming processors return False."""
-        return False
-    
-    @abstractmethod
-    def get_complete_response(self, messages: List[dict], prompt: str) -> str:
-        """Get the complete response as a single string."""
-        pass
-    
+
+class GraphProcessor(ChatProcessor):
+    """Simple processor that demonstrates rendering different content types including Plotly graphs."""
+
     def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
-        """Simulate streaming by yielding the complete response in chunks."""
+        """Generate a response with text, code, and a sample Plotly graph."""
         try:
-            complete_response = self.get_complete_response(messages, prompt)
+            import vizro.plotly.express as px
             
-            # Simulate streaming by yielding chunks
-            chunk_size = 5  # Characters per chunk
-            for i in range(0, len(complete_response), chunk_size):
-                chunk = complete_response[i:i + chunk_size]
-                yield ChatMessage(type=MessageType.TEXT, content=chunk)
-                sleep(0.02)  # Small delay to simulate streaming
+            for char in f"You said: {prompt}\n\n":
+                yield ChatMessage(type=MessageType.TEXT, content=char)
+                
+            for char in "I'm a bot that always responds with a plotly graph:\n\n":
+                yield ChatMessage(type=MessageType.TEXT, content=char)
+            
+            sample_code = "import plotly.express as px\ndf = px.data.iris()\nfig = px.scatter(df, x='sepal_width', y='sepal_length', color='species')"
+            yield ChatMessage(
+                type=MessageType.CODE, 
+                content=sample_code,
+                metadata={"language": "python"}
+            )
+            
+            for char in "\nHere's a sample interactive chart:\n\n":
+                yield ChatMessage(type=MessageType.TEXT, content=char)
+
+            fig = px.scatter(
+                px.data.iris(), 
+                x='sepal_width', 
+                y='sepal_length', 
+                color='species',
+            )
+            
+            time.sleep(1)
+            yield ChatMessage(
+                type=MessageType.PLOTLY_GRAPH,
+                content=fig.to_json(),
+            )
+            
+            time.sleep(2)
+            for char in "\nThis demonstrates mixed content rendering in the chat interface. Now let's try a different theme:":
+                yield ChatMessage(type=MessageType.TEXT, content=char)
+
+            fig2 = px.scatter(
+                px.data.iris(), 
+                x='sepal_width', 
+                y='sepal_length', 
+                color='species',
+                template="vizro_dark",
+            )
+
+            time.sleep(5)
+            yield ChatMessage(
+                type=MessageType.PLOTLY_GRAPH,
+                content=fig2.to_json(),
+            )
                 
         except Exception as e:
             yield ChatMessage(
                 type=MessageType.ERROR,
-                content=f"Error: {e!s}"
+                content=f"Error in GraphProcessor: {e!s}"
             ) 

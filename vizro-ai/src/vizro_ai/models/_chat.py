@@ -10,6 +10,7 @@ from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
 from flask import Response, request
 from pydantic import ConfigDict, Field
+import plotly.graph_objects as go
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -267,9 +268,6 @@ class Chat(VizroBaseModel):
                 user_prompt = data.get("prompt", "").strip()
                 messages = json.loads(data.get("chat_history", "[]"))
 
-                if not user_prompt:
-                    raise ValueError("Empty prompt")
-
                 def response_stream():
                     try:
                         for chat_message in self.processor.get_response(messages, user_prompt):
@@ -486,16 +484,10 @@ class Chat(VizroBaseModel):
             prevent_initial_call=True,
         )
         def update_streaming_display(buffer_data):
-            """Update the streaming display with mixed text and code components."""
+            """Update the streaming display from the buffer data."""
             if not buffer_data:
                 return []
             
-            # buffer_data should now be a list of component specifications
-            if isinstance(buffer_data, str):
-                # Fallback for string data
-                return [dcc.Markdown(buffer_data, className="markdown-container")]
-            
-            # Build components from the buffer data
             components = []
             for item in buffer_data:
                 if item["type"] == "text":
@@ -509,6 +501,14 @@ class Chat(VizroBaseModel):
                 elif item["type"] == "code":
                     code_id = f"{self.id}-code-{item['index']}"
                     components.append(create_code_block_component(item["content"], code_id))
+                    components.append(html.Br())
+                elif item["type"] == "plotly_graph":
+                    fig_data = json.loads(item["content"])
+                    components.append(
+                        dcc.Graph(
+                            figure=go.Figure(fig_data),
+                        )
+                    )
                     components.append(html.Br())
             
             return components
@@ -533,10 +533,12 @@ class Chat(VizroBaseModel):
             content_items = []
             current_text = ""
             code_block_index = 0
+            graph_index = 0
             
             for msg in messages:
                 msg_type = msg.get("type", "text")
                 msg_content = msg.get("content", "")
+                msg_metadata = msg.get("metadata", {})
                 
                 if msg_type == "code":
                     # If we have accumulated text, add it first
@@ -554,6 +556,23 @@ class Chat(VizroBaseModel):
                         "index": code_block_index
                     })
                     code_block_index += 1
+                elif msg_type == "plotly_graph":
+                    # If we have accumulated text, add it first
+                    if current_text:
+                        content_items.append({
+                            "type": "text",
+                            "content": current_text
+                        })
+                        current_text = ""
+                    
+                    # Add graph as a separate item
+                    content_items.append({
+                        "type": "plotly_graph",
+                        "content": msg_content,
+                        "index": graph_index,
+                        "metadata": msg_metadata
+                    })
+                    graph_index += 1
                 else:
                     # Accumulate text content
                     current_text += msg_content
@@ -594,6 +613,10 @@ class Chat(VizroBaseModel):
                     elif item["type"] == "code":
                         # Store code blocks in markdown format
                         markdown_content += f"\n```\n{item['content']}\n```\n"
+                    elif item["type"] == "plotly_graph":
+                        # Store graphs as special markdown blocks with JSON data
+                        title = item.get("metadata", {}).get("title", "Chart")
+                        markdown_content += f"\n**{title}**\n*[Interactive chart rendered in chat]*\n\n"
             else:
                 # Fallback for string content
                 markdown_content = content
@@ -614,33 +637,6 @@ class Chat(VizroBaseModel):
             
             final_messages = json.dumps(messages_array)
             return final_messages, False  # Reset completion trigger
-
-        # Add callback to handle SSE errors
-        @callback(
-            Output(f"{self.id}-history", "children", allow_duplicate=True),
-            Input(f"{self.id}-sse", "error"),
-            State(f"{self.id}-history", "children"),
-            prevent_initial_call=True,
-        )
-        def handle_sse_error(error, current_history):
-            """Handle SSE streaming errors."""
-            if not error:
-                return dash.no_update
-            
-            # Add error message to history
-            error_div = html.Div(
-                f"Error: {error}",
-                style={
-                    **MESSAGE_STYLE,
-                    "backgroundColor": "#ff4444",
-                    "borderLeft": "4px solid #cc0000",
-                    "color": "white",
-                }
-            )
-            
-            new_history = current_history or []
-            new_history = new_history + [error_div]
-            return new_history
         
         # this clientside callback scrolls the chat history so
         # that the user message is visible.

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Chat component (formerly VizroChatComponent) is a chat interface built for Vizro dashboards that provides smooth streaming responses with rich markdown support. It features a plugin-based architecture that separates data processing from UI rendering, enabling easy integration with different AI services.
+The Chat component is a streaming chat interface built for Vizro dashboards that provides real-time AI responses with rich markdown support. It features a plugin-based architecture that separates data processing from UI rendering, enabling easy integration with different AI services.
 
 **🚨 Important**: This component **must be passed as a plugin to Vizro** to properly register its streaming routes. See the [Dash Plugin Pattern](#-dash-plugin-pattern) section for details.
 
@@ -17,6 +17,15 @@ The Chat component (formerly VizroChatComponent) is a chat interface built for V
 └─────────────────┘    └──────────────────┘    └───────────────────┘
 ```
 
+### Supported Content Types
+
+The Chat component supports rich mixed content through structured `ChatMessage` types:
+
+- **`TEXT`**: Regular text content with markdown support
+- **`CODE`**: Syntax-highlighted code blocks with individual clipboard buttons
+- **`PLOTLY_GRAPH`**: Interactive Plotly charts rendered directly in chat
+- **`ERROR`**: Error messages with appropriate styling and handling
+
 ### 1. **ChatProcessor Layer** (Data Processing)
 - **Responsibility**: Convert various data sources into standardized `ChatMessage` objects
 - **Interface**: Abstract base class with `get_response()` method
@@ -24,24 +33,27 @@ The Chat component (formerly VizroChatComponent) is a chat interface built for V
 - **Flexibility**: Easy to implement custom processors for different AI services
 
 ### 2. **Chat Component Layer** (UI & Experience)
-- **Responsibility**: Handle all UI concerns, animations, user interactions
-- **Features**: Smooth streaming, markdown rendering, clipboard functionality
-- **Performance**: Client-side buffering and animation for optimal UX
+- **Responsibility**: Handle all UI concerns, streaming, user interactions
+- **Features**: Real-time streaming, markdown rendering, clipboard functionality, smart scrolling
+- **Performance**: SSE-based streaming with optimized animation for smooth UX
 
 ### 3. **Communication Layer** (SSE Streaming)
-- **Technology**: Server-Sent Events (SSE) for real-time streaming
+- **Technology**: Server-Sent Events (SSE) via dash-extensions
 - **Format**: JSON-serialized `ChatMessage` objects
+- **Completion**: Uses standard `[DONE]` signal and SSE `done` property
 - **Benefits**: Low latency, automatic reconnection, browser-native support
 
 ### 🎯 **Separation of Concerns Principle**
 
-**Chat Model Focus**: The Chat component should remain focused on **UI/UX concerns**:
-- Rendering messages and markdown content
-- Handling streaming animations and user interactions  
-- Managing chat history and persistence
-- Providing clipboard functionality and visual feedback
+**Chat Model Focus**: The Chat component handles **UI/UX concerns**:
+- Real-time streaming display with smooth animations
+- Markdown rendering with code block support
+- Chat history persistence and restoration
+- Smart auto-scrolling to keep user messages visible
+- Clipboard functionality for code blocks
+- Error handling and user feedback
 
-**Processor Focus**: ChatProcessors handle their own **configuration and response generation logic**:
+**Processor Focus**: ChatProcessors handle **data generation logic**:
 - API key management and authentication
 - Model-specific configuration (temperature, model selection, etc.)
 - Raw data processing and token generation
@@ -157,230 +169,252 @@ sequenceDiagram
 ```
 [LLM Token Stream] 
         ↓
+[parse_markdown_stream()] ← (Optional: For automatic markdown parsing)
+        ↓
 [ChatProcessor.get_response()]
         ↓ 
-[ChatMessage Objects]
+[ChatMessage Objects] ← (TEXT, CODE, PLOTLY_GRAPH, ERROR)
         ↓
 [JSON Serialization]
         ↓
-[SSE Stream]
+[SSE Stream with [DONE] signal]
         ↓
-[Chat Component Callbacks]
+[dash-extensions SSE Component]
         ↓
-[Stream Buffer Store]
+[Stream Buffer Store] ← (Structured content items)
         ↓
-[Direct Markdown Update]
+[Mixed Content Rendering] ← (Text, Code Blocks, Interactive Charts)
         ↓
-[Rendered UI]
+[Rendered UI with Smart Scroll]
 ```
+
+### Key Architectural Components
+
+#### `parse_markdown_stream()` Function
+Automatically detects and separates code blocks from streaming text:
+
+```python
+def parse_markdown_stream(token_stream):
+    """Parse a stream of tokens and yield structured messages."""
+    buffer = ""
+    in_code_block = False
+    
+    for token in token_stream:
+        if "```" in token:
+            # Handle code block boundaries
+            # Yield TEXT message for content before code
+            # Yield CODE message for code content
+        else:
+            # Stream text tokens immediately for real-time effect
+            yield ChatMessage(type=MessageType.TEXT, content=token)
+```
+
+**Benefits:**
+- **Real-time streaming**: Text tokens yielded immediately
+- **Smart parsing**: Automatically detects code block boundaries  
+- **Structured output**: Separates text and code for proper rendering
 
 ### Step-by-Step Flow
 
 1. **Data Source** → Raw tokens/chunks from LLM or AI service
 2. **Processor** → Parses and structures data into `ChatMessage` objects
 3. **Serialization** → Converts to JSON for network transmission
-4. **SSE Streaming** → Real-time streaming to browser
-5. **Component Callbacks** → Server-side Dash callbacks receive data
-6. **Buffer Management** → Accumulates content in stream buffer store
-7. **Direct Update** → Updates markdown component directly as content arrives
-8. **UI Rendering** → Final display with markdown, syntax highlighting, clipboard
+4. **SSE Streaming** → Real-time streaming to browser with `[DONE]` completion signal
+5. **Component Callbacks** → Server-side Dash callbacks receive data via SSE animation
+6. **Buffer Management** → Accumulates structured content in stream buffer store
+7. **Content Rendering** → Updates streaming display with mixed text and code components
+8. **Completion Detection** → Uses SSE `done` property to detect stream completion
+9. **Message Persistence** → Converts structured content to markdown and stores in message history
+10. **Smart Scrolling** → Auto-scrolls to keep user message visible during conversations
 
 ## 🔧 Special Design Features
 
-### 1. Simplified Streaming System
+### 1. Modern SSE Streaming System
 
-**Purpose**: Provide real-time streaming display of AI responses as they arrive.
+**Purpose**: Provide real-time streaming display using standard SSE completion signals.
 
 **How It Works**:
 ```python
-# Server-side: Stream individual tokens/messages
+# Server-side: Stream messages and send standard completion signal
 for chat_message in processor.get_response(messages, prompt):
     yield sse_message(chat_message.to_json())
+yield sse_message("[DONE]")  # Standard SSE completion
 
-# Client-side: Direct update to markdown component
+# Client-side: Use SSE done property for completion detection
 @callback(
-    Output("streaming-markdown", "children"),
-    Input("stream-buffer", "data")
+    Output("stream-buffer", "data"),
+    Output("completion-trigger", "data"),
+    Input("sse", "animation"),
+    Input("sse", "done"),  # Built-in completion detection
 )
-def update_streaming_display(buffer_content):
-    return buffer_content
+def update_streaming_buffer(animation, done):
+    # Process streaming content
+    if done:
+        return content, True  # Trigger completion
+    return content, dash.no_update
 ```
 
 **Benefits**:
-- Real-time display of content as it arrives from the AI
-- Simple and robust implementation
-- No complex client-side animation logic needed
-- Natural typing effect from token-by-token streaming
+- Uses standard `[DONE]` signal instead of custom completion markers
+- Leverages dash-extensions built-in `done` property
+- Clean separation between streaming and completion logic
+- Optimized animation settings (`animate_chunk=20, animate_delay=5`) for smooth UX
 
-### 2. Server-Sent Events (SSE) Integration
+### 2. Mixed Content Streaming System
 
-**Why SSE**: 
-- Browser-native streaming support
-- Automatic reconnection handling
-- Lower overhead than WebSockets for one-way communication
-- Works through proxies and firewalls
+**Purpose**: Handle streaming of text, code blocks, and interactive Plotly charts in real-time.
 
 **Implementation**:
 ```python
-# Server-side streaming endpoint
-@app.route("/streaming-{component_id}", methods=["POST"])
-def streaming_chat():
-    def response_stream():
-        for chat_message in processor.get_response(messages, prompt):
-            yield sse_message(chat_message.to_json())
-        yield sse_message()  # Signal completion
+def update_streaming_buffer(animation, done):
+    # Parse SSE chunks into structured content
+    content_items = []
+    current_text = ""
+    code_block_index = 0
+    graph_index = 0
     
-    return Response(response_stream(), mimetype="text/event-stream")
-
-# Client-side SSE consumption
-<SSE id="sse-component" url="/streaming-endpoint" />
+    for msg in messages:
+        msg_type = msg.get("type", "text")
+        msg_content = msg.get("content", "")
+        msg_metadata = msg.get("metadata", {})
+        
+        if msg_type == "code":
+            # Flush accumulated text, then add code block
+            if current_text:
+                content_items.append({"type": "text", "content": current_text})
+                current_text = ""
+            content_items.append({
+                "type": "code", 
+                "content": msg_content, 
+                "index": code_block_index
+            })
+            code_block_index += 1
+            
+        elif msg_type == "plotly_graph":
+            # Flush accumulated text, then add interactive chart
+            if current_text:
+                content_items.append({"type": "text", "content": current_text})
+                current_text = ""
+            content_items.append({
+                "type": "plotly_graph",
+                "content": msg_content,  # JSON serialized Plotly figure
+                "index": graph_index,
+                "metadata": msg_metadata  # Chart title, etc.
+            })
+            graph_index += 1
+            
+        else:  # text or other types
+            current_text += msg_content
+    
+    return content_items, completion_status
 ```
 
-### 3. Persistence and Storage
-
-**Message Storage**:
-- Uses `dcc.Store` with `storage_type="local"` for persistence
-- Messages stored immediately, including placeholders for assistant responses
-- Visual history rebuilt from storage on page load
-
-**Flow**:
-1. User message → Stored immediately
-2. Assistant placeholder → Added immediately to ensure persistence
-3. Streaming content → Updates buffer in real-time
-4. Completion signal → Updates stored assistant message with final content
-
-### 4. Safe Markdown Parsing During Streaming
-
-**Challenge**: Handle both regular text and code blocks during streaming.
-
-**Solution**: The `parse_markdown_stream` function yields tokens immediately for text:
-
+**Rendering Logic**:
 ```python
-def parse_markdown_stream(token_stream):
-    for token in token_stream:
-        if in_code_block:
-            # Buffer code until closing delimiter
-            buffer += token
-            if "```" in buffer:
-                # Yield complete code block
-        else:
-            if "```" in buffer:
-                # Start code block
-            else:
-                # Yield text token immediately
-                yield ChatMessage(type=MessageType.TEXT, content=token)
+def update_streaming_display(buffer_data):
+    components = []
+    for item in buffer_data:
+        if item["type"] == "text":
+            components.append(dcc.Markdown(item["content"]))
+        elif item["type"] == "code":
+            code_id = f"code-{item['index']}"
+            components.append(create_code_block_component(item["content"], code_id))
+        elif item["type"] == "plotly_graph":
+            fig_data = json.loads(item["content"])
+            components.append(dcc.Graph(figure=go.Figure(fig_data)))
+    return components
 ```
 
 **Benefits**:
-- Real-time text streaming
-- Proper code block handling
-- Clean separation of text and code content
+- **Multi-type streaming**: Supports text, code, and interactive charts
+- **Real-time rendering**: Text streams immediately, structured content buffers properly
+- **Individual components**: Each code block and chart gets unique IDs and functionality
+- **Rich metadata**: Charts can include titles and other display information
 
-### 5. Dynamic Clipboard System
+### 3. Smart Auto-Scrolling
 
-**Architecture**: 
+**Purpose**: Automatically scroll to keep user messages visible during conversations.
+
+**Implementation**:
 ```javascript
-// Detect new code blocks as they render
-const codeBlocks = document.querySelectorAll('pre');
-
-codeBlocks.forEach(pre => {
-    // Create clipboard button with SVG icon
-    const clipboardBtn = document.createElement('button');
-    clipboardBtn.innerHTML = `<svg>...</svg>`;
-    
-    // Position in top-right corner
-    clipboardBtn.style.position = 'absolute';
-    clipboardBtn.style.top = '5px';
-    clipboardBtn.style.right = '5px';
-    
-    // Copy functionality
-    clipboardBtn.onclick = () => {
-        navigator.clipboard.writeText(pre.textContent);
-        showSuccessFeedback();
-    };
-    
-    pre.appendChild(clipboardBtn);
-});
+// Clientside callback triggered by message submission
+function(n_clicks, n_submit) {
+    if (!n_clicks && !n_submit) return window.dash_clientside.no_update;
+    setTimeout(() => {
+        const historyDiv = document.getElementById('chat-history');
+        const children = historyDiv?.children;
+        const userMessage = children?.[children.length - 2]; // Second-to-last
+        if (userMessage) historyDiv.scrollTop = userMessage.offsetTop;
+    }, 200);
+    return window.dash_clientside.no_update;
+}
 ```
 
 **Features**:
-- **Auto-detection**: Dynamically adds buttons to new code blocks
-- **Visual feedback**: Icon changes to checkmark on successful copy
-- **Claude-style UX**: Hidden until hover, smooth transitions
+- **Trigger**: Activates on message submission (button click or Enter key)
+- **Target**: Scrolls to the user message (second-to-last child in history)
+- **Method**: Uses direct `scrollTop` assignment for precise positioning
+- **Timing**: 200ms delay to ensure DOM updates are complete
 
-## 🔌 ChatProcessor Plugin Architecture
+### 4. Enhanced Code Block System
 
-> **Note**: This section covers the ChatProcessor plugin system for AI integrations. For the Dash plugin pattern used for route registration, see [Dash Plugin Pattern](#-dash-plugin-pattern) above.
-
-### Creating Custom Processors
-
+**Architecture**: 
 ```python
-from vizro_ai.components import ChatProcessor, ChatMessage, MessageType
-
-class CustomProcessor(ChatProcessor):
-    def get_response(self, messages, prompt):
-        # Connect to your AI service
-        response = my_ai_service.generate(prompt)
-        
-        # Stream character by character
-        for char in response:
-            yield ChatMessage(
-                type=MessageType.TEXT,
-                content=char
-            )
-        
-        # Or yield complete blocks
-        yield ChatMessage(
-            type=MessageType.CODE,
-            content="print('hello')",
-            metadata={"language": "python"}
-        )
-
-# Use with Chat component
-chat = Chat(
-    id="my-chat",
-    processor=CustomProcessor()
-)
+def create_code_block_component(code_content, code_id):
+    return html.Div([
+        dcc.Clipboard(
+            target_id=code_id,
+            className="code-clipboard",
+            style={
+                "position": "absolute",
+                "top": "8px", "right": "8px",
+                "opacity": 0.7, "zIndex": 1000,
+                "transition": "opacity 0.2s ease",
+            },
+            title="Copy code"
+        ),
+        dcc.Markdown(
+            f"```\n{code_content}\n```",
+            id=code_id,
+            className="markdown-container code-block-container",
+        ),
+    ], style=CODE_BLOCK_CONTAINER_STYLE)
 ```
 
-### Supported Message Types
+**Features**:
+- **Individual Clipboard**: Each code block gets its own clipboard button
+- **Visual Feedback**: Hover effects and smooth transitions
+- **Proper Positioning**: Absolute positioning in top-right corner
+- **Consistent Styling**: Uses theme variables for colors and spacing
+
+### 5. Robust Message Persistence
+
+**Challenge**: Maintain chat history across page reloads while handling streaming content.
+
+**Solution**: Dual-layer persistence system:
 
 ```python
-class MessageType(str, Enum):
-    TEXT = "text"      # Regular text content
-    CODE = "code"      # Code blocks with syntax highlighting
-    ERROR = "error"    # Error messages with special styling
+# Immediate persistence with placeholders
+user_message = {"role": "user", "content": value.strip()}
+messages_array.append(user_message)
+assistant_placeholder = {"role": "assistant", "content": ""}
+messages_array.append(assistant_placeholder)
+
+# Update placeholder with final content on completion
+def update_messages_store_on_completion(completion_triggered, content, messages):
+    messages_array = json.loads(messages)
+    # Find and update the last assistant message placeholder
+    for i in range(len(messages_array) - 1, -1, -1):
+        if messages_array[i].get("role") == "assistant":
+            messages_array[i]["content"] = markdown_content.strip()
+            break
 ```
 
-### Message Schema
-
-```python
-class ChatMessage(BaseModel):
-    type: MessageType = MessageType.TEXT
-    content: str                              # The actual content
-    metadata: Dict[str, Any] = {}            # Additional data (e.g., language for code)
-    
-    def to_json(self) -> str:
-        return self.model_dump_json()
-```
-
-## 🎯 Performance Optimizations
-
-### 1. **Efficient Re-rendering Prevention**
-- Uses `dash.no_update` to prevent unnecessary component updates
-- Direct markdown updates minimize re-renders
-- Completion trigger prevents duplicate store updates
-
-### 2. **Memory Management**
-- Streaming buffer is cleared between messages
-- Clipboard buttons are cleaned up and recreated to prevent memory leaks
-- Messages stored efficiently with immediate persistence
-
-### 3. **Network Efficiency**
-- SSE provides persistent connection for streaming
-- JSON serialization minimizes payload size
-- Graceful error handling prevents connection drops
-- Proper cache control headers for optimal streaming
+**Benefits**:
+- **Immediate Persistence**: User messages and placeholders stored immediately
+- **Stream Safety**: Streaming content doesn't affect stored data until completion
+- **Reload Resilience**: Chat history rebuilds correctly from storage
+- **No Duplicates**: Updates placeholders instead of adding new messages
 
 ## 🔧 Configuration Options
 
@@ -389,27 +423,49 @@ class ChatMessage(BaseModel):
 ```python
 Chat(
     id="chat-component",
-    input_placeholder="Ask me anything...",
-    input_height="80px",
-    button_text="Send",
-    initial_message="Hello! How can I help?",
-    processor=YourCustomProcessor()
+    input_placeholder="Ask me anything...",    # Input field placeholder
+    input_height="80px",                       # Height of input area
+    button_text="Send",                        # Send button text
+    initial_message="Hello! How can I help?",  # First message shown
+    height="100%",                             # Component wrapper height
+    storage_type="session",                    # "memory", "session", or "local"
+    processor=YourCustomProcessor()            # Chat processor implementation
 )
 ```
+
+### SSE Streaming Configuration
+
+```python
+# In build() method - SSE component with optimized settings
+SSE(
+    id=f"{self.id}-sse", 
+    concat=True,           # Concatenate streaming data
+    animate_chunk=20,      # Process 20 characters per animation frame
+    animate_delay=5        # 5ms delay between animation frames
+)
+```
+
+**Animation Settings Explained**:
+- `animate_chunk=20`: Processes 20 characters at a time for smooth streaming effect
+- `animate_delay=5`: 5ms delay creates natural typing animation
+- These settings ensure animation completes before stream ends, preventing content dumps
 
 ### Styling Customization
 
 The component uses CSS variables for theming:
-- `--surfaces-bg-card`: Background colors
+- `--surfaces-bg-card`: Background colors for messages and input
 - `--text-primary`: Primary text color
 - `--border-subtleAlpha01`: Border colors
+- `--right-side-bg`: Assistant message background
 
-### Streaming Configuration
+### Storage Configuration
 
-The streaming behavior is controlled by:
-- **SSE Animation**: `animate_chunk=5` - Process chunks every 5ms
-- **Token Yield Rate**: Controlled by the ChatProcessor implementation
-- **Buffer Updates**: Direct updates as tokens arrive for real-time display
+```python
+# Choose storage type based on use case
+storage_type="memory"   # Lost on page reload (testing/demos)
+storage_type="session"  # Persists during browser session (default)
+storage_type="local"    # Persists across browser sessions (long-term)
+```
 
 ## 🚀 Getting Started
 
@@ -418,15 +474,12 @@ The streaming behavior is controlled by:
 ```python
 import vizro.models as vm
 from vizro import Vizro
-from vizro_ai.models import Chat, OpenAIProcessor
+from vizro_ai.models import Chat, EchoProcessor
 
 # Create the chat component
 chat = Chat(
     id="ai-chat",
-    processor=OpenAIProcessor(
-        model="gpt-4o-mini",
-        api_key="your-api-key"
-    )
+    processor=EchoProcessor()  # Simple echo processor for testing
 )
 
 # Register the component type with Vizro
@@ -446,182 +499,117 @@ app = Vizro(plugins=[chat])
 app.build(dashboard).run()
 ```
 
-### Migration from Previous Versions
+### Available Processors
 
-If you're upgrading from a previous version, update your code:
-
-**Before (old way)**:
+#### 1. EchoProcessor (Testing)
+Simple processor that echoes user input:
 ```python
-# ❌ This approach had production safety issues
-app = Vizro()
-app.build(dashboard).run()
+from vizro_ai.models import EchoProcessor
+
+chat = Chat(processor=EchoProcessor())
 ```
 
-**After (new plugin way)**:
+#### 2. OpenAIProcessor (Production)
+Full OpenAI integration with streaming:
 ```python
-# ✅ Safe for production deployments
-app = Vizro(plugins=[chat_component])
-app.build(dashboard).run()
-```
+from vizro_ai.models import OpenAIProcessor
 
-### Advanced Usage
-
-```python
-import vizro.models as vm
-from vizro import Vizro
-from vizro_ai.models import Chat, ChatProcessor, ChatMessage, MessageType
-
-# Custom processor with agent framework
-class AgentProcessor(ChatProcessor):
-    def __init__(self, agent_config):
-        self.agent = create_agent(agent_config)
-    
-    def get_response(self, messages, prompt):
-        for step in self.agent.run_stream(prompt):
-            if step.type == "thought":
-                yield ChatMessage(
-                    type=MessageType.TEXT,
-                    content=f"💭 {step.content}",
-                    metadata={"step_type": "reasoning"}
-                )
-            elif step.type == "code":
-                yield ChatMessage(
-                    type=MessageType.CODE,
-                    content=step.content,
-                    metadata={"language": step.language}
-                )
-
-# Create component with custom processor
-chat = Chat(
-    id="agent-chat",
-    processor=AgentProcessor(agent_config)
+processor = OpenAIProcessor(
+    model="gpt-4o-mini",
+    temperature=0.7,
+    api_key="your-api-key"
 )
+chat = Chat(processor=processor)
+```
 
-# Register and use with Vizro
-vm.Page.add_type("components", Chat)
-page = vm.Page(title="Agent Chat", components=[chat])
-dashboard = vm.Dashboard(pages=[page])
+#### 3. GraphProcessor (Demo)
+Shows mixed content including interactive Plotly charts:
+```python
+from vizro_ai.models import GraphProcessor
 
-# Use plugin pattern for production safety
-app = Vizro(plugins=[chat])
-app.build(dashboard).run()
+chat = Chat(
+    processor=GraphProcessor(),
+    initial_message="I can show text, code, and interactive charts!"
+)
+```
+
+### Custom Processor Implementation
+
+```python
+from vizro_ai.models import ChatProcessor, ChatMessage, MessageType
+import plotly.express as px
+
+class CustomStreamingProcessor(ChatProcessor):
+    def get_response(self, messages, prompt):
+        # Stream text response
+        for char in f"You asked: {prompt}\n\n":
+            yield ChatMessage(type=MessageType.TEXT, content=char)
+        
+        # Add code example
+        yield ChatMessage(
+            type=MessageType.CODE, 
+            content="import pandas as pd\ndf = pd.read_csv('data.csv')",
+            metadata={"language": "python"}
+        )
+        
+        # Add interactive chart
+        fig = px.scatter(px.data.iris(), x='sepal_width', y='sepal_length')
+        yield ChatMessage(
+            type=MessageType.PLOTLY_GRAPH,
+            content=fig.to_json(),
+            metadata={"title": "Sample Chart"}
+        )
+
+# Use with Chat component
+chat = Chat(
+    id="streaming-chat",
+    processor=CustomStreamingProcessor()
+)
 ```
 
 ### Multiple Chat Components
 
-For multiple chat components on different pages:
+For multiple chat components with different processors:
 
 ```python
-# Create multiple chat components
-chat1 = Chat(id="general-chat", processor=OpenAIProcessor())
-chat2 = Chat(id="agent-chat", processor=AgentProcessor())
+from vizro_ai.models import EchoProcessor, OpenAIProcessor, GraphProcessor
+
+# Create multiple chat components with different processors
+echo_chat = Chat(id="echo-chat", processor=EchoProcessor())
+ai_chat = Chat(id="ai-chat", processor=OpenAIProcessor(api_key="sk-..."))
+graph_chat = Chat(id="graph-chat", processor=GraphProcessor())
+
+# Register component type
+vm.Page.add_type("components", Chat)
+
+# Create pages with different chat capabilities
+demo_page = vm.Page(title="Echo Demo", components=[echo_chat])
+ai_page = vm.Page(title="AI Assistant", components=[ai_chat])  
+viz_page = vm.Page(title="Data Visualization", components=[graph_chat])
 
 # Pass all components as plugins
-app = Vizro(plugins=[chat1, chat2])
-app.build(dashboard).run()
+app = Vizro(plugins=[echo_chat, ai_chat, graph_chat])
+app.build(vm.Dashboard(pages=[demo_page, ai_page, viz_page])).run()
 ```
 
-## 🔍 Debugging & Development
 
-### Console Debugging
+### Key Architecture Benefits
 
-The component logs useful information to browser console:
-```javascript
-// Check for clipboard functionality
-console.log('Found code blocks:', codeBlocks.length);
-console.log('Processing code block:', pre);
+- ✅ **Modern SSE**: Uses standard `[DONE]` completion signal with dash-extensions
+- ✅ **Smart Scrolling**: Auto-scrolls to keep user messages visible
+- ✅ **Rich Content Streaming**: Handles text, code blocks, and interactive Plotly charts
+- ✅ **Production Safe**: Plugin pattern works with all WSGI servers
+- ✅ **Real-time UX**: Optimized animation for smooth streaming experience
+- ✅ **Robust Persistence**: Dual-layer system prevents data loss
+- ✅ **Extensible Processors**: Easy integration with any AI service or data source
+- ✅ **Mixed Content Support**: Seamlessly renders text, code, and visualizations together
 
-// Server-side logs (Python)
-print(f"[{self.id}] Streaming message: {message}")
-print(f"[{self.id}] Buffer content: {buffer_content}")
-```
+### Performance Optimizations
 
-### Route Registration Verification
+- **SSE Animation**: `animate_chunk=20, animate_delay=5` for optimal streaming
+- **Direct Scrolling**: Uses `scrollTop` for precise scroll positioning  
+- **Structured Buffering**: Separates text and code for efficient rendering
+- **Completion Detection**: Uses built-in SSE `done` property
+- **Memory Management**: Clears buffers and prevents component duplication
 
-To verify routes are properly registered:
-
-```python
-def verify_routes(app):
-    """Debug helper to check registered routes."""
-    routes = [rule.rule for rule in app.dash.server.url_map.iter_rules()]
-    print("Registered routes:")
-    for route in routes:
-        print(f"  {route}")
-    
-    # Check for chat component routes
-    chat_routes = [r for r in routes if r.startswith("/streaming-")]
-    print(f"Found {len(chat_routes)} chat component routes")
-    return chat_routes
-
-# Usage
-app = Vizro(plugins=[chat_component])
-app.build(dashboard)
-verify_routes(app)  # Check before running
-```
-
-### Common Issues
-
-1. **Route not found errors**: 
-   - ❌ **Cause**: Component not passed as plugin to Vizro
-   - ✅ **Fix**: Add `plugins=[chat_component]` to `Vizro()` constructor
-
-2. **Routes not working in production**:
-   - ❌ **Cause**: Using old `pre_build()` route registration 
-   - ✅ **Fix**: Upgrade to plugin pattern
-
-3. **Multiple workers not working**:
-   - ❌ **Cause**: Routes registered after worker fork
-   - ✅ **Fix**: Use plugin pattern for early route registration
-
-4. **No streaming effect**: Check that processor yields tokens individually, not all at once
-
-5. **Clipboard not working**: Ensure HTTPS or localhost for clipboard API
-
-6. **Markdown not rendering**: Verify CSS classes and selectors
-
-7. **Completion not detected**: Check that completion signal is sent and parsed correctly
-
-### Plugin Pattern Troubleshooting
-
-```python
-# ❌ Common mistake - forgetting plugin registration
-app = Vizro()  # Component routes won't work!
-
-# ✅ Correct approach 
-app = Vizro(plugins=[chat_component])
-
-# ❌ Another mistake - not registering component type
-page = vm.Page(components=[chat_component])  # Will fail!
-
-# ✅ Correct approach
-vm.Page.add_type("components", Chat)
-page = vm.Page(components=[chat_component])
-```
-
-## 📋 Quick Reference
-
-### Essential Plugin Pattern Usage
-
-```python
-# 1. Create component
-chat = Chat(id="my-chat", processor=YourProcessor())
-
-# 2. Register component type  
-vm.Page.add_type("components", Chat)
-
-# 3. Create dashboard
-dashboard = vm.Dashboard(pages=[vm.Page(components=[chat])])
-
-# 4. 🚨 CRITICAL: Pass as plugin for route registration
-app = Vizro(plugins=[chat])
-app.build(dashboard).run()
-```
-
-### Key Benefits of Plugin Pattern
-
-- ✅ **Production Safe**: Routes registered before worker processes fork
-- ✅ **Multi-Worker Compatible**: Works with gunicorn, uvicorn, etc.  
-- ✅ **Clean Architecture**: Direct component access, no registries
-- ✅ **Dash Standard**: Uses official Dash plugin system
-
-This architecture provides a robust, extensible foundation for building AI-powered chat interfaces in Vizro applications.
+This architecture provides a robust, production-ready foundation for building AI-powered chat interfaces in Vizro applications with smooth streaming, smart UX features, and reliable deployment characteristics.
