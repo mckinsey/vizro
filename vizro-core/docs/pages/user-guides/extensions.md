@@ -38,6 +38,126 @@ Custom figures are useful when you need a component that reacts to [filter](filt
 
 Vizro's [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where you can enter _any_ custom figure function as described in the [how-to guide for figures](figure.md).
 
+### Use custom functions in `yaml`/`json` configuration
+
+!!! note "Exposing configuration to untrusted users"
+
+    Exposing Vizro configuration to untrusted users may pose a security risk. A user with access to YAML/JSON configuration can potentially execute arbitrary Python code when the dashboard is run. The security of your `yaml`/`json` configuration should be regarded as equivalent to the security of your `app.py` file.
+
+It is possible to refer to custom functions that are used as `CapturedCallable` by their import path in a `yaml`/`json` configuration of the dashboard.
+
+In the [above guides](#vizro-customizations), you will find examples on how the Vizro schema can be extended by using custom Python code. It is possible to refer to these custom functions in the `yaml`/`json` configuration by using the `_target_` key and the correct import path.
+
+!!! example "Custom charts with YAML config example"
+
+    === "app.py"
+
+        ```python
+        from pathlib import Path
+
+        import vizro.plotly.express as px
+        import yaml
+        from vizro import Vizro
+        from vizro.managers import data_manager
+        from vizro.models import Dashboard
+
+        data_manager["iris"] = px.data.iris()
+
+        dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))  # (1)!
+        dashboard = Dashboard(**dashboard)
+
+        if __name__ == "__main__":
+            Vizro().build(dashboard).run()
+        ```
+
+        1. Parse the YAML or JSON configuration that lies in a separate file.
+
+    === "dashboard.yaml"
+
+        ```yaml
+        title: "Dashboard Example"
+        pages:
+        - title: "Custom Bar Chart"
+            components:
+            - type: "graph"
+                figure:
+                _target_: "custom_charts.custom_bar" # (1)!
+                data_frame: "iris"
+                x: "sepal_length"
+                y: "sepal_width"
+        ```
+
+        1. Here we refer to the import path of the custom chart function. If you define the custom chart in `app.py`, then use `__main__` as the import path. Note that the import path will be interpreted by pydantics [`ImportString` type](https://docs.pydantic.dev/dev/usage/types/string_types/#importstring).
+
+    === "custom_charts.py"
+
+        ```python
+        import pandas as pd
+        import plotly.graph_objects as go
+        from vizro.models.types import capture
+
+
+        @capture("graph")
+        def custom_bar(data_frame: pd.DataFrame, x: str, y: str) -> go.Figure:  # (1)!
+            """Custom bar chart."""
+            return go.Figure(data=[go.Bar(x=data_frame[x], y=data_frame[y])])
+        ```
+
+        1. Definition of the custom chart function as usual.
+
+#### Validate dashboards without defining `CapturedCallable` functions
+
+It is possible to validate a dashboard configuration without importing or executing some `CapturedCallable` functions.
+
+You can use this method when you want to check if the dashboard configuration is valid, but you don't want to import or execute the custom functions until run-time, which may be in a sandboxed environment. This is useful when the custom functions are not available at validation time, or when they originate from untrusted sources (e.g. when a large language model is used to generate that code).
+
+!!! note When starting the server
+
+    If you validate your dashboard configuration with a `CapturedCallable` function that is undefined, you will not be able to start the server. Hence when running the dashboard, you will need to recreate a dashboard object with all the `CapturedCallable` functions defined.
+
+!!! example "Validating dashboards without executing `CapturedCallable` functions"
+
+    ```python
+    import vizro.models as vm
+    import vizro.plotly.express as px
+    from vizro import Vizro
+    from vizro.managers import data_manager
+
+    data_manager["iris"] = px.data.iris()
+
+    dashboard_config = {
+        "title": "Test dashboard",
+        "pages": [
+            {
+                "title": "Page 1",
+                "components": [
+                    {
+                        "type": "ag_grid",
+                        "figure": {"_target_": "llm_generated_grid", "data_frame": "iris"},
+                    },
+                ],
+            }
+        ],
+    }
+
+    dashboard = vm.Dashboard.model_validate(
+        dashboard_config,
+        context={
+            "allow_undefined_captured_callable": [
+                "llm_generated_grid",
+            ]
+        },
+    )
+    app = Vizro().build(dashboard)  # (1)!
+    try:
+        app.run()  # (2)!
+    except ValueError as exc:
+        print(exc)
+    ```
+
+    1. The dashboard configuration contains a `CapturedCallable` function that is undefined but allowed by `allow_undefined_captured_callable`. The app can still be built without raising any errors.
+    1. However, it is not possible to run the app without undefined `CapturedCallable`s. This raises an error.
+
 ## Dash customizations
 
 Since Vizro is built using Dash, it is possible to use [Dash callbacks](https://dash.plotly.com/basic-callbacks) directly in any Vizro dashboard. This enables you to code beneath the Vizro layer and control Dash directly, which is especially useful when working with callbacks

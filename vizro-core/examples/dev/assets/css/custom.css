@@ -13,6 +13,11 @@
   width: unset;
 }
 
+#flex-layout .card {
+  height: 210px;
+  width: 380px;
+}
+
 #my-figure.figure-container .card {
   height: 210px;
   width: 240px;
