@@ -101,7 +101,7 @@ To include only some of your dashboard pages in your navigation then list them i
         )
 
         dashboard = vm.Dashboard(
-            pages=[page_1, page_2, page_3], 
+            pages=[page_1, page_2, page_3],
             navigation=vm.Navigation(pages=["My first page", "My second page"])
         )
         Vizro().build(dashboard).run()
@@ -161,7 +161,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
             pages=[page_1, page_2, page_3],
             navigation=vm.Navigation(
                 pages={
-                    "Group A": ["My first page", "My second page"], 
+                    "Group A": ["My first page", "My second page"],
                     "Group B": ["My third page"]
                 }
             ),
@@ -226,9 +226,9 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
             pages=[page_1, page_2, page_3],
             navigation=vm.Navigation(
                 pages={
-                    "Group A": ["My first page", "My second page"], 
+                    "Group A": ["My first page", "My second page"],
                     "Group B": ["My third page"]
-                }, 
+                },
                 nav_selector=vm.NavBar()
             ),
         )
@@ -305,7 +305,7 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
                         vm.NavLink(
                             label="Section 1",
                             pages={
-                                "Group A": ["My first page", "My second page"], 
+                                "Group A": ["My first page", "My second page"],
                                 "Group B": ["My third page"]
                             },
                         )
@@ -385,8 +385,8 @@ You can alter the icons used by specifying the name of the icon in the [Google M
                             pages=["My first page", "My second page"],
                         ),
                         vm.NavLink(
-                            label="Section 2", 
-                            icon="Pie Chart", 
+                            label="Section 2",
+                            icon="Pie Chart",
                             pages=["My third page"]
                         ),
                     ]
