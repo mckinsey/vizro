@@ -143,6 +143,7 @@ plugins:
             merge_init_into_class: true
             docstring_section_style: list
             separate_signature: true
+            unwrap_annotated: true
             #   filters: ["!^_"]
             show_root_heading: true
             docstring_options:
