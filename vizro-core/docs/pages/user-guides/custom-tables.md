@@ -24,7 +24,7 @@ The following examples show a possible version of a custom table. In this case t
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="11-23 32"}
         from dash import dash_table
 
         import vizro.models as vm
@@ -85,7 +85,7 @@ The following examples show a possible version of a custom table. In this case t
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10-29 38"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from dash_ag_grid import AgGrid
