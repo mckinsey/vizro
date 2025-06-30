@@ -110,6 +110,7 @@ class Filter(VizroBaseModel):
 
     # TODO NOW: think about whether setting these shortcuts is a good idea or if there could be any problems.
     # Add comment on url update CSCB that this translation doesn't work for those so provide control.id manually.
+    # Oops,actually  this clashes with below _action_outputs and TODO-AV2 E. Need to work out what to do here.
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {

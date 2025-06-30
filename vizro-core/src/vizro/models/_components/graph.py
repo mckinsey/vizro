@@ -109,6 +109,11 @@ class Graph(VizroBaseModel):
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        # Might have selectedData etc. in future.
+        return {"__default__": f"{self.id}.clickData"}
+
+    @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
             "__default__": f"{self.id}.figure",

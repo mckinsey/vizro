@@ -7,6 +7,9 @@ import json
 # built-in urlparse stuff.
 # def encode_url_params(decoded_map, apply_on_keys):
 # ...
+# TODO NOW: think how this would work in future if we have global app state in URL - then API would change so best not
+#  to make public yet? We could probably do this just by automatically adding unset parameters to URL through e.g.
+# dcc.Store that mirrors rewritten a.href links as State rather than needing to insert it in update_controls iteslf though.
 # TODO NOW: check again this matches JS encoding, add tests.
 
 

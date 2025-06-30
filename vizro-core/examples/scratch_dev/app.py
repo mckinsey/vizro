@@ -211,6 +211,12 @@ page_1 = vm.Page(
 page_2 = vm.Page(
     title="Page_2",
     components=[
+        vm.AgGrid(
+            figure=dash_ag_grid(df),
+            actions=[update_control(target="page_2_filter_species", lookup="species", mode="ag_grid")],
+            # Same page over URL also works:
+            # actions=[update_control(target="page_2_filter_species", lookup="species", mode="ag_grid")],
+        ),
         vm.Graph(
             id="page_2_graph",
             title="Click the points to trigger the drill-throgh on Page-3",
@@ -223,17 +229,17 @@ page_2 = vm.Page(
                 color_discrete_map=SPECIES_COLORS,
             ),
             actions=[
-                update_control(
-                    target="page_3_filter_species", lookup="points.0.customdata.0", trigger="page_2_graph.clickData"
-                ),
-                # f"/page_3", f"?page_3_filter_species={encode_to_base64(species)}"
+                update_control(target="page_2_filter_species", lookup="points.0.customdata.0"),
+                # update_control(target="page_2_filter_species", lookup="points.0.customdata.0"),
                 # vm.Action(
-                #     # TODO-CHECK: Drill-through to Page-3
+                # Done in above lines:
+                #     # TODO-CHECK: Drill-through to Page-3. Done above.
                 #     function=custom_drill_through_action("page_2_graph.clickData"),
                 #     outputs=["vizro_url_callback_nav.pathname", "vizro_url_callback_nav.search"],
-                #     # TODO-CHECK: Same page interaction over URL
+                #     # TODO-CHECK: Same page interaction over URL. Done above
                 #     # function=same_page_interaction_over_url("page_2_graph.clickData"),
                 #     # outputs=["vizro_url_callback_nav.search"],
+                # Not done but should be possible in future:
                 #     # TODO-CHECK: Same page interaction over controls
                 #     # function=same_page_interaction_over_controls("page_2_graph.clickData"),
                 #     # outputs=["page_2_filter_selector_species.value"],
