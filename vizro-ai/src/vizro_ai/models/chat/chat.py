@@ -86,16 +86,22 @@ class Chat(VizroBaseModel):
                         # Send standard SSE completion signal
                         # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
                         yield sse_message("[DONE]")
-                    except Exception as e:
-                        error_msg = ChatMessage(type="error", content=f"Error: {e!s}")
+                    except Exception:
+                        import logging
+
+                        logging.error("An error occurred in response_stream:", exc_info=True)
+                        error_msg = ChatMessage(type="error", content="An internal error has occurred.")
                         yield sse_message(error_msg.to_json())
                         yield sse_message("[DONE]")
 
                 # Use Response with SSE content type
                 response = Response(response_stream(), mimetype="text/event-stream")
                 return response
-            except Exception as e:
-                return Response(f"Error: {e!s}", status=500)
+            except Exception:
+                import logging
+
+                logging.error("An error occurred in streaming_chat:", exc_info=True)
+                return Response("An internal error has occurred.", status=500)
 
     @_log_call
     def pre_build(self):

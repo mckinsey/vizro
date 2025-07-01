@@ -190,8 +190,11 @@ class EchoProcessor(ChatProcessor):
                 yield ChatMessage(type=MessageType.TEXT, content=char)
                 time.sleep(0.02)  # Small delay for streaming effect
 
-        except Exception as e:
-            yield ChatMessage(type=MessageType.ERROR, content=f"Error: {e!s}")
+        except Exception:
+            import logging
+
+            logging.error("An error occurred in EchoProcessor:", exc_info=True)
+            yield ChatMessage(type=MessageType.ERROR, content="An internal error has occurred.")
 
 
 class OpenAIProcessor(ChatProcessor):
@@ -262,8 +265,11 @@ class OpenAIProcessor(ChatProcessor):
 
             yield from parse_markdown_stream(token_generator)
 
-        except Exception as e:
-            yield ChatMessage(type=MessageType.ERROR, content=f"OpenAI Error: {e!s}")
+        except Exception:
+            import logging
+
+            logging.error("An error occurred in OpenAIProcessor:", exc_info=True)
+            yield ChatMessage(type=MessageType.ERROR, content="An internal error has occurred.")
 
 
 class GraphProcessor(ChatProcessor):
@@ -309,5 +315,8 @@ class GraphProcessor(ChatProcessor):
                 content=fig.to_json(),
             )
 
-        except Exception as e:
-            yield ChatMessage(type=MessageType.ERROR, content=f"Error: {e!s}")
+        except Exception:
+            import logging
+
+            logging.error("An error occurred in GraphProcessor:", exc_info=True)
+            yield ChatMessage(type=MessageType.ERROR, content="An internal error has occurred.")
