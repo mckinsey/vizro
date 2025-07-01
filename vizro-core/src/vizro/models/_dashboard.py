@@ -345,8 +345,16 @@ class Dashboard(VizroBaseModel):
             className="no-left" if _all_hidden(d_header_left_divs) else "",
         )
 
-        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon, right_side])
-        return html.Div(children=[d_header, page_main], className="page-container")
+        page_main = html.Div(
+            id="page-main",
+            children=[collapsible_left_side, collapsible_icon, right_side],
+            style={"display": "flex", "flex": "1 1 0", "flex-direction": "row", "height": "calc(100vh - 64px)"},
+        )
+        return html.Div(
+            children=[d_header, page_main],
+            className="page-container",
+            style={"display": "flex", "flex-direction": "column", "height": "100vh", "width": "100vw"},
+        )
 
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
