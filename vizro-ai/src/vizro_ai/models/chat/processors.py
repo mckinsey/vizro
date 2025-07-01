@@ -4,10 +4,55 @@ import re
 from abc import ABC, abstractmethod
 from enum import Enum
 import time
-from typing import Any, Dict, Generator, List, Optional
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
+
+def _convert_structured_content_to_text(content: Union[str, List[Dict[str, Any]]]) -> str:
+    """Convert structured content back to plain text/markdown format for LLM consumption.
+    
+    Args:
+        content: Either a plain string or structured content list
+        
+    Returns:
+        Plain text/markdown string suitable for LLM
+    """
+    if isinstance(content, str):
+        return content
+    
+    if not isinstance(content, list):
+        return str(content)
+    
+    result_parts = []
+    
+    for item in content:
+        if not isinstance(item, dict):
+            result_parts.append(str(item))
+            continue
+            
+        item_type = item.get("type", "text")
+        item_content = item.get("content", "")
+        item_metadata = item.get("metadata", {})
+        
+        if item_type == "text":
+            result_parts.append(item_content)
+        elif item_type == "code":
+            language = item_metadata.get("language", "")
+            if language:
+                result_parts.append(f"```{language}\n{item_content}\n```")
+            else:
+                result_parts.append(f"```\n{item_content}\n```")
+        elif item_type == "plotly_graph":
+            # For plotly graphs, just mention that a graph was shown
+            result_parts.append("[A Plotly graph was displayed here]")
+        elif item_type == "error":
+            result_parts.append(f"Error: {item_content}")
+        else:
+            # Unknown type, just include the content
+            result_parts.append(item_content)
+    
+    return "".join(result_parts)
 
 
 class MessageType(str, Enum):
@@ -65,98 +110,82 @@ def parse_markdown_stream(token_stream: Generator[str, None, None]) -> Generator
     code_language = ""
     
     for token in token_stream:
-        if in_code_block:
-            # In code block, buffer until we find the closing delimiter
-            buffer += token
+        buffer += token
+        
+        if not in_code_block and "```" in buffer:
+            # Starting a code block
+            before, delimiter, after = buffer.partition("```")
             
-            # Check if we have the closing delimiter
-            if "```" in buffer:
-                before, delimiter, after = buffer.partition("```")
-                # Extract the actual code content (remove the delimiter)
-                code_content = before
-                if code_content:
-                    yield ChatMessage(
-                        type=MessageType.CODE,
-                        content=code_content,
-                        metadata={"language": code_language}
-                    )
-                in_code_block = False
+            # Yield any text before the code block
+            if before:
+                yield ChatMessage(type=MessageType.TEXT, content=before)
+            
+            # Extract language if present
+            lines = after.split('\n', 1)
+            if lines and lines[0].strip() and re.match(r"^\w+$", lines[0].strip()):
+                code_language = lines[0].strip()
+                buffer = lines[1] if len(lines) > 1 else ""
+            else:
                 code_language = ""
                 buffer = after
-        else:
-            # Not in code block - check for opening delimiter
-            buffer += token
             
-            # Check for code block start
-            if "```" in buffer:
-                before, delimiter, after = buffer.partition("```")
-                
-                # Yield any text before the code block
-                if before:
-                    yield ChatMessage(type=MessageType.TEXT, content=before)
-                
-                # Extract language from the next portion
-                lines = after.split('\n', 1)
-                if lines and re.match(r"^\w+$", lines[0].strip()):
-                    code_language = lines[0].strip()
-                    buffer = lines[1] if len(lines) > 1 else ""
-                else:
-                    code_language = ""
-                    buffer = after
-                
-                in_code_block = True
-            else:
-                # No code block delimiter - yield the token immediately for streaming
-                yield ChatMessage(type=MessageType.TEXT, content=token)
-                buffer = ""  # Clear buffer since we yielded the content
+            in_code_block = True
+            
+        elif in_code_block and "```" in buffer:
+            # Ending a code block
+            code_content, delimiter, after = buffer.partition("```")
+            
+            if code_content.strip():
+                yield ChatMessage(
+                    type=MessageType.CODE,
+                    content=code_content.strip(),
+                    metadata={"language": code_language}
+                )
+            
+            buffer = after
+            in_code_block = False
+            code_language = ""
+            
+        elif not in_code_block:
+            # Regular text - yield immediately for streaming effect
+            yield ChatMessage(type=MessageType.TEXT, content=token)
+            buffer = ""
     
     # Handle remaining buffer
-    if buffer:
+    if buffer.strip():
         if in_code_block:
-            # Incomplete code block
             yield ChatMessage(
                 type=MessageType.CODE,
-                content=buffer,
+                content=buffer.strip(),
                 metadata={"language": code_language}
             )
-        elif buffer.strip():
-            # Remaining text
+        else:
             yield ChatMessage(type=MessageType.TEXT, content=buffer)
 
 
 class EchoProcessor(ChatProcessor):
-    """Simple echo processor for testing purposes."""
+    """Simple echo processor for testing and demonstration."""
 
     def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
-        """Echo the user's message back with simulated streaming."""
+        """Echo back the user's message with some processing."""
         try:
-            if not prompt:
-                raise ValueError("Prompt cannot be empty")
-
-            # Simulate streaming by yielding the prompt character by character
-            for char in f"You said: {prompt}":
+            # Simple streaming effect
+            response = f"You said: {prompt}"
+            for char in response:
                 yield ChatMessage(type=MessageType.TEXT, content=char)
-                
-            # Add a final newline
-            yield ChatMessage(type=MessageType.TEXT, content="\n")
+                time.sleep(0.02)  # Small delay for streaming effect
             
         except Exception as e:
             yield ChatMessage(
                 type=MessageType.ERROR,
-                content=f"Error in EchoProcessor: {e!s}"
+                content=f"Error: {e!s}"
             )
 
 
 class OpenAIProcessor(ChatProcessor):
-    """Processor that uses OpenAI API to generate responses."""
+    """Simple OpenAI processor for real LLM integration."""
 
-    def __init__(
-        self,
-        model: str = "gpt-4o-mini",
-        temperature: float = 0.7,
-        api_key: Optional[str] = None,
-        api_base: Optional[str] = None,
-    ):
+    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0.7, api_key: Optional[str] = None, api_base: Optional[str] = None):
         """Initialize the OpenAI processor.
 
         Args:
@@ -165,41 +194,32 @@ class OpenAIProcessor(ChatProcessor):
             api_key: Optional API key. If not provided, will look for OPENAI_API_KEY env var
             api_base: Optional API base URL
         """
-        # Import OpenAI only when needed
         try:
             from openai import OpenAI
-            self._OpenAI = OpenAI
+            
+            # Build client kwargs
+            client_kwargs = {}
+            if api_key:
+                client_kwargs["api_key"] = api_key
+            if api_base:
+                client_kwargs["base_url"] = api_base
+            
+            self.client = OpenAI(**client_kwargs)
         except ImportError:
-            raise ImportError("OpenAI package is required for OpenAIProcessor. Install it with: pip install openai")
+            raise ImportError("OpenAI package is required. Install it with: pip install openai")
         
         self.model = model
         self.temperature = temperature
-        self._api_key = api_key
-        self._api_base = api_base
-        self.client = None
-        self.initialize_client(api_key, api_base)
-        
-        if not self.client:
-            raise ValueError("OpenAI API key is required and was not provided or is invalid.")
-
-    def initialize_client(self, api_key: Optional[str] = None, api_base: Optional[str] = None) -> None:
-        """Initialize or reinitialize the OpenAI client with new credentials."""
-        if api_key:
-            self._api_key = api_key
-        if api_base:
-            self._api_base = api_base
-
-        if self._api_key:
-            kwargs = {"api_key": self._api_key}
-            if self._api_base:
-                kwargs["base_url"] = self._api_base
-            self.client = self._OpenAI(**kwargs)
 
     def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
         """Get a streaming response from OpenAI."""
         try:
+            # Convert structured messages to plain text for OpenAI
             formatted_messages = [
-                {"role": msg["role"], "content": msg["content"]}
+                {
+                    "role": msg["role"], 
+                    "content": _convert_structured_content_to_text(msg["content"])
+                }
                 for msg in messages
                 if msg["role"] in ["user", "assistant"]
             ]
@@ -225,68 +245,47 @@ class OpenAIProcessor(ChatProcessor):
         except Exception as e:
             yield ChatMessage(
                 type=MessageType.ERROR,
-                content=f"Error in OpenAI Processor: {e!s}"
+                content=f"OpenAI Error: {e!s}"
             )
-
 
 
 class GraphProcessor(ChatProcessor):
-    """Simple processor that demonstrates rendering different content types including Plotly graphs."""
+    """Simple processor that demonstrates rendering charts."""
 
     def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
-        """Generate a response with text, code, and a sample Plotly graph."""
+        """Generate a response with text and a sample chart."""
         try:
             import vizro.plotly.express as px
             
-            for char in f"You said: {prompt}\n\n":
-                yield ChatMessage(type=MessageType.TEXT, content=char)
-                
-            for char in "I'm a bot that always responds with a plotly graph:\n\n":
+            response = f"Here's a chart based on your request: '{prompt}'\n\n"
+            for char in response:
                 yield ChatMessage(type=MessageType.TEXT, content=char)
             
-            sample_code = "import plotly.express as px\ndf = px.data.iris()\nfig = px.scatter(df, x='sepal_width', y='sepal_length', color='species')"
+            code = "import plotly.express as px\n\nfig = px.scatter(px.data.iris(), x='sepal_width', y='sepal_length', color='species')"
             yield ChatMessage(
                 type=MessageType.CODE, 
-                content=sample_code,
+                content=code,
                 metadata={"language": "python"}
             )
             
-            for char in "\nHere's a sample interactive chart:\n\n":
-                yield ChatMessage(type=MessageType.TEXT, content=char)
+            yield ChatMessage(type=MessageType.TEXT, content="\n\nHere's the chart:\n\n")
 
             fig = px.scatter(
                 px.data.iris(), 
                 x='sepal_width', 
                 y='sepal_length', 
                 color='species',
+                title="Sample Iris Dataset Visualization",
+                template="vizro_dark"
             )
             
-            time.sleep(1)
             yield ChatMessage(
                 type=MessageType.PLOTLY_GRAPH,
                 content=fig.to_json(),
-            )
-            
-            time.sleep(2)
-            for char in "\nThis demonstrates mixed content rendering in the chat interface. Now let's try a different theme:":
-                yield ChatMessage(type=MessageType.TEXT, content=char)
-
-            fig2 = px.scatter(
-                px.data.iris(), 
-                x='sepal_width', 
-                y='sepal_length', 
-                color='species',
-                template="vizro_dark",
-            )
-
-            time.sleep(5)
-            yield ChatMessage(
-                type=MessageType.PLOTLY_GRAPH,
-                content=fig2.to_json(),
             )
                 
         except Exception as e:
             yield ChatMessage(
                 type=MessageType.ERROR,
-                content=f"Error in GraphProcessor: {e!s}"
+                content=f"Error: {e!s}"
             ) 
