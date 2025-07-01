@@ -6,40 +6,46 @@ from typing import Literal, Optional
 
 import dash
 import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
 from dash import Input, Output, State, callback, clientside_callback, dcc, html
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
 from flask import Response, request
 from pydantic import ConfigDict, Field
-import plotly.graph_objects as go
-
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro_ai.models.chat.processors import ChatMessage, ChatProcessor, EchoProcessor
-from vizro_ai.models.chat._utils import _parse_sse_chunks, _create_code_block_component, _flush_accumulated_text, _create_message_components
-from vizro_ai.models.chat._constants import (
-    ROOT_CONTAINER,
-    MAIN_CONTAINER,
-    INPUT_SECTION,
-    INPUT_GROUP,
-    HISTORY_SECTION,
-    HISTORY_CONTAINER,
-    MESSAGE_BUBBLE,
-    INPUT_FIELD,
-)
 
-# TODO: clean up docstring
+from vizro_ai.models.chat._constants import (
+    HISTORY_CONTAINER,
+    HISTORY_SECTION,
+    INPUT_FIELD,
+    INPUT_GROUP,
+    INPUT_SECTION,
+    MAIN_CONTAINER,
+    MESSAGE_BUBBLE,
+    ROOT_CONTAINER,
+)
+from vizro_ai.models.chat._utils import (
+    _create_code_block_component,
+    _create_message_components,
+    _flush_accumulated_text,
+    _parse_sse_chunks,
+)
+from vizro_ai.models.chat.processors import ChatMessage, ChatProcessor, EchoProcessor
+
+
 class Chat(VizroBaseModel):
-    """Chat component.
+    """Chat component for interactive conversations with AI assistance.
 
     Args:
         type (Literal["chat"]): Defaults to `"chat"`.
         input_placeholder (str): Placeholder text for the input field. Defaults to `"Ask me a question..."`.
         input_height (str): Height of the input field. Defaults to `"80px"`.
         button_text (str): Text displayed on the send button. Defaults to `"Send"`.
-        initial_message (Optional[str]): Initial message displayed in the chat. Defaults to None.
+        initial_message (Optional[str]): Initial message displayed in the chat. Defaults to `None`.
         height (str): Height of the chat component wrapper. Defaults to `"100%"`.
-        storage_type (Literal["memory", "session", "local"]): Storage type for chat history persistence. Defaults to `"session"`.
+        storage_type (Literal["memory", "session", "local"]): Storage type for chat history
+            persistence. Defaults to `"session"`.
         processor (ChatProcessor): Chat processor for generating responses. Defaults to `EchoProcessor()`.
 
     """
@@ -52,11 +58,20 @@ class Chat(VizroBaseModel):
     button_text: str = Field(default="Send", description="Text displayed on the send button")
     initial_message: Optional[str] = Field(default=None, description="Initial message displayed in the chat")
     height: str = Field(default="100%", description="Height of the chat component wrapper")
-    storage_type: Literal["memory", "session", "local"] = Field(default="session", description="Storage type for chat history persistence")
-    processor: ChatProcessor = Field(default_factory=EchoProcessor, description="Chat processor for generating responses")
+    storage_type: Literal["memory", "session", "local"] = Field(
+        default="session", description="Storage type for chat history persistence"
+    )
+    processor: ChatProcessor = Field(
+        default_factory=EchoProcessor, description="Chat processor for generating responses"
+    )
 
     def plug(self, app):
-        """Register streaming routes with the Dash app."""
+        """Register streaming routes with the Dash app.
+
+        Args:
+            app: The Dash application instance.
+        """
+
         @app.server.route(f"/streaming-{self.id}", methods=["POST"], endpoint=f"streaming_chat_{self.id}")
         def streaming_chat():
             try:
@@ -87,8 +102,8 @@ class Chat(VizroBaseModel):
         """Register callbacks before building the component."""
         self._register_streaming_callback()
 
-    def _register_streaming_callback(self):
-        """Register callbacks for chat functionality."""
+    def _register_streaming_callback(self):  # noqa: PLR0915
+        """Register callbacks for chat functionality and user interactions."""
 
         # Add callback to clear input immediately on submit
         @callback(
@@ -132,18 +147,18 @@ class Chat(VizroBaseModel):
             # Only rebuild if history is empty (initial load)
             if current_history:
                 return dash.no_update
-                
+
             if not messages_data:
                 return []
-            
+
             try:
                 messages = json.loads(messages_data)
                 history_divs = []
-                
+
                 for idx, message in enumerate(messages):
                     role = message.get("role", "")
                     content = message.get("content", "")
-                    
+
                     if role == "user":
                         div = html.Div(
                             content,
@@ -151,7 +166,7 @@ class Chat(VizroBaseModel):
                                 **MESSAGE_BUBBLE,
                                 "backgroundColor": "var(--surfaces-bg-card)",
                                 "borderLeft": "4px solid #aaa9ba",
-                            }
+                            },
                         )
                     elif role == "assistant":
                         # Skip empty assistant messages (placeholders)
@@ -165,13 +180,13 @@ class Chat(VizroBaseModel):
                                 **MESSAGE_BUBBLE,
                                 "backgroundColor": "var(--right-side-bg)",
                                 "borderLeft": "4px solid #00b4ff",
-                            }
+                            },
                         )
                     else:
                         continue
-                    
+
                     history_divs.append(div)
-                
+
                 return history_divs
             except (json.JSONDecodeError, TypeError):
                 return []
@@ -194,15 +209,15 @@ class Chat(VizroBaseModel):
             """Start streaming when user submits a message."""
             if (not n_clicks and not n_submit) or not value or not value.strip():
                 return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
-            
+
             messages_array = json.loads(messages)
             user_message = {"role": "user", "content": value.strip()}
             messages_array.append(user_message)
-            
+
             # Add placeholder assistant message immediately to ensure persistence
             assistant_placeholder = {"role": "assistant", "content": ""}
             messages_array.append(assistant_placeholder)
-            
+
             updated_messages = json.dumps(messages_array)
 
             user_div = html.Div(
@@ -211,7 +226,7 @@ class Chat(VizroBaseModel):
                     **MESSAGE_BUBBLE,
                     "backgroundColor": "var(--surfaces-bg-card)",
                     "borderLeft": "4px solid #aaa9ba",
-                }
+                },
             )
 
             assistant_div = html.Div(
@@ -224,22 +239,24 @@ class Chat(VizroBaseModel):
                     **MESSAGE_BUBBLE,
                     "backgroundColor": "var(--right-side-bg)",
                     "borderLeft": "4px solid #00b4ff",
-                }
+                },
             )
 
             # Update history with both divs (append to existing history)
             new_history = current_history or []
-            new_history = new_history + [user_div, assistant_div]
+            new_history = [*new_history, user_div, assistant_div]
 
             return (
                 f"/streaming-{self.id}",
                 sse_options(
-                    json.dumps({
-                        "prompt": value.strip(),
-                        "chat_history": json.dumps(messages_array),
-                    }),
+                    json.dumps(
+                        {
+                            "prompt": value.strip(),
+                            "chat_history": json.dumps(messages_array),
+                        }
+                    ),
                     headers={"Content-Type": "application/json"},
-                    method="POST"
+                    method="POST",
                 ),
                 new_history,
                 updated_messages,
@@ -256,16 +273,12 @@ class Chat(VizroBaseModel):
             """Update the streaming display from the buffer data."""
             if not buffer_data:
                 return []
-            
+
             components = []
             for item in buffer_data:
                 if item["type"] == "text":
                     components.append(
-                        dcc.Markdown(
-                            item["content"],
-                            className="markdown-container",
-                            style={"margin": 0}
-                        )
+                        dcc.Markdown(item["content"], className="markdown-container", style={"margin": 0})
                     )
                 elif item["type"] == "code":
                     code_id = f"{self.id}-code-{uuid.uuid4()}"
@@ -279,7 +292,7 @@ class Chat(VizroBaseModel):
                         )
                     )
                     components.append(html.Br())
-            
+
             return components
 
         @callback(
@@ -300,34 +313,32 @@ class Chat(VizroBaseModel):
 
             content_items = []
             current_text = ""
-            
+
             for msg in messages:
                 msg_type = msg.get("type", "text")
                 msg_content = msg.get("content", "")
                 msg_metadata = msg.get("metadata", {})
-                
+
                 if msg_type == "code":
                     current_text = _flush_accumulated_text(current_text, content_items)
-                    content_items.append({
-                        "type": "code",
-                        "content": msg_content,
-                    })
+                    content_items.append(
+                        {
+                            "type": "code",
+                            "content": msg_content,
+                        }
+                    )
                 elif msg_type == "plotly_graph":
                     current_text = _flush_accumulated_text(current_text, content_items)
-                    content_items.append({
-                        "type": "plotly_graph",
-                        "content": msg_content,
-                        "metadata": msg_metadata
-                    })
+                    content_items.append({"type": "plotly_graph", "content": msg_content, "metadata": msg_metadata})
                 else:
                     current_text += msg_content
-            
+
             current_text = _flush_accumulated_text(current_text, content_items)
-            
+
             # Use SSE done property for completion detection
             if done:
                 return content_items, True  # content, trigger_completion
-            
+
             return content_items, dash.no_update
 
         # Add callback to update messages store when completion is triggered
@@ -355,35 +366,35 @@ class Chat(VizroBaseModel):
                     messages_array[i]["content"] = structured_content
                     updated = True
                     break
-            
+
             if not updated:
                 # Fallback: add new message if no placeholder found
                 assistant_message = {"role": "assistant", "content": structured_content}
                 messages_array.append(assistant_message)
-            
+
             final_messages = json.dumps(messages_array)
             return final_messages, False  # Reset completion trigger
-        
+
         # this clientside callback scrolls the chat history so
         # that the user message is visible.
         # ideally the user message is at the current screen,
         # but this version scrolls to the offset of the user message top.
         clientside_callback(
-            """
-            function(n_clicks, n_submit) {
+            f"""
+            function(n_clicks, n_submit) {{
                 if (!n_clicks && !n_submit) return window.dash_clientside.no_update;
-                setTimeout(() => {
-                    const historyDiv = document.getElementById('%s-history');
+                setTimeout(() => {{
+                    const historyDiv = document.getElementById('{self.id}-history');
                     const children = historyDiv?.children;
                     const userMessage = children?.[children.length - 2];
                     if (userMessage) historyDiv.scrollTop = userMessage.offsetTop;
-                }, 200);
+                }}, 200);
                 return window.dash_clientside.no_update;
-            }
-            """ % self.id,
+            }}
+            """,
             Output(f"{self.id}-history", "data-smart-scroll"),
             Input(f"{self.id}-submit", "n_clicks"),
-            Input(f"{self.id}-input", "n_submit")
+            Input(f"{self.id}-input", "n_submit"),
         )
 
     @_log_call
@@ -394,7 +405,7 @@ class Chat(VizroBaseModel):
         components.extend(self._build_data_stores())
         components.append(self._build_chat_interface())
         components.append(SSE(id=f"{self.id}-sse", concat=True, animate_chunk=20, animate_delay=5))
-        
+
         return html.Div(
             components,
             style={
@@ -454,4 +465,4 @@ class Chat(VizroBaseModel):
                 ),
             ],
             style=MAIN_CONTAINER,
-        ) 
+        )

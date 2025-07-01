@@ -88,4 +88,4 @@ INPUT_FIELD = {
     "borderTopLeftRadius": "10px",
     "boxShadow": "none",
     "border": "1px solid var(--border-subtleAlpha01)",
-} 
+}
