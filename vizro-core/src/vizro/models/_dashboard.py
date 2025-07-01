@@ -210,7 +210,7 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def _get_d_header_custom_content(self) -> list:
+    def _get_d_header_custom_content(self) -> list[Component]:
         """Returns a list of Dash components to be displayed in the dashboard header (to the left of the theme switch).
 
         Override this method in your subclass to inject custom content.
