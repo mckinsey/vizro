@@ -59,7 +59,7 @@ _PageDivsType = TypedDict(
     "_PageDivsType",
     {
         "dashboard-title": html.Div,
-        "settings": html.Div,
+        "theme-selector": dbc.Switch,
         "page-title": html.H2,
         "nav-bar": dbc.Navbar,
         "nav-panel": dbc.Nav,
@@ -217,15 +217,12 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.H2(id="dashboard-title", hidden=True)
         )
-        settings = html.Div(
-            children=dbc.Switch(
+        theme_selector = dbc.Switch(
                 id="theme-selector",
                 value=self.theme == "vizro_light",
                 persistence=True,
                 persistence_type="session",
-            ),
-            id="settings",
-        )
+            )
 
         logo_img = self._infer_image(filename="logo")
         logo_dark_img = self._infer_image(filename="logo_dark")
@@ -258,7 +255,7 @@ class Dashboard(VizroBaseModel):
         return html.Div(
             [
                 dashboard_title,
-                settings,
+                theme_selector,
                 page_title,
                 nav_bar,
                 nav_panel,
@@ -279,9 +276,9 @@ class Dashboard(VizroBaseModel):
 
         # Apply different container position logic based on condition
         if _all_hidden(page_header_divs):
-            right_header_divs.append(page_divs["settings"])
+            right_header_divs.append(page_divs["theme-selector"])
         else:
-            page_header_divs.append(page_divs["settings"])
+            page_header_divs.append(page_divs["theme-selector"])
 
         collapsible_icon = (
             html.Div(
