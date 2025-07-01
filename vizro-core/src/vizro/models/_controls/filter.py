@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import Any, Literal, Optional, Union, cast, Self
+from typing import Any, Literal, Optional, Self, Union, cast
 
 import pandas as pd
 from dash import dcc, html
@@ -103,7 +103,7 @@ class Filter(VizroBaseModel):
     _dynamic: bool = PrivateAttr(False)
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def check_id_set_for_url_control(self) -> Self:
         # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
