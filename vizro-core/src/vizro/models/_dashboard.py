@@ -68,6 +68,7 @@ _PageDivsType = TypedDict(
         "logo-light": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
+        "d-header-custom": html.Div,
     },
 )
 
@@ -209,6 +210,11 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
+    def _append_d_header_custom(self) -> html.Div:
+        # TODO: Make d_header_custom_divs configurable
+        d_header_custom_divs = []
+        return html.Div(id="d-header-custom", children=[d_header_custom_divs], hidden=_all_hidden(d_header_custom_divs))
+
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
         dashboard_description = self.description.build().children if self.description else [None]
@@ -218,11 +224,13 @@ class Dashboard(VizroBaseModel):
             else html.H2(id="dashboard-title", hidden=True)
         )
         theme_selector = dbc.Switch(
-                id="theme-selector",
-                value=self.theme == "vizro_light",
-                persistence=True,
-                persistence_type="session",
-            )
+            id="theme-selector",
+            value=self.theme == "vizro_light",
+            persistence=True,
+            persistence_type="session",
+        )
+
+        d_header_custom = self._append_d_header_custom()
 
         logo_img = self._infer_image(filename="logo")
         logo_dark_img = self._infer_image(filename="logo_dark")
@@ -264,21 +272,27 @@ class Dashboard(VizroBaseModel):
                 logo_light,
                 control_panel,
                 page_components,
+                d_header_custom,
             ]
         )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        logo_title = [page_divs["logo"], page_divs["logo-dark"], page_divs["logo-light"], page_divs["dashboard-title"]]
-        page_header_divs = [html.Div(id="logo-and-title", children=logo_title, hidden=_all_hidden(logo_title))]
+        d_header_left_divs = [
+            page_divs["logo"],
+            page_divs["logo-dark"],
+            page_divs["logo-light"],
+            page_divs["dashboard-title"],
+        ]
+        d_header_right_divs = [page_divs["d-header-custom"]]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
         right_header_divs = [page_divs["page-title"]]
 
         # Apply different container position logic based on condition
-        if _all_hidden(page_header_divs):
+        if _all_hidden(d_header_left_divs + d_header_right_divs):
             right_header_divs.append(page_divs["theme-selector"])
         else:
-            page_header_divs.append(page_divs["theme-selector"])
+            d_header_right_divs.append(page_divs["theme-selector"])
 
         collapsible_icon = (
             html.Div(
@@ -311,9 +325,18 @@ class Dashboard(VizroBaseModel):
         right_main = page_divs["page-components"]
         right_side = html.Div(id="right-side", children=[right_header, right_main])
 
-        page_header = html.Div(id="page-header", children=page_header_divs, hidden=_all_hidden(page_header_divs))
+        d_header_left = html.Div(
+            id="d-header-left", children=d_header_left_divs, hidden=_all_hidden(d_header_left_divs)
+        )
+        d_header_right = html.Div(
+            id="d-header-right", children=d_header_right_divs, hidden=_all_hidden(d_header_right_divs)
+        )
+        d_header = html.Div(
+            id="d-header", children=[d_header_left, d_header_right], hidden=_all_hidden([d_header_left, d_header_right])
+        )
+
         page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon, right_side])
-        return html.Div(children=[page_header, page_main], className="page-container")
+        return html.Div(children=[d_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See

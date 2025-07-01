@@ -43,7 +43,7 @@
   justify-content: space-between;
 }
 
-#page-header {
+#d-header {
   align-items: center;
   background-color: var(--left-side-bg);
   display: flex;
@@ -55,7 +55,7 @@
   width: 100%;
 }
 
-#page-header:not(:empty) {
+#d-header:not(:empty) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
 }
 
@@ -137,7 +137,7 @@
   display: inline;
 }
 
-#logo-and-title {
+#d-header-left {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -201,7 +201,7 @@ Current logic:
     padding-top: 20px;
   }
 
-  #page-header,
+  #d-header,
   #right-side,
   #left-side {
     zoom: 80%;
