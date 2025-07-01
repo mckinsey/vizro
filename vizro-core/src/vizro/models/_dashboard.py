@@ -210,10 +210,12 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def _append_d_header_custom(self) -> html.Div:
-        # TODO: Make d_header_custom_divs configurable
-        d_header_custom_divs = []
-        return html.Div(id="d-header-custom", children=[d_header_custom_divs], hidden=_all_hidden(d_header_custom_divs))
+    def _get_d_header_custom_content(self):
+        """Returns a list of Dash components to be displayed in the dashboard header (to the left of the theme switch).
+
+        Override this method in your subclass to inject custom content.
+        """
+        return []
 
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
@@ -229,8 +231,6 @@ class Dashboard(VizroBaseModel):
             persistence=True,
             persistence_type="session",
         )
-
-        d_header_custom = self._append_d_header_custom()
 
         logo_img = self._infer_image(filename="logo")
         logo_dark_img = self._infer_image(filename="logo_dark")
@@ -259,6 +259,11 @@ class Dashboard(VizroBaseModel):
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
+
+        d_header_custom_divs = self._get_d_header_custom_content()
+        d_header_custom = html.Div(
+            id="d-header-custom", children=d_header_custom_divs, hidden=_all_hidden(d_header_custom_divs)
+        )
 
         return html.Div(
             [
@@ -329,10 +334,15 @@ class Dashboard(VizroBaseModel):
             id="d-header-left", children=d_header_left_divs, hidden=_all_hidden(d_header_left_divs)
         )
         d_header_right = html.Div(
-            id="d-header-right", children=d_header_right_divs, hidden=_all_hidden(d_header_right_divs)
+            id="d-header-right",
+            children=d_header_right_divs,
+            hidden=_all_hidden(d_header_right_divs),
         )
         d_header = html.Div(
-            id="d-header", children=[d_header_left, d_header_right], hidden=_all_hidden([d_header_left, d_header_right])
+            id="d-header",
+            children=[d_header_left, d_header_right],
+            hidden=_all_hidden([d_header_left, d_header_right]),
+            className="no-left" if _all_hidden(d_header_left_divs) else "",
         )
 
         page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon, right_side])
