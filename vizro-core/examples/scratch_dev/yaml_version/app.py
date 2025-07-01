@@ -14,4 +14,4 @@ dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
 
 if __name__ == "__main__":
-    Vizro(assets_folder="../assets").build(dashboard).run()
+    Vizro().build(dashboard).run()

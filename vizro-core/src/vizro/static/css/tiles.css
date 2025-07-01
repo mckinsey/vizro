@@ -5,23 +5,19 @@
   width: 100%;
 }
 
-
-.dash-graph {
-  /* Plotly graphs require their parent element to be visible and to have both width and height explicitly defined.
-     If the parent does not have a defined height, the graph may not render or size correctly.
-     This min-height ensures the graph is displayed even when the parent lacks an explicit height.
-     TODO: Consider increasing min-height if graphs are not sufficiently visible.
-  */
-  min-height: 250px;
-}
-
 .figure-title,
 .figure-header,
 .figure-footer {
-  align-items: center;
   display: flex;
   flex: 0 1 auto;
+  flex-direction: column;
   gap: 8px;
+}
+
+/* Needs to deviate from the default as the info-icon could be placed inside */
+.figure-title {
+  align-items: center;
+  flex-direction: row;
 }
 
 .figure-footer {

@@ -8,7 +8,7 @@ from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
-from vizro.models._controls._controls_utils import check_control_targets, set_container_control_default
+from vizro.models._controls._controls_utils import check_control_targets
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID, SelectorType
 
@@ -78,7 +78,6 @@ class Parameter(VizroBaseModel):
     @_log_call
     def pre_build(self):
         check_control_targets(control=self)
-        set_container_control_default(control=self)
         self._check_numerical_and_temporal_selectors_values()
         self._check_categorical_selectors_options()
         self._set_selector_title()

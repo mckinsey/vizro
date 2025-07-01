@@ -22,6 +22,7 @@ nav:
           - Container: pages/user-guides/container.md
           - Tab: pages/user-guides/tabs.md
       - CONTROLS:
+          - Overview: pages/user-guides/controls.md
           - Filter: pages/user-guides/filters.md
           - Parameter: pages/user-guides/parameters.md
           - Selector: pages/user-guides/selectors.md
@@ -120,7 +121,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.40
+                vizro==0.1.42
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -148,6 +149,10 @@ plugins:
               ignore_init_summary: true
               warn_unknown_params: false
               returns_named_value: false
+            extensions:
+              - docs/griffe_extensions.py:
+                  paths:
+                    [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false

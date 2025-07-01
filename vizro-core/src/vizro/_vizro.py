@@ -16,7 +16,9 @@ from packaging.version import parse
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Dashboard, Filter
+from vizro.models.types import FigureType
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +112,9 @@ class Vizro:
         self._pre_build()
         self.dash.layout = dashboard.build()
 
+        # Store the dashboard object for later use in the run method.
+        self._dashboard = dashboard
+
         # Add data-bs-theme attribute that is always present, even for pages without theme selector,
         # i.e. the Dash "Loading..." screen.
         bootstrap_theme = dashboard.theme.removeprefix("vizro_")
@@ -130,6 +135,23 @@ class Vizro:
         """
         data_manager._frozen_state = True
         model_manager._frozen_state = True
+
+        # Check if there are undefined captured callables in the dashboard.
+        # TODO: In the future we may want to try importing these, do users don't have to create an entirely
+        # new dashboard config.
+        _undefined_captured_callables: set[str] = {
+            model.figure._function
+            for model in cast(
+                Iterable[FigureType], model_manager._get_models(root_model=self._dashboard, model_type=FIGURE_MODELS)
+            )
+            if model.figure._prevent_run
+        }
+
+        if _undefined_captured_callables:
+            raise ValueError(
+                f"""Dashboard contains models with undefined CapturedCallable's: {_undefined_captured_callables}.
+Provide a valid import path for these in your dashboard configuration."""
+            )
 
         if kwargs.get("processes", 1) > 1 and type(data_manager.cache.cache) is SimpleCache:
             warnings.warn(
@@ -155,6 +177,8 @@ class Vizro:
             # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
             # defined in the filter's pre_build method. Also, the calculation of the data_frame Parameter targets
             # depends on the filter targets, so they should be pre-built after the filters as well.
+            # It's also essential for filters to be pre-built before Container.pre_build runs or otherwise
+            # control.selector won't be set.
             filter.pre_build()
         for model_id in set(model_manager):
             model = model_manager[model_id]

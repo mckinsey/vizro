@@ -50,7 +50,7 @@ In practice this means that data can be identified as valid or invalid:
     }
     ```
 
-=== "invalid  (`B` is not an array of strings)"
+=== "invalid (`B` is not an array of strings)"
 
     ```json
     {
