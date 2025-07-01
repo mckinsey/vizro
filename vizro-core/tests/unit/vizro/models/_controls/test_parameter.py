@@ -66,9 +66,9 @@ class TestParameterInstantiation:
     def test_missing_id_for_url_control_warning_raised(self):
         with pytest.warns(
             UserWarning,
-            match="The `show_in_url=True` is set but no `id` was provided. "
-            "This can lead to unstable URLs, especially if the dashboard layout changes. "
-            "Set a fixed `id` to ensure links remain consistent and shareable.",
+            match="`show_in_url=True` is set but no `id` was provided. "
+            "Shareable URLs might be unreliable if your dashboard configuration changes in future. "
+            "If you want to ensure that links continue working, set a fixed `id`.",
         ):
             Parameter(
                 targets=["scatter_chart.x"],

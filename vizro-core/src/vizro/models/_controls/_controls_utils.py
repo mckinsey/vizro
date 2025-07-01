@@ -46,8 +46,8 @@ def check_control_targets(control: ControlType) -> None:
 def warn_missing_id_for_url_control(control: ControlType) -> None:
     if control.show_in_url and "id" not in control.model_fields_set:
         warnings.warn(
-            "The `show_in_url=True` is set but no `id` was provided. "
-            "This can lead to unstable URLs, especially if the dashboard layout changes. "
-            "Set a fixed `id` to ensure links remain consistent and shareable.",
+            "`show_in_url=True` is set but no `id` was provided. "
+            "Shareable URLs might be unreliable if your dashboard configuration changes in future. "
+            "If you want to ensure that links continue working, set a fixed `id`.",
             UserWarning,
         )
