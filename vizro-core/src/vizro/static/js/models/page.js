@@ -6,7 +6,7 @@ def encode_url_params(decoded_map, apply_on_keys=None):
         if key in apply_on_keys:
             # This manual base64 encoding could be simplified with base64.urlsafe_b64encode.
             # It's kept here to match the javascript implementation.
-            json_str = json.dumps(value)
+            json_str = json.dumps(value, separators=(',', ':'))
             encoded_bytes = base64.b64encode(json_str.encode("utf-8"))
             encoded_str = encoded_bytes.decode("utf-8") \
                 .replace("+", "-") \
