@@ -329,7 +329,7 @@ class Dashboard(VizroBaseModel):
                     ),
                 ],
                 className="collapse-icon-div",
-                id="collapse-icon-container"
+                id="collapse-icon-container",
             )
             if not _all_hidden([*left_sidebar_divs, *left_main_divs])
             else None
