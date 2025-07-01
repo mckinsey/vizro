@@ -98,7 +98,7 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
             - ✅Results: ["ALL"], [2.3, 4.4], "setosa"
             - ✅Confirm that the `UNKNOWN` still exists in the URL.
             - ✅Confirm that the URL contains all other controls.
-            - ✅Confirm that the changing the control neither page refresh does not remove UNKNOWN from the URL.
+            - ✅Confirm that the changing the control does not remove UNKNOWN from the URL.
             - ❗the UNKNOWN parameter is not removed from the URL when navigating to Page-1 and back to Page-4.
         (unknown query parameter ID with value that is not base64 encoded)
         - http://localhost:8050/page_4?UNKNOWN=asd
