@@ -15,21 +15,14 @@ class CustomDashboard(vm.Dashboard):
     type: Literal["custom_dashboard"] = "custom_dashboard"
 
     def _arrange_page_divs(self, outer_page_divs):
-        collapsible_icon = outer_page_divs["collapse-icon-container"]
+        collapsible_icon_container = outer_page_divs["collapse-icon-container"]
         collapsible_left_side = outer_page_divs["collapsible-left-side"]
         right_side = outer_page_divs["right-side"]
         d_header = outer_page_divs["d-header"]
 
-        page_main = html.Div(
-            id="page-main",
-            children=[d_header, right_side],
-            style={"display": "flex", "flex": "1 1 0", "flex-direction": "column", "height": "100vh"},
-        )
-
+        page_main = html.Div(id="page-main", children=[d_header, right_side])
         page_main_outer = html.Div(
-            children=[collapsible_left_side, collapsible_icon, page_main],
-            className="page-main-outer",
-            style={"display": "flex", "flex-direction": "row", "height": "100vh", "width": "100vw"},
+            children=[collapsible_left_side, collapsible_icon_container, page_main], className="page-main-outer"
         )
 
         return page_main_outer

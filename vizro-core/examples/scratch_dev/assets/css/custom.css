@@ -1,3 +1,8 @@
-.page-container {
-    display: flex;
-  }
+.page-main-outer {
+  flex-direction: row;
+}
+
+#page-main {
+  flex-direction: column;
+  height: 100vh;
+}

@@ -75,7 +75,7 @@ _InnerPageDivsType = TypedDict(
 _OuterPageDivsType = TypedDict(
     "_OuterPageDivsType",
     {
-        "collapse-icon": html.Div,
+        "collapse-icon-container": html.Div,
         "collapsible-left-side": dbc.Collapse,
         "right-side": html.Div,
         "d-header": html.Div,
@@ -329,7 +329,7 @@ class Dashboard(VizroBaseModel):
                     ),
                 ],
                 className="collapse-icon-div",
-                id="collapse-icon-container"
+                id="collapse-icon-container",
             )
             if not _all_hidden([*left_sidebar_divs, *left_main_divs])
             else None
@@ -369,21 +369,16 @@ class Dashboard(VizroBaseModel):
 
     def _arrange_page_divs(self, outer_page_divs: _OuterPageDivsType):
         # TODO: Handle collapsible_icon_container is None
-        collapsible_icon = outer_page_divs["collapse-icon-container"]
+        collapsible_icon_container = outer_page_divs["collapse-icon-container"]
         collapsible_left_side = outer_page_divs["collapsible-left-side"]
         right_side = outer_page_divs["right-side"]
         d_header = outer_page_divs["d-header"]
 
-        page_main = html.Div(
-            id="page-main",
-            children=[collapsible_left_side, collapsible_icon, right_side],
-            style={"display": "flex", "flex": "1 1 0", "flex-direction": "row", "height": "calc(100vh - 64px)"},
-        )
+        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon_container, right_side])
 
         page_main_outer = html.Div(
             children=[d_header, page_main],
             className="page-main-outer",
-            style={"display": "flex", "flex-direction": "column", "height": "100vh", "width": "100vw"},
         )
         return page_main_outer
 
