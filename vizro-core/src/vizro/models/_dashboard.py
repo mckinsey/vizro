@@ -55,8 +55,8 @@ def _all_hidden(components: list[Component]):
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_PageDivsType = TypedDict(
-    "_PageDivsType",
+_InnerPageDivsType = TypedDict(
+    "_InnerPageDivsType",
     {
         "dashboard-title": html.Div,
         "theme-selector": dbc.Switch,
@@ -69,6 +69,16 @@ _PageDivsType = TypedDict(
         "control-panel": html.Div,
         "page-components": html.Div,
         "d-header-custom": html.Div,
+    },
+)
+
+_OuterPageDivsType = TypedDict(
+    "_OuterPageDivsType",
+    {
+        "collapse-icon": html.Div,
+        "collapsible-left-side": dbc.Collapse,
+        "right-side": html.Div,
+        "d-header": html.Div,
     },
 )
 
@@ -217,7 +227,8 @@ class Dashboard(VizroBaseModel):
         """
         return []
 
-    def _get_page_divs(self, page: Page) -> _PageDivsType:
+    def _get_inner_page_divs(self, page: Page) -> _InnerPageDivsType:
+        """Returns a dictionary of the inner containers/components for a page."""
         # Identical across pages
         dashboard_description = self.description.build().children if self.description else [None]
         dashboard_title = (
@@ -281,23 +292,28 @@ class Dashboard(VizroBaseModel):
             ]
         )
 
-    def _arrange_page_divs(self, page_divs: _PageDivsType):
+    def _get_outer_page_divs(self, inner_page_divs: _InnerPageDivsType) -> _OuterPageDivsType:
+        """Returns a dictionary of the outer containers/components for a page."""
         d_header_left_divs = [
-            page_divs["logo"],
-            page_divs["logo-dark"],
-            page_divs["logo-light"],
-            page_divs["dashboard-title"],
+            inner_page_divs["logo"],
+            inner_page_divs["logo-dark"],
+            inner_page_divs["logo-light"],
+            inner_page_divs["dashboard-title"],
         ]
-        d_header_right_divs = [page_divs["d-header-custom"]]
-        left_sidebar_divs = [page_divs["nav-bar"]]
-        left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
-        right_header_divs = [page_divs["page-title"]]
+        d_header_right_divs = [inner_page_divs["d-header-custom"]]
+        left_sidebar_divs = [inner_page_divs["nav-bar"]]
+        left_main_divs = [inner_page_divs["nav-panel"], inner_page_divs["control-panel"]]
+        right_header_divs = [inner_page_divs["page-title"]]
 
         # Apply different container position logic based on condition
         if _all_hidden(d_header_left_divs + d_header_right_divs):
-            right_header_divs.append(page_divs["theme-selector"])
+            right_header_divs.append(inner_page_divs["theme-selector"])
         else:
-            d_header_right_divs.append(page_divs["theme-selector"])
+            d_header_right_divs.append(inner_page_divs["theme-selector"])
+
+        left_sidebar = html.Div(id="left-sidebar", children=left_sidebar_divs, hidden=_all_hidden(left_sidebar_divs))
+        left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
+        left_side = html.Div(id="left-side", children=[left_sidebar, left_main])
 
         collapsible_icon = (
             html.Div(
@@ -313,21 +329,18 @@ class Dashboard(VizroBaseModel):
                     ),
                 ],
                 className="collapse-icon-div",
+                id="collapse-icon-container"
             )
             if not _all_hidden([*left_sidebar_divs, *left_main_divs])
             else None
         )
-
-        left_sidebar = html.Div(id="left-sidebar", children=left_sidebar_divs, hidden=_all_hidden(left_sidebar_divs))
-        left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
-        left_side = html.Div(id="left-side", children=[left_sidebar, left_main])
 
         collapsible_left_side = dbc.Collapse(
             id="collapsible-left-side", children=left_side, is_open=True, dimension="width"
         )
 
         right_header = html.Div(id="right-header", children=right_header_divs)
-        right_main = page_divs["page-components"]
+        right_main = inner_page_divs["page-components"]
         right_side = html.Div(id="right-side", children=[right_header, right_main])
 
         d_header_left = html.Div(
@@ -345,22 +358,41 @@ class Dashboard(VizroBaseModel):
             className="no-left" if _all_hidden(d_header_left_divs) else "",
         )
 
+        return html.Div(
+            [
+                collapsible_icon,
+                collapsible_left_side,
+                right_side,
+                d_header,
+            ]
+        )
+
+    def _arrange_page_divs(self, outer_page_divs: _OuterPageDivsType):
+        # TODO: Handle collapsible_icon_container is None
+        collapsible_icon = outer_page_divs["collapse-icon-container"]
+        collapsible_left_side = outer_page_divs["collapsible-left-side"]
+        right_side = outer_page_divs["right-side"]
+        d_header = outer_page_divs["d-header"]
+
         page_main = html.Div(
             id="page-main",
             children=[collapsible_left_side, collapsible_icon, right_side],
             style={"display": "flex", "flex": "1 1 0", "flex-direction": "row", "height": "calc(100vh - 64px)"},
         )
-        return html.Div(
+
+        page_main_outer = html.Div(
             children=[d_header, page_main],
-            className="page-container",
+            className="page-main-outer",
             style={"display": "flex", "flex-direction": "column", "height": "100vh", "width": "100vw"},
         )
+        return page_main_outer
 
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
-        page_divs = self._get_page_divs(page=page)
-        page_layout = self._arrange_page_divs(page_divs=page_divs)
+        inner_page_divs = self._get_inner_page_divs(page=page)
+        outer_page_divs = self._get_outer_page_divs(inner_page_divs=inner_page_divs)
+        page_layout = self._arrange_page_divs(outer_page_divs=outer_page_divs)
         page_layout.id = page.id
         return page_layout
 
