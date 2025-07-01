@@ -12,11 +12,11 @@ df = px.data.gapminder()
 
 first_page = vm.Page(
     title="First Page",
-    # layout=vm.Layout(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
+    # layout=vm.Grid(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
     components=[
         vm.Container(
             title="Container with controls",
-            layout=vm.Layout(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
+            layout=vm.Grid(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
             variant="outlined",
             components=[
                 vm.Card(
