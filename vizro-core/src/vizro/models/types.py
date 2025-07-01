@@ -666,8 +666,10 @@ ComponentType = Annotated[
     ),
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
-[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table],
-[`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid]."""
+[`Button`][vizro.models.Button], [`Card`][vizro.models.Card],[`Container`][vizro.models.Container],
+[`Figure`][vizro.models.Figure], [`Table`][vizro.models.Table], [`Graph`][vizro.models.Graph],
+[`Text`][vizro.models.Text], [`Tabs`][vizro.models.Tabs],
+or [`AgGrid`][vizro.models.AgGrid]."""
 
 NavPagesType = Union[list[ModelID], dict[str, list[ModelID]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
