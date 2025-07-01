@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import Any, Literal, Optional, Union, cast
+from typing import Any, Literal, Optional, Union, cast, Self
 
 import pandas as pd
 from dash import dcc, html
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
-from pydantic import Field, PrivateAttr
+from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions._filter_action import _filter
@@ -103,10 +103,11 @@ class Filter(VizroBaseModel):
     _dynamic: bool = PrivateAttr(False)
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
-    def model_post_init(self, context) -> None:
-        super().model_post_init(context)
+    @model_validator(mode='after')
+    def check_id_set_for_url_control(self) -> Self:
         # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
+        return self
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

@@ -1,8 +1,8 @@
 from collections.abc import Iterable
-from typing import Annotated, Literal, cast
+from typing import Annotated, Literal, cast, Self
 
 from dash import html
-from pydantic import AfterValidator, Field
+from pydantic import AfterValidator, Field, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
@@ -85,10 +85,11 @@ class Parameter(VizroBaseModel):
         ),
     )
 
-    def model_post_init(self, context) -> None:
-        super().model_post_init(context)
+    @model_validator(mode='after')
+    def check_id_set_for_url_control(self) -> Self:
         # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
+        return self
 
     @_log_call
     def pre_build(self):
