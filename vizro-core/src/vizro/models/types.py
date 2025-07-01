@@ -630,7 +630,7 @@ MultiValueType = Union[list[StrictBool], list[float], list[str], list[date]]
 class OptionsDictType(TypedDict):
     """Permissible sub-type for OptionsType. Needs to be in the format of {"label": XXX, "value": XXX}."""
 
-    label: str
+    label: Any
     value: SingleValueType
 
 

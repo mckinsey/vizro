@@ -3,6 +3,7 @@
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro import Vizro
+from dash import html
 
 from vizro.tables import dash_ag_grid
 
@@ -32,13 +33,31 @@ first_page = vm.Page(
                     footer="""SOURCE: **Plotly gapminder data set, 2024**""",
                 ),
             ],
-            controls=[vm.Filter(column="continent", selector=vm.Checklist(title="Continent (checklist)"))],
+            controls=[
+                vm.Filter(
+                    column="continent",
+                    selector=vm.Checklist(
+                        title="Continent (checklist)",
+                    ),
+                )
+            ],
         )
     ],
     controls=[
-        # vm.Filter(column="continent"),
         vm.Filter(column="year", selector=vm.Dropdown()),
-        vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(
+            column="continent",
+            selector=vm.Dropdown(
+                options=[
+                    {"label": html.Span("Americas"), "value": "Americas"},
+                    {"label": html.Span("Europe"), "value": "Europe"},
+                    {"label": html.Span("Asia"), "value": "Asia"},
+                    {"label": html.Span("Africa"), "value": "Africa"},
+                    {"label": html.Span("Oceania"), "value": "Oceania"},
+                ],
+                value=["Asia"],
+            ),
+        ),
         vm.Filter(column="country", selector=vm.Dropdown(multi=False)),
         # vm.Filter(
         #     column="continent",

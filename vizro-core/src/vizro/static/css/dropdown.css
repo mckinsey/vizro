@@ -140,10 +140,15 @@ div.Select--multi .Select-clear-zone {
 
 /** spacing for tag elements only when elements are present inside
 wrapper **/
+
+div.Select-multi-value-wrapper,
 div.Select--multi .Select-multi-value-wrapper {
   align-items: center;
   display: flex;
   min-height: 32px;
+}
+
+div.Select--multi .Select-multi-value-wrapper {
   padding-left: 8px;
 }
 
