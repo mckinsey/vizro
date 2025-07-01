@@ -18,17 +18,17 @@ from vizro.models._models_utils import _log_call
 from vizro_ai.models.chat.processors import ChatMessage, ChatProcessor, EchoProcessor
 from vizro_ai.models.chat._utils import _parse_sse_chunks, _create_code_block_component, _flush_accumulated_text, _create_message_components
 from vizro_ai.models.chat._constants import (
-    WRAPPER,
-    CHAT_CONTAINER_STYLE,
-    CHAT_INPUT_WRAPPER_STYLE,
-    CHAT_INPUT_CONTAINER_STYLE,
-    CHAT_HISTORY_WRAPPER_STYLE,
-    CHAT_HISTORY_STYLE,
-    MESSAGE_STYLE,
-    TEXTAREA_STYLE,
+    ROOT_CONTAINER,
+    MAIN_CONTAINER,
+    INPUT_SECTION,
+    INPUT_GROUP,
+    HISTORY_SECTION,
+    HISTORY_CONTAINER,
+    MESSAGE_BUBBLE,
+    INPUT_FIELD,
 )
 
-
+# TODO: clean up docstring
 class Chat(VizroBaseModel):
     """Chat component.
 
@@ -148,7 +148,7 @@ class Chat(VizroBaseModel):
                         div = html.Div(
                             content,
                             style={
-                                **MESSAGE_STYLE,
+                                **MESSAGE_BUBBLE,
                                 "backgroundColor": "var(--surfaces-bg-card)",
                                 "borderLeft": "4px solid #aaa9ba",
                             }
@@ -162,7 +162,7 @@ class Chat(VizroBaseModel):
                         div = html.Div(
                             _create_message_components(content, message_id),
                             style={
-                                **MESSAGE_STYLE,
+                                **MESSAGE_BUBBLE,
                                 "backgroundColor": "var(--right-side-bg)",
                                 "borderLeft": "4px solid #00b4ff",
                             }
@@ -208,7 +208,7 @@ class Chat(VizroBaseModel):
             user_div = html.Div(
                 value.strip(),
                 style={
-                    **MESSAGE_STYLE,
+                    **MESSAGE_BUBBLE,
                     "backgroundColor": "var(--surfaces-bg-card)",
                     "borderLeft": "4px solid #aaa9ba",
                 }
@@ -221,7 +221,7 @@ class Chat(VizroBaseModel):
                     children=[],  # Will hold mixed content: streaming text and code blocks
                 ),
                 style={
-                    **MESSAGE_STYLE,
+                    **MESSAGE_BUBBLE,
                     "backgroundColor": "var(--right-side-bg)",
                     "borderLeft": "4px solid #00b4ff",
                 }
@@ -398,7 +398,7 @@ class Chat(VizroBaseModel):
         return html.Div(
             components,
             style={
-                **WRAPPER,
+                **ROOT_CONTAINER,
                 "height": self.height,
             },
         )
@@ -418,9 +418,9 @@ class Chat(VizroBaseModel):
                 html.Div(
                     html.Div(
                         id=f"{self.id}-history",
-                        style=CHAT_HISTORY_STYLE,
+                        style=HISTORY_CONTAINER,
                     ),
-                    style=CHAT_HISTORY_WRAPPER_STYLE,
+                    style=HISTORY_SECTION,
                 ),
                 html.Div(
                     dbc.InputGroup(
@@ -430,7 +430,7 @@ class Chat(VizroBaseModel):
                                 placeholder=self.input_placeholder,
                                 autoFocus=True,
                                 style={
-                                    **TEXTAREA_STYLE,
+                                    **INPUT_FIELD,
                                     "height": self.input_height,
                                 },
                                 n_submit=0,
@@ -448,10 +448,10 @@ class Chat(VizroBaseModel):
                                 },
                             ),
                         ],
-                        style=CHAT_INPUT_CONTAINER_STYLE,
+                        style=INPUT_GROUP,
                     ),
-                    style=CHAT_INPUT_WRAPPER_STYLE,
+                    style=INPUT_SECTION,
                 ),
             ],
-            style=CHAT_CONTAINER_STYLE,
+            style=MAIN_CONTAINER,
         ) 

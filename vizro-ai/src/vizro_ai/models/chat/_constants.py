@@ -1,19 +1,17 @@
-"""Styling constants for the Vizro-AI chat component."""
+"""Styling constants for Chat model."""
 
-CODE_BLOCK_CONTAINER_STYLE = {
-    "position": "relative",
-    "backgroundColor": "var(--surfaces-bg-card)",
-    "borderRadius": "10px",
-}
+# =============================================================================
+# TOP LEVEL CONTAINERS
+# =============================================================================
 
-WRAPPER = {
+ROOT_CONTAINER = {
     "width": "100%",
     "height": "100%",
     "display": "flex",
     "flexDirection": "column",
 }
 
-CHAT_CONTAINER_STYLE = {
+MAIN_CONTAINER = {
     "display": "flex",
     "flexDirection": "column",
     "flex": "1",
@@ -21,23 +19,11 @@ CHAT_CONTAINER_STYLE = {
     "height": "100%",
 }
 
-CHAT_INPUT_WRAPPER_STYLE = {
-    "display": "flex",
-    "justifyContent": "center",
-    "width": "100%",
-    "marginTop": "auto",
-}
+# =============================================================================
+# HISTORY SECTION (top half of chat)
+# =============================================================================
 
-CHAT_INPUT_CONTAINER_STYLE = {
-    "borderRadius": "10px",
-    "height": "80px",
-    "backgroundColor": "var(--surfaces-bg-card)",
-    "zIndex": "1",
-    "width": "100%",
-    "maxWidth": "760px",
-}
-
-CHAT_HISTORY_WRAPPER_STYLE = {
+HISTORY_SECTION = {
     "display": "flex",
     "justifyContent": "center",
     "width": "100%",
@@ -45,7 +31,7 @@ CHAT_HISTORY_WRAPPER_STYLE = {
     "overflow": "hidden",
 }
 
-CHAT_HISTORY_STYLE = {
+HISTORY_CONTAINER = {
     "width": "100%",
     "paddingBottom": "20px",
     "paddingLeft": "5px",
@@ -53,7 +39,7 @@ CHAT_HISTORY_STYLE = {
     "overflow": "auto",
 }
 
-MESSAGE_STYLE = {
+MESSAGE_BUBBLE = {
     "color": "var(--text-primary)",
     "padding": "10px 15px",
     "maxWidth": "96%",
@@ -69,7 +55,33 @@ MESSAGE_STYLE = {
     "borderRadius": "10px",
 }
 
-TEXTAREA_STYLE = {
+CODE_BLOCK = {
+    "position": "relative",
+    "backgroundColor": "var(--surfaces-bg-card)",
+    "borderRadius": "10px",
+}
+
+# =============================================================================
+# INPUT SECTION (bottom half of chat)
+# =============================================================================
+
+INPUT_SECTION = {
+    "display": "flex",
+    "justifyContent": "center",
+    "width": "100%",
+    "marginTop": "auto",
+}
+
+INPUT_GROUP = {
+    "borderRadius": "10px",
+    "height": "80px",
+    "backgroundColor": "var(--surfaces-bg-card)",
+    "zIndex": "1",
+    "width": "100%",
+    "maxWidth": "760px",
+}
+
+INPUT_FIELD = {
     "height": "80px",  # This will be overridden by self.input_height
     "resize": "none",
     "borderBottomLeftRadius": "10px",

@@ -4,7 +4,7 @@ import json
 import uuid
 from dash import dcc, html
 import plotly.graph_objects as go
-from vizro_ai.models.chat._constants import CODE_BLOCK_CONTAINER_STYLE
+from vizro_ai.models.chat._constants import CODE_BLOCK
 
 
 def _parse_sse_chunks(animation_data) -> list[dict]:
@@ -104,7 +104,7 @@ def _create_code_block_component(code_content, code_id) -> html.Div:
                 "padding": "10px",
                 }
         ),
-    ], style=CODE_BLOCK_CONTAINER_STYLE)
+    ], style=CODE_BLOCK)
 
 
 def _flush_accumulated_text(current_text: str, content_items: list) -> str:
