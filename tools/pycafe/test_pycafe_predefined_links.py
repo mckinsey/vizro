@@ -8,9 +8,9 @@ if __name__ == "__main__":
     links = sys.argv[1:]
 
     # Test the link
-    exit_codes = (
+    exit_codes = [
         test_pycafe_link(url=link, wait_for_locator="#dashboard-container", wait_for_text=False) for link in links
-    )
+    ]
 
     # Exit with appropriate status code
-    sys.exit(all(exit_codes))
+    sys.exit(any(exit_codes))
