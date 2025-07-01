@@ -18,7 +18,7 @@ def my_custom_location(x=2):
     return f"/page-{x}"
 
 
-# ------------------------- Page Build Components -------------------------
+# ------------------------- Page Build Components --------------------------
 
 page_1 = vm.Page(
     title="Test page - Vizro actions",
