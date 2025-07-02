@@ -5,6 +5,7 @@ from vizro import Vizro
 import vizro.models as vm
 from typing import Literal
 from dash import html
+import dash_bootstrap_components as dbc
 
 df = px.data.iris()
 
@@ -15,7 +16,9 @@ class CustomDashboard(vm.Dashboard):
     type: Literal["custom_dashboard"] = "custom_dashboard"
 
     def _get_d_header_custom_content(self):
-        return [html.Div("Welcome Li!")]
+        # single_component = html.Div("Welcome Li!")
+        multiple_components = [html.Div("Welcome Li!"), dbc.Badge("Badge", color="primary")]
+        return multiple_components
 
 
 page = vm.Page(

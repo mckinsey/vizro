@@ -60,13 +60,7 @@
   justify-content: flex-end;
 }
 
-#d-header-right {
-  align-items: center;
-  display: flex;
-  gap: 8px;
-}
-
-#d-header-left {
+#d-header-right, #d-header-left, #d-header-custom {
   align-items: center;
   display: flex;
   gap: 8px;
