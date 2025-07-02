@@ -49,7 +49,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10 34"}
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -187,7 +187,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="14 19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -273,7 +273,7 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9 14 19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -347,7 +347,7 @@ Collapsible containers can be used in `Grid` layout as well.
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9 14 19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -512,7 +512,7 @@ Here are a few cases where you might want to use `controls` within a `Container`
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="12-20"}
+        ```{.python pycafe-link hl_lines="15 20"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
