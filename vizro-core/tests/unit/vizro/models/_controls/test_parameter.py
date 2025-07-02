@@ -1,5 +1,6 @@
 import pytest
 from asserts import assert_component_equal
+from dash import html
 
 import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
@@ -10,7 +11,7 @@ from vizro.models._controls.parameter import Parameter
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
 class TestParameterInstantiation:
-    def test_instantiation(self):
+    def test_create_parameter_mandatory_only(self):
         parameter = Parameter(
             targets=["scatter_chart.x"],
             selector=vm.Dropdown(
@@ -20,6 +21,21 @@ class TestParameterInstantiation:
         assert parameter.type == "parameter"
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.type == "dropdown"
+
+    def test_create_parameter_mandatory_and_optional(self):
+        parameter = Parameter(
+            id="parameter_id",
+            targets=["scatter_chart.x"],
+            selector=vm.Dropdown(
+                options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose x-axis"
+            ),
+            show_in_url=True,
+        )
+        assert parameter.id == "parameter_id"
+        assert parameter.type == "parameter"
+        assert parameter.targets == ["scatter_chart.x"]
+        assert parameter.selector.type == "dropdown"
+        assert parameter.show_in_url is True
 
     def test_check_dot_notation_failed(self):
         with pytest.raises(
@@ -47,10 +63,23 @@ class TestParameterInstantiation:
             Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
             Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
+    def test_missing_id_for_url_control_warning_raised(self):
+        with pytest.warns(
+            UserWarning,
+            match="`show_in_url=True` is set but no `id` was provided. "
+            "Shareable URLs might be unreliable if your dashboard configuration changes in future. "
+            "If you want to ensure that links continue working, set a fixed `id`.",
+        ):
+            Parameter(
+                targets=["scatter_chart.x"],
+                selector=vm.Dropdown(options=["lifeExp", "pop"]),
+                show_in_url=True,
+            )
+
 
 class TestPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control parameter_id should be defined within a Page object"):
+        with pytest.raises(ValueError, match="Control parameter_id should be defined within a Page object."):
             Parameter(
                 id="parameter_id",
                 targets=["scatter_chart.x"],
@@ -193,11 +222,11 @@ class TestParameterBuild:
         ],
     )
     def test_build_parameter(self, test_input):
-        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
+        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
         result = parameter.build()
-        expected = test_input.build()
+        expected = html.Div(id="parameter-id", children=test_input.build())
 
         assert_component_equal(result, expected)

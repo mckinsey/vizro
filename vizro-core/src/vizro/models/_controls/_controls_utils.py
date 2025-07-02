@@ -1,3 +1,4 @@
+import warnings
 from collections.abc import Generator
 from typing import Optional
 
@@ -40,3 +41,13 @@ def check_control_targets(control: ControlType) -> None:
         raise ValueError(f"Control {control.id} should be defined within a Page object.")
 
     _validate_targets(targets=control.targets, root_model=root_model)
+
+
+def warn_missing_id_for_url_control(control: ControlType) -> None:
+    if control.show_in_url and "id" not in control.model_fields_set:
+        warnings.warn(
+            "`show_in_url=True` is set but no `id` was provided. "
+            "Shareable URLs might be unreliable if your dashboard configuration changes in future. "
+            "If you want to ensure that links continue working, set a fixed `id`.",
+            UserWarning,
+        )

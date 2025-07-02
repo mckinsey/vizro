@@ -116,7 +116,7 @@ class RangeSlider(VizroBaseModel):
         output = [
             Output(f"{self.id}_start_value", "value"),
             Output(f"{self.id}_end_value", "value"),
-            Output(self.id, "value"),
+            Output(self.id, "value", allow_duplicate=True),
             Output(f"{self.id}_input_store", "data"),
         ]
         inputs = [
@@ -131,6 +131,7 @@ class RangeSlider(VizroBaseModel):
             ClientsideFunction(namespace="range_slider", function_name="update_range_slider_values"),
             output=output,
             inputs=inputs,
+            prevent_initial_call=True,
         )
         description = self.description.build().children if self.description else [None]
         defaults = {

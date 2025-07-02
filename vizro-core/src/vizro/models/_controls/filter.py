@@ -5,9 +5,9 @@ from contextlib import suppress
 from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
-from dash import dcc
+from dash import dcc, html
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
-from pydantic import Field, PrivateAttr
+from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions._filter_action import _filter
@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._controls._controls_utils import check_control_targets
+from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
@@ -79,6 +79,8 @@ class Filter(VizroBaseModel):
         targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
             on the page that use `column`. Defaults to `[]`.
         selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
+        show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
+            Useful for bookmarking or sharing dashboards with specific filter values pre-set.
 
     """
 
@@ -90,9 +92,22 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: Optional[SelectorType] = None
+    show_in_url: bool = Field(
+        default=False,
+        description=(
+            "Whether the filter should be included in the URL query string. Defaults to `False`. "
+            "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
+        ),
+    )
 
     _dynamic: bool = PrivateAttr(False)
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
+
+    @model_validator(mode="after")
+    def check_id_set_for_url_control(self):
+        # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
+        warn_missing_id_for_url_control(control=self)
+        return self
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -221,12 +236,11 @@ class Filter(VizroBaseModel):
     def build(self):
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
+
         selector_build_obj = selector.build()
-        # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
-        #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
-        #  Also, make selector.title visible when the filter is reloading.
+
         if not self._dynamic:
-            return selector_build_obj
+            return html.Div(id=self.id, children=selector_build_obj)
 
         # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
         # Other components, such as the title, remain visible because of the configuration:
@@ -240,6 +254,9 @@ class Filter(VizroBaseModel):
         if f"{selector.id}_end_value" in selector_build_obj:
             selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
 
+        # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
+        #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
+        #  Also, make selector.title visible when the filter is reloading.
         return dcc.Loading(
             id=self.id,
             children=selector_build_obj,
