@@ -19,7 +19,7 @@
   flex-direction: column;
   gap: 1.5rem;
   overflow: auto;
-  padding: 24px 24px 0;
+  padding: 20px 24px 0;
   width: 324px;
 }
 
@@ -104,7 +104,7 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
-  width: 64px;
+  width: 52px;
 }
 
 #dashboard-container div[hidden] {

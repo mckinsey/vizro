@@ -14,7 +14,12 @@ gapminder_europe = gapminder[gapminder["continent"] == "Europe"]
 
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
-df_bar = pd.DataFrame({"Actual": [100, 200, 700, 100, 300, 500, 400, 900, 800, 300, 400, 700], "Category": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]})
+df_bar = pd.DataFrame(
+    {
+        "Actual": [100, 200, 700, 100, 300, 500, 400, 900, 800, 300, 400, 700],
+        "Category": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"],
+    }
+)
 graphs = vm.Page(
     title="Graphs",
     components=[
@@ -34,23 +39,23 @@ graphs = vm.Page(
             # figure=px.bar(tips, x="day", y="total_bill")
             figure=px.pie(iris, names="species")
         ),
-        vm.Graph(
-            figure=px.bar(gapminder_europe, x="country", y="lifeExp")
-        )
+        vm.Graph(figure=px.bar(gapminder_europe, x="country", y="lifeExp")),
     ],
 )
-graph = [vm.Graph(
-            figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
-            title="Relationships between Sepal Width and Sepal Length",
-            header="""
+graph = [
+    vm.Graph(
+        figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
+        title="Relationships between Sepal Width and Sepal Length",
+        header="""
                 Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their
                 types. The Setosa type is easily identifiable by its short and wide sepals.
 
                 However, there is still overlap between the Versicolor and Virginica types when considering only sepal
                 width and length.
                 """,
-            footer="""SOURCE: **Plotly iris data set, 2024**""",
-        )]
+        footer="""SOURCE: **Plotly iris data set, 2024**""",
+    )
+]
 
 cards = vm.Page(
     title="Cards",
@@ -120,7 +125,7 @@ example_reference_cards = [
         reverse_color=True,
     ),
 ]
-components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards]
+components = [vm.Figure(figure=figure) for figure in example_cards + example_reference_cards]
 
 components.extend(graph)
 
@@ -196,12 +201,12 @@ tooltip = vm.Page(
     """,
 )
 
-navigation = vm.Navigation(
-        pages={"Group A": ["Graphs", "Cards"], "Group B": ["Tooltip", "KPI cards"]}, nav_selector=vm.NavBar()
-    )
+navigation = vm.Navigation(pages={"Group A": ["Graphs", "Cards"], "Group B": ["Tooltip", "KPI cards"]})
 
 
-dashboard = vm.Dashboard(pages=[graphs, cards, tooltip, kpi_cards], navigation=navigation, title="Scratch dev dashboard")
+dashboard = vm.Dashboard(
+    pages=[graphs, cards, tooltip, kpi_cards], navigation=navigation, title="Scratch dev dashboard"
+)
 # dashboard = vm.Dashboard(pages=[graphs], title="Scratch dev dashboard")
 
 if __name__ == "__main__":
