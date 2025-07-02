@@ -187,7 +187,10 @@ page_1 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_1_filter", column="species"),
+        vm.Filter(
+            id="page_1_filter",
+            column="species",
+        ),
     ],
 )
 
