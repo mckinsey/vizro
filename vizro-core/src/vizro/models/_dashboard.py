@@ -41,8 +41,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _all_hidden(components: list[Component]):
+def _all_hidden(components: Component | list[Component]):
     """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
+    if isinstance(components, Component):
+        components = [components]
     return all(
         component is None
         or getattr(component, "hidden", False)
@@ -220,10 +222,10 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def _get_d_header_custom_content(self) -> list[Component]:
-        """Returns a list of Dash components to be displayed in the dashboard header (to the left of the theme switch).
+    def _get_d_header_custom_content(self) -> Component | list[Component]:
+        """Returns a Dash component or a list of Dash components to be displayed in the dashboard header.
 
-        Override this method in your subclass to inject custom content.
+        Override this method in your subclass to inject custom content (to the left of the theme switch).
         """
         return []
 
