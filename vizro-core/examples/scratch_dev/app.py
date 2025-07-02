@@ -5,6 +5,7 @@ from vizro import Vizro
 import vizro.models as vm
 from typing import Literal
 from dash import html
+from vizro.models._dashboard import _all_hidden
 
 df = px.data.iris()
 
@@ -15,16 +16,16 @@ class CustomDashboard(vm.Dashboard):
     type: Literal["custom_dashboard"] = "custom_dashboard"
 
     def _arrange_page_divs(self, outer_page_divs):
-        collapsible_icon_container = outer_page_divs["collapse-icon-container"]
         collapsible_left_side = outer_page_divs["collapsible-left-side"]
+        collapsible_icon_div = outer_page_divs["collapsible-icon-div"]
         right_side = outer_page_divs["right-side"]
         d_header = outer_page_divs["d-header"]
 
         page_main = html.Div(id="page-main", children=[d_header, right_side])
         page_main_outer = html.Div(
-            children=[collapsible_left_side, collapsible_icon_container, page_main], className="page-main-outer"
+            children=[collapsible_left_side, collapsible_icon_div, page_main],
+            className="page-main-outer no-left" if _all_hidden(collapsible_icon_div) else "page-main-outer",
         )
-
         return page_main_outer
 
 
@@ -35,8 +36,8 @@ page = vm.Page(
         vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
     ],
     controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
-    ],
+          vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
+      ],
 )
 
 

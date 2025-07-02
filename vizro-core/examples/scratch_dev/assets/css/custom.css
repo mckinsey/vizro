@@ -2,12 +2,15 @@
   flex-direction: row;
 }
 
+.page-main-outer .no-left {
+  flex-direction: column;
+}
+
 #page-main {
   flex-direction: column;
   height: 100vh;
 }
 
-
-.collapse-icon-div {
+.collapsible-icon-div {
   padding-top: 44px;
 }

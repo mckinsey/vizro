@@ -77,7 +77,7 @@ _InnerPageDivsType = TypedDict(
 _OuterPageDivsType = TypedDict(
     "_OuterPageDivsType",
     {
-        "collapse-icon-container": html.Div,
+        "collapsible-icon-div": html.Div,
         "collapsible-left-side": dbc.Collapse,
         "right-side": html.Div,
         "d-header": html.Div,
@@ -317,24 +317,19 @@ class Dashboard(VizroBaseModel):
         left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
         left_side = html.Div(id="left-side", children=[left_sidebar, left_main])
 
-        collapsible_icon = (
-            html.Div(
-                children=[
-                    html.Span(
-                        id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"
-                    ),
-                    dbc.Tooltip(
-                        id="collapse-tooltip",
-                        children="Hide Menu",
-                        placement="right",
-                        target="collapse-icon",
-                    ),
-                ],
-                className="collapse-icon-div",
-                id="collapse-icon-container",
-            )
-            if not _all_hidden([*left_sidebar_divs, *left_main_divs])
-            else None
+        collapsible_icon_div = html.Div(
+            children=[
+                html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
+                dbc.Tooltip(
+                    id="collapse-tooltip",
+                    children="Hide Menu",
+                    placement="right",
+                    target="collapse-icon",
+                ),
+            ],
+            className="collapsible-icon-div",
+            id="collapsible-icon-div",
+            hidden=_all_hidden([*left_sidebar_divs, *left_main_divs]),
         )
 
         collapsible_left_side = dbc.Collapse(
@@ -362,7 +357,7 @@ class Dashboard(VizroBaseModel):
 
         return html.Div(
             [
-                collapsible_icon,
+                collapsible_icon_div,
                 collapsible_left_side,
                 right_side,
                 d_header,
@@ -370,18 +365,13 @@ class Dashboard(VizroBaseModel):
         )
 
     def _arrange_page_divs(self, outer_page_divs: _OuterPageDivsType):
-        # TODO: Handle collapsible_icon_container is None
-        collapsible_icon_container = outer_page_divs["collapse-icon-container"]
         collapsible_left_side = outer_page_divs["collapsible-left-side"]
+        collapsible_icon_div = outer_page_divs["collapsible-icon-div"]
         right_side = outer_page_divs["right-side"]
         d_header = outer_page_divs["d-header"]
 
-        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon_container, right_side])
-
-        page_main_outer = html.Div(
-            children=[d_header, page_main],
-            className="page-main-outer",
-        )
+        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon_div, right_side])
+        page_main_outer = html.Div(children=[d_header, page_main], className="page-main-outer")
         return page_main_outer
 
     def _make_page_layout(self, page: Page, **kwargs):
