@@ -109,6 +109,19 @@ class Filter(VizroBaseModel):
         warn_missing_id_for_url_control(control=self)
         return self
 
+    # TODO NOW: think about whether setting these shortcuts is a good idea or if there could be any problems.
+    # Add comment on url update CSCB that this translation doesn't work for those so provide control.id manually.
+    # Oops,actually  this clashes with below _action_outputs and TODO-AV2 E. Need to work out what to do here.
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.selector.id}.value",
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.selector.id}.value"}
+
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         # TODO-AV2 E: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.

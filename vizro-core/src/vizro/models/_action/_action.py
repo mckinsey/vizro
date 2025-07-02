@@ -94,6 +94,28 @@ class _BaseAction(VizroBaseModel):
             for action in model_manager._get_models(filter_interaction, root_model=page)
         ]
 
+    # Horrible quickly written hacked code to work for both new _actions_triggers and old _set_actions.
+    # Use my newly removed actions loop (and model manager in future) to tidy up a lot.
+    def _get_trigger_states(self):
+        from vizro.models import ActionsChain
+
+        for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain)):
+            if self in actions_chain.actions:
+                trigger = actions_chain.trigger
+                try:
+                    triggered_model = model_manager[trigger.component_id]
+                    action_triggers = triggered_model._action_triggers["__default__"]
+                    if isinstance(action_triggers, dict):
+                        return {
+                            key: State(*action_trigger.split(".")) for key, action_trigger in action_triggers.items()
+                        }
+                    return State(*action_triggers.split("."))
+
+                except:
+                    # For example on page load model doesn't exist.
+                    # Or any model wherer _action_triggers not yet defined.
+                    return State(trigger.component_id, trigger.component_property)
+
     @staticmethod
     def _transform_dependency(dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
         """Transform a component dependency into its mapped property value.
@@ -184,7 +206,8 @@ class _BaseAction(VizroBaseModel):
                 "filters": self._get_control_states(control_type=Filter),
                 "parameters": self._get_control_states(control_type=Parameter),
                 "filter_interaction": self._get_filter_interaction_states(),
-            }
+            },
+            "trigger": self._get_trigger_states(),
         }
 
         # Work out which built in arguments are actually required for this function.
@@ -225,7 +248,8 @@ class _BaseAction(VizroBaseModel):
             # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
             return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
-        if isinstance(self.outputs, list):
+        # TODO NOW: do isinstance better
+        if isinstance(self.outputs, (list, tuple)):
             callback_outputs = [_transform_output(output) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case

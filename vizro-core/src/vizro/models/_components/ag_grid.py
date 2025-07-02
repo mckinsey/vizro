@@ -95,8 +95,22 @@ class AgGrid(VizroBaseModel):
         super().model_post_init(context)
         self._inner_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
 
-    # TODO-AV2 E: Implement _action_trigger where makes sense.
-    #  For the AgGrid the mapping could look like: {"__default__": f"{self._inner_component_id}.cellClicked"}
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        # Might have selectedData etc. in future.
+        # TODO NOW: check if rowData is actually what we want here
+        # Note now this is more than dict[str, _IdProperty].
+        # Could make all Action inputs/outputs accepts flexible callback signature formats or maybe not worth it
+        # and easier just to do for action triggers for now anyway.
+        # Won't use all these properties, they're just here to see what's in them.
+        return {
+            "__default__": {
+                "cellClicked": f"{self._inner_component_id}.cellClicked",
+                "rowData": f"{self._inner_component_id}.rowData",
+                "virtualRowData": f"{self._inner_component_id}.virtualRowData",
+                "selectedRows": f"{self._inner_component_id}.selectedData",
+            }
+        }
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
