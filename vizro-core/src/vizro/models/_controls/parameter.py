@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from typing import Annotated, Literal, Self, cast
+from typing import Annotated, Literal, cast
 
 from dash import html
 from pydantic import AfterValidator, Field, model_validator
@@ -86,7 +86,7 @@ class Parameter(VizroBaseModel):
     )
 
     @model_validator(mode="after")
-    def check_id_set_for_url_control(self) -> Self:
+    def check_id_set_for_url_control(self):
         # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self
