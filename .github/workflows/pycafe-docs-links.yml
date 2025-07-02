@@ -8,10 +8,6 @@ on:
     branches:
       - main
 
-defaults:
-  run:
-    working-directory: vizro-core
-
 env:
   PYTHON_VERSION: "3.12"
 
@@ -29,8 +25,14 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
-      - name: Check PyCafe docs links
-        run: hatch run pycafe-docs-links
+      - name: Check PyCafe docs links in vizro-core
+        working-directory: ./vizro-core
+        run: hatch run docs:pycafe-links
+
+      - name: Check PyCafe docs links in vizro-ai
+        working-directory: ./vizro-ai
+        if: always()
+        run: hatch run docs:pycafe-links
 
       - name: Send custom JSON data to Slack
         uses: slackapi/slack-github-action@v1.26.0

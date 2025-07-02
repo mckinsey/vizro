@@ -52,34 +52,6 @@ prep-release = [
   "git add schemas",
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro $(hatch version)"'
 ]
-pycafe-docs-links = [
-  "playwright install --with-deps chromium",
-  # grep -hoEr 'https://py.cafe[^])\"]*'
-  # here in the '[]' we're deleting this '^])"'characters at the end of the links and stop reading link after it
-  # -h: Suppress filenames in the output
-  # -o: Print only the matched (non-empty) parts of a matching line.
-  # -E: Use regular expressions.
-  # -r: Recursively read all files under each directory.
-  #
-  # sort -u
-  # sort links and leave onlu unique ones
-  #
-  # grep -vE '^https://py.cafe/?$'
-  # grep -vE '^https://py.cafe/docs/apps/vizro/?$'
-  # grep -vE '^https://py.cafe/logo.png'
-  # here we're excluding this patterns from the grep
-  # -v: Invert match
-  # ^: Anchors the match to the start of the line.
-  # $: Anchors the match to the end of the line.
-  # /?: Matches zero or one / after hostname
-  """python ../tools/pycafe/test_pycafe_predefined_links.py \\
-  $(grep -hoEr 'https://py.cafe[^])\"]*' \\
-  ../vizro-ai/docs/* docs/* |\\
-  sort -u |\\
-  grep -vE '^https://py.cafe/?$' |\\
-  grep -vE '^https://py.cafe/docs/apps/vizro/?$' |\\
-  grep -vE '^https://py.cafe/logo.png')"""
-]
 pypath = "python -c 'import sys; print(sys.executable)'"
 # Only run pre-commit hooks when schema is generated, not when it's checked. This keeps the check fast in CI.
 schema = ["python schemas/generate.py", '- pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
@@ -130,7 +102,9 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "PyGithub",
+  "playwright"
 ]
 installer = "uv"
 template = "docs"  # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
@@ -143,6 +117,7 @@ link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --
 # Check if link to QB logo is not deleted from the docs.
 logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/install.md"
 pip = '"{env:HATCH_UV}" pip {args}'
+pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "mkdocs serve --open"
 
 [envs.examples]
