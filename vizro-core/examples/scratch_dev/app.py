@@ -201,7 +201,9 @@ tooltip = vm.Page(
     """,
 )
 
-navigation = vm.Navigation(pages={"Group A": ["Graphs", "Cards"], "Group B": ["Tooltip", "KPI cards"]})
+navigation = vm.Navigation(
+    pages={"Group A": ["Graphs", "Cards"], "Group B": ["Tooltip", "KPI cards"]}, nav_selector=vm.NavBar()
+)
 
 
 dashboard = vm.Dashboard(
