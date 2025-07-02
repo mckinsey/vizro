@@ -2,6 +2,7 @@ from vizro import Vizro
 import vizro.models as vm
 from vizro.models.types import capture
 from dash import Input, Output, dcc, callback
+from vizro.managers import data_manager
 
 import vizro.plotly.express as px
 
@@ -156,7 +157,6 @@ def change_location_callback(_):
 
 # ------------------------- Dashboard Build Components -------------------------
 
-
 page_3 = vm.Page(
     title="Test dashboard - Vizro actions",
     path="page-3",
@@ -252,6 +252,27 @@ page_4 = vm.Page(
 )
 
 
+def load_iris_data(number_of_points=10):
+    iris = px.data.iris()
+    return iris.sample(number_of_points)
+
+
+data_manager["iris"] = load_iris_data
+
+
+page_dynamic = vm.Page(
+    title="Test dynamic filters",
+    components=[vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))],
+    controls=[
+        vm.Filter(column="species", selector=vm.RadioItems()),
+        vm.Parameter(
+            targets=["graph.data_frame.number_of_points"],
+            selector=vm.Slider(min=1, max=10, step=1, value=1),
+        ),
+    ],
+)
+
+
 # --- Callbacks ---
 # --- Download ---
 @callback(
@@ -291,7 +312,7 @@ def change_location_callback(_):
     return "/page-3"
 
 
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2, page_3, page_4])
+dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2, page_3, page_4, page_dynamic])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
