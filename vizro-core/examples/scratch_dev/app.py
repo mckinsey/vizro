@@ -36,8 +36,8 @@ page = vm.Page(
         vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
     ],
     controls=[
-          vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
-      ],
+        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
+    ],
 )
 
 
