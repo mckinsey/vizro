@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Annotated, Any, Optional, cast
 
-from dash import dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import (
     AfterValidator,
     BeforeValidator,
@@ -21,7 +21,7 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
-from vizro.models import Filter, Tooltip, VizroBaseModel
+from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
@@ -166,6 +166,37 @@ class Page(VizroBaseModel):
                     ],
                 )
             ]
+
+        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
+        url_controls = [
+            control
+            for control in cast(
+                Iterable[ControlType],
+                [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
+            )
+            if control.show_in_url
+        ]
+
+        if url_controls:
+            selector_values_outputs = [Output(control.selector.id, "value") for control in url_controls]
+            selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
+            # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
+            # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
+            control_ids_states = [State(control.id, "id") for control in url_controls]
+
+            # The URL is updated in the clientside callback with the `history.replaceState`, instead of using a
+            # dcc.Location as a callback Output. Do it because the dcc.Location uses `history.pushState` under the hood
+            # which causes destroying the history. With `history.replaceState`, we partially maintain the history.
+            # Similarly, we read the URL query parameters in the clientside callback with the window.location.pathname,
+            # instead of using dcc.Location as a callback Input. Do it to align the behavior with the outputs and to
+            # simplify the function inputs handling.
+            clientside_callback(
+                ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),
+                Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
+                *selector_values_outputs,
+                *selector_values_inputs,
+                *control_ids_states,
+            )
 
     @_log_call
     def build(self) -> _PageBuildType:

@@ -1,8 +1,8 @@
 from vizro import Vizro
 import vizro.models as vm
 from vizro.models.types import capture
-from dash import Input, Output, dcc, callback, ctx
-import dash
+from dash import Input, Output, dcc, callback
+
 import vizro.plotly.express as px
 
 iris = px.data.iris()
