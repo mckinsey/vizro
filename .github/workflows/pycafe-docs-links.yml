@@ -7,9 +7,6 @@ on:
   schedule:
     - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
   workflow_dispatch: # helps to run this job manually from GitHub Actions UI
-  pull_request:
-    branches:
-      - main
 
 env:
   PYTHON_VERSION: "3.12"
