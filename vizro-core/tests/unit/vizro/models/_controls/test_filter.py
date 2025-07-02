@@ -4,7 +4,7 @@ from typing import Literal
 import pandas as pd
 import pytest
 from asserts import assert_component_equal
-from dash import dcc
+from dash import dcc, html
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -425,7 +425,6 @@ class TestFilterStaticMethods:
         assert result == expected
 
 
-@pytest.mark.usefixtures("managers_one_page_two_graphs")
 class TestFilterInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
@@ -438,14 +437,28 @@ class TestFilterInstantiation:
         assert filter._action_outputs == {"__default__": f"{filter.id}.children"}
 
     def test_create_filter_mandatory_and_optional(self):
-        filter = Filter(column="foo", targets=["scatter_chart", "bar_chart"], selector=vm.RadioItems())
+        filter = Filter(
+            id="filter_id",
+            column="foo",
+            targets=["scatter_chart", "bar_chart"],
+            selector=vm.RadioItems(),
+            show_in_url=True,
+        )
+        assert filter.id == "filter_id"
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == ["scatter_chart", "bar_chart"]
         assert isinstance(filter.selector, vm.RadioItems)
+        assert filter.show_in_url is True
 
-    def test_check_target_present_valid(self):
-        Filter(column="foo", targets=["scatter_chart", "bar_chart"])
+    def test_missing_id_for_url_control_warning_raised(self):
+        with pytest.warns(
+            UserWarning,
+            match="`show_in_url=True` is set but no `id` was provided. "
+            "Shareable URLs might be unreliable if your dashboard configuration changes in future. "
+            "If you want to ensure that links continue working, set a fixed `id`.",
+        ):
+            Filter(column="column_numerical", show_in_url=True)
 
 
 @pytest.mark.usefixtures("managers_column_only_exists_in_some")
@@ -537,7 +550,7 @@ class TestFilterCall:
 
 class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object"):
+        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object."):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
 
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
@@ -919,12 +932,12 @@ class TestFilterBuild:
         ],
     )
     def test_filter_build(self, test_column, test_selector):
-        filter = vm.Filter(column=test_column, selector=test_selector)
+        filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
 
         filter.pre_build()
         result = filter.build()
-        expected = test_selector.build()
+        expected = html.Div(id="filter-id", children=test_selector.build())
 
         assert_component_equal(result, expected)
 
