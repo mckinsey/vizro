@@ -1,5 +1,8 @@
 name: PyCafe Docs Links
 
+permissions:
+  contents: read
+
 on:
   schedule:
     - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
@@ -35,7 +38,8 @@ jobs:
         run: hatch run docs:pycafe-links
 
       - name: Send custom JSON data to Slack
-        uses: slackapi/slack-github-action@v1.26.0
+        # used pinned commit hash for security reasons
+        uses: slackapi/slack-github-action@70cd7be8e40a46e8b0eced40b0de447bdb42f68e # v1.26.0
         if: failure()
         with:
           payload: |
