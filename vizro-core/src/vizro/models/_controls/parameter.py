@@ -1,14 +1,15 @@
 from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
-from pydantic import AfterValidator, Field
+from dash import html
+from pydantic import AfterValidator, Field, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
-from vizro.models._controls._controls_utils import check_control_targets
+from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID, SelectorType
 
@@ -58,6 +59,8 @@ class Parameter(VizroBaseModel):
         targets (list[str]): Targets in the form of `<target_component>.<target_argument>`.
         selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value
             `"NONE"` into `None` to allow optional parameters.
+        show_in_url (bool): Whether the parameter should be included in the URL query string. Defaults to `False`.
+            Useful for bookmarking or sharing dashboards with specific parameter values pre-set.
 
     """
 
@@ -74,6 +77,19 @@ class Parameter(VizroBaseModel):
         AfterValidator(check_duplicate_parameter_target),
     ]
     selector: SelectorType
+    show_in_url: bool = Field(
+        default=False,
+        description=(
+            "Whether the parameter should be included in the URL query string. Defaults to `False`. "
+            "Useful for bookmarking or sharing dashboards with specific parameter values pre-set."
+        ),
+    )
+
+    @model_validator(mode="after")
+    def check_id_set_for_url_control(self):
+        # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
+        warn_missing_id_for_url_control(control=self)
+        return self
 
     @_log_call
     def pre_build(self):
@@ -85,7 +101,7 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return self.selector.build()
+        return html.Div(id=self.id, children=self.selector.build())
 
     def _check_numerical_and_temporal_selectors_values(self):
         if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):
