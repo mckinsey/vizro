@@ -42,7 +42,7 @@ To add a `Figure` to your page:
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="12-20"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro

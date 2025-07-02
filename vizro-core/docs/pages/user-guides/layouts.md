@@ -105,14 +105,14 @@ This defines a single row that occupies the entire width and height, divided int
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="6-7"}
         import vizro.models as vm
         from vizro import Vizro
 
         page = vm.Page(
             title="one_left_two_right",
             layout=vm.Grid(grid=[[0, 1],
-                                   [0, 2]]),
+                                 [0, 2]]),
             components=[vm.Card(text="""# Component 0"""),
                         vm.Card(text="""# Component 1"""),
                         vm.Card(text="""# Component 2"""),
@@ -159,7 +159,7 @@ The `Grid` provides full control over the arrangement of top-level components wi
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9-10"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -169,7 +169,7 @@ The `Grid` provides full control over the arrangement of top-level components wi
         page = vm.Page(
             title="Custom Grid - Advanced Example",
             layout=vm.Grid(grid=[[0, 1, 3, 4],
-                                    [2, 2, 3, 4]]),
+                                 [2, 2, 3, 4]]),
             components=[
                 vm.Graph(
                     figure=px.line(
@@ -321,14 +321,14 @@ grid = [[0, 1, -1], [0, 2, -1]]
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="6-7"}
         import vizro.models as vm
         from vizro import Vizro
 
         page = vm.Page(
             title="Adding empty spaces",
             layout=vm.Grid(grid=[[0, 1, -1],
-                                   [0, 2, -1]]),
+                                 [0, 2, -1]]),
             components=[vm.Card(text="""# Component 0"""),
                         vm.Card(text="""# Component 1"""),
                         vm.Card(text="""# Component 2"""),
@@ -376,14 +376,16 @@ By default, the grid fits all charts/components on the screen. This can lead to 
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="8"}
         import vizro.models as vm
         from vizro import Vizro
 
         page = vm.Page(
             title="Activate scrolling",
-            layout=vm.Grid(grid=[[i] for i in range(8)],
-                             row_min_height="240px"),
+            layout=vm.Grid(
+                grid=[[i] for i in range(8)],
+                row_min_height="240px"
+            ),
             components=[vm.Card(text="""# Component 0"""),
                         vm.Card(text="""# Component 1"""),
                         vm.Card(text="""# Component 2"""),
@@ -766,7 +768,7 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9 15"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
