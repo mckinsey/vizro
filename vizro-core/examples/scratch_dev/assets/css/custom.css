@@ -6,3 +6,8 @@
   flex-direction: column;
   height: 100vh;
 }
+
+
+.collapse-icon-div {
+  padding-top: 44px;
+}
