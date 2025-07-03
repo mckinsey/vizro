@@ -4,6 +4,8 @@ function update_checklist_select_all(
   options,
   select_all_id,
 ) {
+  console.debug("update_checklist_select_all");
+
   // When "Select All" checkbox is clicked, set checklist value to be:
   // - all the values in options if checkbox is ticked (select_all_value=True)
   // - none of the options if checkbox is unticked (select_all_value=False)

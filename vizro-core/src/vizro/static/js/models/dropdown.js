@@ -1,4 +1,6 @@
 function update_dropdown_select_all(dropdown_value, options) {
+  console.debug("update_dropdown_select_all");
+
   // Turn into array of values excluding the __SELECT_ALL one.
   const realOptions = options
     .map((dict) => dict["value"])
