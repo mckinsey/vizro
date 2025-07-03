@@ -79,7 +79,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 ??? example "Example based on existing component"
 
     === "app.py"
-        ```{.python pycafe-link linenums="1" hl_lines="17 18"}
+        ```{.python pycafe-link linenums="1" hl_lines="17-18 22-23 37 41"}
         from typing_extensions import Literal
 
         import vizro.models as vm
@@ -201,7 +201,7 @@ vm.Page.add_type("components", Jumbotron)
 ??? example "Example of new component creation"
 
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9-22 25 30"}
         from typing import Literal
 
         from dash import html
@@ -211,8 +211,6 @@ vm.Page.add_type("components", Jumbotron)
 
 
         class Jumbotron(vm.VizroBaseModel):  # (1)!
-            """New custom component `Jumbotron`."""
-
             type: Literal["jumbotron"] = "jumbotron"  # (2)!
             title: str  # (3)!
             subtitle: str
@@ -306,7 +304,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 ??? example "Example of the use of custom component with actions"
 
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="12-27 30 32-36 46-48 52"}
         from typing import Literal
 
         import dash_bootstrap_components as dbc
@@ -408,7 +406,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
 ??? example "Example of triggering action with custom component"
 
     === "app.py"
-        ```py
+        ```py hl_lines="30-34 48-52"
         from typing import Annotated, Literal
 
         import dash_bootstrap_components as dbc
@@ -442,7 +440,6 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         def slide_next_card(active_index):
             if active_index:
                 return "Second slide"
-
             return "First slide"
 
 
