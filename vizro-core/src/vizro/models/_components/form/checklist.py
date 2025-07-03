@@ -99,7 +99,7 @@ class Checklist(VizroBaseModel):
             ClientsideFunction(namespace="checklist", function_name="update_checklist_select_all"),
             output=[
                 Output(f"{self.id}_select_all", "value"),
-                Output(self.id, "value"),
+                Output(self.id, "value", allow_duplicate=True),
             ],
             inputs=[
                 Input(f"{self.id}_select_all", "value"),

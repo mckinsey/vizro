@@ -168,7 +168,7 @@ class Dropdown(VizroBaseModel):
                 ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
                 output=[
                     Output(f"{self.id}_select_all", "value"),
-                    Output(self.id, "value"),
+                    Output(self.id, "value", allow_duplicate=True),
                 ],
                 inputs=[
                     Input(self.id, "value"),
