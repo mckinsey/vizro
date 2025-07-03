@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, Union, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _all_hidden(components: Component | list[Component]):
+def _all_hidden(components: Union[Component, list[Component]]):
     """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
     if isinstance(components, Component):
         components = [components]
@@ -61,7 +61,7 @@ _PageContentType = TypedDict(
     "_PageContentType",
     {
         "dashboard-title": html.Div,
-        "theme-selector": dbc.Switch,
+        "settings": html.Div,
         "page-title": html.H2,
         "nav-bar": dbc.Navbar,
         "nav-panel": dbc.Nav,
@@ -227,11 +227,14 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.H2(id="dashboard-title", hidden=True)
         )
-        theme_selector = dbc.Switch(
-            id="theme-selector",
-            value=self.theme == "vizro_light",
-            persistence=True,
-            persistence_type="session",
+        settings = html.Div(
+            dbc.Switch(
+                id="theme-selector",
+                value=self.theme == "vizro_light",
+                persistence=True,
+                persistence_type="session",
+            ),
+            id="settings",
         )
 
         logo_img = self._infer_image(filename="logo")
@@ -270,7 +273,7 @@ class Dashboard(VizroBaseModel):
         return html.Div(
             [
                 dashboard_title,
-                theme_selector,
+                settings,
                 page_title,
                 nav_bar,
                 nav_panel,
@@ -297,9 +300,9 @@ class Dashboard(VizroBaseModel):
 
         # Apply different container position logic based on condition
         if _all_hidden(d_header_left_divs + d_header_right_divs):
-            right_header_divs.append(page_divs["theme-selector"])
+            right_header_divs.append(page_divs["settings"])
         else:
-            d_header_right_divs.append(page_divs["theme-selector"])
+            d_header_right_divs.append(page_divs["settings"])
 
         collapsible_icon = (
             html.Div(
