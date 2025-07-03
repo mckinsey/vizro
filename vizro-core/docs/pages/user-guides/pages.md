@@ -27,7 +27,7 @@ To create and add a page to your dashboard, do the following steps:
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="7-19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -102,7 +102,7 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="18"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
