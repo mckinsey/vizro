@@ -1,0 +1,48 @@
+name: PyCafe Docs Links
+
+permissions:
+  contents: read
+
+on:
+  schedule:
+    - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
+  workflow_dispatch: # helps to run this job manually from GitHub Actions UI
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  create-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Check PyCafe docs links in vizro-core
+        working-directory: ./vizro-core
+        run: hatch run docs:pycafe-links
+
+      - name: Check PyCafe docs links in vizro-ai
+        working-directory: ./vizro-ai
+        if: always()
+        run: hatch run docs:pycafe-links
+
+      - name: Send custom JSON data to Slack
+        # used pinned commit hash for security reasons
+        uses: slackapi/slack-github-action@70cd7be8e40a46e8b0eced40b0de447bdb42f68e # v1.26.0
+        if: failure()
+        with:
+          payload: |
+            {
+              "text": "PyCafe docs links checker build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
