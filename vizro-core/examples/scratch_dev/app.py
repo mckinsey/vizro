@@ -48,16 +48,7 @@ first_page = vm.Page(
         vm.Filter(column="year", selector=vm.Dropdown()),
         vm.Filter(
             column="continent",
-            selector=vm.Dropdown(
-                options=[
-                    {"label": html.Span("Americas"), "value": "Americas"},
-                    {"label": html.Span("Europe"), "value": "Europe"},
-                    {"label": html.Span("Asia"), "value": "Asia"},
-                    {"label": html.Span("Africa"), "value": "Africa"},
-                    {"label": html.Span("Oceania"), "value": "Oceania"},
-                ],
-                value=["Asia"],
-            ),
+            selector=vm.Dropdown(),
         ),
         vm.Filter(column="country", selector=vm.Dropdown(multi=False)),
         # vm.Filter(
