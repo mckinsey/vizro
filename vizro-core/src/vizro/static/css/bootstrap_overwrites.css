@@ -60,11 +60,14 @@ All the HEX values starting with --text-code are taken from the Github code high
   border-left: 2px solid var(--border-enabled);
 }
 
-
 /* Move background color to BS */
 .accordion-item .nav-link:active, .accordion-item .nav-link.active,
 .accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
   background: var(--surfaces-bg-card);
+}
+
+.accordion-button {
+  text-transform: none;
 }
 
 .form-check:last-of-type {
