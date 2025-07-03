@@ -70,7 +70,7 @@ _PageContentType = TypedDict(
         "logo-light": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
-        "d-header-custom": html.Div,
+        "header-custom": html.Div,
     },
 )
 
@@ -212,7 +212,7 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def _get_header_custom_content(self) -> Component | list[Component]:
+    def custom_header(self) -> Component | list[Component]:
         """Returns a Dash component or a list of Dash components to be displayed in the dashboard header.
 
         Override this method in your subclass to inject custom content (to the left of the theme switch).
@@ -265,9 +265,9 @@ class Dashboard(VizroBaseModel):
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
 
-        header_custom_divs = self._get_header_custom_content()
+        header_custom_divs = self.custom_header()
         header_custom = html.Div(
-            id="d-header-custom", children=header_custom_divs, hidden=_all_hidden(header_custom_divs)
+            id="header-custom", children=header_custom_divs, hidden=_all_hidden(header_custom_divs)
         )
 
         return html.Div(
@@ -293,7 +293,7 @@ class Dashboard(VizroBaseModel):
             page_divs["logo-light"],
             page_divs["dashboard-title"],
         ]
-        header_right_divs = [page_divs["d-header-custom"]]
+        header_right_divs = [page_divs["header-custom"]]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
         right_header_divs = [page_divs["page-title"]]
@@ -335,16 +335,14 @@ class Dashboard(VizroBaseModel):
         right_main = page_divs["page-components"]
         right_side = html.Div(id="right-side", children=[right_header, right_main])
 
-        header_left = html.Div(
-            id="d-header-left", children=header_left_divs, hidden=_all_hidden(header_left_divs)
-        )
+        header_left = html.Div(id="header-left", children=header_left_divs, hidden=_all_hidden(header_left_divs))
         header_right = html.Div(
-            id="d-header-right",
+            id="header-right",
             children=header_right_divs,
             hidden=_all_hidden(header_right_divs),
         )
         header = html.Div(
-            id="d-header",
+            id="header",
             children=[header_left, header_right],
             hidden=_all_hidden([header_left, header_right]),
             className="no-left" if _all_hidden(header_left_divs) else "",

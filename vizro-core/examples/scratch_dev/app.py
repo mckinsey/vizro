@@ -15,7 +15,7 @@ class CustomDashboard(vm.Dashboard):
 
     type: Literal["custom_dashboard"] = "custom_dashboard"
 
-    def _get_header_custom_content(self):
+    def custom_header(self):
         # single_component = html.Div("Welcome Li!")
         multiple_components = [html.Div("Welcome Li!"), dbc.Badge("Badge", color="primary")]
         return multiple_components
