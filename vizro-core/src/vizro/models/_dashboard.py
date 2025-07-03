@@ -258,9 +258,9 @@ class Dashboard(VizroBaseModel):
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
 
-        header_custom_content = self.custom_header()
-        header_custom = html.Div(
-            id="header-custom", children=header_custom_content, hidden=_all_hidden(header_custom_content)
+        custom_header_content = self.custom_header()
+        custom_header = html.Div(
+            id="header-custom", children=custom_header_content, hidden=_all_hidden(custom_header_content)
         )
 
         return html.Div(
@@ -275,7 +275,7 @@ class Dashboard(VizroBaseModel):
                 logo_light,
                 control_panel,
                 page_components,
-                header_custom,
+                custom_header,
             ]
         )
 
