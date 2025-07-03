@@ -45,11 +45,7 @@ first_page = vm.Page(
         )
     ],
     controls=[
-        vm.Filter(column="year", selector=vm.Dropdown()),
-        vm.Filter(
-            column="continent",
-            selector=vm.Dropdown(),
-        ),
+        vm.Filter(column="continent", selector=vm.Dropdown()),
         vm.Filter(column="country", selector=vm.Dropdown(multi=False)),
         # vm.Filter(
         #     column="continent",
@@ -70,7 +66,7 @@ first_page = vm.Page(
 )
 
 
-def dynamic_data_load(number_of_rows: int = 100):
+def dynamic_data_load(number_of_rows: int = 1):
     return px.data.gapminder().head(number_of_rows)
 
 
@@ -103,7 +99,7 @@ second_page = vm.Page(
                 min=1,
                 max=1000,
                 step=100,
-                value=100,
+                value=1,
             )
         )
     ]
