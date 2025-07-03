@@ -15,10 +15,11 @@ class CustomDashboard(vm.Dashboard):
 
     type: Literal["custom_dashboard"] = "custom_dashboard"
 
-    def custom_header(self):
-        # single_component = html.Div("Welcome Li!")
+    @staticmethod
+    def custom_header():
+        single_component = html.Div("Welcome Li!")
         multiple_components = [html.Div("Welcome Li!"), dbc.Badge("Badge", color="primary")]
-        return multiple_components
+        return single_component
 
 
 page = vm.Page(
