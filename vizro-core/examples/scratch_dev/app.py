@@ -157,8 +157,13 @@ def change_location_callback(_):
 
 # ------------------------- Dashboard Build Components -------------------------
 
+DESCRIPTION = """
+    Add 'dashboard_vizro_download' and 'dashboard_vizro_url' component to the dashboard layout to check if it works
+"""
+
 page_3 = vm.Page(
     title="Test dashboard - Vizro actions",
+    description="ADD 'download_vizro_download' component to the dashboard layout to check if it works",
     path="page-3",
     components=[
         vm.Container(
@@ -169,6 +174,7 @@ page_3 = vm.Page(
                 vm.Button(
                     id="page_3_button_download",
                     text="Export data!",
+                    description=DESCRIPTION,
                     actions=[
                         vm.Action(
                             function=my_custom_export(),
@@ -179,6 +185,7 @@ page_3 = vm.Page(
                 vm.Button(
                     id="copy_page_3_button_download",
                     text="Copy Export data!",
+                    description=DESCRIPTION,
                     actions=[
                         vm.Action(
                             function=my_custom_export(),
@@ -189,6 +196,7 @@ page_3 = vm.Page(
                 vm.Button(
                     id="page_3_button_location",
                     text="Go to page 4!",
+                    description=DESCRIPTION,
                     actions=[
                         vm.Action(
                             function=my_custom_location(x=4),
@@ -199,6 +207,7 @@ page_3 = vm.Page(
                 vm.Button(
                     id="copy_page_3_button_location",
                     text="Copy Go to page 4!",
+                    description=DESCRIPTION,
                     actions=[
                         vm.Action(
                             function=my_custom_location(x=4),
@@ -217,7 +226,8 @@ page_3 = vm.Page(
 )
 
 page_4 = vm.Page(
-    title="Test dashboard - pure Dash callbacks",
+    title="Test dashboard - pure Dash callbacks - DOES NOT WORK AS EXPECTED",
+    description=DESCRIPTION,
     path="page-4",
     components=[
         vm.Container(
@@ -228,18 +238,22 @@ page_4 = vm.Page(
                 vm.Button(
                     id="page_4_button_download",
                     text="Export data!",
+                    description=DESCRIPTION,
                 ),
                 vm.Button(
                     id="copy_page_4_button_download",
                     text="Copy Export data!",
+                    description=DESCRIPTION,
                 ),
                 vm.Button(
                     id="page_4_button_location",
                     text="Go to page 3!",
+                    description=DESCRIPTION,
                 ),
                 vm.Button(
                     id="copy_page_4_button_location",
                     text="Copy Go to page 3!",
+                    description=DESCRIPTION,
                 ),
             ],
         ),
