@@ -21,9 +21,7 @@ df_bar = pd.DataFrame(
 graphs = vm.Page(
     title="Graphs",
     components=[
-        vm.Graph(
-            figure=px.pie(iris, names="species")
-        ),
+        vm.Graph(figure=px.pie(iris, names="species")),
         vm.Graph(figure=px.bar(gapminder_europe, x="country", y="lifeExp")),
     ],
 )
