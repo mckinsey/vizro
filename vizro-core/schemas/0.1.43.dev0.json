@@ -1324,7 +1324,8 @@
       "description": "Permissible sub-type for OptionsType. Needs to be in the format of {\"label\": XXX, \"value\": XXX}.",
       "properties": {
         "label": {
-          "title": "Label"
+          "title": "Label",
+          "type": "string"
         },
         "value": {
           "anyOf": [
