@@ -174,7 +174,7 @@ class Dropdown(VizroBaseModel):
                     Input(self.id, "value"),
                     State(self.id, "options"),
                 ],
-                prevent_initial_call=True,
+                prevent_initial_call="initial_duplicate",
             )
 
         description = self.description.build().children if self.description else [None]
