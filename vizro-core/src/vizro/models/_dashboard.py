@@ -212,7 +212,7 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def _get_d_header_custom_content(self) -> Component | list[Component]:
+    def _get_header_custom_content(self) -> Component | list[Component]:
         """Returns a Dash component or a list of Dash components to be displayed in the dashboard header.
 
         Override this method in your subclass to inject custom content (to the left of the theme switch).
@@ -265,9 +265,9 @@ class Dashboard(VizroBaseModel):
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
 
-        d_header_custom_divs = self._get_d_header_custom_content()
-        d_header_custom = html.Div(
-            id="d-header-custom", children=d_header_custom_divs, hidden=_all_hidden(d_header_custom_divs)
+        header_custom_divs = self._get_header_custom_content()
+        header_custom = html.Div(
+            id="d-header-custom", children=header_custom_divs, hidden=_all_hidden(header_custom_divs)
         )
 
         return html.Div(
@@ -282,27 +282,27 @@ class Dashboard(VizroBaseModel):
                 logo_light,
                 control_panel,
                 page_components,
-                d_header_custom,
+                header_custom,
             ]
         )
 
     def _arrange_page_divs(self, page_divs: _PageContentType):
-        d_header_left_divs = [
+        header_left_divs = [
             page_divs["logo"],
             page_divs["logo-dark"],
             page_divs["logo-light"],
             page_divs["dashboard-title"],
         ]
-        d_header_right_divs = [page_divs["d-header-custom"]]
+        header_right_divs = [page_divs["d-header-custom"]]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
         right_header_divs = [page_divs["page-title"]]
 
         # Apply different container position logic based on condition
-        if _all_hidden(d_header_left_divs + d_header_right_divs):
+        if _all_hidden(header_left_divs + header_right_divs):
             right_header_divs.append(page_divs["settings"])
         else:
-            d_header_right_divs.append(page_divs["settings"])
+            header_right_divs.append(page_divs["settings"])
 
         collapsible_icon = (
             html.Div(
@@ -335,23 +335,23 @@ class Dashboard(VizroBaseModel):
         right_main = page_divs["page-components"]
         right_side = html.Div(id="right-side", children=[right_header, right_main])
 
-        d_header_left = html.Div(
-            id="d-header-left", children=d_header_left_divs, hidden=_all_hidden(d_header_left_divs)
+        header_left = html.Div(
+            id="d-header-left", children=header_left_divs, hidden=_all_hidden(header_left_divs)
         )
-        d_header_right = html.Div(
+        header_right = html.Div(
             id="d-header-right",
-            children=d_header_right_divs,
-            hidden=_all_hidden(d_header_right_divs),
+            children=header_right_divs,
+            hidden=_all_hidden(header_right_divs),
         )
-        d_header = html.Div(
+        header = html.Div(
             id="d-header",
-            children=[d_header_left, d_header_right],
-            hidden=_all_hidden([d_header_left, d_header_right]),
-            className="no-left" if _all_hidden(d_header_left_divs) else "",
+            children=[header_left, header_right],
+            hidden=_all_hidden([header_left, header_right]),
+            className="no-left" if _all_hidden(header_left_divs) else "",
         )
 
         page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon, right_side])
-        return html.Div(children=[d_header, page_main], className="page-container")
+        return html.Div(children=[header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See

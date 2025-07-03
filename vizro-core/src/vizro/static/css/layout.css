@@ -48,7 +48,7 @@
   justify-content: space-between;
 }
 
-#d-header {
+#header {
   background-color: var(--left-side-bg);
   display: flex;
   height: 60px;
@@ -57,15 +57,15 @@
   padding: 0 24px;
 }
 
-#d-header:not(:empty) {
+#header:not(:empty) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
 }
 
-#d-header.no-left {
+#header.no-left {
   justify-content: flex-end;
 }
 
-#d-header-right, #d-header-left, #d-header-custom {
+#header-right, #header-left, #header-custom {
   align-items: center;
   display: flex;
   gap: 8px;
