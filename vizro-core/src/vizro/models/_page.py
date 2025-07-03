@@ -206,6 +206,15 @@ class Page(VizroBaseModel):
 
         # Build layout with components
         components_container = _build_inner_layout(self.layout, self.components)
-        components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
-        return html.Div([control_panel, components_container])
+        # Keep this store in components_container, moving it outside prevents on_page_load_action from triggering
+        components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
+
+        return html.Div(
+            [
+                control_panel,
+                components_container,
+                dcc.Download(id="vizro_download"),
+                dcc.Location(id="vizro_url", refresh="callback-nav"),
+            ]
+        )
