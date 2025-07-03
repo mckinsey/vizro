@@ -69,7 +69,9 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "PyGithub",
+  "playwright"
 ]
 detached = true
 installer = "uv"
@@ -81,6 +83,7 @@ build = "mkdocs build --strict"
 # throwing 403 errors, but these are not real errors.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
 pip = '"{env:HATCH_UV}" pip {args}'
+pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "mkdocs serve --open"
 
 [envs.lower-bounds]

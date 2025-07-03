@@ -21,7 +21,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="11-13"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -91,7 +91,7 @@ The [`Graph`][vizro.models.Graph] model accepts `title`, `header`, `footer` and 
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="12-25"}
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -173,7 +173,7 @@ An example use would be to [remove the plotly mode bar](https://plotly.com/pytho
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="13"}
 
         import vizro.models as vm
         import vizro.plotly.express as px

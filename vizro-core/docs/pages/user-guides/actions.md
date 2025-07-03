@@ -27,7 +27,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="23"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -126,7 +126,7 @@ Here is an example of how to configure a chart interaction when the source is a 
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="16 18 21"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -221,7 +221,7 @@ Here is an example of how to configure a chart interaction when the source is an
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="14-16 19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -300,7 +300,7 @@ The `actions` parameter for the different screen components accepts a `list` of 
 
     === "app.py"
 
-        ```{.python pycafe-link extra-requirements="openpyxl"}
+        ```{.python pycafe-link extra-requirements="openpyxl" hl_lines="22-32"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro

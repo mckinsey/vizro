@@ -5,6 +5,8 @@ import pytest
 from packaging.version import parse
 
 import vizro
+import vizro.models as vm
+from vizro import Vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 
 _git_branch = vizro.__version__ if not parse(vizro.__version__).is_devrelease else "main"
@@ -108,3 +110,28 @@ class TestDashResources:
                 library_scripts.append({"namespace": "vizro", resource_key: resource[resource_key]})
 
         assert app.scripts.get_library_scripts("vizro") == library_scripts
+
+
+class TestRun:
+    def test_run_block_with_undefined_captured_callables(self):
+        dashboard_config = {
+            "title": "Test dashboard",
+            "pages": [
+                {
+                    "title": "Page 1",
+                    "components": [
+                        {
+                            "type": "ag_grid",
+                            "figure": {"_target_": "llm_generated_grid", "data_frame": "iris"},
+                        },
+                    ],
+                }
+            ],
+        }
+        dashboard = vm.Dashboard.model_validate(
+            dashboard_config,
+            context={"allow_undefined_captured_callable": ["llm_generated_grid"]},
+        )
+        app = Vizro().build(dashboard)
+        with pytest.raises(ValueError, match="Dashboard contains models with undefined CapturedCallable's"):
+            app.run()

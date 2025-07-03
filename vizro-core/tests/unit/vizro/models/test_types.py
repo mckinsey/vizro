@@ -164,9 +164,23 @@ class ModelWithAction(VizroBaseModel):
     _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
 
+class ModelWithActionDifferentImportPath(VizroBaseModel):
+    # The different import path simulates importing the function from a different module.
+    function: SkipJsonSchema[CapturedCallable] = Field(
+        json_schema_extra={"mode": "action", "import_path": "different_import_path"}
+    )
+    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+
+
 class ModelWithGraph(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
     function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "graph", "import_path": __name__})
+    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+
+
+class ModelWithInvalidModule(VizroBaseModel):
+    # The import_path doesn't exist. This lets us also simulate importing the function from a different module.
+    function: CapturedCallable = Field(json_schema_extra={"mode": "graph", "import_path": "invalid.module"})
     _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
 
@@ -229,9 +243,20 @@ class TestModelFieldJSONConfig:
         assert isinstance(model.function, CapturedCallable)
         assert model.function() == 1 + 2 + 3 + 4
 
+    def test_different_import_path(self):
+        config = {"_target_": f"{__name__}.decorated_action_function", "a": 1, "b": 2, "c": 3}
+        model = ModelWithActionDifferentImportPath(function=config)
+        assert isinstance(model.function, CapturedCallable)
+        assert model.function() == 1 + 2 + 3 + 4
+
     def test_decorated_graph_function(self):
         config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
         model = ModelWithGraph(function=config)
+        assert model.function() == go.Figure()
+
+    def test_decorated_graph_function_different_import_path(self):
+        config = {"_target_": f"{__name__}.decorated_graph_function", "data_frame": "data_source_name"}
+        model = ModelWithInvalidModule(function=config)
         assert model.function() == go.Figure()
 
     def test_no_target(self):
@@ -241,7 +266,9 @@ class TestModelFieldJSONConfig:
 
     def test_invalid_import(self):
         config = {"_target_": "invalid_function"}
-        with pytest.raises(ValidationError, match="_target_=invalid_function cannot be imported"):
+        with pytest.raises(
+            ValidationError, match="Failed to import function 'invalid_function' from any of the attempted paths"
+        ):
             ModelWithGraph(function=config)
 
     def test_invalid_arguments(self):
@@ -272,18 +299,36 @@ class TestModelFieldJSONConfig:
             ModelWithGraph(function=config)
 
     def test_invalid_import_path(self):
-        class ModelWithInvalidModule(VizroBaseModel):
-            # The import_path doesn't exist.
-            function: CapturedCallable = Field(json_schema_extra={"mode": "graph", "import_path": "invalid.module"})
-
-            _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
-
         config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
 
         with pytest.raises(
-            ValueError, match="_target_=decorated_graph_function cannot be imported from invalid.module."
+            ValueError, match="Failed to import function 'decorated_graph_function' from any of the attempted paths"
         ):
             ModelWithInvalidModule(function=config)
+
+    def test_captured_callable_without_import_possible(self):
+        config = {"function": {"_target_": "not_importable_function", "data_frame": "data_source_name"}}
+        model = ModelWithGraph.model_validate(
+            config, context={"allow_undefined_captured_callable": ["not_importable_function"]}
+        )
+        assert isinstance(model.function, CapturedCallable)
+        assert isinstance(model.function._function, str)
+        assert model.function._prevent_run
+
+
+class TestCapturedCallableRepr:
+    @pytest.mark.parametrize(
+        "function_input, repr_method, expected_output",
+        [
+            (decorated_action_function, "__repr__", f"{__name__}.decorated_action_function(a=1, b=2, c=3)"),
+            (decorated_action_function, "__repr_clean__", "decorated_action_function(a=1, b=2, c=3)"),
+            ("not_importable_function", "__repr__", "not_importable_function(1, 2, c=3)"),
+            ("not_importable_function", "__repr_clean__", "not_importable_function(1, 2, c=3)"),
+        ],
+    )
+    def test_repr_methods(self, function_input, repr_method, expected_output):
+        function = CapturedCallable(function_input, 1, 2, c=3)
+        assert getattr(function, repr_method)() == expected_output
 
 
 @capture("graph")
