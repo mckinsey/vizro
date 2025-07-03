@@ -57,8 +57,8 @@ def _all_hidden(components: Component | list[Component]):
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_PageDivsType = TypedDict(
-    "_PageDivsType",
+_PageContentType = TypedDict(
+    "_PageContentType",
     {
         "dashboard-title": html.Div,
         "theme-selector": dbc.Switch,
@@ -219,7 +219,7 @@ class Dashboard(VizroBaseModel):
         """
         return []
 
-    def _get_page_divs(self, page: Page) -> _PageDivsType:
+    def _get_page_divs(self, page: Page) -> _PageContentType:
         # Identical across pages
         dashboard_description = self.description.build().children if self.description else [None]
         dashboard_title = (
@@ -283,7 +283,7 @@ class Dashboard(VizroBaseModel):
             ]
         )
 
-    def _arrange_page_divs(self, page_divs: _PageDivsType):
+    def _arrange_page_divs(self, page_divs: _PageContentType):
         d_header_left_divs = [
             page_divs["logo"],
             page_divs["logo-dark"],
