@@ -155,7 +155,7 @@ A suitable `id` must be unique across all models in the dashboard and should con
 Suppose you want to hide the page title on one page only. Here's how you can achieve this:
 
 1. Give a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`.
-1. Identify the CSS class or CSS `id` you need to target. To hide the page title, you need to hide the parent container with the id `right-header`.
+1. Identify the CSS class or CSS `id` you need to target. To hide the page title, you need to hide the parent container with the id `page-header`.
 1. Use the `id` to hide the content.
 1. Add your custom css file to the `assets` folder.
 
@@ -164,7 +164,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
     === "my_css_file.css"
 
         ```css
-        #page-with-hidden-title #right-header {
+        #page-with-hidden-title #page-header {
             display: none;
         }
         ```
