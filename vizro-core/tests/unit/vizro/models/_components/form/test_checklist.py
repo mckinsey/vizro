@@ -134,7 +134,7 @@ class TestChecklistBuild:
     """Tests model build method."""
 
     @pytest.mark.parametrize(
-        "value, options, expected_checkbox_value, expected_value, expected_options",
+        "value, options, expected_select_all_value, expected_value, expected_options",
         [
             (
                 ["A"],
