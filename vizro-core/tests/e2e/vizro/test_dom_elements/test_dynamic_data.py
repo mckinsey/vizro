@@ -12,7 +12,13 @@ from e2e.vizro.checkers import (
     check_selected_dropdown,
     check_slider_value,
 )
-from e2e.vizro.navigation import accordion_select, page_select, select_dropdown_value, select_slider_handler
+from e2e.vizro.navigation import (
+    accordion_select,
+    clear_dropdown,
+    page_select,
+    select_dropdown_value,
+    select_slider_handler,
+)
 from e2e.vizro.paths import (
     categorical_components_value_path,
     dropdown_arrow_path,
@@ -109,7 +115,8 @@ def test_dropdown_filter_multi(dash_br):
     )
 
     # Choose "versicolor" value and check that graph is reloaded
-    select_dropdown_value(dash_br, value=3, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID)
+    clear_dropdown(dash_br, cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID)
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
@@ -130,7 +137,7 @@ def test_dropdown_filter_multi(dash_br):
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
         expected_selected_options=["versicolor"],
-        expected_unselected_options=["ALL", "virginica"],
+        expected_unselected_options=["SelectAll", "virginica"],
     )
 
 
@@ -145,7 +152,7 @@ def test_dropdown_filter(dash_br):
     )
 
     # Choose "versicolor" value and check that graph is reloaded
-    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID)
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID, value="versicolor")
     check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
@@ -200,10 +207,10 @@ def test_checklist_filter(dash_br):
     check_selected_categorical_component(
         dash_br,
         component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        checklist=True,
         options_value_status=[
-            {"value": 1, "selected": False, "value_name": "ALL"},
-            {"value": 2, "selected": True, "value_name": "versicolor"},
-            {"value": 3, "selected": False, "value_name": "virginica"},
+            {"value": 1, "selected": True, "value_name": "versicolor"},
+            {"value": 2, "selected": False, "value_name": "virginica"},
         ],
     )
 

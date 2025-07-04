@@ -1,333 +1,183 @@
-from vizro import Vizro
-import vizro.models as vm
-from vizro.models.types import capture
-from dash import Input, Output, dcc, callback
-from vizro.managers import data_manager
+"""Dev app to try things out."""
 
 import vizro.plotly.express as px
+import vizro.models as vm
+from vizro import Vizro
+from dash import html
 
-iris = px.data.iris()
-
-
-@capture("action")
-def my_custom_export():
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
-
-
-@capture("action")
-def my_custom_location(x=2):
-    return f"/page-{x}"
+from vizro.tables import dash_ag_grid
+from vizro.managers import data_manager
 
 
-# ------------------------- Page Build Components --------------------------
+df = px.data.gapminder()
 
-page_1 = vm.Page(
-    title="Test page - Vizro actions",
-    path="page-1",
+static_page = vm.Page(
+    title="Homepage with static data",
+    components=[
+        vm.Container(
+            title="Container with controls",
+            layout=vm.Grid(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
+            variant="outlined",
+            components=[
+                vm.Card(
+                    text="""
+                        # First dashboard page
+                        This pages shows the inclusion of markdown text in a page and how components
+                        can be structured using Layout.
+                    """,
+                ),
+                vm.AgGrid(
+                    figure=dash_ag_grid(data_frame=df),
+                    title="Gapminder Data Insights",
+                    header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+                    footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    column="continent",
+                    selector=vm.Checklist(
+                        title="Continent (checklist)",
+                    ),
+                )
+            ],
+        )
+    ],
+    controls=[
+        vm.Filter(column="continent", selector=vm.Dropdown()),
+        vm.Filter(column="country", selector=vm.Dropdown(multi=False)),
+        # vm.Filter(
+        #     column="continent",
+        #     selector=vm.Dropdown(
+        #         options=[
+        #             {"label": "EUROPE", "value": "Europe"},
+        #             {"label": "AFRICA", "value": "Africa"},
+        #             {"label": "ASIA", "value": "Asia"},
+        #             # {"label": "AMERICAS", "value": "Americas"},
+        #             # {"label": "OCEANIA", "value": "Oceania"},
+        #         ],
+        #         # value=["Europe", "Africa", "Asia", "Americas", "Oceania"],
+        #         value="Asia",
+        #         multi=False,
+        #     ),
+        # ),
+    ],
+)
+
+
+def dynamic_data_load(number_of_rows: int = 1):
+    return px.data.gapminder().head(number_of_rows)
+
+
+data_manager["dynamic_df"] = dynamic_data_load
+
+
+dynamic_page = vm.Page(
+    title="Dynamic data",
     components=[
         vm.Container(
             components=[
                 vm.Graph(
-                    figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
-                ),
-                vm.Button(
-                    id="page_1_button_download",
-                    text="Export data!",
-                    actions=[
-                        vm.Action(
-                            function=my_custom_export(),
-                            outputs=["vizro_download.data"],
-                        )
-                    ],
-                ),
-                vm.Button(
-                    id="copy_page_1_button_download",
-                    text="Copy Export data!",
-                    actions=[
-                        vm.Action(
-                            function=my_custom_export(),
-                            outputs=["vizro_download.data"],
-                        )
-                    ],
-                ),
-                vm.Button(
-                    id="page_1_button_location",
-                    text="Go to page 2!",
-                    actions=[
-                        vm.Action(
-                            function=my_custom_location(),
-                            outputs=["vizro_url.href"],
-                        )
-                    ],
-                ),
-                vm.Button(
-                    id="copy_page_1_button_location",
-                    text="Copy Go to page 2!",
-                    actions=[
-                        vm.Action(
-                            function=my_custom_location(),
-                            outputs=["vizro_url.href"],
-                        )
-                    ],
-                ),
+                    id="page-2-graph-1",
+                    figure=px.scatter("dynamic_df", x="gdpPercap", y="lifeExp", color="continent"),
+                )
             ],
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            column="species",
+            controls=[
+                vm.Filter(id="page-2-filter-1", column="country"),
+                vm.Filter(id="page-2-filter-2", column="continent", selector=vm.Checklist()),
+            ],
         )
     ],
-)
-
-page_2 = vm.Page(
-    title="Test page - pure Dash callbacks",
-    path="page-2",
-    components=[
-        vm.Container(
-            components=[
-                vm.Graph(
-                    figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
-                ),
-                vm.Button(
-                    id="page_2_button_download",
-                    text="Export data!",
-                ),
-                vm.Button(
-                    id="copy_page_2_button_download",
-                    text="Copy Export data!",
-                ),
-                vm.Button(
-                    id="page_2_button_location",
-                    text="Go to page 1!",
-                ),
-                vm.Button(
-                    id="copy_page_2_button_location",
-                    text="Copy Go to page 1!",
-                ),
-            ],
-        ),
-    ],
     controls=[
-        vm.Filter(
-            column="species",
-        )
-    ],
-)
-
-
-# --- Callbacks ---
-# --- Download ---
-@callback(
-    Output("vizro_download", "data", allow_duplicate=True),
-    Input("page_2_button_download", "n_clicks"),
-    prevent_initial_call=True,
-)
-def export_callback(_):
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
-
-
-@callback(
-    Output("vizro_download", "data", allow_duplicate=True),
-    Input("copy_page_2_button_download", "n_clicks"),
-    prevent_initial_call=True,
-)
-def export_callback(_):
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
-
-
-# --- Location ---
-@callback(
-    Output("vizro_url", "href", allow_duplicate=True),
-    Input("page_2_button_location", "n_clicks"),
-    prevent_initial_call=True,
-)
-def change_location_callback(_):
-    return "/"
-
-
-@callback(
-    Output("vizro_url", "href", allow_duplicate=True),
-    Input("copy_page_2_button_location", "n_clicks"),
-    prevent_initial_call=True,
-)
-def change_location_callback(_):
-    return "/"
-
-
-# ------------------------- Dashboard Build Components -------------------------
-
-DESCRIPTION = """
-    Add 'dashboard_vizro_download' and 'dashboard_vizro_url' component to the dashboard layout to check if it works
-"""
-
-page_3 = vm.Page(
-    title="Test dashboard - Vizro actions",
-    description="ADD 'download_vizro_download' component to the dashboard layout to check if it works",
-    path="page-3",
-    components=[
-        vm.Container(
-            components=[
-                vm.Graph(
-                    figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
-                ),
-                vm.Button(
-                    id="page_3_button_download",
-                    text="Export data!",
-                    description=DESCRIPTION,
-                    actions=[
-                        vm.Action(
-                            function=my_custom_export(),
-                            outputs=["dashboard_vizro_download.data"],
-                        )
-                    ],
-                ),
-                vm.Button(
-                    id="copy_page_3_button_download",
-                    text="Copy Export data!",
-                    description=DESCRIPTION,
-                    actions=[
-                        vm.Action(
-                            function=my_custom_export(),
-                            outputs=["dashboard_vizro_download.data"],
-                        )
-                    ],
-                ),
-                vm.Button(
-                    id="page_3_button_location",
-                    text="Go to page 4!",
-                    description=DESCRIPTION,
-                    actions=[
-                        vm.Action(
-                            function=my_custom_location(x=4),
-                            outputs=["dashboard_vizro_url.href"],
-                        )
-                    ],
-                ),
-                vm.Button(
-                    id="copy_page_3_button_location",
-                    text="Copy Go to page 4!",
-                    description=DESCRIPTION,
-                    actions=[
-                        vm.Action(
-                            function=my_custom_location(x=4),
-                            outputs=["dashboard_vizro_url.href"],
-                        )
-                    ],
-                ),
-            ],
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            column="species",
-        )
-    ],
-)
-
-page_4 = vm.Page(
-    title="Test dashboard - pure Dash callbacks - DOES NOT WORK AS EXPECTED",
-    description=DESCRIPTION,
-    path="page-4",
-    components=[
-        vm.Container(
-            components=[
-                vm.Graph(
-                    figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
-                ),
-                vm.Button(
-                    id="page_4_button_download",
-                    text="Export data!",
-                    description=DESCRIPTION,
-                ),
-                vm.Button(
-                    id="copy_page_4_button_download",
-                    text="Copy Export data!",
-                    description=DESCRIPTION,
-                ),
-                vm.Button(
-                    id="page_4_button_location",
-                    text="Go to page 3!",
-                    description=DESCRIPTION,
-                ),
-                vm.Button(
-                    id="copy_page_4_button_location",
-                    text="Copy Go to page 3!",
-                    description=DESCRIPTION,
-                ),
-            ],
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            column="species",
-        )
-    ],
-)
-
-
-def load_iris_data(number_of_points=10):
-    iris = px.data.iris()
-    return iris.sample(number_of_points)
-
-
-data_manager["iris"] = load_iris_data
-
-
-page_dynamic = vm.Page(
-    title="Test dynamic filters",
-    components=[vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))],
-    controls=[
-        vm.Filter(column="species", selector=vm.RadioItems()),
         vm.Parameter(
-            targets=["graph.data_frame.number_of_points"],
-            selector=vm.Slider(min=1, max=10, step=1, value=1),
-        ),
+            id="page-2-parameter-1",
+            targets=["page-2-graph-1.data_frame.number_of_rows"],
+            selector=vm.Slider(
+                id="number-of-rows-slider",
+                title="Number of Rows",
+                min=1,
+                max=1000,
+                step=100,
+                value=1,
+            ),
+        )
     ],
 )
 
 
-# --- Callbacks ---
-# --- Download ---
-@callback(
-    Output("dashboard_vizro_download", "data", allow_duplicate=True),
-    Input("page_4_button_download", "n_clicks"),
-    prevent_initial_call=True,
+dynamic_page_all_combinations = vm.Page(
+    title="Dynamic data all combinations",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="page-3-graph-1",
+                    figure=px.scatter("dynamic_df", x="gdpPercap", y="lifeExp", color="continent"),
+                )
+            ],
+        )
+    ],
+    controls=[
+        vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(column="continent"),
+        vm.Filter(column="continent", selector=vm.Dropdown(multi=False)),
+        vm.Filter(column="continent", selector=vm.Checklist(value=["Asia", "Americas"])),
+        vm.Filter(column="continent", selector=vm.Dropdown(multi=True, value=["Asia", "Americas"])),
+        vm.Filter(column="continent", selector=vm.Dropdown(multi=False, value="Asia")),
+        vm.Parameter(
+            targets=["page-3-graph-1.data_frame.number_of_rows"],
+            selector=vm.Slider(
+                title="Number of Rows",
+                min=1,
+                max=1000,
+                step=100,
+                value=1,
+            ),
+        ),
+    ],
 )
-def export_callback(_):
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
 
-
-@callback(
-    Output("dashboard_vizro_download", "data", allow_duplicate=True),
-    Input("copy_page_4_button_download", "n_clicks"),
-    prevent_initial_call=True,
+url_dynamic_page = vm.Page(
+    title="Dynamic data from URL",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="page-4-graph-1",
+                    figure=px.scatter("dynamic_df", x="gdpPercap", y="lifeExp", color="continent"),
+                )
+            ],
+            controls=[
+                vm.Filter(id="page-3-filter-1", column="country", show_in_url=True),
+                vm.Filter(id="page-3-filter-2", column="continent", selector=vm.Checklist(), show_in_url=True),
+            ],
+        )
+    ],
+    controls=[
+        vm.Parameter(
+            id="page-4-parameter-1",
+            targets=["page-4-graph-1.data_frame.number_of_rows"],
+            show_in_url=True,
+            selector=vm.Slider(
+                id="number-of-rows-slider-url",
+                title="Number of Rows",
+                min=1,
+                max=1000,
+                step=100,
+                value=1,
+            ),
+        )
+    ],
 )
-def export_callback(_):
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
 
-
-# --- Location ---
-@callback(
-    Output("dashboard_vizro_url", "href", allow_duplicate=True),
-    Input("page_4_button_location", "n_clicks"),
-    prevent_initial_call=True,
+dashboard = vm.Dashboard(
+    pages=[
+        static_page,
+        dynamic_page,
+        dynamic_page_all_combinations,
+        url_dynamic_page,
+    ]
 )
-def change_location_callback(_):
-    return "/page-3"
-
-
-@callback(
-    Output("dashboard_vizro_url", "href", allow_duplicate=True),
-    Input("copy_page_4_button_location", "n_clicks"),
-    prevent_initial_call=True,
-)
-def change_location_callback(_):
-    return "/page-3"
-
-
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2, page_3, page_4, page_dynamic])
 
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
-    app.run()
+    Vizro().build(dashboard).run()

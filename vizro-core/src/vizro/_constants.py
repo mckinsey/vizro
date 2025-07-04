@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-ALL_OPTION = "ALL"
 NONE_OPTION = "NONE"
 MODULE_PAGE_404 = "not_found_404"
 EMPTY_SPACE_CONST = -1

@@ -41,7 +41,7 @@ ag_grid_page = vm.Page(
         vm.Filter(
             column="continent",
             targets=[cnst.TABLE_AG_GRID_ID],
-            selector=vm.Checklist(id=cnst.CHECKLIST_AGGRID_FILTER, options=["Asia", "Oceania"]),
+            selector=vm.Checklist(id=cnst.CHECKLIST_AGGRID_FILTER, options=["Europe", "Africa"]),
         ),
         vm.Filter(
             column="pop",
