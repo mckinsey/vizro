@@ -185,12 +185,16 @@ tooltip = vm.Page(
 )
 
 navigation = vm.Navigation(
-    pages={"Group A": ["Graphs", "Cards"], "Group B": ["Tooltip", "KPI cards"]}, nav_selector=vm.NavBar()
+    pages={"Group A": ["Graphs", "Cards"], "Group B": ["Tooltip", "KPI cards"]},
+    # nav_selector=vm.NavBar()
 )
 
 
 dashboard = vm.Dashboard(
-    pages=[graphs, cards, tooltip, kpi_cards], navigation=navigation, title="Scratch dev dashboard"
+    pages=[graphs, cards, tooltip, kpi_cards],
+    # pages=[graphs],
+    navigation=navigation,
+    title="Scratch dev dashboard",
 )
 
 if __name__ == "__main__":
