@@ -159,7 +159,7 @@ class TestChecklistBuild:
             ),
         ],
     )
-    def test_checklist_build(self, value, options, expected_checkbox_value, expected_value, expected_options):
+    def test_checklist_build(self, value, options, expected_select_all_value, expected_value, expected_options):
         checklist = Checklist(id="checklist_id", value=value, options=options, title="Title").build()
         expected_checklist = html.Fieldset(
             [
@@ -168,7 +168,7 @@ class TestChecklistBuild:
                     children=[
                         dbc.Checkbox(
                             id="checklist_id_select_all",
-                            value=expected_checkbox_value,
+                            value=expected_select_all_value,
                             label="Select All",
                             persistence=True,
                             persistence_type="session",
