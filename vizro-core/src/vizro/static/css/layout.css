@@ -19,7 +19,7 @@
   flex-direction: column;
   gap: 1.5rem;
   overflow: auto;
-  padding: 20px 24px 0;
+  padding: 20px;
   width: 324px;
 }
 
@@ -56,7 +56,7 @@
   height: 60px;
   justify-content: space-between;
   min-height: 0;
-  padding: 0 24px 0 0;
+  padding: 0 20px;
   width: 100%;
 }
 
@@ -118,11 +118,6 @@
   height: calc(100vh - 64px);
 }
 
-#dashboard-title {
-  gap: 0;
-  padding-left: 0.5rem;
-}
-
 #dashboard-title,
 #page-title {
   margin: 0;
@@ -151,6 +146,7 @@
   align-items: center;
   display: flex;
   flex-direction: row;
+  gap: 8px;
   height: 100%;
 }
 
