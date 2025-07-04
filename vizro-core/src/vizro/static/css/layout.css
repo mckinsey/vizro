@@ -192,7 +192,7 @@ Current logic:
   }
 }
 
-/* Apply flex layout for screens up to 1028px if collapsible-left-side is shown */
+/* Apply flex layout for screens up to 1028px if left-side-collapsible is shown */
 @media screen and (width <= 1028px) {
   #page-main:has(#collapsable-left-side.show) .grid-layout {
     display: flex;
@@ -215,11 +215,11 @@ Current logic:
 }
 
 @media screen and (width <= 576px) and (orientation: portrait) {
-  body:has(#collapsible-left-side.show) {
+  body:has(#left-side-collapsible.show) {
     overflow: hidden;
   }
 
-  #collapsible-left-side.show:has(#left-main:not([hidden]))
+  #left-side-collapsible.show:has(#left-main:not([hidden]))
     ~ .collapsible-icon-div
     #collapse-icon {
     right: -7px;

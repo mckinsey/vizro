@@ -75,7 +75,7 @@ OuterPageContentType = TypedDict(
     "OuterPageContentType",
     {
         "collapsible-icon-div": html.Div,
-        "collapsible-left-side": dbc.Collapse,
+        "left-side-collapsible": dbc.Collapse,
         "right-side": html.Div,
         "header": html.Div,
     },
@@ -170,12 +170,12 @@ class Dashboard(VizroBaseModel):
             clientside_callback(
                 ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
                 [
-                    Output("collapsible-left-side", "is_open"),
+                    Output("left-side-collapsible", "is_open"),
                     Output("collapse-icon", "style"),
                     Output("collapse-tooltip", "children"),
                 ],
                 Input("collapse-icon", "n_clicks"),
-                State("collapsible-left-side", "is_open"),
+                State("left-side-collapsible", "is_open"),
             )
 
         layout = html.Div(
@@ -336,8 +336,8 @@ class Dashboard(VizroBaseModel):
             hidden=_all_hidden([*left_sidebar_divs, *left_main_divs]),
         )
 
-        collapsible_left_side = dbc.Collapse(
-            id="collapsible-left-side", children=left_side, is_open=True, dimension="width"
+        left_side_collapsible = dbc.Collapse(
+            id="left-side-collapsible", children=left_side, is_open=True, dimension="width"
         )
 
         right_side = html.Div(id="right-side", children=[page_header, page_components])
@@ -351,19 +351,19 @@ class Dashboard(VizroBaseModel):
         return html.Div(
             [
                 collapsible_icon_div,
-                collapsible_left_side,
+                left_side_collapsible,
                 right_side,
                 header,
             ]
         )
 
     def arrange_page(self, outer_page: OuterPageContentType):
-        collapsible_left_side = outer_page["collapsible-left-side"]
+        left_side_collapsible = outer_page["left-side-collapsible"]
         collapsible_icon_div = outer_page["collapsible-icon-div"]
         right_side = outer_page["right-side"]
         header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon_div, right_side])
+        page_main = html.Div(id="page-main", children=[left_side_collapsible, collapsible_icon_div, right_side])
         page_main_outer = html.Div(children=[header, page_main], className="page-main-outer")
         return page_main_outer
 
