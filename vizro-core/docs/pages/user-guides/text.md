@@ -16,7 +16,7 @@ You can add a [`Text`][vizro.models.Text] component to your dashboard by inserti
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="7-9"}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -183,7 +183,7 @@ An example use would be to set `mathjax=True` (defaults to `False`) to display m
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="17"}
         import vizro.models as vm
         from vizro import Vizro
 

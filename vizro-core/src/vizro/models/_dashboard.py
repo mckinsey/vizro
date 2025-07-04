@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, Union, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _all_hidden(components: Component | list[Component]):
+def _all_hidden(components: Union[Component, list[Component]]):
     """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
     if isinstance(components, Component):
         components = [components]
@@ -57,11 +57,11 @@ def _all_hidden(components: Component | list[Component]):
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_InnerPageDivsType = TypedDict(
-    "_InnerPageDivsType",
+_InnerPageContentType = TypedDict(
+    "_InnerPageContentType",
     {
         "dashboard-title": html.Div,
-        "theme-selector": dbc.Switch,
+        "settings": html.Div,
         "page-title": html.H2,
         "nav-bar": dbc.Navbar,
         "nav-panel": dbc.Nav,
@@ -70,12 +70,12 @@ _InnerPageDivsType = TypedDict(
         "logo-light": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
-        "d-header-custom": html.Div,
+        "header-custom": html.Div,
     },
 )
 
-_OuterPageDivsType = TypedDict(
-    "_OuterPageDivsType",
+_OuterPageContentType = TypedDict(
+    "_OuterPageContentType",
     {
         "collapsible-icon-div": html.Div,
         "collapsible-left-side": dbc.Collapse,
@@ -222,14 +222,7 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def _get_d_header_custom_content(self) -> Component | list[Component]:
-        """Returns a Dash component or a list of Dash components to be displayed in the dashboard header.
-
-        Override this method in your subclass to inject custom content (to the left of the theme switch).
-        """
-        return []
-
-    def _get_inner_page_divs(self, page: Page) -> _InnerPageDivsType:
+    def _get_inner_page_divs(self, page: Page) -> _InnerPageContentType:
         """Returns a dictionary of the inner containers/components for a page."""
         # Identical across pages
         dashboard_description = self.description.build().children if self.description else [None]
@@ -238,11 +231,14 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.H2(id="dashboard-title", hidden=True)
         )
-        theme_selector = dbc.Switch(
-            id="theme-selector",
-            value=self.theme == "vizro_light",
-            persistence=True,
-            persistence_type="session",
+        settings = html.Div(
+            dbc.Switch(
+                id="theme-selector",
+                value=self.theme == "vizro_light",
+                persistence=True,
+                persistence_type="session",
+            ),
+            id="settings",
         )
 
         logo_img = self._infer_image(filename="logo")
@@ -273,15 +269,15 @@ class Dashboard(VizroBaseModel):
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
 
-        d_header_custom_divs = self._get_d_header_custom_content()
-        d_header_custom = html.Div(
-            id="d-header-custom", children=d_header_custom_divs, hidden=_all_hidden(d_header_custom_divs)
+        custom_header_content = self.custom_header()
+        custom_header = html.Div(
+            id="header-custom", children=custom_header_content, hidden=_all_hidden(custom_header_content)
         )
 
         return html.Div(
             [
                 dashboard_title,
-                theme_selector,
+                settings,
                 page_title,
                 nav_bar,
                 nav_panel,
@@ -290,28 +286,27 @@ class Dashboard(VizroBaseModel):
                 logo_light,
                 control_panel,
                 page_components,
-                d_header_custom,
+                custom_header,
             ]
         )
 
-    def _get_outer_page_divs(self, inner_page_divs: _InnerPageDivsType) -> _OuterPageDivsType:
-        """Returns a dictionary of the outer containers/components for a page."""
+    def _arrange_page_divs(self, page_divs: _InnerPageContentType):
         d_header_left_divs = [
-            inner_page_divs["logo"],
-            inner_page_divs["logo-dark"],
-            inner_page_divs["logo-light"],
-            inner_page_divs["dashboard-title"],
+            page_divs["logo"],
+            page_divs["logo-dark"],
+            page_divs["logo-light"],
+            page_divs["dashboard-title"],
         ]
-        d_header_right_divs = [inner_page_divs["d-header-custom"]]
-        left_sidebar_divs = [inner_page_divs["nav-bar"]]
-        left_main_divs = [inner_page_divs["nav-panel"], inner_page_divs["control-panel"]]
-        right_header_divs = [inner_page_divs["page-title"]]
+        header_right_divs = [page_divs["d-header-custom"]]
+        left_sidebar_divs = [page_divs["nav-bar"]]
+        left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
+        right_header_divs = [page_divs["page-title"]]
 
         # Apply different container position logic based on condition
-        if _all_hidden(d_header_left_divs + d_header_right_divs):
-            right_header_divs.append(inner_page_divs["theme-selector"])
+        if _all_hidden(d_header_left_divs + header_right_divs):
+            right_header_divs.append(page_divs["theme-selector"])
         else:
-            d_header_right_divs.append(inner_page_divs["theme-selector"])
+            header_right_divs.append(page_divs["theme-selector"])
 
         left_sidebar = html.Div(id="left-sidebar", children=left_sidebar_divs, hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
@@ -336,43 +331,25 @@ class Dashboard(VizroBaseModel):
             id="collapsible-left-side", children=left_side, is_open=True, dimension="width"
         )
 
-        right_header = html.Div(id="right-header", children=right_header_divs)
-        right_main = inner_page_divs["page-components"]
+        right_header = html.Div(id="right-header", children=right_header_content)
+        right_main = page_divs["page-components"]
         right_side = html.Div(id="right-side", children=[right_header, right_main])
 
-        d_header_left = html.Div(
-            id="d-header-left", children=d_header_left_divs, hidden=_all_hidden(d_header_left_divs)
+        header_left = html.Div(id="header-left", children=header_left_content, hidden=_all_hidden(header_left_content))
+        header_right = html.Div(
+            id="header-right",
+            children=header_right_content,
+            hidden=_all_hidden(header_right_content),
         )
-        d_header_right = html.Div(
-            id="d-header-right",
-            children=d_header_right_divs,
-            hidden=_all_hidden(d_header_right_divs),
-        )
-        d_header = html.Div(
-            id="d-header",
-            children=[d_header_left, d_header_right],
-            hidden=_all_hidden([d_header_left, d_header_right]),
-            className="no-left" if _all_hidden(d_header_left_divs) else "",
+        header = html.Div(
+            id="header",
+            children=[header_left, header_right],
+            hidden=_all_hidden([header_left, header_right]),
+            className="no-left" if _all_hidden(header_left_content) else "",
         )
 
-        return html.Div(
-            [
-                collapsible_icon_div,
-                collapsible_left_side,
-                right_side,
-                d_header,
-            ]
-        )
-
-    def _arrange_page_divs(self, outer_page_divs: _OuterPageDivsType):
-        collapsible_left_side = outer_page_divs["collapsible-left-side"]
-        collapsible_icon_div = outer_page_divs["collapsible-icon-div"]
-        right_side = outer_page_divs["right-side"]
-        d_header = outer_page_divs["d-header"]
-
-        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon_div, right_side])
-        page_main_outer = html.Div(children=[d_header, page_main], className="page-main-outer")
-        return page_main_outer
+        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon, right_side])
+        return html.Div(children=[d_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
@@ -414,3 +391,11 @@ class Dashboard(VizroBaseModel):
                 if path.suffix in valid_extensions:
                     # Return path as posix so image source comes out correctly on Windows.
                     return path.relative_to(assets_folder).as_posix()
+
+    @staticmethod
+    def custom_header() -> Union[Component, list[Component]]:
+        """Returns a Dash component or list of components for the dashboard header's custom content area.
+
+        Override this method in your subclass to add custom content that will appear to the left of the theme switch.
+        """
+        return []

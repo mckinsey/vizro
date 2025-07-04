@@ -16,7 +16,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="8-13"}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -214,7 +214,7 @@ An image ALT text offers a description to your image and serves as a text placeh
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="11"
         import vizro.models as vm
         from vizro import Vizro
 
@@ -294,7 +294,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="12"
         import vizro.models as vm
         from vizro import Vizro
 
@@ -375,7 +375,7 @@ To float an image for example to the right of the text, use the `src` attribute 
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="12"
         import vizro.models as vm
         from vizro import Vizro
 
@@ -479,7 +479,7 @@ To create a navigation card:
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="16 24"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro

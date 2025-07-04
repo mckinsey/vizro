@@ -5,6 +5,12 @@
   width: 100vw;
 }
 
+#settings {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
 #left-main {
   align-items: flex-start;
   border-right: 1px solid var(--bs-border-color);
@@ -34,7 +40,7 @@
   width: 100%;
 }
 
-#right-header {
+#page-header {
   align-items: baseline;
   display: flex;
   flex-direction: row;
@@ -42,7 +48,7 @@
   justify-content: space-between;
 }
 
-#d-header {
+#header {
   background-color: var(--left-side-bg);
   display: flex;
   height: 60px;
@@ -51,15 +57,15 @@
   padding: 0 24px;
 }
 
-#d-header:not(:empty) {
+#header:not(:empty) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
 }
 
-#d-header.no-left {
+#header.no-left {
   justify-content: flex-end;
 }
 
-#d-header-right, #d-header-left, #d-header-custom {
+#header-right, #header-left, #header-custom {
   align-items: center;
   display: flex;
   gap: 8px;
@@ -201,7 +207,7 @@ Current logic:
     padding-top: 20px;
   }
 
-  #d-header,
+  #header,
   #right-side,
   #left-side {
     zoom: 80%;

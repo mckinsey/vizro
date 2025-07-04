@@ -69,7 +69,7 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="6 11"
         from vizro import Vizro
         import pandas as pd
         import vizro.plotly.express as px
@@ -108,7 +108,7 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="9"
         import yaml
 
         from vizro import Vizro
@@ -129,7 +129,7 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     === "dashboard.yaml"
 
-        ```yaml
+        ```yaml hl_lines="5"
         pages:
           - components:
               figure:
@@ -162,7 +162,7 @@ The example below shows how data is fetched dynamically every time the page is r
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="8-10 12 17"
         from vizro import Vizro
         import pandas as pd
         import vizro.plotly.express as px
