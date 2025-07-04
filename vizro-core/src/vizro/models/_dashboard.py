@@ -80,7 +80,7 @@ _OuterPageContentType = TypedDict(
         "collapsible-icon-div": html.Div,
         "collapsible-left-side": dbc.Collapse,
         "right-side": html.Div,
-        "d-header": html.Div,
+        "header": html.Div,
     },
 )
 
@@ -222,7 +222,7 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def _get_inner_page_divs(self, page: Page) -> _InnerPageContentType:
+    def inner_page(self, page: Page) -> _InnerPageContentType:
         """Returns a dictionary of the inner containers/components for a page."""
         # Identical across pages
         dashboard_description = self.description.build().children if self.description else [None]
@@ -290,23 +290,23 @@ class Dashboard(VizroBaseModel):
             ]
         )
 
-    def _arrange_page_divs(self, page_divs: _InnerPageContentType):
-        d_header_left_divs = [
-            page_divs["logo"],
-            page_divs["logo-dark"],
-            page_divs["logo-light"],
-            page_divs["dashboard-title"],
+    def outer_page(self, inner_page: _InnerPageContentType) -> _OuterPageContentType:
+        header_left_content = [
+            inner_page["logo"],
+            inner_page["logo-dark"],
+            inner_page["logo-light"],
+            inner_page["dashboard-title"],
         ]
-        header_right_divs = [page_divs["d-header-custom"]]
-        left_sidebar_divs = [page_divs["nav-bar"]]
-        left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
-        right_header_divs = [page_divs["page-title"]]
+        header_right_content = [inner_page["header-custom"]]
+        left_sidebar_divs = [inner_page["nav-bar"]]
+        left_main_divs = [inner_page["nav-panel"], inner_page["control-panel"]]
+        page_header_content = [inner_page["page-title"]]
 
         # Apply different container position logic based on condition
-        if _all_hidden(d_header_left_divs + header_right_divs):
-            right_header_divs.append(page_divs["theme-selector"])
+        if _all_hidden(header_left_content + header_right_content):
+            page_header_content.append(inner_page["settings"])
         else:
-            header_right_divs.append(page_divs["theme-selector"])
+            header_right_content.append(inner_page["settings"])
 
         left_sidebar = html.Div(id="left-sidebar", children=left_sidebar_divs, hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
@@ -330,10 +330,9 @@ class Dashboard(VizroBaseModel):
         collapsible_left_side = dbc.Collapse(
             id="collapsible-left-side", children=left_side, is_open=True, dimension="width"
         )
-
-        right_header = html.Div(id="right-header", children=right_header_content)
-        right_main = page_divs["page-components"]
-        right_side = html.Div(id="right-side", children=[right_header, right_main])
+        page_header = html.Div(id="page-header", children=page_header_content)
+        page_body = inner_page["page-components"]
+        right_side = html.Div(id="right-side", children=[page_header, page_body])
 
         header_left = html.Div(id="header-left", children=header_left_content, hidden=_all_hidden(header_left_content))
         header_right = html.Div(
@@ -347,16 +346,31 @@ class Dashboard(VizroBaseModel):
             hidden=_all_hidden([header_left, header_right]),
             className="no-left" if _all_hidden(header_left_content) else "",
         )
+        return html.Div(
+            [
+                collapsible_icon_div,
+                collapsible_left_side,
+                right_side,
+                header,
+            ]
+        )
 
-        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon, right_side])
-        return html.Div(children=[d_header, page_main], className="page-container")
+    def arrange_page(self, outer_page: _OuterPageContentType):
+        collapsible_left_side = outer_page["collapsible-left-side"]
+        collapsible_icon_div = outer_page["collapsible-icon-div"]
+        right_side = outer_page["right-side"]
+        header = outer_page["header"]
+
+        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon_div, right_side])
+        page_main_outer = html.Div(children=[header, page_main], className="page-main-outer")
+        return page_main_outer
 
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
-        inner_page_divs = self._get_inner_page_divs(page=page)
-        outer_page_divs = self._get_outer_page_divs(inner_page_divs=inner_page_divs)
-        page_layout = self._arrange_page_divs(outer_page_divs=outer_page_divs)
+        inner_page = self.inner_page(page=page)
+        outer_page = self.outer_page(inner_page=inner_page)
+        page_layout = self.arrange_page(outer_page=outer_page)
         page_layout.id = page.id
         return page_layout
 
