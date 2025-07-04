@@ -57,8 +57,8 @@ def _all_hidden(components: Union[Component, list[Component]]):
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_InnerPageContentType = TypedDict(
-    "_InnerPageContentType",
+InnerPageContentType = TypedDict(
+    "InnerPageContentType",
     {
         "dashboard-title": html.Div,
         "settings": html.Div,
@@ -74,8 +74,8 @@ _InnerPageContentType = TypedDict(
     },
 )
 
-_OuterPageContentType = TypedDict(
-    "_OuterPageContentType",
+OuterPageContentType = TypedDict(
+    "OuterPageContentType",
     {
         "collapsible-icon-div": html.Div,
         "collapsible-left-side": dbc.Collapse,
@@ -222,7 +222,7 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def inner_page(self, page: Page) -> _InnerPageContentType:
+    def inner_page(self, page: Page) -> InnerPageContentType:
         """Returns a dictionary of the inner containers/components for a page."""
         # Identical across pages
         dashboard_description = self.description.build().children if self.description else [None]
@@ -290,7 +290,7 @@ class Dashboard(VizroBaseModel):
             ]
         )
 
-    def outer_page(self, inner_page: _InnerPageContentType) -> _OuterPageContentType:
+    def outer_page(self, inner_page: InnerPageContentType) -> OuterPageContentType:
         header_left_content = [
             inner_page["logo"],
             inner_page["logo-dark"],
@@ -355,7 +355,7 @@ class Dashboard(VizroBaseModel):
             ]
         )
 
-    def arrange_page(self, outer_page: _OuterPageContentType):
+    def arrange_page(self, outer_page: OuterPageContentType):
         collapsible_left_side = outer_page["collapsible-left-side"]
         collapsible_icon_div = outer_page["collapsible-icon-div"]
         right_side = outer_page["right-side"]
