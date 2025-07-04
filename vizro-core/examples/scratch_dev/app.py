@@ -1,40 +1,26 @@
 """This is a test app to test the dashboard layout."""
 
-import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
 from typing import Literal
 from dash import html
 import dash_bootstrap_components as dbc
 
-df = px.data.iris()
-
 
 class CustomDashboard(vm.Dashboard):
-    """Custom Dashboard."""
+    """Dashboard with custom header."""
 
     type: Literal["custom_dashboard"] = "custom_dashboard"
 
     @staticmethod
     def custom_header():
-        single_component = html.Div("Welcome Li!")
-        multiple_components = [html.Div("Welcome Li!"), dbc.Badge("Badge", color="primary")]
-        return single_component
+        return [html.Div("Good morning, Li! ☕"), dbc.Badge("Tuesday", color="primary")]
 
 
-page = vm.Page(
-    title="My first dashboard",
-    components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
-    ],
-)
+page = vm.Page(title="Page Title", components=[vm.Card(text="""# Placerholder""")])
 
 
-dashboard = CustomDashboard(pages=[page], title="Dashboard Title")
+dashboard = CustomDashboard(pages=[page], title="Dashboard with custom header")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
