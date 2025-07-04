@@ -11,9 +11,8 @@ from vizro.managers import data_manager
 
 df = px.data.gapminder()
 
-first_page = vm.Page(
-    title="First Page - Static data",
-    # layout=vm.Grid(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
+static_page = vm.Page(
+    title="Homepage with static data",
     components=[
         vm.Container(
             title="Container with controls",
@@ -73,26 +72,26 @@ def dynamic_data_load(number_of_rows: int = 1):
 data_manager["dynamic_df"] = dynamic_data_load
 
 
-second_page = vm.Page(
-    title="Second Page - Dynamic data",
+dynamic_page = vm.Page(
+    title="Dynamic data",
     components=[
         vm.Container(
             components=[
                 vm.Graph(
-                    id="graph-1",
+                    id="page-2-graph-1",
                     figure=px.scatter("dynamic_df", x="gdpPercap", y="lifeExp", color="continent"),
                 )
             ],
             controls=[
                 vm.Filter(id="page-2-filter-1", column="country"),
                 vm.Filter(id="page-2-filter-2", column="continent", selector=vm.Checklist()),
-            ]
+            ],
         )
     ],
     controls=[
         vm.Parameter(
             id="page-2-parameter-1",
-            targets=["graph-1.data_frame.number_of_rows"],
+            targets=["page-2-graph-1.data_frame.number_of_rows"],
             selector=vm.Slider(
                 id="number-of-rows-slider",
                 title="Number of Rows",
@@ -100,16 +99,85 @@ second_page = vm.Page(
                 max=1000,
                 step=100,
                 value=1,
-            )
+            ),
         )
+    ],
+)
+
+
+dynamic_page_all_combinations = vm.Page(
+    title="Dynamic data all combinations",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="page-3-graph-1",
+                    figure=px.scatter("dynamic_df", x="gdpPercap", y="lifeExp", color="continent"),
+                )
+            ],
+        )
+    ],
+    controls=[
+        vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(column="continent"),
+        vm.Filter(column="continent", selector=vm.Dropdown(multi=False)),
+        vm.Filter(column="continent", selector=vm.Checklist(value=["Asia", "Americas"])),
+        vm.Filter(column="continent", selector=vm.Dropdown(multi=True, value=["Asia", "Americas"])),
+        vm.Filter(column="continent", selector=vm.Dropdown(multi=False, value="Asia")),
+        vm.Parameter(
+            targets=["page-3-graph-1.data_frame.number_of_rows"],
+            selector=vm.Slider(
+                title="Number of Rows",
+                min=1,
+                max=1000,
+                step=100,
+                value=1,
+            ),
+        ),
+    ],
+)
+
+url_dynamic_page = vm.Page(
+    title="Dynamic data from URL",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="page-4-graph-1",
+                    figure=px.scatter("dynamic_df", x="gdpPercap", y="lifeExp", color="continent"),
+                )
+            ],
+            controls=[
+                vm.Filter(id="page-3-filter-1", column="country", show_in_url=True),
+                vm.Filter(id="page-3-filter-2", column="continent", selector=vm.Checklist(), show_in_url=True),
+            ],
+        )
+    ],
+    controls=[
+        vm.Parameter(
+            id="page-4-parameter-1",
+            targets=["page-4-graph-1.data_frame.number_of_rows"],
+            show_in_url=True,
+            selector=vm.Slider(
+                id="number-of-rows-slider-url",
+                title="Number of Rows",
+                min=1,
+                max=1000,
+                step=100,
+                value=1,
+            ),
+        )
+    ],
+)
+
+dashboard = vm.Dashboard(
+    pages=[
+        static_page,
+        dynamic_page,
+        dynamic_page_all_combinations,
+        url_dynamic_page,
     ]
 )
 
-dashboard = vm.Dashboard(pages=[
-    first_page,
-    second_page,
-])
-
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
-    app.run()
+    Vizro().build(dashboard).run()
