@@ -53,7 +53,7 @@ class Accordion(VizroBaseModel):
             accordion_items.append(
                 dbc.AccordionItem(
                     children=nav_links,
-                    title=page_group.upper(),
+                    title=page_group,
                     class_name="accordion-item-header",
                     item_id=page_group,
                 )
