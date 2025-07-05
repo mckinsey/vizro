@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/mckinsey-vizro-badge.png)](https://mseep.ai/app/mckinsey-vizro)
+
 <br><br>
 
 <div align="center">
