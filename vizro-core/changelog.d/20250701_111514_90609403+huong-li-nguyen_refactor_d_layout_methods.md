@@ -23,11 +23,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Several dashboard header class names have changed to improve clarity and consistency:
-    - The dashboard header is now `header` (was `page-header`)
-    - The right section of the dashboard header is now `header-right`
-    - The left section of the dashboard header is now `header-left`
-    - The page title bar is now `page-header`
+- Update several header class names for improved clarity and consistency. See this [PR](https://github.com/mckinsey/vizro/pull/1267) for the updated selector class names and ensure to update any custom CSS targeting the old ones.
+
 
 
 <!--
