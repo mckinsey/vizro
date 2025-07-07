@@ -111,7 +111,6 @@
   border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
-  gap: 40px;
   width: 64px;
 }
 
