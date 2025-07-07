@@ -114,17 +114,15 @@ class RangeSlider(VizroBaseModel):
 
     def __call__(self, min, max, current_value):
         output = [
+            Output(self.id, "value", allow_duplicate=True),
             Output(f"{self.id}_start_value", "value"),
             Output(f"{self.id}_end_value", "value"),
-            Output(self.id, "value", allow_duplicate=True),
-            Output(f"{self.id}_input_store", "data"),
         ]
         inputs = [
+            Input(self.id, "value"),
             Input(f"{self.id}_start_value", "value"),
             Input(f"{self.id}_end_value", "value"),
-            Input(self.id, "value"),
-            State(f"{self.id}_input_store", "data"),
-            State(f"{self.id}_callback_data", "data"),
+            State(self.id, "id"),
         ]
 
         clientside_callback(
@@ -133,6 +131,7 @@ class RangeSlider(VizroBaseModel):
             inputs=inputs,
             prevent_initial_call=True,
         )
+
         description = self.description.build().children if self.description else [None]
         defaults = {
             "id": self.id,
@@ -148,7 +147,6 @@ class RangeSlider(VizroBaseModel):
 
         return html.Div(
             children=[
-                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
                         dbc.Label(
@@ -184,7 +182,6 @@ class RangeSlider(VizroBaseModel):
                                     persistence_type="session",
                                     className="slider-text-input-field",
                                 ),
-                                dcc.Store(id=f"{self.id}_input_store", storage_type="session"),
                             ],
                             className="slider-text-input-container",
                         ),
