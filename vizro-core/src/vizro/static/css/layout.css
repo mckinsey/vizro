@@ -110,7 +110,7 @@
 #nav-bar {
   border-right: 1px solid var(--bs-border-color);
   display: flex;
-  flex-direction: column;
+  justify-content: flex-start;
   width: 60px;
 }
 
