@@ -212,7 +212,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
 ## Customize the header
 
-You can now append custom content to the dashboard header using the [`custom_header`][vizro.models.Dashboard.custom_header] static method of the [Dashboard][vizro.models.Dashboard] class. This allows you to inject any Dash component(s) into a dedicated area of the header.
+You can now append custom content to the dashboard header using the [`custom_header`][vizro.models.Dashboard.custom_header] static method of the [Dashboard][vizro.models.Dashboard]. This enables you to inject any Dash component(s) into a dedicated area of the header - common examples include text, badges, or buttons.
 
 ![Custom header area](../../assets/user_guides/dashboard/custom_header_area.png)
 
@@ -251,11 +251,9 @@ To append items to the custom header area, subclass the [Dashboard][vizro.models
 
         Custom sashboards are currently only possible via Python configuration.
 
-```
-=== "Result"
+    === "Result"
 
-    [![CustomHeader]][customheader]
-```
+        [![CustomHeader]][customheader]
 
 ## Meta tags for social media
 
@@ -271,4 +269,5 @@ The preview includes:
 
 The [website icon](assets.md/#change-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
 
+[customheader]: ../../assets/user_guides/dashboard/dashboard_custom_header.png
 [dashboard]: ../../assets/user_guides/dashboard/dashboard.png
