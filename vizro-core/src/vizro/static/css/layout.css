@@ -1,4 +1,4 @@
-.page-container {
+.page-main-outer {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -11,7 +11,7 @@
   gap: 0.5rem;
 }
 
-#left-main {
+#nav-control-panel {
   align-items: flex-start;
   border-right: 1px solid var(--bs-border-color);
   display: flex;
@@ -107,11 +107,10 @@
   width: 100%;
 }
 
-#left-sidebar {
+#nav-bar {
   border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
-  gap: 40px;
   width: 64px;
 }
 
@@ -164,7 +163,7 @@
   color: var(--text-primaryHover);
 }
 
-.collapse-icon-div {
+#collapse-icon-outer {
   display: flex;
   justify-content: center;
   padding-top: 28px;
@@ -192,9 +191,9 @@ Current logic:
   }
 }
 
-/* Apply flex layout for screens up to 1028px if collapsible-left-side is shown */
+/* Apply flex layout for screens up to 1028px if collapse-left-side is shown */
 @media screen and (width <= 1028px) {
-  #page-main:has(#collapsable-left-side.show) .grid-layout {
+  #page-main:has(#collapse-left-side.show) .grid-layout {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -203,7 +202,7 @@ Current logic:
 
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
-  .collapse-icon-div {
+  #collapse-icon-outer {
     padding-top: 20px;
   }
 
@@ -215,18 +214,18 @@ Current logic:
 }
 
 @media screen and (width <= 576px) and (orientation: portrait) {
-  body:has(#collapsible-left-side.show) {
+  body:has(#collapse-left-side.show) {
     overflow: hidden;
   }
 
-  #collapsible-left-side.show:has(#left-main:not([hidden]))
-    ~ .collapse-icon-div
+  #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
+    ~ #collapse-icon-outer
     #collapse-icon {
     right: -7px;
     z-index: 10;
   }
 
-  #left-side:has(#left-main:not([hidden])) {
+  #left-side:has(#nav-control-panel:not([hidden])) {
     height: calc(100vh - 48px);
     position: absolute;
     width: 100vw;
@@ -234,8 +233,8 @@ Current logic:
     zoom: 100%;
   }
 
-  /* If #left-main is NOT hidden, apply this rule */
-  #left-main:not([hidden]) {
+  /* If #nav-control-panel is NOT hidden, apply this rule */
+  #nav-control-panel:not([hidden]) {
     flex: 1;
   }
 }
