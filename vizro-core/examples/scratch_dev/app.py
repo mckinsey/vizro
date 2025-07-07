@@ -16,15 +16,15 @@ class CustomDashboard(vm.Dashboard):
     type: Literal["custom_dashboard"] = "custom_dashboard"
 
     def arrange_page(self, outer_page):
-        left_side_collapsible = outer_page["left-side-collapsible"]
-        collapsible_icon_div = outer_page["collapsible-icon-div"]
+        left_side_collapse = outer_page["left-side-collapse"]
+        icon_collapse_outer = outer_page["icon-collapse-outer"]
         right_side = outer_page["right-side"]
         header = outer_page["header"]
 
         page_main = html.Div(id="page-main", children=[header, right_side])
         page_main_outer = html.Div(
-            children=[left_side_collapsible, collapsible_icon_div, page_main],
-            className="page-main-outer no-left" if _all_hidden(collapsible_icon_div) else "page-main-outer",
+            children=[left_side_collapse, icon_collapse_outer, page_main],
+            className="page-main-outer no-left" if _all_hidden(icon_collapse_outer) else "page-main-outer",
         )
         return page_main_outer
 
