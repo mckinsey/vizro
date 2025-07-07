@@ -15,7 +15,7 @@ class CustomDashboard(vm.Dashboard):
 
     type: Literal["custom_dashboard"] = "custom_dashboard"
 
-    def arrange_page(self, outer_page):
+    def _arrange_page(self, outer_page):
         # The only thing that changes are line 25 and 27, where the children are differently assigned
         collapse_left_side = outer_page["collapse-left-side"]
         icon_collapse_outer = outer_page["collapse-icon-outer"]

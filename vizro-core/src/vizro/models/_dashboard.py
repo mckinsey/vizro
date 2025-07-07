@@ -233,7 +233,7 @@ class Dashboard(VizroBaseModel):
 
         return logo, logo_dark, logo_light
 
-    def inner_page(self, page: Page) -> InnerPageContentType:
+    def _inner_page(self, page: Page) -> InnerPageContentType:
         """Builds and returns the main layout components for a dashboard page as a dictionary.
 
         Args:
@@ -315,7 +315,7 @@ class Dashboard(VizroBaseModel):
             ]
         )
 
-    def outer_page(self, inner_page: InnerPageContentType) -> OuterPageContentType:
+    def _outer_page(self, inner_page: InnerPageContentType) -> OuterPageContentType:
         """Assembles the outer layout containers for a dashboard page using the components from inner_page.
 
         Args:
@@ -347,7 +347,7 @@ class Dashboard(VizroBaseModel):
             is_open=True,
             dimension="width",
         )
-        icon_collapse_outer = html.Div(
+        collapse_icon_outer = html.Div(
             children=[
                 html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
                 dbc.Tooltip(
@@ -365,11 +365,11 @@ class Dashboard(VizroBaseModel):
                 header,
                 right_side,
                 collapse_left_side,
-                icon_collapse_outer,
+                collapse_icon_outer,
             ]
         )
 
-    def arrange_page(self, outer_page: OuterPageContentType):
+    def _arrange_page(self, outer_page: OuterPageContentType):
         """Combines the outer containers into the final dashboard page layout.
 
         Args:
@@ -393,9 +393,9 @@ class Dashboard(VizroBaseModel):
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
-        inner_page = self.inner_page(page=page)
-        outer_page = self.outer_page(inner_page=inner_page)
-        page_layout = self.arrange_page(outer_page=outer_page)
+        inner_page = self._inner_page(page=page)
+        outer_page = self._outer_page(inner_page=inner_page)
+        page_layout = self._arrange_page(outer_page=outer_page)
         page_layout.id = page.id
         return page_layout
 
