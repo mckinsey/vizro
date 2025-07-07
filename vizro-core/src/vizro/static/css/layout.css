@@ -194,7 +194,7 @@ Current logic:
 
 /* Apply flex layout for screens up to 1028px if left-side-collapsible is shown */
 @media screen and (width <= 1028px) {
-  #page-main:has(#collapsable-left-side.show) .grid-layout {
+  #page-main:has(#left-side-collapsible.show) .grid-layout {
     display: flex;
     flex: 1;
     flex-direction: column;

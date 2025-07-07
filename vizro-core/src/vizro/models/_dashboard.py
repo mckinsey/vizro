@@ -62,7 +62,6 @@ InnerPageContentType = TypedDict(
     {
         "header-left": html.Div,
         "header-right": html.Div,
-        "header-custom": html.Div,
         "page-header": html.Div,
         "page-components": html.Div,
         "nav-bar": dbc.Navbar,
@@ -299,7 +298,6 @@ class Dashboard(VizroBaseModel):
             [
                 header_left,
                 header_right,
-                custom_header,
                 page_header,
                 page_components,
                 nav_bar,
