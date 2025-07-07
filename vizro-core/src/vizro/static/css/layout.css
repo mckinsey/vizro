@@ -164,7 +164,7 @@
   color: var(--text-primaryHover);
 }
 
-.collapsible-icon-div {
+#collapsible-icon-div {
   display: flex;
   justify-content: center;
   padding-top: 28px;
@@ -203,7 +203,7 @@ Current logic:
 
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
-  .collapsible-icon-div {
+  #collapsible-icon-div {
     padding-top: 20px;
   }
 
@@ -220,7 +220,7 @@ Current logic:
   }
 
   #left-side-collapsible.show:has(#nav-control-panel:not([hidden]))
-    ~ .collapsible-icon-div
+    ~ #collapsible-icon-div
     #collapse-icon {
     right: -7px;
     z-index: 10;

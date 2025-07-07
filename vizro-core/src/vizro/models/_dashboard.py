@@ -72,10 +72,10 @@ InnerPageContentType = TypedDict(
 OuterPageContentType = TypedDict(
     "OuterPageContentType",
     {
-        "collapsible-icon-div": html.Div,
-        "left-side-collapsible": dbc.Collapse,
-        "right-side": html.Div,
         "header": html.Div,
+        "right-side": html.Div,
+        "left-side-collapsible": dbc.Collapse,
+        "collapsible-icon-div": html.Div,
     },
 )
 
@@ -296,7 +296,9 @@ class Dashboard(VizroBaseModel):
         )
 
         nav_control_panel_content = [nav_panel, control_panel]
-        nav_control_panel = html.Div(id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content))
+        nav_control_panel = html.Div(
+            id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content)
+        )
 
         return html.Div(
             [
@@ -310,7 +312,7 @@ class Dashboard(VizroBaseModel):
         )
 
     def outer_page(self, inner_page: InnerPageContentType) -> OuterPageContentType:
-        # Inner page containers
+        # Inner page containers used to construct outer page containers
         header_left = inner_page["header-left"]
         header_right = inner_page["header-right"]
         page_header = inner_page["page-header"]
@@ -319,6 +321,19 @@ class Dashboard(VizroBaseModel):
         nav_control_panel = inner_page["nav-control-panel"]
 
         # Construct outer page containers
+        header = html.Div(
+            id="header",
+            children=[header_left, header_right],
+            hidden=_all_hidden([header_left, header_right]),
+            className="no-left" if _all_hidden(header_left) else "",
+        )
+        right_side = html.Div(id="right-side", children=[page_header, page_components])
+        left_side_collapsible = dbc.Collapse(
+            id="left-side-collapsible",
+            children=html.Div(id="left-side", children=[nav_bar, nav_control_panel]),
+            is_open=True,
+            dimension="width",
+        )
         collapsible_icon_div = html.Div(
             children=[
                 html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
@@ -329,28 +344,15 @@ class Dashboard(VizroBaseModel):
                     target="collapse-icon",
                 ),
             ],
-            className="collapsible-icon-div",
             id="collapsible-icon-div",
             hidden=_all_hidden([nav_bar, nav_control_panel]),
         )
-        # Collapse component requires a single child, so we need the additional left_side container
-        left_side = html.Div(id="left-side", children=[nav_bar, nav_control_panel])
-        left_side_collapsible = dbc.Collapse(
-            id="left-side-collapsible", children=left_side, is_open=True, dimension="width"
-        )
-        right_side = html.Div(id="right-side", children=[page_header, page_components])
-        header = html.Div(
-            id="header",
-            children=[header_left, header_right],
-            hidden=_all_hidden([header_left, header_right]),
-            className="no-left" if _all_hidden(header_left) else "",
-        )
         return html.Div(
             [
-                collapsible_icon_div,
-                left_side_collapsible,
-                right_side,
                 header,
+                right_side,
+                left_side_collapsible,
+                collapsible_icon_div,
             ]
         )
 
