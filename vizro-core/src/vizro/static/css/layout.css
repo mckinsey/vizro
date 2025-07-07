@@ -151,7 +151,7 @@
 }
 
 
-#icon-collapse.material-symbols-outlined {
+#collapse-icon.material-symbols-outlined {
   background-color: var(--left-side-bg);
   border: 1px solid var(--border-subtleAlpha01);
   border-radius: 50%;
@@ -160,11 +160,11 @@
   position: absolute;
 }
 
-#icon-collapse.material-symbols-outlined:hover {
+#collapse-icon.material-symbols-outlined:hover {
   color: var(--text-primaryHover);
 }
 
-#icon-collapse-outer {
+#collapse-icon-outer {
   display: flex;
   justify-content: center;
   padding-top: 28px;
@@ -192,9 +192,9 @@ Current logic:
   }
 }
 
-/* Apply flex layout for screens up to 1028px if left-side-collapse is shown */
+/* Apply flex layout for screens up to 1028px if collapse-left-side is shown */
 @media screen and (width <= 1028px) {
-  #page-main:has(#left-side-collapse.show) .grid-layout {
+  #page-main:has(#collapse-left-side.show) .grid-layout {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -203,7 +203,7 @@ Current logic:
 
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
-  #icon-collapse-outer {
+  #collapse-icon-outer {
     padding-top: 20px;
   }
 
@@ -215,13 +215,13 @@ Current logic:
 }
 
 @media screen and (width <= 576px) and (orientation: portrait) {
-  body:has(#left-side-collapse.show) {
+  body:has(#collapse-left-side.show) {
     overflow: hidden;
   }
 
-  #left-side-collapse.show:has(#nav-control-panel:not([hidden]))
-    ~ #icon-collapse-outer
-    #icon-collapse {
+  #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
+    ~ #collapse-icon-outer
+    #collapse-icon {
     right: -7px;
     z-index: 10;
   }

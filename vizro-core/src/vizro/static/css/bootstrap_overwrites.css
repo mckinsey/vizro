@@ -14,7 +14,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --text-code-type: #f69d50;
   --text-code-literal: #6bb5fd;
   --slider-rail-bg: var(--primary-100);
-  --icon-collapse-bg: var(--primary-500);
+  --collapse-icon-bg: var(--primary-500);
 }
 
 [data-bs-theme="light"] {
@@ -29,7 +29,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --text-code-literal: #005cc5;
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
-  --icon-collapse-bg: var(--primary-300);
+  --collapse-icon-bg: var(--primary-300);
 }
 
 /* This is currently required as dbc.NavBar comes with the `navbar-light` class even on a dark theme */

@@ -74,8 +74,8 @@ OuterPageContentType = TypedDict(
     {
         "header": html.Div,
         "right-side": html.Div,
-        "left-side-collapse": dbc.Collapse,
-        "icon-collapse-outer": html.Div,
+        "collapse-left-side": dbc.Collapse,
+        "collapse-icon-outer": html.Div,
     },
 )
 
@@ -168,12 +168,12 @@ class Dashboard(VizroBaseModel):
             clientside_callback(
                 ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
                 [
-                    Output("left-side-collapse", "is_open"),
-                    Output("icon-collapse", "style"),
-                    Output("tooltip-collapse", "children"),
+                    Output("collapse-left-side", "is_open"),
+                    Output("collapse-icon", "style"),
+                    Output("collapse-tooltip", "children"),
                 ],
-                Input("icon-collapse", "n_clicks"),
-                State("left-side-collapse", "is_open"),
+                Input("collapse-icon", "n_clicks"),
+                State("collapse-left-side", "is_open"),
             )
 
         layout = html.Div(
@@ -328,41 +328,41 @@ class Dashboard(VizroBaseModel):
             className="no-left" if _all_hidden(header_left) else "",
         )
         right_side = html.Div(id="right-side", children=[page_header, page_components])
-        left_side_collapse = dbc.Collapse(
-            id="left-side-collapse",
+        collapse_left_side = dbc.Collapse(
+            id="collapse-left-side",
             children=html.Div(id="left-side", children=[nav_bar, nav_control_panel]),
             is_open=True,
             dimension="width",
         )
         icon_collapse_outer = html.Div(
             children=[
-                html.Span(id="icon-collapse", children="keyboard_arrow_left", className="material-symbols-outlined"),
+                html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
                 dbc.Tooltip(
-                    id="tooltip-collapse",
+                    id="collapse-tooltip",
                     children="Hide Menu",
                     placement="right",
-                    target="icon-collapse",
+                    target="collapse-icon",
                 ),
             ],
-            id="icon-collapse-outer",
+            id="collapse-icon-outer",
             hidden=_all_hidden([nav_bar, nav_control_panel]),
         )
         return html.Div(
             [
                 header,
                 right_side,
-                left_side_collapse,
+                collapse_left_side,
                 icon_collapse_outer,
             ]
         )
 
     def arrange_page(self, outer_page: OuterPageContentType):
-        left_side_collapse = outer_page["left-side-collapse"]
-        icon_collapse_outer = outer_page["icon-collapse-outer"]
+        collapse_left_side = outer_page["collapse-left-side"]
+        icon_collapse_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
         header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[left_side_collapse, icon_collapse_outer, right_side])
+        page_main = html.Div(id="page-main", children=[collapse_left_side, icon_collapse_outer, right_side])
         page_main_outer = html.Div(
             children=[header, page_main],
             className="page-main-outer no-left" if _all_hidden(icon_collapse_outer) else "page-main-outer",
