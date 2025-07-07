@@ -10,12 +10,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Removed
 
-- A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Simplified the `left-side` container by removing the extra `left-sidebar` and `left-main` containers. The left-side now directly uses `nav-bar` and `nav-control-panel` as its children. ([#1268](https://github.com/mckinsey/vizro/pull/1268))
 
--->
+
 <!--
 ### Added
 
