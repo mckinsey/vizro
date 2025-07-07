@@ -11,7 +11,7 @@
   gap: 0.5rem;
 }
 
-#left-main {
+#nav-control-panel {
   align-items: flex-start;
   border-right: 1px solid var(--bs-border-color);
   display: flex;
@@ -107,7 +107,7 @@
   width: 100%;
 }
 
-#left-sidebar {
+#nav-bar {
   border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
@@ -219,14 +219,14 @@ Current logic:
     overflow: hidden;
   }
 
-  #left-side-collapsible.show:has(#left-main:not([hidden]))
+  #left-side-collapsible.show:has(#nav-control-panel:not([hidden]))
     ~ .collapsible-icon-div
     #collapse-icon {
     right: -7px;
     z-index: 10;
   }
 
-  #left-side:has(#left-main:not([hidden])) {
+  #left-side:has(#nav-control-panel:not([hidden])) {
     height: calc(100vh - 48px);
     position: absolute;
     width: 100vw;
@@ -234,8 +234,8 @@ Current logic:
     zoom: 100%;
   }
 
-  /* If #left-main is NOT hidden, apply this rule */
-  #left-main:not([hidden]) {
+  /* If #nav-control-panel is NOT hidden, apply this rule */
+  #nav-control-panel:not([hidden]) {
     flex: 1;
   }
 }

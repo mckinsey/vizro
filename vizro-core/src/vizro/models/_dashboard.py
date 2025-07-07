@@ -65,8 +65,7 @@ InnerPageContentType = TypedDict(
         "page-header": html.Div,
         "page-components": html.Div,
         "nav-bar": dbc.Navbar,
-        "nav-panel": dbc.Nav,
-        "control-panel": html.Div,
+        "nav-control-panel": html.Div,
     },
 )
 
@@ -279,6 +278,8 @@ class Dashboard(VizroBaseModel):
         header_left_content = [logo, logo_dark, logo_light, dashboard_title]
         header_left = html.Div(id="header-left", children=header_left_content, hidden=_all_hidden(header_left_content))
         header_right_content = [custom_header]
+
+        # Construct required parent containers
         page_header_content = [page_title]
         page_header = html.Div(id="page-header", children=page_header_content)
 
@@ -294,6 +295,9 @@ class Dashboard(VizroBaseModel):
             hidden=_all_hidden(header_right_content),
         )
 
+        nav_control_panel_content = [nav_panel, control_panel]
+        nav_control_panel = html.Div(id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content))
+
         return html.Div(
             [
                 header_left,
@@ -301,24 +305,20 @@ class Dashboard(VizroBaseModel):
                 page_header,
                 page_components,
                 nav_bar,
-                nav_panel,
-                control_panel,
+                nav_control_panel,
             ]
         )
 
     def outer_page(self, inner_page: InnerPageContentType) -> OuterPageContentType:
+        # Inner page containers
         header_left = inner_page["header-left"]
         header_right = inner_page["header-right"]
         page_header = inner_page["page-header"]
         page_components = inner_page["page-components"]
+        nav_bar = inner_page["nav-bar"]
+        nav_control_panel = inner_page["nav-control-panel"]
 
-        left_sidebar_divs = [inner_page["nav-bar"]]
-        left_main_divs = [inner_page["nav-panel"], inner_page["control-panel"]]
-
-        left_sidebar = html.Div(id="left-sidebar", children=left_sidebar_divs, hidden=_all_hidden(left_sidebar_divs))
-        left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
-        left_side = html.Div(id="left-side", children=[left_sidebar, left_main])
-
+        # Construct outer page containers
         collapsible_icon_div = html.Div(
             children=[
                 html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
@@ -331,15 +331,14 @@ class Dashboard(VizroBaseModel):
             ],
             className="collapsible-icon-div",
             id="collapsible-icon-div",
-            hidden=_all_hidden([*left_sidebar_divs, *left_main_divs]),
+            hidden=_all_hidden([nav_bar, nav_control_panel]),
         )
-
+        # Collapse component requires a single child, so we need the additional left_side container
+        left_side = html.Div(id="left-side", children=[nav_bar, nav_control_panel])
         left_side_collapsible = dbc.Collapse(
             id="left-side-collapsible", children=left_side, is_open=True, dimension="width"
         )
-
         right_side = html.Div(id="right-side", children=[page_header, page_components])
-
         header = html.Div(
             id="header",
             children=[header_left, header_right],
