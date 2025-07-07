@@ -296,7 +296,9 @@ class Dashboard(VizroBaseModel):
         )
 
         nav_control_panel_content = [nav_panel, control_panel]
-        nav_control_panel = html.Div(id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content))
+        nav_control_panel = html.Div(
+            id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content)
+        )
 
         return html.Div(
             [
