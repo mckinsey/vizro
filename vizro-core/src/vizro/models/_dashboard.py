@@ -57,8 +57,8 @@ def _all_hidden(components: Union[Component, list[Component]]):
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-InnerPageContentType = TypedDict(
-    "InnerPageContentType",
+_InnerPageContentType = TypedDict(
+    "_InnerPageContentType",
     {
         "header-left": html.Div,
         "header-right": html.Div,
@@ -69,8 +69,8 @@ InnerPageContentType = TypedDict(
     },
 )
 
-OuterPageContentType = TypedDict(
-    "OuterPageContentType",
+_OuterPageContentType = TypedDict(
+    "_OuterPageContentType",
     {
         "header": html.Div,
         "right-side": html.Div,
@@ -233,14 +233,14 @@ class Dashboard(VizroBaseModel):
 
         return logo, logo_dark, logo_light
 
-    def _inner_page(self, page: Page) -> InnerPageContentType:
+    def _inner_page(self, page: Page) -> _InnerPageContentType:
         """Builds and returns the main layout components for a dashboard page as a dictionary.
 
         Args:
             page (Page): The page object for which to build the layout components.
 
         Returns:
-            InnerPageContentType: A dictionary with keys for header components, navigation,
+            _InnerPageContentType: A dictionary with keys for header components, navigation,
                 controls, and content components for the page.
         """
         # Shared across pages but slightly differ in content. Could possibly be done by a clientside callback.
@@ -315,14 +315,14 @@ class Dashboard(VizroBaseModel):
             ]
         )
 
-    def _outer_page(self, inner_page: InnerPageContentType) -> OuterPageContentType:
+    def _outer_page(self, inner_page: _InnerPageContentType) -> _OuterPageContentType:
         """Assembles the outer layout containers for a dashboard page using the components from inner_page.
 
         Args:
-            inner_page (InnerPageContentType): Dictionary of main page components built by inner_page().
+            inner_page (_InnerPageContentType): Dictionary of main page components built by inner_page().
 
         Returns:
-            OuterPageContentType: A dictionary with the outer containers, including header, right-side,
+            _OuterPageContentType: A dictionary with the outer containers, including header, right-side,
                 left-side (collapsible), and the collapse icon container.
         """
         # Inner page containers used to construct outer page containers
@@ -369,24 +369,24 @@ class Dashboard(VizroBaseModel):
             ]
         )
 
-    def _arrange_page(self, outer_page: OuterPageContentType):
+    def _arrange_page(self, outer_page: _OuterPageContentType):
         """Combines the outer containers into the final dashboard page layout.
 
         Args:
-            outer_page (OuterPageContentType): Dictionary of outer containers built by outer_page().
+            outer_page (_OuterPageContentType): Dictionary of outer containers built by outer_page().
 
         Returns:
             html.Div: The complete Dash layout for the page, ready to render.
         """
         collapse_left_side = outer_page["collapse-left-side"]
-        icon_collapse_outer = outer_page["collapse-icon-outer"]
+        collapse_icon_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
         header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[collapse_left_side, icon_collapse_outer, right_side])
+        page_main = html.Div(id="page-main", children=[collapse_left_side, collapse_icon_outer, right_side])
         page_main_outer = html.Div(
             children=[header, page_main],
-            className="page-main-outer no-left" if _all_hidden(icon_collapse_outer) else "page-main-outer",
+            className="page-main-outer no-left" if _all_hidden(collapse_icon_outer) else "page-main-outer",
         )
         return page_main_outer
 

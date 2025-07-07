@@ -18,14 +18,14 @@ class CustomDashboard(vm.Dashboard):
     def _arrange_page(self, outer_page):
         # The only thing that changes are line 25 and 27, where the children are differently assigned
         collapse_left_side = outer_page["collapse-left-side"]
-        icon_collapse_outer = outer_page["collapse-icon-outer"]
+        collapse_icon_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
         header = outer_page["header"]
 
         page_main = html.Div(id="page-main", children=[header, right_side])
         page_main_outer = html.Div(
-            children=[collapse_left_side, icon_collapse_outer, page_main],
-            className="page-main-outer no-left" if _all_hidden(icon_collapse_outer) else "page-main-outer",
+            children=[collapse_left_side, collapse_icon_outer, page_main],
+            className="page-main-outer no-left" if _all_hidden(collapse_icon_outer) else "page-main-outer",
         )
         return page_main_outer
 
