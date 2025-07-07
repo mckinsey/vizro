@@ -234,10 +234,14 @@ class Dashboard(VizroBaseModel):
         return logo, logo_dark, logo_light
 
     def inner_page(self, page: Page) -> InnerPageContentType:
-        """Constructs and returns the main layout components for a dashboard page.
+        """Builds and returns the main layout components for a dashboard page as a dictionary.
 
-        The returned dictionary contains keys for header-left, header-right, custom header, page header,
-        page components, navigation bar, navigation panel, and control panel.
+        Args:
+            page (Page): The page object for which to build the layout components.
+
+        Returns:
+            InnerPageContentType: A dictionary with keys for header components, navigation,
+                controls, and content components for the page.
         """
         # Shared across pages but slightly differ in content. Could possibly be done by a clientside callback.
         page_description = page.description.build().children if page.description else [None]
@@ -312,6 +316,15 @@ class Dashboard(VizroBaseModel):
         )
 
     def outer_page(self, inner_page: InnerPageContentType) -> OuterPageContentType:
+        """Assembles the outer layout containers for a dashboard page using the components from inner_page.
+
+        Args:
+            inner_page (InnerPageContentType): Dictionary of main page components built by inner_page().
+
+        Returns:
+            OuterPageContentType: A dictionary with the outer containers, including header, right-side,
+                left-side (collapsible), and the collapse icon container.
+        """
         # Inner page containers used to construct outer page containers
         header_left = inner_page["header-left"]
         header_right = inner_page["header-right"]
@@ -357,6 +370,14 @@ class Dashboard(VizroBaseModel):
         )
 
     def arrange_page(self, outer_page: OuterPageContentType):
+        """Combines the outer containers into the final dashboard page layout.
+
+        Args:
+            outer_page (OuterPageContentType): Dictionary of outer containers built by outer_page().
+
+        Returns:
+            html.Div: The complete Dash layout for the page, ready to render.
+        """
         collapse_left_side = outer_page["collapse-left-side"]
         icon_collapse_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
