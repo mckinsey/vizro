@@ -363,7 +363,10 @@ class Dashboard(VizroBaseModel):
         header = outer_page["header"]
 
         page_main = html.Div(id="page-main", children=[left_side_collapse, icon_collapse_outer, right_side])
-        page_main_outer = html.Div(children=[header, page_main], className="page-main-outer")
+        page_main_outer = html.Div(
+            children=[header, page_main],
+            className="page-main-outer no-left" if _all_hidden(icon_collapse_outer) else "page-main-outer",
+        )
         return page_main_outer
 
     def _make_page_layout(self, page: Page, **kwargs):
