@@ -231,7 +231,7 @@ def test_dropdown_filter_select_all_value(dash_br):
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
+        all_value=False,
         expected_selected_options=["setosa"],
         expected_unselected_options=["SelectAll", "versicolor"],
     )
