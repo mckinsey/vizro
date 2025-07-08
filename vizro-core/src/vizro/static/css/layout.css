@@ -19,7 +19,7 @@
   flex-direction: column;
   gap: 1.5rem;
   overflow: auto;
-  padding: 20px;
+  padding: 20px 20px 0;
   width: 324px;
 }
 
@@ -166,7 +166,7 @@
 #collapse-icon-outer {
   display: flex;
   justify-content: center;
-  padding-top: 28px;
+  padding-top: 24px;
   width: 0;
 }
 
@@ -203,7 +203,15 @@ Current logic:
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
   #collapse-icon-outer {
-    padding-top: 20px;
+    padding-top: 16px;
+  }
+
+  #nav-control-panel {
+    padding-top: 16px;
+  }
+
+  #nav-bar {
+    padding-top: 4px;
   }
 
   #header,
@@ -225,8 +233,16 @@ Current logic:
     z-index: 10;
   }
 
+  #nav-control-panel {
+    padding-top: 12px;
+  }
+
+  #nav-bar {
+    padding-top: 0;
+  }
+
   #left-side:has(#nav-control-panel:not([hidden])) {
-    height: calc(100vh - 48px);
+    height: calc(100vh - 40px);
     position: absolute;
     width: 100vw;
     z-index: 5;
