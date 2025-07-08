@@ -67,6 +67,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 .accordion-button {
+  padding: 0.75rem 0;
   text-transform: none;
 }
 
