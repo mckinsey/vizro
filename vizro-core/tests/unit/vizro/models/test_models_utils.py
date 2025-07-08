@@ -71,7 +71,7 @@ class TestWarnDescriptionWithoutTitle:
             "text_area",
         ],
     )
-    def test_warns_if_description_and_no_title_field(self, model_type):
+    def test_warns_if_description_and_no_title(self, model_type):
         info = MockValidationInfo(data={"title": "", "type": model_type})
         with pytest.warns(UserWarning, match="description.*title.*missing or empty"):
             warn_description_without_title("description", info)
