@@ -58,7 +58,7 @@ def test_dropdown_options_value(dash_br):
 
     1. Delete 'virginica' option.
     2. Check how options in dropdown looks like.
-    3. Clear all chosen options and select 'setosa' only.
+    3. Select 'virginica' again.
     4. Check how options in dropdown looks like.
     """
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
@@ -72,22 +72,20 @@ def test_dropdown_options_value(dash_br):
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=["SelectAll", "virginica"],
     )
-    # clear dropdown
-    clear_dropdown(dash_br, cnst.DROPDOWN_FILTER_FILTERS_PAGE)
-    # choose one option 'setosa'
-    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="setosa")
+    # choose one option 'virginica'
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     dash_br.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        all_value=False,
-        expected_selected_options=["setosa"],
-        expected_unselected_options=["SelectAll", "versicolor", "virginica"],
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor", "virginica"],
+        expected_unselected_options=[],
     )
 
 
-def test_dropdown_persistence(dash_br):
+def test_dropdown_persistence_with_two_values(dash_br):
     """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     # delete last option 'virginica'
@@ -102,6 +100,44 @@ def test_dropdown_persistence(dash_br):
         all_value=False,
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=["SelectAll", "virginica"],
+    )
+
+
+def test_dropdown_persistence_with_all_values(dash_br):
+    """Check that chosen values persistent after page reload."""
+    page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
+    # delete all options
+    clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
+    # select all options
+    dash_br.multiple_click(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}_select_all", 1)
+    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
+    page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
+    page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
+    dash_br.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor", "virginica"],
+        expected_unselected_options=[],
+    )
+
+
+def test_dropdown_persistence_with_no_values(dash_br):
+    """Check that chosen values persistent after page reload."""
+    page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
+    # delete all options
+    clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
+    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
+    page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
+    page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
+    dash_br.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
+        all_value=False,
+        expected_selected_options=[],
+        expected_unselected_options=["SelectAll", "setosa", "versicolor", "virginica"],
     )
 
 
@@ -131,17 +167,6 @@ def test_categorical_filters(dash_br, filter_id):
                 {"value": 3, "selected": True, "value_name": "virginica"},
             ],
         ),
-        # TODO: Find the problem
-        # (
-        #     [
-        #         select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
-        #         categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=3),
-        #     ],
-        #     False,
-        #     [{"value": 1, "selected": False, "value_name": "setosa"},
-        #      {"value": 2, "selected": False, "value_name": "versicolor"},
-        #      {"value": 3, "selected": True, "value_name": "virginica"}],
-        # ),
         (
             [
                 categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=1),
@@ -176,13 +201,27 @@ def test_categorical_filters(dash_br, filter_id):
                 {"value": 3, "selected": True, "value_name": "virginica"},
             ],
         ),
+        (
+            [
+                select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
+                categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=1),
+                categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=2),
+                categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=3),
+            ],
+            True,
+            [
+                {"value": 1, "selected": True, "value_name": "setosa"},
+                {"value": 2, "selected": True, "value_name": "versicolor"},
+                {"value": 3, "selected": True, "value_name": "virginica"},
+            ],
+        ),
     ],
     ids=[
         "unchecked one option",
-        # "checked one option only",
         "unchecked all options",
         "unchecked 'Select All' only",
         "checked 'Select All' only",
+        "check all options manually",
     ],
 )
 def test_checklist(dash_br, value_paths, select_all_status, options_value_status):
@@ -201,7 +240,51 @@ def test_checklist(dash_br, value_paths, select_all_status, options_value_status
     )
 
 
-def test_checklist_persistence(dash_br):
+@pytest.mark.parametrize(
+    "value_paths, select_all_status, options_value_status",
+    [
+        (
+            [categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=2)],
+            False,
+            [
+                {"value": 1, "selected": True, "value_name": "setosa"},
+                {"value": 2, "selected": False, "value_name": "versicolor"},
+                {"value": 3, "selected": True, "value_name": "virginica"},
+            ],
+        ),
+        (
+            [
+                categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=1),
+                categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=2),
+                categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=3),
+            ],
+            False,
+            [
+                {"value": 1, "selected": False, "value_name": "setosa"},
+                {"value": 2, "selected": False, "value_name": "versicolor"},
+                {"value": 3, "selected": False, "value_name": "virginica"},
+            ],
+        ),
+        (
+            [
+                select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
+                select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
+            ],
+            True,
+            [
+                {"value": 1, "selected": True, "value_name": "setosa"},
+                {"value": 2, "selected": True, "value_name": "versicolor"},
+                {"value": 3, "selected": True, "value_name": "virginica"},
+            ],
+        ),
+    ],
+    ids=[
+        "unchecked one option",
+        "unchecked all options",
+        "checked 'Select All' only",
+    ],
+)
+def test_checklist_persistence(dash_br, value_paths, select_all_status, options_value_status):
     """Check that chosen values persistent after page reload."""
     filter_id = cnst.CHECK_LIST_FILTER_FILTERS_PAGE
     page_select(
@@ -209,20 +292,18 @@ def test_checklist_persistence(dash_br):
         page_path=cnst.FILTERS_PAGE_PATH,
         page_name=cnst.FILTERS_PAGE,
     )
-    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=2), 1)
+    # dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=2), 1)
+    for path in value_paths:
+        dash_br.multiple_click(path, 1)
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     check_selected_categorical_component(
         dash_br,
         component_id=filter_id,
-        select_all_status=False,
+        select_all_status=select_all_status,
         checklist=True,
-        options_value_status=[
-            {"value": 1, "selected": True, "value_name": "setosa"},
-            {"value": 2, "selected": False, "value_name": "versicolor"},
-            {"value": 3, "selected": True, "value_name": "virginica"},
-        ],
+        options_value_status=options_value_status,
     )
 
 

@@ -142,6 +142,119 @@ def test_dropdown_filter_multi(dash_br):
 
 
 @rewrite_dynamic_filters_data_config
+def test_dropdown_filter_select_all_value(dash_br):
+    """Initial selected value is 'setosa'."""
+    # Select page and wait until it's loaded
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor", "virginica"],
+        expected_unselected_options=[],
+    )
+    # delete last options 'versicolor' and 'virginica'
+    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
+    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
+    # Remove "versicolor" and "virginica" from the dynamic data
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
+    dynamic_filters_data_config_manipulation(key="virginica", set_value=0)
+    # Simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+    )
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa"],
+        expected_unselected_options=[],
+    )
+    # Add "versicolor" to the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+    )
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=10)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=False,
+        expected_selected_options=["setosa"],
+        expected_unselected_options=["SelectAll", "versicolor"],
+    )
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor"],
+        expected_unselected_options=[],
+    )
+    # Remove "versicolor" from the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+    )
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor"],
+        expected_unselected_options=[],
+    )
+    # delete last option 'versicolor'
+    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa"],
+        expected_unselected_options=["SelectAll", "versicolor"],
+    )
+    # Simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+    )
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa"],
+        expected_unselected_options=[],
+    )
+
+
+@rewrite_dynamic_filters_data_config
 def test_dropdown_filter(dash_br):
     """Initial selected value is 'setosa'."""
     # Select page and wait until it's loaded
@@ -174,6 +287,147 @@ def test_dropdown_filter(dash_br):
         dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID,
         expected_selected_options=["versicolor"],
         expected_unselected_options=["versicolor", "virginica"],
+    )
+
+
+@rewrite_dynamic_filters_data_config
+def test_checklist_filter_select_all_value(dash_br):
+    """Initial selected value is 'setosa'."""
+    # Load the page
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    # Check that "setosa", "versicolor" and "virginica" is the listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        checklist=True,
+        select_all_status=True,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    # Unselect "versicolor" and "virginica"
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1)
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=3), 1)
+    # Remove "versicolor" and "virginica" from the dynamic data
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
+    dynamic_filters_data_config_manipulation(key="virginica", set_value=0)
+    # Simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+    )
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    # Check that "setosa" is the only listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        checklist=True,
+        select_all_status=True,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+        ],
+    )
+    # Add "versicolor" to the dynamic data
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=10)
+    # Simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+    )
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    # Check that "setosa" is the only selected option
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        checklist=True,
+        select_all_status=False,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+        ],
+    )
+    # Select "versicolor"
+    dash_br.multiple_click(
+        categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1, delay=0.1
+    )
+    # Check that "setosa" and "versicolor" selected
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        checklist=True,
+        select_all_status=True,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+        ],
+    )
+    # Delete "versicolor" from the dynamic data
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
+    # Simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+    )
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    # Check that "setosa" and "versicolor" selected
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        checklist=True,
+        select_all_status=True,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+        ],
+    )
+    # Unselect "versicolor"
+    dash_br.multiple_click(
+        categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1, delay=0.1
+    )
+    # Check that only "setosa" selected
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        checklist=True,
+        select_all_status=False,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+        ],
+    )
+    # Simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+    )
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    # Check that "setosa" selected and the only option
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        checklist=True,
+        select_all_status=True,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+        ],
     )
 
 
