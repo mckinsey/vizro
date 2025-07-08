@@ -9,7 +9,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, MultiValueType, OptionsType, _IdProperty
 
@@ -46,6 +46,7 @@ class Checklist(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
+        AfterValidator(warn_description_without_title),
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
