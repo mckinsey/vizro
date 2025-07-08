@@ -68,10 +68,12 @@ def validate_icon(icon) -> str:
 
 def warn_description_without_title(description, info: ValidationInfo):
     title = info.data.get("title", "")
-    if description is not None and (not title or title.strip() == ""):
+    if description and not title:
         warnings.warn(
-            """The `description` field is set, but `title` is missing or empty.
-            The tooltip icon will not appear unless a `title` is provided.""",
+            """
+            The `description` field is set, but `title` is missing or empty.
+            The tooltip will not appear unless a `title` is provided.
+            """,
             UserWarning,
         )
     return description

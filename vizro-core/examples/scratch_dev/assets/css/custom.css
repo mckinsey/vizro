@@ -1,16 +1,3 @@
-.page-main-outer {
-  flex-direction: row;
-}
-
-.page-main-outer .no-left {
-  flex-direction: column;
-}
-
-#page-main {
-  flex-direction: column;
-  height: 100vh;
-}
-
-#collapse-icon-outer {
-  padding-top: 44px;
+.page-header {
+  display: flex;
 }
