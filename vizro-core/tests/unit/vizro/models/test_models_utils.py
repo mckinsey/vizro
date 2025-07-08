@@ -52,27 +52,26 @@ class TestSharedValidators:
 
 class TestWarnDescriptionWithoutTitle:
     @pytest.mark.parametrize(
-        "model_type,title_field",
+        "model_type",
         [
-            ("dashboard", "title"),
-            ("page", "title"),
-            ("container", "title"),
-            ("tabs", "title"),
-            ("graph", "title"),
-            ("table", "title"),
-            ("ag_grid", "title"),
-            ("dropdown", "title"),
-            ("radio_items", "title"),
-            ("checklist", "title"),
-            ("slider", "title"),
-            ("range_slider", "title"),
-            ("date_picker", "title"),
-            ("user_input", "title"),
-            ("text_area", "title"),
-            ("button", "text"),
+            "dashboard",
+            "page",
+            "container",
+            "tabs",
+            "graph",
+            "table",
+            "ag_grid",
+            "dropdown",
+            "radio_items",
+            "checklist",
+            "slider",
+            "range_slider",
+            "date_picker",
+            "user_input",
+            "text_area",
         ],
     )
-    def test_warns_if_description_and_no_title_field(self, model_type, title_field):
-        info = MockValidationInfo(data={title_field: "", "type": model_type})
-        with pytest.warns(UserWarning, match=f"description.*{title_field}.*missing or empty"):
+    def test_warns_if_description_and_no_title_field(self, model_type):
+        info = MockValidationInfo(data={"title": "", "type": model_type})
+        with pytest.warns(UserWarning, match="description.*title.*missing or empty"):
             warn_description_without_title("description", info)

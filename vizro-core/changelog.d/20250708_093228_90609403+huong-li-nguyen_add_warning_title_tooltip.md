@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Emit a warning in all models when `description` is set but the title field (`title`, or `text` for Button) is missing or empty, since tooltips require a title to be shown.([#1275](https://github.com/mckinsey/vizro/pull/1275))
+- Emit a warning in all models when `description` is set but `title` is missing or empty. ([#1275](https://github.com/mckinsey/vizro/pull/1275))
 
 
 <!--
