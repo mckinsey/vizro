@@ -1,7 +1,7 @@
 .card-kpi {
   border-left: 4px solid var(--bs-secondary);
   height: 100%;
-  padding: 0.5rem;
+  padding: 0.75rem;
 }
 
 /* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
@@ -64,7 +64,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   color: var(--bs-secondary);
   display: flex;
   flex-grow: 1;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
