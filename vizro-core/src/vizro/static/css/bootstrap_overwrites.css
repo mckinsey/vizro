@@ -96,3 +96,8 @@ label[for="theme-selector"] {
   align-content: center;
   height: 32px;
 }
+
+div.form-check.form-switch {
+  display: flex;
+  gap: 8px;
+}

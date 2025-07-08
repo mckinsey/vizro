@@ -1,48 +1,43 @@
 """This is a test app to test the dashboard layout."""
 
-import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
-from typing import Literal
-from dash import html
-from vizro.models._dashboard import _all_hidden
-
-df = px.data.iris()
 
 
-class CustomDashboard(vm.Dashboard):
-    """Custom Dashboard with different layout arrangement."""
+import pandas as pd
+import numpy as np
+from vizro.tables import dash_ag_grid
 
-    type: Literal["custom_dashboard"] = "custom_dashboard"
+# Create sample data
+data = {
+    "user_id": range(1, 11),
+    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Hannah", "Ian", "Jane"],
+    "age": np.random.randint(20, 50, size=10),
+    "signup_date": pd.date_range(start="2023-01-01", periods=10, freq="W"),
+    "is_active": np.random.choice([True, False], size=10),
+}
 
-    def _arrange_page(self, outer_page):
-        # The only thing that changes are line 25 and 27, where the children are differently assigned
-        collapse_left_side = outer_page["collapse-left-side"]
-        collapse_icon_outer = outer_page["collapse-icon-outer"]
-        right_side = outer_page["right-side"]
-        header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[header, right_side])
-        page_main_outer = html.Div(
-            children=[collapse_left_side, collapse_icon_outer, page_main],
-            className="page-main-outer no-left" if _all_hidden(collapse_icon_outer) else "page-main-outer",
-        )
-        return page_main_outer
+df = pd.DataFrame(data)
 
 
 page = vm.Page(
-    title="My first dashboard",
-    components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
-    ],
+    title="Test page",
+    components=[vm.AgGrid(figure=dash_ag_grid(df))],
     controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
+        vm.Filter(
+            column="is_active",
+            selector=vm.Switch(
+                value=False,
+                label="Is account active",
+                title="Switch selector title",
+                description="This is a description for the new switch selector",
+            ),
+        )
     ],
 )
 
-
-dashboard = CustomDashboard(pages=[page], title="Dashboard Title")
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

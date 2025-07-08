@@ -15,14 +15,7 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Container, VizroBaseModel
-from vizro.models._components.form import (
-    Checklist,
-    DatePicker,
-    Dropdown,
-    RadioItems,
-    RangeSlider,
-    Slider,
-)
+from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch
 from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
@@ -36,6 +29,7 @@ SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Dropdown, Checklist, RadioItems),
     "temporal": (DatePicker,),
+    "boolean": (Switch),
 }
 CategoricalSelectorType = Union[Dropdown, Checklist, RadioItems]
 NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
@@ -210,6 +204,9 @@ class Filter(VizroBaseModel):
                 self.selector.min = _min
             if self.selector.max is None:
                 self.selector.max = _max
+        elif isinstance(self.selector, SELECTORS["boolean"]):
+            if self.selector.label is None:
+                self.selector.label = "Default label"
         else:
             # Categorical selector.
             self.selector = cast(CategoricalSelectorType, self.selector)
