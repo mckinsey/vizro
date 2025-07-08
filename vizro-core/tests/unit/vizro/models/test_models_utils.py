@@ -2,8 +2,15 @@ import re
 
 import pytest
 from pydantic import ValidationError
+from dataclasses import dataclass
 
 import vizro.models as vm
+from vizro.models._models_utils import warn_description_without_title
+
+
+@dataclass
+class MockValidationInfo:
+    data: dict
 
 
 class TestSharedValidators:
@@ -41,3 +48,31 @@ class TestSharedValidators:
             ),
         ):
             model_with_layout(title="Page Title", components=[vm.Checklist()])
+
+
+class TestWarnDescriptionWithoutTitle:
+    @pytest.mark.parametrize(
+        "model_type,title_field",
+        [
+            ("dashboard", "title"),
+            ("page", "title"),
+            ("container", "title"),
+            ("tabs", "title"),
+            ("graph", "title"),
+            ("table", "title"),
+            ("ag_grid", "title"),
+            ("dropdown", "title"),
+            ("radio_items", "title"),
+            ("checklist", "title"),
+            ("slider", "title"),
+            ("range_slider", "title"),
+            ("date_picker", "title"),
+            ("user_input", "title"),
+            ("text_area", "title"),
+            ("button", "text"),
+        ]
+    )
+    def test_warns_if_description_and_no_title_field(self, model_type, title_field):
+        info = MockValidationInfo(data={title_field: "", "type": model_type})
+        with pytest.warns(UserWarning, match=f"description.*{title_field}.*missing or empty"):
+            warn_description_without_title("description", info)
