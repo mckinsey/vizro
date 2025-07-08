@@ -18,7 +18,7 @@
   background: transparent;
 }
 
-#left-main::-webkit-scrollbar-thumb {
+#nav-control-panel::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg02);
 }
 

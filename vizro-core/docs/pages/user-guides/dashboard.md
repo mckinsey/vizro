@@ -210,6 +210,51 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
 ![Dashboard with tooltip](../../assets/user_guides/dashboard/dashboard_with_info_icon.png)
 
+## Customize the header
+
+You can now append custom content to the dashboard header using the [`custom_header`][vizro.models.Dashboard.custom_header] static method of the [Dashboard][vizro.models.Dashboard]. This enables you to inject any Dash component(s) into a dedicated area of the header - common examples include text, badges, or buttons.
+
+![Custom header area](../../assets/user_guides/dashboard/custom_header_area.png)
+
+To append items to the custom header area, subclass the [Dashboard][vizro.models.Dashboard] and override the [`custom_header`][vizro.models.Dashboard.custom_header] static method to return your desired Dash component(s):
+
+- The returned value can be a single Dash component or a list of components.
+- The custom header area is styled as a flex row with an 8px gap.
+- The custom content will appear in the header, to the left of the theme switch.
+
+!!! example "Customize dashboard header"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="8-13 17"}
+        from vizro import Vizro
+        import vizro.models as vm
+        from typing import Literal
+        from dash import html
+        import dash_bootstrap_components as dbc
+
+
+        class CustomDashboard(vm.Dashboard):
+            type: Literal["custom_dashboard"] = "custom_dashboard"
+
+            @staticmethod
+            def custom_header():
+                return [html.Div("Good morning, Li! ☕"), dbc.Badge("Tuesday", color="primary")]
+
+
+        page = vm.Page(title="Page Title", components=[vm.Card(text="""# Placerholder""")])
+        dashboard = CustomDashboard(pages=[page], title="Dashboard with custom header")
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        Custom sashboards are currently only possible via Python configuration.
+
+    === "Result"
+
+        [![CustomHeader]][customheader]
+
 ## Meta tags for social media
 
 Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat clients. To see an example, try sharing an example from the [Vizro examples gallery](https://vizro.mckinsey.com/).
@@ -224,4 +269,5 @@ The preview includes:
 
 The [website icon](assets.md/#change-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
 
+[customheader]: ../../assets/user_guides/dashboard/dashboard_custom_header.png
 [dashboard]: ../../assets/user_guides/dashboard/dashboard.png
