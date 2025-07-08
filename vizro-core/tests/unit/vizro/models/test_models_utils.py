@@ -1,8 +1,8 @@
 import re
+from dataclasses import dataclass
 
 import pytest
 from pydantic import ValidationError
-from dataclasses import dataclass
 
 import vizro.models as vm
 from vizro.models._models_utils import warn_description_without_title
@@ -70,7 +70,7 @@ class TestWarnDescriptionWithoutTitle:
             ("user_input", "title"),
             ("text_area", "title"),
             ("button", "text"),
-        ]
+        ],
     )
     def test_warns_if_description_and_no_title_field(self, model_type, title_field):
         info = MockValidationInfo(data={title_field: "", "type": model_type})
