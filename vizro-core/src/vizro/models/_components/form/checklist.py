@@ -13,7 +13,7 @@ from vizro.models._components.form._form_utils import (
     validate_options_dict,
     validate_value,
 )
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, MultiValueType, OptionsType, _IdProperty
 

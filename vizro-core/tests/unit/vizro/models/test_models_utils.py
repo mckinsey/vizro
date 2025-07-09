@@ -48,7 +48,7 @@ class TestSharedValidators:
             ),
         ):
             model_with_layout(title="Page Title", components=[vm.Checklist()])
-    
+
     def test_warns_if_description_and_no_title(self):
         info = MockValidationInfo(data={"title": ""})
         with pytest.warns(UserWarning, match="description.*title.*missing or empty"):
