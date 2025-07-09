@@ -33,7 +33,7 @@ dynamic_sliders = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="sepal_length"),
+        # vm.Filter(column="sepal_length"),
         vm.Filter(column="petal_length", selector=vm.Slider()),
         vm.Parameter(
             targets=["page_2_graph_1.data_frame.number_of_rows"],
