@@ -1,14 +1,18 @@
 from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
+from vizro.models._components.form._form_utils import (
+    get_dict_options_and_default,
+    validate_options_dict,
+    validate_value,
+)
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, MultiValueType, OptionsType, _IdProperty
@@ -91,12 +95,28 @@ class Checklist(VizroBaseModel):
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
-        full_options, default_value = get_options_and_default(options=options, multi=True)
+        clientside_callback(
+            ClientsideFunction(namespace="checklist", function_name="update_checklist_select_all"),
+            output=[
+                Output(f"{self.id}_select_all", "value"),
+                Output(self.id, "value", allow_duplicate=True),
+            ],
+            inputs=[
+                Input(f"{self.id}_select_all", "value"),
+                Input(self.id, "value"),
+                State(self.id, "options"),
+                State(f"{self.id}_select_all", "id"),
+            ],
+            prevent_initial_call="initial_duplicate",
+        )
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=True)
+        value = self.value if self.value is not None else default_value
         description = self.description.build().children if self.description else [None]
+
         defaults = {
             "id": self.id,
-            "options": full_options,
-            "value": self.value if self.value is not None else [default_value],
+            "options": dict_options,
+            "value": value,
             "inline": self._in_container,
             "persistence": True,
             "persistence_type": "session",
@@ -110,14 +130,26 @@ class Checklist(VizroBaseModel):
                 )
                 if self.title
                 else None,
-                dbc.Checklist(**(defaults | self.extra)),
-            ]
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            id=f"{self.id}_select_all",
+                            value=len(value) == len(dict_options),  # type: ignore[arg-type]
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(**(defaults | self.extra)),
+                    ],
+                    className="checklist-inline" if self._in_container else None,
+                ),
+            ],
         )
 
     def _build_dynamic_placeholder(self):
         if self.value is None:
-            _, default_value = get_options_and_default(self.options, multi=True)
-            self.value = [default_value]  # type: ignore[assignment]
+            _, default_value = get_dict_options_and_default(options=self.options, multi=True)
+            self.value = default_value  # type: ignore[assignment]
 
         return self.__call__(self.options)
 
