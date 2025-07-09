@@ -113,6 +113,7 @@ class DatePicker(VizroBaseModel):
             "id": self.id,
             "minDate": min,
             "value": self.value or ([min, max] if self.range else min),
+            "valueFormat": "MMM D, YYYY",
             "maxDate": max,
             "persistence": True,
             "persistence_type": "session",
