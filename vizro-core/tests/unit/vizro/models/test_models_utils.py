@@ -48,30 +48,8 @@ class TestSharedValidators:
             ),
         ):
             model_with_layout(title="Page Title", components=[vm.Checklist()])
-
-
-class TestWarnDescriptionWithoutTitle:
-    @pytest.mark.parametrize(
-        "model_type",
-        [
-            "dashboard",
-            "page",
-            "container",
-            "tabs",
-            "graph",
-            "table",
-            "ag_grid",
-            "dropdown",
-            "radio_items",
-            "checklist",
-            "slider",
-            "range_slider",
-            "date_picker",
-            "user_input",
-            "text_area",
-        ],
-    )
-    def test_warns_if_description_and_no_title(self, model_type):
-        info = MockValidationInfo(data={"title": "", "type": model_type})
+    
+    def test_warns_if_description_and_no_title(self):
+        info = MockValidationInfo(data={"title": ""})
         with pytest.warns(UserWarning, match="description.*title.*missing or empty"):
             warn_description_without_title("description", info)
