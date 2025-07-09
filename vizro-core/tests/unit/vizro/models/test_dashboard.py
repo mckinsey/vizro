@@ -112,14 +112,14 @@ class TestDashboardPreBuild:
 
     def test_page_registry_with_dashboard_description(self, vizro_app, page_1, mocker):
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
-        vm.Dashboard(pages=[page_1], description="Dashboard description").pre_build()
+        vm.Dashboard(pages=[page_1], title="My dashboard", description="Dashboard description").pre_build()
 
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
             description="Dashboard description",
             image=None,
-            title="Page 1",
+            title="My dashboard: Page 1",
             path="/",
             order=0,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
@@ -145,6 +145,7 @@ class TestDashboardPreBuild:
     def test_page_registry_with_dashboard_and_page_description(self, vizro_app, mocker):
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
         vm.Dashboard(
+            title="My dashboard",
             description="Dashboard description",
             pages=[vm.Page(title="Page 1", components=[vm.Button()], description="Page description")],
         ).pre_build()
@@ -154,7 +155,7 @@ class TestDashboardPreBuild:
             name="Page 1",
             description="Page description",
             image=None,
-            title="Page 1",
+            title="My dashboard: Page 1",
             path="/",
             order=0,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
