@@ -127,4 +127,4 @@ def layout():
 
 @pytest.fixture
 def expected_filter():
-    return vm.Filter(targets=["bar_chart"], column="a")
+    return vm.Filter(targets=["bar_chart"], column="a", show_in_url=False)
