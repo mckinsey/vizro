@@ -169,15 +169,6 @@ tooltip = vm.Page(
                 """,
             ),
         ),
-        vm.Filter(
-            column="sepal_width",
-            selector=vm.RangeSlider(
-                description="""
-                    Use the slider to filter flowers by sepal width.
-                    Only samples within the selected range will be shown.
-                """
-            ),
-        ),
     ],
     description="""
         This page provides overview of Tooltip functionality.
