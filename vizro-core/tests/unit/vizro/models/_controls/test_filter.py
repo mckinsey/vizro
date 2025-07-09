@@ -303,9 +303,6 @@ class TestFilterStaticMethods:
         "data_columns, current_value, expected",
         [
             ([[]], None, []),
-            ([[]], "ALL", []),
-            ([[]], ["ALL", "A"], ["A"]),
-            ([["A"]], ["ALL", "B"], ["A", "B"]),
             ([[]], "A", ["A"]),
             ([[]], ["A", "B"], ["A", "B"]),
             ([["A"]], "B", ["A", "B"]),
@@ -475,7 +472,12 @@ class TestFilterCall:
         filter.pre_build()
 
         selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["c", "d"])["test_selector_id"]
-        assert selector_build.options == ["ALL", "a", "b", "c", "d"]
+        assert selector_build.options == [
+            {"label": "a", "value": "a"},
+            {"label": "b", "value": "b"},
+            {"label": "c", "value": "c"},
+            {"label": "d", "value": "d"},
+        ]
 
     def test_filter_call_numerical_valid(self, target_to_data_frame):
         filter = vm.Filter(

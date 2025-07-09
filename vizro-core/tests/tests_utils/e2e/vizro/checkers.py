@@ -114,19 +114,26 @@ def check_graph_color_selenium(driver, style_background, color, timeout=cnst.SEL
     )
 
 
-def check_selected_categorical_component(driver, component_id, options_value_status):
+def check_selected_categorical_component(
+    driver, component_id, options_value_status, select_all_status=False, checklist=False
+):
     """Checks what selected and what is not for checklist and radio items.
 
     Args:
         driver: dash_br fixture
         component_id: id of checklist or radio items
         options_value_status: list of dicts with the next syntax
+        select_all_status: value of Select All option, 'False' by default
+        checklist: to have logic for 'Select All'
             [{
                 "value": int, number of the value inside dom structure,
                 "selected": bool, checks if value selected or not,
                 "value_name": str, component value name,
             }]
     """
+    if checklist:
+        select_all = driver.find_element(select_all_path(elem_id=component_id))
+        assert_that(select_all.is_selected(), equal_to(select_all_status))
     values = driver.find_elements(f"div[id='{component_id}'] div")
     assert_that(len(values), equal_to(len(options_value_status)))
     for option in options_value_status:

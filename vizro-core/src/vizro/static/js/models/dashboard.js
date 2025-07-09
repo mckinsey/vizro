@@ -5,7 +5,7 @@ function update_dashboard_theme(theme_selector_checked) {
   document.documentElement.setAttribute("data-bs-theme", theme);
   document.documentElement.setAttribute("data-mantine-color-scheme", theme);
 
-  return window.dash_clientside.no_update;
+  return dash_clientside.no_update;
 }
 
 function update_ag_grid_theme(theme_selector_checked) {

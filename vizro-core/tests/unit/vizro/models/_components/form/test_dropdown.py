@@ -9,6 +9,7 @@ from pydantic import ValidationError
 from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
+from vizro.models._components.form._form_utils import get_dict_options_and_default
 
 
 class TestDropdownInstantiation:
@@ -91,9 +92,7 @@ class TestDropdownInstantiation:
             Dropdown(options=test_options)
 
     def test_create_dropdown_invalid_options_dict(self):
-        with pytest.raises(
-            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
-        ):
+        with pytest.raises(ValidationError, match="Field required"):
             Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
@@ -157,22 +156,60 @@ class TestDropdownInstantiation:
 class TestDropdownBuild:
     """Tests model build method."""
 
-    def test_dropdown_with_all_option(self):
-        dropdown = Dropdown(options=["A", "B", "C"], title="Title", id="dropdown_id").build()
+    @pytest.mark.parametrize(
+        "value, options, expected_select_all_value, expected_value, expected_options",
+        [
+            (
+                ["A"],
+                ["A", "B", "C"],
+                False,
+                ["A"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
+            (
+                ["A", "B", "C"],
+                ["A", "B", "C"],
+                True,
+                ["A", "B", "C"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
+            (
+                None,
+                ["A", "B", "C"],
+                True,
+                ["A", "B", "C"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
+        ],
+    )
+    def test_dropdown_with_all_option(
+        self, value, options, expected_select_all_value, expected_value, expected_options
+    ):
+        dropdown = Dropdown(value=value, options=options, title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
                 dbc.Label([html.Span("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[
-                        {"label": html.Div(["ALL"]), "value": "ALL"},
-                        {"label": "A", "value": "A"},
-                        {"label": "B", "value": "B"},
-                        {"label": "C", "value": "C"},
+                        {
+                            "label": dbc.Checkbox(
+                                id="dropdown_id_select_all",
+                                value=expected_select_all_value,
+                                label="Select All",
+                                persistence=True,
+                                persistence_type="session",
+                                className="dropdown-select-all",
+                            ),
+                            "value": "__SELECT_ALL",
+                        },
+                        *expected_options,
                     ],
                     optionHeight=32,
-                    value="ALL",
+                    value=expected_value,
                     multi=True,
+                    clearable=True,
+                    placeholder="Select option",
                     persistence=True,
                     persistence_type="session",
                     className="dropdown",
@@ -189,10 +226,12 @@ class TestDropdownBuild:
                 dbc.Label([html.Span("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
-                    options=["A", "B", "C"],
+                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                     optionHeight=32,
                     value="A",
                     multi=False,
+                    clearable=False,
+                    placeholder="Select option",
                     persistence=True,
                     persistence_type="session",
                     className="dropdown",
@@ -206,7 +245,7 @@ class TestDropdownBuild:
         "options, option_height",
         [
             (["A", "B", "C"], 32),
-            ([10, 20, 30], 32),
+            ([10.0, 20.0, 30.0], 32),
             (["A" * 30, "B", "C"], 32),
             (["A" * 31, "B", "C"], 56),
             (["A" * 60, "B", "C"], 56),
@@ -218,19 +257,22 @@ class TestDropdownBuild:
         ],
     )
     def test_dropdown_option_height(self, options, option_height):
-        default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
+
         expected_dropdown = html.Div(
             [
                 None,
                 dcc.Dropdown(
                     id="dropdown_id",
-                    options=options,
+                    options=dict_options,
                     optionHeight=option_height,
                     multi=False,
                     value=default_value,
+                    clearable=False,
                     persistence=True,
                     persistence_type="session",
+                    placeholder="Select option",
                     className="dropdown",
                 ),
             ]
@@ -242,7 +284,7 @@ class TestDropdownBuild:
         "options, option_height",
         [
             (["A", "B", "C"], 32),
-            ([10, 20, 30], 32),
+            ([10.0, 20.0, 30.0], 32),
             (["A" * 15, "B", "C"], 32),
             (["A" * 30, "B", "C"], 56),
             (["A" * 31, "B", "C"], 80),
@@ -255,7 +297,7 @@ class TestDropdownBuild:
         ],
     )
     def test_dropdown_in_container_option_height(self, options, option_height):
-        default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options)
         dropdown._in_container = True
         dropdown = dropdown.build()
@@ -265,13 +307,15 @@ class TestDropdownBuild:
                 None,
                 dcc.Dropdown(
                     id="dropdown_id",
-                    options=options,
+                    options=dict_options,
                     optionHeight=option_height,
                     multi=False,
                     value=default_value,
                     persistence=True,
                     persistence_type="session",
+                    placeholder="Select option",
                     className="dropdown",
+                    clearable=False,
                 ),
             ]
         )
@@ -284,6 +328,7 @@ class TestDropdownBuild:
             options=["A", "B", "C"],
             title="Title",
             id="dropdown_id",
+            multi=False,
             extra={
                 "clearable": True,
                 "optionHeight": 150,
@@ -296,15 +341,15 @@ class TestDropdownBuild:
                 dcc.Dropdown(
                     id="overridden_id",
                     options=[
-                        {"label": html.Div(["ALL"]), "value": "ALL"},
                         {"label": "A", "value": "A"},
                         {"label": "B", "value": "B"},
                         {"label": "C", "value": "C"},
                     ],
-                    value="ALL",
-                    multi=True,
+                    value="A",
+                    multi=False,
                     persistence=True,
                     persistence_type="session",
+                    placeholder="Select option",
                     className="dropdown",
                     clearable=True,
                     optionHeight=150,
@@ -317,6 +362,7 @@ class TestDropdownBuild:
     def test_dropdown_with_description(self):
         dropdown = Dropdown(
             options=["A", "B", "C"],
+            multi=False,
             title="Title",
             id="dropdown_id",
             description=Tooltip(text="Test description", icon="info", id="info"),
@@ -341,16 +387,17 @@ class TestDropdownBuild:
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[
-                        {"label": html.Div(["ALL"]), "value": "ALL"},
                         {"label": "A", "value": "A"},
                         {"label": "B", "value": "B"},
                         {"label": "C", "value": "C"},
                     ],
                     optionHeight=32,
-                    value="ALL",
-                    multi=True,
+                    value="A",
+                    multi=False,
+                    clearable=False,
                     persistence=True,
                     persistence_type="session",
+                    placeholder="Select option",
                     className="dropdown",
                 ),
             ]
