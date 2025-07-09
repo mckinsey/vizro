@@ -51,6 +51,14 @@ All the HEX values starting with --text-code are taken from the Github code high
   height: 100%;
 }
 
+.form-check {
+    height: 16px;
+}
+
+.form-check:last-of-type {
+  margin-bottom: 0;
+}
+
 /* ACCORDION */
 .accordion-item .nav-link {
   padding: 0.5rem 1rem;
@@ -65,10 +73,6 @@ All the HEX values starting with --text-code are taken from the Github code high
 .accordion-item .nav-link:active, .accordion-item .nav-link.active,
 .accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
   background: var(--surfaces-bg-card);
-}
-
-.form-check:last-of-type {
-  margin-bottom: 0;
 }
 
 /* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
