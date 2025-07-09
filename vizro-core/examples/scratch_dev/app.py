@@ -4,6 +4,7 @@ import pandas as pd
 import vizro.plotly.express as px
 from vizro.tables import dash_ag_grid
 
+
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 stocks = px.data.stocks(datetimes=True)
 tips = px.data.tips()
@@ -71,8 +72,6 @@ selectors = vm.Page(
         vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
     ],
 )
-
-
 
 
 dashboard = vm.Dashboard(pages=[selectors])
