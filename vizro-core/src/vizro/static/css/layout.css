@@ -243,3 +243,10 @@ Current logic:
 ._dash-loading {
   display: none;
 }
+
+.checklist-inline {
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
