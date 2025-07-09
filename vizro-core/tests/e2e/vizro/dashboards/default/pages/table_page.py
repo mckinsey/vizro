@@ -31,7 +31,7 @@ table_page = vm.Page(
         ),
         vm.Filter(
             column="continent",
-            selector=vm.Checklist(id=cnst.CHECKLIST_TABLE_FILTER, options=["Asia", "Oceania"]),
+            selector=vm.Checklist(id=cnst.CHECKLIST_TABLE_FILTER, options=["Europe", "Africa"]),
         ),
         vm.Filter(
             column="pop",

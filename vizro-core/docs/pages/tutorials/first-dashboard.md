@@ -22,7 +22,7 @@ Click on the **Run and edit this code in Py.Cafe** link below to live-edit the d
                 vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
             ],
             controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
+                vm.Filter(column="species"),
             ],
         )
 

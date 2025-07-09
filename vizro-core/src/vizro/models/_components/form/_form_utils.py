@@ -3,27 +3,22 @@
 from datetime import date
 from typing import Any, Optional, Union
 
-from pydantic import ValidationInfo
+from pydantic import TypeAdapter, ValidationInfo
 
-from vizro._constants import ALL_OPTION
-from vizro.models.types import MultiValueType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
-def get_options_and_default(options: OptionsType, multi: bool = False) -> tuple[OptionsType, SingleValueType]:
+def get_dict_options_and_default(
+    options: OptionsType, multi: bool
+) -> tuple[list[OptionsDictType], Union[SingleValueType, MultiValueType]]:
     """Gets list of full options and default value based on user input type of `options`."""
-    if multi:
-        if all(isinstance(option, dict) for option in options):
-            options = [{"label": ALL_OPTION, "value": ALL_OPTION}, *options]
-        else:
-            options = [ALL_OPTION, *options]
+    # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
+    dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]  # type: ignore[typeddict-item]
 
-    if all(isinstance(option, dict) for option in options):
-        # Each option is a OptionsDictType
-        default_value = options[0]["value"]  # type: ignore[index]
-    else:
-        default_value = options[0]
+    list_values = [dict_option["value"] for dict_option in dict_options]
+    default_value = list_values if multi else list_values[0]
 
-    return options, default_value
+    return dict_options, default_value  # type: ignore[return-value]
 
 
 # Utils for validators
@@ -41,9 +36,9 @@ def validate_options_dict(cls, data: Any) -> Any:
     if "options" not in data or not isinstance(data["options"], list):
         return data
 
-    for entry in data["options"]:
-        if isinstance(entry, dict) and not set(entry.keys()) == {"label", "value"}:
-            raise ValueError("Invalid argument `options` passed. Expected a dict with keys `label` and `value`.")
+    for option in data["options"]:
+        if isinstance(option, dict):
+            TypeAdapter(OptionsDictType).validate_python(option)
     return data
 
 
@@ -57,9 +52,6 @@ def validate_value(value, info: ValidationInfo):
         if isinstance(info.data["options"][0], dict)
         else info.data["options"]
     )
-
-    if hasattr(value, "__iter__") and ALL_OPTION in value:
-        return value
 
     if value and not is_value_contained(value, possible_values):
         raise ValueError("Please provide a valid value from `options`.")
