@@ -9,8 +9,9 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_value
+from vizro.models._models_utils import warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, SingleValueType, _IdProperty
+from vizro.models.types import ActionType, StrictBool, _IdProperty
 
 
 class Switch(VizroBaseModel):
@@ -21,8 +22,7 @@ class Switch(VizroBaseModel):
 
     Args:
         type (Literal["toggle_switch"]): Defaults to `"toggle_switch"`.
-        value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].
-            Defaults to `None`.
+        value (Optional[StrictBool]): See [`StrictBool`][vizro.models.types.StrictBool]. Defaults to `False`.
         title (str): Title to be displayed. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
@@ -35,9 +35,7 @@ class Switch(VizroBaseModel):
     """
 
     type: Literal["switch"] = "switch"
-    value: Annotated[
-        Optional[SingleValueType], AfterValidator(validate_value), Field(default=None, validate_default=True)
-    ]
+    value: Annotated[Optional[StrictBool], AfterValidator(validate_value), Field(default=False, validate_default=True)]
     title: str = Field(default="", description="Title to be displayed")
     label: str = Field(default="", description="Label to be displayed")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
@@ -45,6 +43,7 @@ class Switch(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
+        AfterValidator(warn_description_without_title),
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.

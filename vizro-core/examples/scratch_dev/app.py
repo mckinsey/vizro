@@ -29,7 +29,7 @@ page = vm.Page(
             column="is_active",
             selector=vm.Switch(
                 value=False,
-                label="Is account active",
+                label="Show active accounts",
                 title="Switch selector title",
                 description="This is a description for the new switch selector",
             ),

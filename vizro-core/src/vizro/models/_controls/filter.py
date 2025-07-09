@@ -6,7 +6,7 @@ from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc, html
-from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
+from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
@@ -29,7 +29,7 @@ SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Dropdown, Checklist, RadioItems),
     "temporal": (DatePicker,),
-    "boolean": (Switch),
+    "boolean": (Switch,),
 }
 CategoricalSelectorType = Union[Dropdown, Checklist, RadioItems]
 NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
@@ -40,6 +40,7 @@ DISALLOWED_SELECTORS = {
     "numerical": SELECTORS["temporal"],
     "temporal": SELECTORS["numerical"],
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
+    "boolean": SELECTORS["temporal"] + SELECTORS["numerical"],
 }
 
 
@@ -95,7 +96,7 @@ class Filter(VizroBaseModel):
     )
 
     _dynamic: bool = PrivateAttr(False)
-    _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
+    _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -205,8 +206,8 @@ class Filter(VizroBaseModel):
             if self.selector.max is None:
                 self.selector.max = _max
         elif isinstance(self.selector, SELECTORS["boolean"]):
-            if self.selector.label is None:
-                self.selector.label = "Default label"
+            if self.selector.value is None:
+                self.selector.value = False
         else:
             # Categorical selector.
             self.selector = cast(CategoricalSelectorType, self.selector)
@@ -290,12 +291,17 @@ class Filter(VizroBaseModel):
 
         return targeted_data
 
-    def _validate_column_type(self, targeted_data: pd.DataFrame) -> Literal["numerical", "categorical", "temporal"]:
+    def _validate_column_type(
+        self, targeted_data: pd.DataFrame
+    ) -> Literal["numerical", "categorical", "temporal", "boolean"]:
+        is_boolean = targeted_data.apply(is_bool_dtype)
         is_numerical = targeted_data.apply(is_numeric_dtype)
         is_temporal = targeted_data.apply(is_datetime64_any_dtype)
         is_categorical = ~is_numerical & ~is_temporal
 
-        if is_numerical.all():
+        if is_boolean.all():
+            return "boolean"
+        elif is_numerical.all():
             return "numerical"
         elif is_temporal.all():
             return "temporal"
