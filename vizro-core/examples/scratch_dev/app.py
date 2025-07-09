@@ -56,9 +56,10 @@ url_dynamic_sliders = vm.Page(
         )
     ],
     controls=[
-        vm.Filter(column="sepal_length", show_in_url=True),
-        vm.Filter(column="petal_length", selector=vm.Slider(), show_in_url=True),
+        vm.Filter(id="filter-1", column="sepal_length", show_in_url=True),
+        vm.Filter(id="filter-2", column="petal_length", selector=vm.Slider(), show_in_url=True),
         vm.Parameter(
+            id="dfp-parameter",
             targets=["page_3_graph_1.data_frame.number_of_rows"],
             selector=vm.Slider(
                 title="Number of Rows",
