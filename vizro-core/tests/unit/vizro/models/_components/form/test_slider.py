@@ -13,7 +13,6 @@ import vizro.models as vm
 def expected_slider():
     return html.Div(
         [
-            dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
                     dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
@@ -31,7 +30,6 @@ def expected_slider():
                                 persistence_type="session",
                                 className="slider-text-input-field",
                             ),
-                            dcc.Store(id="slider_id_input_store", storage_type="session"),
                         ],
                         className="slider-text-input-container",
                     ),
@@ -58,7 +56,6 @@ def expected_slider():
 def expected_slider_extra():
     return html.Div(
         [
-            dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
                     dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
@@ -76,7 +73,6 @@ def expected_slider_extra():
                                 persistence_type="session",
                                 className="slider-text-input-field",
                             ),
-                            dcc.Store(id="slider_id_input_store", storage_type="session"),
                         ],
                         className="slider-text-input-container",
                     ),
@@ -113,7 +109,6 @@ def expected_slider_with_description():
     ]
     return html.Div(
         [
-            dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
                     dbc.Label(
@@ -134,7 +129,6 @@ def expected_slider_with_description():
                                 persistence_type="session",
                                 className="slider-text-input-field",
                             ),
-                            dcc.Store(id="slider_id_input_store", storage_type="session"),
                         ],
                         className="slider-text-input-container",
                     ),

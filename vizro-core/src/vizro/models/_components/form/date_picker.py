@@ -102,7 +102,7 @@ class DatePicker(VizroBaseModel):
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
 
-    def __call__(self, min, max, current_value=None):
+    def __call__(self, min, max):
         # TODO: Refactor value calculation logic after the Dash persistence bug is fixed and "Select All" PR is merged.
         #  The underlying component's value calculation will need to account for:
         #  - Changes introduced by Pydantic V2.
