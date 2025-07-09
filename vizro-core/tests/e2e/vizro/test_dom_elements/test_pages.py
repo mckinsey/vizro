@@ -28,7 +28,7 @@ def test_active_accordion(dash_br):
     dash_br.multiple_click(nav_card_link_path(href=f"/{cnst.DATEPICKER_PAGE}"), 1)
     graph_load_waiter(dash_br)
     dash_br.wait_for_text_to_equal(page_title_path(), cnst.DATEPICKER_PAGE)
-    check_accordion_active(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION.upper())
+    check_accordion_active(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
 
 
 def test_404_page(dash_br):
