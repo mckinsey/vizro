@@ -63,7 +63,7 @@ class TestAccordionBuild:
                             dbc.NavLink(children="Page 1", active="exact", href="/"),
                             dbc.NavLink(children="Page 2", active="exact", href="/page-2"),
                         ],
-                        title="GROUP",
+                        title="Group",
                         item_id="Group",
                     )
                 ],
@@ -77,12 +77,12 @@ class TestAccordionBuild:
                 children=[
                     dbc.AccordionItem(
                         children=[dbc.NavLink(children="Page 1", active="exact", href="/")],
-                        title="GROUP 1",
+                        title="Group 1",
                         item_id="Group 1",
                     ),
                     dbc.AccordionItem(
                         children=[dbc.NavLink(children="Page 2", active="exact", href="/page-2")],
-                        title="GROUP 2",
+                        title="Group 2",
                         item_id="Group 2",
                     ),
                 ],
@@ -100,10 +100,10 @@ class TestAccordionBuild:
                             dbc.NavLink(children="Page 2", active="exact", href="/page-2"),
                         ],
                         title=ACCORDION_DEFAULT_TITLE,
-                        item_id="SELECT PAGE",
+                        item_id="Select Page",
                     )
                 ],
-                active_item="SELECT PAGE",
+                active_item="Select Page",
                 **common_args,
             ),
         ),
