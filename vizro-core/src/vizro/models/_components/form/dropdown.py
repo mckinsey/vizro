@@ -3,6 +3,7 @@ from datetime import date
 from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
@@ -212,7 +213,43 @@ class Dropdown(VizroBaseModel):
             _, default_value = get_dict_options_and_default(options=self.options, multi=self.multi)
             self.value = default_value
 
-        return self.__call__(self.options)
+        if self.multi:
+            clientside_callback(
+                ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
+                output=[
+                    Output(f"{self.id}_select_all", "value"),
+                    Output(self.id, "value", allow_duplicate=True),
+                ],
+                inputs=[
+                    Input(self.id, "value"),
+                    State(self.id, "options"),
+                ],
+                prevent_initial_call="initial_duplicate",
+            )
+
+        placeholder_defaults = {
+            "id": self.id,
+            "options": self.value if self.multi else [self.value],
+            "value": self.value,
+            "persistence": True,
+            "persistence_type": "session",
+        }
+        placeholder_component = dcc.Checklist(**placeholder_defaults) if self.multi else dbc.RadioItems(**placeholder_defaults)
+
+        description = self.description.build().children if self.description else [None]
+        return html.Div(
+            children=[
+                dbc.Label(
+                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
+                ),
+                placeholder_component,
+                html.Div(id="fake_dropdown-placeholder", style={"display": "none"}, children=[
+                    dcc.Dropdown(id=f"{self.id}_select_all", value=False)
+                ]),
+            ]
+        )
+
+        # return self.__call__(self.options)
 
     @_log_call
     def build(self):
