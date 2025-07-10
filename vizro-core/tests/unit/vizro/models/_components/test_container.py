@@ -276,7 +276,11 @@ class TestContainerBuildMethod:
         result = vm.Container(
             id="container",
             components=[vm.Button()],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(id="dropdown-id"))],
+            controls=[
+                vm.Filter(
+                    column="species", selector=vm.RadioItems(id="radio-items-id", options=["A", "B", "C"], value="A")
+                )
+            ],
         ).build()
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
@@ -289,4 +293,4 @@ class TestContainerBuildMethod:
             ),
             keys_to_strip={"children"},
         )
-        assert_component_equal(result["dropdown-id"], dcc.Dropdown(), keys_to_strip=STRIP_ALL)
+        assert_component_equal(result["radio-items-id"], dbc.RadioItems(), keys_to_strip=STRIP_ALL)

@@ -1,7 +1,7 @@
 import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import check_graph_is_loaded, check_slider_value
-from e2e.vizro.navigation import page_select, select_dropdown_value
+from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
 from e2e.vizro.paths import categorical_components_value_path, graph_axis_value_path, slider_value_path
 
 
@@ -12,7 +12,8 @@ def test_dropdown(dash_br):
     )
 
     # select 'setosa'
-    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS)
+    clear_dropdown(dash_br, cnst.DROPDOWN_INSIDE_CONTAINERS)
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS, value="setosa")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
 
 

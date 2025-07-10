@@ -57,6 +57,10 @@ class TestButtonInstantiation:
         with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
             vm.Button(variant="test")
 
+    def test_invalid_text(self):
+        with pytest.raises(ValidationError, match="String should have at least 1 character"):
+            vm.Button(text="")
+
 
 class TestBuildMethod:
     def test_button_build(self):
