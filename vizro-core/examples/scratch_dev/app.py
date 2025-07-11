@@ -108,11 +108,43 @@ dropdown_url = vm.Page(
     ],
 )
 
+
+page_1637_bug_ticket = vm.Page(
+    title="1637 Bug Ticket",
+    components=[
+        vm.Graph(
+            id="page_4_graph_1",
+            figure=px.scatter(
+                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+        vm.Graph(
+            id="page_4_graph_2",
+            figure=px.scatter(
+                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+        vm.Parameter(
+            targets=["page_4_graph_1.data_frame.number_of_rows"],
+            selector=vm.Slider(
+                title="Number of Rows",
+                min=10,
+                max=150,
+            ),
+        ),
+    ],
+)
+
+
 dashboard = vm.Dashboard(
     pages=[
         dropdown_dynamic_data_bug,
         dropdown_preset_value,
         dropdown_url,
+        page_1637_bug_ticket,
     ]
 )
 
