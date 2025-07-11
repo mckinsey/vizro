@@ -4,6 +4,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+from urllib.parse import parse_qs, urlencode, urlparse
 
 import pandas as pd
 import pytest
@@ -105,5 +106,18 @@ def decode_url_params(encoded_map, apply_on_keys=None):
                 json_str = binary_data.decode("utf-8")
                 decoded_map[key] = json.loads(json_str)
             except Exception as e:
-                print(f"Failed to decode URL parameter: {key}, {val} - {e}")
+                print(f"Failed to decode URL parameter: {key}, {val} - {e}")  # noqa
     return decoded_map
+
+
+def get_url_params(driver):
+    current_url = driver.driver.current_url
+    parsed_url = urlparse(current_url)
+    params_dict = parse_qs(parsed_url.query)
+    # Convert single-value lists to actual values
+    params_dict_simple = {k: v[0] if len(v) == 1 else v for k, v in params_dict.items()}
+    return params_dict_simple
+
+
+def param_to_url(decoded_map, apply_on_keys):
+    return urlencode(encode_url_params(decoded_map=decoded_map, apply_on_keys=apply_on_keys), doseq=True)

@@ -34,6 +34,7 @@ RANGE_SLIDER_FILTER_FILTERS_PAGE = "range slider-filters-page"
 FILTERED_CSV = "scatter.csv"
 FILTERED_XLSX = "scatter.xlsx"
 FILTERED_BASE_CSV = "tests/tests_utils/e2e/vizro/files/filtered_scatter_base.csv"
+FILTERS_PAGE_APPLY_ON_KEYS = [DROPDOWN_FILTER_CONTROL_ID, RADIO_ITEMS_FILTER_CONTROL_ID]
 
 FILTERS_INSIDE_CONTAINERS_PAGE = "filters inside containers page (tabs + containers)"
 FILTERS_INSIDE_CONTAINERS_PAGE_PATH = "/filters-inside-containers-page-tabs--containers"
