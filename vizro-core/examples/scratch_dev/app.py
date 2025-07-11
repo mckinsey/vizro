@@ -1,13 +1,20 @@
 """Dev app to try things out."""
 
 """ FOR REVIEWERS:
-To reproduce the bug on the main:
+To reproduce the #1494 bug on the main:
 1. Open the first page
 2. Set the number of rows to 150 (bottom slider)
 3. Select ["setosa", "versicolor"] in the multi-select dropdown
 4. Select "versicolor" in the single-select dropdown
 5. Refresh the page -> The value is unexpectedly reset to "setosa" in the multi-select dropdown and clear
    in the single-select dropdown. The value should remain the same as it was before the refresh.
+
+To reproduce the #1637 bug on the main:
+1. Open the fourth page
+2. Set the number of rows to 150 (bottom slider)
+3. Select ["setosa", "versicolor"] in the multi-select dropdown
+4. Refresh the page -> The dropdown value is incorrect, and there's also one more http request that happened after the
+   OPL (see the browser devtools console).
 """
 
 import vizro.plotly.express as px
