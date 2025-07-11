@@ -106,10 +106,14 @@ parameters_page = vm.Page(
             ),
         ),
         vm.Parameter(
+            id=cnst.SLIDER_PARAM_CONTROL_ID,
+            show_in_url=True,
             targets=[f"{cnst.BAR_GRAPH_ID}.opacity"],
             selector=vm.Slider(id=cnst.SLIDER_PARAMETERS, min=0, max=1, value=0.2, step=0.2, title="Bubble opacity"),
         ),
         vm.Parameter(
+            id=cnst.RANGE_SLIDER_PARAM_CONTROL_ID,
+            show_in_url=True,
             targets=[f"{cnst.HISTOGRAM_GRAPH_ID}.range_x"],
             selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_PARAMETERS, min=4, max=8, step=1.0, title="Range X Histogram"),
         ),
