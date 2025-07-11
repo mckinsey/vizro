@@ -3,7 +3,6 @@ from datetime import date
 from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
@@ -147,6 +146,7 @@ class Dropdown(VizroBaseModel):
         value = self.value if self.value is not None else default_value
 
         if self.multi:
+            self._define_clientside_callback()
             value = value if isinstance(value, list) else [value]  # type: ignore[assignment]
             dict_options = [
                 {
@@ -165,21 +165,7 @@ class Dropdown(VizroBaseModel):
                 *dict_options,
             ]
 
-            clientside_callback(
-                ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
-                output=[
-                    Output(f"{self.id}_select_all", "value"),
-                    Output(self.id, "value", allow_duplicate=True),
-                ],
-                inputs=[
-                    Input(self.id, "value"),
-                    State(self.id, "options"),
-                ],
-                prevent_initial_call="initial_duplicate",
-            )
-
         description = self.description.build().children if self.description else [None]
-
         defaults = {
             "id": self.id,
             "options": dict_options,
@@ -213,28 +199,21 @@ class Dropdown(VizroBaseModel):
             _, default_value = get_dict_options_and_default(options=self.options, multi=self.multi)
             self.value = default_value
 
+        # The rest of the method is added instead of calling and returning the content from the __call__ method
+        # because placeholder for the Dropdown can't be the dropdown itself. The reason is that the Dropdown value can
+        # be unexpectedly changed when the new options are added. This is developed as the dash feature
+        # https://github.com/plotly/dash/pull/1970.
         if self.multi:
-            clientside_callback(
-                ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
-                output=[
-                    Output(f"{self.id}_select_all", "value"),
-                    Output(self.id, "value", allow_duplicate=True),
-                ],
-                inputs=[
-                    Input(self.id, "value"),
-                    State(self.id, "options"),
-                ],
-                prevent_initial_call="initial_duplicate",
-            )
-
-        placeholder_defaults = {
-            "id": self.id,
-            "options": self.value if self.multi else [self.value],
-            "value": self.value,
-            "persistence": True,
-            "persistence_type": "session",
-        }
-        placeholder_component = dcc.Checklist(**placeholder_defaults) if self.multi else dbc.RadioItems(**placeholder_defaults)
+            # Add the clientside callback as the callback has to be defined in the page.build process.
+            self._define_clientside_callback()
+            # hidden_select_all_dropdown is needed to ensure that clientside callback doesn't raise the no output error.
+            hidden_select_all_dropdown = [dcc.Dropdown(id=f"{self.id}_select_all", style={"display": "none"})]
+            placeholder_model = dcc.Checklist
+            placeholder_options = self.value
+        else:
+            hidden_select_all_dropdown = [None]
+            placeholder_model = dbc.RadioItems
+            placeholder_options = [self.value]  # type: ignore[assignment]
 
         description = self.description.build().children if self.description else [None]
         return html.Div(
@@ -242,15 +221,32 @@ class Dropdown(VizroBaseModel):
                 dbc.Label(
                     children=[html.Span(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
                 ),
-                placeholder_component,
-                html.Div(id="fake_dropdown-placeholder", style={"display": "none"}, children=[
-                    dcc.Dropdown(id=f"{self.id}_select_all", value=False)
-                ]),
+                placeholder_model(
+                    id=self.id,
+                    options=placeholder_options,
+                    value=self.value,
+                    persistence=True,
+                    persistence_type="session",
+                ),
+                *hidden_select_all_dropdown,
             ]
         )
-
-        # return self.__call__(self.options)
 
     @_log_call
     def build(self):
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
+
+    def _define_clientside_callback(self):
+        """Define the clientside callbacks in the page build phase responsible for handling the select_all."""
+        clientside_callback(
+            ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
+            output=[
+                Output(f"{self.id}_select_all", "value"),
+                Output(self.id, "value", allow_duplicate=True),
+            ],
+            inputs=[
+                Input(self.id, "value"),
+                State(self.id, "options"),
+            ],
+            prevent_initial_call="initial_duplicate",
+        )

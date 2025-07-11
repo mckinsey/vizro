@@ -21,8 +21,6 @@ class _on_page_load(_AbstractAction):
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
 
         """
-        # import time
-        # time.sleep(2)
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
