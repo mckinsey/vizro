@@ -60,8 +60,11 @@ DROPDOWN_PARAMETERS_ONE = "dropdown parameters one"
 DROPDOWN_PARAMETERS_TWO = "dropdown parameters two"
 RADIO_ITEMS_PARAMETERS_ONE = "radio items parameters one"
 RADIO_ITEMS_PARAMETERS_TWO = "radio items parameters two"
+SLIDER_PARAM_CONTROL_ID = "slider_param_control_id"
 SLIDER_PARAMETERS = "slider parameters"
+RANGE_SLIDER_PARAM_CONTROL_ID = "range_slider_param_control_id"
 RANGE_SLIDER_PARAMETERS = "range slider parameters"
+PARAMS_PAGE_APPLY_ON_KEYS = [SLIDER_PARAM_CONTROL_ID, RANGE_SLIDER_PARAM_CONTROL_ID]
 
 PARAMETERS_MULTI_PAGE = "parameters_p@ge! (multi selectors)"
 PARAMETERS_MULTI_PAGE_PATH = "/parameters_pge-multi-selectors"
