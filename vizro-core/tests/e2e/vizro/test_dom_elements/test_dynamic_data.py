@@ -90,6 +90,7 @@ def test_dropdown_values_not_disappear(dash_br):
     dash_br.driver.refresh()
     # Open dropdown menu
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    # Check that all values are present and only "setosa" selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
@@ -97,9 +98,12 @@ def test_dropdown_values_not_disappear(dash_br):
         expected_selected_options=["setosa"],
         expected_unselected_options=["SelectAll", "versicolor", "virginica"],
     )
+    # Choose "versicolor" and "virginica"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
+    # Open dropdown menu
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    # Check that all values are selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
@@ -108,7 +112,9 @@ def test_dropdown_values_not_disappear(dash_br):
         expected_unselected_options=[],
     )
     dash_br.driver.refresh()
+    # Open dropdown menu
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    # Check that all values are still selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
