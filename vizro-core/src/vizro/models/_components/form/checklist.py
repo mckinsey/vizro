@@ -29,6 +29,7 @@ class Checklist(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
+        show_select_all (Optional[bool]): Optional flag to include 'Select All' option. Defaults to True.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
@@ -47,6 +48,7 @@ class Checklist(VizroBaseModel):
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
+    show_select_all: bool = Field(default=True, description="Boolean flag to show 'Select All' option.")
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
@@ -96,23 +98,22 @@ class Checklist(VizroBaseModel):
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
-        clientside_callback(
-            ClientsideFunction(namespace="checklist", function_name="update_checklist_select_all"),
-            output=[
-                Output(f"{self.id}_select_all", "value"),
-                Output(self.id, "value", allow_duplicate=True),
-            ],
-            inputs=[
-                Input(f"{self.id}_select_all", "value"),
-                Input(self.id, "value"),
-                State(self.id, "options"),
-                State(f"{self.id}_select_all", "id"),
-            ],
-            prevent_initial_call="initial_duplicate",
-        )
         dict_options, default_value = get_dict_options_and_default(options=options, multi=True)
         value = self.value if self.value is not None else default_value
         description = self.description.build().children if self.description else [None]
+
+        if self.show_select_all:
+            # Add the clientside callback only if show_select_all is True
+            self._define_clientside_callback()
+            select_all_checkbox = dbc.Checkbox(
+                id=f"{self.id}_select_all",
+                value=len(value) == len(dict_options),  # type: ignore[arg-type]
+                label="Select All",
+                persistence=True,
+                persistence_type="session",
+            )
+        else:
+            select_all_checkbox = None
 
         defaults = {
             "id": self.id,
@@ -133,13 +134,7 @@ class Checklist(VizroBaseModel):
                 else None,
                 html.Div(
                     children=[
-                        dbc.Checkbox(
-                            id=f"{self.id}_select_all",
-                            value=len(value) == len(dict_options),  # type: ignore[arg-type]
-                            label="Select All",
-                            persistence=True,
-                            persistence_type="session",
-                        ),
+                        select_all_checkbox,
                         dbc.Checklist(**(defaults | self.extra)),
                     ],
                     className="checklist-inline" if self._in_container else None,
@@ -157,3 +152,20 @@ class Checklist(VizroBaseModel):
     @_log_call
     def build(self):
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
+
+    def _define_clientside_callback(self):
+        """Define the clientside callbacks in the page build phase responsible for handling the select_all."""
+        clientside_callback(
+            ClientsideFunction(namespace="checklist", function_name="update_checklist_select_all"),
+            output=[
+                Output(f"{self.id}_select_all", "value"),
+                Output(self.id, "value", allow_duplicate=True),
+            ],
+            inputs=[
+                Input(f"{self.id}_select_all", "value"),
+                Input(self.id, "value"),
+                State(self.id, "options"),
+                State(f"{self.id}_select_all", "id"),
+            ],
+            prevent_initial_call="initial_duplicate",
+        )
