@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enabled `show_select_all` argument in `vm.Checklist`, which enables users to remove 'Select All' option. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Enabled `show_select_all` argument in `vm.Checklist`, which enables users to remove 'Select All' option. ([#1283](https://github.com/mckinsey/vizro/pull/1283))
 
 
 <!--
