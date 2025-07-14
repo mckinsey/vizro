@@ -86,7 +86,7 @@ To add a `Figure` to your page:
                   data_frame: tips
                   value_column: tip
                   value_format: ${value:.2f}
-                  icon: shopping_cart
+                  icon: Shopping Cart
                   title: Average Price
                 type: figure
             controls:
@@ -238,7 +238,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
                   data_frame: df_kpi
                   value_column: Actual
                   title: KPI with icon
-                  icon: shopping_cart
+                  icon: Shopping Cart
                 type: figure
               - figure:
                   _target_: kpi_card_reference
@@ -270,7 +270,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
                   value_column: Actual
                   reference_column: Reference
                   title: KPI reference with icon
-                  icon: shopping_cart
+                  icon: Shopping Cart
                 type: figure
               - figure:
                   _target_: kpi_card_reference
