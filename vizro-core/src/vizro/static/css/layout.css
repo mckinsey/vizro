@@ -65,7 +65,9 @@
   justify-content: flex-end;
 }
 
-#header-right, #header-left, #header-custom {
+#header-right,
+#header-left,
+#header-custom {
   align-items: center;
   display: flex;
   gap: 8px;
@@ -149,7 +151,6 @@
   display: inline;
 }
 
-
 #collapse-icon.material-symbols-outlined {
   background-color: var(--left-side-bg);
   border: 1px solid var(--border-subtleAlpha01);
@@ -207,15 +208,26 @@ Current logic:
   }
 
   #header,
-  #right-side,
-  #left-side {
+  #right-side {
     zoom: 80%;
+  }
+}
+
+/* Apply specific styles for landscape orientation on small screen heights */
+@media screen and (height <= 576px) and (orientation: landscape) {
+  #nav-control-panel {
+    width: 260px;
+    font-size: 12px;
   }
 }
 
 @media screen and (width <= 576px) and (orientation: portrait) {
   body:has(#collapse-left-side.show) {
     overflow: hidden;
+  }
+
+  #nav-control-panel {
+    width: 324px;
   }
 
   #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
