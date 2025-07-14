@@ -263,6 +263,57 @@ def test_dropdown_filter_select_all_value(dash_br):
     )
 
 
+def test_bug(dash_br):
+    # Select page and wait until it's loaded
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    # Open dropdown menu
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    # Check that all values are selected
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa"],
+        expected_unselected_options=[],
+    )
+    # Add "versicolor" and "virginica" from the dynamic data
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=10)
+    dynamic_filters_data_config_manipulation(key="virginica", set_value=15)
+    dash_br.driver.refresh()
+    # Open dropdown menu
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=False,
+        expected_selected_options=["setosa"],
+        expected_unselected_options=["SelectAll", "versicolor", "virginica"],
+    )
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor", "virginica"],
+        expected_unselected_options=[],
+    )
+    dash_br.driver.refresh()
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor", "virginica"],
+        expected_unselected_options=[],
+    )
+
+
 @rewrite_dynamic_filters_data_config
 def test_dropdown_filter(dash_br):
     """Initial selected value is 'setosa'."""
