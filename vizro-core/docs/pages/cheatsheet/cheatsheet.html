@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vizro - Cheat Sheet</title>
+    <title>Vizro - Cheatsheet</title>
     <link rel="stylesheet" href="assets/css/styles.css" />
     <script src="assets/js/script.js" defer></script>
   </head>
   <body>
     <div class="container">
       <header class="header">
-        <h1>Vizro - Cheat Sheet</h1>
-        <div class="subtitle">Essential Commands & Syntax Reference</div>
+        <h1>Vizro - Cheatsheet</h1>
+        <div class="subtitle">Essential commands & syntax reference</div>
       </header>
 
       <!-- First Row: 2 Columns -->
@@ -19,7 +19,7 @@
         <!-- Basic Dashboard Section -->
         <section class="section">
           <div class="section-header">
-            <h2 class="section-title">Basic Dashboard</h2>
+            <h2 class="section-title">Basic dashboard</h2>
           </div>
 
           <div class="subsection">
@@ -39,9 +39,9 @@
           </div>
 
           <div class="subsection">
-            <div class="subsection-title">Simple Dashboard</div>
+            <div class="subsection-title">Simple dashboard</div>
             <div class="subsection-description">
-              Creates a complete dashboard with pages, components, and runs the
+              Create a complete dashboard with pages & components, and run the
               application.
             </div>
             <div class="code-block-container">
@@ -68,13 +68,13 @@ Vizro().build(dashboard).run()</code></pre>
         <!-- Basic Page Section -->
         <section class="section">
           <div class="section-header">
-            <h2 class="section-title">Basic Page</h2>
+            <h2 class="section-title">Basic page</h2>
           </div>
 
           <div class="subsection">
-            <div class="subsection-title">Page Structure</div>
+            <div class="subsection-title">Page structure</div>
             <div class="subsection-description">
-              Defines a single page with title, components, and layout
+              Define a single page with title, components, and layout
               configuration.
             </div>
             <div class="code-block-container">
@@ -93,7 +93,7 @@ page = vm.Page(
           </div>
 
           <div class="subsection">
-            <div class="subsection-title">Page Properties</div>
+            <div class="subsection-title">Page properties</div>
             <div class="subsection-description">
               Configure page metadata, routing, and display options.
             </div>
@@ -108,7 +108,7 @@ page = vm.Page(
             <div class="example-row">
               <code class="code-inline">description="Description"</code>
               <span class="description"
-                >Adds tooltip with icon & meta tags.</span
+                >Add tooltip with icon & meta tags.</span
               >
             </div>
           </div>
@@ -302,7 +302,7 @@ container = vm.Container(
     ]
 )
 
-# Using Container within Tabs
+# Using ontainer within Tabs
 tabs = vm.Tabs(
     tabs=[
         vm.Container(title="Overview", components=[vm.Card(text="Overview")]),
@@ -325,7 +325,7 @@ tabs = vm.Tabs(
                 >
               </div>
               <div class="subsection-description">
-                Display kpi cards or any custom figures.
+                Display KPI cards or any custom figures.
               </div>
               <div class="code-block-container">
                 <div class="code-block">
@@ -373,7 +373,7 @@ text = vm.Text(
           </div>
 
           <div class="highlight-box">
-            <strong>Component Tips:</strong>
+            <strong>Component tips:</strong>
             <br />• All components can be styled with custom CSS classes and
             IDs. <br />• All arguments of underlying dash components can be
             entered via `extra` argument.
@@ -645,13 +645,13 @@ parameter = vm.Parameter(
       <div class="main-grid">
         <section class="section full-width">
           <div class="section-header">
-            <h2 class="section-title">Page Layout & Navigation</h2>
+            <h2 class="section-title">Page layout & navigation</h2>
           </div>
 
           <div class="two-column-grid">
             <div>
               <div class="subsection">
-                <div class="subsection-title">Multi-Page Dashboard</div>
+                <div class="subsection-title">Multi-page dashboard</div>
                 <div class="subsection-description">
                   Create dashboards with multiple pages and automatic navigation
                   between them.
@@ -697,7 +697,7 @@ dashboard = vm.Dashboard(title="My dashboard",pages=[page_1, page_2, page_3])</c
                 <div class="subsection-description">
                   Configure custom navigation to group pages together and
                   customize how they appear in your navigation by specifying
-                  navigation model.
+                  a navigation model.
                 </div>
                 <div class="navigation-content">
                   <div class="navigation-code">
@@ -739,13 +739,13 @@ dashboard = vm.Dashboard(title="My dashboard",pages=[page_1, page_2, page_3])</c
                       />
                     </div>
                     <div class="highlight-box">
-                      <strong>Navigation Tips:</strong>
+                      <strong>Navigation tips:</strong>
                       <br />• To include only some of your dashboard pages in
                       your navigation then list them in the pages argument of
-                      the vm.Navigation model. <br />• Alter the icons used by
+                      the <code>vm.Navigation</code> model. <br />• Alter the icons used by
                       specifying the name of the icon in the Google Material
                       icons library. <br />• Group your pages together by
-                      specifying pages as a dictionary.
+                      specifying them as a dictionary.
                     </div>
                   </div>
                 </div>
@@ -821,10 +821,10 @@ dashboard = vm.Dashboard(title="My dashboard",pages=[page_1, page_2, page_3])</c
                 </div>
               </div>
               <div class="highlight-box">
-                <strong>Layout Tips:</strong>
+                <strong>Layout tips:</strong>
                 <br />• Grid numbers match component positions <br />• Add empty
-                spaces within grid layout by specifying -1 e.g grid=[[0], [1],
-                [-1]] <br />• Control the scroll behavior by specifying
+                spaces within grid layout by specifying -1 e.g <code>grid=[[0], [1],
+                [-1]]</code> <br />• Control the scroll behavior by specifying
                 "row_min_height" and "col_min_width"
               </div>
 
@@ -836,7 +836,7 @@ dashboard = vm.Dashboard(title="My dashboard",pages=[page_1, page_2, page_3])</c
                   >
                 </div>
                 <div class="subsection-description">
-                  Achieve Fflexible layout system for dynamic component
+                  Achieve flexible layout system for dynamic component
                   arrangement and responsive behavior with flex layout.
                 </div>
                 <div class="code-block-container">
@@ -851,7 +851,7 @@ dashboard = vm.Dashboard(title="My dashboard",pages=[page_1, page_2, page_3])</c
                 </div>
                 <div class="highlight-box">
                   <strong>Flex layout tips:</strong>
-                  <br />• To wrap components into multiple lines use "wrap=True"
+                  <br />• To wrap components into multiple lines use <code>"wrap=True"</code>
                   <br />• Control the spacing between components in the flex
                   container by using "gap" argument
                 </div>
@@ -866,11 +866,16 @@ dashboard = vm.Dashboard(title="My dashboard",pages=[page_1, page_2, page_3])</c
         <!-- Data Management Section -->
         <section class="section wide-section">
           <div class="section-header">
-            <h2 class="section-title">Data Management</h2>
+            <h2 class="section-title">
+              <a
+                href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data/"
+                >Data management</a
+              >
+            </h2>
           </div>
           <div class="components-grid-data-management">
             <div class="subsection">
-              <div class="subsection-title">Data Loading</div>
+              <div class="subsection-title">Data loading</div>
               <div class="subsection-description">
                 Load and manage data from various sources using the centralized
                 data manager.
@@ -900,12 +905,7 @@ vm.Graph(
             </div>
 
             <div class="subsection">
-              <div class="subsection-title">
-                <a
-                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#dynamic-data"
-                  >Dynamic data</a
-                >
-              </div>
+              <div class="subsection-title">Dynamic data</div>
               <div class="subsection-description">
                 A dynamic data source is a Python function that returns a pandas
                 DataFrame and can be re-executed to refresh dashboard data
@@ -940,7 +940,7 @@ vm.Graph(
             </div>
           </div>
           <div class="highlight-box">
-            <strong>Data Integration:</strong>
+            <strong>Data integration:</strong>
             <br />• You can give arguments to your dynamic data loading function
             that can be modified from the dashboard. <br />• SQL databases via
             pandas <br />• Kedro Data Catalog integration
@@ -965,7 +965,7 @@ vm.Graph(
               <div class="subsection">
                 <div class="subsection-title">Export data</div>
                 <div class="subsection-description">
-                  To enable downloading data, you can add the export_data action
+                  To enable downloading data, you can add the <code>export_data</code> action
                   function to the Button component.
                 </div>
                 <div class="code-block-container">
@@ -1026,7 +1026,7 @@ actions=[vm.Action(
                 <div class="subsection-title">
                   <a
                     href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-charts/"
-                    >Custom Charts</a
+                    >Custom charts</a
                   >
                 </div>
                 <div class="subsection-description">
@@ -1133,7 +1133,7 @@ vm.Action(
                 <div class="subsection-title">
                   <a
                     href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-tables/"
-                    >Custom Table</a
+                    >Custom table</a
                   >
                 </div>
                 <div class="subsection-description">
@@ -1184,11 +1184,11 @@ vm.AgGrid(
                 <div class="subsection-title">
                   <a
                     href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-figures/"
-                    >Custom Figure</a
+                    >Custom figure</a
                   >
                 </div>
                 <div class="subsection-description">
-                  Design custom kpi cards or other figures with complex layouts
+                  Design custom KPI cards or other figures with complex layouts
                   and specialized visualizations.
                 </div>
                 <div class="code-block-container">
@@ -1224,16 +1224,16 @@ vm.Figure(
           </div>
 
           <div class="highlight-box">
-            <strong>Custom Component Tips:</strong>
+            <strong>Custom component Tips:</strong>
             <br />• Extend VizroBaseModel for reusable custom components <br />•
-            Use standard plotly/dash components within custom functions <br />•
+            Use standard plotly/Dash components within custom functions <br />•
             Register custom components with Vizro's component registry
           </div>
         </section>
       </div>
 
       <footer class="footer">
-        <div>Vizro Cheat Sheet | Low-code dashboards with Python</div>
+        <div>Vizro cheatsheet | Low-code dashboards with Python</div>
         <div>Print-friendly layout • Optimized for quick reference</div>
       </footer>
     </div>
