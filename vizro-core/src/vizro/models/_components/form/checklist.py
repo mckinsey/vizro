@@ -48,7 +48,11 @@ class Checklist(VizroBaseModel):
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
-    show_select_all: bool = Field(default=True, description="Boolean flag to show 'Select All' option.")
+    show_select_all: bool = Field(
+        default=True,
+        description="Whether to display the 'Select All' option that allows users to select or deselect all available "
+        "options with a single click.",
+    )
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
