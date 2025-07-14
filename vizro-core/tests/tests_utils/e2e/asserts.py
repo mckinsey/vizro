@@ -81,6 +81,7 @@ def assert_files_equal(base_file, exported_file):
 
 
 def encode_url_params(decoded_map, apply_on_keys=None):
+    """Code taken from comments in vizro-core/src/vizro/static/js/models/page.js file."""
     encoded_map = {}
     for key, value in decoded_map.items():
         if key in apply_on_keys:
@@ -94,6 +95,7 @@ def encode_url_params(decoded_map, apply_on_keys=None):
 
 
 def decode_url_params(encoded_map, apply_on_keys=None):
+    """Code taken from comments in vizro-core/src/vizro/static/js/models/page.js file."""
     decoded_map = {}
     for key, val in encoded_map.items():
         if val.startswith("b64_") and key in apply_on_keys:

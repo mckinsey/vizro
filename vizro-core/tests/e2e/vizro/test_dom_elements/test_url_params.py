@@ -15,8 +15,8 @@ def test_url_filters_encoding_and_page_refresh(dash_br):
     dash_br.multiple_click(
         categorical_components_value_path(elem_id=cnst.RADIO_ITEMS_FILTER_FILTERS_PAGE, value=2), 1, delay=0.1
     )
-    selected_params = {cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"], cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor"}
     # check correct urls params
+    selected_params = {cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"], cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor"}
     enc_data = encode_url_params(selected_params, apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)
     url_params_dict = get_url_params(dash_br)
     assert_that(url_params_dict, equal_to(enc_data))
@@ -35,8 +35,8 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
     dash_br.multiple_click(
         categorical_components_value_path(elem_id=cnst.RADIO_ITEMS_FILTER_FILTERS_PAGE, value=2), 1, delay=0.1
     )
-    selected_params = {cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"], cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor"}
     # check correct urls params
+    selected_params = {cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"], cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor"}
     url_params_dict = get_url_params(dash_br)
     dec_data = decode_url_params(url_params_dict, apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)
     assert_that(dec_data, equal_to(selected_params))
@@ -50,141 +50,108 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
 
 
 @pytest.mark.parametrize(
-    "dash_br_driver, expected_params, radio_items_values_status, dropdown_selected_options, "
-    "dropdown_unselected_options",
+    "dash_br_driver, expected_decoded_map, selected_radio_items_values, dropdown_options",
     [
         (
             {
-                "port": cnst.DEFAULT_PORT,
                 "path": f"{cnst.FILTERS_PAGE_PATH}?"
                 f"{param_to_url(decoded_map={cnst.DROPDOWN_FILTER_CONTROL_ID: ['setosa', 'versicolor', 'virginica']}, apply_on_keys=[cnst.DROPDOWN_FILTER_CONTROL_ID])}",  # noqa
             },
-            encode_url_params(
-                decoded_map={
-                    cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
-                    cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
-                },
-                apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS,
-            ),
-            [
-                {"value": 1, "selected": True, "value_name": "setosa"},
-                {"value": 2, "selected": False, "value_name": "versicolor"},
-                {"value": 3, "selected": False, "value_name": "virginica"},
-            ],
-            ["setosa", "versicolor", "virginica"],
-            [],
+            {
+                cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
+                cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
+            },
+            ["setosa"],
+            [["setosa", "versicolor", "virginica"], []],
         ),
         (
             {
-                "port": cnst.DEFAULT_PORT,
                 "path": f"{cnst.FILTERS_PAGE_PATH}?"
                 f"{param_to_url(decoded_map={cnst.DROPDOWN_FILTER_CONTROL_ID: ['versicolor', 'virginica'], cnst.RADIO_ITEMS_FILTER_CONTROL_ID: 'versicolor'}, apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)}",  # noqa
             },
-            encode_url_params(
-                decoded_map={
-                    cnst.DROPDOWN_FILTER_CONTROL_ID: ["versicolor", "virginica"],
-                    cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor",
-                },
-                apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS,
-            ),
-            [
-                {"value": 1, "selected": False, "value_name": "setosa"},
-                {"value": 2, "selected": True, "value_name": "versicolor"},
-                {"value": 3, "selected": False, "value_name": "virginica"},
-            ],
-            ["versicolor", "virginica"],
-            ["SelectAll", "setosa"],
+            {
+                cnst.DROPDOWN_FILTER_CONTROL_ID: ["versicolor", "virginica"],
+                cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor",
+            },
+            ["versicolor"],
+            [["versicolor", "virginica"], ["SelectAll", "setosa"]],
         ),
         (
             {
-                "port": cnst.DEFAULT_PORT,
                 "path": f"{cnst.FILTERS_PAGE_PATH}?{cnst.RADIO_ITEMS_FILTER_CONTROL_ID}=b64_InZlcnNpY29sb",
             },  # invalid value
-            encode_url_params(
-                decoded_map={
-                    cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
-                    cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
-                },
-                apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS,
-            ),
-            [
-                {"value": 1, "selected": True, "value_name": "setosa"},
-                {"value": 2, "selected": False, "value_name": "versicolor"},
-                {"value": 3, "selected": False, "value_name": "virginica"},
-            ],
-            ["setosa", "versicolor", "virginica"],
-            [],
+            {
+                cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
+                cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
+            },
+            ["setosa"],
+            [["setosa", "versicolor", "virginica"], []],
         ),
         (
             {
-                "port": cnst.DEFAULT_PORT,
                 "path": f"{cnst.FILTERS_PAGE_PATH}?"
                 f"{cnst.DROPDOWN_FILTER_CONTROL_ID}=&{cnst.RADIO_ITEMS_FILTER_CONTROL_ID}=",
             },  # empty values
-            encode_url_params(
-                decoded_map={
-                    cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
-                    cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
-                },
-                apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS,
-            ),
-            [
-                {"value": 1, "selected": True, "value_name": "setosa"},
-                {"value": 2, "selected": False, "value_name": "versicolor"},
-                {"value": 3, "selected": False, "value_name": "virginica"},
-            ],
-            ["setosa", "versicolor", "virginica"],
-            [],
+            {
+                cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
+                cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
+            },
+            ["setosa"],
+            [["setosa", "versicolor", "virginica"], []],
         ),
         (
             {
-                "port": cnst.DEFAULT_PORT,
                 "path": f"{cnst.FILTERS_PAGE_PATH}?"
                 f"{cnst.DROPDOWN_FILTER_CONTROL_ID}=b64_WyJ2aXJnaW5pY2EiXQ&"  # ["virginica"]
                 f"{cnst.RADIO_ITEMS_FILTER_CONTROL_ID}=InZpcmdpbmljYSI",
             },  # valid + invalid values
-            encode_url_params(
-                decoded_map={
-                    cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"],
-                    cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
-                },
-                apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS,
-            ),
-            [
-                {"value": 1, "selected": True, "value_name": "setosa"},
-                {"value": 2, "selected": False, "value_name": "versicolor"},
-                {"value": 3, "selected": False, "value_name": "virginica"},
-            ],
-            ["virginica"],
-            ["SelectAll", "setosa", "versicolor"],
+            {
+                cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"],
+                cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
+            },
+            ["setosa"],
+            [["virginica"], ["SelectAll", "setosa", "versicolor"]],
         ),
     ],
     indirect=["dash_br_driver"],
     ids=[
         "only dropdown value in url",
-        "dropdown + radio_tems values in url",
+        "dropdown + radio_items values in url",
         "invalid value",
         "empty values",
         "valid + invalid values",
     ],
 )
-def test_different_url_parameters(
-    dash_br_driver, expected_params, radio_items_values_status, dropdown_selected_options, dropdown_unselected_options
-):
+def test_different_url_parameters(dash_br_driver, expected_decoded_map, selected_radio_items_values, dropdown_options):
     params_dict_simple = get_url_params(dash_br_driver)
-    assert_that(params_dict_simple, equal_to(expected_params))
-    # check that controls have correct values
+    assert_that(
+        params_dict_simple,
+        equal_to(encode_url_params(decoded_map=expected_decoded_map, apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)),
+    )
+    # radio_items values calculation
+    radio_items_values = [
+        {"value": 1, "selected": False, "value_name": "setosa"},
+        {"value": 2, "selected": False, "value_name": "versicolor"},
+        {"value": 3, "selected": False, "value_name": "virginica"},
+    ]
+    for item in radio_items_values:
+        if item["value_name"] in selected_radio_items_values:
+            item["selected"] = True
+        else:
+            item["selected"] = False
+    # check that radio_items control have correct values
     check_selected_categorical_component(
         dash_br_driver,
         component_id=cnst.RADIO_ITEMS_FILTER_FILTERS_PAGE,
-        options_value_status=radio_items_values_status,
+        options_value_status=radio_items_values,
     )
+    # check that dropdown control have correct values
     dash_br_driver.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br_driver,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        expected_selected_options=dropdown_selected_options,
-        expected_unselected_options=dropdown_unselected_options,
+        expected_selected_options=dropdown_options[0],
+        expected_unselected_options=dropdown_options[1],
     )
 
 
@@ -193,8 +160,8 @@ def test_url_params_encoding_and_page_refresh(dash_br):
     # select 0.6 for slider and [4, 7] for range_slider
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_PARAMETERS, value=4), 1, delay=0.1)
-    selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.4, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [4, 7]}
     # check correct urls params
+    selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.4, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [4, 7]}
     enc_data = encode_url_params(selected_params, apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
     url_params_dict = get_url_params(dash_br)
     assert_that(url_params_dict, equal_to(enc_data))
@@ -210,8 +177,8 @@ def test_url_params_decoding_and_navigate_to_page(dash_br):
     # select 0.8 for slider and [6, 8] for range_slider
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=5), 1)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_PARAMETERS, value=3), 1, delay=0.1)
-    selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.8, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [6, 8]}
     # check correct urls params
+    selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.8, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [6, 8]}
     url_params_dict = get_url_params(dash_br)
     dec_data = decode_url_params(url_params_dict, apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
     assert_that(dec_data, equal_to(selected_params))
