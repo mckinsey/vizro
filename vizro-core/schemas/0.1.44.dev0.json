@@ -383,7 +383,7 @@
         },
         "show_select_all": {
           "default": true,
-          "description": "Boolean flag to show 'Select All' option.",
+          "description": "Whether to display the 'Select All' option that allows users to select or deselect all available options with a single click.",
           "title": "Show Select All",
           "type": "boolean"
         },
