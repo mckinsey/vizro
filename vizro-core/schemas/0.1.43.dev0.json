@@ -899,7 +899,8 @@
                   "dropdown": "#/$defs/Dropdown",
                   "radio_items": "#/$defs/RadioItems",
                   "range_slider": "#/$defs/RangeSlider",
-                  "slider": "#/$defs/Slider"
+                  "slider": "#/$defs/Slider",
+                  "switch": "#/$defs/Switch"
                 },
                 "propertyName": "type"
               },
@@ -921,6 +922,9 @@
                 },
                 {
                   "$ref": "#/$defs/Slider"
+                },
+                {
+                  "$ref": "#/$defs/Switch"
                 }
               ]
             },
@@ -1527,7 +1531,8 @@
               "dropdown": "#/$defs/Dropdown",
               "radio_items": "#/$defs/RadioItems",
               "range_slider": "#/$defs/RangeSlider",
-              "slider": "#/$defs/Slider"
+              "slider": "#/$defs/Slider",
+              "switch": "#/$defs/Switch"
             },
             "propertyName": "type"
           },
@@ -1549,6 +1554,9 @@
             },
             {
               "$ref": "#/$defs/Slider"
+            },
+            {
+              "$ref": "#/$defs/Switch"
             }
           ],
           "title": "Selector"
@@ -1932,6 +1940,81 @@
         }
       },
       "title": "Slider",
+      "type": "object"
+    },
+    "Switch": {
+      "additionalProperties": false,
+      "description": "Boolean single-option selector `Switch`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"toggle_switch\"]): Defaults to `\"toggle_switch\"`.\n    value (Optional[StrictBool]): See [`StrictBool`][vizro.models.types.StrictBool]. Defaults to `False`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "switch",
+          "default": "switch",
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "Value"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed",
+          "title": "Title",
+          "type": "string"
+        },
+        "label": {
+          "default": "",
+          "description": "Label to be displayed",
+          "title": "Label",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Switch",
       "type": "object"
     },
     "Table": {

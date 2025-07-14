@@ -102,6 +102,7 @@ label[for="theme-selector"] {
 }
 
 div.form-check.form-switch {
+  align-items: start;
   display: flex;
   gap: 8px;
 }
