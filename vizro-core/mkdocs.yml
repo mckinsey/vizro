@@ -63,8 +63,7 @@ nav:
       - Authors: pages/explanation/authors.md
   - Examples gallery:
       - Gallery: https://vizro.mckinsey.com/
-  - Vizro-AI:
-      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
+  - ✨🆕 Cheatsheet : pages/cheatsheet/cheatsheet.html
   - Vizro-MCP:
       - Vizro-MCP: https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md
 
