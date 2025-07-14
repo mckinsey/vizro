@@ -310,7 +310,7 @@ class TestBuildAgGrid:
         ag_grid = vm.AgGrid(
             figure=standard_ag_grid,
             title="Title",
-            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+            description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
         )
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
