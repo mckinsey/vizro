@@ -734,7 +734,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     Page configuration includes dynamic data scatter chart which controls by slider parameter and static data scatter
     which has 'virginica' data only.
     """
-    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper())
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,

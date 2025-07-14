@@ -132,9 +132,7 @@ class Filter(VizroBaseModel):
         else:
             self.selector = cast(NumericalTemporalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data, current_value)
-            # "current_value" is propagated only to support dcc.Input and dcc.Store components in numerical selectors
-            # to work with a dynamic selector. This can be removed when dash persistence bug is fixed.
-            return self.selector(min=_min, max=_max, current_value=current_value)
+            return self.selector(min=_min, max=_max)
 
     @_log_call
     def pre_build(self):

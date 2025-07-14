@@ -113,19 +113,17 @@ class RangeSlider(VizroBaseModel):
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
 
-    def __call__(self, min, max, current_value):
+    def __call__(self, min, max):
         output = [
+            Output(self.id, "value", allow_duplicate=True),
             Output(f"{self.id}_start_value", "value"),
             Output(f"{self.id}_end_value", "value"),
-            Output(self.id, "value", allow_duplicate=True),
-            Output(f"{self.id}_input_store", "data"),
         ]
         inputs = [
+            Input(self.id, "value"),
             Input(f"{self.id}_start_value", "value"),
             Input(f"{self.id}_end_value", "value"),
-            Input(self.id, "value"),
-            State(f"{self.id}_input_store", "data"),
-            State(f"{self.id}_callback_data", "data"),
+            State(self.id, "id"),
         ]
 
         clientside_callback(
@@ -134,7 +132,9 @@ class RangeSlider(VizroBaseModel):
             inputs=inputs,
             prevent_initial_call=True,
         )
-        description = self.description.build().children if self.description else [None]
+
+        current_value = self.value or [min, max]
+
         defaults = {
             "id": self.id,
             "min": min,
@@ -147,9 +147,9 @@ class RangeSlider(VizroBaseModel):
             "className": "slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
         }
 
+        description = self.description.build().children if self.description else [None]
         return html.Div(
             children=[
-                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
                         dbc.Label(
@@ -185,7 +185,6 @@ class RangeSlider(VizroBaseModel):
                                     persistence_type="session",
                                     className="slider-text-input-field",
                                 ),
-                                dcc.Store(id=f"{self.id}_input_store", storage_type="session"),
                             ],
                             className="slider-text-input-container",
                         ),
@@ -196,14 +195,12 @@ class RangeSlider(VizroBaseModel):
             ]
         )
 
-    def _build_dynamic_placeholder(self, current_value):
-        return self.__call__(self.min, self.max, current_value)
+    def _build_dynamic_placeholder(self):
+        if not self.value:
+            self.value = [self.min, self.max]
+
+        return self.__call__(self.min, self.max)
 
     @_log_call
     def build(self):
-        current_value = self.value or [self.min, self.max]
-        return (
-            self._build_dynamic_placeholder(current_value)
-            if self._dynamic
-            else self.__call__(self.min, self.max, current_value)
-        )
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.min, self.max)
