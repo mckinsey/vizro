@@ -1,42 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vizro - Cheat Sheet</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <script src="script.js" defer></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header class="header">
-            <h1>Vizro - Cheat Sheet</h1>
-            <div class="subtitle">Essential Commands & Syntax Reference</div>
-        </header>
+      <header class="header">
+        <h1>Vizro - Cheat Sheet</h1>
+        <div class="subtitle">Essential Commands & Syntax Reference</div>
+      </header>
 
-        <!-- First Row: 2 Columns -->
-        <div class="two-column-grid-main">
-            <!-- Basic Dashboard Section -->
-            <section class="section">
-                <div class="section-header">
-                    <h2 class="section-title">Basic Dashboard</h2>
-                </div>
+      <!-- First Row: 2 Columns -->
+      <div class="two-column-grid-main">
+        <!-- Basic Dashboard Section -->
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">Basic Dashboard</h2>
+          </div>
 
-                <div class="subsection">
-                    <div class="subsection-title">Installation</div>
-                    <div class="subsection-description">Install the <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/install/">Vizro</a> package to get started with dashboard creation.</div>
-                    <div class="example-row">
-                        <code class="code-inline">pip install vizro</code>
-                        <span class="description">Install Vizro</span>
-                    </div>
-                </div>
+          <div class="subsection">
+            <div class="subsection-title">Installation</div>
+            <div class="subsection-description">
+              Install the
+              <a
+                href="https://vizro.readthedocs.io/en/stable/pages/user-guides/install/"
+                >Vizro</a
+              >
+              package to get started with dashboard creation.
+            </div>
+            <div class="example-row">
+              <code class="code-inline">pip install vizro</code>
+              <span class="description">Install Vizro</span>
+            </div>
+          </div>
 
-                <div class="subsection">
-                    <div class="subsection-title">Simple Dashboard</div>
-                    <div class="subsection-description">Creates a complete dashboard with pages, components, and runs the application.</div>
-                    <div class="code-block-container">
-                        <div class="code-block">
-                            <pre><code>from vizro import Vizro
+          <div class="subsection">
+            <div class="subsection-title">Simple Dashboard</div>
+            <div class="subsection-description">
+              Creates a complete dashboard with pages, components, and runs the
+              application.
+            </div>
+            <div class="code-block-container">
+              <div class="code-block">
+                <pre><code>from vizro import Vizro
 import vizro.models as vm
 
 dashboard = vm.Dashboard(
@@ -49,24 +59,27 @@ dashboard = vm.Dashboard(
 )
 
 Vizro().build(dashboard).run()</code></pre>
-                        </div>
-                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                    </div>
-                </div>
-            </section>
+              </div>
+              <button class="copy-button" onclick="copyCode(this)">Copy</button>
+            </div>
+          </div>
+        </section>
 
-            <!-- Basic Page Section -->
-            <section class="section">
-                <div class="section-header">
-                    <h2 class="section-title">Basic Page</h2>
-                </div>
+        <!-- Basic Page Section -->
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">Basic Page</h2>
+          </div>
 
-                <div class="subsection">
-                    <div class="subsection-title">Page Structure</div>
-                    <div class="subsection-description">Defines a single page with title, components, and layout configuration.</div>
-                    <div class="code-block-container">
-                        <div class="code-block">
-                            <pre><code># Basic page with components
+          <div class="subsection">
+            <div class="subsection-title">Page Structure</div>
+            <div class="subsection-description">
+              Defines a single page with title, components, and layout
+              configuration.
+            </div>
+            <div class="code-block-container">
+              <div class="code-block">
+                <pre><code># Basic page with components
 page = vm.Page(
     title="My first page!",
     components=[
@@ -74,46 +87,57 @@ page = vm.Page(
         vm.Card(text="Welcome to Vizro!"),
     ],
 )</code></pre>
-                        </div>
-                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                    </div>
-                </div>
+              </div>
+              <button class="copy-button" onclick="copyCode(this)">Copy</button>
+            </div>
+          </div>
 
-                <div class="subsection">
-                    <div class="subsection-title">Page Properties</div>
-                    <div class="subsection-description">Configure page metadata, routing, and display options.</div>
-                    <div class="example-row">
-                        <code class="code-inline">title="My first page!"</code>
-                        <span class="description">Title of the page</span>
-                    </div>
-                    <div class="example-row">
-                        <code class="code-inline">path="custom-path"</code>
-                        <span class="description">Custom URL path</span>
-                    </div>
-                    <div class="example-row">
-                        <code class="code-inline">description="Description"</code>
-                        <span class="description">Adds tooltip with icon & meta tags.</span>
-                    </div>
-                </div>
+          <div class="subsection">
+            <div class="subsection-title">Page Properties</div>
+            <div class="subsection-description">
+              Configure page metadata, routing, and display options.
+            </div>
+            <div class="example-row">
+              <code class="code-inline">title="My first page!"</code>
+              <span class="description">Title of the page</span>
+            </div>
+            <div class="example-row">
+              <code class="code-inline">path="custom-path"</code>
+              <span class="description">Custom URL path</span>
+            </div>
+            <div class="example-row">
+              <code class="code-inline">description="Description"</code>
+              <span class="description"
+                >Adds tooltip with icon & meta tags.</span
+              >
+            </div>
+          </div>
+        </section>
+      </div>
 
-            </section>
-        </div>
+      <!-- Second Row: Components -->
+      <div class="main-grid">
+        <section class="section full-width">
+          <div class="section-header">
+            <h2 class="section-title">Components</h2>
+          </div>
 
-        <!-- Second Row: Components -->
-        <div class="main-grid">
-            <section class="section full-width">
-                <div class="section-header">
-                    <h2 class="section-title">Components</h2>
-                </div>
-
-                <!-- First Row: Graph, Table, Aggrid -->
-                <div class="components-grid">
-                    <div class="subsection">
-                        <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/">Graph</a></div>
-                        <div class="subsection-description">Display interactive plotly charts and visualizations with data filtering capabilities.</div>
-                        <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>import vizro.plotly.express as px
+          <!-- First Row: Graph, Table, Aggrid -->
+          <div class="components-grid">
+            <div class="subsection">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/"
+                  >Graph</a
+                >
+              </div>
+              <div class="subsection-description">
+                Display interactive plotly charts and visualizations with data
+                filtering capabilities.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import vizro.plotly.express as px
 import vizro.models as vm
 
 df = px.data.iris()
@@ -126,17 +150,27 @@ graph = vm.Graph(
         color="species",
     )
 )</code></pre>
-                            </div>
-                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
+                </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
 
-                    <div class="subsection">
-                        <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#dash-datatable">Table</a></div>
-                        <div class="subsection-description">Display tabular data with sorting, filtering, and pagination using dash DataTable.</div>
-                        <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>import vizro.plotly.express as px
+            <div class="subsection">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#dash-datatable"
+                  >Table</a
+                >
+              </div>
+              <div class="subsection-description">
+                Display tabular data with sorting, filtering, and pagination
+                using dash DataTable.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.tables import dash_data_table
 
@@ -149,17 +183,27 @@ data_table = vm.Table(
 )
 
                                 </code></pre>
-                            </div>
-                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
+                </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
 
-                    <div class="subsection">
-                        <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#ag-grid">Aggrid</a></div>
-                        <div class="subsection-description">Advanced data grid with enterprise features like grouping, aggregation, and cell editing.</div>
-                        <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>import vizro.plotly.express as px
+            <div class="subsection">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#ag-grid"
+                  >Aggrid</a
+                >
+              </div>
+              <div class="subsection-description">
+                Advanced data grid with enterprise features like grouping,
+                aggregation, and cell editing.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.tables import dash_ag_grid
 
@@ -172,53 +216,83 @@ ag_grid = vm.AgGrid(
 
 
                                 </code></pre>
-                            </div>
-                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
                 </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
 
-                <!-- Second Row: Other Components & Container -->
-                <div class="components-second-row">
-                    <!-- Button -->
-                    <div class="subsection">
-                        <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/button/">Button</a></div>
-                        <div class="subsection-description">Interactive button component that triggers actions and callbacks when clicked.</div>
-                        <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>import vizro.models as vm
+          <!-- Second Row: Other Components & Container -->
+          <div class="components-second-row">
+            <!-- Button -->
+            <div class="subsection">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/button/"
+                  >Button</a
+                >
+              </div>
+              <div class="subsection-description">
+                Interactive button component that triggers actions and callbacks
+                when clicked.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import vizro.models as vm
 
 button = vm.Button(
     text="Click me!",
 )</code></pre>
-                            </div>
-                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
+                </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
 
-                    <!-- Card -->
-                    <div class="subsection">
-                        <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/card/">Card</a></div>
-                        <div class="subsection-description">Display text content, markdown, or HTML in a styled card container.</div>
-                        <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>import vizro.models as vm
+            <!-- Card -->
+            <div class="subsection">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/card/"
+                  >Card</a
+                >
+              </div>
+              <div class="subsection-description">
+                Display text content, markdown, or HTML in a styled card
+                container.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import vizro.models as vm
 
 card = vm.Card(
     text="Hello World!",
 )</code></pre>
-                            </div>
-                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
+                </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
 
-                    <!-- Container (spans 2 rows) -->
-                    <div class="subsection container-span">
-                        <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/containers/">Containers</a></div>
-                        <div class="subsection-description">Group multiple components together with shared layout, controls and styling options.</div>
-                        <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>import vizro.models as vm
+            <!-- Container (spans 2 rows) -->
+            <div class="subsection container-span">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/containers/"
+                  >Containers</a
+                >
+              </div>
+              <div class="subsection-description">
+                Group multiple components together with shared layout, controls
+                and styling options.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import vizro.models as vm
 
 container = vm.Container(
     title="Analysis Section",
@@ -235,18 +309,27 @@ tabs = vm.Tabs(
         vm.Container(title="Details", components=[vm.Card(text="Details")])
     ]
 )</code></pre>
-                            </div>
-                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
+                </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
 
-                    <!-- Figure -->
-                    <div class="subsection">
-                        <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/figure/">Figure</a></div>
-                        <div class="subsection-description">Display kpi cards or any custom figures.</div>
-                        <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>import vizro.models as vm
+            <!-- Figure -->
+            <div class="subsection">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/figure/"
+                  >Figure</a
+                >
+              </div>
+              <div class="subsection-description">
+                Display kpi cards or any custom figures.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import vizro.models as vm
 from vizro.figures import kpi_card
 
 figure = vm.Figure(
@@ -255,51 +338,72 @@ figure = vm.Figure(
         value_column="column_name",
     ),
 )</code></pre>
-                            </div>
-                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
+                </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
 
-                    <!-- Text -->
-                    <div class="subsection">
-                        <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/text/">Text</a></div>
-                        <div class="subsection-description">Render markdown text with support for formatting, links, and embedded content.</div>
-                        <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>import vizro.models as vm
+            <!-- Text -->
+            <div class="subsection">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/text/"
+                  >Text</a
+                >
+              </div>
+              <div class="subsection-description">
+                Render markdown text with support for formatting, links, and
+                embedded content.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import vizro.models as vm
 
 text = vm.Text(
     text="Markdown text content",
 )</code></pre>
-                            </div>
-                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
                 </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
 
-                        <div class="highlight-box">
-                            <strong>Component Tips:</strong>
-                            <br>• All components can be styled with custom CSS classes and IDs.
-                            <br>• All arguments of underlying dash components can be entered via `extra` argument.
-                        </div>
-            </section>
-        </div>
+          <div class="highlight-box">
+            <strong>Component Tips:</strong>
+            <br />• All components can be styled with custom CSS classes and
+            IDs. <br />• All arguments of underlying dash components can be
+            entered via `extra` argument.
+          </div>
+        </section>
+      </div>
 
-        <!-- Third Row: Controls -->
-        <div class="main-grid">
-            <section class="section full-width">
-                <div class="section-header">
-                    <h2 class="section-title">Controls</h2>
+      <!-- Third Row: Controls -->
+      <div class="main-grid">
+        <section class="section full-width">
+          <div class="section-header">
+            <h2 class="section-title">Controls</h2>
+          </div>
+
+          <div class="two-column-grid">
+            <div>
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/"
+                    >Filters</a
+                  >
                 </div>
-
-                <div class="two-column-grid">
-                    <div>
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/">Filters</a></div>
-                            <div class="subsection-description">Apply data filtering to components based on column values using various selector types.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>import vizro.models as vm
+                <div class="subsection-description">
+                  Apply data filtering to components based on column values
+                  using various selector types.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>import vizro.models as vm
 
 filter = vm.Filter(
     column="species",
@@ -307,22 +411,33 @@ filter = vm.Filter(
         value=["setosa", "versicolor"]
     ),
 )</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="highlight-box">
-                            <strong>Filter tips:</strong>
-                            <br>• column argument denotes the target column to be filtered
-                            <br>• Set targets to specify which components on the page the filter should apply to.
-                        </div>
-                        </div>
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
+                </div>
+                <div class="highlight-box">
+                  <strong>Filter tips:</strong>
+                  <br />• column argument denotes the target column to be
+                  filtered <br />• Set targets to specify which components on
+                  the page the filter should apply to.
+                </div>
+              </div>
 
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/">Parameters</a></div>
-                            <div class="subsection-description">Dynamically control component properties through user input selectors.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>import vizro.models as vm
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/"
+                    >Parameters</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Dynamically control component properties through user input
+                  selectors.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>import vizro.models as vm
 
 parameter = vm.Parameter(
     targets=["scatter_chart.title"],
@@ -331,135 +446,219 @@ parameter = vm.Parameter(
        multi=False,
     ),
 )</code></pre>
-                             </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                </div>
-                            <div class="highlight-box">
-                            <strong>Parameter tips:</strong>
-                            <br>• Specify `targets` in the form "target_component_id.target_argument" (for example, "scatter_chart.title")
-                            <br>• To make parameter optional you can specify the string "NONE" in the options or value field
-                            <br>• To change nested parameters, you can specify the targets argument with a dot separated string like "target_component_id.target_argument.first_hierarchy".
-                            <br>• selector argument is a mandatory field, specify it by providing the appropriate model and the desired options/numeric ranges.
-                        </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#categorical-selectors">Categorical selectors</a></div>
-                            <div class="subsection-description">Interactive components for selecting from discrete categories and options.</div>
-                            <div class="selectors-row">
-                            <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>selector=vm.Dropdown()</code></pre>
-                            </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="example-row">
-                                <img src="assets/images/dropdown.png" alt="Dropdown selector" class="selector-icon" title="Dropdown selector">
-                            </div>
-                            </div>
-                            <div class="selectors-row">
-                            <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>selector=vm.Checklist()</code></pre>
-                            </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="example-row">
-                                <img src="assets/images/checklist.png" alt="Checklist selector" class="selector-icon" title="Checklist selector">
-                            </div>
-                            </div>
-                            <div class="selectors-row">
-                            <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>selector=vm.RadioItems()</code></pre>
-                            </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="example-row">
-                                <img src="assets/images/radioitems.png" alt="Radio items selector" class="selector-icon" title="Radio items selector">
-                            </div>
-                            </div>
-                        </div>
-
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#numerical-selectors">Numerical selectors</a></div>
-                            <div class="subsection-description">Components for selecting numerical values and ranges with precise control.</div>
-                            <div class="selectors-row">
-                            <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>selector=vm.Slider()</code></pre>
-                            </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="example-row">
-                                <img src="assets/images/slider.png" alt="Slider selector" class="selector-icon" title="Slider selector">
-                            </div>
-                            </div>
-                            <div class="selectors-row">
-                            <div class="code-block-container">
-                            <div class="code-block">
-                                <pre><code>selector=vm.RangeSlider()</code></pre>
-                            </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="example-row">
-                                <img src="assets/images/rangeslider.png" alt="Range Slider selector" class="selector-icon" title="Range Slider selector">
-                            </div>
-                            </div>
-                        </div>
-
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#temporal-selectors">Temporal selectors</a></div>
-                            <div class="subsection-description">Date and time selection components for temporal data filtering and analysis.</div>
-                            <div class="selectors-row">
-                                <div class="selectors-row-date-picker">
-                                    <div class="code-block-container">
-                                    <div class="code-block">
-                                    <pre><code>selector=vm.DatePicker()</code></pre>
-                                    </div>
-                                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                    </div>
-                                    <div class="example-row">
-                                       <img src="assets/images/daterangepicker.png" alt="Date Picker selector" class="selector-icon-date-picker" title="Date Picker selector">
-                                    </div>
-                                </div>
-                                <div class="selectors-row">
-                                <div class="selectors-row-date-picker">
-                                    <div class="code-block-container">
-                                    <div class="code-block">
-                                    <pre><code>selector=vm.DatePicker(range=False)</code></pre>
-                                    </div>
-                                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                    </div>
-                                    <div class="example-row">
-                                       <img src="assets/images/datepicker.png" alt="Date Range Picker selector" class="selector-icon-date-picker" title="Date Range Picker selector">
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
                 </div>
-            </section>
-        </div>
-
-        <!-- Fourth Row: Page Layout & Navigation -->
-        <div class="main-grid">
-            <section class="section full-width">
-                <div class="section-header">
-                    <h2 class="section-title">Page Layout & Navigation</h2>
+                <div class="highlight-box">
+                  <strong>Parameter tips:</strong>
+                  <br />• Specify `targets` in the form
+                  "target_component_id.target_argument" (for example,
+                  "scatter_chart.title") <br />• To make parameter optional you
+                  can specify the string "NONE" in the options or value field
+                  <br />• To change nested parameters, you can specify the
+                  targets argument with a dot separated string like
+                  "target_component_id.target_argument.first_hierarchy". <br />•
+                  selector argument is a mandatory field, specify it by
+                  providing the appropriate model and the desired
+                  options/numeric ranges.
                 </div>
+              </div>
+            </div>
 
-                <div class="two-column-grid">
-                    <div>
-                        <div class="subsection">
-                            <div class="subsection-title">Multi-Page Dashboard</div>
-                            <div class="subsection-description">Create dashboards with multiple pages and automatic navigation between them.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>page_1 = vm.Page(
+            <div>
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#categorical-selectors"
+                    >Categorical selectors</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Interactive components for selecting from discrete categories
+                  and options.
+                </div>
+                <div class="selectors-row">
+                  <div class="code-block-container">
+                    <div class="code-block">
+                      <pre><code>selector=vm.Dropdown()</code></pre>
+                    </div>
+                    <button class="copy-button" onclick="copyCode(this)">
+                      Copy
+                    </button>
+                  </div>
+                  <div class="example-row">
+                    <img
+                      src="assets/images/dropdown.png"
+                      alt="Dropdown selector"
+                      class="selector-icon"
+                      title="Dropdown selector"
+                    />
+                  </div>
+                </div>
+                <div class="selectors-row">
+                  <div class="code-block-container">
+                    <div class="code-block">
+                      <pre><code>selector=vm.Checklist()</code></pre>
+                    </div>
+                    <button class="copy-button" onclick="copyCode(this)">
+                      Copy
+                    </button>
+                  </div>
+                  <div class="example-row">
+                    <img
+                      src="assets/images/checklist.png"
+                      alt="Checklist selector"
+                      class="selector-icon"
+                      title="Checklist selector"
+                    />
+                  </div>
+                </div>
+                <div class="selectors-row">
+                  <div class="code-block-container">
+                    <div class="code-block">
+                      <pre><code>selector=vm.RadioItems()</code></pre>
+                    </div>
+                    <button class="copy-button" onclick="copyCode(this)">
+                      Copy
+                    </button>
+                  </div>
+                  <div class="example-row">
+                    <img
+                      src="assets/images/radioitems.png"
+                      alt="Radio items selector"
+                      class="selector-icon"
+                      title="Radio items selector"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#numerical-selectors"
+                    >Numerical selectors</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Components for selecting numerical values and ranges with
+                  precise control.
+                </div>
+                <div class="selectors-row">
+                  <div class="code-block-container">
+                    <div class="code-block">
+                      <pre><code>selector=vm.Slider()</code></pre>
+                    </div>
+                    <button class="copy-button" onclick="copyCode(this)">
+                      Copy
+                    </button>
+                  </div>
+                  <div class="example-row">
+                    <img
+                      src="assets/images/slider.png"
+                      alt="Slider selector"
+                      class="selector-icon"
+                      title="Slider selector"
+                    />
+                  </div>
+                </div>
+                <div class="selectors-row">
+                  <div class="code-block-container">
+                    <div class="code-block">
+                      <pre><code>selector=vm.RangeSlider()</code></pre>
+                    </div>
+                    <button class="copy-button" onclick="copyCode(this)">
+                      Copy
+                    </button>
+                  </div>
+                  <div class="example-row">
+                    <img
+                      src="assets/images/rangeslider.png"
+                      alt="Range Slider selector"
+                      class="selector-icon"
+                      title="Range Slider selector"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#temporal-selectors"
+                    >Temporal selectors</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Date and time selection components for temporal data filtering
+                  and analysis.
+                </div>
+                <div class="selectors-row">
+                  <div class="selectors-row-date-picker">
+                    <div class="code-block-container">
+                      <div class="code-block">
+                        <pre><code>selector=vm.DatePicker()</code></pre>
+                      </div>
+                      <button class="copy-button" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="example-row">
+                      <img
+                        src="assets/images/daterangepicker.png"
+                        alt="Date Picker selector"
+                        class="selector-icon-date-picker"
+                        title="Date Picker selector"
+                      />
+                    </div>
+                  </div>
+                  <div class="selectors-row">
+                    <div class="selectors-row-date-picker">
+                      <div class="code-block-container">
+                        <div class="code-block">
+                          <pre><code>selector=vm.DatePicker(range=False)</code></pre>
+                        </div>
+                        <button class="copy-button" onclick="copyCode(this)">
+                          Copy
+                        </button>
+                      </div>
+                      <div class="example-row">
+                        <img
+                          src="assets/images/datepicker.png"
+                          alt="Date Range Picker selector"
+                          class="selector-icon-date-picker"
+                          title="Date Range Picker selector"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Fourth Row: Page Layout & Navigation -->
+      <div class="main-grid">
+        <section class="section full-width">
+          <div class="section-header">
+            <h2 class="section-title">Page Layout & Navigation</h2>
+          </div>
+
+          <div class="two-column-grid">
+            <div>
+              <div class="subsection">
+                <div class="subsection-title">Multi-Page Dashboard</div>
+                <div class="subsection-description">
+                  Create dashboards with multiple pages and automatic navigation
+                  between them.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>page_1 = vm.Page(
     title="Overview",
     components=[
         vm.Card(text="Test")
@@ -481,19 +680,30 @@ page_3 = vm.Page(
 )
 
 dashboard = vm.Dashboard(title="My dashboad",pages=[page_1, page_2, page_3])</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                        </div>
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
+                </div>
+              </div>
 
-                        <div class="subsection navigation-subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/">Navigation</a></div>
-                            <div class="subsection-description">Configure custom navigation to group pages together and customize how they appear in your navigation by specifying navigation model.</div>
-                            <div class="navigation-content">
-                                <div class="navigation-code">
-                                    <div class="code-block-container">
-                                        <div class="code-block">
-                                            <pre><code>navigation = vm.Navigation(
+              <div class="subsection navigation-subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/"
+                    >Navigation</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Configure custom navigation to group pages together and
+                  customize how they appear in your navigation by specifying
+                  navigation model.
+                </div>
+                <div class="navigation-content">
+                  <div class="navigation-code">
+                    <div class="code-block-container">
+                      <div class="code-block">
+                        <pre><code>navigation = vm.Navigation(
     pages=[page_1, page_2, page_3],
     nav_selector=vm.NavBar(
         items=[
@@ -513,33 +723,51 @@ dashboard = vm.Dashboard(title="My dashboad",pages=[page_1, page_2, page_3])</co
         ]
     )
 )</code></pre>
-                                        </div>
-                                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                    </div>
-                                </div>
-                                <div class="navigation-tips">
-                                <div class="navigation-image">
-                                    <img src="assets/images/nav.png" alt="Navigation example" class="navigation-icon" title="Navigation bar example">
-                                </div>
-                                <div class="highlight-box">
-                                    <strong>Navigation Tips:</strong>
-                                    <br>• To include only some of your dashboard pages in your navigation then list them in the pages argument of the vm.Navigation model.
-                                    <br>• Alter the icons used by specifying the name of the icon in the Google Material icons library.
-                                    <br>• Group your pages together by specifying pages as a dictionary.
-                        </div>
-                                </div>
-                            </div>
-                        </div>
+                      </div>
+                      <button class="copy-button" onclick="copyCode(this)">
+                        Copy
+                      </button>
                     </div>
+                  </div>
+                  <div class="navigation-tips">
+                    <div class="navigation-image">
+                      <img
+                        src="assets/images/nav.png"
+                        alt="Navigation example"
+                        class="navigation-icon"
+                        title="Navigation bar example"
+                      />
+                    </div>
+                    <div class="highlight-box">
+                      <strong>Navigation Tips:</strong>
+                      <br />• To include only some of your dashboard pages in
+                      your navigation then list them in the pages argument of
+                      the vm.Navigation model. <br />• Alter the icons used by
+                      specifying the name of the icon in the Google Material
+                      icons library. <br />• Group your pages together by
+                      specifying pages as a dictionary.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                    <div class="layout-subsection">
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#grid-layout">Grid layout</a></div>
-                            <div class="subsection-description">Arrange components in grid patterns with precise positioning and responsive design with grid layout.</div>
-                            <div class="layout-section-one">
-                            <div class="code-block-container-layout">
-                                <div class="code-block">
-                                    <pre><code>grid_layout = vm.Grid(
+            <div class="layout-subsection">
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#grid-layout"
+                    >Grid layout</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Arrange components in grid patterns with precise positioning
+                  and responsive design with grid layout.
+                </div>
+                <div class="layout-section-one">
+                  <div class="code-block-container-layout">
+                    <div class="code-block">
+                      <pre><code>grid_layout = vm.Grid(
     grid=[
         # All rows must be of same length
         [0, 1, -1],
@@ -550,72 +778,106 @@ dashboard = vm.Dashboard(title="My dashboad",pages=[page_1, page_2, page_3])</co
 )
 
                                     </code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="layout-examples-right">
-                                    <img src="assets/images/layout_exam.jpg" alt="Layout example" class="grid-layout-example-image" title="Grid layout example">
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    <button class="copy-button" onclick="copyCode(this)">
+                      Copy
+                    </button>
+                  </div>
+                  <div class="layout-examples-right">
+                    <img
+                      src="assets/images/layout_exam.jpg"
+                      alt="Layout example"
+                      class="grid-layout-example-image"
+                      title="Grid layout example"
+                    />
+                  </div>
+                </div>
+              </div>
 
-                        <div class="subsection layout-examples-subsection">
-                            <div class="layout-examples-content">
-                                <div class="layout-examples-left">
-                                    <div class="example-row">
-                                        <code class="code-inline">grid = [[0], [1], [2], [3]</code>
-                                        <img src="assets/images/vertical_stacking.png" alt="Vertical stacking" class="layout-icon" title="Vertical stacking">
-                                    </div>
-                                    <div class="example-row">
-                                        <code class="code-inline">grid = [[0, 1, 2, 3]]</code>
-                                        <img src="assets/images/horizontal_stacking.png" alt="Horizontal stacking" class="layout-icon" title="Horizontal stacking">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="highlight-box">
-                            <strong>Layout Tips:</strong>
-                            <br>• Grid numbers match component positions
-                            <br>• Add empty spaces within grid layout by specifying -1 e.g grid=[[0], [1], [-1]]
-                            <br>• Control the scroll behavior by specifying "row_min_height" and "col_min_width"
-                        </div>
+              <div class="subsection layout-examples-subsection">
+                <div class="layout-examples-content">
+                  <div class="layout-examples-left">
+                    <div class="example-row">
+                      <code class="code-inline"
+                        >grid = [[0], [1], [2], [3]</code
+                      >
+                      <img
+                        src="assets/images/vertical_stacking.png"
+                        alt="Vertical stacking"
+                        class="layout-icon"
+                        title="Vertical stacking"
+                      />
+                    </div>
+                    <div class="example-row">
+                      <code class="code-inline">grid = [[0, 1, 2, 3]]</code>
+                      <img
+                        src="assets/images/horizontal_stacking.png"
+                        alt="Horizontal stacking"
+                        class="layout-icon"
+                        title="Horizontal stacking"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="highlight-box">
+                <strong>Layout Tips:</strong>
+                <br />• Grid numbers match component positions <br />• Add empty
+                spaces within grid layout by specifying -1 e.g grid=[[0], [1],
+                [-1]] <br />• Control the scroll behavior by specifying
+                "row_min_height" and "col_min_width"
+              </div>
 
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout">Flex layout</a></div>
-                            <div class="subsection-description">Achieve Fflexible layout system for dynamic component arrangement and responsive behavior with flex layout.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>flex_layout = vm.Flex(
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout"
+                    >Flex layout</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Achieve Fflexible layout system for dynamic component
+                  arrangement and responsive behavior with flex layout.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>flex_layout = vm.Flex(
     direction="row"
 )</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="highlight-box">
-                            <strong>Flex layout tips:</strong>
-                            <br>• To wrap components into multiple lines use "wrap=True"
-                            <br>• Control the spacing between components in the flex container by using "gap" argument
-                        </div>
-                        </div>
-                    </div>
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
                 </div>
-            </section>
-        </div>
-
-        <!-- Last Row: Data Management & Actions -->
-        <div class="main-grid">
-            <!-- Data Management Section -->
-            <section class="section wide-section">
-            <div class="section-header">
-                <h2 class="section-title">Data Management</h2>
+                <div class="highlight-box">
+                  <strong>Flex layout tips:</strong>
+                  <br />• To wrap components into multiple lines use "wrap=True"
+                  <br />• Control the spacing between components in the flex
+                  container by using "gap" argument
+                </div>
+              </div>
             </div>
-        <div class="components-grid-data-management">
-                <div class="subsection">
-                    <div class="subsection-title">Data Loading</div>
-                    <div class="subsection-description">Load and manage data from various sources using the centralized data manager.</div>
-                    <div class="code-block-container">
-                        <div class="code-block">
-                            <pre><code>import pandas as pd
+          </div>
+        </section>
+      </div>
+
+      <!-- Last Row: Data Management & Actions -->
+      <div class="main-grid">
+        <!-- Data Management Section -->
+        <section class="section wide-section">
+          <div class="section-header">
+            <h2 class="section-title">Data Management</h2>
+          </div>
+          <div class="components-grid-data-management">
+            <div class="subsection">
+              <div class="subsection-title">Data Loading</div>
+              <div class="subsection-description">
+                Load and manage data from various sources using the centralized
+                data manager.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import pandas as pd
 from vizro.managers import data_manager
 
 # Load data
@@ -630,17 +892,28 @@ vm.Graph(
         y="y_col"
     )
 )</code></pre>
-                        </div>
-                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                    </div>
                 </div>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
 
-                <div class="subsection">
-                    <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#dynamic-data">Dynamic data</a></div>
-                    <div class="subsection-description">A dynamic data source is a Python function that returns a pandas DataFrame and can be re-executed to refresh dashboard data without restarting it.</div>
-                    <div class="code-block-container">
-                        <div class="code-block">
-                            <pre><code>import pandas as pd
+            <div class="subsection">
+              <div class="subsection-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#dynamic-data"
+                  >Dynamic data</a
+                >
+              </div>
+              <div class="subsection-description">
+                A dynamic data source is a Python function that returns a pandas
+                DataFrame and can be re-executed to refresh dashboard data
+                without restarting it.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code>import pandas as pd
 from vizro.managers import data_manager
 
 # Load data
@@ -659,82 +932,110 @@ vm.Graph(
         color="species",
     )
 )</code></pre>
-                        </div>
-                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                    </div>
                 </div>
-                </div>
-                <div class="highlight-box">
-                    <strong>Data Integration:</strong>
-                    <br>• You can give arguments to your dynamic data loading function that can be modified from the dashboard.
-                    <br>• SQL databases via pandas
-                    <br>• Kedro Data Catalog integration
-                </div>
-            </section>
+                <button class="copy-button" onclick="copyCode(this)">
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <strong>Data Integration:</strong>
+            <br />• You can give arguments to your dynamic data loading function
+            that can be modified from the dashboard. <br />• SQL databases via
+            pandas <br />• Kedro Data Catalog integration
+          </div>
+        </section>
 
-            <!-- Actions & Customization Section -->
-            <section class="section">
-                <div class="section-header">
-                    <h2 class="section-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/">Actions</a></h2>
+        <!-- Actions & Customization Section -->
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <a
+                href="https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/"
+                >Actions</a
+              >
+            </h2>
+          </div>
+          <div class="subsection-description">
+            Vizro actions are similar to callbacks in Dash.
+          </div>
+          <div class="one-column-grid">
+            <div>
+              <div class="subsection">
+                <div class="subsection-title">Export data</div>
+                <div class="subsection-description">
+                  To enable downloading data, you can add the export_data action
+                  function to the Button component.
                 </div>
-                <div class="subsection-description">Vizro actions are similar to callbacks in Dash.</div>
-                <div class="one-column-grid">
-                    <div>
-                        <div class="subsection">
-
-                            <div class="subsection-title">Export data</div>
-                            <div class="subsection-description">To enable downloading data, you can add the export_data action function to the Button component.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code># Export data action
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code># Export data action
 from vizro.actions import export_data
 
 actions=[vm.Action(
     function=export_data(),
     ),
 ]</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <div class="subsection-title">Cross-filtering</div>
-                            <div class="subsection-description">Cross-filtering enables you to click on data in one chart or table to filter other components in the dashboard.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code># Cross-filtering
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
+                </div>
+                <div class="subsection-title">Cross-filtering</div>
+                <div class="subsection-description">
+                  Cross-filtering enables you to click on data in one chart or
+                  table to filter other components in the dashboard.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code># Cross-filtering
 from vizro.actions import filter_interaction
 
 actions=[vm.Action(
     function=filter_interaction(targets=["your-target-component-id"]),
     ),
 ]</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                        </div>
-                    <div class="highlight-box">
-                    <strong>Actions tips:</strong>
-                    <br>• Chain multiple actions together by providing them in sequence you want them to be executed. Next action in order will execute only after the previous action has completed.
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
                 </div>
-                    </div>
-                </div>
-            </section>
-        </div>
+              </div>
+              <div class="highlight-box">
+                <strong>Actions tips:</strong>
+                <br />• Chain multiple actions together by providing them in
+                sequence you want them to be executed. Next action in order will
+                execute only after the previous action has completed.
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
 
-        <!-- Custom Components Section -->
-        <div class="main-grid">
-            <section class="section full-width">
-                <div class="section-header">
-                    <h2 class="section-title">Custom Components</h2>
-                </div>
+      <!-- Custom Components Section -->
+      <div class="main-grid">
+        <section class="section full-width">
+          <div class="section-header">
+            <h2 class="section-title">Custom Components</h2>
+          </div>
 
-                <div class="two-column-grid">
-                    <div>
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-charts/">Custom Charts</a></div>
-                            <div class="subsection-description">Create custom plotly charts with advanced styling and interactive features beyond standard templates.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>from vizro.models.types import capture
+          <div class="two-column-grid">
+            <div>
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-charts/"
+                    >Custom Charts</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Create custom plotly charts with advanced styling and
+                  interactive features beyond standard templates.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>from vizro.models.types import capture
 import vizro.plotly.express as px
 
 df = px.data.iris()
@@ -747,16 +1048,26 @@ def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None):
 
 # Use in Graph component
 vm.Graph(figure=custom_chart(data_frame=df))</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                        </div>
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-components/">Custom Components</a></div>
-                            <div class="subsection-description">Extend any Vizro component or create completely new ones using any dash-compatible component.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>from typing import Literal
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
+                </div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-components/"
+                    >Custom Components</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Extend any Vizro component or create completely new ones using
+                  any dash-compatible component.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>from typing import Literal
 from dash import html
 import vizro.models as vm
 
@@ -777,16 +1088,26 @@ class Jumbotron(vm.VizroBaseModel):
 
 # Register the component
 vm.Page.add_type("components", Jumbotron)</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                        </div>
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/">Custom Actions</a></div>
-                            <div class="subsection-description">Implement custom callback functions that respond to user interactions and update dashboard state.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>from vizro.models.types import capture
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
+                </div>
+              </div>
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/"
+                    >Custom Actions</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Implement custom callback functions that respond to user
+                  interactions and update dashboard state.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>from vizro.models.types import capture
 import vizro.models as vm
 
 @capture("action")
@@ -799,19 +1120,29 @@ vm.Action(
     inputs=["my_selector.value"],
     outputs=["my_card.children"],
 )</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                        </div>
-                    </div>
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
+                </div>
+              </div>
+            </div>
 
-                    <div>
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-tables/">Custom Table</a></div>
-                            <div class="subsection-description">Build custom data tables with specific formatting, styling, and interactive features.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>from dash_ag_grid import AgGrid
+            <div>
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-tables/"
+                    >Custom Table</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Build custom data tables with specific formatting, styling,
+                  and interactive features.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>from dash_ag_grid import AgGrid
 from vizro.models.types import capture
 import vizro.models as vm
 
@@ -842,17 +1173,27 @@ vm.AgGrid(
         chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
     )
 )</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                        </div>
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
+                </div>
+              </div>
 
-                        <div class="subsection">
-                            <div class="subsection-title"><a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-figures/">Custom Figure</a></div>
-                            <div class="subsection-description">Design custom kpi cards or other figures with complex layouts and specialized visualizations.</div>
-                            <div class="code-block-container">
-                                <div class="code-block">
-                                    <pre><code>from vizro.models.types import capture
+              <div class="subsection">
+                <div class="subsection-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-figures/"
+                    >Custom Figure</a
+                  >
+                </div>
+                <div class="subsection-description">
+                  Design custom kpi cards or other figures with complex layouts
+                  and specialized visualizations.
+                </div>
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code>from vizro.models.types import capture
 import vizro.models as vm
 import pandas as pd
 import dash_bootstrap_components as dbc
@@ -873,26 +1214,28 @@ vm.Figure(
     id="my-figure",
     figure=multiple_cards(data_frame=df)
 )</code></pre>
-                                </div>
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                            </div>
-                        </div>
-                    </div>
+                  </div>
+                  <button class="copy-button" onclick="copyCode(this)">
+                    Copy
+                  </button>
                 </div>
+              </div>
+            </div>
+          </div>
 
-                <div class="highlight-box">
-                    <strong>Custom Component Tips:</strong>
-                    <br>• Extend VizroBaseModel for reusable custom components
-                    <br>• Use standard plotly/dash components within custom functions
-                    <br>• Register custom components with Vizro's component registry
-                </div>
-            </section>
-        </div>
+          <div class="highlight-box">
+            <strong>Custom Component Tips:</strong>
+            <br />• Extend VizroBaseModel for reusable custom components <br />•
+            Use standard plotly/dash components within custom functions <br />•
+            Register custom components with Vizro's component registry
+          </div>
+        </section>
+      </div>
 
-        <footer class="footer">
-            <div>Vizro Cheat Sheet | Low-code dashboards with Python</div>
-            <div>Print-friendly layout • Optimized for quick reference</div>
-        </footer>
+      <footer class="footer">
+        <div>Vizro Cheat Sheet | Low-code dashboards with Python</div>
+        <div>Print-friendly layout • Optimized for quick reference</div>
+      </footer>
     </div>
-</body>
+  </body>
 </html>

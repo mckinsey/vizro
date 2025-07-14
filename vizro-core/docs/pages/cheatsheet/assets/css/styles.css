@@ -1,7 +1,7 @@
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 :root {
@@ -15,7 +15,7 @@
   --border-color: #e1e5e9;
   --text-muted: #5f6368;
   --font-code: 'Courier New', monospace;
-  --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-base: 'Segoe UI', tahoma, geneva, verdana, sans-serif;
   --gap-width: 12px;
 }
 
@@ -27,28 +27,28 @@
 .function         { color: #f57c00; }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.4;
-    color: #333;
     background-color: #f8f9fa;
+    color: #333333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 11px;
+    line-height: 1.4;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 14px;
   background-color: var(--bg-white);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 14px;
 }
 
 .header {
-  text-align: center;
+  background: var(--primary-color);
+  border-radius: 8px;
+  color: white;
   margin-bottom: 20px;
   padding: 14px;
-  background: var(--primary-color);
-  color: white;
-  border-radius: 8px;
+  text-align: center;
 }
 
 .header h1 {
@@ -63,48 +63,48 @@ body {
 }
 
 .footer {
-  text-align: center;
-  margin-top: 20px;
-  padding: 10px;
   background-color: var(--bg-light-alt);
   border-radius: 6px;
-  font-size: 10px;
   color: var(--text-muted);
+  font-size: 10px;
+  margin-top: 20px;
+  padding: 10px;
+  text-align: center;
 }
 
 .main-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
     gap: var(--gap-width);
+    grid-template-columns: 1fr 1fr 1fr;
     margin-bottom: 20px;
 }
 
 .two-column-grid-main {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: var(--gap-width);
+    grid-template-columns: 1fr 1fr;
     margin-bottom: 20px;
 }
 
 .section {
-    background-color: #fff;
-    padding: 12px;
-    border-radius: 6px;
+    background-color: #ffffff;
     border: 1px solid #e1e5e9;
+    border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 12px;
 }
 
 .section-header {
     background-color: #f1f3f4;
-    padding: 8px 12px;
-    margin: -12px -12px 10px -12px;
     border-radius: 6px 6px 0 0;
+    margin: -12px -12px 10px;
+    padding: 8px 12px;
 }
 
 .section-title {
+    color: #4051b5;
     font-size: 14px;
     font-weight: 600;
-    color: #4051b5;
     margin: 0;
 }
 
@@ -117,29 +117,29 @@ body {
 }
 
 .subsection-title {
+    color: #5f6368;
     font-size: 11px;
     font-weight: 600;
-    color: #5f6368;
+    letter-spacing: 0.5px;
     margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .code-block {
     background-color: #f8f9fa;
     border: 1px solid #e8eaed;
     border-radius: 4px;
-    padding: 8px;
     font-family: 'Courier New', monospace;
     font-size: 10px;
     line-height: 1.3;
     margin: 4px 0;
     overflow-x: auto;
+    padding: 8px;
     position: relative;
     user-select: text;
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
+    user-select: text;
+    user-select: text;
+    user-select: text;
 }
 
 .code-block:hover {
@@ -148,19 +148,19 @@ body {
 }
 
 .copy-button {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    background-color: #fff;
+    background-color: #ffffff;
     border: 1px solid #dadce0;
     border-radius: 3px;
-    padding: 2px 6px;
-    font-size: 9px;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s;
     color: #5f6368;
+    cursor: pointer;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 9px;
+    opacity: 0;
+    padding: 2px 6px;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    transition: opacity 0.2s;
 }
 
 
@@ -171,22 +171,22 @@ body {
 
 .copy-button.copied {
     background-color: #e8f5e8;
-    color: #137333;
     border-color: #81c995;
+    color: #137333;
 }
 
 .code-inline {
     background-color: #f1f3f4;
-    padding: 2px 4px;
     border-radius: 3px;
+    color: #d73027;
+    cursor: text;
     font-family: 'Courier New', monospace;
     font-size: 10px;
-    color: #d73027;
+    padding: 2px 4px;
     user-select: text;
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    cursor: text;
+    user-select: text;
+    user-select: text;
+    user-select: text;
 }
 
 .code-inline:hover {
@@ -216,18 +216,18 @@ body {
 }
 
 .description {
-    font-size: 10px;
     color: #5f6368;
+    font-size: 10px;
     margin: 2px 0;
 }
 
 .example-row {
-    display: flex;
-    justify-content: flex-start;
     align-items: center;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
     margin: 3px 0;
     padding: 2px 0;
-    gap: 8px;
 }
 
 .wide-section {
@@ -240,35 +240,35 @@ body {
 
 .two-column-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 10px;
+    grid-template-columns: 1fr 1fr;
 }
 
 .one-column-grid {
     display: grid;
-    grid-template-columns: 1fr;
     gap: 10px;
+    grid-template-columns: 1fr;
 }
 
 .components-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
     gap: var(--gap-width);
+    grid-template-columns: 1fr 1fr 1fr;
     margin-bottom: 14px;
 }
 
 .components-grid-data-management {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: var(--gap-width);
+    grid-template-columns: 1fr 1fr;
     margin-bottom: 14px;
 }
 
 .components-second-row {
     display: grid;
+    gap: var(--gap-width);
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    gap: var(--gap-width);
 }
 
 .container-span {
@@ -280,16 +280,16 @@ body {
     background-color: #fff3cd;
     border: 1px solid #ffeaa7;
     border-radius: 4px;
-    padding: 8px;
     margin: 6px 0;
+    padding: 8px;
 }
 
 .tip {
     background-color: #d1ecf1;
     border-left: 4px solid #bee5eb;
-    padding: 6px 8px;
-    margin: 4px 0;
     font-size: 10px;
+    margin: 4px 0;
+    padding: 6px 8px;
 }
 
 /* ========== Grids ========== */
@@ -318,8 +318,8 @@ body {
 }
 
 .one-column-grid {
-  grid-template-columns: 1fr;
   gap: 10px;
+  grid-template-columns: 1fr;
 }
 
 .components-second-row {
@@ -344,23 +344,23 @@ body {
 /* ========== Sections ========== */
 .section {
   background-color: var(--bg-white);
-  padding: 12px;
-  border-radius: 6px;
   border: 1px solid var(--border-color);
+  border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 12px;
 }
 
 .section-header {
   background-color: var(--bg-light-alt);
-  padding: 8px 12px;
-  margin: -12px -12px 10px;
   border-radius: 6px 6px 0 0;
+  margin: -12px -12px 10px;
+  padding: 8px 12px;
 }
 
 .section-title {
+  color: var(--primary-color);
   font-size: 14px;
   font-weight: 600;
-  color: var(--primary-color);
   margin: 0;
 }
 
@@ -374,34 +374,34 @@ body {
 }
 
 .subsection-title {
+  color: var(--text-muted);
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-muted);
+  letter-spacing: 0.5px;
   margin-bottom: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .subsection-description {
+  color: #666666;
+  font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #666;
-  margin-bottom: 8px;
   line-height: 1.3;
+  margin-bottom: 8px;
   padding: 0 2px;
-  font-family: 'Inter', sans-serif;
 }
 
 /* ========== Code Blocks ========== */
 .code-block,
 .code-inline {
   background-color: var(--bg-light-alt);
+  border: 1px solid #e8eaed;
+  border-radius: 4px;
   font-family: var(--font-code);
   font-size: 10px;
-  user-select: text;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #e8eaed;
   line-height: 1.3;
+  padding: 8px;
+  user-select: text;
 }
 
 .code-block {
@@ -416,9 +416,9 @@ body {
 }
 
 .code-inline {
-  padding: 2px 4px;
   color: #d73027;
   cursor: text;
+  padding: 2px 4px;
 }
 
 .code-inline:hover {
@@ -426,8 +426,8 @@ body {
 }
 
 .description {
-  font-size: 10px;
   color: var(--text-muted);
+  font-size: 10px;
   margin: 2px 0;
 }
 
@@ -437,19 +437,19 @@ body {
 }
 
 .copy-button {
-  position: absolute;
-  top: 4px;
-  right: 4px;
   background-color: var(--bg-white);
   border: 1px solid #dadce0;
   border-radius: 3px;
-  padding: 2px 6px;
-  font-size: 9px;
   color: var(--text-muted);
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s;
   font-family: var(--font-base);
+  font-size: 9px;
+  opacity: 0;
+  padding: 2px 6px;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  transition: opacity 0.2s;
 }
 
 .code-block-container:hover .copy-button {
@@ -463,15 +463,15 @@ body {
 
 .copy-button.copied {
   background-color: #e8f5e8;
-  color: var(--accent-green);
   border-color: #81c995;
+  color: var(--accent-green);
 }
 
 /* ========== Examples ========== */
 .example-row,
 .example-row-date-picker {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 8px;
   margin: 3px 0;
   padding: 2px 0;
@@ -487,20 +487,20 @@ body {
   background-color: #fff3cd;
   border: 1px solid #ffeaa7;
   border-radius: 4px;
-  padding: 8px;
   margin: 6px 0;
+  padding: 8px;
 }
 
 .tip {
   background-color: #d1ecf1;
   border-left: 4px solid #bee5eb;
-  padding: 6px 8px;
-  margin: 4px 0;
   font-size: 10px;
+  margin: 4px 0;
+  padding: 6px 8px;
 }
 
 /* ========== Media Queries ========== */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .main-grid,
   .two-column-grid-main,
   .two-column-grid,
@@ -532,8 +532,8 @@ body {
   }
 
   .section {
-    break-inside: avoid;
     box-shadow: none;
+    break-inside: avoid;
   }
 
   .header {
@@ -547,38 +547,38 @@ body {
 .selector-icon,
 .navigation-icon,
 .layout-example-image {
-  object-fit: contain;
-  transition: opacity 0.2s;
-  border-radius: 4px;
   background-color: var(--bg-light);
   border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  object-fit: contain;
   opacity: 0.8;
+  transition: opacity 0.2s;
 }
 
 .layout-icon {
-  width: 60px;
   height: 60px;
+  width: 60px;
 }
 
 .selector-icon {
-  width: 220px;
   height: 50px;
+  width: 220px;
 }
 
 .selector-icon-date-picker {
-  width: 100px;
   height: 100px;
+  width: 100px;
 }
 
 .navigation-icon,
 .layout-example-image {
-  width: 180px;
   height: 96px;
+  width: 180px;
 }
 
 .grid-layout-example-image {
-  width: 240px;
   height: 160px;
+  width: 240px;
 }
 
 .layout-icon:hover,
@@ -596,9 +596,9 @@ body {
 
 .navigation-content,
 .layout-examples-content {
+  align-items: flex-start;
   display: flex;
   gap: var(--gap-width);
-  align-items: flex-start;
 }
 
 .layout-examples-content {
@@ -607,25 +607,25 @@ body {
 
 .navigation-code,
 .layout-examples-right {
-  flex: 0.55;
-  min-width: 280px;
-  display: flex;
   align-items: center;
+  display: flex;
+  flex: 0.55;
   justify-content: center;
+  min-width: 280px;
 }
 
 .navigation-image,
 .layout-examples-left {
-  flex: 0.45;
   display: flex;
+  flex: 0.45;
   gap: 40px;
 }
 
 /* ========== Misc ========== */
 .selectors-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: var(--gap-width);
+  grid-template-columns: 1fr 1fr;
 }
 
 .navigation-tips {
@@ -645,8 +645,8 @@ body {
 }
 
 .code-block-container-layout {
-  position: relative;
   flex: 0.5;
+  position: relative;
 }
 
 .code-block-container-layout:hover .copy-button {
