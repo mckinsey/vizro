@@ -1,6 +1,7 @@
 .card-kpi {
   border-left: 4px solid var(--bs-secondary);
   height: 100%;
+  padding: 0.75rem;
 }
 
 /* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
