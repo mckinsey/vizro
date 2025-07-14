@@ -219,6 +219,19 @@ Current logic:
     width: 260px;
     font-size: 12px;
   }
+
+  #nav-control-panel .accordion-button,
+  #nav-control-panel .form-label,
+  #nav-control-panel .form-check-label,
+  #nav-control-panel .mantine-DatePickerInput-input,
+  #nav-control-panel .slider-text-input-field,
+  #nav-control-panel div.Select--multi .Select-value {
+    font-size: 12px;
+  }
+
+  #nav-control-panel .mantine-DatePickerInput-input {
+    min-height: 40px;
+  }
 }
 
 @media screen and (width <= 576px) and (orientation: portrait) {
