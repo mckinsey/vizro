@@ -5,5 +5,6 @@ from vizro.models._components.form.dropdown import Dropdown
 from vizro.models._components.form.radio_items import RadioItems
 from vizro.models._components.form.range_slider import RangeSlider
 from vizro.models._components.form.slider import Slider
+from vizro.models._components.form.switch import Switch
 
-__all__ = ["Button", "Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider"]
+__all__ = ["Button", "Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider", "Switch"]
