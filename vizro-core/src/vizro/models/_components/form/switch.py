@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -11,7 +11,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_value
 from vizro.models._models_utils import warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, StrictBool, _IdProperty
+from vizro.models.types import ActionType, _IdProperty
 
 
 class Switch(VizroBaseModel):
