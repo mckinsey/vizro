@@ -18,7 +18,7 @@ class Button(VizroBaseModel):
 
     Args:
         type (Literal["button"]): Defaults to `"button"`.
-        text (str): Text to be displayed on button. Defaults to `"Click me!"`.
+        text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
@@ -34,7 +34,7 @@ class Button(VizroBaseModel):
     """
 
     type: Literal["button"] = "button"
-    text: str = Field(default="Click me!", description="Text to be displayed on button.")
+    text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     actions: Annotated[
         list[ActionType],
@@ -52,6 +52,8 @@ class Button(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
+        # AfterValidator(warn_description_without_title) is not needed here because 'text' is mandatory and
+        # must have at least one character.
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the button text.

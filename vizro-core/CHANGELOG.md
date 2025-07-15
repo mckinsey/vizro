@@ -11,6 +11,30 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.43'></a>
+
+# 0.1.43 — 2025-07-09
+
+## Highlights ✨
+
+- Introduce the "Select All" option for `Checklist` and multi-select `Dropdown`. Easily select or deselect all options with a single click within the selector. ([#1000](https://github.com/mckinsey/vizro/pull/1000))
+
+- The current state of controls on a page in your app can be shared by sharing its URL. Set `show_in_url=True` in `Filter` and `Parameter` to include their values in the URL. See the [user guide on filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#show-in-url) for more information. ([#1243](https://github.com/mckinsey/vizro/pull/1243))
+
+## Removed
+
+- Simplified the `left-side` container by removing the extra `left-sidebar` and `left-main` containers. The left-side now directly uses `nav-bar` and `nav-control-panel` as its children. ([#1268](https://github.com/mckinsey/vizro/pull/1268))
+
+## Added
+
+- Add `custom_header` static method to `Dashboard`, allowing users to inject custom Dash components into a dedicated area of the dashboard header. See the [user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/#customize-the-header) for details. ([#1267](https://github.com/mckinsey/vizro/pull/1267))
+
+- Emit a warning in all models when `description` is set but `title` is missing or empty. ([#1275](https://github.com/mckinsey/vizro/pull/1275))
+
+## Changed
+
+- Update several header class names for improved clarity and consistency. See this [PR](https://github.com/mckinsey/vizro/pull/1267) for the updated selector class names and ensure to update any custom CSS targeting the old ones.
+
 <a id='changelog-0.1.42'></a>
 
 # 0.1.42 — 2025-06-27

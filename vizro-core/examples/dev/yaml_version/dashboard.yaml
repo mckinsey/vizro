@@ -555,6 +555,7 @@ pages:
       - column: sepal_width
         selector:
           type: range_slider
+          title: Sepal Width
           description: |
             Use the slider to filter flowers by sepal width.
             Only samples within the selected range will be shown.

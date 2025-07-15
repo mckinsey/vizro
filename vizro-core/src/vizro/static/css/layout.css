@@ -19,7 +19,7 @@
   flex-direction: column;
   gap: 1.5rem;
   overflow: auto;
-  padding: 24px 24px 0;
+  padding: 20px 20px 0;
   width: 324px;
 }
 
@@ -36,7 +36,7 @@
   flex-direction: column;
   gap: 1.25rem;
   overflow: auto;
-  padding: 24px;
+  padding: 20px;
   width: 100%;
 }
 
@@ -54,7 +54,7 @@
   height: 60px;
   justify-content: space-between;
   min-height: 0;
-  padding: 0 24px;
+  padding: 0 20px;
 }
 
 #header:not(:empty) {
@@ -112,8 +112,8 @@
 #nav-bar {
   border-right: 1px solid var(--bs-border-color);
   display: flex;
-  flex-direction: column;
-  width: 64px;
+  justify-content: flex-start;
+  width: 60px;
 }
 
 #dashboard-container div[hidden] {
@@ -167,7 +167,7 @@
 #collapse-icon-outer {
   display: flex;
   justify-content: center;
-  padding-top: 28px;
+  padding-top: 22px;
   width: 0;
 }
 
@@ -204,7 +204,15 @@ Current logic:
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
   #collapse-icon-outer {
-    padding-top: 20px;
+    padding-top: 16px;
+  }
+
+  #nav-control-panel {
+    padding-top: 16px;
+  }
+
+  #nav-bar {
+    padding-top: 4px;
   }
 
   #header,
@@ -250,8 +258,16 @@ Current logic:
     z-index: 10;
   }
 
+  #nav-control-panel {
+    padding-top: 12px;
+  }
+
+  #nav-bar {
+    padding-top: 0;
+  }
+
   #left-side:has(#nav-control-panel:not([hidden])) {
-    height: calc(100vh - 48px);
+    height: calc(100vh - 40px);
     position: absolute;
     width: 100vw;
     z-index: 5;
