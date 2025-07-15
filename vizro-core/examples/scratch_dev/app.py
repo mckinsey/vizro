@@ -1,159 +1,26 @@
 """Dev app to try things out."""
 
-""" FOR REVIEWERS:
-To reproduce the #1494 bug on the main:
-1. Open the first page
-2. Set the number of rows to 150 (bottom slider)
-3. Select ["setosa", "versicolor"] in the multi-select dropdown
-4. Select "versicolor" in the single-select dropdown
-5. Refresh the page -> The value is unexpectedly reset to "setosa" in the multi-select dropdown and clear
-   in the single-select dropdown. The value should remain the same as it was before the refresh.
-
-To reproduce the #1637 bug on the main:
-1. Open the fourth page
-2. Set the number of rows to 150 (bottom slider)
-3. Select ["setosa", "versicolor"] in the multi-select dropdown
-4. Refresh the page -> The dropdown value is incorrect, and there's also one more http request that happened after the
-   OPL (see the browser devtools console).
-"""
-
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro import Vizro
-from vizro.managers import data_manager
+
+iris = px.data.iris()
 
 
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
-
-
-data_manager["dynamic_df"] = lambda number_of_rows=10: px.data.iris().head(number_of_rows)
-
-dropdown_dynamic_data_bug = vm.Page(
-    title="Dropdown dynamic data bug",
+page = vm.Page(
+    title="Dynamic data from URL",
     components=[
         vm.Graph(
-            id="page_1_graph",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
-        ),
+            id="page_3_graph_1",
+            figure=px.scatter(iris, x="sepal_length", y="petal_length", color="species"),
+        )
     ],
     controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(title="Multi-select dropdown", description="Select species")),
-        vm.Filter(
-            column="species",
-            selector=vm.Dropdown(multi=False, title="Single-select dropdown", description="Select species"),
-        ),
-        vm.Parameter(
-            targets=["page_1_graph.data_frame.number_of_rows"],
-            selector=vm.Slider(
-                title="Number of Rows",
-                min=10,
-                max=150,
-            ),
-        ),
+        vm.Filter(column="species", selector=vm.Checklist(show_select_all=False)),
     ],
 )
 
-dropdown_preset_value = vm.Page(
-    title="Dropdown preset value",
-    components=[
-        vm.Graph(
-            id="page_2_graph",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value=["setosa", "versicolor"])),
-        vm.Filter(
-            column="species",
-            selector=vm.Dropdown(multi=False, value="versicolor"),
-        ),
-        vm.Parameter(
-            targets=["page_2_graph.data_frame.number_of_rows"],
-            selector=vm.Slider(
-                title="Number of Rows",
-                min=10,
-                max=150,
-            ),
-        ),
-    ],
-)
-
-dropdown_url = vm.Page(
-    title="Dropdown in URL",
-    components=[
-        vm.Graph(
-            id="page_3_graph",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            id="page_3_filter_1",
-            show_in_url=True,
-            column="species",
-        ),
-        vm.Filter(
-            id="page_3_filter_2",
-            show_in_url=True,
-            column="species",
-            selector=vm.Dropdown(multi=False),
-        ),
-        vm.Parameter(
-            targets=["page_3_graph.data_frame.number_of_rows"],
-            selector=vm.Slider(
-                title="Number of Rows",
-                min=10,
-                max=150,
-            ),
-        ),
-    ],
-)
-
-
-page_1637_bug_ticket = vm.Page(
-    title="1637 Bug Ticket",
-    components=[
-        vm.Graph(
-            id="page_4_graph_1",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
-        ),
-        vm.Graph(
-            id="page_4_graph_2",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species"),
-        vm.Parameter(
-            targets=["page_4_graph_1.data_frame.number_of_rows"],
-            selector=vm.Slider(
-                title="Number of Rows",
-                min=10,
-                max=150,
-            ),
-        ),
-    ],
-)
-
-
-dashboard = vm.Dashboard(
-    pages=[
-        dropdown_dynamic_data_bug,
-        dropdown_preset_value,
-        dropdown_url,
-        page_1637_bug_ticket,
-    ]
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run()

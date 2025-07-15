@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 from dash import html
 
+from vizro.models._models_utils import validate_icon
+
 __all__ = ["kpi_card", "kpi_card_reference"]
 
 
@@ -64,7 +66,7 @@ def kpi_card(
 
     header = dbc.CardHeader(
         [
-            html.P(icon, className="material-symbols-outlined") if icon else None,
+            html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None,
             html.H4(title, className="card-kpi-title"),
         ]
     )
@@ -144,7 +146,7 @@ def kpi_card_reference(  # noqa: PLR0913
 
     header = dbc.CardHeader(
         [
-            html.P(icon, className="material-symbols-outlined") if icon else None,
+            html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None,
             html.H4(title, className="card-kpi-title"),
         ]
     )
