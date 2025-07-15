@@ -146,7 +146,7 @@ class Dropdown(VizroBaseModel):
         value = self.value if self.value is not None else default_value
 
         if self.multi:
-            self._define_clientside_callback()
+            self._update_dropdown_select_all()
             value = value if isinstance(value, list) else [value]  # type: ignore[assignment]
             dict_options = [
                 {
@@ -205,7 +205,7 @@ class Dropdown(VizroBaseModel):
         # https://github.com/plotly/dash/pull/1970.
         if self.multi:
             # Add the clientside callback as the callback has to be defined in the page.build process.
-            self._define_clientside_callback()
+            self._update_dropdown_select_all()
             # hidden_select_all_dropdown is needed to ensure that clientside callback doesn't raise the no output error.
             hidden_select_all_dropdown = [dcc.Dropdown(id=f"{self.id}_select_all", style={"display": "none"})]
             placeholder_model = dcc.Checklist
@@ -236,7 +236,7 @@ class Dropdown(VizroBaseModel):
     def build(self):
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
 
-    def _define_clientside_callback(self):
+    def _update_dropdown_select_all(self):
         """Define the clientside callbacks in the page build phase responsible for handling the select_all."""
         clientside_callback(
             ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
