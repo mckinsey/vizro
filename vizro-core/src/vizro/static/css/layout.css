@@ -249,6 +249,7 @@ Current logic:
 
   #nav-control-panel {
     width: 324px;
+    padding-top: 12px;
   }
 
   #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
@@ -256,10 +257,6 @@ Current logic:
     #collapse-icon {
     right: -7px;
     z-index: 10;
-  }
-
-  #nav-control-panel {
-    padding-top: 12px;
   }
 
   #nav-bar {
