@@ -270,4 +270,6 @@ dashboard = vm.Dashboard(
     title="Vizro dashboard for integration testing",
     pages=[page, page1, page2, page3],
 )
-Vizro().build(dashboard).run()
+
+if __name__ == "__main__":
+    Vizro().build(dashboard).run(debug=True)
