@@ -97,7 +97,7 @@ class TestTabsBuildMethod:
         result = vm.Tabs(
             id="tabs-id",
             title="Tabs Title",
-            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+            description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
             tabs=containers,
         ).build()
 

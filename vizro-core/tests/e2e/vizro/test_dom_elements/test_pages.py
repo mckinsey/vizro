@@ -42,10 +42,10 @@ def test_404_page(dash_br):
 
 
 @pytest.mark.parametrize(
-    "dash_br",
-    [{"port": cnst.DEFAULT_PORT, "path": "?unexpercted_param=parampampam"}],
-    indirect=["dash_br"],
+    "dash_br_driver",
+    [{"path": "?unexpercted_param=parampampam"}],
+    indirect=["dash_br_driver"],
 )
-def test_unexpected_query_parameters_page(dash_br):
+def test_unexpected_query_parameters_page(dash_br_driver):
     """Test opening page with not existent parameter."""
-    graph_load_waiter(dash_br)
+    graph_load_waiter(dash_br_driver)

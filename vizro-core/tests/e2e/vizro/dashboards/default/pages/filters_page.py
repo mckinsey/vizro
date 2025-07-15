@@ -73,12 +73,16 @@ filters_page = vm.Page(
     ],
     controls=[
         vm.Filter(
+            id=cnst.DROPDOWN_FILTER_CONTROL_ID,
             column="species",
+            show_in_url=True,
             targets=[cnst.SCATTER_GRAPH_ID, cnst.BOX_GRAPH_ID],
             selector=vm.Dropdown(id=cnst.DROPDOWN_FILTER_FILTERS_PAGE),
         ),
         vm.Filter(
+            id=cnst.RADIO_ITEMS_FILTER_CONTROL_ID,
             column="species",
+            show_in_url=True,
             targets=[cnst.SCATTER_GRAPH_ID, cnst.BOX_GRAPH_ID],
             selector=vm.RadioItems(
                 id=cnst.RADIO_ITEMS_FILTER_FILTERS_PAGE, options=["setosa", "versicolor", "virginica"]
