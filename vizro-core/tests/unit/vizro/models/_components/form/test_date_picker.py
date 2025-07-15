@@ -23,7 +23,6 @@ class TestDatePickerInstantiation:
         assert date_picker.min is None
         assert date_picker.max is None
         assert date_picker.value is None
-        assert date_picker.valueFormat == "MMM D, YYYY"
         assert date_picker.title == ""
         assert date_picker.description is None
         assert date_picker.actions == []
@@ -46,7 +45,6 @@ class TestDatePickerInstantiation:
         assert date_picker.min == date(2024, 1, 1)
         assert date_picker.max == date(2024, 12, 31)
         assert date_picker.value == [date(2024, 3, 1), date(2024, 4, 1)]
-        assert date_picker.valueFormat == "MMM D, YYYY"
         assert date_picker.title == "Title"
         assert date_picker.actions == []
         assert date_picker.range is True
@@ -156,7 +154,6 @@ class TestBuildMethod:
             min="2023-01-01",
             max="2023-07-01",
             value="2023-01-05",
-            valueFormat="MMM D, YYYY",
             range=False,
             title="Title",
             extra={"clearable": True, "placeholder": "Select a date"},
@@ -190,7 +187,6 @@ class TestBuildMethod:
             min="2023-01-01",
             max="2023-07-01",
             value="2023-01-05",
-            valueFormat="MMM D, YYYY",
             range=False,
             title="Title",
             description=vm.Tooltip(text="Test description", icon="Info", id="info"),
