@@ -787,7 +787,7 @@ toast = html.Div(
             html.P("This is the content of the toast", className="mb-0"),
             id="dbc-gallery-x-auto-toast",
             header="This is the header",
-            icon="primary",
+            icon="Primary",
             duration=4000,
         ),
     ],

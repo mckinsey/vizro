@@ -67,7 +67,7 @@ class TestUserInputBuild:
         user_input = UserInput(
             id="user-input-id",
             title="Title",
-            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+            description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
             placeholder="Placeholder",
         ).build()
 
