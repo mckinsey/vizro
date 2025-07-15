@@ -29,7 +29,8 @@ class Checklist(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        show_select_all (Optional[bool]): Optional flag to include 'Select All' option. Defaults to True.
+        show_select_all (Optional[bool]): Whether to display the 'Select All' option that allows users to select or
+            deselect all available options with a single click. Defaults to `True`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
@@ -108,7 +109,7 @@ class Checklist(VizroBaseModel):
 
         if self.show_select_all:
             # Add the clientside callback only if show_select_all is True
-            self._define_clientside_callback()
+            self._update_checklist_select_all()
             select_all_checkbox = dbc.Checkbox(
                 id=f"{self.id}_select_all",
                 value=len(value) == len(dict_options),  # type: ignore[arg-type]
@@ -157,7 +158,7 @@ class Checklist(VizroBaseModel):
     def build(self):
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
 
-    def _define_clientside_callback(self):
+    def _update_checklist_select_all(self):
         """Define the clientside callbacks in the page build phase responsible for handling the select_all."""
         clientside_callback(
             ClientsideFunction(namespace="checklist", function_name="update_checklist_select_all"),
