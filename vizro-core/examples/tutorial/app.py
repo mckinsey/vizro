@@ -108,8 +108,8 @@ dashboard = vm.Dashboard(
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
-                vm.NavLink(label="Data", pages=["Data"], icon="database"),
-                vm.NavLink(label="Charts", pages=["Summary", "Analysis"], icon="bar_chart"),
+                vm.NavLink(label="Data", pages=["Data"], icon="Database"),
+                vm.NavLink(label="Charts", pages=["Summary", "Analysis"], icon="Bar Chart"),
             ]
         )
     ),

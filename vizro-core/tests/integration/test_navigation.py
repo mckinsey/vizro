@@ -68,8 +68,8 @@ navbar_flat_cases = [
         lambda: vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
-                    vm.NavLink(label="Page 1", pages=["Page 1"], icon="filter_1"),
-                    vm.NavLink(label="Page 2", pages=["Page 2"], icon="filter_2"),
+                    vm.NavLink(label="Page 1", pages=["Page 1"], icon="Filter 1"),
+                    vm.NavLink(label="Page 2", pages=["Page 2"], icon="Filter 2"),
                 ]
             )
         ),
@@ -85,7 +85,7 @@ navbar_flat_cases = [
     (
         lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.NavBar()),
         lambda: vm.Navigation(
-            nav_selector=vm.NavBar(items=[vm.NavLink(label="Page 1", pages=["Page 1"], icon="filter_1")])
+            nav_selector=vm.NavBar(items=[vm.NavLink(label="Page 1", pages=["Page 1"], icon="Filter 1")])
         ),
     ),
 ]
@@ -100,8 +100,8 @@ navbar_grouped_cases = [
         lambda: vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
-                    vm.NavLink(label="Group 1", pages=["Page 1"], icon="filter_1"),
-                    vm.NavLink(label="Group 2", pages=["Page 2"], icon="filter_2"),
+                    vm.NavLink(label="Group 1", pages=["Page 1"], icon="Filter 1"),
+                    vm.NavLink(label="Group 2", pages=["Page 2"], icon="Filter 2"),
                 ]
             )
         ),
@@ -110,7 +110,7 @@ navbar_grouped_cases = [
         lambda: vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
-                    vm.NavLink(label="Group 1", pages={"Subgroup 1": ["Page 1"]}, icon="dashboard"),
+                    vm.NavLink(label="Group 1", pages={"Subgroup 1": ["Page 1"]}, icon="Dashboard"),
                     vm.NavLink(label="Group 2", pages={"Subgroup 2": ["Page 2"]}),
                 ]
             )
@@ -118,8 +118,8 @@ navbar_grouped_cases = [
         lambda: vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
-                    vm.NavLink(label="Group 1", pages={"Subgroup 1": ["Page 1"]}, icon="dashboard"),
-                    vm.NavLink(label="Group 2", pages={"Subgroup 2": ["Page 2"]}, icon="filter_2"),
+                    vm.NavLink(label="Group 1", pages={"Subgroup 1": ["Page 1"]}, icon="Dashboard"),
+                    vm.NavLink(label="Group 2", pages={"Subgroup 2": ["Page 2"]}, icon="Filter 2"),
                 ]
             )
         ),

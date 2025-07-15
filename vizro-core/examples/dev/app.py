@@ -57,7 +57,7 @@ example_cards = [
         data_frame=df_kpi,
         value_column="Actual",
         title="KPI with icon",
-        icon="shopping_cart",
+        icon="Shopping Cart",
     ),
 ]
 
@@ -88,7 +88,7 @@ example_reference_cards = [
         value_column="Actual",
         reference_column="Reference",
         title="KPI reference with icon",
-        icon="shopping_cart",
+        icon="Shopping Cart",
     ),
 ]
 
