@@ -24,7 +24,7 @@ class TestKPICard:
         result = kpi_card(
             data_frame=df,
             value_column="Actual",
-            icon="shopping_cart",
+            icon="Shopping Cart",
             title="sales",
             value_format="${value:0.2f}",
             agg_func="mean",
@@ -135,7 +135,7 @@ class TestKPICardReference:
             data_frame=df,
             value_column="Actual",
             reference_column="Reference",
-            icon="shopping_cart",
+            icon="Shopping Cart",
             title="sales",
             # A and B distinguish the two strings to make sure the kpi_card_reference function isn't mixing them up
             value_format="A {value} is +{delta:.1f} ({delta_relative}:%) vs. {reference:.1f}",

@@ -241,7 +241,7 @@ class TestChecklistBuild:
             options=["A", "B", "C"],
             value=["A"],
             title="Title",
-            description=Tooltip(text="Test description", icon="info", id="info"),
+            description=Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
 
         expected_description = [

@@ -25,7 +25,7 @@ class TestNavLinkInstantiation:
         assert nav_link.pages == []
 
     def test_nav_link_mandatory_and_optional(self, pages_as_list):
-        nav_link = vm.NavLink(id="nav_link", icon="home", label="Homepage", pages=pages_as_list)
+        nav_link = vm.NavLink(id="nav_link", icon="Home", label="Homepage", pages=pages_as_list)
 
         assert nav_link.id == "nav_link"
         assert nav_link.label == "Homepage"
@@ -76,7 +76,7 @@ class TestNavLinkBuildMethod:
 
     def test_nav_link_active(self, pages, request):
         pages = request.getfixturevalue(pages)
-        nav_link = vm.NavLink(id="nav-link", label="Label", icon="icon", pages=pages)
+        nav_link = vm.NavLink(id="nav-link", label="Label", icon="Icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
         expected_nav_link = dbc.NavLink(
@@ -97,7 +97,7 @@ class TestNavLinkBuildMethod:
 
     def test_nav_link_not_active(self, pages, request):
         pages = request.getfixturevalue(pages)
-        nav_link = vm.NavLink(id="nav-link", label="Label", icon="icon", pages=pages)
+        nav_link = vm.NavLink(id="nav-link", label="Label", icon="Icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
         expected_button = dbc.NavLink(
