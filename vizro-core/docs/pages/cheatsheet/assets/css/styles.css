@@ -267,12 +267,6 @@ body {
   padding: 2px 0;
 }
 
-.example-row:nth-child(even) {
-  background-color: var(--bg-light);
-  border-radius: 3px;
-  padding: 2px 4px;
-}
-
 .example-row-date-picker {
   width: 100px;
 }
@@ -414,6 +408,7 @@ body {
   display: flex;
   flex: 0.45;
   gap: 40px;
+  justify-content: center;
 }
 
 /* Misc */
@@ -426,4 +421,19 @@ body {
 .navigation-tips {
   display: grid;
   gap: 15px;
+}
+
+.grid-layout-example-image {
+  height: 182px;
+  width: 266px;
+}
+
+.layout-section-one {
+  display: flex;
+  flex-direction: row;
+}
+
+.vizro-docs-button {
+  display: flex;
+  gap: 350px;
 }
