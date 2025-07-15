@@ -35,7 +35,7 @@ class TestKPICard:
                 [
                     dbc.CardHeader(
                         [
-                            html.P("Shopping Cart", className="material-symbols-outlined"),
+                            html.P("shopping_cart", className="material-symbols-outlined"),
                             html.H4("sales", className="card-kpi-title"),
                         ]
                     ),
@@ -147,7 +147,7 @@ class TestKPICardReference:
             [
                 dbc.CardHeader(
                     [
-                        html.P("Shopping Cart", className="material-symbols-outlined"),
+                        html.P("shopping_cart", className="material-symbols-outlined"),
                         html.H4("sales", className="card-kpi-title"),
                     ]
                 ),
