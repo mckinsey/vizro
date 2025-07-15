@@ -193,7 +193,7 @@ class TestBuildMethod:
             valueFormat="MMM D, YYYY",
             range=False,
             title="Title",
-            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+            description=vm.Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),

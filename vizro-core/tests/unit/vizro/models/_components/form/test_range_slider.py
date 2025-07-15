@@ -458,7 +458,7 @@ class TestRangeSliderBuild:
             marks={1: "1", 5: "5", 10: "10"},
             value=[0, 10],
             title="Title",
-            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+            description=vm.Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
 
         assert_component_equal(range_slider, expected_range_slider_with_description)
