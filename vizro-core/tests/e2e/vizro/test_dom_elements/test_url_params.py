@@ -50,7 +50,7 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
 
 
 @pytest.mark.parametrize(
-    "dash_br_driver, expected_decoded_map, selected_radio_items_values, dropdown_options",
+    "dash_br_driver, expected_decoded_map, dropdown_values, selected_radio_items_values",
     [
         (
             {
@@ -61,8 +61,8 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
             },
-            ["setosa"],
             [["setosa", "versicolor", "virginica"], []],
+            ["setosa"],
         ),
         (
             {
@@ -73,8 +73,8 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["versicolor", "virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor",
             },
-            ["versicolor"],
             [["versicolor", "virginica"], ["SelectAll", "setosa"]],
+            ["versicolor"],
         ),
         (
             {
@@ -84,8 +84,8 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
             },
-            ["setosa"],
             [["setosa", "versicolor", "virginica"], []],
+            ["setosa"],
         ),
         (
             {
@@ -96,21 +96,21 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
             },
-            ["setosa"],
             [["setosa", "versicolor", "virginica"], []],
+            ["setosa"],
         ),
         (
             {
                 "path": f"{cnst.FILTERS_PAGE_PATH}?"
-                f"{cnst.DROPDOWN_FILTER_CONTROL_ID}=b64_WyJ2aXJnaW5pY2EiXQ&"  # ["virginica"]
+                f"{param_to_url(decoded_map={cnst.DROPDOWN_FILTER_CONTROL_ID: ['virginica']}, apply_on_keys=cnst.DROPDOWN_FILTER_CONTROL_ID)}&"  # noqa
                 f"{cnst.RADIO_ITEMS_FILTER_CONTROL_ID}=InZpcmdpbmljYSI",
             },  # valid + invalid values
             {
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
             },
-            ["setosa"],
             [["virginica"], ["SelectAll", "setosa", "versicolor"]],
+            ["setosa"],
         ),
     ],
     indirect=["dash_br_driver"],
@@ -122,7 +122,7 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
         "valid + invalid values",
     ],
 )
-def test_different_url_parameters(dash_br_driver, expected_decoded_map, selected_radio_items_values, dropdown_options):
+def test_different_url_parameters(dash_br_driver, expected_decoded_map, dropdown_values, selected_radio_items_values):
     params_dict_simple = get_url_params(dash_br_driver)
     assert_that(
         params_dict_simple,
@@ -150,8 +150,8 @@ def test_different_url_parameters(dash_br_driver, expected_decoded_map, selected
     check_selected_dropdown(
         dash_br_driver,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        expected_selected_options=dropdown_options[0],
-        expected_unselected_options=dropdown_options[1],
+        expected_selected_options=dropdown_values[0],
+        expected_unselected_options=dropdown_values[1],
     )
 
 
