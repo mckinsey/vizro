@@ -14,7 +14,7 @@ data = {
     "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Hannah", "Ian", "Jane"],
     "age": np.random.randint(20, 50, size=10),
     "signup_date": pd.date_range(start="2023-01-01", periods=10, freq="W"),
-    "is_active": np.random.choice([True, False], size=10),
+    "active": np.random.choice([True, False], size=10),
 }
 
 
@@ -26,7 +26,7 @@ page = vm.Page(
     components=[vm.AgGrid(figure=dash_ag_grid(df))],
     controls=[
         vm.Filter(
-            column="is_active",
+            column="active",
             selector=vm.Switch(
                 value=False,
                 label="Show active accounts",

@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable `vm.Switch` model as a selectors for `Filter` and `Parameter`. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Enable `vm.Switch` model as a new selector for `Filter` and `Parameter`. ([#1286](https://github.com/mckinsey/vizro/pull/1286))
 
 <!--
 ### Changed

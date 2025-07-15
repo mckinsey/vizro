@@ -33,6 +33,7 @@ SELECTORS = {
 }
 CategoricalSelectorType = Union[Dropdown, Checklist, RadioItems]
 NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
+BooleanSelectorType = Switch
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
@@ -195,21 +196,7 @@ class Filter(VizroBaseModel):
                     break
 
         # Set appropriate properties for the selector.
-        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            self.selector = cast(NumericalTemporalSelectorType, self.selector)
-            _min, _max = self._get_min_max(targeted_data)
-            # Note that manually set self.selector.min/max = 0 are Falsey but should not be overwritten.
-            if self.selector.min is None:
-                self.selector.min = _min
-            if self.selector.max is None:
-                self.selector.max = _max
-        elif isinstance(self.selector, SELECTORS["boolean"]):
-            if self.selector.value is None:
-                self.selector.value = False
-        else:
-            # Categorical selector.
-            self.selector = cast(CategoricalSelectorType, self.selector)
-            self.selector.options = self.selector.options or self._get_options(targeted_data)
+        self._set_selector_properties(targeted_data=targeted_data)
 
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (
@@ -364,3 +351,22 @@ class Filter(VizroBaseModel):
             page,
         )
         return [model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model))]
+
+    def _set_selector_properties(self, targeted_data: pd.DataFrame):
+        """Set appropriate properties on the selector based on its type."""
+        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
+            self.selector = cast(NumericalTemporalSelectorType, self.selector)
+            _min, _max = self._get_min_max(targeted_data)
+            # Note that manually set self.selector.min/max = 0 are Falsey but should not be overwritten.
+            if self.selector.min is None:
+                self.selector.min = _min
+            if self.selector.max is None:
+                self.selector.max = _max
+        elif isinstance(self.selector, SELECTORS["boolean"]):
+            self.selector = cast(BooleanSelectorType, self.selector)
+            if not self.selector.label:
+                self.selector.label = self.selector.title
+        else:
+            # Categorical selector.
+            self.selector = cast(CategoricalSelectorType, self.selector)
+            self.selector.options = self.selector.options or self._get_options(targeted_data)

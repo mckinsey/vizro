@@ -17,25 +17,25 @@ from vizro.models.types import ActionType, StrictBool, _IdProperty
 class Switch(VizroBaseModel):
     """Boolean single-option selector `Switch`.
 
-    Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter].
+    Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Args:
-        type (Literal["toggle_switch"]): Defaults to `"toggle_switch"`.
-        value (Optional[StrictBool]): See [`StrictBool`][vizro.models.types.StrictBool]. Defaults to `False`.
+        type (Literal["switch"]): Defaults to `"switch"`.
+        value (StrictBool): See [`StrictBool`][vizro.models.types.StrictBool]. Defaults to `False`.
         title (str): Title to be displayed. Defaults to `""`.
+        label: (str): Label to be displayed. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Switch` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["switch"] = "switch"
-    value: Annotated[Optional[StrictBool], AfterValidator(validate_value), Field(default=False, validate_default=True)]
+    value: Annotated[StrictBool, AfterValidator(validate_value), Field(default=False, validate_default=True)]
     title: str = Field(default="", description="Title to be displayed")
     label: str = Field(default="", description="Label to be displayed")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
@@ -61,9 +61,9 @@ class Switch(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
+                description="""Extra keyword arguments that are passed to `dbc.Switch` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.""",
             ),

@@ -50,10 +50,6 @@ For more information, refer to the API reference of the selector, or the documen
 
 - [`Switch`][vizro.models.Switch] based on [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/)
 
-!!! note
-
-    When configuring the [`Switch`][vizro.models.Switch] make sure to use it only on boolean type data.
-
 ## Add a tooltip
 
 The `description` argument enables you to add helpful context to your selector by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
