@@ -182,7 +182,7 @@ class TestRadioItemsBuild:
             id="radio_items",
             options=["A", "B", "C"],
             title="Title",
-            description=Tooltip(text="Test description", icon="info", id="info"),
+            description=Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
 
         expected_description = [

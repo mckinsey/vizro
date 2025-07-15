@@ -240,7 +240,7 @@ class TestContainerBuildMethod:
             title="Title",
             components=[vm.Button()],
             layout=vm.Grid(id="layout_id", grid=[[0]]),
-            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+            description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
         ).build()
 
         expected_description = [
