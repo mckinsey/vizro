@@ -237,6 +237,11 @@ Current logic:
     font-size: 12px;
   }
 
+  #nav-control-panel .rc-slider-tooltip-inner,
+  #nav-control-panel .rc-slider-mark-text {
+    font-size: 10px;
+  }
+
   #nav-control-panel .mantine-DatePickerInput-input {
     min-height: 40px;
   }
