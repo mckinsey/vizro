@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 from vizro.tables import dash_ag_grid
 
-# Create sample data
+# Sample data
 data = {
     "user_id": range(1, 11),
     "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Hannah", "Ian", "Jane"],
