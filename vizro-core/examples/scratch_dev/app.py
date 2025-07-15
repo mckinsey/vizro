@@ -2,6 +2,7 @@
 # check out https://github.com/mckinsey/vizro for more info about Vizro
 # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 import pandas as pd
+
 import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
@@ -271,5 +272,6 @@ dashboard = vm.Dashboard(
     pages=[page, page1, page2, page3],
 )
 
+
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run()

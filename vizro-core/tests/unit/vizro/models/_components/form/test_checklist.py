@@ -45,6 +45,7 @@ class TestChecklistInstantiation:
             "description": f"{checklist.description.id}-text.children",
         }
         assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
+        assert checklist.show_select_all is True
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -311,6 +312,39 @@ class TestChecklistBuild:
                         ),
                     ],
                     className="checklist-inline",
+                ),
+            ],
+        )
+        assert_component_equal(checklist, expected_checklist, keys_to_strip={"id"})
+
+    def test_checklist_build_without_select_all(self):
+        """Test that description arguments correctly builds without 'Select All' option."""
+        checklist = Checklist(
+            options=["A", "B", "C"],
+            value=["A"],
+            title="Title",
+            show_select_all=False,
+        ).build()
+
+        expected_checklist = html.Fieldset(
+            [
+                html.Legend([html.Span("Title"), None], className="form-label"),
+                html.Div(
+                    children=[
+                        None,
+                        dbc.Checklist(
+                            options=[
+                                {"label": "A", "value": "A"},
+                                {"label": "B", "value": "B"},
+                                {"label": "C", "value": "C"},
+                            ],
+                            value=["A"],
+                            inline=False,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                    ],
+                    className=None,
                 ),
             ],
         )
