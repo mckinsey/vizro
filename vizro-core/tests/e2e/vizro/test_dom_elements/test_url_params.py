@@ -8,6 +8,7 @@ from hamcrest import assert_that, equal_to
 
 
 def test_url_filters_encoding_and_page_refresh(dash_br):
+    """Verifies that URL params for filters are correctly encoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     # select 'virginica' for dropdown and 'versicolor' for radio_items
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
@@ -28,6 +29,7 @@ def test_url_filters_encoding_and_page_refresh(dash_br):
 
 
 def test_url_filters_decoding_and_navigate_to_page(dash_br):
+    """Verifies that URL params for filters could be correctly decoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     # select 'virginica' for dropdown and 'versicolor' for radio_items
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
@@ -55,7 +57,12 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
         (
             {
                 "path": f"{cnst.FILTERS_PAGE_PATH}?"
-                f"{param_to_url(decoded_map={cnst.DROPDOWN_FILTER_CONTROL_ID: ['setosa', 'versicolor', 'virginica']}, apply_on_keys=[cnst.DROPDOWN_FILTER_CONTROL_ID])}",  # noqa
+                f"""{
+                    param_to_url(
+                        decoded_map={cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"]},
+                        apply_on_keys=[cnst.DROPDOWN_FILTER_CONTROL_ID],
+                    )
+                }""",
             },
             {
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["setosa", "versicolor", "virginica"],
@@ -67,7 +74,15 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
         (
             {
                 "path": f"{cnst.FILTERS_PAGE_PATH}?"
-                f"{param_to_url(decoded_map={cnst.DROPDOWN_FILTER_CONTROL_ID: ['versicolor', 'virginica'], cnst.RADIO_ITEMS_FILTER_CONTROL_ID: 'versicolor'}, apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)}",  # noqa
+                f"""{
+                    param_to_url(
+                        decoded_map={
+                            cnst.DROPDOWN_FILTER_CONTROL_ID: ["versicolor", "virginica"],
+                            cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor",
+                        },
+                        apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS,
+                    )
+                }""",
             },
             {
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["versicolor", "virginica"],
@@ -102,7 +117,12 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
         (
             {
                 "path": f"{cnst.FILTERS_PAGE_PATH}?"
-                f"{param_to_url(decoded_map={cnst.DROPDOWN_FILTER_CONTROL_ID: ['virginica']}, apply_on_keys=cnst.DROPDOWN_FILTER_CONTROL_ID)}&"  # noqa
+                f"""{
+                    param_to_url(
+                        decoded_map={cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"]},
+                        apply_on_keys=cnst.DROPDOWN_FILTER_CONTROL_ID,
+                    )
+                }&"""
                 f"{cnst.RADIO_ITEMS_FILTER_CONTROL_ID}=InZpcmdpbmljYSI",
             },  # valid + invalid values
             {
@@ -123,6 +143,7 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
     ],
 )
 def test_different_url_parameters(dash_br_driver, expected_decoded_map, dropdown_values, selected_radio_items_values):
+    """Verifies different URL params combinations and that controls has correct values according to it."""
     params_dict_simple = get_url_params(dash_br_driver)
     assert_that(
         params_dict_simple,
@@ -156,6 +177,7 @@ def test_different_url_parameters(dash_br_driver, expected_decoded_map, dropdown
 
 
 def test_url_params_encoding_and_page_refresh(dash_br):
+    """Verifies that URL params for parameters are correctly encoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
     # select 0.6 for slider and [4, 7] for range_slider
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
@@ -173,6 +195,7 @@ def test_url_params_encoding_and_page_refresh(dash_br):
 
 
 def test_url_params_decoding_and_navigate_to_page(dash_br):
+    """Verifies that URL params for parameters could be correctly decoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
     # select 0.8 for slider and [6, 8] for range_slider
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=5), 1)
