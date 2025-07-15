@@ -18,6 +18,7 @@ dependencies = [
   "pytest-rerunfailures",
   "pytest-split",
   "pytest-json-ctrf",
+  "pytest-order",
   "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
