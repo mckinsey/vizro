@@ -12,9 +12,7 @@ tips = px.data.tips()
 gapminder = px.data.gapminder()
 iris = px.data.iris()
 iris2 = px.data.iris()
-iris2["date_column"] = pd.date_range(
-    start=pd.to_datetime("2024-01-01"), periods=len(iris), freq="D"
-)
+iris2["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(iris), freq="D")
 
 page = vm.Page(
     title="TABLE_INTERACTIONS_PAGE",
@@ -109,9 +107,7 @@ page1 = vm.Page(
         ),
         vm.Parameter(
             targets=["BOX_INTERACTIONS_ID.title"],
-            selector=vm.RadioItems(
-                id="RADIOITEM_INTER_PARAM", options=["red", "blue"], value="blue"
-            ),
+            selector=vm.RadioItems(id="RADIOITEM_INTER_PARAM", options=["red", "blue"], value="blue"),
         ),
     ],
 )

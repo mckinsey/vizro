@@ -224,8 +224,8 @@ Current logic:
 /* Apply specific styles for landscape orientation on small screen heights */
 @media screen and (height <= 576px) and (orientation: landscape) {
   #nav-control-panel {
-    width: 260px;
     font-size: 12px;
+    width: 260px;
   }
 
   #nav-control-panel .accordion-button,
