@@ -2,6 +2,7 @@
 # check out https://github.com/mckinsey/vizro for more info about Vizro
 # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 import pandas as pd
+import dash_bootstrap_components as dbc
 
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -274,4 +275,4 @@ dashboard = vm.Dashboard(
 
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
