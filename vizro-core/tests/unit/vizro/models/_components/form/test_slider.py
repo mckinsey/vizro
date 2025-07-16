@@ -329,7 +329,7 @@ class TestBuildMethod:
             step=1,
             value=5,
             title="Title",
-            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+            description=vm.Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
 
         assert_component_equal(slider, expected_slider_with_description)

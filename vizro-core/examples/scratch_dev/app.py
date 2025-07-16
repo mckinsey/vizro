@@ -1,159 +1,277 @@
-"""Dev app to try things out."""
-
-""" FOR REVIEWERS:
-To reproduce the #1494 bug on the main:
-1. Open the first page
-2. Set the number of rows to 150 (bottom slider)
-3. Select ["setosa", "versicolor"] in the multi-select dropdown
-4. Select "versicolor" in the single-select dropdown
-5. Refresh the page -> The value is unexpectedly reset to "setosa" in the multi-select dropdown and clear
-   in the single-select dropdown. The value should remain the same as it was before the refresh.
-
-To reproduce the #1637 bug on the main:
-1. Open the fourth page
-2. Set the number of rows to 150 (bottom slider)
-3. Select ["setosa", "versicolor"] in the multi-select dropdown
-4. Refresh the page -> The dropdown value is incorrect, and there's also one more http request that happened after the
-   OPL (see the browser devtools console).
-"""
+# Vizro is an open-source toolkit for creating modular data visualization applications.
+# check out https://github.com/mckinsey/vizro for more info about Vizro
+# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
+import pandas as pd
 
 import vizro.plotly.express as px
-import vizro.models as vm
 from vizro import Vizro
-from vizro.managers import data_manager
+import vizro.models as vm
+from vizro.actions import filter_interaction, export_data
+from vizro.tables import dash_data_table
 
+tips = px.data.tips()
+gapminder = px.data.gapminder()
+iris = px.data.iris()
+iris2 = px.data.iris()
+iris2["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(iris), freq="D")
 
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
-
-
-data_manager["dynamic_df"] = lambda number_of_rows=10: px.data.iris().head(number_of_rows)
-
-dropdown_dynamic_data_bug = vm.Page(
-    title="Dropdown dynamic data bug",
+page = vm.Page(
+    title="TABLE_INTERACTIONS_PAGE",
     components=[
-        vm.Graph(
-            id="page_1_graph",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
+        vm.Container(
+            title="container one",
+            # layout=vm.Flex(direction="column"),
+            components=[
+                vm.Table(
+                    id="TABLE_INTERACTIONS_ID",
+                    title="Table Country",
+                    figure=dash_data_table(
+                        id="dash_data_table_country",
+                        data_frame=gapminder,
+                    ),
+                    actions=[
+                        vm.Action(
+                            function=filter_interaction(
+                                targets=[
+                                    "LINE_INTERACTIONS_ID",
+                                ]
+                            )
+                        )
+                    ],
+                ),
+            ],
         ),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(title="Multi-select dropdown", description="Select species")),
-        vm.Filter(
-            column="species",
-            selector=vm.Dropdown(multi=False, title="Single-select dropdown", description="Select species"),
-        ),
-        vm.Parameter(
-            targets=["page_1_graph.data_frame.number_of_rows"],
-            selector=vm.Slider(
-                title="Number of Rows",
-                min=10,
-                max=150,
-            ),
-        ),
-    ],
-)
-
-dropdown_preset_value = vm.Page(
-    title="Dropdown preset value",
-    components=[
-        vm.Graph(
-            id="page_2_graph",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value=["setosa", "versicolor"])),
-        vm.Filter(
-            column="species",
-            selector=vm.Dropdown(multi=False, value="versicolor"),
-        ),
-        vm.Parameter(
-            targets=["page_2_graph.data_frame.number_of_rows"],
-            selector=vm.Slider(
-                title="Number of Rows",
-                min=10,
-                max=150,
-            ),
-        ),
-    ],
-)
-
-dropdown_url = vm.Page(
-    title="Dropdown in URL",
-    components=[
-        vm.Graph(
-            id="page_3_graph",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
+        vm.Container(
+            title="container two",
+            components=[
+                vm.Graph(
+                    id="LINE_INTERACTIONS_ID",
+                    figure=px.line(
+                        gapminder,
+                        title="Line Country",
+                        x="year",
+                        y="gdpPercap",
+                        markers=True,
+                    ),
+                ),
+            ],
         ),
     ],
     controls=[
         vm.Filter(
-            id="page_3_filter_1",
-            show_in_url=True,
-            column="species",
+            column="year",
+            targets=["TABLE_INTERACTIONS_ID"],
+            selector=vm.Dropdown(value=2007),
         ),
         vm.Filter(
-            id="page_3_filter_2",
-            show_in_url=True,
-            column="species",
-            selector=vm.Dropdown(multi=False),
-        ),
-        vm.Parameter(
-            targets=["page_3_graph.data_frame.number_of_rows"],
-            selector=vm.Slider(
-                title="Number of Rows",
-                min=10,
-                max=150,
-            ),
+            column="continent",
+            targets=["TABLE_INTERACTIONS_ID"],
+            selector=vm.RadioItems(options=["Europe", "Africa", "Americas"]),
         ),
     ],
 )
 
 
-page_1637_bug_ticket = vm.Page(
-    title="1637 Bug Ticket",
+page1 = vm.Page(
+    title="FILTER_INTERACTIONS_PAGE",
+    layout=vm.Grid(grid=[[0], [2], [1]]),
     components=[
         vm.Graph(
-            id="page_4_graph_1",
+            id="SCATTER_INTERACTIONS_ID",
             figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
+                custom_data=["species"],
             ),
+            actions=[
+                vm.Action(function=filter_interaction(targets=["BOX_INTERACTIONS_ID"])),
+            ],
         ),
+        vm.Card(id="CARD_INTERACTIONS_ID", text="### No data clicked."),
         vm.Graph(
-            id="page_4_graph_2",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS
+            id="BOX_INTERACTIONS_ID",
+            figure=px.box(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
             ),
         ),
     ],
     controls=[
-        vm.Filter(column="species"),
+        vm.Filter(
+            column="species",
+            targets=["BOX_INTERACTIONS_ID"],
+            selector=vm.Dropdown(id="DROPDOWN_INTER_FILTER"),
+        ),
         vm.Parameter(
-            targets=["page_4_graph_1.data_frame.number_of_rows"],
-            selector=vm.Slider(
-                title="Number of Rows",
-                min=10,
-                max=150,
-            ),
+            targets=["BOX_INTERACTIONS_ID.title"],
+            selector=vm.RadioItems(id="RADIOITEM_INTER_PARAM", options=["red", "blue"], value="blue"),
         ),
     ],
 )
 
 
+page2 = vm.Page(
+    title="FILTERS_PAGE",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    id="FILTERS_TAB_CONTAINER",
+                    title="FILTERS_TAB_CONTAINER",
+                    components=[
+                        vm.Container(
+                            id="FILTERS_COMPONENTS_CONTAINER",
+                            title="FILTERS_COMPONENTS_CONTAINER",
+                            layout=vm.Grid(grid=[[0, 1], [0, 1], [0, 2]]),
+                            components=[
+                                vm.Graph(
+                                    id="SCATTER_GRAPH_ID",
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="sepal_width",
+                                        height=450,
+                                    ),
+                                ),
+                                vm.Graph(
+                                    title="Where do we get more tips?",
+                                    figure=px.bar(tips, y="tip", x="day"),
+                                ),
+                                vm.Graph(
+                                    id="BOX_GRAPH_ID_2",
+                                    figure=px.box(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="sepal_width",
+                                    ),
+                                ),
+                            ],
+                        )
+                    ],
+                ),
+            ]
+        ),
+        vm.Graph(
+            id="BOX_GRAPH_ID",
+            figure=px.box(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="sepal_width",
+            ),
+        ),
+    ],
+)
+
+page3 = vm.Page(
+    title="EXTRAS_PAGE",
+    components=[
+        vm.Container(
+            extra={
+                "class_name": "bg-container",
+                "fluid": False,
+                "style": {"height": "900px"},
+            },
+            components=[
+                vm.Graph(
+                    figure=px.line(
+                        iris2,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="sepal_width",
+                    ),
+                ),
+                vm.Card(
+                    text="""
+    ![icon-top](assets/images/icons/content/features.svg)
+
+    Leads to the home page on click.
+    """,
+                    href="/",
+                    extra={"style": {"backgroundColor": "#377a6b"}},
+                ),
+                vm.Button(
+                    text="Export data",
+                    extra={"color": "success", "outline": True},
+                    actions=[
+                        vm.Action(
+                            function=export_data(
+                                file_format="csv",
+                            )
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                extra={
+                    "clearable": True,
+                    "placeholder": "Select an option...",
+                    "style": {"width": "150px"},
+                },
+            ),
+        ),
+        vm.Filter(
+            column="species",
+            selector=vm.RadioItems(
+                description="RADIOITEMS_TOOLTIP_TEXT",
+                options=["setosa", "versicolor", "virginica"],
+                extra={"inline": True},
+            ),
+        ),
+        vm.Filter(
+            column="species",
+            selector=vm.Checklist(
+                options=["setosa", "versicolor", "virginica"],
+                extra={"switch": True, "inline": True},
+            ),
+        ),
+        vm.Filter(
+            column="petal_width",
+            selector=vm.Slider(
+                step=0.5,
+                extra={"tooltip": {"placement": "bottom", "always_visible": True}},
+            ),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.RangeSlider(
+                step=1.0,
+                extra={
+                    "tooltip": {"placement": "bottom", "always_visible": True},
+                    "pushable": 20,
+                },
+            ),
+        ),
+        vm.Filter(
+            column="date_column",
+            selector=vm.DatePicker(
+                title="Custom styled date picker",
+                range=False,
+                extra={
+                    "size": "lg",
+                    "valueFormat": "YYYY/MM/DD",
+                    "placeholder": "Select a date",
+                },
+            ),
+        ),
+    ],
+)
 dashboard = vm.Dashboard(
-    pages=[
-        dropdown_dynamic_data_bug,
-        dropdown_preset_value,
-        dropdown_url,
-        page_1637_bug_ticket,
-    ]
+    title="Vizro dashboard for integration testing",
+    pages=[page, page1, page2, page3],
 )
+
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run()
