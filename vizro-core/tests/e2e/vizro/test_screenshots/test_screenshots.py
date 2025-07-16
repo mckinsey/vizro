@@ -323,7 +323,7 @@ def test_homepage_mobile(dash_br):
 
 @pytest.mark.mobile_screenshots
 @pytest.mark.parametrize(
-    "dash_br_driver", [({"path": cnst.FILTER_INTERACTIONS_PAGE})], ids=["mobile"], indirect=["dash_br_driver"]
+    "dash_br_driver", [({"path": f"/{cnst.FILTER_INTERACTIONS_PAGE}"})], ids=["mobile"], indirect=["dash_br_driver"]
 )
 @image_assertion
 def test_filter_interactions_page(dash_br_driver):
@@ -332,7 +332,7 @@ def test_filter_interactions_page(dash_br_driver):
 
 @pytest.mark.mobile_screenshots
 @pytest.mark.parametrize(
-    "dash_br_driver", [({"path": cnst.FILTER_INTERACTIONS_PAGE})], ids=["mobile"], indirect=["dash_br_driver"]
+    "dash_br_driver", [({"path": f"/{cnst.FILTER_INTERACTIONS_PAGE}"})], ids=["mobile"], indirect=["dash_br_driver"]
 )
 @image_assertion
 def test_filter_interactions_dark_theme_page(dash_br_driver):
