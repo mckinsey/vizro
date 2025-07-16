@@ -138,7 +138,7 @@ class Dropdown(VizroBaseModel):
     def __call__(self, options):
         dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
         # 24 characters is roughly the number of "A" characters you can fit comfortably on a line in the page dropdown
-        # (placed on the left-side width 280px). 15 is half this width for when the dropdown is in a container's controls.
+        # (placed on the left-side 280px width). 15 is the width for when the dropdown is in a container's controls.
         # "A" is representative of a slightly wider than average character:
         # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
         option_height = _calculate_option_height(dict_options, 15 if self._in_container else 24)
