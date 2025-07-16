@@ -45,7 +45,7 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="7-11 19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -105,7 +105,7 @@ The below examples shows a more involved use-case. We create and style a waterfa
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="20-36 43"}
         import pandas as pd
         import plotly.graph_objects as go
 

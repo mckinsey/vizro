@@ -13,7 +13,6 @@ import vizro.models as vm
 def expected_range_slider_default():
     return html.Div(
         [
-            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": None, "max": None}),
             html.Div(
                 [
                     None,
@@ -44,7 +43,6 @@ def expected_range_slider_default():
                                 persistence_type="session",
                                 className="slider-text-input-field",
                             ),
-                            dcc.Store(id="range_slider_input_store", storage_type="session"),
                         ],
                         className="slider-text-input-container",
                     ),
@@ -70,7 +68,6 @@ def expected_range_slider_default():
 def expected_range_slider_with_optional():
     return html.Div(
         [
-            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
                     dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
@@ -101,7 +98,6 @@ def expected_range_slider_with_optional():
                                 persistence_type="session",
                                 className="slider-text-input-field",
                             ),
-                            dcc.Store(id="range_slider_input_store", storage_type="session"),
                         ],
                         className="slider-text-input-container",
                     ),
@@ -127,7 +123,6 @@ def expected_range_slider_with_optional():
 def expected_range_slider_with_extra():
     return html.Div(
         [
-            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
                     dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
@@ -158,7 +153,6 @@ def expected_range_slider_with_extra():
                                 persistence_type="session",
                                 className="slider-text-input-field",
                             ),
-                            dcc.Store(id="range_slider_input_store", storage_type="session"),
                         ],
                         className="slider-text-input-container",
                     ),
@@ -195,7 +189,6 @@ def expected_range_slider_with_description():
     ]
     return html.Div(
         [
-            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
                     dbc.Label(
@@ -229,7 +222,6 @@ def expected_range_slider_with_description():
                                 persistence_type="session",
                                 className="slider-text-input-field",
                             ),
-                            dcc.Store(id="range_slider_input_store", storage_type="session"),
                         ],
                         className="slider-text-input-container",
                     ),
@@ -466,7 +458,7 @@ class TestRangeSliderBuild:
             marks={1: "1", 5: "5", 10: "10"},
             value=[0, 10],
             title="Title",
-            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+            description=vm.Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
 
         assert_component_equal(range_slider, expected_range_slider_with_description)

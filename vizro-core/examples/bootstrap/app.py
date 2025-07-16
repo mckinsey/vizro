@@ -787,7 +787,7 @@ toast = html.Div(
             html.P("This is the content of the toast", className="mb-0"),
             id="dbc-gallery-x-auto-toast",
             header="This is the header",
-            icon="primary",
+            icon="Primary",
             duration=4000,
         ),
     ],
@@ -878,7 +878,7 @@ clientside_callback(
     """
     (switchOn) => {
        document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');
-       return window.dash_clientside.no_update
+       return dash_clientside.no_update
     }
     """,
     Output("color-mode-switch", "id"),

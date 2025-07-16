@@ -1,17 +1,23 @@
+import math
+from datetime import date
 from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
-from dash import dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, ValidationInfo, model_validator
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
-from vizro.models._models_utils import _calculate_option_height, _log_call
+from vizro.models._components.form._form_utils import (
+    get_dict_options_and_default,
+    validate_options_dict,
+    validate_value,
+)
+from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, MultiValueType, OptionsDictType, OptionsType, SingleValueType, _IdProperty
+from vizro.models.types import ActionType, MultiValueType, OptionsType, SingleValueType, _IdProperty
 
 
 def validate_multi(multi, info: ValidationInfo):
@@ -23,16 +29,22 @@ def validate_multi(multi, info: ValidationInfo):
     return multi
 
 
-def _add_select_all_option(full_options: OptionsType) -> OptionsType:
-    """Adds a 'Select All' option to the list of options."""
-    # TODO: Move option to dictionary conversion within `get_options_and_default` function as here: https://github.com/mckinsey/vizro/pull/961#discussion_r1923356781
-    options_dict = [
-        cast(OptionsDictType, {"label": option, "value": option}) if not isinstance(option, dict) else option
-        for option in full_options
-    ]
+def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
+    """Returns a list of labels from the selector options provided."""
+    if all(isinstance(option, dict) for option in full_options):
+        return [option["label"] for option in full_options]  # type: ignore[index]
+    else:
+        return cast(Union[list[StrictBool], list[float], list[str], list[date]], full_options)
 
-    options_dict[0] = {"label": html.Div(["ALL"]), "value": "ALL"}
-    return options_dict
+
+def _calculate_option_height(full_options: OptionsType, char_count: int) -> int:
+    """Calculates the height of the dropdown options based on the longest option."""
+    # We look at the longest option to find number_of_lines it requires. Option height is the same for all options
+    # and needs 24px for each line + 8px padding.
+    list_of_labels = _get_list_of_labels(full_options)
+    max_length = max(len(str(option)) for option in list_of_labels)
+    number_of_lines = math.ceil(max_length / char_count)
+    return 8 + 24 * number_of_lines
 
 
 class Dropdown(VizroBaseModel):
@@ -106,6 +118,7 @@ class Dropdown(VizroBaseModel):
     # Consider making the _dynamic public later. The same property could also be used for all other components.
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
+    _in_container: bool = PrivateAttr(False)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -123,20 +136,47 @@ class Dropdown(VizroBaseModel):
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
-        full_options, default_value = get_options_and_default(options=options, multi=self.multi)
-        option_height = _calculate_option_height(full_options)
-        altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
-        description = self.description.build().children if self.description else [None]
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
+        # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the page dropdown
+        # (placed on the left-side). 15 is half this width for when the dropdown is in a container's controls.
+        # "A" is representative of a slightly wider than average character:
+        # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
+        option_height = _calculate_option_height(dict_options, 15 if self._in_container else 30)
 
+        value = self.value if self.value is not None else default_value
+
+        if self.multi:
+            self._update_dropdown_select_all()
+            value = value if isinstance(value, list) else [value]  # type: ignore[assignment]
+            dict_options = [
+                {
+                    "label": dbc.Checkbox(
+                        id=f"{self.id}_select_all",
+                        value=len(value) == len(dict_options),  # type: ignore[arg-type]
+                        label="Select All",
+                        persistence=True,
+                        persistence_type="session",
+                        className="dropdown-select-all",
+                    ),
+                    # Special sentinel value used in update_dropdown_select_all.
+                    # This never gets sent to the server.
+                    "value": "__SELECT_ALL",
+                },
+                *dict_options,
+            ]
+
+        description = self.description.build().children if self.description else [None]
         defaults = {
             "id": self.id,
-            "options": altered_options,
-            "value": self.value if self.value is not None else default_value,
+            "options": dict_options,
+            "value": value,
             "multi": self.multi,
             "optionHeight": option_height,
             "persistence": True,
             "persistence_type": "session",
+            "placeholder": "Select option",
             "className": "dropdown",
+            "clearable": self.multi,  # Set clearable=False only for single-select dropdowns
         }
 
         return html.Div(
@@ -156,11 +196,57 @@ class Dropdown(VizroBaseModel):
         # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method if we decide that.
         # TODO: move this to pre_build once we have better control of the ordering.
         if self.value is None:
-            _, default_value = get_options_and_default(self.options, self.multi)
+            _, default_value = get_dict_options_and_default(options=self.options, multi=self.multi)
             self.value = default_value
 
-        return self.__call__(self.options)
+        # The rest of the method is added instead of calling and returning the content from the __call__ method
+        # because placeholder for the Dropdown can't be the dropdown itself. The reason is that the Dropdown value can
+        # be unexpectedly changed when the new options are added. This is developed as the dash feature
+        # https://github.com/plotly/dash/pull/1970.
+        if self.multi:
+            # Add the clientside callback as the callback has to be defined in the page.build process.
+            self._update_dropdown_select_all()
+            # hidden_select_all_dropdown is needed to ensure that clientside callback doesn't raise the no output error.
+            hidden_select_all_dropdown = [dcc.Dropdown(id=f"{self.id}_select_all", style={"display": "none"})]
+            placeholder_model = dcc.Checklist
+            placeholder_options = self.value
+        else:
+            hidden_select_all_dropdown = [None]
+            placeholder_model = dbc.RadioItems
+            placeholder_options = [self.value]  # type: ignore[assignment]
+
+        description = self.description.build().children if self.description else [None]
+        return html.Div(
+            children=[
+                dbc.Label(
+                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
+                ),
+                placeholder_model(
+                    id=self.id,
+                    options=placeholder_options,
+                    value=self.value,
+                    persistence=True,
+                    persistence_type="session",
+                ),
+                *hidden_select_all_dropdown,
+            ]
+        )
 
     @_log_call
     def build(self):
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
+
+    def _update_dropdown_select_all(self):
+        """Define the clientside callbacks in the page build phase responsible for handling the select_all."""
+        clientside_callback(
+            ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
+            output=[
+                Output(f"{self.id}_select_all", "value"),
+                Output(self.id, "value", allow_duplicate=True),
+            ],
+            inputs=[
+                Input(self.id, "value"),
+                State(self.id, "options"),
+            ],
+            prevent_initial_call="initial_duplicate",
+        )

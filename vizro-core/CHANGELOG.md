@@ -11,6 +11,60 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.43'></a>
+
+# 0.1.43 — 2025-07-09
+
+## Highlights ✨
+
+- Introduce the "Select All" option for `Checklist` and multi-select `Dropdown`. Easily select or deselect all options with a single click within the selector. ([#1000](https://github.com/mckinsey/vizro/pull/1000))
+
+- The current state of controls on a page in your app can be shared by sharing its URL. Set `show_in_url=True` in `Filter` and `Parameter` to include their values in the URL. See the [user guide on filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#show-in-url) for more information. ([#1243](https://github.com/mckinsey/vizro/pull/1243))
+
+## Removed
+
+- Simplified the `left-side` container by removing the extra `left-sidebar` and `left-main` containers. The left-side now directly uses `nav-bar` and `nav-control-panel` as its children. ([#1268](https://github.com/mckinsey/vizro/pull/1268))
+
+## Added
+
+- Add `custom_header` static method to `Dashboard`, allowing users to inject custom Dash components into a dedicated area of the dashboard header. See the [user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/#customize-the-header) for details. ([#1267](https://github.com/mckinsey/vizro/pull/1267))
+
+- Emit a warning in all models when `description` is set but `title` is missing or empty. ([#1275](https://github.com/mckinsey/vizro/pull/1275))
+
+## Changed
+
+- Update several header class names for improved clarity and consistency. See this [PR](https://github.com/mckinsey/vizro/pull/1267) for the updated selector class names and ensure to update any custom CSS targeting the old ones.
+
+<a id='changelog-0.1.42'></a>
+
+# 0.1.42 — 2025-06-27
+
+## Added
+
+- yaml/json configurations can specify `_target_` functions with any import path rather than being restricted to built-in Vizro functions. ([#1255](https://github.com/mckinsey/vizro/pull/1255))
+
+- Add option to validate yaml/json configurations without importing `CapturedCallable` functions. See [the user guide on extensions](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/) for more details. ([#1255](https://github.com/mckinsey/vizro/pull/1255))
+
+## Fixed
+
+- Temporarily limit the upper bound of `dash` to `<3.1.0` to investigate [a bug in `dash==3.1.0`](https://github.com/plotly/dash/issues/3349). ([#1259](https://github.com/mckinsey/vizro/pull/1259))
+
+<a id='changelog-0.1.41'></a>
+
+# 0.1.41 — 2025-06-24
+
+## Added
+
+- Add `description` argument to `Button` to enable tooltip next to button text. See the [user guide on button](https://vizro.readthedocs.io/en/stable/pages/user-guides/buttons/#add-a-tooltip) for an example. ([#1225](https://github.com/mckinsey/vizro/pull/1225))
+
+## Changed
+
+- Update the default settings for `dash_ag_grid` to enhance layout compatibility and performance. The grid now uses `"domLayout": "autoHeight"` and [enables pagination by default](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#disable-pagination). ([#1226](https://github.com/mckinsey/vizro/pull/1226))
+
+## Fixed
+
+- Fix dynamically calculated row height for `Dropdown` when used in `Container.controls`. ([#1238](https://github.com/mckinsey/vizro/pull/1238))
+
 <a id='changelog-0.1.40'></a>
 
 # 0.1.40 — 2025-06-03

@@ -18,9 +18,15 @@ from vizro.managers import data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, CapturedCallable, ModelID, _IdProperty, validate_captured_callable
+from vizro.models.types import (
+    ActionType,
+    CapturedCallable,
+    ModelID,
+    _IdProperty,
+    validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +36,9 @@ class Graph(VizroBaseModel):
 
     Args:
         type (Literal["graph"]): Defaults to `"graph"`.
-        figure (CapturedCallable): Function that returns a graph.
-            See `CapturedCallable`][vizro.models.types.CapturedCallable].
+        figure (CapturedCallable): Function that returns a graph. Either use
+            [`vizro.plotly.express`](../user-guides/graph.md) or see
+            [`CapturedCallable`][vizro.models.types.CapturedCallable].
         title (str): Title of the `Graph`. Defaults to `""`.
         header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.
             Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
@@ -74,6 +81,7 @@ class Graph(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
+        AfterValidator(warn_description_without_title),
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.

@@ -35,7 +35,7 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -70,15 +70,15 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
         [![AGGrid]][aggrid]
 
-### Enable pagination
+### Disable pagination
 
-Pagination is a visual alternative to using vertical scroll. It can also improve loading time if you have many rows. You can turn it on by setting `dashGridOptions={"pagination": True}`.
+By default, pagination is enabled in AG Grid to improve performance and usability with large datasets. If you prefer to show all rows in a single scrollable table (for example, to allow users to scroll vertically through all data), you can disable pagination by setting `dashGridOptions={"pagination": False}`.
 
-!!! example "Basic Dash AG Grid"
+!!! example "Dash AG Grid without pagination"
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -88,7 +88,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
 
         page = vm.Page(
             title="Dash AG Grid with pagination",
-            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True}))]
+            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": False}))]
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -106,7 +106,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
                   _target_: dash_ag_grid
                   data_frame: gapminder
                   dashGridOptions:
-                    pagination: true
+                    pagination: false
                 type: ag_grid
             title: Dash AG Grid with pagination
         ```
@@ -135,7 +135,7 @@ In the example below we select and format some columns of the gapminder data.
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="8-9 18"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -207,7 +207,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="8-27 29-46 55-56"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -353,7 +353,7 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="11"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -399,7 +399,7 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="8-15 17-37 39 48-52"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -541,7 +541,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="13-20"}
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -606,7 +606,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="13-20"}
 
         import vizro.models as vm
         import vizro.plotly.express as px

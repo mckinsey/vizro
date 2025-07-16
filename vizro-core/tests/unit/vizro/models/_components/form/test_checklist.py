@@ -45,6 +45,7 @@ class TestChecklistInstantiation:
             "description": f"{checklist.description.id}-text.children",
         }
         assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
+        assert checklist.show_select_all is True
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -83,9 +84,7 @@ class TestChecklistInstantiation:
             Checklist(options=test_options)
 
     def test_create_checklist_invalid_options_dict(self):
-        with pytest.raises(
-            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
-        ):
+        with pytest.raises(ValidationError, match="Field required"):
             Checklist(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
@@ -135,17 +134,56 @@ class TestChecklistInstantiation:
 class TestChecklistBuild:
     """Tests model build method."""
 
-    def test_checklist_build(self):
-        checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
+    @pytest.mark.parametrize(
+        "value, options, expected_select_all_value, expected_value, expected_options",
+        [
+            (
+                ["A"],
+                ["A", "B", "C"],
+                False,
+                ["A"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
+            (
+                ["A", "B", "C"],
+                ["A", "B", "C"],
+                True,
+                ["A", "B", "C"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
+            (
+                None,
+                ["A", "B", "C"],
+                True,
+                ["A", "B", "C"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
+        ],
+    )
+    def test_checklist_build(self, value, options, expected_select_all_value, expected_value, expected_options):
+        checklist = Checklist(id="checklist_id", value=value, options=options, title="Title").build()
         expected_checklist = html.Fieldset(
             [
                 html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
-                dbc.Checklist(
-                    id="checklist_id",
-                    options=["ALL", "A", "B", "C"],
-                    value=["ALL"],
-                    persistence=True,
-                    persistence_type="session",
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            id="checklist_id_select_all",
+                            value=expected_select_all_value,
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(
+                            id="checklist_id",
+                            options=expected_options,
+                            value=expected_value,
+                            inline=False,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                    ],
+                    className=None,
                 ),
             ],
         )
@@ -168,14 +206,30 @@ class TestChecklistBuild:
         expected_checklist = html.Fieldset(
             [
                 html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
-                dbc.Checklist(
-                    id="overridden_id",
-                    options=["ALL", "A", "B", "C"],
-                    value=["A"],
-                    persistence=True,
-                    persistence_type="session",
-                    switch=True,
-                    inline=True,
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            id="checklist_id_select_all",
+                            value=False,
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(
+                            id="overridden_id",
+                            options=[
+                                {"label": "A", "value": "A"},
+                                {"label": "B", "value": "B"},
+                                {"label": "C", "value": "C"},
+                            ],
+                            value=["A"],
+                            persistence=True,
+                            persistence_type="session",
+                            switch=True,
+                            inline=True,
+                        ),
+                    ],
+                    className=None,
                 ),
             ],
         )
@@ -187,7 +241,7 @@ class TestChecklistBuild:
             options=["A", "B", "C"],
             value=["A"],
             title="Title",
-            description=Tooltip(text="Test description", icon="info", id="info"),
+            description=Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
 
         expected_description = [
@@ -201,14 +255,96 @@ class TestChecklistBuild:
         ]
         expected_checklist = html.Fieldset(
             [
-                html.Legend(
-                    [html.Span("Title", id="checklist_id_title"), *expected_description], className="form-label"
+                html.Legend([html.Span("Title"), *expected_description], className="form-label"),
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            value=False,
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(
+                            options=[
+                                {"label": "A", "value": "A"},
+                                {"label": "B", "value": "B"},
+                                {"label": "C", "value": "C"},
+                            ],
+                            value=["A"],
+                            inline=False,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                    ],
+                    className=None,
                 ),
-                dbc.Checklist(
-                    options=["ALL", "A", "B", "C"],
-                    value=["A"],
-                    persistence=True,
-                    persistence_type="session",
+            ],
+        )
+        assert_component_equal(checklist, expected_checklist, keys_to_strip={"id"})
+
+    def test_checklist_in_container_build(self):
+        checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title", value=["A"])
+        checklist._in_container = True
+        checklist = checklist.build()
+
+        expected_checklist = html.Fieldset(
+            [
+                html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
+                html.Div(
+                    children=[
+                        dbc.Checkbox(
+                            value=False,
+                            label="Select All",
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dbc.Checklist(
+                            id="checklist_id",
+                            options=[
+                                {"label": "A", "value": "A"},
+                                {"label": "B", "value": "B"},
+                                {"label": "C", "value": "C"},
+                            ],
+                            value=["A"],
+                            inline=True,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                    ],
+                    className="checklist-inline",
+                ),
+            ],
+        )
+        assert_component_equal(checklist, expected_checklist, keys_to_strip={"id"})
+
+    def test_checklist_build_without_select_all(self):
+        """Test that description arguments correctly builds without 'Select All' option."""
+        checklist = Checklist(
+            options=["A", "B", "C"],
+            value=["A"],
+            title="Title",
+            show_select_all=False,
+        ).build()
+
+        expected_checklist = html.Fieldset(
+            [
+                html.Legend([html.Span("Title"), None], className="form-label"),
+                html.Div(
+                    children=[
+                        None,
+                        dbc.Checklist(
+                            options=[
+                                {"label": "A", "value": "A"},
+                                {"label": "B", "value": "B"},
+                                {"label": "C", "value": "C"},
+                            ],
+                            value=["A"],
+                            inline=False,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                    ],
+                    className=None,
                 ),
             ],
         )

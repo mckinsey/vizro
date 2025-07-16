@@ -18,6 +18,8 @@ By using [`Tabs`][vizro.models.Tabs], the following applies:
 - [`Filters`][vizro.models.Filter] affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
 - The `title` of the [`Container`][vizro.models.Container] inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
 
+## Add tabs
+
 To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
 1. Insert the [`Tabs`][vizro.models.Tabs] into the `components` argument of the [`Page`][vizro.models.Page]
@@ -29,7 +31,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10-14 36-37"}
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -148,7 +150,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="9-13"}
+        ```{.python pycafe-link hl_lines="12-16"}
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -158,14 +160,14 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
         page = vm.Page(
             title="Tabs",
-            description="""
-                The Iris dataset includes measurements of 150 iris flowers across three types: Setosa, Versicolor, and Virginica.
-
-                While all samples are labeled by type, they can appear similar when looking at just some features—making it a useful dataset for exploring patterns and challenges in classification.
-            """,
             components=[
                 vm.Tabs(
                     title="Tabs Title",
+                    description="""
+                        The Iris dataset includes measurements of 150 iris flowers across three types: Setosa, Versicolor, and Virginica.
+
+                        While all samples are labeled by type, they can appear similar when looking at just some features—making it a useful dataset for exploring patterns and challenges in classification.
+                    """,
                     tabs=[
                         vm.Container(
                             title="Tab I",
@@ -216,19 +218,19 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
     === "app.yaml"
 
-        ```{.yaml hl_lines="9-12"}
+        ```{.yaml}
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           components:
             - type: tabs
               title: Tabs Title
-              tabs:
-                - title: Tab I
-                  description: |
+              description: |
                     The Iris dataset includes measurements of 150 iris flowers across three types: Setosa, Versicolor, and Virginica.
 
                     While all samples are labeled by type, they can appear similar when looking at just some features—making it a useful dataset for exploring patterns and challenges in classification.
+              tabs:
+                - title: Tab I
                   type: container
                   components:
                     - type: graph

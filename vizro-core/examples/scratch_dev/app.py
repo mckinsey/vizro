@@ -1,212 +1,278 @@
-from vizro import Vizro
-import vizro.plotly.express as px
-import vizro.models as vm
-from dash import html, dcc, callback, Input, Output, State
-import dash_bootstrap_components as dbc
-from typing import Literal
-from vizro.tables import dash_ag_grid, dash_data_table
-from vizro.figures import kpi_card_reference, kpi_card
+# Vizro is an open-source toolkit for creating modular data visualization applications.
+# check out https://github.com/mckinsey/vizro for more info about Vizro
+# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 import pandas as pd
 import dash_bootstrap_components as dbc
 
+import vizro.plotly.express as px
+from vizro import Vizro
+import vizro.models as vm
+from vizro.actions import filter_interaction, export_data
+from vizro.tables import dash_data_table
 
-gapminder_2007 = px.data.gapminder().query("year == 2007")
-kpi_df = pd.DataFrame(
-    [[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]],
-    columns=["Actual", "Reference", "Category"],
-)
+tips = px.data.tips()
+gapminder = px.data.gapminder()
+iris = px.data.iris()
+iris2 = px.data.iris()
+iris2["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(iris), freq="D")
 
-
-class CustomDashboard(vm.Dashboard):
-    """Custom implementation of `Dashboard`."""
-
-    type: Literal["custom_dashboard"] = "custom_dashboard"
-
-    def _make_page_layout(self, *args, **kwargs):
-        modal_with_button = html.Div(
-            [
-                dbc.Button("+ Add Entry", color="primary", id="open", n_clicks=0),
-                dbc.Modal(
-                    [
-                        dbc.ModalHeader(dbc.ModalTitle("New Entry")),
-                        dbc.ModalBody(
-                            # TODO - DB: options need to be replaced with database table
-                            [
-                                vm.Dropdown(options=["A", "B", "C"], title="Customer *", multi=False).build(),
-                                vm.Dropdown(options=["A", "B", "C"], title="Category *").build(),
-                                vm.Dropdown(options=["A", "B", "C"], title="Region *", multi=False).build(),
-                                vm.Dropdown(options=["A", "B", "C"], title="Status *", multi=False).build(),
-                            ],
-                            style={"display": "flex", "flex-direction": "column", "gap": "1rem"},
-                        ),
-                        dbc.ModalFooter(
-                            [
-                                dbc.Button("Submit", id="close", className="ms-auto", n_clicks=0),
-                            ]
-                        ),
+page = vm.Page(
+    title="TABLE_INTERACTIONS_PAGE",
+    components=[
+        vm.Container(
+            title="container one",
+            # layout=vm.Flex(direction="column"),
+            components=[
+                vm.Table(
+                    id="TABLE_INTERACTIONS_ID",
+                    title="Table Country",
+                    figure=dash_data_table(
+                        id="dash_data_table_country",
+                        data_frame=gapminder,
+                    ),
+                    actions=[
+                        vm.Action(
+                            function=filter_interaction(
+                                targets=[
+                                    "LINE_INTERACTIONS_ID",
+                                ]
+                            )
+                        )
                     ],
-                    id="modal",
-                    is_open=False,
                 ),
             ],
-        )
-
-        super_build_obj = super()._make_page_layout(*args, **kwargs)
-        # We access the container with id="settings", where the theme switch is placed and add the H4.
-        # You can see what's inside the settings.children container here: https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/models/_dashboard.py
-        super_build_obj["settings"].children = [
-            modal_with_button,
-            super_build_obj["settings"].children,
-        ]
-        return super_build_obj
-
-
-page_1 = vm.Page(
-    title="Page with modal",
-    components=[
-        vm.Table(figure=dash_data_table(gapminder_2007)),
+        ),
+        vm.Container(
+            title="container two",
+            components=[
+                vm.Graph(
+                    id="LINE_INTERACTIONS_ID",
+                    figure=px.line(
+                        gapminder,
+                        title="Line Country",
+                        x="year",
+                        y="gdpPercap",
+                        markers=True,
+                    ),
+                ),
+            ],
+        ),
     ],
-    controls=[vm.Filter(column="continent"), vm.Filter(column="country")],
+    controls=[
+        vm.Filter(
+            column="year",
+            targets=["TABLE_INTERACTIONS_ID"],
+            selector=vm.Dropdown(value=2007),
+        ),
+        vm.Filter(
+            column="continent",
+            targets=["TABLE_INTERACTIONS_ID"],
+            selector=vm.RadioItems(options=["Europe", "Africa", "Americas"]),
+        ),
+    ],
 )
 
 
-page_2 = vm.Page(
-    title="kpi-indicators-page",
-    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
+page1 = vm.Page(
+    title="FILTER_INTERACTIONS_PAGE",
+    layout=vm.Grid(grid=[[0], [2], [1]]),
     components=[
-        # Style 1: Value Only
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                title="Value I",
-                agg_func="sum",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                title="Value II",
-                agg_func="mean",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                title="Value III",
-                agg_func="median",
-            )
-        ),
-        # Style 2: Value and reference value
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Reference",
-                reference_column="Actual",
-                title="Ref. Value II",
-                agg_func="sum",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Actual",
-                reference_column="Reference",
-                title="Ref. Value I",
-                agg_func="sum",
-            )
-        ),
-        vm.Figure(
-            id="kpi-card-reverse-coloring",
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Actual",
-                reference_column="Reference",
-                title="Ref. Value III",
-                agg_func="median",
-                icon="shopping_cart",
+        vm.Graph(
+            id="SCATTER_INTERACTIONS_ID",
+            figure=px.scatter(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
+                custom_data=["species"],
             ),
+            actions=[
+                vm.Action(function=filter_interaction(targets=["BOX_INTERACTIONS_ID"])),
+            ],
         ),
-        # Style 3: Value and icon
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                icon="shopping_cart",
-                title="Icon I",
-                agg_func="sum",
-                value_format="${value:.2f}",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                icon="payment",
-                title="Icon II",
-                agg_func="mean",
-                value_format="{value:.0f}€",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                icon="monitoring",
-                title="Icon III",
-                agg_func="median",
-            )
-        ),
-        # Style 4: Reference value and reverse coloring
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Actual",
-                reference_column="Reference",
-                title="Ref. Value (pos-reverse)",
-                reverse_color=True,
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Reference",
-                reference_column="Actual",
-                title="Ref. Value (neg-reverse)",
-                reverse_color=True,
+        vm.Card(id="CARD_INTERACTIONS_ID", text="### No data clicked."),
+        vm.Graph(
+            id="BOX_INTERACTIONS_ID",
+            figure=px.box(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
             ),
         ),
     ],
-    controls=[vm.Filter(column="Category", selector=vm.Dropdown(id="dropdown-filter"))],
+    controls=[
+        vm.Filter(
+            column="species",
+            targets=["BOX_INTERACTIONS_ID"],
+            selector=vm.Dropdown(id="DROPDOWN_INTER_FILTER"),
+        ),
+        vm.Parameter(
+            targets=["BOX_INTERACTIONS_ID.title"],
+            selector=vm.RadioItems(id="RADIOITEM_INTER_PARAM", options=["red", "blue"], value="blue"),
+        ),
+    ],
 )
 
-page_3 = vm.Page(title="datepicker-page", components=[vm.Text(text="Placeholder")])
 
-
-@callback(
-    Output("modal", "is_open"),
-    [Input("open", "n_clicks"), Input("close", "n_clicks")],
-    [State("modal", "is_open")],
-)
-def toggle_modal(n1, n2, is_open):
-    if n1 or n2:
-        return not is_open
-    return is_open
-
-
-dashboard = CustomDashboard(
-    pages=[page_1, page_2, page_3],
-    navigation=vm.Navigation(
-        nav_selector=vm.NavBar(
-            items=[
-                vm.NavLink(label="Data", pages=["Page with modal"], icon="database"),
-                vm.NavLink(label="Charts", pages=["kpi-indicators-page", "datepicker-page"], icon="bar_chart"),
+page2 = vm.Page(
+    title="FILTERS_PAGE",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    id="FILTERS_TAB_CONTAINER",
+                    title="FILTERS_TAB_CONTAINER",
+                    components=[
+                        vm.Container(
+                            id="FILTERS_COMPONENTS_CONTAINER",
+                            title="FILTERS_COMPONENTS_CONTAINER",
+                            layout=vm.Grid(grid=[[0, 1], [0, 1], [0, 2]]),
+                            components=[
+                                vm.Graph(
+                                    id="SCATTER_GRAPH_ID",
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="sepal_width",
+                                        height=450,
+                                    ),
+                                ),
+                                vm.Graph(
+                                    title="Where do we get more tips?",
+                                    figure=px.bar(tips, y="tip", x="day"),
+                                ),
+                                vm.Graph(
+                                    id="BOX_GRAPH_ID_2",
+                                    figure=px.box(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="sepal_width",
+                                    ),
+                                ),
+                            ],
+                        )
+                    ],
+                ),
             ]
-        )
-    ),
+        ),
+        vm.Graph(
+            id="BOX_GRAPH_ID",
+            figure=px.box(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="sepal_width",
+            ),
+        ),
+    ],
 )
+
+page3 = vm.Page(
+    title="EXTRAS_PAGE",
+    components=[
+        vm.Container(
+            extra={
+                "class_name": "bg-container",
+                "fluid": False,
+                "style": {"height": "900px"},
+            },
+            components=[
+                vm.Graph(
+                    figure=px.line(
+                        iris2,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="sepal_width",
+                    ),
+                ),
+                vm.Card(
+                    text="""
+    ![icon-top](assets/images/icons/content/features.svg)
+
+    Leads to the home page on click.
+    """,
+                    href="/",
+                    extra={"style": {"backgroundColor": "#377a6b"}},
+                ),
+                vm.Button(
+                    text="Export data",
+                    extra={"color": "success", "outline": True},
+                    actions=[
+                        vm.Action(
+                            function=export_data(
+                                file_format="csv",
+                            )
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                extra={
+                    "clearable": True,
+                    "placeholder": "Select an option...",
+                    "style": {"width": "150px"},
+                },
+            ),
+        ),
+        vm.Filter(
+            column="species",
+            selector=vm.RadioItems(
+                description="RADIOITEMS_TOOLTIP_TEXT",
+                options=["setosa", "versicolor", "virginica"],
+                extra={"inline": True},
+            ),
+        ),
+        vm.Filter(
+            column="species",
+            selector=vm.Checklist(
+                options=["setosa", "versicolor", "virginica"],
+                extra={"switch": True, "inline": True},
+            ),
+        ),
+        vm.Filter(
+            column="petal_width",
+            selector=vm.Slider(
+                step=0.5,
+                extra={"tooltip": {"placement": "bottom", "always_visible": True}},
+            ),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.RangeSlider(
+                step=1.0,
+                extra={
+                    "tooltip": {"placement": "bottom", "always_visible": True},
+                    "pushable": 20,
+                },
+            ),
+        ),
+        vm.Filter(
+            column="date_column",
+            selector=vm.DatePicker(
+                title="Custom styled date picker",
+                range=False,
+                extra={
+                    "size": "lg",
+                    "valueFormat": "YYYY/MM/DD",
+                    "placeholder": "Select a date",
+                },
+            ),
+        ),
+    ],
+)
+dashboard = vm.Dashboard(
+    title="Vizro dashboard for integration testing",
+    pages=[page, page1, page2, page3],
+)
+
 
 if __name__ == "__main__":
     Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()

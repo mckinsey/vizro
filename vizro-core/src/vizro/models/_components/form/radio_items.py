@@ -8,7 +8,11 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
+from vizro.models._components.form._form_utils import (
+    get_dict_options_and_default,
+    validate_options_dict,
+    validate_value,
+)
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, OptionsType, SingleValueType, _IdProperty
@@ -74,6 +78,7 @@ class RadioItems(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
+    _in_container: bool = PrivateAttr(False)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -91,13 +96,14 @@ class RadioItems(VizroBaseModel):
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
-        full_options, default_value = get_options_and_default(options=options, multi=False)
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
         description = self.description.build().children if self.description else [None]
 
         defaults = {
             "id": self.id,
-            "options": full_options,
+            "options": dict_options,
             "value": self.value if self.value is not None else default_value,
+            "inline": self._in_container,
             "persistence": True,
             "persistence_type": "session",
         }
@@ -116,8 +122,8 @@ class RadioItems(VizroBaseModel):
 
     def _build_dynamic_placeholder(self):
         if self.value is None:
-            _, default_value = get_options_and_default(self.options, multi=False)
-            self.value = default_value
+            _, default_value = get_dict_options_and_default(options=self.options, multi=False)
+            self.value = default_value  # type: ignore[assignment]
 
         return self.__call__(self.options)
 

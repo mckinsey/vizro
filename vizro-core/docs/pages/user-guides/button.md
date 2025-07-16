@@ -14,7 +14,7 @@ You can configure the `text` argument to alter the display text of the [`Button`
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="6"}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -63,7 +63,7 @@ The example below demonstrates how to configure a button to export the filtered 
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="23"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -151,7 +151,7 @@ There are three predefined button styles that can be customized using the `varia
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9-10"}
         import vizro.models as vm
         from vizro import Vizro
 

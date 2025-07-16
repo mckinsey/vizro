@@ -18,6 +18,7 @@ from vizro.tables import dash_ag_grid, dash_data_table
 iris = px.data.iris()
 tips = px.data.tips()
 stocks = px.data.stocks(datetimes=True)
+gapminder = px.data.gapminder()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
@@ -56,7 +57,7 @@ example_cards = [
         data_frame=df_kpi,
         value_column="Actual",
         title="KPI with icon",
-        icon="shopping_cart",
+        icon="Shopping Cart",
     ),
 ]
 
@@ -87,7 +88,7 @@ example_reference_cards = [
         value_column="Actual",
         reference_column="Reference",
         title="KPI reference with icon",
-        icon="shopping_cart",
+        icon="Shopping Cart",
     ),
 ]
 
@@ -274,7 +275,10 @@ button = vm.Page(
                 size="petal_length",
             ),
         ),
-        vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
+        vm.Button(
+            text="Export data",
+            actions=[vm.Action(function=export_data())],
+        ),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
@@ -282,63 +286,142 @@ button = vm.Page(
 containers = vm.Page(
     title="Containers",
     components=[
-        vm.Container(
-            title="Container I",
-            layout=vm.Grid(grid=[[0, 1]]),
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris,
-                        x="sepal_length",
-                        y="petal_width",
-                        color="species",
-                        title="Container I - Scatter",
-                    )
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Default",
+                    layout=vm.Grid(grid=[[0], [1]]),
+                    components=[
+                        vm.Container(
+                            title="Container I",
+                            components=[
+                                vm.Graph(
+                                    title="Container I - Scatter",
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_width",
+                                        y="sepal_length",
+                                        color="species",
+                                        marginal_y="violin",
+                                        marginal_x="box",
+                                    ),
+                                )
+                            ],
+                        ),
+                        vm.Container(
+                            title="Container II",
+                            layout=vm.Grid(grid=[[0, 1]]),
+                            components=[
+                                vm.Graph(
+                                    title="Container II - Scatter",
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="species",
+                                    ),
+                                ),
+                                vm.Graph(
+                                    title="Container II - Bar",
+                                    figure=px.bar(
+                                        iris,
+                                        x="sepal_length",
+                                        y="sepal_width",
+                                        color="species",
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
                 ),
-                vm.Graph(
-                    figure=px.bar(
-                        iris,
-                        x="sepal_length",
-                        y="sepal_width",
-                        color="species",
-                        title="Container I - Bar",
-                    )
+                vm.Container(
+                    title="Styled",
+                    layout=vm.Grid(grid=[[0, 0], [1, 2]]),
+                    components=[
+                        vm.Container(
+                            components=[
+                                vm.Graph(
+                                    title="Container I - Scatter",
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_width",
+                                        y="sepal_length",
+                                        color="species",
+                                        marginal_y="violin",
+                                        marginal_x="box",
+                                    ),
+                                )
+                            ],
+                            variant="plain",
+                        ),
+                        vm.Container(
+                            components=[
+                                vm.Graph(
+                                    title="Container II - Scatter",
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="species",
+                                    ),
+                                ),
+                            ],
+                            variant="outlined",
+                        ),
+                        vm.Container(
+                            components=[
+                                vm.Graph(
+                                    title="Container II - Bar",
+                                    figure=px.bar(
+                                        iris,
+                                        x="sepal_length",
+                                        y="sepal_width",
+                                        color="species",
+                                    ),
+                                ),
+                            ],
+                            variant="filled",
+                        ),
+                    ],
                 ),
-            ],
-        ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris,
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        marginal_y="violin",
-                        marginal_x="box",
-                        title="Container II - Scatter",
-                    )
-                )
-            ],
-        ),
-    ],
-)
-
-collapsible_container = vm.Page(
-    title="Collapsible containers",
-    layout=vm.Flex(),
-    components=[
-        vm.Container(
-            title="Initially collapsed container",
-            components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-            collapsed=True,
-        ),
-        vm.Container(
-            title="Initially expanded container",
-            components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-            collapsed=False,
-        ),
+                vm.Container(
+                    title="Collapsible",
+                    layout=vm.Flex(),
+                    components=[
+                        vm.Container(
+                            title="Initially collapsed container",
+                            components=[
+                                vm.Graph(
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_width",
+                                        y="sepal_length",
+                                        color="species",
+                                        marginal_y="violin",
+                                        marginal_x="box",
+                                    )
+                                )
+                            ],
+                            collapsed=True,
+                        ),
+                        vm.Container(
+                            title="Initially expanded container",
+                            components=[
+                                vm.Graph(
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="species",
+                                    )
+                                ),
+                            ],
+                            collapsed=False,
+                        ),
+                    ],
+                ),
+            ]
+        )
     ],
 )
 
@@ -384,6 +467,77 @@ tab_2 = vm.Container(
 
 tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls=[vm.Filter(column="continent")])
 
+
+tooltip = vm.Page(
+    title="Tooltip",
+    layout=vm.Grid(grid=[[0], [0], [0], [1], [1], [1], [1], [1], [2]]),
+    components=[
+        vm.Card(
+            text="""
+                The `description` argument allows you to add helpful context to your components by displaying a small
+                info icon next to the component's title.
+                When users hover over the icon, a tooltip appears showing the text you provide.
+
+                You can add tooltips to any Vizro component that supports the title argument. The description accepts:
+                * A `string`, which uses the default info icon.
+                * A `Tooltip` model, which lets you customize the icon using any symbol from the
+                [Google Material Icons library](https://fonts.google.com/icons)
+
+                Tooltips are a clean, lightweight way to offer additional details without cluttering your dashboard.
+            """
+        ),
+        vm.Graph(
+            title="Relationships between Sepal Width and Sepal Length",
+            figure=px.scatter(
+                iris,
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                size="petal_length",
+            ),
+            description="""
+                **The Iris dataset** includes measurements of 150 iris flowers across three types: Setosa, Versicolor,
+                and Virginica.
+                While all samples are labeled by type, they can appear similar when looking at just some features -
+                 making it a useful dataset for exploring patterns and challenges in classification.
+            """,
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[vm.Action(function=export_data())],
+            description="""
+                Use this button to export the filtered data from the Iris dataset.
+            """,
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                title="Species",
+                description="""
+                    Select one or more species to explore patterns
+                    specific to Setosa, Versicolor, or Virginica.
+                """,
+            ),
+        ),
+        vm.Filter(
+            column="sepal_width",
+            selector=vm.RangeSlider(
+                title="Sepal Width",
+                description="""
+                    Use the slider to filter flowers by sepal width.
+                    Only samples within the selected range will be shown.
+                """,
+            ),
+        ),
+    ],
+    description="""
+        This page provides overview of Tooltip functionality.
+    """,
+)
+
+
 # CONTROLS --------------------------------------------------------------------
 filters = vm.Page(
     title="Filters",
@@ -407,7 +561,10 @@ filters = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species"),
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(),
+        ),
         vm.Filter(
             column="petal_length",
             targets=["scatter_chart2"],
@@ -512,6 +669,203 @@ selectors = vm.Page(
         vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
     ],
 )
+
+
+controls_in_containers = vm.Page(
+    title="Controls in containers",
+    components=[
+        vm.Container(
+            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(
+                                iris,
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                marginal_y="violin",
+                                marginal_x="box",
+                            ),
+                        )
+                    ],
+                    controls=[
+                        vm.Filter(column="species", selector=vm.Checklist()),
+                    ],
+                    variant="outlined",
+                ),
+                vm.Container(
+                    components=[
+                        vm.Graph(
+                            figure=px.box(
+                                gapminder_2007,
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                                custom_data=["continent"],
+                            ),
+                        ),
+                        vm.Graph(
+                            figure=px.scatter(
+                                gapminder_2007,
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                    controls=[
+                        vm.Filter(column="continent", selector=vm.RadioItems()),
+                    ],
+                    variant="outlined",
+                ),
+            ],
+        ),
+    ],
+)
+
+# LAYOUT ------------------------------------------------------------------
+
+grid_layout = vm.Page(
+    title="Grid layout",
+    layout=vm.Grid(grid=[[0, 0, 0, 0], [1, 1, 3, 3], [1, 1, 4, 4], [2, 2, 5, 5], [2, 2, 6, 6]]),
+    components=[
+        vm.Card(
+            text="""
+                ### Card #1
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+                Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #2
+
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #3
+
+                Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #4
+
+                Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #5
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #6
+
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #7
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+    ],
+    description="""
+        Use Grid when you have a specific layout in mind—like a dashboard with clearly defined sections
+        (e.g. top summary row, bottom detail view).
+    """,
+)
+
+flex_layout = vm.Page(
+    id="flex-layout",
+    title="Flex layout",
+    layout=vm.Flex(
+        direction="row",
+        wrap=True,
+    ),
+    components=[
+        vm.Card(
+            text="""
+                ### Card #1
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+                Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #2
+
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #3
+
+                Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #4
+
+                Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #5
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #6
+
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #7
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+    ],
+    description="""
+        Use Flex when you want a responsive row of items that adjusts automatically—great for things like
+        dynamic card collections or tag-like elements that should flow naturally.
+    """,
+)
+
 
 # ACTIONS ---------------------------------------------------------------------
 export_data_action = vm.Page(
@@ -792,14 +1146,15 @@ kpi_indicators = vm.Page(
 
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, ag_grid, table, cards, figure, button, containers, collapsible_container, tabs]
-controls = [filters, parameters, selectors]
+components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip]
+controls = [filters, parameters, selectors, controls_in_containers]
 actions = [export_data_action, chart_interaction]
+layout = [grid_layout, flex_layout]
 extensions = [custom_charts, custom_tables, custom_actions, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
-    pages=[home, *components, *controls, *actions, *extensions],
+    pages=[home, *components, *controls, *actions, *layout, *extensions],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -815,10 +1170,11 @@ dashboard = vm.Dashboard(
                             "Figure",
                             "Button",
                             "Containers",
-                            "Collapsible containers",
                             "Tabs",
+                            "Tooltip",
                         ],
-                        "Controls": ["Filters", "Parameters", "Selectors"],
+                        "Controls": ["Filters", "Parameters", "Selectors", "Controls in containers"],
+                        "Layout": ["Grid layout", "flex-layout"],
                         "Actions": ["Export data", "Chart interaction"],
                         "Extensions": [
                             "Custom Charts",

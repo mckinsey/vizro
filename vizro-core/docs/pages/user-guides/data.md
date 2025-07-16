@@ -39,7 +39,7 @@ graph TD
     | Can be refreshed while dashboard is running                   | No               | Yes                                      |
     | Production-ready                                              | Yes              | Yes                                      |
 
-If you have a [Kedro](https://kedro.org/) project, you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md) to add [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) data to the Vizro data manager.
+If you have a [Kedro](https://kedro.org/) project, you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md) to add [`kedro_datasets.pandas`](https://docs.kedro.org/projects/kedro-datasets) data to the Vizro data manager.
 
 !!! note "Kedro Data Catalog as a data source registry"
 
@@ -69,7 +69,7 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="6 11"
         from vizro import Vizro
         import pandas as pd
         import vizro.plotly.express as px
@@ -108,7 +108,7 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="9"
         import yaml
 
         from vizro import Vizro
@@ -129,7 +129,7 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     === "dashboard.yaml"
 
-        ```yaml
+        ```yaml hl_lines="5"
         pages:
           - components:
               figure:
@@ -162,7 +162,7 @@ The example below shows how data is fetched dynamically every time the page is r
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="8-10 12 17"
         from vizro import Vizro
         import pandas as pd
         import vizro.plotly.express as px

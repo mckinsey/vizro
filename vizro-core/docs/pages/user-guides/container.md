@@ -49,7 +49,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10 34"}
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -181,13 +181,13 @@ vm.Container(
 
 ## Styled containers
 
-To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `variant` argument.
+To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `variant` argument. This can be set to `"plain"` (the default), `"filled"` or `"outlined"`.
 
 !!! example "Container with different styles"
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="14 19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -265,13 +265,15 @@ To make a Container collapsible, use the `collapsed` argument:
 
 Once defined, dashboard users can toggle the container’s visibility interactively.
 
+By default, a collapsible container is [styled with `variant="outlined"`](#styled-containers) to make its border visible.
+
 Collapsible containers are supported in both `Grid` and `Flex` layouts. However, we recommend using them within a `Flex` layout for optimal behavior, as `Flex` is better suited to dynamic sizing and more efficient use of space when content is shown or hidden.
 
 !!! example "Collapsible container inside `Flex`"
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9 14 19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -345,7 +347,7 @@ Collapsible containers can be used in `Grid` layout as well.
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9 14 19"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -498,7 +500,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
 ## Add controls to container
 
-The `Container` has a `controls` argument, where you can define container-specific controls to group related components for better interaction. By default, controls only affect components inside their own container.
+The `Container` has a `controls` argument, where you can define container-specific controls to group related components for better interaction. Controls can only target components inside their own container.
 
 Here are a few cases where you might want to use `controls` within a `Container`:
 
@@ -510,7 +512,7 @@ Here are a few cases where you might want to use `controls` within a `Container`
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="14-18"}
+        ```{.python pycafe-link hl_lines="15 20"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -541,7 +543,7 @@ Here are a few cases where you might want to use `controls` within a `Container`
 
     === "app.yaml"
 
-        ```{.yaml hl_lines="20-23"}
+        ```
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
@@ -584,6 +586,10 @@ Here are a few cases where you might want to use `controls` within a `Container`
     === "Result"
 
         [![ContainerWithControls]][containerwithcontrols]
+
+!!! tip "Container styles"
+
+    When you have multiple adjacent containers with controls, consider using [styled containers](#styled-containers) to make the separations between sections of your page clear. Containers with controls also work with [collapsible containers](#collapsible-containers) and inside [nested containers](#nested-containers).
 
 ## The `extra` argument
 

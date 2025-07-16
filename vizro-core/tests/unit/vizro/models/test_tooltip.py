@@ -13,7 +13,7 @@ class TestTooltipInstantiation:
     """Tests model instantiation."""
 
     def test_create_tooltip_mandatory_only(self):
-        tooltip = Tooltip(text="Tooltip text", icon="info")
+        tooltip = Tooltip(text="Tooltip text", icon="Info")
 
         assert hasattr(tooltip, "id")
         assert tooltip.text == "Tooltip text"
@@ -33,7 +33,7 @@ class TestTooltipBuild:
     """Tests model build method."""
 
     def test_tooltip_build(self):
-        tooltip = Tooltip(text="Tooltip text", icon="help", id="tooltip").build()
+        tooltip = Tooltip(text="Tooltip text", icon="Help", id="tooltip").build()
 
         expected_tooltip = html.Div(
             [
@@ -50,7 +50,7 @@ class TestTooltipBuild:
         assert_component_equal(tooltip, expected_tooltip)
 
     def test_tooltip_build_with_extra(self):
-        tooltip = Tooltip(text="Tooltip text", icon="help", id="tooltip", extra={"flip": False}).build()
+        tooltip = Tooltip(text="Tooltip text", icon="Help", id="tooltip", extra={"flip": False}).build()
 
         expected_tooltip = html.Div(
             [

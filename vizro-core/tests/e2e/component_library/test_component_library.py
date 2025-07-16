@@ -21,7 +21,7 @@ example_cards = [
         value_column="Actual",
         title="KPI (agg, icon, format)",
         agg_func="median",
-        icon="folder_check_2",
+        icon="Folder Check 2",
         value_format="${value:.2f}",
     ),
     kpi_card_reference(
@@ -50,7 +50,7 @@ example_cards = [
         title="KPI ref. (agg, icon, format)",
         value_format="{value}€",
         reference_format="{delta}€ vs. last year ({reference}€)",
-        icon="shopping_cart",
+        icon="Shopping Cart",
     ),
     kpi_card_reference(
         data_frame=df_kpi,

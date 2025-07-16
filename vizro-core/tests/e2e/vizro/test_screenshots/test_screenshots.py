@@ -33,7 +33,7 @@ def image_assertion(func):
 def test_kpi_indicators_page(dash_br):
     page_select(dash_br, page_name=cnst.KPI_INDICATORS_PAGE, graph_check=False)
     # check if first kpi card have correct value
-    dash_br.wait_for_text_to_equal(kpi_card_path(), "73902")
+    dash_br.wait_for_text_to_equal(kpi_card_path(), "67434")
 
 
 @image_assertion
@@ -121,7 +121,7 @@ def test_export_action_page(dash_br_driver):
 def test_navbar_kpi_indicators_page(dash_br_driver):
     dash_br_driver.multiple_click(nav_card_link_path(f"/{cnst.KPI_INDICATORS_PAGE}"), 1)
     # check if first kpi card have correct value
-    dash_br_driver.wait_for_text_to_equal(kpi_card_path(), "73902")
+    dash_br_driver.wait_for_text_to_equal(kpi_card_path(), "67434")
 
 
 @pytest.mark.parametrize(
@@ -323,7 +323,7 @@ def test_homepage_mobile(dash_br):
 
 @pytest.mark.mobile_screenshots
 @pytest.mark.parametrize(
-    "dash_br_driver", [({"path": cnst.FILTER_INTERACTIONS_PAGE})], ids=["mobile"], indirect=["dash_br_driver"]
+    "dash_br_driver", [({"path": f"/{cnst.FILTER_INTERACTIONS_PAGE}"})], ids=["mobile"], indirect=["dash_br_driver"]
 )
 @image_assertion
 def test_filter_interactions_page(dash_br_driver):
@@ -332,7 +332,7 @@ def test_filter_interactions_page(dash_br_driver):
 
 @pytest.mark.mobile_screenshots
 @pytest.mark.parametrize(
-    "dash_br_driver", [({"path": cnst.FILTER_INTERACTIONS_PAGE})], ids=["mobile"], indirect=["dash_br_driver"]
+    "dash_br_driver", [({"path": f"/{cnst.FILTER_INTERACTIONS_PAGE}"})], ids=["mobile"], indirect=["dash_br_driver"]
 )
 @image_assertion
 def test_filter_interactions_dark_theme_page(dash_br_driver):
