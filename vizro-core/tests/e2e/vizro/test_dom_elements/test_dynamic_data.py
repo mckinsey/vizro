@@ -723,7 +723,7 @@ def test_datepicker_range_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 6, 2024 – Mar 10, 2024")  # noqa: RUF001
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 6, 2024 – Mar 10, 2024")  # noqa: RUF001
 
     # open the calendar and check if '5 March' is disabled
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
@@ -786,7 +786,7 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 6, 2024")
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
 
     # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
@@ -805,7 +805,7 @@ def test_datepicker_single_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 6, 2024")
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
 
     # open the calendar and check if '5 March' is disabled
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
