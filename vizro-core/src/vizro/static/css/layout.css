@@ -254,7 +254,7 @@ Current logic:
 
   #nav-control-panel {
     padding-top: 12px;
-    width: 324px;
+    width: 280px;
   }
 
   #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
