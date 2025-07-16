@@ -8,6 +8,62 @@ from vizro.tables import dash_ag_grid
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 stocks = px.data.stocks(datetimes=True)
 tips = px.data.tips()
+iris = px.data.iris()
+
+
+test_options_30_chars = [
+    # 24 characters seems to be the sweet spot for the dropdown width now
+    "A" * 24,
+    "Option B",
+    "Option C",
+]
+
+
+# Test page for character width testing
+character_test_page = vm.Page(
+    title="Dropdown Character Width Test",
+    components=[
+        vm.Card(
+            text="""
+            ### Dropdown Character Width Test
+            
+            **Purpose:** Determine the optimal character count for dropdowns in the 300,jn px left panel.
+            
+            **Current setting:** 30 characters for left panel, 15 for containers
+            
+            **Instructions:**
+
+            1. Look at the dropdown in the left panel
+            2. Note where text starts wrapping to a second line
+            3. The optimal character count is where text just fits on one line
+            4. Test by selecting different options to see wrapping behavior
+            
+            **Expected:** Text should wrap around 25-28 characters for the new 280px width
+            """
+        ),
+        vm.Graph(
+            id="scatter",
+            figure=px.scatter(
+                iris,
+                x="sepal_length",
+                y="sepal_width", 
+                color="species",
+                title="Sample Chart - Select filters to test dropdown behavior"
+            )
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["scatter.title"],
+            selector=vm.Dropdown(
+                title="Check Char Count",
+                options=test_options_30_chars,
+                value=test_options_30_chars[0],
+                multi=False,
+            ),
+        ),
+    ],
+)
 
 selectors = vm.Page(
     title="Selectors",
@@ -74,7 +130,7 @@ selectors = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[selectors])
+dashboard = vm.Dashboard(pages=[selectors, character_test_page])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
