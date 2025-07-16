@@ -680,7 +680,7 @@ def test_datepicker_range_filters(dash_br):
     )
 
     # check current date values
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 5, 2024 – March 10, 2024")  # noqa: RUF001
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
 
     # Set "date_max" option to "2024-03-09" for the dynamic data and simulate refreshing the page
     page_select(
@@ -692,7 +692,7 @@ def test_datepicker_range_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 5, 2024 – March 10, 2024")  # noqa: RUF001
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
 
     # Check y axis max value is '5'
     dash_br.wait_for_text_to_equal(
@@ -723,7 +723,7 @@ def test_datepicker_range_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 6, 2024 – March 10, 2024")  # noqa: RUF001
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 6, 2024 – Mar 10, 2024")  # noqa: RUF001
 
     # open the calendar and check if '5 March' is disabled
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
@@ -741,7 +741,7 @@ def test_datepicker_single_filters(dash_br):
     )
 
     # check current date value
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
 
     # Check y axis min value is '0'
     dash_br.wait_for_text_to_equal(
@@ -769,7 +769,7 @@ def test_datepicker_single_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
 
     # Check y axis min value is '-1' (empty chart)
     check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)

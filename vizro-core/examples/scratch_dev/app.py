@@ -26,18 +26,18 @@ character_test_page = vm.Page(
         vm.Card(
             text="""
             ### Dropdown Character Width Test
-            
+
             **Purpose:** Determine the optimal character count for dropdowns in the 300,jn px left panel.
-            
+
             **Current setting:** 30 characters for left panel, 15 for containers
-            
+
             **Instructions:**
 
             1. Look at the dropdown in the left panel
             2. Note where text starts wrapping to a second line
             3. The optimal character count is where text just fits on one line
             4. Test by selecting different options to see wrapping behavior
-            
+
             **Expected:** Text should wrap around 25-28 characters for the new 280px width
             """
         ),
@@ -46,10 +46,10 @@ character_test_page = vm.Page(
             figure=px.scatter(
                 iris,
                 x="sepal_length",
-                y="sepal_width", 
+                y="sepal_width",
                 color="species",
-                title="Sample Chart - Select filters to test dropdown behavior"
-            )
+                title="Sample Chart - Select filters to test dropdown behavior",
+            ),
         ),
     ],
     controls=[
