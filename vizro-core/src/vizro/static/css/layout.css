@@ -65,7 +65,9 @@
   justify-content: flex-end;
 }
 
-#header-right, #header-left, #header-custom {
+#header-right,
+#header-left,
+#header-custom {
   align-items: center;
   display: flex;
   gap: 8px;
@@ -149,7 +151,6 @@
   display: inline;
 }
 
-
 #collapse-icon.material-symbols-outlined {
   background-color: var(--left-side-bg);
   border: 1px solid var(--border-subtleAlpha01);
@@ -215,9 +216,34 @@ Current logic:
   }
 
   #header,
-  #right-side,
-  #left-side {
+  #right-side {
     zoom: 80%;
+  }
+}
+
+/* Apply specific styles for landscape orientation on small screen heights */
+@media screen and (height <= 576px) and (orientation: landscape) {
+  #nav-control-panel {
+    font-size: 12px;
+    width: 260px;
+  }
+
+  #nav-control-panel .accordion-button,
+  #nav-control-panel .form-label,
+  #nav-control-panel .form-check-label,
+  #nav-control-panel .mantine-DatePickerInput-input,
+  #nav-control-panel .slider-text-input-field,
+  #nav-control-panel div.Select--multi .Select-value {
+    font-size: 12px;
+  }
+
+  #nav-control-panel .rc-slider-tooltip-inner,
+  #nav-control-panel .rc-slider-mark-text {
+    font-size: 10px;
+  }
+
+  #nav-control-panel .mantine-DatePickerInput-input {
+    min-height: 40px;
   }
 }
 
@@ -226,15 +252,16 @@ Current logic:
     overflow: hidden;
   }
 
+  #nav-control-panel {
+    padding-top: 12px;
+    width: 324px;
+  }
+
   #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
     ~ #collapse-icon-outer
     #collapse-icon {
     right: -7px;
     z-index: 10;
-  }
-
-  #nav-control-panel {
-    padding-top: 12px;
   }
 
   #nav-bar {
