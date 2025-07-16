@@ -19,8 +19,8 @@
   flex-direction: column;
   gap: 1.5rem;
   overflow: auto;
-  padding: 24px 24px 0;
-  width: 324px;
+  padding: 20px 20px 0;
+  width: 280px;
 }
 
 #left-side {
@@ -36,7 +36,7 @@
   flex-direction: column;
   gap: 1.25rem;
   overflow: auto;
-  padding: 24px;
+  padding: 20px;
   width: 100%;
 }
 
@@ -54,7 +54,7 @@
   height: 60px;
   justify-content: space-between;
   min-height: 0;
-  padding: 0 24px;
+  padding: 0 20px;
 }
 
 #header:not(:empty) {
@@ -65,7 +65,9 @@
   justify-content: flex-end;
 }
 
-#header-right, #header-left, #header-custom {
+#header-right,
+#header-left,
+#header-custom {
   align-items: center;
   display: flex;
   gap: 8px;
@@ -110,8 +112,8 @@
 #nav-bar {
   border-right: 1px solid var(--bs-border-color);
   display: flex;
-  flex-direction: column;
-  width: 64px;
+  justify-content: flex-start;
+  width: 60px;
 }
 
 #dashboard-container div[hidden] {
@@ -149,7 +151,6 @@
   display: inline;
 }
 
-
 #collapse-icon.material-symbols-outlined {
   background-color: var(--left-side-bg);
   border: 1px solid var(--border-subtleAlpha01);
@@ -166,7 +167,7 @@
 #collapse-icon-outer {
   display: flex;
   justify-content: center;
-  padding-top: 28px;
+  padding-top: 22px;
   width: 0;
 }
 
@@ -203,19 +204,57 @@ Current logic:
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
   #collapse-icon-outer {
-    padding-top: 20px;
+    padding-top: 16px;
+  }
+
+  #nav-control-panel {
+    padding-top: 16px;
+  }
+
+  #nav-bar {
+    padding-top: 4px;
   }
 
   #header,
-  #right-side,
-  #left-side {
+  #right-side {
     zoom: 80%;
+  }
+}
+
+/* Apply specific styles for landscape orientation on small screen heights */
+@media screen and (height <= 576px) and (orientation: landscape) {
+  #nav-control-panel {
+    font-size: 12px;
+    width: 260px;
+  }
+
+  #nav-control-panel .accordion-button,
+  #nav-control-panel .form-label,
+  #nav-control-panel .form-check-label,
+  #nav-control-panel .mantine-DatePickerInput-input,
+  #nav-control-panel .slider-text-input-field,
+  #nav-control-panel div.Select--multi .Select-value {
+    font-size: 12px;
+  }
+
+  #nav-control-panel .rc-slider-tooltip-inner,
+  #nav-control-panel .rc-slider-mark-text {
+    font-size: 10px;
+  }
+
+  #nav-control-panel .mantine-DatePickerInput-input {
+    min-height: 40px;
   }
 }
 
 @media screen and (width <= 576px) and (orientation: portrait) {
   body:has(#collapse-left-side.show) {
     overflow: hidden;
+  }
+
+  #nav-control-panel {
+    padding-top: 12px;
+    width: 280px;
   }
 
   #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
@@ -225,8 +264,12 @@ Current logic:
     z-index: 10;
   }
 
+  #nav-bar {
+    padding-top: 0;
+  }
+
   #left-side:has(#nav-control-panel:not([hidden])) {
-    height: calc(100vh - 48px);
+    height: calc(100vh - 40px);
     position: absolute;
     width: 100vw;
     z-index: 5;

@@ -16,18 +16,18 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Emit a warning in all models when `description` is set but `title` is missing or empty. ([#1275](https://github.com/mckinsey/vizro/pull/1275))
-
-
-<!--
-### Changed
-
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+
+### Changed
+
+- Made the left navigation panel narrower (from 324px to 280px) to give more space to dashboard content while keeping navigation easily accessible. ([#1277](https://github.com/mckinsey/vizro/pull/1277))
+
+
 <!--
 ### Deprecated
 

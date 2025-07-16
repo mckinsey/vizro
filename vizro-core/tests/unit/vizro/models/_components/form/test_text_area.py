@@ -66,7 +66,7 @@ class TestTextAreaBuild:
         text_area = TextArea(
             id="text-area-id",
             title="Title",
-            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+            description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
             placeholder="Placeholder",
         ).build()
 

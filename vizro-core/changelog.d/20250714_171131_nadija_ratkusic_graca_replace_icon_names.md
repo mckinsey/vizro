@@ -4,11 +4,12 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-
+<!--
 ### Highlights ✨
 
-- Introduce the "Select All" option for `Checklist` and multi-select `Dropdown`. Easily select or deselect all options with a single click within the selector. ([#1000](https://github.com/mckinsey/vizro/pull/1000))
+- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Removed
 

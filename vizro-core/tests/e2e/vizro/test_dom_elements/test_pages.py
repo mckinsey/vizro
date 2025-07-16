@@ -28,7 +28,7 @@ def test_active_accordion(dash_br):
     dash_br.multiple_click(nav_card_link_path(href=f"/{cnst.DATEPICKER_PAGE}"), 1)
     graph_load_waiter(dash_br)
     dash_br.wait_for_text_to_equal(page_title_path(), cnst.DATEPICKER_PAGE)
-    check_accordion_active(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION.upper())
+    check_accordion_active(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
 
 
 def test_404_page(dash_br):
@@ -42,10 +42,10 @@ def test_404_page(dash_br):
 
 
 @pytest.mark.parametrize(
-    "dash_br",
-    [{"port": cnst.DEFAULT_PORT, "path": "?unexpercted_param=parampampam"}],
-    indirect=["dash_br"],
+    "dash_br_driver",
+    [{"path": "?unexpercted_param=parampampam"}],
+    indirect=["dash_br_driver"],
 )
-def test_unexpected_query_parameters_page(dash_br):
+def test_unexpected_query_parameters_page(dash_br_driver):
     """Test opening page with not existent parameter."""
-    graph_load_waiter(dash_br)
+    graph_load_waiter(dash_br_driver)

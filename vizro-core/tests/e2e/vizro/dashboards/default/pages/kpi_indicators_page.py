@@ -65,7 +65,7 @@ kpi_indicators_page = vm.Page(
                 reference_column="Reference",
                 title="Ref. Value III",
                 agg_func="median",
-                icon="shopping_cart",
+                icon="Shopping Cart",
             ),
         ),
         # Style 3: Value and icon
@@ -73,7 +73,7 @@ kpi_indicators_page = vm.Page(
             figure=kpi_card(
                 data_frame=kpi_df,
                 value_column="Actual",
-                icon="shopping_cart",
+                icon="Shopping Cart",
                 title="Icon I",
                 agg_func="sum",
                 value_format="${value:.2f}",
@@ -83,7 +83,7 @@ kpi_indicators_page = vm.Page(
             figure=kpi_card(
                 data_frame=kpi_df,
                 value_column="Actual",
-                icon="payment",
+                icon="Payment",
                 title="Icon II",
                 agg_func="mean",
                 value_format="{value:.0f}€",
@@ -93,7 +93,7 @@ kpi_indicators_page = vm.Page(
             figure=kpi_card(
                 data_frame=kpi_df,
                 value_column="Actual",
-                icon="monitoring",
+                icon="Monitoring",
                 title="Icon III",
                 agg_func="median",
             )

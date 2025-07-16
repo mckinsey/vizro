@@ -63,8 +63,7 @@ nav:
       - Authors: pages/explanation/authors.md
   - Examples gallery:
       - Gallery: https://vizro.mckinsey.com/
-  - Vizro-AI:
-      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
+  - ✨🆕 Cheatsheet: pages/cheatsheet/cheatsheet.html
   - Vizro-MCP:
       - Vizro-MCP: https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md
 
@@ -121,7 +120,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.42
+                vizro==0.1.43
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark

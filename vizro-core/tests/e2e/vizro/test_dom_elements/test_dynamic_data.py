@@ -59,6 +59,71 @@ def rewrite_dynamic_filters_data_config(func):
     return wrapper
 
 
+@pytest.mark.order(1)
+def test_dropdown_values_not_disappear(dash_br):
+    """Check for dynamic data specific scenario.
+
+    This test checks the problem when dashboard is started with one scope of options
+    for dropdown in database and during its usage database updated with new options, which will disappear
+    from dropdown after reloading the page.
+    This test should be run as the first in module because of specific database configuration.
+    """
+    # Select page and wait until it's loaded
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    # Open dropdown menu
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    # Check that all values are selected
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa"],
+        expected_unselected_options=[],
+    )
+    # Add "versicolor" and "virginica" from the dynamic data
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=10)
+    dynamic_filters_data_config_manipulation(key="virginica", set_value=15)
+    dash_br.driver.refresh()
+    # Open dropdown menu
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    # Check that all values are present and only "setosa" selected
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=False,
+        expected_selected_options=["setosa"],
+        expected_unselected_options=["SelectAll", "versicolor", "virginica"],
+    )
+    # Choose "versicolor" and "virginica"
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
+    # Open dropdown menu
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    # Check that all values are selected
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor", "virginica"],
+        expected_unselected_options=[],
+    )
+    dash_br.driver.refresh()
+    # Open dropdown menu
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    # Check that all values are still selected
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        all_value=True,
+        expected_selected_options=["setosa", "versicolor", "virginica"],
+        expected_unselected_options=[],
+    )
+
+
 @pytest.mark.parametrize(
     "cache, slider_id",
     [
@@ -150,6 +215,15 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
+    # TODO: delete this code block after fixing https://github.com/McK-Internal/vizro-internal/issues/1356
+    # -------- START: code block --------
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=15)
+    dynamic_filters_data_config_manipulation(key="virginica", set_value=10)
+    dash_br.driver.refresh()
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
+    # -------- END: code block --------
     # Open dropdown menu
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are selected
@@ -308,6 +382,16 @@ def test_checklist_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
+    # TODO: delete this code block after fixing https://github.com/McK-Internal/vizro-internal/issues/1356
+    # -------- START: code block --------
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=15)
+    dynamic_filters_data_config_manipulation(key="virginica", set_value=10)
+    dash_br.driver.refresh()
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1)
+    dash_br.multiple_click(
+        categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=3), 1, delay=0.1
+    )
+    # -------- END: code block --------
     # Check that "setosa", "versicolor" and "virginica" is the listed options
     check_selected_categorical_component(
         dash_br,
@@ -451,7 +535,8 @@ def test_checklist_filter(dash_br):
 
     # Choose "versicolor" value and check that graph is reloaded
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=1), 1)
-    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=3), 1)
+    # TODO: change value to 3 after fixing https://github.com/McK-Internal/vizro-internal/issues/1356
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1)
     check_graph_is_loaded(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
@@ -595,7 +680,7 @@ def test_datepicker_range_filters(dash_br):
     )
 
     # check current date values
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 5, 2024 – March 10, 2024")  # noqa: RUF001
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
 
     # Set "date_max" option to "2024-03-09" for the dynamic data and simulate refreshing the page
     page_select(
@@ -607,7 +692,7 @@ def test_datepicker_range_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 5, 2024 – March 10, 2024")  # noqa: RUF001
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
 
     # Check y axis max value is '5'
     dash_br.wait_for_text_to_equal(
@@ -638,7 +723,7 @@ def test_datepicker_range_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 6, 2024 – March 10, 2024")  # noqa: RUF001
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 6, 2024 – Mar 10, 2024")  # noqa: RUF001
 
     # open the calendar and check if '5 March' is disabled
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
@@ -656,7 +741,7 @@ def test_datepicker_single_filters(dash_br):
     )
 
     # check current date value
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
 
     # Check y axis min value is '0'
     dash_br.wait_for_text_to_equal(
@@ -684,7 +769,7 @@ def test_datepicker_single_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
 
     # Check y axis min value is '-1' (empty chart)
     check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
@@ -701,7 +786,7 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 6, 2024")
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
 
     # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
@@ -720,7 +805,7 @@ def test_datepicker_single_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 6, 2024")
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
 
     # open the calendar and check if '5 March' is disabled
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
@@ -734,7 +819,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     Page configuration includes dynamic data scatter chart which controls by slider parameter and static data scatter
     which has 'virginica' data only.
     """
-    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper())
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
