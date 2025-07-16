@@ -212,6 +212,14 @@ GRAPH_TOOLTIP_ICON = "resize"
 BUTTON_TOOLTIP_TEXT = "Button tooltip for exporting data"
 BUTTON_TOOLTIP_ICON = "abc"
 
+VIZRO_URL_AND_DOWNLOAD_PAGE = "url-and-download"
+BUTTON_VIZRO_DOWNLOAD = "button_download"
+BUTTON_VIZRO_DOWNLOAD_COPY = "button_download_copy"
+BUTTON_VIZRO_URL = "button_url"
+BUTTON_VIZRO_URL_COPY = "button_url_copy"
+VIZRO_DOWNLOAD_FILE = "vizro_download.csv"
+VIZRO_DOWNLOAD_BASE_FILE = "tests/tests_utils/e2e/vizro/files/vizro_download.csv"
+
 
 COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
 
