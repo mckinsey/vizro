@@ -1,12 +1,11 @@
 # Vizro-MCP
 
-
-
 <div class="grid cards" markdown>
 
 - :fontawesome-regular-map:{ .lg .middle } __New to Vizro-MCP?__
 
     ---
+
 </div>
 
 !!! notice "Notice"
