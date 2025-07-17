@@ -55,10 +55,7 @@ column_names_2 = [
 data = {}
 for i, col in enumerate(column_names):
     if i % 5 == 0:  # String columns with long values
-        data[col] = [
-            f"Long_Text_Value_{j}_{np.random.randint(1000, 9999)}"
-            for j in range(n_rows)
-        ]
+        data[col] = [f"Long_Text_Value_{j}_{np.random.randint(1000, 9999)}" for j in range(n_rows)]
     elif i % 5 == 1:  # Float columns with many decimal places
         data[col] = np.round(np.random.uniform(1000, 9999, n_rows), 4)
     elif i % 5 == 2:  # Integer columns with large numbers
@@ -91,10 +88,7 @@ def generate_column_data(column_names):
 
     for i, col in enumerate(column_names):
         if i % 5 == 0:  # String columns with long values
-            data[col] = [
-                f"Long_Text_Value_{j}_{np.random.randint(1000, 9999)}"
-                for j in range(n_rows)
-            ]
+            data[col] = [f"Long_Text_Value_{j}_{np.random.randint(1000, 9999)}" for j in range(n_rows)]
         elif i % 5 == 1:  # Float columns with many decimal places
             data[col] = np.round(np.random.uniform(1000, 9999, n_rows), 4)
         elif i % 5 == 2:  # Integer columns with large numbers
@@ -335,9 +329,7 @@ page9 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(
-    pages=[page0, page1, page2, page3, page4, page5, page6, page7, page8, page9]
-)
+dashboard = vm.Dashboard(pages=[page0, page1, page2, page3, page4, page5, page6, page7, page8, page9])
 
 
 Vizro().build(dashboard).run()
