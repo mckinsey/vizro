@@ -23,7 +23,9 @@ _DATA_TYPE_DEFINITIONS = {
         "extendsDataType": "number",
         "columnTypes": "rightAligned",
         "appendColumnTypes": True,
-        "valueFormatter": {"function": "params.value == null ? 'NaN' : String(params.value)"},
+        "valueFormatter": {
+            "function": "params.value == null ? 'NaN' : String(params.value)"
+        },
     },
     "dollar": {
         "baseDataType": "number",
@@ -33,7 +35,9 @@ _DATA_TYPE_DEFINITIONS = {
     "euro": {
         "baseDataType": "number",
         "extendsDataType": "number",
-        "valueFormatter": {"function": f"{_FORMAT_CURRENCY_EU}.format('$,.2f')(params.value)"},
+        "valueFormatter": {
+            "function": f"{_FORMAT_CURRENCY_EU}.format('$,.2f')(params.value)"
+        },
     },
     "percent": {
         "baseDataType": "number",
@@ -71,7 +75,9 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
         "columnDefs": [{"field": col} for col in data_frame.columns],
         "rowData": data_frame.apply(
             lambda x: (
-                x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AG Grid filtering to function
+                x.dt.strftime(
+                    "%Y-%m-%d"
+                )  # set date columns to `dateString` for AG Grid filtering to function
                 if pd.api.types.is_datetime64_any_dtype(x)
                 else x
             )
@@ -80,7 +86,6 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
             "resizable": True,
             "sortable": True,
             "filter": True,
-            "flex": 1,
             "filterParams": {
                 "buttons": ["apply", "reset"],
                 "closeOnApply": True,
@@ -93,6 +98,8 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
             "pagination": True,
             "paginationPageSize": 20,
         },
+        "columnSize": "sizeToFit",
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
+
     return dag.AgGrid(**kwargs)
