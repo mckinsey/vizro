@@ -292,7 +292,7 @@ class TestBuildTable:
         table = vm.Table(
             figure=standard_dash_table,
             title="Title",
-            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+            description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
         )
         table.pre_build()
         table = table.build()

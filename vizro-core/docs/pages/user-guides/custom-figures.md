@@ -81,7 +81,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
-                        icon="shopping_cart",
+                        icon="Shopping Cart",
                         title="Default KPI card",
                     )
                 ),
@@ -90,7 +90,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
-                        icon="payment",
+                        icon="Payment",
                         title="Custom KPI card",
                     )
                 ),

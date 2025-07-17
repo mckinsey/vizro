@@ -1,7 +1,10 @@
+import base64
+import json
 import os
 import shutil
 import subprocess
 from pathlib import Path
+from urllib.parse import parse_qs, urlencode, urlparse
 
 import pandas as pd
 import pytest
@@ -75,3 +78,48 @@ def assert_files_equal(base_file, exported_file):
         equal_to(True),
         reason=f"{exported_file} is not equal to {base_file}\nDifference is:\n{differences}",
     )
+
+
+def encode_url_params(decoded_map, apply_on_keys=None):
+    """Code taken from comments in vizro-core/src/vizro/static/js/models/page.js file."""
+    encoded_map = {}
+    for key, value in decoded_map.items():
+        if key in apply_on_keys:
+            # This manual base64 encoding could be simplified with base64.urlsafe_b64encode.
+            # It's kept here to match the javascript implementation.
+            json_str = json.dumps(value, separators=(",", ":"))
+            encoded_bytes = base64.b64encode(json_str.encode("utf-8"))
+            encoded_str = encoded_bytes.decode("utf-8").replace("+", "-").replace("/", "_").rstrip("=")
+            encoded_map[key] = "b64_" + encoded_str
+    return encoded_map
+
+
+def decode_url_params(encoded_map, apply_on_keys=None):
+    """Code taken from comments in vizro-core/src/vizro/static/js/models/page.js file."""
+    decoded_map = {}
+    for key, val in encoded_map.items():
+        if val.startswith("b64_") and key in apply_on_keys:
+            try:
+                # This manual base64 decoding could be simplified with base64.urlsafe_b64decode.
+                # It's kept here to match the javascript implementation.
+                base64_str = val[4:].replace("-", "+").replace("_", "/")
+                base64_str += "=" * ((4 - len(base64_str) % 4) % 4)
+                binary_data = base64.b64decode(base64_str)
+                json_str = binary_data.decode("utf-8")
+                decoded_map[key] = json.loads(json_str)
+            except Exception as e:
+                print(f"Failed to decode URL parameter: {key}, {val} - {e}")  # noqa
+    return decoded_map
+
+
+def get_url_params(driver):
+    current_url = driver.driver.current_url
+    parsed_url = urlparse(current_url)
+    params_dict = parse_qs(parsed_url.query)
+    # Convert single-value lists to actual values
+    params_dict_simple = {k: v[0] if len(v) == 1 else v for k, v in params_dict.items()}
+    return params_dict_simple
+
+
+def param_to_url(decoded_map, apply_on_keys):
+    return urlencode(encode_url_params(decoded_map=decoded_map, apply_on_keys=apply_on_keys), doseq=True)
