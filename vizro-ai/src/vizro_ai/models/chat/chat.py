@@ -2,7 +2,7 @@
 
 import json
 import uuid
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 import dash
 import dash_bootstrap_components as dbc
@@ -11,9 +11,11 @@ from dash import Input, Output, State, callback, clientside_callback, dcc, html
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
 from flask import Response, request
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, field_validator
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
+
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 from vizro_ai.models.chat._constants import (
     HISTORY_CONTAINER,
@@ -31,7 +33,7 @@ from vizro_ai.models.chat._utils import (
     _flush_accumulated_text,
     _parse_sse_chunks,
 )
-from vizro_ai.models.chat.processors import ChatMessage, ChatProcessor, EchoProcessor
+from vizro_ai.processors import ChatMessage, ChatProcessor, EchoProcessor
 
 
 class Chat(VizroBaseModel):
@@ -46,7 +48,9 @@ class Chat(VizroBaseModel):
         height (str): Height of the chat component wrapper. Defaults to `"100%"`.
         storage_type (Literal["memory", "session", "local"]): Storage type for chat history
             persistence. Defaults to `"session"`.
-        processor (ChatProcessor): Chat processor for generating responses. Defaults to `EchoProcessor()`.
+        processor (Union[ChatProcessor, CapturedCallable]): Chat processor for generating responses. 
+            Can be a ChatProcessor instance or a captured callable that returns a ChatProcessor.
+            Defaults to `EchoProcessor()`.
 
     """
 
@@ -61,9 +65,14 @@ class Chat(VizroBaseModel):
     storage_type: Literal["memory", "session", "local"] = Field(
         default="session", description="Storage type for chat history persistence"
     )
-    processor: ChatProcessor = Field(
-        default_factory=EchoProcessor, description="Chat processor for generating responses"
+    
+    processor: Union[ChatProcessor, CapturedCallable] = Field(
+        default_factory=EchoProcessor,
+        json_schema_extra={"mode": "processor", "import_path": "vizro_ai.processors"},
+        description="Chat processor for generating responses. Can be a ChatProcessor instance or captured callable that returns a ChatProcessor."
     )
+    
+    _validate_processor = field_validator("processor", mode="before")(validate_captured_callable)
 
     def plug(self, app):
         """Register streaming routes with the Dash app.
@@ -81,7 +90,8 @@ class Chat(VizroBaseModel):
 
                 def response_stream():
                     try:
-                        for chat_message in self.processor.get_response(messages, user_prompt):
+                        processor_instance = self.processor() if isinstance(self.processor, CapturedCallable) else self.processor
+                        for chat_message in processor_instance.get_response(messages, user_prompt):
                             yield sse_message(chat_message.to_json())
                         # Send standard SSE completion signal
                         # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6

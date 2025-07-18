@@ -466,13 +466,13 @@ def _pio_templates_default():
 class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
-    This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically, it should be used as a function decorator. There are five possible modes: `"graph"`, `"table"`,
-    `"ag_grid"`, `"figure"` and `"action"`.
+    This is used to add the functionality required to make graphs, actions, and processors work in a dashboard.
+    Typically, it should be used as a function decorator. There are six possible modes: `"graph"`, `"table"`,
+    `"ag_grid"`, `"figure"`, `"action"`, and `"processor"`.
 
     Args:
         mode: The mode of the captured callable. Valid modes are `"graph"`, `"table"`, `"ag_grid"`,
-            `"figure"` and `"action"`.
+            `"figure"`, `"action"`, and `"processor"`.
 
     Examples:
         >>> @capture("graph")
@@ -490,6 +490,9 @@ class capture:
         >>> @capture("action")
         >>> def action_function():
         >>>     ...
+        >>> @capture("processor")
+        >>> def processor_function():
+        >>>     ...
 
     For further help on the use of `@capture("graph")`, you can refer to the guide on
     [custom graphs](../user-guides/custom-charts.md).
@@ -502,7 +505,7 @@ class capture:
 
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure"]):
+    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure", "processor"]):
         """Decorator to capture a function call."""
         # mode and model_example are used in later validations of the captured callable.
         self._mode = mode
@@ -512,15 +515,16 @@ class capture:
             "table": "vm.Table(figure=...)",
             "ag_grid": "vm.AgGrid(figure=...)",
             "figure": "vm.Figure(figure=...)",
+            "processor": "vam.Chat(processor=...)",
         }
         self._model_example = model_examples[mode]
 
     def __call__(self, func, /):
         """Produces a CapturedCallable or _DashboardReadyFigure.
 
-        mode="action" and mode="table" give a CapturedCallable, while mode="graph" gives a _DashboardReadyFigure that
-        contains a CapturedCallable. In both cases, the CapturedCallable is based on func and the provided
-        *args and **kwargs.
+        mode="action", mode="processor", and mode="table" give a CapturedCallable, while mode="graph" gives a 
+        _DashboardReadyFigure that contains a CapturedCallable. In both cases, the CapturedCallable is based on func 
+        and the provided *args and **kwargs.
         """
         if self._mode == "graph":
             # The more difficult case, where we need to still have a valid plotly figure that renders in a notebook.
@@ -573,7 +577,7 @@ class capture:
                 return fig
 
             return wrapped
-        elif self._mode == "action":
+        elif self._mode in ["action", "processor"]:
             # The "normal" case where we just capture the function call.
             @functools.wraps(func)
             def wrapped(*args, **kwargs) -> CapturedCallable:
@@ -604,7 +608,7 @@ class capture:
             return wrapped
         raise ValueError(
             "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table'), "
-            "@capture('ag_grid') and @capture('figure')."
+            "@capture('ag_grid'), @capture('figure'), and @capture('processor')."
         )
 
 

@@ -22,30 +22,28 @@ best practices, you can quickly assemble high-quality, multi-page prototypes,
 that are production-ready.
 """
 
-example_llm_processor = vam.OpenAIProcessor(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    api_base=os.getenv("OPENAI_BASE_URL"),
-)
-
 chat_component1 = vam.Chat(
     input_placeholder="Ask me a question...",
-    processor=example_llm_processor,
+    processor=vam.openai_processor(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        api_base=os.getenv("OPENAI_BASE_URL"),
+    ),
 )
 
 chat_component2 = vam.Chat(
-    processor=vam.EchoProcessor(),
+    processor=vam.echo_processor(),
     initial_message="I'm an echo processor",
 )
 
 chat_component3 = vam.Chat(
-    processor=vam.EchoProcessor(),
+    processor=vam.echo_processor(),
     height="400px",
     storage_type="local",
 )
 
 chat_component4 = vam.Chat(
     input_placeholder="Ask me anything to see mixed content...",
-    processor=vam.GraphProcessor(),
+    processor=vam.graph_processor(),
     initial_message="Hello! I can show you text, code, and interactive charts. Try asking me anything!",
 )
 
