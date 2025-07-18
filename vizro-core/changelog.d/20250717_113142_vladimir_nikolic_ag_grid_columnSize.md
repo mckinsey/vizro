@@ -34,12 +34,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Improved AgGrid column sizing behavior by removing `flex` from default column options and setting `columnSize: "sizeToFit"` as the default, ensuring columns automatically adjust to fit their content. ([#1986](https://github.com/mckinsey/vizro/pull/1986))
 
--->
 <!--
 ### Security
 
