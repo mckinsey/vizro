@@ -1,3 +1,10 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
+
 # Vizro-MCP
 
 
