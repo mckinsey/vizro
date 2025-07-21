@@ -4,7 +4,6 @@ hide:
   - toc
 ---
 
-
 # Vizro-MCP
 
 <div class="grid cards" markdown>
