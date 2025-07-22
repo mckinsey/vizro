@@ -246,14 +246,14 @@ class TestDropdownBuild:
         [
             (["A", "B", "C"], 32),
             ([10.0, 20.0, 30.0], 32),
-            (["A" * 30, "B", "C"], 32),
-            (["A" * 31, "B", "C"], 56),
-            (["A" * 60, "B", "C"], 56),
-            (["A" * 61, "B", "C"], 80),
-            ([{"label": "A" * 30, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 32),
-            ([{"label": "A" * 31, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
-            ([{"label": "A" * 60, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
-            ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
+            (["A" * 24, "B", "C"], 32),
+            (["A" * 25, "B", "C"], 56),
+            (["A" * 48, "B", "C"], 56),
+            (["A" * 49, "B", "C"], 80),
+            ([{"label": "A" * 24, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 32),
+            ([{"label": "A" * 25, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
+            ([{"label": "A" * 48, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
+            ([{"label": "A" * 49, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
         ],
     )
     def test_dropdown_option_height(self, options, option_height):

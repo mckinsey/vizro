@@ -53,6 +53,10 @@ def button_path():
     return "button[class='btn btn-primary']"
 
 
+def button_id_path(btn_id):
+    return f"button[id='{btn_id}']"
+
+
 def table_cell_value_path(table_id, row_number, column_number):
     return f"div[id='{table_id}'] tr:nth-of-type({row_number}) td:nth-of-type({column_number}) div"
 
