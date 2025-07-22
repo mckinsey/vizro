@@ -1,7 +1,3 @@
-#dashboard-container .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
-  font-family: Inter, sans-serif, Arial, serif;
-}
-
 #dashboard-container .dash-cell {
   height: 3rem !important;
 }
@@ -19,6 +15,10 @@
 
 #dashboard-container .dash-spreadsheet-inner table {
   --hover: inherit;
+}
+
+#dashboard-container .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
+  font-family: Inter, sans-serif, Arial, serif;
 }
 
 /* Styling for pagination element */
