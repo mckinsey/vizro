@@ -2,16 +2,16 @@ site_name: Vizro-MCP
 site_url: https://vizro.readthedocs.io/projects/vizro-mcp
 nav:
   - Vizro-MCP: index.md
-  - Tutorials: 
-    - Set up Vizro-MCP with Claude: pages/tutorials/set-up-vizro-mcp-with-claude.md
-    - Set up Vizro-MCP with Cursor: pages/tutorials/set-up-vizro-mcp-with-cursor.md
-    - Set up Vizro-MCP with other clients: pages/tutorials/set-up-vizro-mcp-general.md
-    - First dashboard tutorial: pages/tutorials/first-dashboard-tutorial.md
+  - Tutorials:
+      - Set up Vizro-MCP with Claude: pages/tutorials/set-up-vizro-mcp-with-claude.md
+      - Set up Vizro-MCP with Cursor: pages/tutorials/set-up-vizro-mcp-with-cursor.md
+      - Set up Vizro-MCP with other clients: pages/tutorials/set-up-vizro-mcp-general.md
+      - First dashboard tutorial: pages/tutorials/first-dashboard-tutorial.md
   - Guides:
-    - Use Vizro-MCP tools: pages/guides/use-vizro-mcp-tools.md 
-    - Use developer builds: pages/guides/use-developer-build.md
+      - Use Vizro-MCP tools: pages/guides/use-vizro-mcp-tools.md
+      - Use developer builds: pages/guides/use-developer-build.md
   - Explanation:
-    - Disclaimers: pages/explanation/disclaimers.md
+      - Disclaimers: pages/explanation/disclaimers.md
   - Vizro: https://vizro.readthedocs.io
   - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
