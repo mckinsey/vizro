@@ -1,6 +1,7 @@
 # FAQs
 
 ## Can Vizro-MCP create custom CSS?
+
 Vizro-MCP is designed to start you creating Vizro dashboards and charts based on the core Vizro features. It is not designed to replace a human developer when going beyond the core features, e.g. when building an application that requires custom CSS or bespoke Dash components.
 
 ## How do I use the prompt templates?
@@ -8,9 +9,8 @@ Vizro-MCP is designed to start you creating Vizro dashboards and charts based on
 !!! warning "Check if the templates are available for your MCP client"
 
     Vizro-MCP's prompt templates are not available in all MCP clients.
-    
+
 You can use the prompt templates to create specific dashboards quickly. To access them (e.g. in Claude Desktop), click on the plus icon below the chat, and choose _`Add from vizro-mcp`_.
-  
 
 ![Claude Desktop MCP Server Icon](../../assets/images/claude_prompt.png)
 
@@ -38,7 +38,6 @@ When the LLM chooses to use the tool `validate_dashboard_config`, and the tool e
 
 ![validate_model_config](../../assets/images/claude_validate.png)
 
-
 You can also ask the model to give you the link, but it will attempt to regenerate it, which is very error prone and slow.
 
 ## Can I just create Vizro charts without a dashboard?
@@ -52,4 +51,3 @@ Alternatively, you can just ask in the chat, for example:
 > _Create a scatter based on the iris dataset._
 
 > _Create a bar chart based on `<insert absolute file path or public URL>` data._
-

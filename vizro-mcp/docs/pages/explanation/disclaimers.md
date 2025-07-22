@@ -10,7 +10,6 @@ The second most critical part is the `validate_dashboard_config` tool. This tool
 
 ## Third party API
 
-
 Users are responsible for anything done via their host LLM application.
 
 Users are responsible for procuring any and all rights necessary to access any third-party generative AI tools and for complying with any applicable terms or conditions thereof.
@@ -43,24 +42,16 @@ We recommend users research and understand the selected model before using Vizro
 
 Users are encouraged to treat AI-generated content as supplementary, always apply human judgment, approach with caution, review the relevant disclaimer page, and consider the following:
 
-* Hallucination and misrepresentation
-Generative models can potentially generate information while appearing factual, being entirely fictitious or misleading.
+- Hallucination and misrepresentation Generative models can potentially generate information while appearing factual, being entirely fictitious or misleading.
 
 The vendor models might lack real-time knowledge or events beyond its last updates. Vizro-MCP output may vary and you should always verify critical information. It is the user's responsibility to discern the accuracy, consistent, and reliability of the generated content.
 
-* Unintended and sensitive output
-The outputs from these models can be unexpected, inappropriate, or even harmful. Users as human in the loop is an essential part. Users must check and interpret the final output. It is necessary to approach the generated content with caution, especially when shared or applied in various contexts.
+- Unintended and sensitive output The outputs from these models can be unexpected, inappropriate, or even harmful. Users as human in the loop is an essential part. Users must check and interpret the final output. It is necessary to approach the generated content with caution, especially when shared or applied in various contexts.
 
-* Data privacy
-Your data is sent to model vendors if you connect to LLMs via their APIs. For example, if you connect to the model from OpenAI, your data will be sent to OpenAI via their API. Users should be cautious about sharing or inputting any personal or sensitive information.
+- Data privacy Your data is sent to model vendors if you connect to LLMs via their APIs. For example, if you connect to the model from OpenAI, your data will be sent to OpenAI via their API. Users should be cautious about sharing or inputting any personal or sensitive information.
 
-* Bias and fairness
-Generative AI can exhibit biases present in their training data. Users need to be aware of and navigate potential biases in generated outputs and be cautious when interpreting the generated content.
+- Bias and fairness Generative AI can exhibit biases present in their training data. Users need to be aware of and navigate potential biases in generated outputs and be cautious when interpreting the generated content.
 
-* Malicious use
-These models can be exploited for various malicious activities. Users should be cautious about how and where they deploy and access such models.
-
+- Malicious use These models can be exploited for various malicious activities. Users should be cautious about how and where they deploy and access such models.
 
 It's crucial for users to remain informed, cautious, and ethical in their applications.
-
-
