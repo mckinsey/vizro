@@ -2,22 +2,21 @@
 
 !!! notice "Use of large language models"
 
-    You must connect to a large language model (LLM) to use Vizro-MCP. 
-    
+    You must connect to a large language model (LLM) to use Vizro-MCP.
+
     Please review our [guidelines on the use of LLMs](../explanation/disclaimers.md).
-    
-This page explains how to set up [Claude Desktop](https://support.anthropic.com/en/articles/10065433-installing-claude-desktop) to use Vizro-MCP. 
+
+This page explains how to set up [Claude Desktop](https://support.anthropic.com/en/articles/10065433-installing-claude-desktop) to use Vizro-MCP.
 
 !!! Warning "Can I use the free tier with Claude?"
 
     You do not need to have a paid account with Claude to use Vizro-MCP, but your tokens for usage will be limited. The free plan might also be less performant, which may cause issues when the request is too complex. In cases where you run out of tokens, or the request causes the UI to crash, opt to use a paid plan, or reduce your request's complexity.
 
-
-If you have not already done so, download and install [Claude Desktop](https://claude.ai/download). Vizro-MCP does not work with the web version of Claude. 
+If you have not already done so, download and install [Claude Desktop](https://claude.ai/download). Vizro-MCP does not work with the web version of Claude.
 
 ## Set up uv or Docker
 
-To access Vizro-MCP, you must first install **either [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Docker](https://www.docker.com/get-started/)** by following the linked instructions. 
+To access Vizro-MCP, you must first install **either [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Docker](https://www.docker.com/get-started/)** by following the linked instructions.
 
 ## Set up instructions
 
@@ -48,10 +47,9 @@ Copy the path returned, and add the following to `claude_desktop_config.json`, s
 }
 ```
 
-
 ### Using Docker
 
-If you are using Docker, add the following to `claude_desktop_config.json`. 
+If you are using Docker, add the following to `claude_desktop_config.json`.
 
 ```json
 {
@@ -73,38 +71,28 @@ If you are using Docker, add the following to `claude_desktop_config.json`.
 
     Mount your data directory or directories into the container with the following extended configuration. Replace `</absolute/path/to/allowed/dir>` (syntax for folders) or `</absolute/path/to/data.csv>` (syntax for files) with the absolute path to your data on your machine. For consistency, we recommend that the `dst` path matches the `src` path.
 
-	```json
-	{
-	  "mcpServers": {
-	    "vizro-mcp": {
-	      "command": "docker",
-	      "args": [
-	        "run",
-	        "-i",
-	        "--rm",
-	        "--mount",
-	        "type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir>",
-	        "--mount",
-	        "type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv>",
-	        "mcp/vizro"
-	      ]
-	    }
-	  }
-	}
-	```
-
+    ```json
+    {
+      "mcpServers": {
+        "vizro-mcp": {
+          "command": "docker",
+          "args": [
+            "run",
+            "-i",
+            "--rm",
+            "--mount",
+            "type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir>",
+            "--mount",
+            "type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv>",
+            "mcp/vizro"
+          ]
+        }
+      }
+    }
+    ```
 
 ### Restart Claude Desktop
 
 Once you have updated the configuration, restart Claude Desktop. After a few moments, you should see the vizro-mcp menu in the settings/context menu:
 
-
-![Claude Desktop MCP Server Icon](../../assets/images/claude_working.png) 
-
-
-
-
-
-
-
-
+![Claude Desktop MCP Server Icon](../../assets/images/claude_working.png)
