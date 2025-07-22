@@ -2,35 +2,33 @@
 
 !!! notice "Use of large language models"
 
-    You must connect to a large language model (LLM) to use Vizro-MCP. 
-    
+    You must connect to a large language model (LLM) to use Vizro-MCP.
+
     Please review our [guidelines on the use of LLMs](../explanation/disclaimers.md).
-    
-This page explains how to set up [Cursor](https://www.cursor.com/) to use Vizro-MCP. 
+
+This page explains how to set up [Cursor](https://www.cursor.com/) to use Vizro-MCP.
 
 !!! Warning "Can I use a free version of Cursor?"
 
     You do not need to have a paid account with Cursor to use Vizro-MCP, but your tokens for usage will be limited. The free plan might also be less performant, which may cause issues when the request is too complex. In cases where you run out of tokens, or the request causes the UI to crash, opt to use a paid plan, or reduce your request's complexity.
 
-
-If you have not already done so, download and install the [Cursor app](https://cursor.com/downloads). Vizro-MCP does not work with the web version. 
+If you have not already done so, download and install the [Cursor app](https://cursor.com/downloads). Vizro-MCP does not work with the web version.
 
 ## Set up uv or Docker
 
-To access Vizro-MCP, you must first install **either [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Docker](https://www.docker.com/get-started/)** by following the linked instructions. 
+To access Vizro-MCP, you must first install **either [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Docker](https://www.docker.com/get-started/)** by following the linked instructions.
 
 ## Set up instructions
 
-Once you have uv or Docker, and have installed the desktop version of Cursor, you need to set up the Vizro-MCP server configuration. 
+Once you have uv or Docker, and have installed the desktop version of Cursor, you need to set up the Vizro-MCP server configuration.
 
 ### Using uv
 
 Click the "Install" button below:
 
-
 [![Install with uv in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)
 
-The following configuration is added to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)). 
+The following configuration is added to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
 
 ```json
 {
@@ -50,7 +48,7 @@ Click the "Install" button below:
 
 [![Install with Docker in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoiZG9ja2VyIHJ1biAtaSAtLXJtIG1jcC92aXpybyJ9)
 
-The following configuration is added to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)). 
+The following configuration is added to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
 
 ```json
 {
@@ -67,16 +65,16 @@ The following configuration is added to your `mcp.json` ([see Cursor Settings](h
 
     Mount your data directory or directories into the container by extending the configuration as follows:
 
-	```json
-	{
-	  "mcpServers": {
-	    "vizro-mcp": {
-	      "command": "docker run -i --rm --mount type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir> --mount type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv> mcp/vizro",
-	      "env": {}
-	    }
-	  }
-	}
-	```
+    ```json
+    {
+      "mcpServers": {
+        "vizro-mcp": {
+          "command": "docker run -i --rm --mount type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir> --mount type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv> mcp/vizro",
+          "env": {}
+        }
+      }
+    }
+    ```
 
     Replace `</absolute/path/to/allowed/dir>` (syntax for folders) or `</absolute/path/to/data.csv>` (syntax for files) with the absolute path to your data on your machine. For consistency, we recommend that the `dst` path matches the `src` path.
 
