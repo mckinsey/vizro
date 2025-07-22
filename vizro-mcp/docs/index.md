@@ -8,7 +8,7 @@ hide:
 
 Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts.
 
-<img src="./assets/images/vizro-mcp.gif" width="600" alt="Vizro MCP Demo">
+<img src="./assets/images/vizro-mcp.gif" width="600" alt="Vizro-MCP Demo">
 
 <div class="grid cards" markdown>
 
