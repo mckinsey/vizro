@@ -1,3 +1,7 @@
+#dashboard-container .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
+  font-family: Inter, sans-serif, Arial, serif;
+}
+
 #dashboard-container .dash-cell {
   height: 3rem !important;
 }
