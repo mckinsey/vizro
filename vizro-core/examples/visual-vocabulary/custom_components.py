@@ -36,7 +36,7 @@ class CodeClipboard(vm.VizroBaseModel):
                 dmc.CodeHighlight(
                     code=self.code,
                     language=self.language,
-                )
+                ),
             ],
             className="code-clipboard-container",
         )
