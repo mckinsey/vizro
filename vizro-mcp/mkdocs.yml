@@ -11,6 +11,7 @@ nav:
       - Use Vizro-MCP tools: pages/guides/use-vizro-mcp-tools.md
       - Use developer builds: pages/guides/use-developer-build.md
   - Explanation:
+      - FAQs: pages/explanation/faqs.md
       - Disclaimers: pages/explanation/disclaimers.md
   - Vizro: https://vizro.readthedocs.io
   - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
