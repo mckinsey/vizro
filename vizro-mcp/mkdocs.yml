@@ -5,7 +5,7 @@ nav:
   - Tutorials:
       - Set up Vizro-MCP with Claude: pages/tutorials/set-up-vizro-mcp-with-claude.md
       - Set up Vizro-MCP with Cursor: pages/tutorials/set-up-vizro-mcp-with-cursor.md
-      - Set up Vizro-MCP with other clients: pages/tutorials/set-up-vizro-mcp-general.md
+      - Set up Vizro-MCP with VS Code: pages/tutorials/set-up-vizro-mcp-with-vscode.md
       - First dashboard tutorial: pages/tutorials/first-dashboard-tutorial.md
   - Guides:
       - Use Vizro-MCP tools: pages/guides/use-vizro-mcp-tools.md
