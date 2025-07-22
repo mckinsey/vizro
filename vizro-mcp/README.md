@@ -2,11 +2,11 @@
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@mckinsey/vizro/badge" />
 </a> -->
 
-# Vizro MCP server
+# Vizro-MCP
 
 Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts.
 
-<img src="docs/assets/images/vizro-mcp.gif" width="600" alt="Vizro MCP Demo">
+<img src="docs/assets/images/vizro-mcp.gif" width="600" alt="Vizro-MCP Demo">
 
 ### Quick install
 
@@ -18,6 +18,14 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 | [VS Code](https://code.visualstudio.com/) | [Docker](https://www.docker.com/get-started/)                 | [![Install with Docker in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22docker%22%2C%22args%22%3A%5B%22run%22%2C%22-i%22%2C%22--rm%22%2C%22mcp%2Fvizro%22%5D%7D) | For local data access, [mount your data directory](#setup-instructions) |
 
 ## Disclaimers
+
+### Transparency and trust
+
+MCP servers are a relatively new concept, and it is important to be transparent about what the tools are capable of so you can make an informed choice as a user. Overall, the Vizro MCP server only reads data, and never writes, deletes or modifies any data on your machine.
+
+In general the most critical part of the process is the `load_and_analyze_data` tool. This tool, running on your machine, will load local or remote data into a pandas DataFrame and provide a detailed analysis of its structure and content. It only uses `pd.read_xxx`, so in general there is no need to worry about privacy or data security. However, you should only run Vizro-MCP locally, not as a hosted server, because there is currently no authentication to manage access.
+
+The second most critical part is the `validate_dashboard_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return and attempt to open a link to a live preview of the dashboard, which will take you to [PyCafe](https://py.cafe). If you don't want to open the link, you can tell the LLM to not do so.
 
 <details>
 <summary><strong>Third party API</strong></summary>
