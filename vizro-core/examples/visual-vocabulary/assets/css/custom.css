@@ -1,5 +1,5 @@
-#page-header {
-  padding-left: 8px;
+#header {
+  padding-left: px;
 }
 
 #nav-control-panel {
@@ -10,36 +10,22 @@ img[src*="#chart-icon"] {
   width: 100%;
 }
 
+/* PyCafe Link Button Icon*/
 .open-in-new {
   font-size: inherit;
   margin-left: 4px;
   vertical-align: middle;
 }
 
-.code-clipboard {
-  float: right;
-  font-size: 20px;
-}
-
-.code-clipboard pre {
-  font-family: monospace;
-  margin-bottom: 12px;
-}
 
 .code-clipboard-container {
-  background: var(--surfaces-bg-card);
-  max-height: 500px;
-  overflow: auto;
-  padding: 1rem;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.code-clipboard-container .pycafe-link {
-  margin-bottom: 12px;
-}
-
-.code-clipboard-container::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg-card);
+.container-fluid > .grid-layout::-webkit-scrollbar-thumb {
+  border-color: var(--right-side-bg);
 }
 
 .flex-item h4 {

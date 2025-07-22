@@ -4,6 +4,7 @@ from typing import Literal
 from urllib.parse import quote
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import vizro.models as vm
 from dash import dcc, html
 from pydantic import Field
@@ -15,12 +16,10 @@ class CodeClipboard(vm.VizroBaseModel):
     type: Literal["code_clipboard"] = "code_clipboard"
     code: str
     mode: Literal["vizro", "plotly"]
-    language: str = ""
+    language: str = "python"
 
     def build(self):
         """Returns the code clipboard component inside an accordion."""
-        markdown_code = "\n".join([f"```{self.language}", self.code, "```"])
-
         pycafe_link = dbc.Button(
             [
                 "Edit code live on PyCafe",
@@ -34,8 +33,10 @@ class CodeClipboard(vm.VizroBaseModel):
         return html.Div(
             [
                 pycafe_link if self.mode == "vizro" else None,
-                dcc.Clipboard(target_id=self.id, className="code-clipboard"),
-                dcc.Markdown(markdown_code, id=self.id),
+                dmc.CodeHighlight(
+                    code=self.code,
+                    language=self.language,
+                )
             ],
             className="code-clipboard-container",
         )
