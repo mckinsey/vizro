@@ -11,7 +11,7 @@ from pydantic import Field
 
 
 class CodeClipboard(vm.VizroBaseModel):
-    """Code snippet with a copy to clipboard button."""
+    """Code clipboard based on `dmc.CodeHighlight` with optional pyCafe link."""
 
     type: Literal["code_clipboard"] = "code_clipboard"
     code: str
@@ -19,7 +19,7 @@ class CodeClipboard(vm.VizroBaseModel):
     language: str = "python"
 
     def build(self):
-        """Returns the code clipboard component inside an accordion."""
+        """Build and return the complete code clipboard component."""
         pycafe_link = dbc.Button(
             [
                 "Edit code live on PyCafe",
@@ -41,22 +41,4 @@ class CodeClipboard(vm.VizroBaseModel):
             className="code-clipboard-container",
         )
 
-
-class Markdown(vm.VizroBaseModel):
-    """Markdown component."""
-
-    type: Literal["markdown"] = "markdown"
-    text: str = Field(
-        ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
-    )
-    classname: str = ""
-
-    def build(self):
-        """Returns a markdown component with an optional classname."""
-        return dcc.Markdown(
-            id=self.id, children=self.text, dangerously_allow_html=False, className=self.classname, link_target="_blank"
-        )
-
-
-vm.Container.add_type("components", Markdown)
 vm.Container.add_type("components", CodeClipboard)

@@ -2,16 +2,12 @@
   padding-left: 4px;
 }
 
-#nav-control-panel {
-  width: 288px;
-}
-
 img[src*="#chart-icon"] {
   width: 100%;
 }
 
 /* PyCafe Link Button Icon */
-.open-in-new {
+.material-symbols-outlined .open-in-new {
   font-size: inherit;
   margin-left: 4px;
   vertical-align: middle;
@@ -22,10 +18,6 @@ img[src*="#chart-icon"] {
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.container-fluid > .grid-layout::-webkit-scrollbar-thumb {
-  border-color: var(--right-side-bg);
 }
 
 .flex-item h4 {
@@ -57,6 +49,7 @@ img[src*="#chart-icon"] {
 
 .intro-text h4 {
   color: var(--text-secondary);
+  margin: 0;
 }
 
 .intro-text p {
