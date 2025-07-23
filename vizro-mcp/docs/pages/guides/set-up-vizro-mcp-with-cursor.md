@@ -8,9 +8,9 @@
 
 This page explains how to set up [Cursor](https://www.cursor.com/) to use Vizro-MCP.
 
-!!! Warning "Can I use a free version of Cursor?"
+!!! Warning "Can I use a trial version of Cursor?"
 
-    You do not need to have a paid account with Cursor to use Vizro-MCP, but your tokens for usage will be limited. The free plan might also be less performant, which may cause issues when the request is too complex. In cases where you run out of tokens, or the request causes the UI to crash, opt to use a paid plan, or reduce your request's complexity.
+    You can use the limited-period trial version of Cursor with Vizro-MCP, but your tokens for usage will be limited. The plan might also be less performant, which may cause issues when the request is too complex. In cases where you run out of tokens, or the request causes the UI to crash, opt to use a paid plan, or reduce your request's complexity.
 
 If you have not already done so, download and install the [Cursor app](https://cursor.com/downloads). Vizro-MCP does not work with the web version.
 
