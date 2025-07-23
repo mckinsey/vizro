@@ -189,7 +189,8 @@ class Filter(VizroBaseModel):
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
         # but should still count as manually set.
         if (
-            not getattr(self.selector, "options", [])
+            isinstance(self.selector, (SELECTORS["categorical"], SELECTORS["numerical"], SELECTORS["temporal"]))
+            and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
         ):
