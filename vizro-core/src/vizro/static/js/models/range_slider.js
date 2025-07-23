@@ -15,7 +15,7 @@ function update_range_slider_values(
   slider_value,
   start_value,
   end_value,
-  slider_component_id
+  slider_component_id,
 ) {
   console.debug("update_range_slider_values");
   const trigger_id = dash_clientside.callback_context.triggered_id;

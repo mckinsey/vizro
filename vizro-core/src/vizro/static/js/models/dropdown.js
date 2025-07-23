@@ -12,8 +12,8 @@ function update_dropdown_select_all(dropdown_value, options) {
 
   // Turn into array of values excluding the __SELECT_ALL one.
   const realOptions = options
-    .map(dict => dict["value"])
-    .filter(value => value !== "__SELECT_ALL");
+    .map((dict) => dict["value"])
+    .filter((value) => value !== "__SELECT_ALL");
 
   // When "Select All" option is clicked (includes when clicks on checkbox itself and area next to checkbox).
   if (dropdown_value.includes("__SELECT_ALL")) {

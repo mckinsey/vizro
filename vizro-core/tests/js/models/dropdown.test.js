@@ -25,7 +25,7 @@ describe("update_dropdown_select_all", () => {
     test("should select all options when Select All is clicked and not all options are selected", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["__SELECT_ALL", "option1"],
-        mockOptions
+        mockOptions,
       );
 
       expect(result[0]).toBe(true);
@@ -35,7 +35,7 @@ describe("update_dropdown_select_all", () => {
     test("should deselect all options when Select All is clicked and all options are already selected", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["__SELECT_ALL", "option1", "option2", "option3"],
-        mockOptions
+        mockOptions,
       );
 
       expect(result[0]).toBe(false);
@@ -45,7 +45,7 @@ describe("update_dropdown_select_all", () => {
     test("should select all options when only Select All is clicked", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["__SELECT_ALL"],
-        mockOptions
+        mockOptions,
       );
 
       expect(result[0]).toBe(true);
@@ -57,7 +57,7 @@ describe("update_dropdown_select_all", () => {
     test("should set select all to true when all real options are selected", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["option1", "option2", "option3"],
-        mockOptions
+        mockOptions,
       );
 
       expect(result[0]).toBe(true);
@@ -67,7 +67,7 @@ describe("update_dropdown_select_all", () => {
     test("should set select all to false when not all real options are selected", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["option1", "option2"],
-        mockOptions
+        mockOptions,
       );
 
       expect(result[0]).toBe(false);
@@ -77,7 +77,7 @@ describe("update_dropdown_select_all", () => {
     test("should set select all to false when only one option is selected", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["option1"],
-        mockOptions
+        mockOptions,
       );
 
       expect(result[0]).toBe(false);
@@ -87,7 +87,7 @@ describe("update_dropdown_select_all", () => {
     test("should set select all to false when no options are selected", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         [],
-        mockOptions
+        mockOptions,
       );
 
       expect(result[0]).toBe(false);
@@ -99,7 +99,7 @@ describe("update_dropdown_select_all", () => {
     test("should handle empty options array", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         [],
-        []
+        [],
       );
 
       expect(result[0]).toBe(true);
@@ -111,7 +111,7 @@ describe("update_dropdown_select_all", () => {
 
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["__SELECT_ALL"],
-        selectAllOnlyOptions
+        selectAllOnlyOptions,
       );
 
       expect(result[0]).toBe(false);
@@ -128,7 +128,7 @@ describe("update_dropdown_select_all", () => {
 
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["option1", "option2", "option3"],
-        mixedOptions
+        mixedOptions,
       );
 
       expect(result[0]).toBe(true);
@@ -138,7 +138,7 @@ describe("update_dropdown_select_all", () => {
     test("should handle dropdown value with mixed real options and __SELECT_ALL", () => {
       const result = window.dash_clientside.dropdown.update_dropdown_select_all(
         ["option1", "__SELECT_ALL", "option2"],
-        mockOptions
+        mockOptions,
       );
 
       expect(result[0]).toBe(true);

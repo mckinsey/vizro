@@ -38,7 +38,7 @@ describe("update_checklist_select_all", () => {
           true,
           [],
           mockOptions,
-          selectAllId
+          selectAllId,
         );
 
       expect(result[0]).toBe(global.dash_clientside.no_update);
@@ -51,7 +51,7 @@ describe("update_checklist_select_all", () => {
           false,
           ["option1", "option2"],
           mockOptions,
-          selectAllId
+          selectAllId,
         );
 
       expect(result[0]).toBe(global.dash_clientside.no_update);
@@ -70,7 +70,7 @@ describe("update_checklist_select_all", () => {
           false,
           ["option1", "option2", "option3"],
           mockOptions,
-          selectAllId
+          selectAllId,
         );
 
       expect(result[0]).toBe(true);
@@ -83,7 +83,7 @@ describe("update_checklist_select_all", () => {
           true,
           ["option1", "option2"],
           mockOptions,
-          selectAllId
+          selectAllId,
         );
 
       expect(result[0]).toBe(false);
@@ -96,7 +96,7 @@ describe("update_checklist_select_all", () => {
           false,
           [],
           mockOptions,
-          selectAllId
+          selectAllId,
         );
 
       expect(result[0]).toBe(false);
@@ -113,7 +113,7 @@ describe("update_checklist_select_all", () => {
           false,
           [],
           [],
-          selectAllId
+          selectAllId,
         );
 
       expect(result[0]).toBe(true);
@@ -128,7 +128,7 @@ describe("update_checklist_select_all", () => {
           true,
           [],
           [],
-          selectAllId
+          selectAllId,
         );
 
       expect(result[0]).toBe(global.dash_clientside.no_update);

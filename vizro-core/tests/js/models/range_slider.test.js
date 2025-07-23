@@ -35,7 +35,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([
@@ -54,7 +54,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([global.dash_clientside.no_update, 0, 1]);
@@ -69,7 +69,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([global.dash_clientside.no_update, 0, 100]);
@@ -84,7 +84,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([global.dash_clientside.no_update, 50, 50]);
@@ -99,7 +99,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([global.dash_clientside.no_update, -50, -10]);
@@ -114,7 +114,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([global.dash_clientside.no_update, 1.5, 98.7]);
@@ -136,7 +136,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([
@@ -155,7 +155,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([
@@ -174,7 +174,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([
@@ -193,7 +193,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([
@@ -212,7 +212,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([
@@ -239,7 +239,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -254,7 +254,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -269,7 +269,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -284,7 +284,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -299,7 +299,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -314,7 +314,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -330,7 +330,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -345,7 +345,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -361,7 +361,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -376,7 +376,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -391,7 +391,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -406,7 +406,7 @@ describe("update_range_slider_values", () => {
           slider_value,
           start_value,
           end_value,
-          slider_component_id
+          slider_component_id,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -423,7 +423,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       // When triggered_id is null, it's treated as text form component trigger
@@ -444,7 +444,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       // When triggered_id is empty string, it's treated as text form component trigger
@@ -466,7 +466,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([
@@ -487,7 +487,7 @@ describe("update_range_slider_values", () => {
         slider_value,
         start_value,
         end_value,
-        slider_component_id
+        slider_component_id,
       );
 
       expect(result).toEqual([

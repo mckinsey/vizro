@@ -15,9 +15,9 @@ global.URLSearchParams = jest.fn(() => ({
   set: jest.fn((key, value) => mockSearchParams.set(key, value)),
   toString: jest.fn(() => "param1=value1&param2=value2"),
   entries: jest.fn(() => mockSearchParams.entries()),
-  get: jest.fn(key => mockSearchParams.get(key)),
-  has: jest.fn(key => mockSearchParams.has(key)),
-  forEach: jest.fn(callback => mockSearchParams.forEach(callback)),
+  get: jest.fn((key) => mockSearchParams.get(key)),
+  has: jest.fn((key) => mockSearchParams.has(key)),
+  forEach: jest.fn((callback) => mockSearchParams.forEach(callback)),
 }));
 
 global.dash_clientside = {
@@ -45,9 +45,9 @@ describe("page.js functions", () => {
   describe("encodeUrlParams", () => {
     beforeEach(() => {
       // Mock btoa and TextEncoder for encoding tests
-      global.btoa = jest.fn(str => "encoded_" + str);
+      global.btoa = jest.fn((str) => "encoded_" + str);
       global.TextEncoder = jest.fn(() => ({
-        encode: jest.fn(str => new Uint8Array([1, 2, 3])), // Mock byte array
+        encode: jest.fn((str) => new Uint8Array([1, 2, 3])), // Mock byte array
       }));
     });
 
@@ -107,9 +107,9 @@ describe("page.js functions", () => {
       originalConsole = global.console;
 
       // Mock atob and TextDecoder for decoding tests
-      global.atob = jest.fn(str => "decoded_" + str);
+      global.atob = jest.fn((str) => "decoded_" + str);
       global.TextDecoder = jest.fn(() => ({
-        decode: jest.fn(bytes => '{"test": "value"}'),
+        decode: jest.fn((bytes) => '{"test": "value"}'),
       }));
     });
 
@@ -128,7 +128,7 @@ describe("page.js functions", () => {
       const applyOnKeys = ["vizro_1", "vizro_2"];
 
       global.JSON = {
-        parse: jest.fn(str => ({ decoded: "data" })),
+        parse: jest.fn((str) => ({ decoded: "data" })),
       };
 
       const result = decodeUrlParams(encodedMap, applyOnKeys);
@@ -210,7 +210,7 @@ describe("page.js functions", () => {
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
-          ...values_ids
+          ...values_ids,
         );
 
       // First element should be null (trigger OPL)
@@ -227,7 +227,7 @@ describe("page.js functions", () => {
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
-          ...values_ids
+          ...values_ids,
         );
 
       // First element should be no_update (don't trigger OPL)
@@ -243,7 +243,7 @@ describe("page.js functions", () => {
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
-          ...values_ids
+          ...values_ids,
         );
 
       // Should handle 3 controls (6 total parameters / 2)
@@ -256,13 +256,13 @@ describe("page.js functions", () => {
       const values_ids = ["value1", "control1"];
 
       global.dash_clientside.page.sync_url_query_params_and_controls(
-        ...values_ids
+        ...values_ids,
       );
 
       expect(replaceStateSpy).toHaveBeenCalledWith(
         null,
         "",
-        "/?param1=value1&param2=value2"
+        "/?param1=value1&param2=value2",
       );
     });
 
@@ -282,7 +282,7 @@ describe("page.js functions", () => {
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
-          ...values_ids
+          ...values_ids,
         );
 
       expect(result.length).toBe(3);
@@ -300,14 +300,14 @@ describe("page.js functions", () => {
       const values_ids = ["value1", "control1"];
 
       global.dash_clientside.page.sync_url_query_params_and_controls(
-        ...values_ids
+        ...values_ids,
       );
 
       expect(mockUrlParams.set).toHaveBeenCalled();
       expect(replaceStateSpy).toHaveBeenCalledWith(
         null,
         "",
-        "/?encoded=params"
+        "/?encoded=params",
       );
     });
   });

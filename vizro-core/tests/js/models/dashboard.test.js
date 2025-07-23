@@ -40,7 +40,7 @@ describe("dashboard.js functions", () => {
     // Spy on document.documentElement.setAttribute
     setAttributeSpy = jest.spyOn(
       global.document.documentElement,
-      "setAttribute"
+      "setAttribute",
     );
   });
 
@@ -58,11 +58,11 @@ describe("dashboard.js functions", () => {
 
       expect(global.document.documentElement.setAttribute).toHaveBeenCalledWith(
         "data-bs-theme",
-        "light"
+        "light",
       );
       expect(global.document.documentElement.setAttribute).toHaveBeenCalledWith(
         "data-mantine-color-scheme",
-        "light"
+        "light",
       );
       expect(result).toBe(global.dash_clientside.no_update);
     });
@@ -73,11 +73,11 @@ describe("dashboard.js functions", () => {
 
       expect(global.document.documentElement.setAttribute).toHaveBeenCalledWith(
         "data-bs-theme",
-        "dark"
+        "dark",
       );
       expect(global.document.documentElement.setAttribute).toHaveBeenCalledWith(
         "data-mantine-color-scheme",
-        "dark"
+        "dark",
       );
       expect(result).toBe(global.dash_clientside.no_update);
     });
@@ -88,11 +88,11 @@ describe("dashboard.js functions", () => {
 
       expect(global.document.documentElement.setAttribute).toHaveBeenCalledWith(
         "data-bs-theme",
-        "dark"
+        "dark",
       );
       expect(global.document.documentElement.setAttribute).toHaveBeenCalledWith(
         "data-mantine-color-scheme",
-        "dark"
+        "dark",
       );
       expect(result).toBe(global.dash_clientside.no_update);
     });
@@ -103,11 +103,11 @@ describe("dashboard.js functions", () => {
 
       expect(global.document.documentElement.setAttribute).toHaveBeenCalledWith(
         "data-bs-theme",
-        "dark"
+        "dark",
       );
       expect(global.document.documentElement.setAttribute).toHaveBeenCalledWith(
         "data-mantine-color-scheme",
-        "dark"
+        "dark",
       );
       expect(result).toBe(global.dash_clientside.no_update);
     });
@@ -170,7 +170,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         mockFigure,
         true,
-        mockVizroThemes
+        mockVizroThemes,
       );
 
       expect(result).toHaveLength(2);
@@ -182,7 +182,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         mockFigure,
         false,
-        mockVizroThemes
+        mockVizroThemes,
       );
 
       expect(result).toHaveLength(2);
@@ -194,7 +194,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         mockFigure,
         true,
-        mockVizroThemes
+        mockVizroThemes,
       );
 
       const updatedFigure = result[0];
@@ -209,7 +209,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         emptyFigure,
         true,
-        mockVizroThemes
+        mockVizroThemes,
       );
 
       expect(result[0].layout.template).toBe(mockVizroThemes.vizro_light);
@@ -221,7 +221,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         figureNoLayout,
         false,
-        mockVizroThemes
+        mockVizroThemes,
       );
 
       expect(result[0].layout.template).toBe(mockVizroThemes.vizro_dark);
@@ -232,7 +232,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         mockFigure,
         null,
-        mockVizroThemes
+        mockVizroThemes,
       );
 
       expect(result[0].layout.template).toBe(mockVizroThemes.vizro_dark);
@@ -243,7 +243,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         mockFigure,
         undefined,
-        mockVizroThemes
+        mockVizroThemes,
       );
 
       expect(result[0].layout.template).toBe(mockVizroThemes.vizro_dark);
@@ -254,7 +254,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         mockFigure,
         true,
-        {}
+        {},
       );
 
       expect(result[0].layout.template).toBeUndefined();
@@ -276,7 +276,7 @@ describe("dashboard.js functions", () => {
       const result = global.dash_clientside.dashboard.update_graph_theme(
         complexFigure,
         true,
-        mockVizroThemes
+        mockVizroThemes,
       );
 
       const updatedFigure = result[0];
@@ -285,10 +285,10 @@ describe("dashboard.js functions", () => {
       expect(updatedFigure.layout.xaxis).toEqual(complexFigure.layout.xaxis);
       expect(updatedFigure.layout.yaxis).toEqual(complexFigure.layout.yaxis);
       expect(updatedFigure.layout.annotations).toEqual(
-        complexFigure.layout.annotations
+        complexFigure.layout.annotations,
       );
       expect(updatedFigure.layout.showlegend).toBe(
-        complexFigure.layout.showlegend
+        complexFigure.layout.showlegend,
       );
       expect(updatedFigure.layout.template).toBe(mockVizroThemes.vizro_light);
     });
@@ -298,7 +298,7 @@ describe("dashboard.js functions", () => {
     test("should return correct values when n_clicks is not 0 and is_open is true", () => {
       const result = global.dash_clientside.dashboard.collapse_nav_panel(
         1,
-        true
+        true,
       );
       const expected = [
         false,
@@ -315,7 +315,7 @@ describe("dashboard.js functions", () => {
     test("should return correct values when n_clicks is not 0 and is_open is false", () => {
       const result = global.dash_clientside.dashboard.collapse_nav_panel(
         1,
-        false
+        false,
       );
       const expected = [
         true,
@@ -334,7 +334,7 @@ describe("dashboard.js functions", () => {
 
       const result = global.dash_clientside.dashboard.collapse_nav_panel(
         0,
-        true
+        true,
       );
       const expected = [
         false,
@@ -354,7 +354,7 @@ describe("dashboard.js functions", () => {
 
       const result = global.dash_clientside.dashboard.collapse_nav_panel(
         0,
-        false
+        false,
       );
       const expected = [
         false,
@@ -417,11 +417,11 @@ describe("dashboard.js functions", () => {
       const result1 = global.dash_clientside.dashboard.collapse_nav_panel(1, 0);
       const result2 = global.dash_clientside.dashboard.collapse_nav_panel(
         1,
-        ""
+        "",
       );
       const result3 = global.dash_clientside.dashboard.collapse_nav_panel(
         1,
-        null
+        null,
       );
 
       const expected = [
@@ -441,12 +441,12 @@ describe("dashboard.js functions", () => {
     test("should handle truthy non-boolean values for is_open", () => {
       const result1 = global.dash_clientside.dashboard.collapse_nav_panel(
         1,
-        "true"
+        "true",
       );
       const result2 = global.dash_clientside.dashboard.collapse_nav_panel(1, 1);
       const result3 = global.dash_clientside.dashboard.collapse_nav_panel(
         1,
-        {}
+        {},
       );
 
       const expected = [
@@ -467,7 +467,7 @@ describe("dashboard.js functions", () => {
     test("should handle multiple clicks", () => {
       const result = global.dash_clientside.dashboard.collapse_nav_panel(
         5,
-        true
+        true,
       );
       const expected = [
         false,
@@ -484,7 +484,7 @@ describe("dashboard.js functions", () => {
     test("should handle negative n_clicks as truthy", () => {
       const result = global.dash_clientside.dashboard.collapse_nav_panel(
         -1,
-        false
+        false,
       );
       const expected = [
         true,
@@ -503,7 +503,7 @@ describe("dashboard.js functions", () => {
 
       const result = global.dash_clientside.dashboard.collapse_nav_panel(
         0,
-        true
+        true,
       );
       const expected = [
         false,
@@ -523,7 +523,7 @@ describe("dashboard.js functions", () => {
 
       const result = global.dash_clientside.dashboard.collapse_nav_panel(
         0,
-        false
+        false,
       );
       const expected = [
         false,

@@ -21,7 +21,7 @@ function update_checklist_select_all(
   select_all_value,
   checklist_value,
   options,
-  select_all_id
+  select_all_id,
 ) {
   console.debug("update_checklist_select_all");
 
@@ -30,7 +30,7 @@ function update_checklist_select_all(
   // - none of the options if checkbox is unticked (select_all_value=False)
   if (dash_clientside.callback_context.triggered_id === select_all_id) {
     const newChecklistValue = select_all_value
-      ? options.map(dict => dict["value"])
+      ? options.map((dict) => dict["value"])
       : [];
     return [dash_clientside.no_update, newChecklistValue];
   }

@@ -27,7 +27,7 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
     if (applyOnKeys.includes(key)) {
       const json = JSON.stringify(value);
       const encoded = btoa(
-        String.fromCharCode(...new TextEncoder().encode(json))
+        String.fromCharCode(...new TextEncoder().encode(json)),
       )
         .replace(/\+/g, "-")
         .replace(/\//g, "_")
@@ -70,7 +70,7 @@ function decodeUrlParams(encodedMap, applyOnKeys) {
         let base64 = val.slice(4).replace(/-/g, "+").replace(/_/g, "/");
         base64 += "=".repeat((4 - (base64.length % 4)) % 4);
         const binary = atob(base64);
-        const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+        const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
         const json = new TextDecoder().decode(bytes);
         decodedMap.set(key, JSON.parse(json));
       } catch (e) {
@@ -95,7 +95,7 @@ function sync_url_query_params_and_controls(...values_ids) {
 
   // controlMap is in format: Map<controlId, controlSelectorValue>
   const controlMap = new Map(
-    values_ids.slice(half).map((id, i) => [id, values_ids[i]])
+    values_ids.slice(half).map((id, i) => [id, values_ids[i]]),
   );
 
   const relevantControlIds = Array.from(controlMap.keys());
@@ -111,7 +111,7 @@ function sync_url_query_params_and_controls(...values_ids) {
 
   // Prepare default selector values outputs
   const outputSelectorValues = new Array(controlMap.size).fill(
-    dash_clientside.no_update
+    dash_clientside.no_update,
   );
 
   if (isPageOpened) {
@@ -123,7 +123,7 @@ function sync_url_query_params_and_controls(...values_ids) {
     // Decoded URL parameters in format: Map<controlId, controlSelectorValue>
     const decodedParamMap = decodeUrlParams(
       urlParams,
-      relevantControlIds // Apply decoding only to control IDs
+      relevantControlIds, // Apply decoding only to control IDs
     );
 
     // Values from the URL take precedence if page is just opened.
@@ -141,7 +141,7 @@ function sync_url_query_params_and_controls(...values_ids) {
 
   // Encode controlMap to URL parameters.
   encodeUrlParams(controlMap, relevantControlIds).forEach((value, id) =>
-    urlParams.set(id, value)
+    urlParams.set(id, value),
   );
 
   // Directly `replace` the URL instead of using a dcc.Location as a callback Output. Do it because the dcc.Location
@@ -150,7 +150,7 @@ function sync_url_query_params_and_controls(...values_ids) {
   history.replaceState(
     null,
     "",
-    `${window.location.pathname}?${urlParams.toString()}`
+    `${window.location.pathname}?${urlParams.toString()}`,
   );
 
   return [triggerOPL, ...outputSelectorValues];

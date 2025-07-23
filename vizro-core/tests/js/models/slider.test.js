@@ -35,7 +35,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(global.dash_clientside.no_update);
@@ -49,7 +49,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(global.dash_clientside.no_update);
@@ -63,7 +63,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(global.dash_clientside.no_update);
@@ -77,7 +77,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(global.dash_clientside.no_update);
@@ -98,7 +98,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(endValue);
@@ -112,7 +112,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(endValue);
@@ -126,7 +126,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(endValue);
@@ -140,7 +140,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(endValue);
@@ -155,7 +155,7 @@ describe("update_slider_values", () => {
         window.dash_clientside.slider.update_slider_values(
           sliderValue,
           endValue,
-          sliderComponentId
+          sliderComponentId,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -168,7 +168,7 @@ describe("update_slider_values", () => {
         window.dash_clientside.slider.update_slider_values(
           sliderValue,
           endValue,
-          sliderComponentId
+          sliderComponentId,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -181,7 +181,7 @@ describe("update_slider_values", () => {
         window.dash_clientside.slider.update_slider_values(
           sliderValue,
           endValue,
-          sliderComponentId
+          sliderComponentId,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -194,7 +194,7 @@ describe("update_slider_values", () => {
         window.dash_clientside.slider.update_slider_values(
           sliderValue,
           endValue,
-          sliderComponentId
+          sliderComponentId,
         );
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
@@ -209,7 +209,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(endValue);
@@ -224,7 +224,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(global.dash_clientside.no_update);
@@ -239,7 +239,7 @@ describe("update_slider_values", () => {
       const result = window.dash_clientside.slider.update_slider_values(
         sliderValue,
         endValue,
-        sliderComponentId
+        sliderComponentId,
       );
 
       expect(result[0]).toBe(endValue);
