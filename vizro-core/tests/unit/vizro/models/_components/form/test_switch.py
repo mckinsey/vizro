@@ -16,7 +16,6 @@ class TestSwitchInstantiation:
         assert hasattr(switch, "id")
         assert switch.type == "switch"
         assert switch.value is False
-        assert switch.label == "Turn on"
         assert switch.title == ""
         assert switch.actions == []
         assert switch._action_outputs == {"__default__": f"{switch.id}.value"}
@@ -26,7 +25,6 @@ class TestSwitchInstantiation:
         switch = vm.Switch(
             id="switch-id",
             value=True,
-            label="Label",
             title="Title",
             description="Test description",
         )
@@ -34,7 +32,6 @@ class TestSwitchInstantiation:
         assert switch.id == "switch-id"
         assert switch.type == "switch"
         assert switch.value is True
-        assert switch.label == "Label"
         assert switch.title == "Title"
         assert switch.actions == []
         assert switch._action_outputs == {
@@ -49,30 +46,18 @@ class TestSwitchBuild:
     """Tests model build method."""
 
     def test_switch_build(self):
-        switch = vm.Switch(
-            value=True,
-            label="Show active",
-            title="Title",
-        ).build()
+        switch = vm.Switch(value=True, title="Show active").build()
 
-        expected_switch = html.Fieldset(
-            children=[
-                html.Legend(
-                    children=[html.Span(children="Title"), None],
-                    className="form-label",
-                ),
-                dbc.Switch(value=True, label="Show active", persistence=True, persistence_type="session"),
-            ]
+        expected_switch = dbc.Switch(
+            value=True, label=[html.Span(children="Show active"), None], persistence=True, persistence_type="session"
         )
-
         assert_component_equal(switch, expected_switch, keys_to_strip={"id"})
 
     def test_switch_build_with_description(self):
         """Test that description arguments correctly builds icon and tooltip."""
         switch = vm.Switch(
             value=True,
-            label="Show active",
-            title="Title",
+            title="Show active",
             description=vm.Tooltip(text="Test description", icon="info", id="info"),
         ).build()
 
@@ -86,19 +71,10 @@ class TestSwitchBuild:
             ),
         ]
 
-        expected_switch = html.Fieldset(
-            children=[
-                html.Legend(
-                    children=[html.Span(children="Title"), *expected_description],
-                    className="form-label",
-                ),
-                dbc.Switch(
-                    value=True,
-                    label="Show active",
-                    persistence=True,
-                    persistence_type="session",
-                ),
-            ]
+        expected_switch = dbc.Switch(
+            value=True,
+            label=[html.Span(children="Show active"), *expected_description],
+            persistence=True,
+            persistence_type="session",
         )
-
         assert_component_equal(switch, expected_switch, keys_to_strip={"id"})

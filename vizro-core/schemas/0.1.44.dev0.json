@@ -1950,7 +1950,7 @@
     },
     "Switch": {
       "additionalProperties": false,
-      "description": "Boolean single-option selector `Switch`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"switch\"]): Defaults to `\"switch\"`.\n    value (StrictBool): Initial state of the switch. When `True`, the switch is \"on\".\n        When `False`, the switch is \"off\". Defaults to `False`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    label (str): Label to be displayed to the right of the switch when it's in the \"on\" (true) state.\n        Defaults to \"Turn on\".\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Switch` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Boolean single-option selector `Switch`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"switch\"]): Defaults to `\"switch\"`.\n    value (bool): Initial state of the switch. When `True`, the switch is \"on\".\n        When `False`, the switch is \"off\". Defaults to `False`.\n    title (str): Title/Label to be displayed to the right of the switch. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Switch` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1972,14 +1972,8 @@
         },
         "title": {
           "default": "",
-          "description": "Title to be displayed",
+          "description": "Title/Label to be displayed to the right of the switch.",
           "title": "Title",
-          "type": "string"
-        },
-        "label": {
-          "default": "Turn on",
-          "description": "Label to be displayed to the right of the switch when it's in the 'on' (true) state.",
-          "title": "Label",
           "type": "string"
         },
         "description": {

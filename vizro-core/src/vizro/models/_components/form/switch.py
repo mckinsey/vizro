@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -20,11 +20,9 @@ class Switch(VizroBaseModel):
 
     Args:
         type (Literal["switch"]): Defaults to `"switch"`.
-        value (StrictBool): Initial state of the switch. When `True`, the switch is "on".
+        value (bool): Initial state of the switch. When `True`, the switch is "on".
             When `False`, the switch is "off". Defaults to `False`.
-        title (str): Title to be displayed. Defaults to `""`.
-        label (str): Label to be displayed to the right of the switch when it's in the "on" (true) state.
-            Defaults to "Turn on".
+        title (str): Title/Label to be displayed to the right of the switch. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
@@ -36,16 +34,12 @@ class Switch(VizroBaseModel):
     """
 
     type: Literal["switch"] = "switch"
-    value: StrictBool = Field(
+    value: bool = Field(
         default=False,
         description="""Initial state of the switch. When `True`, the switch is enabled/on.
         When `False`, the switch is disabled/off. Defaults to `False`.""",
     )
-    title: str = Field(default="", description="Title to be displayed")
-    label: str = Field(
-        default="Turn on",
-        description="Label to be displayed to the right of the switch when it's in the 'on' (true) state.",
-    )
+    title: str = Field(default="", description="Title/Label to be displayed to the right of the switch.")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
@@ -99,19 +93,9 @@ class Switch(VizroBaseModel):
         defaults = {
             "id": self.id,
             "value": self.value,
-            "label": self.label,
+            "label": [html.Span(id=f"{self.id}_title", children=self.title), *description],
             "persistence": True,
             "persistence_type": "session",
         }
 
-        return html.Fieldset(
-            children=[
-                html.Legend(
-                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
-                    className="form-label",
-                )
-                if self.title
-                else None,
-                dbc.Switch(**(defaults | self.extra)),
-            ]
-        )
+        return dbc.Switch(**(defaults | self.extra))

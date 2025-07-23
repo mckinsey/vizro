@@ -29,11 +29,11 @@ page = vm.Page(
             column="active",
             selector=vm.Switch(
                 value=False,
-                label="Show active accounts",
-                title="Switch selector title",
+                title="Show active accounts",
                 description="This is a description for the new switch selector",
             ),
-        )
+        ),
+        vm.Filter(column="active"),
     ],
 )
 
