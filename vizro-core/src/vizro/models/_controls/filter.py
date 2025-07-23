@@ -135,7 +135,7 @@ class Filter(VizroBaseModel):
         if isinstance(self.selector, SELECTORS["categorical"]):
             self.selector = cast(CategoricalSelectorType, self.selector)
             return self.selector(options=self._get_options(targeted_data, current_value))
-        elif isinstance(self.selector, SELECTORS["numerical"]):
+        elif isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             self.selector = cast(NumericalTemporalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data, current_value)
             return self.selector(min=_min, max=_max)
