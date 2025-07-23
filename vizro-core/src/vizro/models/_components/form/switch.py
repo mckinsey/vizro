@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -20,7 +20,7 @@ class Switch(VizroBaseModel):
 
     Args:
         type (Literal["switch"]): Defaults to `"switch"`.
-        value (bool): Initial state of the switch. When `True`, the switch is "on".
+        value (StrictBool): Initial state of the switch. When `True`, the switch is "on".
             When `False`, the switch is "off". Defaults to `False`.
         title (str): Title to be displayed. Defaults to `""`.
         label (str): Label to be displayed to the right of the switch when it's in the "on" (true) state.
@@ -36,7 +36,7 @@ class Switch(VizroBaseModel):
     """
 
     type: Literal["switch"] = "switch"
-    value: bool = Field(
+    value: StrictBool = Field(
         default=False,
         description="""Initial state of the switch. When `True`, the switch is enabled/on.
         When `False`, the switch is disabled/off. Defaults to `False`.""",

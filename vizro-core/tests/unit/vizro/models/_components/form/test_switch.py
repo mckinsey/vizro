@@ -16,7 +16,7 @@ class TestSwitchInstantiation:
         assert hasattr(switch, "id")
         assert switch.type == "switch"
         assert switch.value is False
-        assert switch.label == ""
+        assert switch.label == "Turn on"
         assert switch.title == ""
         assert switch.actions == []
         assert switch._action_outputs == {"__default__": f"{switch.id}.value"}
