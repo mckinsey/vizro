@@ -8,7 +8,7 @@ Vizro-MCP is designed to start you creating Vizro dashboards and charts based on
 
 !!! warning "Check if the templates are available for your MCP client"
 
-    Vizro-MCP's prompt templates are not available in all MCP clients.
+    Vizro-MCP's prompt templates are not available in all MCP hosts.
 
 You can use the prompt templates to create specific dashboards quickly. To access them (e.g. in Claude Desktop), click on the plus icon below the chat, and choose _`Add from vizro-mcp`_.
 
