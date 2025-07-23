@@ -2,14 +2,18 @@ site_name: Vizro-MCP
 site_url: https://vizro.readthedocs.io/projects/vizro-mcp
 nav:
   - Vizro-MCP: index.md
-  - Tutorials:
-      - Set up Vizro-MCP with Claude: pages/tutorials/set-up-vizro-mcp-with-claude.md
-      - Set up Vizro-MCP with Cursor: pages/tutorials/set-up-vizro-mcp-with-cursor.md
-      - Set up Vizro-MCP with VS Code: pages/tutorials/set-up-vizro-mcp-with-vscode.md
+  - Get started:
+      - Use Claude: pages/guides/set-up-vizro-mcp-with-claude.md
+      - Use Cursor: pages/guides/set-up-vizro-mcp-with-cursor.md
+      - Use VS Code: pages/guides/set-up-vizro-mcp-with-vscode.md
       - First dashboard tutorial: pages/tutorials/first-dashboard-tutorial.md
-  - Guides:
+  - How-to guides:
+      - Use prompt templates: pages/guides/use-prompt-templates.md
       - Use Vizro-MCP tools: pages/guides/use-vizro-mcp-tools.md
+      - Create charts: pages/guides/create-charts-only.md
       - Use developer builds: pages/guides/use-developer-build.md
+      - Use local or remote data: pages/guides/use-data.md
+      - Get a live preview: pages/guides/get-live-preview.md 
   - Explanation:
       - FAQs: pages/explanation/faqs.md
       - Disclaimers: pages/explanation/disclaimers.md
