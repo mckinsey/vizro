@@ -13,4 +13,3 @@ You can even ask for a dashboard without providing data:
 > _Create a Vizro dashboard with one page, a scatter chart, and a filter._
 
 In general, it helps to specify Vizro in the prompt and to keep it as precise (and simple) as possible.
-

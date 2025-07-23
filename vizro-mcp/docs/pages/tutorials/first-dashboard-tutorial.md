@@ -1,18 +1,18 @@
 # First dashboard tutorial
 
-Before creating your first Vizro dashboard with Vizro-MCP, you need to configure your MCP host. In this tutorial we assume you have set up [Claude desktop](../guides/set-up-vizro-mcp-with-claude.md), but you can use [Cursor](../guides/set-up-vizro-mcp-with-cursor.md) or [VS Code](../guides/set-up-vizro-mcp-with-vscode.md) to similar effect. 
+Before creating your first Vizro dashboard with Vizro-MCP, you need to configure your MCP host. In this tutorial we assume you have set up [Claude desktop](../guides/set-up-vizro-mcp-with-claude.md), but you can use [Cursor](../guides/set-up-vizro-mcp-with-cursor.md) or [VS Code](../guides/set-up-vizro-mcp-with-vscode.md) to similar effect.
 
 When Claude Desktop is set up to use Vizro-MCP, you should see the vizro-mcp menu in the settings/context menu:
 
 ![Claude Desktop MCP Server Icon](../../assets/images/claude_working.png)
 
-
 ## Create a dashboard with a prompt template
+
 Click on the plus icon below the chat, and choose _`Add from vizro-mcp`_.
 
 ![Claude Desktop MCP Server Icon](../../assets/images/claude_prompt.png)
 
-Choose the template `create_starter_dashboard` and submit the prompt.  
+Choose the template `create_starter_dashboard` and submit the prompt.
 
 ![](../../assets/images/vizro-mcp-templates-in-claude.png)
 
@@ -23,12 +23,12 @@ The template prompt creates a simple dashboard with one page, one chart, and one
 Prompt templates are only available in Claude Desktop, so if you are using another MCP host, or prefer to type your own prompt, this text is the equivalent of the template:
 
 !!! information "Dashboard creation prompt"
-    
+
     *Create a Vizro dashboard to analyze the iris dataset. Make a scatter plot of sepal dimensions and a species filter. Use the dark theme*.
 
-
 ## Dashboard output
-Given the `create_starter_dashboard.txt` template, or prompt above, Vizro-MCP plans the dashboard, accesses the public Iris dataset, and creates the configuration automatically. It generates code similar to the following, and opens a link to display the dashboard in [PyCafe](https://py.cafe/). 
+
+Given the `create_starter_dashboard.txt` template, or prompt above, Vizro-MCP plans the dashboard, accesses the public Iris dataset, and creates the configuration automatically. It generates code similar to the following, and opens a link to display the dashboard in [PyCafe](https://py.cafe/).
 
 If you want to see the dashboard for the code below, click on **☕️ Run and edit this code in Py.Cafe**.
 

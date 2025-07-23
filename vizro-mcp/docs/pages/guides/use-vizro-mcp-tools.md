@@ -12,5 +12,3 @@ Vizro-MCP provides the following tools. In general you should not need to use th
 - `load_and_analyze_data` - Loads a CSV file from a local path or URL into a pandas DataFrame and provides detailed analysis of its structure and content. It only uses `pd.read_xxx`, so in general there is no need to worry about privacy or data security. However, you should only run Vizro-MCP locally, not as a hosted server, because there is currently no authentication to manage access.
 - `validate_chart_code` - Validates the code created for a chart and returns feedback on its correctness.
 - `get_sample_data_info` - Provides information about sample datasets that can be used for testing and development.
-
-
