@@ -47,7 +47,7 @@ def make_homepage_container(chart_group: ChartGroup) -> vm.Container:
         title=chart_group.name,
         layout=vm.Grid(grid=[[0, 1, 1]], col_gap="40px"),
         components=[
-            vm.Text(text=chart_group.intro_text, extra={"className":"intro-text"}),
+            vm.Text(text=chart_group.intro_text, extra={"className": "intro-text"}),
             vm.Container(
                 layout=vm.Flex(direction="row", wrap=True),
                 components=[

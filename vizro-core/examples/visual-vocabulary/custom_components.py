@@ -6,8 +6,7 @@ from urllib.parse import quote
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import vizro.models as vm
-from dash import dcc, html
-from pydantic import Field
+from dash import html
 
 
 class CodeClipboard(vm.VizroBaseModel):
@@ -40,5 +39,6 @@ class CodeClipboard(vm.VizroBaseModel):
             ],
             className="code-clipboard-container",
         )
+
 
 vm.Container.add_type("components", CodeClipboard)
