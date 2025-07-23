@@ -56,7 +56,7 @@ As [shown below](#use-datasets-from-the-kedro-data-catalog), the best way to use
 
 ??? "Kedro configuration loader features"
 
-    Here are a few features of the Kedro configuration loader which are not possible with a `yaml.safe_load` alone. For more details, refer to Kedro's [documentation on advanced configuration](https://docs.kedro.org/en/stable/configuration/advanced_configuration.html).
+    Here are a few features of the Kedro configuration loader which are not possible with a `yaml.safe_load` alone. For more details, refer to Kedro's [documentation on advanced configuration](https://docs.kedro.org/en/1.0.0/configure/advanced_configuration/).
 
     - [Configuration environments](https://docs.kedro.org/en/stable/configure/configuration_basics/#configuration-environments) to organize settings that might be different between your different [development and production environments](run-deploy.md). For example, you might have different s3 buckets for development and production data.
     - [Recursive scanning for configuration files](https://docs.kedro.org/en/stable/configure/configuration_basics/#configuration-loading) to merge complex configuration that is split across multiple files and folders.
