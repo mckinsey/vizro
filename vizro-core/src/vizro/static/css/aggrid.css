@@ -1,5 +1,6 @@
 .ag-theme-quartz.ag-theme-vizro,
 .ag-theme-quartz-dark.ag-theme-vizro {
+  --ag-font-family: inter, sans-serif, arial, serif;
   --ag-active-color: var(--stateOverlays-selectedHover);
   --ag-background-color: transparent;
   --ag-odd-row-background-color: transparent;
