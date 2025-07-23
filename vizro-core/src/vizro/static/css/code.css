@@ -1,33 +1,4 @@
-code.language-python.hljs {
-  padding: 0;
-}
-
 .hljs {
-  background: unset;
+  background: var(--surfaces-bg-card);
   color: unset;
-}
-
-
-
-.hljs-string,
-.hljs-params,
-.hljs-params .hljs-string,
-.hljs-number,
-.hljs-subst {
-  color: var(--text-code-string);
-}
-
-.hljs-literal {
-  color: var(--text-code-literal);
-}
-
-.hljs-keyword {
-  color: var(--text-code-keyword);
-}
-
-.hljs-title.function_,
-.hljs-meta,
-.hljs-built_in,
-.hljs-type {
-  color: var(--text-code-meta);
 }

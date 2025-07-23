@@ -1,4 +1,5 @@
 /* Custom CSS  */
-#header {
-    padding-left: 4px;
+.flex-item .card-kpi {
+  height: 150px;
+  width: 300px;
 }

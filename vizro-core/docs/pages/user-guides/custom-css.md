@@ -316,6 +316,16 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a comprehensive list of available variable names, refer to the [Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/).
 
+### Remove theme-switch
+
+By default, Vizro displays a theme toggle button in the top right corner that allows users to switch between dark and light themes. If you want to restrict your dashboard to a single theme or prefer not to offer theme switching, you can hide this toggle using CSS.
+
+```css
+#theme-selector {
+    display: none;
+}
+```
+
 ### Turn off page title
 
 See the example above on [hiding the page title on selected pages](#overwrite-css-for-selected-pages).
@@ -360,11 +370,11 @@ If you need to change the global font, perhaps to adhere to branding guidelines,
 
 ### Reposition the logo
 
-By default, the logo appears in the top left corner of the dashboard. You can move it further to the left or right by adjusting the `padding` of the `#page-header` element. Here is an example of how to achieve this:
+By default, the logo appears in the top left corner of the dashboard. You can move it further to the left or right by adjusting the `padding` of the `#header` element. Here is an example of how to achieve this:
 
 ```css
-#page-header {
-    padding-left: 8px;
+#header {
+    padding-left: 4px;
 }
 ```
 
