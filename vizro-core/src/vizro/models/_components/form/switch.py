@@ -2,13 +2,12 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import validate_value
 from vizro.models._models_utils import warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
@@ -21,9 +20,11 @@ class Switch(VizroBaseModel):
 
     Args:
         type (Literal["switch"]): Defaults to `"switch"`.
-        value (StrictBool): See [`StrictBool`][vizro.models.types.StrictBool]. Defaults to `False`.
+        value (bool): Initial state of the switch. When `True`, the switch is "on".
+            When `False`, the switch is "off". Defaults to `False`.
         title (str): Title to be displayed. Defaults to `""`.
-        label: (str): Label to be displayed. Defaults to `""`.
+        label (str): Label to be displayed to the right of the switch when it's in the "on" (true) state.
+            Defaults to "Turn on".
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
@@ -35,9 +36,16 @@ class Switch(VizroBaseModel):
     """
 
     type: Literal["switch"] = "switch"
-    value: Annotated[StrictBool, AfterValidator(validate_value), Field(default=False, validate_default=True)]
+    value: bool = Field(
+        default=False,
+        description="""Initial state of the switch. When `True`, the switch is enabled/on.
+        When `False`, the switch is disabled/off. Defaults to `False`.""",
+    )
     title: str = Field(default="", description="Title to be displayed")
-    label: str = Field(default="", description="Label to be displayed")
+    label: str = Field(
+        default="Turn on",
+        description="Label to be displayed to the right of the switch when it's in the 'on' (true) state.",
+    )
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
