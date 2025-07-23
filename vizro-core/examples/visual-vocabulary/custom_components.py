@@ -10,7 +10,7 @@ from dash import html
 
 
 class CodeClipboard(vm.VizroBaseModel):
-    """Code clipboard based on `dmc.CodeHighlight` with optional pyCafe link."""
+    """Code clipboard based on `dmc.CodeHighlight` with optional PyCafe link."""
 
     type: Literal["code_clipboard"] = "code_clipboard"
     code: str
