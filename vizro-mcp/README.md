@@ -63,7 +63,7 @@ Users remain solely responsible for the use of the Output, in particular, the us
 
 Vizro-MCP is used by generative AI models because large language models (LLMs) represent significant advancements in the AI field. However, as with any powerful tool, there are potential risks associated with connecting to a generative AI model.
 
-We recommend users research and understand the selected model before using Vizro-MCP.
+We recommend users research and understand the selected model before using Vizro-MCP. We also recommend users to check the MCP server code before using it.
 
 Users are encouraged to treat AI-generated content as supplementary, always apply human judgment, approach with caution, review the relevant disclaimer page, and consider the following:
 
