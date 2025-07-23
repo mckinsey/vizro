@@ -17,6 +17,10 @@
   --hover: inherit;
 }
 
+#dashboard-container .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
+  font-family: inter, sans-serif, Arial, serif;
+}
+
 /* Styling for pagination element */
 #dashboard-container .first-page,
 #dashboard-container .previous-page,
