@@ -1,6 +1,6 @@
 # How to integrate Vizro with the Kedro Data Catalog
 
-This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable), an open-source Python framework to create reproducible, maintainable, and modular data science code. Vizro provides a convenient way to visualize Pandas datasets registered in a [Kedro Data Catalog](https://docs.kedro.org/en/stable/catalog-data/data_catalog/).
+This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/), an open-source Python framework to create reproducible, maintainable, and modular data science code. Vizro provides a convenient way to visualize Pandas datasets registered in a [Kedro Data Catalog](https://docs.kedro.org/en/stable/catalog-data/data_catalog/).
 
 Even if you do not have a Kedro project, you can still [use a Kedro Data Catalog](#create-a-kedro-data-catalog) to manage your dashboard's data sources. This separates configuration of your data from your app's code and is particularly useful for dashboards with many data sources or more complex data loading configuration.
 
