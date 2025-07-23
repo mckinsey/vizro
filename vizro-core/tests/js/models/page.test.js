@@ -1,15 +1,9 @@
-// Mock dash_clientside before importing the module
-global.dash_clientside = {
-  no_update: "no_update",
-  PreventUpdate: "PreventUpdate",
-  callback_context: {
-    triggered_id: null,
-  },
-};
+const mockSearchParams = new Map([
+  ["vizro_1", "b64_encodedValue"],
+  ["foo", "raw_value"],
+  ["vizro_2", "b64_anotherEncoded"],
+]);
 
-// Mock browser APIs
-global.btoa = jest.fn();
-global.atob = jest.fn();
 global.TextEncoder = jest.fn(() => ({
   encode: jest.fn(),
 }));
@@ -17,31 +11,30 @@ global.TextDecoder = jest.fn(() => ({
   decode: jest.fn(),
 }));
 
-// Mock window and history
-Object.defineProperty(global, "window", {
-  value: {
-    location: {
-      search: "",
-      pathname: "/test-page",
-    },
-  },
-  writable: true,
-});
-
-Object.defineProperty(global, "history", {
-  value: {
-    replaceState: jest.fn(),
-  },
-  writable: true,
-});
-
 global.URLSearchParams = jest.fn(() => ({
-  set: jest.fn(),
+  set: jest.fn((key, value) => mockSearchParams.set(key, value)),
   toString: jest.fn(() => "param1=value1&param2=value2"),
+  entries: jest.fn(() => mockSearchParams.entries()),
+  get: jest.fn(key => mockSearchParams.get(key)),
+  has: jest.fn(key => mockSearchParams.has(key)),
+  forEach: jest.fn(callback => mockSearchParams.forEach(callback)),
 }));
+
+global.dash_clientside = {
+  no_update: "no_update",
+  PreventUpdate: "PreventUpdate",
+  callback_context: {
+    triggered_id: undefined,
+  },
+};
 
 // Mock window.dash_clientside
 global.window = {
+  location: {
+    search:
+      "?vizro_1=b64_encodedValue&foo=raw_value&vizro_2=b64_anotherEncoded",
+    pathname: "/",
+  },
   dash_clientside: global.dash_clientside,
 };
 
@@ -49,19 +42,6 @@ global.window = {
 require("../../../src/vizro/static/js/models/page.js");
 
 describe("page.js functions", () => {
-  beforeEach(() => {
-    // Reset all mocks before each test
-    jest.clearAllMocks();
-    global.dash_clientside.callback_context.triggered_id = null;
-    global.window.location.search = "";
-
-    // Reset URLSearchParams mock
-    global.URLSearchParams = jest.fn(() => ({
-      set: jest.fn(),
-      toString: jest.fn(() => "param1=value1&param2=value2"),
-    }));
-  });
-
   describe("encodeUrlParams", () => {
     beforeEach(() => {
       // Mock btoa and TextEncoder for encoding tests
@@ -118,12 +98,25 @@ describe("page.js functions", () => {
   });
 
   describe("decodeUrlParams", () => {
+    let originalJSON;
+    let originalConsole;
+
     beforeEach(() => {
+      // Save original JSON and console functions
+      originalJSON = global.JSON;
+      originalConsole = global.console;
+
       // Mock atob and TextDecoder for decoding tests
       global.atob = jest.fn(str => "decoded_" + str);
       global.TextDecoder = jest.fn(() => ({
         decode: jest.fn(bytes => '{"test": "value"}'),
       }));
+    });
+
+    afterEach(() => {
+      // Return original functions after each test
+      global.JSON = originalJSON;
+      global.console = originalConsole;
     });
 
     test("should decode b64_ prefixed values for specified keys", () => {
@@ -162,8 +155,7 @@ describe("page.js functions", () => {
       const encodedMap = new Map([["key1", "b64_invalidEncoding"]]);
       const applyOnKeys = ["key1"];
 
-      // Mock console.warn to avoid noise in test output
-      global.console = { warn: jest.fn() };
+      global.console.warn = jest.fn();
 
       // Make atob throw an error
       global.atob.mockImplementation(() => {
@@ -187,17 +179,39 @@ describe("page.js functions", () => {
   });
 
   describe("sync_url_query_params_and_controls", () => {
-    console.log(global.dash_clientside);
-    const sync_url_query_params_and_controls =
-      global.dash_clientside.page.sync_url_query_params_and_controls;
+    let replaceStateSpy;
 
-    test("should handle page opened scenario", () => {
-      // Set triggered_id to undefined to simulate page opened
+    beforeEach(() => {
       global.dash_clientside.callback_context.triggered_id = undefined;
 
+      if (!global.window.history) {
+        global.window.history = { replaceState: function () {} };
+      }
+      if (!global.history) {
+        global.history = global.window.history;
+      }
+
+      replaceStateSpy = jest
+        .spyOn(global.window.history, "replaceState")
+        .mockImplementation(() => {});
+
+      global.history.replaceState = global.window.history.replaceState;
+    });
+
+    afterEach(() => {
+      // Resetujemo spy nakon svakog testa
+      if (replaceStateSpy) {
+        replaceStateSpy.mockRestore();
+      }
+    });
+
+    test("should handle page opened scenario", () => {
       const values_ids = ["value1", "value2", "control1", "control2"];
 
-      const result = sync_url_query_params_and_controls(...values_ids);
+      const result =
+        global.dash_clientside.page.sync_url_query_params_and_controls(
+          ...values_ids
+        );
 
       // First element should be null (trigger OPL)
       expect(result[0]).toBe(null);
@@ -205,122 +219,96 @@ describe("page.js functions", () => {
       expect(result.length).toBe(3); // 1 for trigger + 2 controls
     });
 
-    // test("should handle control changed scenario", () => {
-    //   // Set triggered_id to some value to simulate control change
-    //   global.dash_clientside.callback_context.triggered_id = "some-control";
+    test("should handle control changed scenario", () => {
+      // Set triggered_id to some value to simulate control change
+      global.dash_clientside.callback_context.triggered_id = "some-control";
 
-    //   const values_ids = ["value1", "value2", "control1", "control2"];
+      const values_ids = ["value1", "value2", "control1", "control2"];
 
-    //   const result = sync_url_query_params_and_controls(...values_ids);
+      const result =
+        global.dash_clientside.page.sync_url_query_params_and_controls(
+          ...values_ids
+        );
 
-    //   // First element should be no_update (don't trigger OPL)
-    //   expect(result[0]).toBe(global.dash_clientside.no_update);
-    //   // Should return array with length = 1 + number of controls
-    //   expect(result.length).toBe(3); // 1 for trigger + 2 controls
-    // });
+      // First element should be no_update (don't trigger OPL)
+      expect(result[0]).toBe(global.dash_clientside.no_update);
+      // Should return array with length = 1 + number of controls
+      expect(result.length).toBe(3); // 1 for trigger + 2 controls
+    });
 
-    // test("should split values and IDs correctly", () => {
-    //   global.dash_clientside.callback_context.triggered_id = "test-control";
+    test("should split values and IDs correctly", () => {
+      global.dash_clientside.callback_context.triggered_id = "test-control";
 
-    //   const values_ids = ["val1", "val2", "val3", "id1", "id2", "id3"];
+      const values_ids = ["val1", "val2", "val3", "id1", "id2", "id3"];
 
-    //   const result = sync_url_query_params_and_controls(...values_ids);
+      const result =
+        global.dash_clientside.page.sync_url_query_params_and_controls(
+          ...values_ids
+        );
 
-    //   // Should handle 3 controls (6 total parameters / 2)
-    //   expect(result.length).toBe(4); // 1 for trigger + 3 controls
-    // });
+      // Should handle 3 controls (6 total parameters / 2)
+      expect(result.length).toBe(4); // 1 for trigger + 3 controls
+    });
 
-    // test("should call history.replaceState with correct URL", () => {
-    //   global.dash_clientside.callback_context.triggered_id = "test-control";
-    //   global.window.location.pathname = "/test-dashboard";
+    test("should call history.replaceState with correct URL", () => {
+      global.dash_clientside.callback_context.triggered_id = "test-control";
 
-    //   const values_ids = ["value1", "control1"];
+      const values_ids = ["value1", "control1"];
 
-    //   sync_url_query_params_and_controls(...values_ids);
+      global.dash_clientside.page.sync_url_query_params_and_controls(
+        ...values_ids
+      );
 
-    //   expect(global.history.replaceState).toHaveBeenCalledWith(
-    //     null,
-    //     "",
-    //     "/test-dashboard?param1=value1&param2=value2"
-    //   );
-    // });
+      expect(replaceStateSpy).toHaveBeenCalledWith(
+        null,
+        "",
+        "/?param1=value1&param2=value2"
+      );
+    });
 
-    // test("should handle empty values_ids array", () => {
-    //   global.dash_clientside.callback_context.triggered_id = undefined;
+    test("should handle empty values_ids array", () => {
+      global.dash_clientside.callback_context.triggered_id = undefined;
 
-    //   const result = sync_url_query_params_and_controls();
+      const result =
+        global.dash_clientside.page.sync_url_query_params_and_controls();
 
-    //   expect(result).toEqual([null]);
-    // });
+      expect(result).toEqual([null]);
+    });
 
-    // test("should handle odd number of parameters", () => {
-    //   global.dash_clientside.callback_context.triggered_id = "test";
+    test("should handle odd number of parameters", () => {
+      global.dash_clientside.callback_context.triggered_id = "test";
 
-    //   // Odd number should still work (though not typical usage)
-    //   const values_ids = ["value1", "value2", "control1"];
+      const values_ids = ["value1", "value2", "control1"];
 
-    //   const result = sync_url_query_params_and_controls(...values_ids);
+      const result =
+        global.dash_clientside.page.sync_url_query_params_and_controls(
+          ...values_ids
+        );
 
-    //   // Should handle 1.5 -> 1 control (Math.floor behavior)
-    //   expect(result.length).toBe(2); // 1 for trigger + 1 control
-    // });
+      expect(result.length).toBe(3);
+    });
 
-    // test("should update URLSearchParams with encoded values", () => {
-    //   global.dash_clientside.callback_context.triggered_id = "test-control";
+    test("should update URLSearchParams with encoded values", () => {
+      global.dash_clientside.callback_context.triggered_id = "test-control";
 
-    //   const mockUrlParams = {
-    //     set: jest.fn(),
-    //     toString: jest.fn(() => "encoded=params"),
-    //   };
-    //   global.URLSearchParams = jest.fn(() => mockUrlParams);
+      const mockUrlParams = {
+        set: jest.fn(),
+        toString: jest.fn(() => "encoded=params"),
+      };
+      global.URLSearchParams = jest.fn(() => mockUrlParams);
 
-    //   const values_ids = ["value1", "control1"];
+      const values_ids = ["value1", "control1"];
 
-    //   sync_url_query_params_and_controls(...values_ids);
+      global.dash_clientside.page.sync_url_query_params_and_controls(
+        ...values_ids
+      );
 
-    //   expect(mockUrlParams.set).toHaveBeenCalled();
-    //   expect(global.history.replaceState).toHaveBeenCalledWith(
-    //     null,
-    //     "",
-    //     expect.stringContaining("encoded=params")
-    //   );
-    // });
+      expect(mockUrlParams.set).toHaveBeenCalled();
+      expect(replaceStateSpy).toHaveBeenCalledWith(
+        null,
+        "",
+        "/?encoded=params"
+      );
+    });
   });
-
-  //   describe("integration tests", () => {
-  //     test("should work with realistic control data", () => {
-  //       const sync_url_query_params_and_controls =
-  //         global.dash_clientside.page.sync_url_query_params_and_controls;
-
-  //       global.dash_clientside.callback_context.triggered_id = undefined; // Page opened
-  //       global.window.location.search = "?vizro_1=b64_encodedValue";
-
-  //       // Simulate realistic control data: 2 control values + 2 control IDs
-  //       const controlValues = [["option1", "option2"], 50];
-  //       const controlIds = ["dropdown-1", "slider-1"];
-  //       const values_ids = [...controlValues, ...controlIds];
-
-  //       const result = sync_url_query_params_and_controls(...values_ids);
-
-  //       expect(result[0]).toBe(null); // Should trigger OPL
-  //       expect(result.length).toBe(3); // 1 trigger + 2 controls
-  //       expect(Array.isArray(result)).toBe(true);
-  //     });
-
-  //     test("should handle control changes properly", () => {
-  //       const sync_url_query_params_and_controls =
-  //         global.dash_clientside.page.sync_url_query_params_and_controls;
-
-  //       global.dash_clientside.callback_context.triggered_id = "dropdown-1"; // Control changed
-
-  //       const controlValues = [["new_option"], 75];
-  //       const controlIds = ["dropdown-1", "slider-1"];
-  //       const values_ids = [...controlValues, ...controlIds];
-
-  //       const result = sync_url_query_params_and_controls(...values_ids);
-
-  //       expect(result[0]).toBe(global.dash_clientside.no_update); // Should not trigger OPL
-  //       expect(result.length).toBe(3); // 1 trigger + 2 controls
-  //     });
-  //   });
 });

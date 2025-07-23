@@ -156,21 +156,11 @@ function sync_url_query_params_and_controls(...values_ids) {
   return [triggerOPL, ...outputSelectorValues];
 }
 
+window.encodeUrlParams = encodeUrlParams;
+window.decodeUrlParams = decodeUrlParams;
 window.dash_clientside = {
   ...window.dash_clientside,
   page: {
     sync_url_query_params_and_controls: sync_url_query_params_and_controls,
   },
 };
-
-// Export functions for testing
-if (typeof global !== "undefined") {
-  global.encodeUrlParams = encodeUrlParams;
-  global.decodeUrlParams = decodeUrlParams;
-}
-
-// Also add to window for browser compatibility
-if (typeof window !== "undefined") {
-  window.encodeUrlParams = encodeUrlParams;
-  window.decodeUrlParams = decodeUrlParams;
-}
