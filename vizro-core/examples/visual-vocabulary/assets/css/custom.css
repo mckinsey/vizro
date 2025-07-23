@@ -85,3 +85,7 @@ img[src*="#chart-icon"] {
 img#banner {
   height: 16px;
 }
+
+.mantine-CodeHighlight-controls {
+  background: transparent;
+}

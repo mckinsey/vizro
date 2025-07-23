@@ -12,7 +12,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   --collapse-icon-bg: var(--primary-500);
 }
 
-
 [data-bs-theme="light"] {
   --dropdown-label-bg: var(--primary-300);
   --left-side-bg: var(--surfaces-bg01);
@@ -21,10 +20,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
   --collapse-icon-bg: var(--primary-300);
-}
-
-.mantine-CodeHighlight-controls {
-  background: transparent;
 }
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
