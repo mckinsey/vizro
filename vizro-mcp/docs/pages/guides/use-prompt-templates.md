@@ -1,6 +1,5 @@
 # How to use Vizro-MCP prompt templates
 
-
 !!! warning "Check if the templates are available for your MCP host"
 
     Vizro-MCP's prompt templates are available in Claude Desktop, but may not allowed by other MCP hosts.
