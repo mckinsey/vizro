@@ -37,11 +37,16 @@ BooleanSelectorType = Switch
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
+# Really numerical data should also disallow SELECTORS["boolean"], but we allow it so that a column
+# of 0s and 1s can be interpreted as boolean data. We could modify the detection of data type in
+# validate_column_type to check for this case, but this would mean checking actual data values. This is
+# something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
+# performance hit.
 DISALLOWED_SELECTORS = {
     "numerical": SELECTORS["temporal"],
     "temporal": SELECTORS["numerical"],
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
-    "boolean": SELECTORS["temporal"] + SELECTORS["numerical"],
+    "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 
 
@@ -195,8 +200,18 @@ class Filter(VizroBaseModel):
                     self.selector._dynamic = True
                     break
 
-        # Set appropriate properties for the selector.
-        self._set_selector_properties(targeted_data=targeted_data)
+        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
+            self.selector = cast(NumericalTemporalSelectorType, self.selector)
+            _min, _max = self._get_min_max(targeted_data)
+            # Note that manually set self.selector.min/max = 0 are Falsey but should not be overwritten.
+            if self.selector.min is None:
+                self.selector.min = _min
+            if self.selector.max is None:
+                self.selector.max = _max
+        elif isinstance(self.selector, SELECTORS["categorical"]):
+            # Categorical selector.
+            self.selector = cast(CategoricalSelectorType, self.selector)
+            self.selector.options = self.selector.options or self._get_options(targeted_data)
 
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (
@@ -282,7 +297,7 @@ class Filter(VizroBaseModel):
         is_boolean = targeted_data.apply(is_bool_dtype)
         is_numerical = targeted_data.apply(is_numeric_dtype)
         is_temporal = targeted_data.apply(is_datetime64_any_dtype)
-        is_categorical = ~is_numerical & ~is_temporal
+        is_categorical = ~is_boolean & ~is_numerical & ~is_temporal
 
         if is_boolean.all():
             return "boolean"
@@ -351,18 +366,3 @@ class Filter(VizroBaseModel):
             page,
         )
         return [model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model))]
-
-    def _set_selector_properties(self, targeted_data: pd.DataFrame):
-        """Set appropriate properties on the selector based on its type."""
-        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            self.selector = cast(NumericalTemporalSelectorType, self.selector)
-            _min, _max = self._get_min_max(targeted_data)
-            # Note that manually set self.selector.min/max = 0 are Falsey but should not be overwritten.
-            if self.selector.min is None:
-                self.selector.min = _min
-            if self.selector.max is None:
-                self.selector.max = _max
-        elif isinstance(self.selector, SELECTORS["categorical"]):
-            # Categorical selector.
-            self.selector = cast(CategoricalSelectorType, self.selector)
-            self.selector.options = self.selector.options or self._get_options(targeted_data)
