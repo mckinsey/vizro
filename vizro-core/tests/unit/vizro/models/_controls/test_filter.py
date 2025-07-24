@@ -699,7 +699,7 @@ class TestFilterPreBuildMethod:
             ("is_europe", vm.Dropdown),
             ("is_europe", vm.RadioItems),
             ("is_europe", vm.Checklist),
-            # Covers numerical columns with 0/1 data. See detailed comment in filter.py 
+            # Covers numerical columns with 0/1 data. See detailed comment in filter.py
             # on disallowing boolean selectors for numerical columns.
             ("lifeExp", vm.Switch),
         ],
