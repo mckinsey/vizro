@@ -100,7 +100,6 @@ class Filter(VizroBaseModel):
         ),
     )
 
-
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
     @model_validator(mode="after")

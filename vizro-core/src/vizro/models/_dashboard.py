@@ -3,9 +3,10 @@ from __future__ import annotations
 import base64
 import logging
 import time
+from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, Union, cast, Iterable
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, Union, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -29,7 +30,6 @@ from typing_extensions import TypedDict
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
-from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
