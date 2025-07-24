@@ -10,7 +10,7 @@ nav:
       - First dashboard tutorial: pages/tutorials/first-dashboard-tutorial.md
   - How-to guides:
       - Use prompt templates: pages/guides/use-prompt-templates.md
-      - Use Vizro-MCP tools: pages/guides/use-vizro-mcp-tools.md
+      - Use tools: pages/guides/use-vizro-mcp-tools.md
       - Create only charts: pages/guides/create-charts-only.md
       - Use developer builds: pages/guides/use-developer-build.md
       - Use local or remote data: pages/guides/use-data.md
