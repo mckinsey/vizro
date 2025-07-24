@@ -118,7 +118,8 @@ class Filter(VizroBaseModel):
         return {"__default__": f"{self.id}.children"}
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
-        # Only relevant for a dynamic filter.
+        # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
+        # as their options are always set to True/False.
         # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
         # is missing then it will raise an error. We could change this if we wanted.
         targeted_data = self._validate_targeted_data(
