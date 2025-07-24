@@ -109,7 +109,9 @@ def make_actions_chain(self) -> Self:
             converted_actions.append(action)
 
     for i, action in enumerate(converted_actions):
-        if i == 0:
+        first_in_chain = i == 0
+
+        if first_in_chain:
             # First action in the chain uses the model's specified trigger. In future we would allow multiple keys in
             # the _action_triggers dictionary and then we'd need to look up the relevant entry here. For now there's
             # just __default__ so we always use that.
@@ -122,11 +124,11 @@ def make_actions_chain(self) -> Self:
         # Needed for filter_interaction but maybe other things in future too.
         # Note this is not just same as trigger_component - it's always the first trigger of the chain.
         action._parent_model_id = self.id
+        action._first_in_chain = first_in_chain
 
-        # TODO NOW: see if this can be simplified. Should we have trigger as public property? Probably just private
-        #  to begin with anyway.
-        if not action.trigger:  # Already set manually for opl
-            action.trigger = trigger
+        # TODO NOW: see if this can be simplified. Preset trigger only relevant for first action in chain.
+        if not action._trigger:  # Already set manually for opl
+            action._trigger = trigger
 
     self.actions = converted_actions
 

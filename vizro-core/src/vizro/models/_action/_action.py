@@ -3,13 +3,14 @@ from __future__ import annotations
 import inspect
 import logging
 import re
+import time
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
-from pydantic import Field, TypeAdapter, field_validator
+from pydantic import Field, TypeAdapter, field_validator, PrivateAttr
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -38,11 +39,6 @@ class ControlsStates(TypedDict):
     filter_interaction: list[dict[str, State]]
 
 
-# TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
-# title. See https://github.com/mckinsey/vizro/issues/1078.
-# Try to fix AgGrid problem with underlying input component id.
-
-
 class _BaseAction(VizroBaseModel):
     # The common interface shared between Action and _AbstractAction all raise NotImplementedError or are ClassVar.
     # This mypy type-check this class.
@@ -50,6 +46,12 @@ class _BaseAction(VizroBaseModel):
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
     outputs: ClassVar[Union[list[str], dict[str, str]]]
+
+    # These are set in the make_actions_chain validator (same for both Action and _AbstractAction).
+    # In the future a user would probably be able to specify something here that would look up a key in
+    # _action_triggers or just a full _IdProperty.
+    _trigger: _IdProperty = PrivateAttr()
+    _first_in_chain: bool = PrivateAttr()
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -285,24 +287,17 @@ class _BaseAction(VizroBaseModel):
         return return_value
 
     @_log_call
-    def build(self) -> html.Div:
-        """Builds a callback for the Action model and returns required components for the callback.
-
-        Returns:
-            Div containing a list of required components (e.g. dcc.Download) for the Action model
-
-        """
-        # TODO: after sorting out model manager and pre-build order, lots of this should probably move to happen
-        #  some time before the build phase.
+    def _define_callback(self):
+        """Defines a callback for the Action model."""
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
         callback_inputs = {
             "external": external_callback_inputs,
-            "internal": {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")},
+            "internal": {"trigger": Input(*self._trigger.split("."))},
         }
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
-            "internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)},
+            "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
@@ -314,7 +309,7 @@ class _BaseAction(VizroBaseModel):
             callback_outputs["external"] = external_callback_outputs
 
         logger.debug(
-            "===== Building callback for Action with id %s, function %s =====",
+            "===== Defining callback for Action with id %s, function %s =====",
             self.id,
             self._action_name,
         )
@@ -326,10 +321,8 @@ class _BaseAction(VizroBaseModel):
         def callback_wrapper(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:
-                return {"internal": {"action_finished": None}, "external": return_value}
-            return {"internal": {"action_finished": None}}
-
-        return html.Div(id=f"{self.id}_action_model_components_div", children=self._dash_components, hidden=True)
+                return {"internal": {"action_finished": time.time()}, "external": return_value}
+            return {"internal": {"action_finished": time.time()}}
 
 
 class Action(_BaseAction):

@@ -100,7 +100,7 @@ class Filter(VizroBaseModel):
         ),
     )
 
-    _dynamic: bool = PrivateAttr(False)
+
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
     @model_validator(mode="after")

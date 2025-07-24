@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import base64
 import logging
+import time
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, Union, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, Union, cast, Iterable
 
 import dash
 import dash_bootstrap_components as dbc
@@ -29,7 +30,9 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
+from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
+from vizro.models._action._action import _BaseAction
 from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
@@ -158,6 +161,15 @@ class Dashboard(VizroBaseModel):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
+        action_components = []
+
+        # TODO NOW COMMENT:  all actions across all pages defined once in global dashbaord container
+        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
+            action._define_callback()
+            action_components.append(dcc.Store(id=f"{action.id}_finished", data=time.time()))
+            # TODO NOW: comment hopefully not needed in future
+            action_components.extend(action._dash_components)
+
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
@@ -188,7 +200,7 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-                ActionLoop._create_app_callbacks(),
+                *action_components,
                 dash.page_container,
             ],
         )
