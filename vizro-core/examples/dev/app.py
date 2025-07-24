@@ -20,6 +20,7 @@ tips = px.data.tips()
 stocks = px.data.stocks(datetimes=True)
 gapminder = px.data.gapminder()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
+gapminder_2007["is_europe"] = gapminder["continent"] == "Europe"
 waterfall_df = pd.DataFrame(
     {
         "measure": ["relative", "relative", "total", "relative", "relative", "total"],
@@ -650,6 +651,11 @@ selectors = vm.Page(
             targets=["table-gapminder"],
             column="country",
             selector=vm.Dropdown(title="Dropdown (Gapminder - country)"),
+        ),
+        vm.Filter(
+            targets=["table-gapminder"],
+            column="is_europe",
+            selector=vm.Switch(title="Is Europe?"),
         ),
         vm.Filter(
             targets=["table-tips"],
