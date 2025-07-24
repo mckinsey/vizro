@@ -24,7 +24,11 @@ Prompt templates are only available in Claude Desktop, so if you are using anoth
 
 !!! information "Dashboard creation prompt"
 
-    *Create a Vizro dashboard to analyze the iris dataset. Make a scatter plot of sepal dimensions and a species filter. Use the dark theme*.
+    ``` { .text .copy }
+    Create a Vizro dashboard to analyze the iris dataset. 
+    Make a scatter plot of sepal dimensions and a species filter.
+    Use the dark theme.
+    ```
 
 ## Dashboard output
 
