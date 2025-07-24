@@ -1,4 +1,4 @@
-# Set up Vizro-MCP with Cursor
+# How to set up Vizro-MCP with Cursor
 
 !!! notice "Use of large language models"
 
