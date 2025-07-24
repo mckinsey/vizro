@@ -134,7 +134,7 @@ The following example demonstrates these default selector types.
                 type: filter
               - column: date
                 type: filter
-             - column: date
+              - column: Is GOOG?
                 type: filter
             title: My first page
         ```
