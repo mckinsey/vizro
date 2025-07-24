@@ -351,7 +351,7 @@ describe("update_range_slider_values", () => {
     });
 
     // // Note: Testing empty string values - in JavaScript, isNaN('') returns false because ''
-    test("should NOT throw PreventUpdate when start_value is empty string", () => {
+    test("should throw PreventUpdate when start_value is empty string", () => {
       const slider_value = [10, 80];
       const start_value = "";
       const end_value = 50;
