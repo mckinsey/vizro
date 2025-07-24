@@ -60,6 +60,12 @@ def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> 
 
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    """Filter using .isin() - works with boolean/categorical data.
+    
+    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
+    >>> pd.Series([0, 1]).isin([False])  # [True, False]  
+    >>> pd.Series([False, True]).isin([1])  # [False, True]
+    """
     if is_datetime64_any_dtype(series):
         # Value will always have time 00:00:00. In order for the filter to include all times during
         # the end date value we need to remove the time part of every value in series so that it's 00:00:00.

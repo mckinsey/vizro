@@ -211,6 +211,11 @@ class TestFilterFunctions:
             ([1, 0, 1, 0], [0], [False, True, False, True]),  # Test for boolean 0/1 values
             ([1, 0, 1, 0], [1, 0], [True, True, True, True]),  # Test for boolean 0/1 both values
             ([1, 0, 1, 0], [], [False, False, False, False]),  # Test for boolean 0/1 empty value list
+            # Test pandas automatic boolean/numeric conversion (crucial for Switch with 0/1 columns)
+            ([0, 1, 0, 1], [False], [True, False, True, False]),  # 0/1 data filtered with False
+            ([0, 1, 0, 1], [True], [False, True, False, True]),  # 0/1 data filtered with True
+            ([False, True, False, True], [0], [True, False, True, False]),  # True/False data filtered with 0
+            ([False, True, False, True], [1], [False, True, False, True]),  # True/False data filtered with 1
         ],
     )
     def test_filter_isin(self, data, value, expected):
