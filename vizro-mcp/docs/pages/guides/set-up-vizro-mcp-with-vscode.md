@@ -1,4 +1,4 @@
-# Set up Vizro-MCP with Visual Studio Code
+# How to set up Vizro-MCP with Visual Studio Code
 
 !!! notice "Use of large language models"
 

@@ -1,4 +1,4 @@
-# Set up Vizro-MCP with Claude for desktop
+# How to set up Vizro-MCP with Claude for desktop
 
 !!! notice "Use of large language models"
 
@@ -38,7 +38,7 @@ Copy the path returned, and add the following to `claude_desktop_config.json`, s
 {
   "mcpServers": {
     "vizro-mcp": {
-      "command": "/placeholder/path/uvx",
+      "command": "/placeholder-path/uvx",
       "args": [
         "vizro-mcp"
       ]
