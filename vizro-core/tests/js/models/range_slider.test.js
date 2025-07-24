@@ -350,7 +350,7 @@ describe("update_range_slider_values", () => {
       }).toThrow(global.dash_clientside.PreventUpdate);
     });
 
-    // // Note: Testing empty string values - in JavaScript, isNaN('') returns false because ''
+    // Note: Testing empty string values - in JavaScript, isNaN('') returns false because an empty string coerces to 0, which is a valid number.
     test("should throw PreventUpdate when start_value is empty string", () => {
       const slider_value = [10, 80];
       const start_value = "";
