@@ -145,6 +145,8 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 The MCP server is designed to get you started on Vizro dashboards and charts by creating beautiful working dashboards based on the core Vizro features. It is not designed to replace a human developer when going beyond the core features, e.g. when building an application that requires custom CSS or bespoke Dash components.
 
+> 💡 Tip: For best performance, we recommend using the `claude-4-sonnet` model (or another high-performing model of your choice) when working with the MCP. Using (the often offered) `auto` setting may lead to inconsistent or unexpected results.
+
 ### Use prompt templates to get specific dashboards quickly
 
 Prompt templates are not available in all MCP hosts, but when they are, you can use them to get specific dashboards quickly. To access them (e.g. in Claude Desktop), click on the plus icon below the chat, and choose _`Add from vizro-mcp`_.
