@@ -4,8 +4,7 @@ from typing import Annotated, Literal, Optional
 import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
-from pydantic.functional_serializers import PlainSerializer
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
@@ -13,9 +12,8 @@ from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_act
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
-from vizro.models._models_utils import _log_call, warn_description_without_title
+from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionType,
@@ -82,22 +80,18 @@ class AgGrid(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("cellClicked")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),  # TODO[MS]: here and elsewhere: do we need to validate default here?
-    ]
-
+    actions: list[ActionType] = []
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
     def model_post_init(self, context) -> None:
         super().model_post_init(context)
         self._inner_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
 
-    # TODO-AV2 E: Implement _action_trigger where makes sense.
-    #  For the AgGrid the mapping could look like: {"__default__": f"{self._inner_component_id}.cellClicked"}
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self._inner_component_id}.cellClicked"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

@@ -30,7 +30,7 @@ from vizro.models._models_utils import (
     check_captured_callable_model,
     warn_description_without_title,
 )
-from vizro.models.types import _IdProperty
+from vizro.models.types import ActionType, _IdProperty
 
 from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType, FigureType, LayoutType
@@ -93,7 +93,9 @@ class Page(VizroBaseModel):
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
-    actions: list[ActionsChain] = []
+    actions: list[ActionType] = []
+
+    # TODO NOW: note not in actions chain since there's no make_actions_chain validator.
 
     @model_validator(mode="before")
     @classmethod
@@ -158,6 +160,7 @@ class Page(VizroBaseModel):
         if targets:
             # TODO-AV2 A 3: can we simplify this to not use ActionsChain, just like we do for filters and parameters?
             # See https://github.com/mckinsey/vizro/pull/363#discussion_r2021020062.
+            # TODO NOW: figger this bit out
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",

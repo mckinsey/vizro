@@ -2,13 +2,11 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field
-from pydantic.functional_serializers import PlainSerializer
+from pydantic import BeforeValidator, Field, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
@@ -36,12 +34,8 @@ class Button(VizroBaseModel):
     type: Literal["button"] = "button"
     text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("n_clicks")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    # TODO NOW: test the button case
+    actions: list[ActionType] = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
@@ -73,6 +67,12 @@ class Button(VizroBaseModel):
             ),
         ]
     ]
+
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.n_clicks"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
