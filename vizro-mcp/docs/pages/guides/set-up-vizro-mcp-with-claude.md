@@ -10,7 +10,7 @@ This page explains how to set up [Claude Desktop](https://support.anthropic.com/
 
 !!! Warning "Can I use the free tier with Claude?"
 
-    You do not need to have a paid account with Claude to use Vizro-MCP, but your tokens for usage will be limited. The free plan might also be less performant, which may cause issues when the request is too complex. In cases where you run out of tokens, or the request causes the UI to crash, opt to use a paid plan, or reduce your request's complexity.
+    You do not need to have a paid account with Claude to use Vizro-MCP, but your tokens for usage will be limited. Furthermore, for best performance, we recommend using the `claude-4-sonnet` model. Using the offered `auto` setting may lead to inconsistent or unexpected results.
 
 If you have not already done so, download and install [Claude Desktop](https://claude.ai/download). Vizro-MCP does not work with the web version of Claude.
 

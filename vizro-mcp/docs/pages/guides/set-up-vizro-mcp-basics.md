@@ -1,12 +1,12 @@
 # How to set up Vizro-MCP with any MCP host
 
-Vizro-MCP can be used with most LLM products that enable configuration of MCP server usage. This page explains the basic configuration to use.
+Vizro-MCP can be used with most LLM products that enable configuration of MCP server usage. For best performance, we recommend using the `claude-4-sonnet` model, or another high-performing model of your choice. Using the often-offered `auto` setting may lead to inconsistent or unexpected results.
 
 !!! Information
 
     We have separate, more detailed pages, if you want to follow them to set up [Claude Desktop](./set-up-vizro-mcp-with-claude.md), [Cursor](./set-up-vizro-mcp-with-cursor.md) or [VS Code](./set-up-vizro-mcp-with-vscode.md) to use Vizro-MCP.
 
-In the following, we assume you have downloaded and installed the LLM app you want to configure and use as a MCP host.
+This page explains the basic configuration to use. In the following, we assume you have downloaded and installed the LLM app you want to configure and use as a MCP host.
 
 ## Set up uv or Docker
 
