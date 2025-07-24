@@ -1,336 +1,155 @@
-# Vizro is an open-source toolkit for creating modular data visualization applications.
-# check out https://github.com/mckinsey/vizro for more info about Vizro
-# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
+# # Vizro is an open-source toolkit for creating modular data visualization applications.
+# # check out https://github.com/mckinsey/vizro for more info about Vizro
+# # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
-import pandas as pd
-import numpy as np
+import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-import vizro.models as vm
-from vizro.tables import dash_ag_grid
+from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.actions import filter_interaction, export_data
+from vizro.models.types import capture
+from time import sleep
+from vizro.managers import data_manager
 
-# Create a fake dataset with many columns and longer values
-np.random.seed(42)
-
-# Generate data with many columns
-n_rows = 50
-n_cols = 25
-
-# Create column names that are long enough to get truncated
-column_names = [
-    "Very_Long_Column_Name_1",
-    "Extended_Data_Field_2",
-    "Comprehensive_Metric_3",
-    "Detailed_Information_4",
-    "Complex_Calculation_5",
-    "Advanced_Analytics_6",
-    "Business_Intelligence_7",
-    "Performance_Indicator_8",
-    "Statistical_Measure_9",
-    "Quantitative_Analysis_10",
-    "Operational_Efficiency_11",
-    "Customer_Satisfaction_12",
-    "Revenue_Generation_13",
-    "Cost_Optimization_14",
-    "Quality_Assessment_15",
-    "Risk_Management_16",
-    "Strategic_Planning_17",
-    "Market_Research_18",
-    "Product_Development_19",
-    "Sales_Performance_20",
-    "Marketing_Campaign_21",
-    "Financial_Reporting_22",
-    "Compliance_Monitoring_23",
-    "Sustainability_Index_24",
-    "Innovation_Score_25",
-]
-
-column_names_2 = [
-    "Very_Long_Column_Name_1",
-    "Extended_Data_Field_2",
-    "Comprehensive_Metric_3",
-]
-
-# Generate data with longer values that could get truncated
-data = {}
-for i, col in enumerate(column_names):
-    if i % 5 == 0:  # String columns with long values
-        data[col] = [f"Long_Text_Value_{j}_{np.random.randint(1000, 9999)}" for j in range(n_rows)]
-    elif i % 5 == 1:  # Float columns with many decimal places
-        data[col] = np.round(np.random.uniform(1000, 9999, n_rows), 4)
-    elif i % 5 == 2:  # Integer columns with large numbers
-        data[col] = np.random.randint(10000, 99999, n_rows)
-    elif i % 5 == 3:  # Categorical data with long category names
-        categories = [
-            "Category_A_Very_Long_Name",
-            "Category_B_Extended_Label",
-            "Category_C_Comprehensive_Description",
-            "Category_D_Detailed_Classification",
-        ]
-        data[col] = np.random.choice(categories, n_rows)
-    else:  # Mixed data types
-        data[col] = [
-            f"Data_{j}_{np.random.randint(100, 999)}_{np.random.choice(['Alpha', 'Beta', 'Gamma'])}"
-            for j in range(n_rows)
-        ]
+df_gapminder = px.data.gapminder().query("year == 2007")
 
 
-def generate_column_data(column_names):
-    """
-    Generate data for columns with different data types based on column index.
-
-    Args:
-        data (dict): Dictionary to store generated data
-        column_names (list): List of column names
-        n_rows (int): Number of rows to generate
-    """
-    data = {}
-
-    for i, col in enumerate(column_names):
-        if i % 5 == 0:  # String columns with long values
-            data[col] = [f"Long_Text_Value_{j}_{np.random.randint(1000, 9999)}" for j in range(n_rows)]
-        elif i % 5 == 1:  # Float columns with many decimal places
-            data[col] = np.round(np.random.uniform(1000, 9999, n_rows), 4)
-        elif i % 5 == 2:  # Integer columns with large numbers
-            data[col] = np.random.randint(10000, 99999, n_rows)
-        elif i % 5 == 3:  # Categorical data with long category names
-            categories = [
-                "Category_A_Very_Long_Name",
-                "Category_B_Extended_Label",
-                "Category_C_Comprehensive_Description",
-                "Category_D_Detailed_Classification",
-            ]
-            data[col] = np.random.choice(categories, n_rows)
-        else:  # Mixed data types
-            data[col] = [
-                f"Data_{j}_{np.random.randint(100, 999)}_{np.random.choice(['Alpha', 'Beta', 'Gamma'])}"
-                for j in range(n_rows)
-            ]
+def load_dynamic_gapminder_data(continent: str = "Europe"):
+    return df_gapminder[df_gapminder["continent"] == continent]
 
 
-# Create DataFrame
-tips = pd.DataFrame(data)
-tips_small = pd.DataFrame({col: data[col] for col in column_names_2})
+data_manager["dynamic_df_gapminder"] = load_dynamic_gapminder_data
 
-page0 = vm.Page(
-    title="Default columnSize - sizeToFit",
+
+@capture("action")
+def my_custom_action(t: int):
+    """Custom action."""
+    sleep(t)
+
+
+#
+
+page_1 = vm.Page(
+    title="My first dashboard",
     components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips,
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
+        vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+        vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
+    ],
+    controls=[
+        vm.Filter(column="continent"),
     ],
 )
 
+# # TEST NEW ACTIONS SYNTAX
+# page_2 = vm.Page(
+#     title="Simple custom action",
+#     components=[
+#         vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+#         vm.Button(
+#             text="Export data",
+#             actions=[
+#                 export_data(id="a1"),
+#                 vm.Action(id="a2", function=my_custom_action(t=2)),
+#                 export_data(file_format="xlsx", id="a3"),
+#             ],
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
+#
+# page_3 = vm.Page(
+#     title="Filter interaction graph",
+#     components=[
+#         vm.Graph(
+#             figure=px.box(
+#                 df_gapminder,
+#                 x="continent",
+#                 y="lifeExp",
+#                 color="continent",
+#                 custom_data=["continent"],
+#             ),
+#             actions=[filter_interaction(targets=["scatter_relation_2007"])],
+#         ),
+#         vm.Graph(
+#             id="scatter_relation_2007",
+#             figure=px.scatter(
+#                 df_gapminder,
+#                 x="gdpPercap",
+#                 y="lifeExp",
+#                 size="pop",
+#                 color="continent",
+#             ),
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
+#
+# page_4 = vm.Page(
+#     title="Filter interaction grid",
+#     components=[
+#         vm.AgGrid(
+#             id="grid",
+#             figure=dash_ag_grid(data_frame=df_gapminder),
+#             actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007b"]))],
+#         ),
+#         vm.Graph(
+#             id="scatter_relation_2007b",
+#             figure=px.scatter(
+#                 df_gapminder,
+#                 x="gdpPercap",
+#                 y="lifeExp",
+#                 size="pop",
+#                 color="continent",
+#             ),
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
+#
+# page_5 = vm.Page(
+#     title="Dynamic filter",
+#     components=[
+#         vm.Graph(
+#             figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent"),
+#     ],
+# )
+#
+# # TODO NOW: think about whether in future this case should be dealt with as a single serverside callback that updates
+# # filter and relevant graphs on page (as now) or instead more like an interact with two chained callbacks
+# page_6 = vm.Page(
+#     title="DataFrame Parameter",
+#     components=[
+#         vm.Graph(
+#             id="page_6_graph", figure=px.box("dynamic_df_gapminder", x="continent", y="lifeExp", color="continent")
+#         ),
+#     ],
+#     controls=[
+#         vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
+#         vm.Parameter(
+#             targets=["page_6_graph.data_frame.continent"],
+#             selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe", id="parameter"),
+#         ),
+#     ],
+# )
 
-page1 = vm.Page(
-    title="Default columnSize - sizeToFit - small dataset",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips_small,
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
+dashboard = vm.Dashboard(pages=[page_1])
 
-
-page2 = vm.Page(
-    title="responsiveSizeToFit",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips,
-                                columnSize="responsiveSizeToFit",
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
-
-page3 = vm.Page(
-    title="responsiveSizeToFit - small dataset",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips_small,
-                                columnSize="responsiveSizeToFit",
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
-
-
-page4 = vm.Page(
-    title="autoSize",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips,
-                                columnSize="autoSize",
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
-
-page5 = vm.Page(
-    title="autoSize - small dataset",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips_small,
-                                columnSize="autoSize",
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
-
-
-page6 = vm.Page(
-    title="sizeToFit",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips,
-                                columnSize="sizeToFit",
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
-
-page7 = vm.Page(
-    title="sizeToFit - small dataset",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips_small,
-                                # columnSize="responsiveSizeToFit",
-                                # columnSize="autoSize",
-                                columnSize="sizeToFit",
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
-
-
-page8 = vm.Page(
-    title="No columnSize",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips,
-                                columnSize=None,
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
-
-page9 = vm.Page(
-    title="No columnSize - small dataset",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="View Data",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(
-                                tips_small,
-                                # columnSize="responsiveSizeToFit",
-                                # columnSize="autoSize",
-                                columnSize=None,
-                            )
-                        )
-                    ],
-                )
-            ]
-        )
-    ],
-)
-
-dashboard = vm.Dashboard(pages=[page0, page1, page2, page3, page4, page5, page6, page7, page8, page9])
-
+"""Problems:
+- minor: on page load trigger system can probably be simplified
+"""
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(
+        debug=True,
+        use_reloader=False,
+    )

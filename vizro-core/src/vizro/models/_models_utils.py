@@ -91,7 +91,7 @@ def make_actions_chain(self) -> Self:
     action_triggers, which needs the parent model instance. Hence it must be done as a model validator.
 
     This runs after model_post_init so that self._inner_component_id will have already been set correctly in
-    Table and AgGrid.
+    Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
     """
     from vizro.actions import export_data, filter_interaction
 
@@ -123,13 +123,11 @@ def make_actions_chain(self) -> Self:
         # TODO NOW: see if this can be simplified.
         # Needed for filter_interaction but maybe other things in future too.
         # Note this is not just same as trigger_component - it's always the first trigger of the chain.
-        action._parent_model_id = self.id
+        # action._parent_model_id = self.id
         action._first_in_chain = first_in_chain
+        action._trigger = trigger
 
-        # TODO NOW: see if this can be simplified. Preset trigger only relevant for first action in chain.
-        if not action._trigger:  # Already set manually for opl
-            action._trigger = trigger
-
-    self.actions = converted_actions
-
+    # We should do self.actions = converted_actions but this leads to a recursion error. The below is a workaround
+    # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
+    self.__dict__["actions"] = converted_actions
     return self

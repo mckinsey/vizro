@@ -8,7 +8,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
-from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
+from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
@@ -148,7 +148,7 @@ class AgGrid(VizroBaseModel):
             return data_frame
 
         # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-        source_table_actions = _get_component_actions(_get_parent_model(ctd_cellClicked["id"]))
+        source_table_actions = _get_triggered_model(ctd_cellClicked["id"]).actions
 
         for action in source_table_actions:
             # TODO-AV2 A 1: simplify this as in

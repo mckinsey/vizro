@@ -12,7 +12,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested
 from vizro.actions import filter_interaction
-from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
+from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
@@ -166,7 +166,7 @@ class Graph(VizroBaseModel):
             return data_frame
 
         source_graph_id: ModelID = ctd_click_data["id"]
-        source_graph_actions = _get_component_actions(model_manager[source_graph_id])
+        source_graph_actions = model_manager[source_graph_id].actions
         try:
             custom_data_columns = cast(Graph, model_manager[source_graph_id])["custom_data"]
         except KeyError as exc:

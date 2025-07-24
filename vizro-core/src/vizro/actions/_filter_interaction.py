@@ -30,16 +30,6 @@ class filter_interaction(_AbstractAction):
     # Note this has a default value, unlike on_page_load, filter and parameter. It's like export_data.
     targets: list[ModelID] = Field(default=[], description="Target component IDs.")
 
-    def _get_triggered_model(self) -> FigureWithFilterInteractionType:  # type: ignore[return]
-        """Gets the model that triggers the action with "action_id"."""
-        # In future we should have a better way of doing this:
-        #  - maybe through the model manager
-        #  - pass trigger into callback as a built-in keyword
-        #  - maybe need to be able to define inputs property for actions that subclass _AbstractAction
-        for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain)):
-            if self in actions_chain.actions:
-                return model_manager[actions_chain.trigger.component_id]
-
     @_log_call
     def pre_build(self):
         # Set targets to all figures on the page if not already set. In this case we don't need to check the targets

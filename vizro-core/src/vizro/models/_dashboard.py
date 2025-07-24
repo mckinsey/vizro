@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import base64
 import logging
-import time
 from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
@@ -28,7 +27,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
 import vizro
-from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
+from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH, ON_PAGE_LOAD_ACTION_PREFIX
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
@@ -161,14 +160,12 @@ class Dashboard(VizroBaseModel):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
+        # TODO NOW COMMET: only page load here, rest are in page.build
         action_components = []
-
-        # TODO NOW COMMENT:  all actions across all pages defined once in global dashbaord container
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
             action._define_callback()
-            action_components.append(dcc.Store(id=f"{action.id}_finished", data=time.time()))
-            # TODO NOW: comment hopefully not needed in future
-            action_components.extend(action._dash_components)
+            if action.id.startswith(ON_PAGE_LOAD_ACTION_PREFIX):
+                action_components.append(dcc.Store(id=f"{action.id}_finished"))
 
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
