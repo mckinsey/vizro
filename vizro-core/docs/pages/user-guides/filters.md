@@ -76,7 +76,7 @@ The following example demonstrates these default selector types.
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="24-26"}
+        ```{.python pycafe-link hl_lines="25-28"}
         import pandas as pd
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -93,6 +93,7 @@ The following example demonstrates these default selector types.
         )
 
         df_stocks_long['value'] = df_stocks_long['value'].round(3)
+        df_stocks_long['Is GOOG?'] = df_stocks_long["stocks"] == "GOOG"
 
         page = vm.Page(
             title="My first page",
@@ -103,6 +104,7 @@ The following example demonstrates these default selector types.
                 vm.Filter(column="stocks"),
                 vm.Filter(column="value"),
                 vm.Filter(column="date"),
+                vm.Filter(column="Is GOOG?"),
             ],
         )
 
@@ -131,6 +133,8 @@ The following example demonstrates these default selector types.
                 type: filter
               - column: date
                 type: filter
+             - column: date
+                type: filter
             title: My first page
         ```
 
@@ -141,6 +145,8 @@ The following example demonstrates these default selector types.
 ## Change selector
 
 If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch].
+
+You can explore and test all available selectors interactively at our [demo page](https://vizro-demo-features.hf.space/selectors).
 
 !!! example "Filter with different selector"
 
