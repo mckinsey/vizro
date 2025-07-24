@@ -199,7 +199,7 @@ describe("page.js functions", () => {
     });
 
     afterEach(() => {
-      // Resetujemo spy nakon svakog testa
+      // Reset spy after each test
       if (replaceStateSpy) {
         replaceStateSpy.mockRestore();
       }
