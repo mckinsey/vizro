@@ -1,4 +1,4 @@
-# How to set up Vizro-MCP with Claude for desktop
+# How to set up Vizro-MCP with Claude Desktop
 
 !!! notice "Use of large language models"
 
