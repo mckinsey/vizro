@@ -1,8 +1,8 @@
 # FAQs
 
 ## Do I need to install Vizro?
-No, you do not need to install Vizro.
 
+No, you do not need to install Vizro.
 
 ## Can I use ChatGPT?
 
