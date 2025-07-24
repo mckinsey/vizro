@@ -3,17 +3,15 @@ from typing import Annotated, Any, Literal, Optional
 import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
-from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
     validate_options_dict,
     validate_value,
 )
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, OptionsType, SingleValueType, _IdProperty
 
@@ -57,12 +55,7 @@ class RadioItems(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("value")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    actions: list[ActionType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -82,6 +75,11 @@ class RadioItems(VizroBaseModel):
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

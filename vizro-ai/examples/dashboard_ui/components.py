@@ -25,12 +25,7 @@ class UserPromptTextArea(vm.VizroBaseModel):
     """
 
     type: Literal["user_text_area"] = "user_text_area"
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("value")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    actions: Annotated[list[ActionType], Field(default=[])]
 
     @_log_call
     def build(self):

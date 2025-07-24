@@ -1,10 +1,12 @@
 import logging
 import warnings
 from functools import wraps
+from typing import Self
 
 from dash import html
 from pydantic import ValidationInfo
 
+from vizro.managers import model_manager
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
@@ -78,3 +80,54 @@ def warn_description_without_title(description, info: ValidationInfo):
             UserWarning,
         )
     return description
+
+
+# TODO NOW: check which of https://github.com/McK-Internal/vizro-internal/issues/1613 satisfied now
+# TODO NOW: check to_python
+def make_actions_chain(self) -> Self:
+    """Creates actions chain from a list of actions.
+
+    Ideally this would have been implemented as an AfterValidator for the actions field but we need access to
+    action_triggers, which needs the parent model instance. Hence it must be done as a model validator.
+
+    This runs after model_post_init so that self._inner_component_id will have already been set correctly in
+    Table and AgGrid.
+    """
+    from vizro.actions import export_data, filter_interaction
+
+    converted_actions = []
+
+    # Convert any built in actions written in the legacy style vm.Action(function=filter_interaction(...)) or
+    # vm.Action(function=export_data(...)) to the new style filter_interaction(...) or export_data(...).
+    # We need to delete the old action models from the model manager so they don't get built. After that,
+    # built in actions are always handled in the new way.
+    for action in self.actions:
+        if isinstance(action.function, (export_data, filter_interaction)):
+            del model_manager[action.id]
+            converted_actions.append(action.function)
+        else:
+            converted_actions.append(action)
+
+    for i, action in enumerate(converted_actions):
+        if i == 0:
+            # First action in the chain uses the model's specified trigger. In future we would allow multiple keys in
+            # the _action_triggers dictionary and then we'd need to look up the relevant entry here. For now there's
+            # just __default__ so we always use that.
+            trigger = self._action_triggers["__default__"]
+        else:
+            # All subsequent actions in the chain are triggered by the previous action's completion.
+            trigger = f"{converted_actions[i - 1].id}_finished.data"
+
+        # TODO NOW: see if this can be simplified.
+        # Needed for filter_interaction but maybe other things in future too.
+        # Note this is not just same as trigger_component - it's always the first trigger of the chain.
+        action._parent_model_id = self.id
+
+        # TODO NOW: see if this can be simplified. Should we have trigger as public property? Probably just private
+        #  to begin with anyway.
+        if not action.trigger:  # Already set manually for opl
+            action.trigger = trigger
+
+    self.actions = converted_actions
+
+    return self
