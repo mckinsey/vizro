@@ -27,7 +27,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
 import vizro
-from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
+from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH, ON_PAGE_LOAD_ACTION_PREFIX
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
@@ -345,10 +345,15 @@ class Dashboard(VizroBaseModel):
             for component in page_layout._traverse_ids():
                 if f"{component.id}_created" not in page_layout:
                     action_components.append(dcc.Store(id=f"{component.id}_created", data="not_dynamic"))
-            action_components.append(dcc.Store(id=f"{action.id}_trigger_for_actual_callback"))
+
+            if not action.id.startswith(ON_PAGE_LOAD_ACTION_PREFIX):
+                action_components.append(dcc.Store(id=f"{action.id}_trigger_for_actual_callback"))
             action_components.append(dcc.Store(id=f"{action.id}_finished"))
+            action_components.append(dcc.Store(id=f"{action.id}_finished_created", data="not_dynamic"))
             action_components.extend(action._dash_components)  # hopefully not needed in future
 
+        this_page_opl_action_id = f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{page.id}"
+        action_components.append(dcc.Store(id=f"{this_page_opl_action_id}_trigger_for_actual_callback"))
         page_layout.children.extend(action_components)
         return page_layout
 

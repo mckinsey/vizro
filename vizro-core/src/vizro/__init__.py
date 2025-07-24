@@ -11,7 +11,8 @@ from ._constants import VIZRO_ASSETS_PATH
 from ._vizro import Vizro, _make_resource_spec
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
-
+log = logging.getLogger("werkzeug")
+log.setLevel(logging.ERROR)
 base_path = Path(__file__).parent / "_themes"
 pio.templates["vizro_dark"] = json.loads((base_path / "vizro_dark.json").read_text())
 pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_text())

@@ -93,7 +93,8 @@ class AgGrid(VizroBaseModel):
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         figure = self.figure(**kwargs)
         figure.id = self._input_component_id
-        return html.Div([figure, dcc.Store(id=f"{self.id}_created", data=True, storage_type="local")])
+        # Doesn't work in terms of rendering but gateway logic does.
+        return html.Div([figure, dcc.Store(id=f"{self._input_component_id}_created", data=True, storage_type="local")])
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):

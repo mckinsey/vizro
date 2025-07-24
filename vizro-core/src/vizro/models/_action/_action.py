@@ -261,7 +261,7 @@ class _BaseAction(VizroBaseModel):
         inputs: Union[dict[str, Any], list[Any]],
         outputs: Union[dict[str, Output], list[Output], Output, None],
     ) -> Any:
-        logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
+        logger.critical("===== Running action with id %s, function %s =====", self.id, self._action_name)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
@@ -347,14 +347,18 @@ class _BaseAction(VizroBaseModel):
             Output(f"{self.id}_trigger_for_actual_callback", "data", allow_duplicate=True),
             Output(f"{self.trigger.split(".")[0]}_created", "data", allow_duplicate=True),
             Input(*self.trigger.split(".")),
-            State(f"{self.trigger.split(".")[0]}_created", "data"),
+            Input(f"{self.trigger.split(".")[0]}_created", "data"),
             prevent_initial_call=True,
         )
         def gateway(value, created):
+            logger.critical("***** Gateway action with id %s, function %s =====", self.id, self._action_name)
             if created == "not_dynamic":
+                logger.critical("running action")
                 return value, dash.no_update
             if created:
+                logger.critical("not running action")
                 return dash.no_update, False
+            logger.critical("running action")
             return value, False
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
