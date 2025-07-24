@@ -44,8 +44,8 @@ BooleanSelectorType = Switch
 # performance hit.
 DISALLOWED_SELECTORS = {
     "numerical": SELECTORS["temporal"],
-    "temporal": SELECTORS["numerical"],
-    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
+    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"],
+    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
     "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 

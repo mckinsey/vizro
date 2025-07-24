@@ -699,6 +699,9 @@ class TestFilterPreBuildMethod:
             ("is_europe", vm.Dropdown),
             ("is_europe", vm.RadioItems),
             ("is_europe", vm.Checklist),
+            # Covers numerical columns with 0/1 data. See detailed comment in filter.py 
+            # on disallowing boolean selectors for numerical columns.
+            ("lifeExp", vm.Switch),
         ],
     )
     def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
@@ -719,6 +722,9 @@ class TestFilterPreBuildMethod:
             ("is_europe", vm.Slider, "Slider", "boolean"),
             ("is_europe", vm.RangeSlider, "RangeSlider", "boolean"),
             ("is_europe", vm.DatePicker, "DatePicker", "boolean"),
+            ("year", vm.Switch, "Switch", "temporal"),
+            # Also disallowed for categorical binary columns such as Off/On etc.
+            ("country", vm.Switch, "Switch", "categorical"),
         ],
     )
     def test_disallowed_selectors_per_column_type(
