@@ -8,14 +8,103 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 <img src="docs/assets/images/vizro-mcp.gif" width="600" alt="Vizro-MCP Demo">
 
-### Quick install
+## Set up Vizro-MCP
+Vizro-MCP is best used with Claude Desktop, Cursor or VS Code. However, it can be used with most LLM products that enable configuration of MCP server usage. 
+
+> 💡 Tip: For best performance, we recommend using the `claude-4-sonnet` model, or another high-performing model of your choice. Using the often offered `auto` setting may lead to inconsistent or unexpected results.
+
+Our documentation offers separate, detailed steps for [Claude Desktop](./docs/pages/guides/set-up-vizro-mcp-with-claude.md), [Cursor](./docs/pages/guides/set-up-vizro-mcp-with-cursor.md) and [VS Code](./docs/pages/guides/set-up-vizro-mcp-with-vscode.md). 
+
+### Basic configuration
+
+The following is for those familiar with MCP server setup who are comfortable with basic configuration settings. 
+
+#### Prerequisites
+* You must have downloaded and installed the LLM app you want to configure and use as a MCP host.
+
+* You must also install **either [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Docker](https://www.docker.com/get-started/)** by following the linked instructions.
+
+#### Set up Vizro-MCP using uv
+
+If you've installed uv, open a terminal window and type `uv` to confirm that is available. To get the path to `uvx`, type the following:
+
+```shell
+which uv
+```
+
+Copy the path returned, and add the following to the JSON file used to configure MCP servers for your LLM app. Be sure to substitute your path to uv as returned above, for the placeholder given:
+
+```json
+{
+  "mcpServers": {
+    "vizro-mcp": {
+      "command": "/placeholder-path/uvx",
+      "args": [
+        "vizro-mcp"
+      ]
+    }
+  }
+}
+```
+
+**Quick install**
+
+| Host                                      | Prerequisite                                                  | Link                                                                                                                                                                                                                                                                                                                                   
+| ----------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [Cursor](https://www.cursor.com/)         | [uv](https://docs.astral.sh/uv/getting-started/installation/) | [![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)                                                                                                 |                                                                         
+| [VS Code](https://code.visualstudio.com/) | [uv](https://docs.astral.sh/uv/guides/tools/)                 | [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)                                             |                                                                         
+
+#### Set up Vizro-MCP using Docker
+
+If you are using Docker, add the following to the JSON file used to configure MCP servers for your LLM app.
+
+```json
+{
+  "mcpServers": {
+    "vizro-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/vizro"
+      ]
+    }
+  }
+}
+```
+
+**To use local data with Docker**
+
+Mount your data directory or directories into the container with the following extended configuration. Replace `</absolute/path/to/allowed/dir>` (syntax for folders) or `</absolute/path/to/data.csv>` (syntax for files) with the absolute path to your data on your machine. For consistency, we recommend that the `dst` path matches the `src` path.
+
+    ```json
+    {
+      "mcpServers": {
+        "vizro-mcp": {
+          "command": "docker",
+          "args": [
+            "run",
+            "-i",
+            "--rm",
+            "--mount",
+            "type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir>",
+            "--mount",
+            "type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv>",
+            "mcp/vizro"
+          ]
+        }
+      }
+    }
+    ```
+
+**Quick install**
 
 | Host                                      | Prerequisite                                                  | Link                                                                                                                                                                                                                                                                                                                                   | Notes                                                                   |
 | ----------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [Cursor](https://www.cursor.com/)         | [uv](https://docs.astral.sh/uv/getting-started/installation/) | [![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)                                                                                                 |                                                                         |
-| [VS Code](https://code.visualstudio.com/) | [uv](https://docs.astral.sh/uv/guides/tools/)                 | [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)                                             |                                                                         |
 | [Cursor](https://www.cursor.com/)         | [Docker](https://www.docker.com/get-started/)                 | [![Install with Docker in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoiZG9ja2VyIHJ1biAtaSAtLXJtIG1jcC92aXpybyJ9)                                                                          | For local data access, [mount your data directory](#setup-instructions) |
 | [VS Code](https://code.visualstudio.com/) | [Docker](https://www.docker.com/get-started/)                 | [![Install with Docker in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22docker%22%2C%22args%22%3A%5B%22run%22%2C%22-i%22%2C%22--rm%22%2C%22mcp%2Fvizro%22%5D%7D) | For local data access, [mount your data directory](#setup-instructions) |
+
 
 ## Disclaimers
 
