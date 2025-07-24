@@ -37,6 +37,10 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
   height: 100%;
 }
 
+.tab-pane > div > .container-fluid .flex-row {
+  align-content: flex-start;
+}
+
 .inner-tabs-title {
   align-items: center;
   display: flex;

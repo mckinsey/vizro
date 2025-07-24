@@ -41,10 +41,6 @@ as it may result in unexpected layouts.
   width: 100%;
 }
 
-.flex-row .flex-item {
-  flex: 1;
-}
-
 .container-fluid > .grid-layout {
   flex: 1;
   height: auto;
