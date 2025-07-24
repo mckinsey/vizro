@@ -1,0 +1,41 @@
+name: JS Unit tests for Vizro
+
+defaults:
+  run: 
+    working-directory: vizro-core
+
+on: 
+  push:
+    branches: [main]
+  pull_requests:
+    branches:
+      - main
+
+jobs: 
+  test-js: 
+    name: test-js on Node.js ${{ matrix.node-version }}
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Run JavaScript tests
+        run: hatch run test-js
