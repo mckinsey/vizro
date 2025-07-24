@@ -36,7 +36,7 @@ which uv
 
 Copy the path returned, and add the following to the JSON file used to configure MCP servers for your LLM app. Be sure to substitute your path to uv as returned above, for the placeholder given:
 
-```json
+```
 {
   "mcpServers": {
     "vizro-mcp": {
@@ -60,7 +60,7 @@ Copy the path returned, and add the following to the JSON file used to configure
 
 If you are using Docker, add the following to the JSON file used to configure MCP servers for your LLM app.
 
-```json
+```
 {
   "mcpServers": {
     "vizro-mcp": {
