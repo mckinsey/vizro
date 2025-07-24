@@ -3,11 +3,11 @@ site_url: https://vizro.readthedocs.io/projects/vizro-mcp
 nav:
   - Vizro-MCP: index.md
   - Get started:
+      - First dashboard tutorial: pages/tutorials/first-dashboard-tutorial.md
       - Use Claude Desktop: pages/guides/set-up-vizro-mcp-with-claude.md
       - Use Cursor: pages/guides/set-up-vizro-mcp-with-cursor.md
       - Use VS Code: pages/guides/set-up-vizro-mcp-with-vscode.md
       - Use any MCP host: pages/guides/set-up-vizro-mcp-basics.md
-      - First dashboard tutorial: pages/tutorials/first-dashboard-tutorial.md
   - How-to guides:
       - Use prompt templates: pages/guides/use-prompt-templates.md
       - Use tools: pages/guides/use-vizro-mcp-tools.md

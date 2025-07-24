@@ -1,6 +1,8 @@
 # First dashboard tutorial
 
-Before creating your first Vizro dashboard with Vizro-MCP, you need to configure your MCP host. In this tutorial we assume you have set up [Claude desktop](../guides/set-up-vizro-mcp-with-claude.md), but you can use [Cursor](../guides/set-up-vizro-mcp-with-cursor.md) or [VS Code](../guides/set-up-vizro-mcp-with-vscode.md) to similar effect.
+Before creating your first Vizro dashboard with Vizro-MCP, you need to configure your MCP host. Follow our instructions to [set up Claude Desktop](../guides/set-up-vizro-mcp-with-claude.md), which is what this tutorial assumes. 
+
+(Alternatively, you can [set up Cursor](../guides/set-up-vizro-mcp-with-cursor.md), or [set up VS Code](../guides/set-up-vizro-mcp-with-vscode.md), or use our [basic setup configuration](../guides/set-up-vizro-mcp-basics.md) for your preferred LLM).
 
 When Claude Desktop is set up to use Vizro-MCP, you should see the vizro-mcp menu in the settings/context menu:
 
