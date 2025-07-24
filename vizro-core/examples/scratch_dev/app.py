@@ -29,9 +29,7 @@ page1 = vm.Page(
         ),
         vm.Graph(
             title="Which group size is more profitable?",
-            figure=px.density_heatmap(
-                tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
-            ),
+            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
         ),
     ],
     controls=[vm.Filter(column="day")],
@@ -52,9 +50,7 @@ page2 = vm.Page(
         ),
         vm.Graph(
             title="Which group size is more profitable?",
-            figure=px.density_heatmap(
-                tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
-            ),
+            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
         ),
     ],
     controls=[vm.Filter(column="day")],
@@ -134,39 +130,27 @@ page6 = vm.Page(
 page7 = vm.Page(
     title="Flex - default - graphs",
     layout=vm.Flex(),
-    components=[
-        vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True))
-        for i in range(6)
-    ],
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
 )
 
 
 page8 = vm.Page(
     title="Flex - gap - graphs",
     layout=vm.Flex(gap="40px"),
-    components=[
-        vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True))
-        for i in range(6)
-    ],
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
 )
 
 page9 = vm.Page(
     title="Flex - row - graphs",
     layout=vm.Flex(direction="row"),
-    components=[
-        vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True))
-        for i in range(6)
-    ],
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
 )
 
 page10 = vm.Page(
     id="page-flex-wrap-row-graphs",
     title="Flex - row/wrap - graphs",
     layout=vm.Flex(direction="row", wrap=True),
-    components=[
-        vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True))
-        for i in range(6)
-    ],
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
 )
 
 page11 = vm.Page(
@@ -242,9 +226,7 @@ page20 = vm.Page(
         ),
         vm.Graph(
             title="Which group size is more profitable?",
-            figure=px.density_heatmap(
-                tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
-            ),
+            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
         ),
     ],
     controls=[vm.Filter(column="day")],
@@ -394,29 +376,19 @@ page24 = vm.Page(
 page25 = vm.Page(
     title="FlexItem - dimension - graphs",
     layout=vm.Flex(direction="row", wrap=True),
-    components=[
-        vm.Graph(
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True, width=300)
-        )
-        for i in range(6)
-    ],
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True, width=300)) for i in range(6)],
 )
 
 page26 = vm.Page(
     title="FlexItem - dimension - tables",
     layout=vm.Flex(direction="row", wrap=True),
-    components=[
-        vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"}))
-        for i in range(3)
-    ],
+    components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
 )
 
 page27 = vm.Page(
     title="FlexItem - dimension - aggrid",
     layout=vm.Flex(direction="row", wrap=True),
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)
-    ],
+    components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
 )
 
 
