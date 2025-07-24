@@ -1,6 +1,6 @@
 # How to set up Vizro-MCP with any MCP host
 
-Vizro-MCP can be used with most LLM products that enable configuration of MCP server usage. This page explains the basic configuration to use. 
+Vizro-MCP can be used with most LLM products that enable configuration of MCP server usage. This page explains the basic configuration to use.
 
 !!! Information
 
@@ -82,4 +82,3 @@ If you are using Docker, add the following to the JSON file used to configure MC
       }
     }
     ```
-
