@@ -205,9 +205,11 @@ class TestFilterFunctions:
             ([1, 2, 3, 4, 5], [], [False, False, False, False, False]),  # Test for empty value list
             ([True, False, True, False], [True], [True, False, True, False]),  # Test for boolean True/False values
             ([True, False, True, False], [False], [False, True, False, True]),  # Test for boolean True/False values
+            ([True, False, True, False], [True, False], [True, True, True, True]),  # Test for boolean both values
             ([True, False, True, False], [], [False, False, False, False]),  # Test for boolean empty value list
             ([1, 0, 1, 0], [1], [True, False, True, False]),  # Test for boolean 0/1 values
             ([1, 0, 1, 0], [0], [False, True, False, True]),  # Test for boolean 0/1 values
+            ([1, 0, 1, 0], [1, 0], [True, True, True, True]),  # Test for boolean 0/1 both values
             ([1, 0, 1, 0], [], [False, False, False, False]),  # Test for boolean 0/1 empty value list
         ],
     )
@@ -689,6 +691,9 @@ class TestFilterPreBuildMethod:
             ("year", vm.Checklist),
             ("year", vm.DatePicker),
             ("is_europe", vm.Switch),
+            ("is_europe", vm.Dropdown),
+            ("is_europe", vm.RadioItems),
+            ("is_europe", vm.Checklist),
         ],
     )
     def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):

@@ -1,6 +1,7 @@
 """Unit tests for Switch."""
 
 import dash_bootstrap_components as dbc
+import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
 
@@ -40,6 +41,22 @@ class TestSwitchInstantiation:
             "description": f"{switch.description.id}-text.children",
         }
         assert switch._action_inputs == {"__default__": f"{switch.id}.value"}
+
+    @pytest.mark.parametrize(
+        "input_value, expected_value",
+        [
+            (True, True),
+            (False, False),
+            (1, True),
+            (0, False),
+            ("true", True),
+            ("false", False),
+        ],
+    )
+    def test_pydantic_bool_conversion(self, input_value, expected_value):
+        switch = vm.Switch(value=input_value)
+        assert switch.value is expected_value
+        assert isinstance(switch.value, bool)
 
 
 class TestSwitchBuild:
