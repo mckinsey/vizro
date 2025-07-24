@@ -80,8 +80,7 @@ If you are using Docker, add the following to the JSON file used to configure MC
 
 Mount your data directory or directories into the container with the following extended configuration. Replace `</absolute/path/to/allowed/dir>` (syntax for folders) or `</absolute/path/to/data.csv>` (syntax for files) with the absolute path to your data on your machine. For consistency, we recommend that the `dst` path matches the `src` path.
 
-````
-```json
+```
 {
   "mcpServers": {
     "vizro-mcp": {
@@ -100,7 +99,6 @@ Mount your data directory or directories into the container with the following e
   }
 }
 ```
-````
 
 **Quick install**
 
