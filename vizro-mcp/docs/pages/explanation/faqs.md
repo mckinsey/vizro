@@ -1,8 +1,12 @@
 # FAQs
 
 ## Do I need to install Vizro?
+No, you do not need to install Vizro.
+
 
 ## Can I use ChatGPT?
+
+You can use any LLM model with Vizro-MCP if the app can be configured as a MCP. host. However, Anthropic models tend to work best. At the time of writing, the desktop ChatGPT app is not MCP-enabled, but this may change in the future.
 
 ## Can Vizro-MCP create custom CSS?
 
