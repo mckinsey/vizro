@@ -15,6 +15,7 @@ data = {
     "age": np.random.randint(20, 50, size=10),
     "signup_date": pd.date_range(start="2023-01-01", periods=10, freq="W"),
     "active": np.random.choice([True, False], size=10),
+    "active_numeric": np.random.choice([0, 1], size=10),
 }
 
 
@@ -34,6 +35,15 @@ page = vm.Page(
             ),
         ),
         vm.Filter(column="active"),
+        vm.Filter(
+            column="active_numeric",
+            selector=vm.Switch(
+                value=False,
+                title="Show active accounts",
+                description="This is a description for the new switch selector",
+            ),
+        ),
+        vm.Filter(column="active_numeric"),
     ],
 )
 
