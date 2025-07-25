@@ -21,16 +21,17 @@ data = {
     ],
     "active": [True, False, True, False, True, False, True, False, True],
 }
-
-
 df = pd.DataFrame(data)
+
+data.update({"active": [1, 0, 1, 0, 1, 0, 1, 0, 1]})
+df_numeric = pd.DataFrame(data)
 
 
 switch_control_page = vm.Page(
     title=cnst.SWITCH_CONTROL_PAGE,
     components=[
         vm.AgGrid(id=cnst.AG_GRID_INACTIVE, figure=dash_ag_grid(df)),
-        vm.AgGrid(id=cnst.AG_GRID_ACTIVE, figure=dash_ag_grid(df)),
+        vm.AgGrid(id=cnst.AG_GRID_ACTIVE, figure=dash_ag_grid(df_numeric)),
     ],
     controls=[
         vm.Filter(

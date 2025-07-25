@@ -7,7 +7,7 @@ from e2e.vizro.checkers import (
     check_slider_value,
     check_table_ag_grid_rows_number,
 )
-from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
+from e2e.vizro.navigation import clear_dropdown, click_element_by_xpath_selenium, page_select, select_dropdown_value
 from e2e.vizro.paths import (
     categorical_components_value_path,
     dropdown_arrow_path,
@@ -435,3 +435,21 @@ def test_switch_active(dash_br):
     )
     # check number of inactive rows
     check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_ACTIVE, expected_rows_num=4)
+
+
+def test_switch_active_clicking_on_tooltip(dash_br_driver):
+    """Test Switch control set up to the True value."""
+    page_select(dash_br_driver, page_name=cnst.SWITCH_CONTROL_PAGE)
+    dash_br_driver.wait_for_text_to_equal(
+        table_ag_grid_cell_value_path(table_id=cnst.AG_GRID_ACTIVE, row_number=1, column_number=2), "Alice"
+    )
+    # switch 'Show inactive accounts' to False by clicking tooltip
+    click_element_by_xpath_selenium(
+        dash_br_driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CONTAINER_TOOLTIP_ICON}']"
+    )
+    # check that first row for inactive data is loaded
+    dash_br_driver.wait_for_text_to_equal(
+        table_ag_grid_cell_value_path(table_id=cnst.AG_GRID_ACTIVE, row_number=1, column_number=2), "Bob"
+    )
+    # check number of inactive rows
+    check_table_ag_grid_rows_number(dash_br_driver, table_id=cnst.AG_GRID_ACTIVE, expected_rows_num=4)

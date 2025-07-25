@@ -6,6 +6,7 @@ import vizro.plotly.express as px
 
 iris = px.data.iris()
 iris["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(iris), freq="D")
+iris["switch_column"] = iris["species"] == "setosa"
 gapminder = px.data.gapminder()
 
 filters_inside_containers_page = vm.Page(
@@ -84,6 +85,13 @@ filters_inside_containers_page = vm.Page(
                                     "valueFormat": "YYYY/MM/DD",
                                     "placeholder": "Select a date",
                                 },
+                            ),
+                        ),
+                        vm.Filter(
+                            column="switch_column",
+                            selector=vm.Switch(
+                                value=True,
+                                title="Show setosa",
                             ),
                         ),
                     ],
