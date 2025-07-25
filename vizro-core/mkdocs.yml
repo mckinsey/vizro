@@ -144,6 +144,10 @@ plugins:
             docstring_section_style: list
             separate_signature: true
             unwrap_annotated: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            show_signature_annotations: true
             #   filters: ["!^_"]
             show_root_heading: true
             docstring_options:
@@ -157,6 +161,9 @@ plugins:
               - griffe_pydantic:
                   schema: false
           paths: [src]
+          inventories:
+          - https://docs.python.org/3/objects.inv
+          - https://docs.pydantic.dev/latest/objects.inv
   - git-revision-date-localized:
       enable_creation_date: false
 

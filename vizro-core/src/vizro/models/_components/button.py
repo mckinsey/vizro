@@ -14,24 +14,7 @@ from vizro.models.types import ActionType, _IdProperty
 
 
 class Button(VizroBaseModel):
-    """Component provided to `Page` to trigger any defined `action` in `Page`.
-
-    Args:
-        type (Literal["button"]): Defaults to `"button"`.
-        text (str): Text to be displayed on button. Defaults to `"Click me!"`.
-        href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
-        variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
-            `filled` or `outlined`. Defaults to `filled`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
-    """
+    """Component provided to `Page` to trigger any defined `action` in `Page`."""
 
     type: Literal["button"] = "button"
     text: str = Field(default="Click me!", description="Text to be displayed on button.")

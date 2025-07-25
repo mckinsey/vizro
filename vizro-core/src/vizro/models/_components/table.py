@@ -22,22 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class Table(VizroBaseModel):
-    """Wrapper for `dash_table.DataTable` to visualize tables in dashboard.
-
-    Args:
-        type (Literal["table"]): Defaults to `"table"`.
-        figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the `Table`. Defaults to `""`.
-        header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
-
-    """
+    """Wrapper for `dash_table.DataTable` to visualize tables in dashboard."""
 
     type: Literal["table"] = "table"
     figure: Annotated[
@@ -80,7 +65,7 @@ class Table(VizroBaseModel):
     _inner_component_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    # _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     def model_post_init(self, context) -> None:
         super().model_post_init(context)

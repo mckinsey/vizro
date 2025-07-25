@@ -16,14 +16,7 @@ from vizro.models.types import NavPagesType
 
 
 class NavLink(VizroBaseModel):
-    """Icon that serves as a navigation link to be used in navigation bar of Dashboard.
-
-    Args:
-        pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
-        label (str): Text description of the icon for use in tooltip.
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
-
-    """
+    """Icon that serves as a navigation link to be used in navigation bar of Dashboard."""
 
     pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
     label: str = Field(description="Text description of the icon for use in tooltip.")

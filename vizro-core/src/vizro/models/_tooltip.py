@@ -22,18 +22,7 @@ def coerce_str_to_tooltip(text: Any) -> Any:
 
 
 class Tooltip(VizroBaseModel):
-    """A tooltip that displays text when hovering over an icon.
-
-    Args:
-        text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
-            chosen by the Vizro team. This may have unexpected behavior. Visit the
-            [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
-    """
+    """A tooltip that displays text when hovering over an icon."""
 
     text: str = Field(
         description="Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec."

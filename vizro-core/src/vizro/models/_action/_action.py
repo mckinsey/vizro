@@ -333,16 +333,7 @@ class _BaseAction(VizroBaseModel):
 
 
 class Action(_BaseAction):
-    """Action to be inserted into `actions` of relevant component.
-
-    Args:
-        function (CapturedCallable): Action function.
-        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
-            or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
-        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the action function. Each
-            output can be specified as `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
-            Defaults to `[]`.
-    """
+    """Action to be inserted into `actions` of relevant component."""
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
     # This class is only relevant for user-defined actions using @capture("action"). Actions that are defined by
@@ -405,7 +396,7 @@ class Action(_BaseAction):
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy
 
-    _validate_function = field_validator("function", mode="before")(validate_captured_callable)
+    # _validate_function = field_validator("function", mode="before")(validate_captured_callable)
 
     @property
     def _parameters(self) -> set[str]:

@@ -214,13 +214,7 @@ def set_id(id: ModelID) -> ModelID:
 
 
 class VizroBaseModel(BaseModel):
-    """All models that are registered to the model manager should inherit from this class.
-
-    Args:
-        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
-            When no ID is chosen, ID will be automatically generated.
-
-    """
+    """All models that are registered to the model manager should inherit from this class."""
 
     id: Annotated[
         ModelID,

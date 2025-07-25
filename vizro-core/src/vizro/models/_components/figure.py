@@ -12,13 +12,7 @@ from vizro.models.types import CapturedCallable, _IdProperty, validate_captured_
 
 
 class Figure(VizroBaseModel):
-    """Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.
-
-    Args:
-        type (Literal["figure"]): Defaults to `"figure"`.
-        figure (CapturedCallable): Function that returns a figure-like object. See [`vizro.figures`][vizro.figures].
-
-    """
+    """Creates a figure-like object that can be displayed in the dashboard and is reactive to controls."""
 
     type: Literal["figure"] = "figure"
     figure: Annotated[
@@ -31,7 +25,7 @@ class Figure(VizroBaseModel):
     ]
 
     # Component properties for actions and interactions
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    # _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

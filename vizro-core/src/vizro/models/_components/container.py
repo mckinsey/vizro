@@ -23,30 +23,7 @@ def set_variant(variant: Optional[Literal["plain", "filled", "outlined"]], info:
 
 
 class Container(VizroBaseModel):
-    """Container to group together a set of components on a page.
-
-    Args:
-        type (Literal["container"]): Defaults to `"container"`.
-        components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
-            has to be provided.
-        title (str): Title of the `Container`. Defaults to `""`.
-        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
-        collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.
-            Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the
-            container is not collapsible.
-        variant (Optional[Literal["plain", "filled", "outlined"]]): Predefined styles to choose from. Options are
-            `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
-
-    """
+    """Container to group together a set of components on a page."""
 
     type: Literal["container"] = "container"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field

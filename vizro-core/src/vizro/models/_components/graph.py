@@ -32,28 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 class Graph(VizroBaseModel):
-    """Wrapper for `dcc.Graph` to visualize charts in dashboard.
-
-    Args:
-        type (Literal["graph"]): Defaults to `"graph"`.
-        figure (CapturedCallable): Function that returns a graph.
-            See `CapturedCallable`][vizro.models.types.CapturedCallable].
-        title (str): Title of the `Graph`. Defaults to `""`.
-        header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
-    """
+    """Wrapper for `dcc.Graph` to visualize charts in dashboard."""
 
     type: Literal["graph"] = "graph"
     figure: Annotated[
@@ -106,7 +85,7 @@ class Graph(VizroBaseModel):
         ]
     ]
 
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    # _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

@@ -14,14 +14,7 @@ from vizro.models.types import NavPagesType, NavSelectorType
 
 
 class Navigation(VizroBaseModel):
-    """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
-
-    Args:
-        pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
-        nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
-            Defaults to `None`.
-
-    """
+    """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page]."""
 
     pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
     nav_selector: Optional[NavSelectorType] = None
