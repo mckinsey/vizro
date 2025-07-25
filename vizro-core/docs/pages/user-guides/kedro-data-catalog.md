@@ -1,6 +1,6 @@
 # How to integrate Vizro with the Kedro Data Catalog
 
-This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/index.html), an open-source Python framework to create reproducible, maintainable, and modular data science code. Vizro provides a convenient way to visualize Pandas datasets registered in a [Kedro Data Catalog](https://docs.kedro.org/en/stable/catalog-data/data_catalog/).
+This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/), an open-source Python framework to create reproducible, maintainable, and modular data science code. Vizro provides a convenient way to visualize Pandas datasets registered in a [Kedro Data Catalog](https://docs.kedro.org/en/stable/catalog-data/data_catalog/).
 
 Even if you do not have a Kedro project, you can still [use a Kedro Data Catalog](#create-a-kedro-data-catalog) to manage your dashboard's data sources. This separates configuration of your data from your app's code and is particularly useful for dashboards with many data sources or more complex data loading configuration.
 
@@ -56,7 +56,7 @@ As [shown below](#use-datasets-from-the-kedro-data-catalog), the best way to use
 
 ??? "Kedro configuration loader features"
 
-    Here are a few features of the Kedro configuration loader which are not possible with a `yaml.safe_load` alone. For more details, refer to Kedro's [documentation on advanced configuration](https://docs.kedro.org/en/1.0.0/configure/advanced_configuration/).
+    Here are a few features of the Kedro configuration loader which are not possible with a `yaml.safe_load` alone. For more details, refer to Kedro's [documentation on advanced configuration](https://docs.kedro.org/en/stable/configure/advanced_configuration/).
 
     - [Configuration environments](https://docs.kedro.org/en/stable/configure/configuration_basics/#configuration-environments) to organize settings that might be different between your different [development and production environments](run-deploy.md). For example, you might have different s3 buckets for development and production data.
     - [Recursive scanning for configuration files](https://docs.kedro.org/en/stable/configure/configuration_basics/#configuration-loading) to merge complex configuration that is split across multiple files and folders.
@@ -85,7 +85,7 @@ The `catalog` variable may have been created in a number of different ways:
 
 1. Data Catalog configuration file (`catalog.yaml`), [created as described above](#create-a-kedro-data-catalog). This generates a `catalog` variable independently of a Kedro project using `DataCatalog.from_config`.
 1. Kedro project path. Vizro exposes a helper function [`catalog_from_project`](../API-reference/kedro-integration.md#vizro.integrations.kedro.catalog_from_project) to generate a `catalog` given the path to a Kedro project.
-1. [Kedro Jupyter session](https://docs.kedro.org/en/1.0.0/integrations-and-plugins/notebooks_and_ipython/kedro_and_notebooks/). This automatically exposes `catalog`.
+1. [Kedro Jupyter session](https://docs.kedro.org/en/stable/integrations-and-plugins/notebooks_and_ipython/kedro_and_notebooks/). This automatically exposes `catalog`.
 
 The full code for these different cases is given below.
 
@@ -108,8 +108,8 @@ The full code for these different cases is given below.
         ```
 
         1. Kedro's experimental `KedroDataCatalog` would also work.
-        1. This [loads and parses configuration in `catalog.yaml`](https://docs.kedro.org/en/1.0.0/configure/advanced_configuration/#advanced-configuration-without-a-full-kedro-project). The argument `conf_source="."` specifies that `catalog.yaml` is found in the same directory as `app.py` or a subdirectory beneath this level. In a more complex setup, this could include [configuration environments](https://docs.kedro.org/en/1.0.0/configure/configuration_basics/#configuration-environments), for example to organize configuration for development and production data sources.
-        1. If you have [credentials](https://docs.kedro.org/en/1.0.0/configure/credentials/) then these can be injected with `DataCatalog.from_config(conf_loader["catalog"], conf_loader["credentials"])`.
+        1. This [loads and parses configuration in `catalog.yaml`](https://docs.kedro.org/en/stable/configure/advanced_configuration/#advanced-configuration-without-a-full-kedro-project). The argument `conf_source="."` specifies that `catalog.yaml` is found in the same directory as `app.py` or a subdirectory beneath this level. In a more complex setup, this could include [configuration environments](https://docs.kedro.org/en/stable/configure/configuration_basics/#configuration-environments), for example to organize configuration for development and production data sources.
+        1. If you have [credentials](https://docs.kedro.org/en/stable/configure/credentials/) then these can be injected with `DataCatalog.from_config(conf_loader["catalog"], conf_loader["credentials"])`.
 
     === "app.py (Kedro project path)"
 
@@ -137,7 +137,7 @@ The full code for these different cases is given below.
 
 ### Use dataset factories
 
-To add datasets that are defined using a [Kedro dataset factory](https://docs.kedro.org/en/1.0.0/catalog-data/kedro_dataset_factories/), `datasets_from_catalog` needs to resolve dataset patterns against explicit datasets. Given a Kedro `pipelines` dictionary, you should specify a `pipeline` argument as follows:
+To add datasets that are defined using a [Kedro dataset factory](https://docs.kedro.org/en/stable/catalog-data/kedro_dataset_factories/), `datasets_from_catalog` needs to resolve dataset patterns against explicit datasets. Given a Kedro `pipelines` dictionary, you should specify a `pipeline` argument as follows:
 
 ```python
 kedro_integration.datasets_from_catalog(catalog, pipeline=pipelines["__default__"])  # (1)!
@@ -148,7 +148,7 @@ kedro_integration.datasets_from_catalog(catalog, pipeline=pipelines["__default__
 The `pipelines` variable may have been created the following ways:
 
 1. Kedro project path. Vizro exposes a helper function [`pipelines_from_project`](../API-reference/kedro-integration.md#vizro.integrations.kedro.pipelines_from_project) to generate a `pipelines` given the path to a Kedro project.
-1. [Kedro Jupyter session](https://docs.kedro.org/en/1.0.0/integrations-and-plugins/notebooks_and_ipython/kedro_and_notebooks/). This automatically exposes `pipelines`.
+1. [Kedro Jupyter session](https://docs.kedro.org/en/stable/integrations-and-plugins/notebooks_and_ipython/kedro_and_notebooks/). This automatically exposes `pipelines`.
 
 The full code for these different cases is given below.
 
