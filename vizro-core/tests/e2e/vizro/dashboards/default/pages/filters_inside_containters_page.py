@@ -56,7 +56,9 @@ filters_inside_containers_page = vm.Page(
                             ),
                         ),
                         vm.Filter(
+                            id=cnst.CHECK_LIST_FILTERS_CONTAINERS_CONTROL_ID,
                             column="species",
+                            show_in_url=True,
                             selector=vm.Checklist(
                                 id=cnst.CHECK_LIST_INSIDE_CONTAINERS,
                                 options=["setosa", "versicolor", "virginica"],
