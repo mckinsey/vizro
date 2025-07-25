@@ -199,7 +199,7 @@ For the [`AgGrid`][vizro.models.AgGrid] model to sort and filter dates correctly
 
 No specific formatting is available for custom objects and strings, however you can make use of [Value Formatters](https://dash.plotly.com/dash-ag-grid/value-formatters) to format displayed strings automatically.
 
-### Column Size
+### Resizing columns
 
 The AG Grid component provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
 
