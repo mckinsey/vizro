@@ -461,6 +461,13 @@ pages:
         targets:
           - table-gapminder
         type: filter
+      - column: is_europe
+        selector:
+          title: Is Europe?
+          type: switch
+        targets:
+          - table-gapminder
+        type: filter
       - column: day
         selector:
           title: Dropdown (Tips - day)

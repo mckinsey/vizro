@@ -15,7 +15,9 @@ from vizro.tables import dash_ag_grid, dash_data_table
 
 @pytest.fixture
 def gapminder():
-    return px.data.gapminder(datetimes=True)
+    gapminder = px.data.gapminder(datetimes=True)
+    gapminder["is_europe"] = gapminder["continent"] == "Europe"
+    return gapminder
 
 
 @pytest.fixture
