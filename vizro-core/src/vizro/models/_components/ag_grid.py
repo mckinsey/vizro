@@ -4,7 +4,7 @@ from typing import Annotated, Literal, Optional
 import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -21,7 +21,6 @@ from vizro.models.types import (
     ActionType,
     CapturedCallable,
     _IdProperty,
-    validate_captured_callable,
 )
 
 logger = logging.getLogger(__name__)

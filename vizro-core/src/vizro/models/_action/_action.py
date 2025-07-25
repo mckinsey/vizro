@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, U
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
-from pydantic import Field, TypeAdapter, field_validator
+from pydantic import Field, TypeAdapter
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -21,7 +21,6 @@ from vizro.models.types import (
     ControlType,
     _IdOrIdProperty,
     _IdProperty,
-    validate_captured_callable,
 )
 
 logger = logging.getLogger(__name__)

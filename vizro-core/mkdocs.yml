@@ -161,8 +161,8 @@ plugins:
                   schema: false
           paths: [src]
           inventories:
-          - https://docs.python.org/3/objects.inv
-          - https://docs.pydantic.dev/latest/objects.inv
+            - https://docs.python.org/3/objects.inv
+            - https://docs.pydantic.dev/latest/objects.inv
   - git-revision-date-localized:
       enable_creation_date: false
 
