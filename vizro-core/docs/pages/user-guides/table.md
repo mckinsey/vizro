@@ -219,7 +219,7 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="11"}
+        ```
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
