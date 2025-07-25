@@ -44,8 +44,8 @@ BooleanSelectorType = Switch
 # performance hit.
 DISALLOWED_SELECTORS = {
     "numerical": SELECTORS["temporal"],
-    "temporal": SELECTORS["numerical"],
-    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
+    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"],
+    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
     "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 
@@ -60,6 +60,12 @@ def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> 
 
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    """Filter using .isin() - works with boolean/categorical data.
+
+    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
+    >>> pd.Series([0, 1]).isin([False])  # [True, False]
+    >>> pd.Series([False, True]).isin([1])  # [False, True]
+    """
     if is_datetime64_any_dtype(series):
         # Value will always have time 00:00:00. In order for the filter to include all times during
         # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
@@ -118,7 +124,8 @@ class Filter(VizroBaseModel):
         return {"__default__": f"{self.id}.children"}
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
-        # Only relevant for a dynamic filter.
+        # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
+        # as their options are always set to True/False.
         # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
         # is missing then it will raise an error. We could change this if we wanted.
         targeted_data = self._validate_targeted_data(
