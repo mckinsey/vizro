@@ -209,8 +209,7 @@ You can configure column sizing by setting the `columnSize` parameter in your `d
 
 - **`"sizeToFit"`**: Resizes all columns proportionally to fill the entire width of the grid container. This ensures no horizontal scrolling is needed and the AgGrid uses all available space.
 
-- **`"responsiveSizeToFit"`**: Similar to `sizeToFit`, but also automatically readjusts column sizes when the grid container or columns change (such as when the browser window is resized or when filters are applied).
-
+- **`"responsiveSizeToFit"`**: Combines `sizeToFit` with automatic readjustment of the columns' widths when the grid container or columns change (such as when the browser window is resized or when filters are applied).
 - **`None`** (default): Maintains the default column widths without automatic resizing.
 
 For more advanced column sizing configurations, you can use the `columnSizeOptions` parameter in combination with `columnSize`.
