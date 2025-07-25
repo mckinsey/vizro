@@ -1,3 +1,22 @@
+/**
+ * Updates the checklist and select all checkbox state based on user interactions.
+ *
+ * @param {boolean} select_all_value - The current state of the "Select All" checkbox
+ * @param {Array} checklist_value - Array of currently selected values in the checklist
+ * @param {Array<Object>} options - Array of option objects, each containing a "value" property
+ * @param {string} select_all_id - The ID of the "Select All" checkbox element
+ * @returns {Array} Returns a tuple where:
+ *   - First element: updated select all checkbox state or dash_clientside.no_update
+ *   - Second element: updated checklist values array or dash_clientside.no_update
+ *
+ * @description
+ * When the "Select All" checkbox is clicked:
+ * - If checked, selects all available options in the checklist
+ * - If unchecked, deselects all options in the checklist
+ *
+ * When a regular checklist item is clicked:
+ * - Updates the "Select All" checkbox state based on whether all options are selected
+ */
 function update_checklist_select_all(
   select_all_value,
   checklist_value,
