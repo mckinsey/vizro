@@ -3,7 +3,7 @@
 <!-- vale off -->
 API reference for all [`pydantic`](https://docs.pydantic.dev/latest/) models used.
 
-<!-- ::: vizro.models._dashboard.ExampleModel -->
+::: vizro.models._dashboard.ExampleModel
 
 
 ::: vizro.models
