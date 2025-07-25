@@ -2,6 +2,10 @@ def theme_toggle_path():
     return "#theme-selector"
 
 
+def switch_path_using_filter_control_id(filter_control_id):
+    return f"#{filter_control_id} input[type='checkbox']"
+
+
 # Navigation
 
 

@@ -2,8 +2,13 @@ import e2e.vizro.constants as cnst
 import pytest
 from e2e.asserts import decode_url_params, encode_url_params, get_url_params, param_to_url
 from e2e.vizro.checkers import check_selected_categorical_component, check_selected_dropdown
-from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
-from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, slider_value_path
+from e2e.vizro.navigation import accordion_select, clear_dropdown, page_select, select_dropdown_value
+from e2e.vizro.paths import (
+    categorical_components_value_path,
+    dropdown_arrow_path,
+    slider_value_path,
+    switch_path_using_filter_control_id,
+)
 from hamcrest import assert_that, equal_to
 
 
@@ -212,3 +217,76 @@ def test_url_params_decoding_and_navigate_to_page(dash_br):
     url_params_dict = get_url_params(dash_br)
     dec_data = decode_url_params(url_params_dict, apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
     assert_that(dec_data, equal_to(selected_params))
+
+
+def test_url_params_encoding_and_page_refresh_checklist(dash_br):
+    """Verifies that URL params for checklist are correctly encoded and restored after a page refresh."""
+    page_select(
+        dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
+    )
+    # unselect 'setosa'
+    dash_br.multiple_click(
+        categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTERS_CONTAINERS_CONTROL_ID, value=2), 1, delay=0.1
+    )
+    # check correct urls params
+    selected_params = {cnst.CHECK_LIST_FILTERS_CONTAINERS_CONTROL_ID: ["versicolor", "virginica"]}
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.CHECK_LIST_FILTERS_CONTAINERS_CONTROL_ID)
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+    # refresh the page
+    dash_br.driver.refresh()
+    # check url params still the same
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_datepicker(dash_br):
+    """Verifies that URL params for datepicker are correctly encoded and restored after a page refresh."""
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DATEPICKER_PAGE,
+    )
+    # open datepicker calendar and choose dates from 17 to 18 May 2016
+    dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', 1)
+    dash_br.wait_for_element('div[data-calendar="true"]')
+    dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
+    dash_br.multiple_click('button[aria-label="18 May 2016"]', 1)
+    # check correct urls params
+    selected_params = {cnst.DATEPICKER_FILTER_CONTROL_ID: ["2016-05-17", "2016-05-18"]}
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.DATEPICKER_FILTER_CONTROL_ID)
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+    # refresh the page
+    dash_br.driver.refresh()
+    # check url params still the same
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_switch(dash_br):
+    """Verifies that URL params for switch are correctly encoded and restored after a page refresh."""
+    page_select(dash_br, page_name=cnst.SWITCH_CONTROL_PAGE)
+    # switch 'Show active accounts' to True
+    dash_br.multiple_click(switch_path_using_filter_control_id(filter_control_id=cnst.SWITCH_CONTROL_FALSE_ID), 1)
+    # switch 'Show inactive accounts' to False
+    dash_br.multiple_click(
+        switch_path_using_filter_control_id(filter_control_id=cnst.SWITCH_CONTROL_TRUE_ID), 1, delay=0.1
+    )
+    # check correct urls params
+    selected_params = {
+        cnst.SWITCH_CONTROL_FALSE_ID: True,
+        cnst.SWITCH_CONTROL_FALSE_DEFAULT_ID: False,
+        cnst.SWITCH_CONTROL_TRUE_ID: False,
+    }
+    enc_data = encode_url_params(
+        selected_params,
+        apply_on_keys=[cnst.SWITCH_CONTROL_FALSE_ID, cnst.SWITCH_CONTROL_FALSE_DEFAULT_ID, cnst.SWITCH_CONTROL_TRUE_ID],
+    )
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+    # refresh the page
+    dash_br.driver.refresh()
+    # check url params still the same
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
