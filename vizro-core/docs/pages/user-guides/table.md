@@ -219,7 +219,7 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="11"}
+        ```{.python pycafe-link hl_lines="10"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -229,12 +229,22 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
 
         page = vm.Page(
             title="AG Grid with Column Sizing",
-            components=[
-                vm.AgGrid(
-                    title="AG Grid with responsiveSizeToFit columns",
-                    figure=dash_ag_grid(data_frame=df, columnSize="responsiveSizeToFit")
+            components=[vm.AgGrid(id="ag-grid", figure=dash_ag_grid(data_frame=df, columnSize="responsiveSizeToFit"))],
+            controls=[
+                vm.Parameter(
+                    targets=["ag-grid.columnSize"],
+                    selector=vm.RadioItems(
+                        title="Select ColumnSize",
+                        options=[
+                            {"value": "autoSize", "label": "autoSize"},
+                            {"value": "responsiveSizeToFit", "label": "responsiveSizeToFit"},
+                            {"value": "sizeToFit", "label": "sizeToFit"},
+                            {"value": "NONE", "label": "None"},
+                        ],
+                        value="responsizeSizeToFit"
+                    ),
                 )
-            ]
+            ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -244,14 +254,27 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
     === "app.yaml"
 
         ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
         pages:
           - components:
               - figure:
                   _target_: dash_ag_grid
                   data_frame: gapminder
                   columnSize: responsiveSizeToFit
-                title: AG Grid with responsiveSizeToFit columns
+                id: ag-grid
                 type: ag_grid
+            controls:
+              - selector:
+                  options: [{value: autoSize, label: autoSize}, {value: 
+                          responsiveSizeToFit, label: responsiveSizeToFit}, {value: 
+                          sizeToFit, label: sizeToFit}, {value: NONE, label: None}]
+                  value: responsiveSizeToFit
+                  title: Select ColumnSize
+                  type: radio_items
+                targets:
+                  - ag-grid.columnSize
+                type: parameter
             title: AG Grid with Column Sizing
         ```
 
