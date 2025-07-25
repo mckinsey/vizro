@@ -239,6 +239,10 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
+        ```
+
+    ```
+
     ```
 
 For detailed information about column sizing options and advanced configurations, refer to the [Dash AG Grid column sizing documentation](https://dash.plotly.com/dash-ag-grid/column-sizing).
