@@ -1,36 +1,17 @@
-function update_slider_values(start, slider, input_store, self_data) {
-  var end_value, trigger_id;
+function update_slider_values(slider_value, end_value, slider_component_id) {
+  console.debug("update_slider_values");
+  const trigger_id = dash_clientside.callback_context.triggered_id;
 
-  trigger_id = dash_clientside.callback_context.triggered;
-  if (trigger_id.length != 0) {
-    trigger_id =
-      dash_clientside.callback_context.triggered[0]["prop_id"].split(".")[0];
+  // slider component is triggered (slider_value)
+  if (trigger_id === slider_component_id) {
+    return [dash_clientside.no_update, slider_value];
   }
 
-  // text form component is the trigger
-  if (trigger_id === `${self_data["id"]}_end_value`) {
-    if (isNaN(start)) {
-      throw dash_clientside.PreventUpdate;
-    }
-    return [start, start, start];
-
-    // slider component is the trigger
-  } else if (trigger_id === self_data["id"]) {
-    return [slider, slider, slider];
+  // text form component is triggered (end_value)
+  if (isNaN(end_value)) {
+    throw dash_clientside.PreventUpdate;
   }
-  // on_page_load is the trigger
-  if (input_store === null) {
-    return [dash_clientside.no_update, dash_clientside.no_update, slider];
-  }
-  if (slider === start && start === input_store) {
-    // To prevent filter_action to be triggered after on_page_load
-    return [
-      dash_clientside.no_update,
-      dash_clientside.no_update,
-      dash_clientside.no_update,
-    ];
-  }
-  return [input_store, input_store, input_store];
+  return [end_value, dash_clientside.no_update];
 }
 
 window.dash_clientside = {

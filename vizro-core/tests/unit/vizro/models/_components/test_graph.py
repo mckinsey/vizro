@@ -259,7 +259,7 @@ class TestBuildGraph:
         graph = vm.Graph(
             figure=standard_px_chart,
             title="Title",
-            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+            description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
         ).build()
 
         expected_description = [

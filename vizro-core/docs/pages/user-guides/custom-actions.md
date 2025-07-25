@@ -18,7 +18,7 @@ The following example shows how to create a custom action that postpones executi
 
     === "app.py"
 
-        ```{.python pycafe-link extra-requirements="openpyxl"}
+        ```{.python pycafe-link extra-requirements="openpyxl" hl_lines="9-11 26"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -44,9 +44,7 @@ The following example shows how to create a custom action that postpones executi
                     text="Export data",
                     actions=[
                         vm.Action(function=export_data()),
-                        vm.Action(
-                            function=my_custom_action(t=2)
-                        ),
+                        vm.Action(function=my_custom_action(t=2)),
                         vm.Action(function=export_data(file_format="xlsx")),
                     ]
                 )
@@ -80,7 +78,7 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9-11 22"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -131,7 +129,7 @@ The following example shows how to create a custom action that shows the `clickD
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9-10 27-28"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -193,7 +191,7 @@ The return value of the custom action function is propagated to the dashboard co
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="14 30"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro

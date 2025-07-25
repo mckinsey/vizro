@@ -18,6 +18,7 @@ dependencies = [
   "pytest-rerunfailures",
   "pytest-split",
   "pytest-json-ctrf",
+  "pytest-order",
   "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
@@ -29,7 +30,8 @@ dependencies = [
   "PyGithub",
   "pyhamcrest",
   "gunicorn",
-  "pixelmatch"
+  "pixelmatch",
+  "playwright"
 ]
 features = ["kedro"]
 installer = "uv"
@@ -103,6 +105,8 @@ dependencies = [
   "linkchecker",
   "mkdocs-pycafe",
   "griffe-pydantic"
+  "PyGithub",
+  "playwright"
 ]
 installer = "uv"
 template = "docs"  # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
@@ -115,6 +119,7 @@ link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --
 # Check if link to QB logo is not deleted from the docs.
 logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/install.md"
 pip = '"{env:HATCH_UV}" pip {args}'
+pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "mkdocs serve --open"
 
 [envs.examples]
@@ -142,7 +147,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
 extra-dependencies = [
-  "dash==3.0.0",
+  "dash==3.1.1",
   "dash-bootstrap-components==2.0.0",
   "dash-ag-grid==31.3.1",
   "dash-mantine-components==1.0.0",

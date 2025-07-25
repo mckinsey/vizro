@@ -17,7 +17,7 @@ class Button(VizroBaseModel):
     """Component provided to `Page` to trigger any defined `action` in `Page`."""
 
     type: Literal["button"] = "button"
-    text: str = Field(default="Click me!", description="Text to be displayed on button.")
+    text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     actions: Annotated[
         list[ActionType],
@@ -35,6 +35,8 @@ class Button(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
+        # AfterValidator(warn_description_without_title) is not needed here because 'text' is mandatory and
+        # must have at least one character.
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the button text.

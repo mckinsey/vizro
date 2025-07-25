@@ -35,7 +35,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="15-34 51"}
         from typing import Optional
 
         import dash_bootstrap_components as dbc
@@ -60,13 +60,10 @@ For instance, to make a KPI card with the icon positioned on the right side of t
             title: Optional[str] = None,
             icon: Optional[str] = None,
         ) -> dbc.Card:  # (2)!
-            """Creates a custom KPI card."""
             title = title or f"{agg_func} {value_column}".title()
             value = data_frame[value_column].agg(agg_func)
-
             header = dbc.CardHeader(
                     [
-
                         html.H4(title, className="card-kpi-title"),
                         html.P(icon, className="material-symbols-outlined") if icon else None,  # (3)!
                     ]
@@ -84,7 +81,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
-                        icon="shopping_cart",
+                        icon="Shopping Cart",
                         title="Default KPI card",
                     )
                 ),
@@ -93,7 +90,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
-                        icon="payment",
+                        icon="Payment",
                         title="Custom KPI card",
                     )
                 ),
@@ -131,7 +128,7 @@ You can create a custom figure for any [Dash component](https://dash.plotly.com/
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10-13 18"}
         import pandas as pd
         import vizro.models as vm
         from dash import html
@@ -182,7 +179,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
 
     === "app.py"
 
-        ```py
+        ```py hl_lines="22-38 43"
         from typing import Optional
 
         import dash_bootstrap_components as dbc

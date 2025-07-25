@@ -8,11 +8,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--surfaces-bg02);
   --right-side-bg: var(--surfaces-bg03);
   --right-side-bg-iterated: var(--surfaces-bg03);
-  --text-code-string: #95c2e7;
-  --text-code-keyword: #f4766e;
-  --text-code-meta: #c8ace1;
-  --text-code-type: #f69d50;
-  --text-code-literal: #6bb5fd;
   --slider-rail-bg: var(--primary-100);
   --collapse-icon-bg: var(--primary-500);
 }
@@ -22,17 +17,17 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--surfaces-bg01);
   --right-side-bg: var(--surfaces-bg01);
   --right-side-bg-iterated: var(--primary-300);
-  --text-code-string: #0a3069;
-  --text-code-keyword: #d12d39;
-  --text-code-meta: #6f42c1;
-  --text-code-type: #f69d50;
-  --text-code-literal: #005cc5;
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
   --collapse-icon-bg: var(--primary-300);
 }
 
-/* This is currently required as dbc.NavBar comes with the `navbar-light` class even on a dark theme */
+/* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
+`bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
+.navbar {
+  background: var(--left-side-bg) !important;
+}
+
 .nav-link {
    color: var(--text-secondary) !important;
 }
@@ -40,7 +35,6 @@ All the HEX values starting with --text-code are taken from the Github code high
 .nav-link:active, .nav-link.active {
     color: var(--text-primary) !important;
 }
-
 
 /* CARDS */
 .card {
@@ -51,35 +45,13 @@ All the HEX values starting with --text-code are taken from the Github code high
   height: 100%;
 }
 
-/* ACCORDION */
-.accordion-item .nav-link {
-  padding: 0.5rem 1rem;
-}
-
-.accordion-item .nav-link.active {
-  border-left: 2px solid var(--border-enabled);
-}
-
-
-/* Move background color to BS */
-.accordion-item .nav-link:active, .accordion-item .nav-link.active,
-.accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
-  background: var(--surfaces-bg-card);
+/* FORM ELEMENTS */
+.form-check {
+    height: 16px;
 }
 
 .form-check:last-of-type {
   margin-bottom: 0;
-}
-
-/* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
-label[for="theme-selector"] {
-  display: none;
-}
-
-/* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
-`bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
-.navbar {
-  background: var(--left-side-bg) !important;
 }
 
 .form-switch .form-check-input {
@@ -96,3 +68,10 @@ label[for="theme-selector"] {
   align-content: center;
   height: 32px;
 }
+
+/* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
+label[for="theme-selector"] {
+  display: none;
+}
+
+/* Eventually bring over to vizro-bootstrap */

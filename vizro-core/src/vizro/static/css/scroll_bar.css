@@ -18,7 +18,7 @@
   background: transparent;
 }
 
-#left-main::-webkit-scrollbar-thumb {
+#nav-control-panel::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg02);
 }
 
@@ -47,5 +47,9 @@
 
 .text::-webkit-scrollbar-thumb,
 .hljs::-webkit-scrollbar-thumb {
+  border-color: var(--right-side-bg);
+}
+
+.container-fluid > .grid-layout::-webkit-scrollbar-thumb {
   border-color: var(--right-side-bg);
 }

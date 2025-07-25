@@ -28,9 +28,11 @@ from pages.layout_pages import (
     layout_flex_with_wrap_param_and_ag_grid,
     layout_flex_without_params,
 )
+from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
+from pages.vizro_url_and_download_page import vizro_url_and_download_page
 
 import vizro.models as vm
 from vizro import Vizro
@@ -42,6 +44,7 @@ dashboard = vm.Dashboard(
         filters_page,
         filters_inside_containers_page,
         parameters_page,
+        parameters_multi_page,
         filter_interactions_page,
         kpi_indicators_page,
         export_action_page,
@@ -68,6 +71,7 @@ dashboard = vm.Dashboard(
         buttons_page,
         collapsible_containers_grid,
         collapsible_containers_flex,
+        vizro_url_and_download_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -76,11 +80,13 @@ dashboard = vm.Dashboard(
                 cnst.FILTERS_PAGE,
                 cnst.FILTERS_INSIDE_CONTAINERS_PAGE,
                 cnst.PARAMETERS_PAGE,
+                cnst.PARAMETERS_MULTI_PAGE,
                 cnst.FILTER_INTERACTIONS_PAGE,
                 cnst.KPI_INDICATORS_PAGE,
                 cnst.EXPORT_PAGE,
                 cnst.CUSTOM_COMPONENTS_PAGE,
                 cnst.FILTER_AND_PARAM_PAGE,
+                cnst.VIZRO_URL_AND_DOWNLOAD_PAGE,
             ],
             cnst.DATEPICKER_ACCORDION: [
                 cnst.DATEPICKER_PAGE,

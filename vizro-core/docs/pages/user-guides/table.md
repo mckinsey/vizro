@@ -35,7 +35,7 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -78,7 +78,7 @@ By default, pagination is enabled in AG Grid to improve performance and usabilit
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -135,7 +135,7 @@ In the example below we select and format some columns of the gapminder data.
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="8-9 18"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -207,7 +207,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="8-27 29-46 55-56"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -353,7 +353,7 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="11"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -399,7 +399,7 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="8-15 17-37 39 48-52"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -541,7 +541,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="13-20"}
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -606,7 +606,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="13-20"}
 
         import vizro.models as vm
         import vizro.plotly.express as px

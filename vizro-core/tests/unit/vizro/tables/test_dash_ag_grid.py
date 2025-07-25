@@ -14,7 +14,12 @@ data = pd.DataFrame(
         "date": pd.to_datetime(["2021/01/01", "2021/01/02", "2021/01/03"]),
     }
 )
-column_defs = [{"field": "cat"}, {"field": "int"}, {"field": "float"}, {"field": "date"}]
+column_defs = [
+    {"field": "cat"},
+    {"field": "int"},
+    {"field": "float"},
+    {"field": "date"},
+]
 row_data_date_converted = [
     {"cat": "a", "int": 4, "float": 7.3, "date": "2021-01-01"},
     {"cat": "b", "int": 5, "float": 8.2, "date": "2021-01-02"},
@@ -30,7 +35,6 @@ default_col_defs = {
     "filterParams": {"buttons": ["apply", "reset"], "closeOnApply": True},
     "resizable": True,
     "sortable": True,
-    "flex": 1,
 }
 
 
@@ -43,6 +47,7 @@ class TestDashAgGrid:
                 columnDefs=column_defs,
                 rowData=row_data_date_converted,
                 defaultColDef=default_col_defs,
+                columnSize="sizeToFit",
             ),
             keys_to_strip={"className", "dashGridOptions"},
         )

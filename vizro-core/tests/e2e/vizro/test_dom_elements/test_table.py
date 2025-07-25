@@ -15,8 +15,6 @@ def test_filters(dash_br):
 
     # select 'Africa'
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_TABLE_FILTER, value=2), 1)
-    # select 'Asia', but 'ALL' still selected
-    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_TABLE_FILTER, value=2), 1)
     # select '5000000' as min value
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGESLIDER_TABLE_FILTER, value=5), 1)
 

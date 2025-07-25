@@ -1,45 +1,22 @@
-#page-header {
-  padding-left: 8px;
-}
-
-#left-main {
-  width: 288px;
+#header {
+  padding-left: 4px;
 }
 
 img[src*="#chart-icon"] {
   width: 100%;
 }
 
-.open-in-new {
+/* PyCafe Link Button Icon */
+.material-symbols-outlined .open-in-new {
   font-size: inherit;
   margin-left: 4px;
-  vertical-align: middle;
 }
 
-.code-clipboard {
-  float: right;
-  font-size: 20px;
-}
-
-.code-clipboard pre {
-  font-family: monospace;
-  margin-bottom: 12px;
-}
 
 .code-clipboard-container {
-  background: var(--surfaces-bg-card);
-  max-height: 500px;
-  overflow: auto;
-  padding: 1rem;
-  position: relative;
-}
-
-.code-clipboard-container .pycafe-link {
-  margin-bottom: 12px;
-}
-
-.code-clipboard-container::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg-card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .flex-item h4 {
@@ -71,6 +48,7 @@ img[src*="#chart-icon"] {
 
 .intro-text h4 {
   color: var(--text-secondary);
+  margin: 0;
 }
 
 .intro-text p {
@@ -105,4 +83,8 @@ img[src*="#chart-icon"] {
 
 img#banner {
   height: 16px;
+}
+
+.mantine-CodeHighlight-controls {
+  background: transparent;
 }

@@ -1,7 +1,9 @@
 import logging
+import warnings
 from functools import wraps
 
 from dash import html
+from pydantic import ValidationInfo
 
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
@@ -62,3 +64,17 @@ def _build_inner_layout(layout, components):
 
 def validate_icon(icon) -> str:
     return icon.strip().lower().replace(" ", "_")
+
+
+def warn_description_without_title(description, info: ValidationInfo):
+    title = info.data.get("title")
+
+    if description and not title:
+        warnings.warn(
+            """
+            The `description` field is set, but `title` is missing or empty.
+            The tooltip will not appear unless a `title` is provided.
+            """,
+            UserWarning,
+        )
+    return description

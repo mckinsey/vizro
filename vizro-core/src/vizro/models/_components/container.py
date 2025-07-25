@@ -10,7 +10,12 @@ from pydantic_core.core_schema import ValidationInfo
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
-from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
+from vizro.models._models_utils import (
+    _build_inner_layout,
+    _log_call,
+    check_captured_callable_model,
+    warn_description_without_title,
+)
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProperty
 
@@ -54,6 +59,7 @@ class Container(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
+        AfterValidator(warn_description_without_title),
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.

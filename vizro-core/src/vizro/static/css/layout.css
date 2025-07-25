@@ -1,4 +1,4 @@
-.page-container {
+.page-main-outer {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -11,7 +11,7 @@
   gap: 0.5rem;
 }
 
-#left-main {
+#nav-control-panel {
   align-items: flex-start;
   border-right: 1px solid var(--bs-border-color);
   display: flex;
@@ -19,8 +19,8 @@
   flex-direction: column;
   gap: 1.5rem;
   overflow: auto;
-  padding: 24px 24px 0;
-  width: 324px;
+  padding: 20px 20px 0;
+  width: 280px;
 }
 
 #left-side {
@@ -36,11 +36,11 @@
   flex-direction: column;
   gap: 1.25rem;
   overflow: auto;
-  padding: 24px;
+  padding: 20px;
   width: 100%;
 }
 
-#right-header {
+#page-header {
   align-items: baseline;
   display: flex;
   flex-direction: row;
@@ -48,20 +48,30 @@
   justify-content: space-between;
 }
 
-#page-header {
-  align-items: center;
+#header {
   background-color: var(--left-side-bg);
   display: flex;
-  flex-direction: row;
   height: 60px;
   justify-content: space-between;
   min-height: 0;
-  padding: 0 24px;
-  width: 100%;
+  padding: 0 20px;
 }
 
-#page-header:not(:empty) {
+#header:not(:empty) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
+}
+
+#header.no-left {
+  justify-content: flex-end;
+}
+
+#header-right,
+#header-left,
+#header-custom {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  height: 100%;
 }
 
 #page-components {
@@ -99,12 +109,11 @@
   width: 100%;
 }
 
-#left-sidebar {
+#nav-bar {
   border-right: 1px solid var(--bs-border-color);
   display: flex;
-  flex-direction: column;
-  gap: 40px;
-  width: 64px;
+  justify-content: flex-start;
+  width: 60px;
 }
 
 #dashboard-container div[hidden] {
@@ -142,14 +151,6 @@
   display: inline;
 }
 
-#logo-and-title {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  height: 100%;
-}
-
 #collapse-icon.material-symbols-outlined {
   background-color: var(--left-side-bg);
   border: 1px solid var(--border-subtleAlpha01);
@@ -163,10 +164,10 @@
   color: var(--text-primaryHover);
 }
 
-.collapse-icon-div {
+#collapse-icon-outer {
   display: flex;
   justify-content: center;
-  padding-top: 28px;
+  padding-top: 22px;
   width: 0;
 }
 
@@ -191,9 +192,9 @@ Current logic:
   }
 }
 
-/* Apply flex layout for screens up to 1028px if collapsible-left-side is shown */
+/* Apply flex layout for screens up to 1028px if collapse-left-side is shown */
 @media screen and (width <= 1028px) {
-  #page-main:has(#collapsable-left-side.show) .grid-layout {
+  #page-main:has(#collapse-left-side.show) .grid-layout {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -202,39 +203,81 @@ Current logic:
 
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
-  .collapse-icon-div {
-    padding-top: 20px;
+  #collapse-icon-outer {
+    padding-top: 16px;
   }
 
-  #page-header,
-  #right-side,
-  #left-side {
+  #nav-control-panel {
+    padding-top: 16px;
+  }
+
+  #nav-bar {
+    padding-top: 4px;
+  }
+
+  #header,
+  #right-side {
     zoom: 80%;
   }
 }
 
+/* Apply specific styles for landscape orientation on small screen heights */
+@media screen and (height <= 576px) and (orientation: landscape) {
+  #nav-control-panel {
+    font-size: 12px;
+    width: 260px;
+  }
+
+  #nav-control-panel .accordion-button,
+  #nav-control-panel .form-label,
+  #nav-control-panel .form-check-label,
+  #nav-control-panel .mantine-DatePickerInput-input,
+  #nav-control-panel .slider-text-input-field,
+  #nav-control-panel div.Select--multi .Select-value {
+    font-size: 12px;
+  }
+
+  #nav-control-panel .rc-slider-tooltip-inner,
+  #nav-control-panel .rc-slider-mark-text {
+    font-size: 10px;
+  }
+
+  #nav-control-panel .mantine-DatePickerInput-input {
+    min-height: 40px;
+  }
+}
+
 @media screen and (width <= 576px) and (orientation: portrait) {
-  body:has(#collapsible-left-side.show) {
+  body:has(#collapse-left-side.show) {
     overflow: hidden;
   }
 
-  #collapsible-left-side.show:has(#left-main:not([hidden]))
-    ~ .collapse-icon-div
+  #nav-control-panel {
+    padding-top: 12px;
+    width: 280px;
+  }
+
+  #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
+    ~ #collapse-icon-outer
     #collapse-icon {
     right: -7px;
     z-index: 10;
   }
 
-  #left-side:has(#left-main:not([hidden])) {
-    height: calc(100vh - 48px);
+  #nav-bar {
+    padding-top: 0;
+  }
+
+  #left-side:has(#nav-control-panel:not([hidden])) {
+    height: calc(100vh - 40px);
     position: absolute;
     width: 100vw;
     z-index: 5;
     zoom: 100%;
   }
 
-  /* If #left-main is NOT hidden, apply this rule */
-  #left-main:not([hidden]) {
+  /* If #nav-control-panel is NOT hidden, apply this rule */
+  #nav-control-panel:not([hidden]) {
     flex: 1;
   }
 }
@@ -242,4 +285,11 @@ Current logic:
 /* Hide Loading... text on loading page */
 ._dash-loading {
   display: none;
+}
+
+.checklist-inline {
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
 }

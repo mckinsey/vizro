@@ -57,7 +57,7 @@ example_cards = [
         data_frame=df_kpi,
         value_column="Actual",
         title="KPI with icon",
-        icon="shopping_cart",
+        icon="Shopping Cart",
     ),
 ]
 
@@ -88,7 +88,7 @@ example_reference_cards = [
         value_column="Actual",
         reference_column="Reference",
         title="KPI reference with icon",
-        icon="shopping_cart",
+        icon="Shopping Cart",
     ),
 ]
 
@@ -524,10 +524,11 @@ tooltip = vm.Page(
         vm.Filter(
             column="sepal_width",
             selector=vm.RangeSlider(
+                title="Sepal Width",
                 description="""
                     Use the slider to filter flowers by sepal width.
                     Only samples within the selected range will be shown.
-                """
+                """,
             ),
         ),
     ],

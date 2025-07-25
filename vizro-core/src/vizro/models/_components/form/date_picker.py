@@ -11,7 +11,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
@@ -45,6 +45,7 @@ class DatePicker(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
+        AfterValidator(warn_description_without_title),
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
@@ -85,7 +86,7 @@ class DatePicker(VizroBaseModel):
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
 
-    def __call__(self, min, max, current_value=None):
+    def __call__(self, min, max):
         # TODO: Refactor value calculation logic after the Dash persistence bug is fixed and "Select All" PR is merged.
         #  The underlying component's value calculation will need to account for:
         #  - Changes introduced by Pydantic V2.
@@ -96,6 +97,7 @@ class DatePicker(VizroBaseModel):
             "id": self.id,
             "minDate": min,
             "value": self.value or ([min, max] if self.range else min),
+            "valueFormat": "MMM D, YYYY",
             "maxDate": max,
             "persistence": True,
             "persistence_type": "session",

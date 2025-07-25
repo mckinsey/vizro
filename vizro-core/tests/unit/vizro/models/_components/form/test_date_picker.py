@@ -135,6 +135,7 @@ class TestBuildMethod:
                     id="datepicker_id",
                     minDate="2023-01-01",
                     value=value,
+                    valueFormat="MMM D, YYYY",
                     maxDate="2023-07-01",
                     persistence=True,
                     persistence_type="session",
@@ -165,6 +166,7 @@ class TestBuildMethod:
                     id="datepicker_id",
                     minDate="2023-01-01",
                     value="2023-01-05",
+                    valueFormat="MMM D, YYYY",
                     maxDate="2023-07-01",
                     persistence=True,
                     persistence_type="session",
@@ -187,7 +189,7 @@ class TestBuildMethod:
             value="2023-01-05",
             range=False,
             title="Title",
-            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+            description=vm.Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
@@ -208,6 +210,7 @@ class TestBuildMethod:
                     id="datepicker_id",
                     minDate="2023-01-01",
                     value="2023-01-05",
+                    valueFormat="MMM D, YYYY",
                     maxDate="2023-07-01",
                     persistence=True,
                     persistence_type="session",

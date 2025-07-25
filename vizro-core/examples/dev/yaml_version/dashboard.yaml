@@ -162,7 +162,7 @@ pages:
           data_frame: df_kpi
           value_column: Actual
           title: KPI with icon
-          icon: shopping_cart
+          icon: Shopping Cart
         type: figure
       - figure:
           _target_: kpi_card_reference
@@ -194,7 +194,7 @@ pages:
           value_column: Actual
           reference_column: Reference
           title: KPI reference with icon
-          icon: shopping_cart
+          icon: Shopping Cart
         type: figure
     controls:
       - column: Category
@@ -555,6 +555,7 @@ pages:
       - column: sepal_width
         selector:
           type: range_slider
+          title: Sepal Width
           description: |
             Use the slider to filter flowers by sepal width.
             Only samples within the selected range will be shown.
