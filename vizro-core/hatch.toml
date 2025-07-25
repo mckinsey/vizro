@@ -104,7 +104,7 @@ dependencies = [
   "mkdocstrings[python]",
   "linkchecker",
   "mkdocs-pycafe",
-  "griffe-pydantic"
+  "griffe-pydantic",
   "PyGithub",
   "playwright"
 ]
