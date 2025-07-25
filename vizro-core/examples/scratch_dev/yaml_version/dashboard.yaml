@@ -10,9 +10,13 @@ pages:
         type: ag_grid
     controls:
       - selector:
-          options: [{value: autoSize, label: autoSize}, {value: 
-                  responsiveSizeToFit, label: responsiveSizeToFit}, {value: 
-                  sizeToFit, label: sizeToFit}, {value: NONE, label: None}]
+          options:
+            [
+              { value: autoSize, label: autoSize },
+              { value: responsiveSizeToFit, label: responsiveSizeToFit },
+              { value: sizeToFit, label: sizeToFit },
+              { value: NONE, label: None },
+            ]
           value: responsiveSizeToFit
           title: Select ColumnSize
           type: radio_items
