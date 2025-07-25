@@ -219,7 +219,7 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
 
     === "app.py"
 
-        ```
+        ```{.python pycafe-link hl_lines="11"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -231,8 +231,8 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
             title="AG Grid with Column Sizing",
             components=[
                 vm.AgGrid(
-                    title="AG Grid with auto-sized columns",
-                    figure=dash_ag_grid(data_frame=df, columnSize="autoSize")
+                    title="AG Grid with responsiveSizeToFit columns",
+                    figure=dash_ag_grid(data_frame=df, columnSize="responsiveSizeToFit")
                 )
             ]
         )
@@ -241,9 +241,23 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
         Vizro().build(dashboard).run()
         ```
 
-    ```
+    === "app.yaml"
 
-    ```
+        ```yaml
+        pages:
+          - components:
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: gapminder
+                  columnSize: responsiveSizeToFit
+                title: AG Grid with responsiveSizeToFit columns
+                type: ag_grid
+            title: AG Grid with Column Sizing
+        ```
+
+    === "Result"
+
+        [![AGGridColumnSize]][aggridcolumnsize]
 
 For detailed information about column sizing options and advanced configurations, refer to the [Dash AG Grid column sizing documentation](https://dash.plotly.com/dash-ag-grid/column-sizing).
 
@@ -714,6 +728,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 [aggrid]: ../../assets/user_guides/table/aggrid.png
 [aggrid2]: ../../assets/user_guides/table/formatted_aggrid.png
 [aggrid3]: ../../assets/user_guides/table/styled_aggrid.png
+[aggridcolumnsize]: ../../assets/user_guides/table/aggrid_columnSize.png
 [formattedgrid]: ../../assets/user_guides/components/formatted_aggrid.png
 [formattedtable]: ../../assets/user_guides/components/formatted_table.png
 [table]: ../../assets/user_guides/table/table.png
