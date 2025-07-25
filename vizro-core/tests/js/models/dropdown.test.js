@@ -18,10 +18,10 @@ describe("update_dropdown_select_all", () => {
     { value: "option3", label: "Option 3" },
   ];
 
-  const updateDropdownSelectAll = selectedValues => {
+  const updateDropdownSelectAll = (selectedValues) => {
     return window.dash_clientside.dropdown.update_dropdown_select_all(
       selectedValues,
-      mockOptions
+      mockOptions,
     );
   };
 
@@ -61,7 +61,7 @@ describe("update_dropdown_select_all", () => {
 
         expect(selectAllValue).toBe(expectedSelectAll);
         expect(updateValue).toBe(global.dash_clientside.no_update);
-      }
+      },
     );
   });
 
@@ -81,7 +81,7 @@ describe("update_dropdown_select_all", () => {
 
         expect(selectAllValue).toBe(expectedSelectAll);
         expect(updateValue).toBe(global.dash_clientside.no_update);
-      }
+      },
     );
   });
 });
