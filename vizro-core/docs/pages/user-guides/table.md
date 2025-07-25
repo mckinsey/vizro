@@ -199,6 +199,50 @@ For the [`AgGrid`][vizro.models.AgGrid] model to sort and filter dates correctly
 
 No specific formatting is available for custom objects and strings, however you can make use of [Value Formatters](https://dash.plotly.com/dash-ag-grid/value-formatters) to format displayed strings automatically.
 
+### Column Size
+
+The AG Grid component provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
+
+You can configure column sizing by setting the `columnSize` parameter in your `dash_ag_grid` function call. The available options are:
+
+- **`"autoSize"`**: Automatically adjusts column widths to fit their content. This is particularly useful when you have varying content lengths and want each column to be sized appropriately for readability.
+
+- **`"sizeToFit"`**: Resizes all columns proportionally to fill the entire width of the grid container. This ensures no horizontal scrolling is needed and the table utilizes the full available space.
+
+- **`"responsiveSizeToFit"`**: Similar to `sizeToFit`, but also automatically readjusts column sizes when the grid container or columns change (such as when the browser window is resized or when filters are applied).
+
+- **`None`** (default): Maintains the default column widths without automatic resizing.
+
+For more advanced column sizing configurations, you can use the `columnSizeOptions` parameter in combination with `columnSize`.
+
+!!! example "AG Grid with column sizing"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="11"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        df = px.data.gapminder()
+
+        page = vm.Page(
+            title="AG Grid with Column Sizing",
+            components=[
+                vm.AgGrid(
+                    title="AG Grid with auto-sized columns",
+                    figure=dash_ag_grid(data_frame=df, columnSize="autoSize")
+                )
+            ]
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+    ```
+
+For detailed information about column sizing options and advanced configurations, refer to the [Dash AG Grid column sizing documentation](https://dash.plotly.com/dash-ag-grid/column-sizing).
+
 ### Styling and changing the AG Grid
 
 As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Below you can find an example of a styled AG Grid where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable. There are more ways to alter the grid beyond this showcase. AG Grid, like any other Vizro component, can be customized using custom CSS. You can find information in the [guide to overwriting CSS properties](custom-css.md#overwrite-css-for-selected-components).
