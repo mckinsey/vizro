@@ -142,6 +142,11 @@ plugins:
             merge_init_into_class: true
             docstring_section_style: list
             separate_signature: true
+            unwrap_annotated: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            show_signature_annotations: true
             #   filters: ["!^_"]
             show_root_heading: true
             docstring_options:
@@ -152,7 +157,12 @@ plugins:
               - docs/griffe_extensions.py:
                   paths:
                     [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
+              - griffe_pydantic:
+                  schema: false
           paths: [src]
+          inventories:
+            - https://docs.python.org/3/objects.inv
+            - https://docs.pydantic.dev/latest/objects.inv
   - git-revision-date-localized:
       enable_creation_date: false
 

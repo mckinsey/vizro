@@ -22,7 +22,13 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    BeforeValidator,
+    Field,
+    ValidationInfo,
+)
 from typing_extensions import TypedDict
 
 import vizro
@@ -39,6 +45,14 @@ if TYPE_CHECKING:
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
+
+
+class ExampleModel(BaseModel):
+    """An example model."""
+
+    field_with_constraints_and_description: Annotated[
+        int, Field(default=5, ge=0, le=100, description="Shows constraints within doc string.")
+    ]
 
 
 def _all_hidden(components: Union[Component, list[Component]]):
@@ -90,19 +104,7 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
 
 
 class Dashboard(VizroBaseModel):
-    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
-
-    Args:
-        pages (list[Page]): See [`Page`][vizro.models.Page].
-        theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
-            Defaults to `vizro_dark`.
-        navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-
-    """
+    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build]."""
 
     pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(

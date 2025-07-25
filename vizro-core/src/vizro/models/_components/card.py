@@ -11,20 +11,7 @@ from vizro.models.types import _IdProperty
 
 
 class Card(VizroBaseModel):
-    """Creates a card based on Markdown syntax.
-
-    Args:
-        type (Literal["card"]): Defaults to `"card"`.
-        text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
-        href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
-            only. Defaults to `""`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
-    """
+    """Creates a card based on Markdown syntax."""
 
     type: Literal["card"] = "card"
     text: str = Field(

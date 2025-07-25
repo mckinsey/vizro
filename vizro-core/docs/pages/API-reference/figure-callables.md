@@ -9,8 +9,8 @@ API reference for all built-in [`CapturedCallable`][vizro.models.types.CapturedC
     from vizro.figures.library import kpi_card, kpi_card_reference
     ```
 
-::: vizro.figures
+<!-- ::: vizro.figures
     options:
-      show_source: true
+      show_source: true -->
 
 <!-- vale on -->

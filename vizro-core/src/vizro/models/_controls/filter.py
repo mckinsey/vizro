@@ -72,16 +72,6 @@ class Filter(VizroBaseModel):
 
     Examples:
         >>> print(repr(Filter(column="species")))
-
-    Args:
-        type (Literal["filter"]): Defaults to `"filter"`.
-        column (str): Column of `DataFrame` to filter.
-        targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
-            on the page that use `column`. Defaults to `[]`.
-        selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
-        show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
-            Useful for bookmarking or sharing dashboards with specific filter values pre-set.
-
     """
 
     type: Literal["filter"] = "filter"

@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -12,7 +12,6 @@ from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
-    validate_options_dict,
     validate_value,
 )
 from vizro.models._models_utils import _log_call
@@ -52,23 +51,6 @@ class Dropdown(VizroBaseModel):
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
-
-    Args:
-        type (Literal["dropdown"]): Defaults to `"dropdown"`.
-        options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (Optional[Union[SingleValueType, MultiValueType]]): See
-            [`SingleValueType`][vizro.models.types.SingleValueType] and
-            [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
-        multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
-        title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["dropdown"] = "dropdown"
@@ -121,7 +103,7 @@ class Dropdown(VizroBaseModel):
     _in_container: bool = PrivateAttr(False)
 
     # Reused validators
-    _validate_options = model_validator(mode="before")(validate_options_dict)
+    # _validate_options = model_validator(mode="before")(validate_options_dict)
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
