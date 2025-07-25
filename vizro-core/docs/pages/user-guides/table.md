@@ -211,7 +211,7 @@ You can configure column sizing by setting the `columnSize` parameter in your `d
 
 - **`"responsiveSizeToFit"`**: Combines `sizeToFit` with automatic readjustment of the columns' widths when the grid container or columns change (such as when the browser window is resized or when filters are applied).
 
-- **`None`** (default): Maintains the default column widths without automatic resizing.
+- **`None`**: Maintains the default column widths without automatic resizing.
 
 For more advanced column sizing configurations, you can use the `columnSizeOptions` parameter in combination with `columnSize`.
 
