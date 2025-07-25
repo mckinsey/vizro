@@ -16,7 +16,7 @@
   background: var(--field-enabled);
   border: inherit;
   box-shadow: var(--elevation-1);
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem;
 }
 
 .mantine-DatePickerInput-day {
@@ -56,6 +56,10 @@
 
 .mantine-DatePickerInput-calendarHeaderControlIcon:hover,
 .mantine-DatePickerInput-calendarHeader .mantine-UnstyledButton-root:hover {
-  background: transparent;
+  background: transparent !important;
   color: var(--text-primaryHover);
+}
+
+.mantine-DatePickerInput-weekday {
+  text-align: center;
 }
