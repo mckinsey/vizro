@@ -201,7 +201,7 @@ No specific formatting is available for custom objects and strings, however you 
 
 ### Resizing columns
 
-The AG Grid component provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
+The [`AgGrid`][vizro.models.AgGrid] provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
 
 You can configure column sizing by setting the `columnSize` parameter in your `dash_ag_grid` function call. The available options are:
 
