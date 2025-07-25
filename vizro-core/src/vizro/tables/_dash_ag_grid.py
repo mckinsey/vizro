@@ -92,7 +92,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
             "pagination": True,
             "paginationPageSize": 20,
         },
-        "columnSize": "sizeToFit",
+        "columnSize": "responsiveSizeToFit",
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
 
