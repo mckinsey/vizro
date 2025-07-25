@@ -156,6 +156,8 @@ function sync_url_query_params_and_controls(...values_ids) {
   return [triggerOPL, ...outputSelectorValues];
 }
 
+window.encodeUrlParams = encodeUrlParams;
+window.decodeUrlParams = decodeUrlParams;
 window.dash_clientside = {
   ...window.dash_clientside,
   page: {

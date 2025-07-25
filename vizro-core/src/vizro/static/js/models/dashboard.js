@@ -1,3 +1,9 @@
+/**
+ * Updates the dashboard theme by setting theme attributes on the document element.
+ *
+ * @param {boolean} theme_selector_checked - Whether the theme selector is checked (true for light theme, false for dark theme)
+ * @returns {*} Returns dash_clientside.no_update to prevent component updates
+ */
 function update_dashboard_theme(theme_selector_checked) {
   const theme = theme_selector_checked ? "light" : "dark";
 
