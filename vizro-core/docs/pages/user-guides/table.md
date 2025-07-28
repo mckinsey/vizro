@@ -205,11 +205,11 @@ The [`AgGrid`][vizro.models.AgGrid] provides automatic column sizing options thr
 
 You can configure column sizing by setting the `columnSize` parameter in your `dash_ag_grid` function call. By default, the `columnSize` is set to `responsiveSizeToFit` within the `vm.AgGrid`. The available options are:
 
-- **`"autoSize"`**: Automatically adjusts column widths to fit their content. This is particularly useful when you have varying content lengths and want each column to be sized appropriately for readability.
+- **`autoSize`**: Automatically adjusts column widths to fit their content. This is particularly useful when you have varying content lengths and want each column to be sized appropriately for readability.
 
-- **`"sizeToFit"`**: Resizes all columns proportionally to fill the entire width of the grid container. This ensures no horizontal scrolling is needed and the AgGrid uses all available space.
+- **`sizeToFit`**: Resizes all columns proportionally to fill the entire width of the grid container. This ensures no horizontal scrolling is needed and the AgGrid uses all available space.
 
-- **`"responsiveSizeToFit"`**: Combines `sizeToFit` with automatic readjustment of the columns' widths when the grid container or columns change (such as when the browser window is resized or when filters are applied).
+- **`responsiveSizeToFit`**: Combines `sizeToFit` with automatic readjustment of the columns' widths when the grid container or columns change (such as when the browser window is resized or when filters are applied).
 
 - **`None`**: Maintains the default column widths without automatic resizing.
 

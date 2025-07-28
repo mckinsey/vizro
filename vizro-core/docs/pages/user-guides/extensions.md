@@ -75,16 +75,15 @@ In the [above guides](#vizro-customizations), you will find examples on how the 
     === "dashboard.yaml"
 
         ```yaml
-        title: Dashboard Example
         pages:
-          - title: Custom Bar Chart
-            components:
-              - type: graph
-                figure:
-                  _target_: custom_charts.custom_bar   # (1)!
+          - components:
+              - figure:
+                  _target_: custom_charts.custom_bar    # (1)!
                   data_frame: iris
                   x: sepal_length
                   y: sepal_width
+                type: graph
+            title: Custom Bar Chart
         ```
 
         1. Here we refer to the import path of the custom chart function. If you define the custom chart in `app.py`, then use `__main__` as the import path. Note that the import path will be interpreted by pydantics [`ImportString` type](https://docs.pydantic.dev/dev/usage/types/string_types/#importstring).
