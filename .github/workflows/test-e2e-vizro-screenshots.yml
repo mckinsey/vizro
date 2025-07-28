@@ -11,8 +11,6 @@ on:
   pull_request:
     branches:
       - main
-      # TODO: delete before merge
-      - feat/add-switch-selector
 
 env:
   PYTHONUNBUFFERED: 1
