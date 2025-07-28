@@ -74,4 +74,10 @@ label[for="theme-selector"] {
   display: none;
 }
 
+div.form-check.form-switch {
+  align-items: start;
+  display: flex;
+  gap: 8px;
+}
+
 /* Eventually bring over to vizro-bootstrap */
