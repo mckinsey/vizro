@@ -11,7 +11,13 @@ from e2e.vizro.navigation import (
     hover_over_element_by_xpath_selenium,
     page_select,
 )
-from e2e.vizro.paths import kpi_card_path, nav_card_link_path, theme_toggle_path
+from e2e.vizro.paths import (
+    kpi_card_path,
+    nav_card_link_path,
+    switch_path_using_filter_control_id,
+    table_ag_grid_cell_value_path,
+    theme_toggle_path,
+)
 from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
 
 
@@ -313,6 +319,29 @@ def test_collapsible_subcontainers_flex(dash_br):
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
     dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
+
+
+@image_assertion
+def test_switch_control(dash_br):
+    page_select(dash_br, page_name=cnst.SWITCH_CONTROL_PAGE)
+    # check that table is loaded
+    dash_br.wait_for_text_to_equal(
+        table_ag_grid_cell_value_path(table_id=cnst.AG_GRID_INACTIVE, row_number=1, column_number=2), "Bob"
+    )
+    # switch 'Show active accounts' to True
+    dash_br.multiple_click(switch_path_using_filter_control_id(filter_control_id=cnst.SWITCH_CONTROL_FALSE_ID), 1)
+    # switch 'Active' to True
+    dash_br.multiple_click(
+        switch_path_using_filter_control_id(filter_control_id=cnst.SWITCH_CONTROL_FALSE_DEFAULT_ID), 1
+    )
+    # switch 'Show inactive accounts' to False
+    dash_br.multiple_click(
+        switch_path_using_filter_control_id(filter_control_id=cnst.SWITCH_CONTROL_TRUE_ID), 1, delay=0.1
+    )
+    # check that first row for inactive data is loaded
+    dash_br.wait_for_text_to_equal(
+        table_ag_grid_cell_value_path(table_id=cnst.AG_GRID_ACTIVE, row_number=1, column_number=2), "Bob"
+    )
 
 
 @pytest.mark.mobile_screenshots

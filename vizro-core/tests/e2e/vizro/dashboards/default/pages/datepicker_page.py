@@ -127,7 +127,9 @@ datepicker_page = vm.Page(
     ],
     controls=[
         vm.Filter(
+            id=cnst.DATEPICKER_FILTER_CONTROL_ID,
             column="time",
+            show_in_url=True,
             selector=vm.DatePicker(
                 id=cnst.DATEPICKER_RANGE_ID,
                 title="Pick a date range",
