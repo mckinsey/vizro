@@ -9,6 +9,7 @@ from vizro.managers import data_manager
 from vizro.models import Dashboard
 
 data_manager["iris"] = px.data.iris()
+data_manager["gapminder"] = px.data.gapminder()
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
