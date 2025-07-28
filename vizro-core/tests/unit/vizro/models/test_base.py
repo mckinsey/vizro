@@ -633,7 +633,6 @@ class TestPydanticPython:
         assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
 
     def test_to_python_builtin_actions(self, page_builtin_actions):
-        # Test if built-in actions are included correctly in output, ie no ActionsChain model
         result = page_builtin_actions._to_python()
         assert result == expected_builtin_actions
 

@@ -8,7 +8,7 @@ from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import FIGURE_MODELS, model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, FigureWithFilterInteractionType, ModelID, _Controls
+from vizro.models.types import FigureType, ModelID, _Controls
 
 
 class filter_interaction(_AbstractAction):

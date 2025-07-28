@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, U
 
 from dash import Input, Output, State, callback, dash, set_props
 from dash.development.base_component import Component
-from dash.exceptions import PreventUpdate
 from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
@@ -21,10 +20,10 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import (
     CapturedCallable,
     ControlType,
+    ModelID,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
-    ModelID,
 )
 
 logger = logging.getLogger(__name__)
@@ -323,8 +322,6 @@ class _BaseAction(VizroBaseModel):
             # The guard is needed only for the first action in the chain because subsequent actions can only be
             # triggered by the *_finished dcc.Store which cannot be accidentally triggered since it's created fresh
             # on every page.
-            # __input_grid_guard_actions_chain
-            # __input_grid_guard_actions_chain
             trigger_component_id = self._trigger.split(".")[0]
             component_guard_id = f"{trigger_component_id}_guard_actions_chain"
             trigger = Input(f"{self.id}_guarded_trigger", "data")

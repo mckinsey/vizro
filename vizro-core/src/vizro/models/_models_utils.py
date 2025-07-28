@@ -82,8 +82,6 @@ def warn_description_without_title(description, info: ValidationInfo):
     return description
 
 
-# TODO NOW: check which of https://github.com/McK-Internal/vizro-internal/issues/1613 satisfied now
-# TODO NOW: check to_python
 def make_actions_chain(self) -> Self:
     """Creates actions chain from a list of actions.
 

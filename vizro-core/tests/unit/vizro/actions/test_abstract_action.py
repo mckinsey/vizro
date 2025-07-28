@@ -347,11 +347,3 @@ class TestAbstractActionOutputs:
         ):
             action_with_mock_outputs.outputs = ["known_model_with_no_default_props"]
             action_with_mock_outputs()._transformed_outputs
-
-
-class TestAbstractActionBuild:
-    def test_abstract_action_build(self):
-        action = action_with_no_args(id="action_test")
-        assert_component_equal(
-            action.build(), html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
-        )

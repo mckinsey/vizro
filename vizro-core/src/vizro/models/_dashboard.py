@@ -27,7 +27,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
 import vizro
-from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH, ON_PAGE_LOAD_ACTION_PREFIX
+from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel

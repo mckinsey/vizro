@@ -501,14 +501,6 @@ class TestActionOutputs:
             action._transformed_outputs
 
 
-class TestActionBuild:
-    def test_custom_action_build(self):
-        action = Action(id="action_test", function=action_with_no_args())
-        assert_component_equal(
-            action.build(), html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
-        )
-
-
 class TestBaseActionCallbackFunction:
     @pytest.mark.parametrize(
         "action_with_mock_outputs, callback_outputs",

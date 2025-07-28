@@ -125,8 +125,6 @@ page_4 = vm.Page(
 #     ],
 # )
 #
-# # TODO NOW: think about whether in future this case should be dealt with as a single serverside callback that updates
-# # filter and relevant graphs on page (as now) or instead more like an interact with two chained callbacks
 # page_6 = vm.Page(
 #     title="DataFrame Parameter",
 #     components=[
@@ -145,10 +143,9 @@ page_4 = vm.Page(
 
 dashboard = vm.Dashboard(pages=[page_3, page_4])
 
-# TODO NOW: test other components
-# TODO NOW: search ActionsChain
-# TODO NOW: check url params
-# TODO NOW: check vizro_download, vizro_url
+# TODO NOW: modify custom-components.md
+# TODO NOW: check url params still work
+# TODO NOW: check vizro_download, vizro_url still work
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(

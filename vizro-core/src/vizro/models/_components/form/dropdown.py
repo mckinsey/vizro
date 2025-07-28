@@ -235,7 +235,7 @@ class Dropdown(VizroBaseModel):
     @_log_call
     def build(self):
         # TODO NOW: check that guard_actions_chain is implemented everywhere it should be. Is it better to implement
-        #  on selectors or in Filter itself?
+        #  on selectors or in Filter.__call__ itself?
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
 
     def _update_dropdown_select_all(self):

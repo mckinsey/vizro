@@ -31,8 +31,8 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models.types import ActionType, _IdProperty
-from ._action._action import _BaseAction
 
+from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType, FigureType, LayoutType
 

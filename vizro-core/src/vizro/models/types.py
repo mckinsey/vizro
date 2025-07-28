@@ -693,9 +693,6 @@ LayoutType = Annotated[
 # JSONSchema should be skipped for private actions that are not part of the public API.
 # In addition, `_filter` doesn't have a well defined schema due the Callables,
 # so if we were to include it, the JSONSchema would need to be defined.
-# TODO: Note that atm ActionType violates our (and pydantic's) convention that the type of the model ensures
-# the type AFTER validation. Since ActionType is used as annotation for the actions field,
-# this is not true as long as we convert to ActionsChain.
 ActionType = Annotated[
     Union[
         Annotated["Action", Tag("action")],
