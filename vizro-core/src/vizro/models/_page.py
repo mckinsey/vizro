@@ -230,6 +230,8 @@ class Page(VizroBaseModel):
             # OPL.
             if not action.id.startswith(ON_PAGE_LOAD_ACTION_PREFIX):
                 action_components.append(dcc.Store(id=f"{action.id}_finished"))
+            if action._first_in_chain:
+                action_components.append(dcc.Store(id=f"{action.id}_guarded_trigger"))
             # TODO NOW: comment hopefully not needed in future
             action_components.extend(action._dash_components)
 

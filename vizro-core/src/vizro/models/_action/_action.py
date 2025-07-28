@@ -8,8 +8,9 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import Input, Output, State, callback
+from dash import Input, Output, State, callback, dash, set_props
 from dash.development.base_component import Component
+from dash.exceptions import PreventUpdate
 from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
@@ -244,7 +245,7 @@ class _BaseAction(VizroBaseModel):
         inputs: Union[dict[str, Any], list[Any]],
         outputs: Union[dict[str, Output], list[Output], Output, None],
     ) -> Any:
-        logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
+        logger.critical("===== Running action with id %s, function %s =====", self.id, self._action_name)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
@@ -292,10 +293,47 @@ class _BaseAction(VizroBaseModel):
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
-        callback_inputs = {
-            "external": external_callback_inputs,
-            "internal": {"trigger": Input(*self._trigger.split("."))},
-        }
+        if self._first_in_chain:
+            trigger_component_id = self._trigger.split(".")[0]
+            component_created_id = f"{trigger_component_id}_created"
+            trigger = Input(f"{self.id}_guarded_trigger", "data")
+
+            # HERE HERE HERE:
+            # Not sure if things working yet. Trying to figure out how to get guard to work correctly.
+            # Just moved guarded_trigger from dashboard-level to page-level.
+            # TODO NOW: make clientside
+            # TODO NOW: consider calling it "trigger_callback" and making it False. Instead of creaeted =Trued
+            @callback(
+                Output(f"{self.id}_guarded_trigger", "data", allow_duplicate=True),
+                Input(*self._trigger.split(".")),
+                State(component_created_id, "data", allow_optional=True),
+                prevent_initial_call=True,
+                # TODO NOW: maybe prevent_initial_call = False and can simplify opl scheme?
+                # TODO NOW COMMENT: no so long as keep allow_duplicate=True, which is necessary for multiple trigger
+                #  properties.
+            )
+            # Maybe give it external global output to trigger it.
+            # TODO COMMENT: prevent_initial_call_on_component_creation
+            def guard_action_chain(value, created):
+                logger.critical("***** Guard action with id %s, function %s =====", self.id, self._action_name)
+                if created is None:
+                    logger.critical("not dynamic, running action")
+                    return value
+                elif created:
+                    logger.critical("not running action")
+                    logger.critical(f"setting {component_created_id} to False")
+                    # TODO NOW: COMMENT - need to do this as don't always have Output existing and it can't be
+                    #  optional unlike Input
+                    set_props(component_created_id, {"data": False})
+                    # Can't do PreventUpdate or set_props won't work
+                    return dash.no_update
+                elif not created:
+                    logger.critical("running action")
+                    return value
+        else:
+            trigger = Input(*self._trigger.split("."))
+
+        callback_inputs = {"external": external_callback_inputs, "internal": {"trigger": trigger}}
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
             "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
         }

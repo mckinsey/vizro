@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import html, dcc
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -115,6 +115,7 @@ class RadioItems(VizroBaseModel):
                 if self.title
                 else None,
                 dbc.RadioItems(**(defaults | self.extra)),
+                dcc.Store(id=f"{self.id}_created", data=True) if self._dynamic else None,
             ]
         )
 

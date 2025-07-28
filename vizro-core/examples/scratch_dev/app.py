@@ -18,7 +18,8 @@ def load_dynamic_gapminder_data(continent: str = "Europe"):
     return df_gapminder[df_gapminder["continent"] == continent]
 
 
-data_manager["dynamic_df_gapminder"] = load_dynamic_gapminder_data
+data_manager["dynamic_df_gapminder_arg"] = load_dynamic_gapminder_data
+data_manager["dynamic_df_gapminder"] = lambda: df_gapminder
 
 
 @capture("action")
@@ -29,16 +30,16 @@ def my_custom_action(t: int):
 
 #
 
-page_1 = vm.Page(
-    title="My first dashboard",
-    components=[
-        vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-        vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
-    ],
-    controls=[
-        vm.Filter(column="continent"),
-    ],
-)
+# page_1 = vm.Page(
+#     title="My first dashboard",
+#     components=[
+#         # vm.Graph(figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+#         vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
+#     ],
+#     controls=[
+#         vm.Filter(column="continent", selector=vm.RadioItems()),
+#     ],
+# )
 
 # # TEST NEW ACTIONS SYNTAX
 # page_2 = vm.Page(
@@ -55,10 +56,10 @@ page_1 = vm.Page(
 #         ),
 #     ],
 #     controls=[
-#         vm.Filter(column="continent"),
+#         vm.Filter(column="continent", selector=vm.RadioItems()),
 #     ],
 # )
-#
+# #
 # page_3 = vm.Page(
 #     title="Filter interaction graph",
 #     components=[
@@ -120,29 +121,29 @@ page_1 = vm.Page(
 #         ),
 #     ],
 #     controls=[
-#         vm.Filter(column="continent"),
+#         vm.Filter(id="filter", column="continent", selector=vm.RadioItems(id="selector")),
 #     ],
 # )
 #
 # # TODO NOW: think about whether in future this case should be dealt with as a single serverside callback that updates
 # # filter and relevant graphs on page (as now) or instead more like an interact with two chained callbacks
-# page_6 = vm.Page(
-#     title="DataFrame Parameter",
-#     components=[
-#         vm.Graph(
-#             id="page_6_graph", figure=px.box("dynamic_df_gapminder", x="continent", y="lifeExp", color="continent")
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
-#         vm.Parameter(
-#             targets=["page_6_graph.data_frame.continent"],
-#             selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe", id="parameter"),
-#         ),
-#     ],
-# )
+page_6 = vm.Page(
+    title="DataFrame Parameter",
+    components=[
+        vm.Graph(
+            id="page_6_graph", figure=px.box("dynamic_df_gapminder_arg", x="continent", y="lifeExp", color="continent")
+        ),
+    ],
+    controls=[
+        vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
+        vm.Parameter(
+            targets=["page_6_graph.data_frame.continent"],
+            selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe", id="parameter"),
+        ),
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page_1])
+dashboard = vm.Dashboard(pages=[page_6])
 
 """Problems:
 - minor: on page load trigger system can probably be simplified
