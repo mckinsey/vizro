@@ -1,5 +1,7 @@
 """Dev app to try things out."""
 
+from vizro.actions._update_control import update_control
+
 """
 Test cases:
 1. When page is opened without the URL parameter:
@@ -136,31 +138,31 @@ SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3
 df = px.data.iris()
 
 
-def encode_to_base64(value):
-    json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
-    b64_bytes = base64.urlsafe_b64encode(json_bytes)
-    return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
+# def encode_to_base64(value):
+#     json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
+#     b64_bytes = base64.urlsafe_b64encode(json_bytes)
+#     return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
 
 # TODO-CHECK: 1. Drill-through to Page-3 - [WORKS]
-@capture("action")
-def custom_drill_through_action(clicked_point):
-    species = clicked_point["points"][0]["customdata"][0]
-    return f"/page_3", f"?page_3_filter_species={encode_to_base64(species)}"
+# @capture("action")
+# def custom_drill_through_action(clicked_point):
+#     species = clicked_point["points"][0]["customdata"][0]
+#     return f"/page_3", f"?page_3_filter_species={encode_to_base64(species)}"
 
 
 # TODO-CHECK: 2. Same page interaction over URL - [Doesn't work when the same point is clicked twice.]
-@capture("action")
-def same_page_interaction_over_url(clicked_point):
-    species = clicked_point["points"][0]["customdata"][0]
-    return f"?page_2_filter_species={encode_to_base64(species)}"
+# @capture("action")
+# def same_page_interaction_over_url(clicked_point):
+#     species = clicked_point["points"][0]["customdata"][0]
+#     return f"?page_2_filter_species={encode_to_base64(species)}"
 
 
 # TODO-CHECK: 3. Same page interaction over controls - [Doesn't work as expected, because filter-action is not clicked]
-@capture("action")
-def same_page_interaction_over_controls(clicked_point):
-    species = clicked_point["points"][0]["customdata"][0]
-    return [species]
+# @capture("action")
+# def same_page_interaction_over_controls(clicked_point):
+#     species = clicked_point["points"][0]["customdata"][0]
+#     return [species]
 
 
 # # TODO-CHECK: 4. Same page interaction over controls with dash callback - [WORKS]
@@ -212,6 +214,12 @@ page_1 = vm.Page(
 page_2 = vm.Page(
     title="Page_2",
     components=[
+        vm.AgGrid(
+            figure=dash_ag_grid(df),
+            actions=[update_control(target="page_3_filter_species", lookup="species", mode="ag_grid")],
+            # Same page over URL also works:
+            # actions=[update_control(target="page_2_filter_species", lookup="species", mode="ag_grid")],
+        ),
         vm.Graph(
             id="page_2_graph",
             title="Click the points to trigger the drill-throgh on Page-3",
@@ -224,17 +232,22 @@ page_2 = vm.Page(
                 color_discrete_map=SPECIES_COLORS,
             ),
             actions=[
-                vm.Action(
-                    # TODO-CHECK: Drill-through to Page-3
-                    function=custom_drill_through_action("page_2_graph.clickData"),
-                    outputs=["vizro_url_callback_nav.pathname", "vizro_url_callback_nav.search"],
-                    # TODO-CHECK: Same page interaction over URL
-                    # function=same_page_interaction_over_url("page_2_graph.clickData"),
-                    # outputs=["vizro_url_callback_nav.search"],
-                    # TODO-CHECK: Same page interaction over controls
-                    # function=same_page_interaction_over_controls("page_2_graph.clickData"),
-                    # outputs=["page_2_filter_selector_species.value"],
-                )
+                update_control(target="page_3_filter_species", lookup="points.0.customdata.0"),
+                # Same page over URL also works:
+                # update_control(target="page_2_filter_species", lookup="points.0.customdata.0"),
+                # vm.Action(
+                # Done in above lines:
+                #     # TODO-CHECK: Drill-through to Page-3. Done above.
+                #     function=custom_drill_through_action("page_2_graph.clickData"),
+                #     outputs=["vizro_url_callback_nav.pathname", "vizro_url_callback_nav.search"],
+                #     # TODO-CHECK: Same page interaction over URL. Done above
+                #     # function=same_page_interaction_over_url("page_2_graph.clickData"),
+                #     # outputs=["vizro_url_callback_nav.search"],
+                # Not done but should be possible in future:
+                #     # TODO-CHECK: Same page interaction over controls
+                #     # function=same_page_interaction_over_controls("page_2_graph.clickData"),
+                #     # outputs=["page_2_filter_selector_species.value"],
+                # ),
             ],
         ),
         vm.Button(
@@ -350,6 +363,6 @@ if __name__ == "__main__":
     app = Vizro().build(dashboard)
 
     # To enable custom drill-through actio)
-    app.dash.layout.children.append(dcc.Location(id="vizro_url_callback_nav", refresh="callback-nav"))
+    app.dash.layout.children.append(dcc.Location(id="vizro_url", refresh="callback-nav"))
 
     app.run(debug=True, use_reloader=False)
