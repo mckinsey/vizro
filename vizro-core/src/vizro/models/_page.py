@@ -188,6 +188,8 @@ class Page(VizroBaseModel):
             # Similarly, we read the URL query parameters in the clientside callback with the window.location.pathname,
             # instead of using dcc.Location as a callback Input. Do it to align the behavior with the outputs and to
             # simplify the function inputs handling.
+            # TODO NOW: fix this and the new on page load order to make sure everything works correctly. Currently
+            # opening a page with show_in_url=True and a set URL parameter doesn't.
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
@@ -208,12 +210,12 @@ class Page(VizroBaseModel):
 
         # Components that are required to make action chains function correctly:
         #   - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain can prevent
-        #     undesired triggering (workaround for Dash prevent_initial_call=True behaviour)
+        #     undesired triggering (workaround for Dash prevent_initial_call=True behavior)
         #   - {action.id}_finished for completion of an action callback to trigger the next action in the chain
         #   - action._dash_components for particular actions (e.g. dcc.Download for export_data) - hopefully will be
         #     removed in future
         # These components are recreated on every page rather than going at the global dashboard level so that we do
-        # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behaviour).
+        # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behavior).
         action_components = []
 
         # TODO NOW: should this just go through this page's actions or across whole dashboard? Probably doesn't

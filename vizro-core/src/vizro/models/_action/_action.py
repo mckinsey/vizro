@@ -24,6 +24,7 @@ from vizro.models.types import (
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
+    FigureWithFilterInteractionType,
 )
 
 logger = logging.getLogger(__name__)
@@ -103,8 +104,8 @@ class _BaseAction(VizroBaseModel):
         # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
         # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
-            model_manager[action._parent_model_id]._filter_interaction_input
-            for action in cast(Iterable[filter_interaction], model_manager._get_models(filter_interaction, page))
+            cast(FigureWithFilterInteractionType, model_manager[action._parent_model_id])._filter_interaction_input
+            for action in model_manager._get_models(filter_interaction, page)
         ]
 
     @staticmethod
@@ -306,7 +307,7 @@ class _BaseAction(VizroBaseModel):
         if self._first_in_chain:
             # If the action is the first one in the action chain then we need to insert an additional "guard"
             # callback. This prevents the main action callback (action_callback) firing even in the case that the
-            # Input component is created in the layout. This is a workaround for the behaviour of
+            # Input component is created in the layout. This is a workaround for the behavior of
             # prevent_initial_call=True which otherwise does not prevent initial callback execution when
             # an Input component appears if an Output already exists in the page layout:
             # https://dash.plotly.com/advanced-callbacks#prevent-callback-execution-upon-initial-component-render

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict, Union, cast
+from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict, Union, cast, Iterable
 
 import pandas as pd
 
@@ -68,7 +68,7 @@ def _apply_filter_controls(
     for ctd in ctds_filter:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
-        selector_actions = model_manager[ctd["id"]].actions
+        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
 
         for action in selector_actions:
             # TODO-AV2 A 1: simplify this as in
@@ -82,9 +82,9 @@ def _apply_filter_controls(
     return data_frame
 
 
-def _get_triggered_model(input_component_id: str) -> VizroBaseModel:
+def _get_triggered_model(input_component_id: str) -> FigureType:
     # Goes directly from input_component_id to the model (like AgGrid).
-    for model in model_manager._get_models(FIGURE_MODELS):
+    for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS)):
         if hasattr(model, "_inner_component_id") and model._inner_component_id == input_component_id:
             return model
     raise KeyError(f"No triggered Vizro model found for {input_component_id=}.")
@@ -193,7 +193,7 @@ def _get_parametrized_config(
     for ctd in ctds_parameter:
         # TODO: needs to be refactored so that it is independent of implementation details
         parameter_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
-        selector_actions = model_manager[ctd["id"]].actions
+        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
 
         for action in selector_actions:
             # TODO-AV2 A 1: simplify this as in

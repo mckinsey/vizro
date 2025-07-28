@@ -1,8 +1,7 @@
 """Unit tests for vizro.models.Action."""
 
 import pytest
-from asserts import assert_component_equal
-from dash import Output, State, html
+from dash import Output, State
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action

@@ -29,17 +29,17 @@ def my_custom_action(t: int):
 
 
 #
-#
-# page_1 = vm.Page(
-#     title="My first dashboard",
-#     components=[
-#         vm.Graph(figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-#         # vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
-#     ],
-#     controls=[
-#         vm.Filter(column="continent"),
-#     ],
-# )
+
+page_1 = vm.Page(
+    title="My first dashboard",
+    components=[
+        # vm.Graph(figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+        vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
+    ],
+    controls=[
+        vm.Filter(column="continent", id="f", show_in_url=True),
+    ],
+)
 
 # TEST NEW ACTIONS SYNTAX
 # page_2 = vm.Page(
@@ -85,7 +85,7 @@ page_3 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="continent"),
+        vm.Filter(column="continent", show_in_url=True),
     ],
 )
 
@@ -141,11 +141,7 @@ page_4 = vm.Page(
 #     ],
 # )
 
-dashboard = vm.Dashboard(pages=[page_3, page_4])
-
-# TODO NOW: modify custom-components.md
-# TODO NOW: check url params still work
-# TODO NOW: check vizro_download, vizro_url still work
+dashboard = vm.Dashboard(pages=[page_1])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(

@@ -82,7 +82,7 @@ def warn_description_without_title(description, info: ValidationInfo):
     return description
 
 
-def make_actions_chain(self) -> Self:
+def make_actions_chain(self):
     """Creates actions chain from a list of actions.
 
     Ideally this would have been implemented as an AfterValidator for the actions field but we need access to

@@ -9,7 +9,6 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin

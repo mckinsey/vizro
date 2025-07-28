@@ -161,7 +161,6 @@ class Dashboard(VizroBaseModel):
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
         # Define callbacks when the dashboard is built but not every time the page is changed.
-        action_components = []
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
             action._define_callback()
 
@@ -195,7 +194,6 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-                *action_components,
                 dash.page_container,
             ],
         )

@@ -122,7 +122,7 @@ class TestOptionalDiscriminatedUnion:
             ParentWithOptional(child=child)
 
     # The current error message is the non-discriminated union one.
-    def test_no_type_match_current_behaviour(self, ParentWithOptional):
+    def test_no_type_match_current_behavior(self, ParentWithOptional):
         child = ChildZ()
         with pytest.raises(
             ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"

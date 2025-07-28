@@ -166,9 +166,10 @@ class Graph(VizroBaseModel):
             return data_frame
 
         source_graph_id: ModelID = ctd_click_data["id"]
-        source_graph_actions = model_manager[source_graph_id].actions
+        source_graph = cast(Graph, model_manager[source_graph_id])
+
         try:
-            custom_data_columns = cast(Graph, model_manager[source_graph_id])["custom_data"]
+            custom_data_columns = source_graph["custom_data"]
         except KeyError as exc:
             raise KeyError(
                 f"Missing 'custom_data' for the source graph with id {source_graph_id}. "
@@ -180,7 +181,7 @@ class Graph(VizroBaseModel):
 
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
-        for action in source_graph_actions:
+        for action in source_graph.actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
             #  Potentially this function would move to the filter_interaction action. That will be deprecated so
