@@ -47,7 +47,7 @@ class TestDashAgGrid:
                 columnDefs=column_defs,
                 rowData=row_data_date_converted,
                 defaultColDef=default_col_defs,
-                columnSize="sizeToFit",
+                columnSize="responsiveSizeToFit",
             ),
             keys_to_strip={"className", "dashGridOptions"},
         )
