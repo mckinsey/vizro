@@ -3,7 +3,7 @@ from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import html
+from dash import html, dcc
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -130,6 +130,7 @@ class DatePicker(VizroBaseModel):
                 if self.title
                 else None,
                 dmc.DatePickerInput(**(defaults | self.extra)),
+                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ],
         )
 

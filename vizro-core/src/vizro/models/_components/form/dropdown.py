@@ -185,7 +185,7 @@ class Dropdown(VizroBaseModel):
                 if self.title
                 else None,
                 dcc.Dropdown(**(defaults | self.extra)),
-                dcc.Store(id=f"{self.id}_guard", data=True) if self._dynamic else None,
+                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ]
         )
 
@@ -227,13 +227,15 @@ class Dropdown(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                 ),
-                dcc.Store(id=f"{self.id}_guard", data=True),  # always dynamic so no need to check
+                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True),
                 *hidden_select_all_dropdown,
             ]
         )
 
     @_log_call
     def build(self):
+        # TODO NOW: check that guard_actions_chain is implemented everywhere it should be. Is it better to implement
+        #  on selectors or in Filter itself?
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
 
     def _update_dropdown_select_all(self):

@@ -85,10 +85,9 @@ def _apply_filter_controls(
 
 
 def _get_triggered_model(input_component_id: str) -> VizroBaseModel:
-    # Used to go directly from input_component_id to the model (like AgGrid). This doesn't go through the intermediate
-    # filter_interaction model using the _parent_model_id.
+    # Goes directly from input_component_id to the model (like AgGrid).
     for model in model_manager._get_models(FIGURE_MODELS):
-        if hasattr(model, "_input_component_id") and model._input_component_id == input_component_id:
+        if hasattr(model, "_inner_component_id") and model._inner_component_id == input_component_id:
             return model
     raise KeyError(f"No triggered Vizro model found for {input_component_id=}.")
 

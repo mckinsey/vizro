@@ -121,14 +121,14 @@ def make_actions_chain(self) -> Self:
             # All subsequent actions in the chain are triggered by the previous action's completion.
             trigger = f"{converted_actions[i - 1].id}_finished.data"
 
-        # TODO NOW: see if this can be simplified.
-        # Needed for filter_interaction but maybe other things in future too.
-        # Note this is not just same as trigger_component - it's always the first trigger of the chain.
-        # action._parent_model_id = self.id
         action._trigger = trigger
         action._first_in_chain = first_in_chain
         # The actions chain guard should be called only for on page load.
         action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
+
+        # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
+        # model manager and removal of filter_interaction.
+        action._parent_model_id = self.id
 
     # We should do self.actions = converted_actions but this leads to a recursion error. The below is a workaround
     # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.

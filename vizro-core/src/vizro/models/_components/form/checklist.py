@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, html, dcc
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -142,6 +142,7 @@ class Checklist(VizroBaseModel):
                     ],
                     className="checklist-inline" if self._in_container else None,
                 ),
+                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ],
         )
 

@@ -103,7 +103,7 @@ class Table(VizroBaseModel):
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         figure = self.figure(**kwargs)
         figure.id = self._inner_component_id
-        return figure
+        return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):

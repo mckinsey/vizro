@@ -24,6 +24,7 @@ from vizro.models.types import (
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
+    ModelID,
 )
 
 logger = logging.getLogger(__name__)
@@ -56,6 +57,10 @@ class _BaseAction(VizroBaseModel):
     _first_in_chain: bool = PrivateAttr()
     _prevent_initial_call_of_guard: bool = PrivateAttr()
 
+    # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
+    # model manager and removal of filter_interaction.
+    _parent_model_id: ModelID = PrivateAttr()
+
     @property
     def _dash_components(self) -> list[Component]:
         raise NotImplementedError
@@ -82,7 +87,7 @@ class _BaseAction(VizroBaseModel):
         # of the filter and parameter models in future. This property could match outputs and return just a dotted
         # string that is then transformed to State inside _transformed_inputs. This would prevent us from using
         # pattern-matching callback here though.
-        # See also notes in filter_interaction._get_triggered_model.
+        # Maybe want to revisit this as part of TODO-AV2 A 1.
         page = model_manager._get_model_page(self)
         return [
             State(*control.selector._action_inputs["__default__"].split("."))
@@ -94,9 +99,13 @@ class _BaseAction(VizroBaseModel):
         from vizro.actions import filter_interaction
 
         page = model_manager._get_model_page(self)
+
+        # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
+        # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
+        # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
-            action._get_triggered_model()._filter_interaction_input
-            for action in model_manager._get_models(filter_interaction, root_model=page)
+            model_manager[action._parent_model_id]._filter_interaction_input
+            for action in cast(Iterable[filter_interaction], model_manager._get_models(filter_interaction, page))
         ]
 
     @staticmethod
@@ -304,8 +313,8 @@ class _BaseAction(VizroBaseModel):
             # https://dash.plotly.com/advanced-callbacks#prevent-callback-execution-upon-initial-component-render
             # e.g. for the case of a dynamic filter, we want the guard to let through genuine callback triggers (user
             # changes value of filter) vs. when the dropdown is created. This works as follows:
-            #   1. When a new dynamic component is created, a dcc.Store component labelled *_guard is created at the
-            #   same time with data=True.
+            #   1. When a new dynamic component is created, a dcc.Store component labelled *_guard_actions_chain
+            #   is created at the same time with data=True.
             #   2. When guard_action_chain callback is triggered, we work out whether the trigger of the callback
             #   chain is genuine or not:
             #      - if it's due to creation of component then we do not allow action chain to execute. This mimics
@@ -314,8 +323,10 @@ class _BaseAction(VizroBaseModel):
             # The guard is needed only for the first action in the chain because subsequent actions can only be
             # triggered by the *_finished dcc.Store which cannot be accidentally triggered since it's created fresh
             # on every page.
+            # __input_grid_guard_actions_chain
+            # __input_grid_guard_actions_chain
             trigger_component_id = self._trigger.split(".")[0]
-            component_guard_id = f"{trigger_component_id}_guard"
+            component_guard_id = f"{trigger_component_id}_guard_actions_chain"
             trigger = Input(f"{self.id}_guarded_trigger", "data")
 
             # TODO NOW: make clientside, revert logging.critical changes.

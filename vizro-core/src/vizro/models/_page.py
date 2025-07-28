@@ -217,7 +217,7 @@ class Page(VizroBaseModel):
         action_components = []
 
         # TODO NOW: should this just go through this page's actions or across whole dashboard? Probably doesn't
-        #  matter much apart form if we want to do cross-page actions.
+        #  matter much apart from if we want to do cross-page actions.
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
             if action._first_in_chain:
                 action_components.append(dcc.Store(id=f"{action.id}_guarded_trigger"))
