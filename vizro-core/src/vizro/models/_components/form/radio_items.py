@@ -35,7 +35,7 @@ class RadioItems(VizroBaseModel):
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
     """
@@ -70,7 +70,7 @@ class RadioItems(VizroBaseModel):
                 default={},
                 description="""Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.""",
             ),

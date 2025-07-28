@@ -69,6 +69,7 @@ The selector is configured automatically based on the target column type data as
 - Categorical data uses [`vm.Dropdown(multi=True)`][vizro.models.Dropdown] where `options` is the set of unique values found in `column` across all the data sources of components in `targets`.
 - [Numerical data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) uses [`vm.RangeSlider`][vizro.models.RangeSlider] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
 - [Temporal data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) uses [`vm.DatePicker(range=True)`][vizro.models.DatePicker] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`. A column can be converted to this type with [pandas.to_datetime](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html).
+- [Boolean data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_bool_dtype.html) uses [`vm.Switch`][vizro.models.Switch] which provides a toggle interface for True/False values. The Switch also works with binary numerical columns containing 0/1 values.
 
 The following example demonstrates these default selector types.
 
@@ -76,7 +77,7 @@ The following example demonstrates these default selector types.
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="24-26"}
+        ```{.python pycafe-link hl_lines="25-28"}
         import pandas as pd
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -93,6 +94,7 @@ The following example demonstrates these default selector types.
         )
 
         df_stocks_long['value'] = df_stocks_long['value'].round(3)
+        df_stocks_long['Is GOOG?'] = df_stocks_long["stocks"] == "GOOG"
 
         page = vm.Page(
             title="My first page",
@@ -103,6 +105,7 @@ The following example demonstrates these default selector types.
                 vm.Filter(column="stocks"),
                 vm.Filter(column="value"),
                 vm.Filter(column="date"),
+                vm.Filter(column="Is GOOG?"),
             ],
         )
 
@@ -131,6 +134,8 @@ The following example demonstrates these default selector types.
                 type: filter
               - column: date
                 type: filter
+              - column: Is GOOG?
+                type: filter
             title: My first page
         ```
 
@@ -140,7 +145,9 @@ The following example demonstrates these default selector types.
 
 ## Change selector
 
-If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], and [`DatePicker`][vizro.models.DatePicker].
+If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch].
+
+You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 
 !!! example "Filter with different selector"
 

@@ -49,3 +49,7 @@
 .hljs::-webkit-scrollbar-thumb {
   border-color: var(--right-side-bg);
 }
+
+.container-fluid > .grid-layout::-webkit-scrollbar-thumb {
+  border-color: var(--right-side-bg);
+}

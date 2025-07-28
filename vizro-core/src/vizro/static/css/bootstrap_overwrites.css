@@ -8,11 +8,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--surfaces-bg02);
   --right-side-bg: var(--surfaces-bg03);
   --right-side-bg-iterated: var(--surfaces-bg03);
-  --text-code-string: #95c2e7;
-  --text-code-keyword: #f4766e;
-  --text-code-meta: #c8ace1;
-  --text-code-type: #f69d50;
-  --text-code-literal: #6bb5fd;
   --slider-rail-bg: var(--primary-100);
   --collapse-icon-bg: var(--primary-500);
 }
@@ -22,11 +17,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--surfaces-bg01);
   --right-side-bg: var(--surfaces-bg01);
   --right-side-bg-iterated: var(--primary-300);
-  --text-code-string: #0a3069;
-  --text-code-keyword: #d12d39;
-  --text-code-meta: #6f42c1;
-  --text-code-type: #f69d50;
-  --text-code-literal: #005cc5;
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
   --collapse-icon-bg: var(--primary-300);
@@ -82,6 +72,12 @@ All the HEX values starting with --text-code are taken from the Github code high
 /* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
 label[for="theme-selector"] {
   display: none;
+}
+
+div.form-check.form-switch {
+  align-items: start;
+  display: flex;
+  gap: 8px;
 }
 
 /* Eventually bring over to vizro-bootstrap */

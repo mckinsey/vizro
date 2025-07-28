@@ -6,7 +6,7 @@ from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc, html
-from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
+from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
@@ -15,14 +15,7 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Container, VizroBaseModel
-from vizro.models._components.form import (
-    Checklist,
-    DatePicker,
-    Dropdown,
-    RadioItems,
-    RangeSlider,
-    Slider,
-)
+from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch
 from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
@@ -36,16 +29,24 @@ SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Dropdown, Checklist, RadioItems),
     "temporal": (DatePicker,),
+    "boolean": (Switch,),
 }
 CategoricalSelectorType = Union[Dropdown, Checklist, RadioItems]
 NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
+BooleanSelectorType = Switch
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
+# Really numerical data should also disallow SELECTORS["boolean"], but we allow it so that a column
+# of 0s and 1s can be interpreted as boolean data. We could modify the detection of data type in
+# validate_column_type to check for this case, but this would mean checking actual data values. This is
+# something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
+# performance hit.
 DISALLOWED_SELECTORS = {
     "numerical": SELECTORS["temporal"],
-    "temporal": SELECTORS["numerical"],
-    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
+    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"],
+    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
+    "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 
 
@@ -59,6 +60,12 @@ def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> 
 
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    """Filter using .isin() - works with boolean/categorical data.
+
+    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
+    >>> pd.Series([0, 1]).isin([False])  # [True, False]
+    >>> pd.Series([False, True]).isin([1])  # [False, True]
+    """
     if is_datetime64_any_dtype(series):
         # Value will always have time 00:00:00. In order for the filter to include all times during
         # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
@@ -101,7 +108,7 @@ class Filter(VizroBaseModel):
     )
 
     _dynamic: bool = PrivateAttr(False)
-    _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
+    _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -117,7 +124,8 @@ class Filter(VizroBaseModel):
         return {"__default__": f"{self.id}.children"}
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
-        # Only relevant for a dynamic filter.
+        # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
+        # as their options are always set to True/False.
         # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
         # is missing then it will raise an error. We could change this if we wanted.
         targeted_data = self._validate_targeted_data(
@@ -134,7 +142,7 @@ class Filter(VizroBaseModel):
         if isinstance(self.selector, SELECTORS["categorical"]):
             self.selector = cast(CategoricalSelectorType, self.selector)
             return self.selector(options=self._get_options(targeted_data, current_value))
-        else:
+        elif isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             self.selector = cast(NumericalTemporalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data, current_value)
             return self.selector(min=_min, max=_max)
@@ -184,11 +192,12 @@ class Filter(VizroBaseModel):
 
         # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
         # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
-        # The filter is dynamic iff mentioned attributes ("options"/"min"/"max") are not explicitly provided and
+        # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
         # but should still count as manually set.
         if (
-            not getattr(self.selector, "options", [])
+            not isinstance(self.selector, SELECTORS["boolean"])
+            and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
         ):
@@ -199,7 +208,6 @@ class Filter(VizroBaseModel):
                     self.selector._dynamic = True
                     break
 
-        # Set appropriate properties for the selector.
         if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             self.selector = cast(NumericalTemporalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data)
@@ -208,7 +216,7 @@ class Filter(VizroBaseModel):
                 self.selector.min = _min
             if self.selector.max is None:
                 self.selector.max = _max
-        else:
+        elif isinstance(self.selector, SELECTORS["categorical"]):
             # Categorical selector.
             self.selector = cast(CategoricalSelectorType, self.selector)
             self.selector.options = self.selector.options or self._get_options(targeted_data)
@@ -291,12 +299,17 @@ class Filter(VizroBaseModel):
 
         return targeted_data
 
-    def _validate_column_type(self, targeted_data: pd.DataFrame) -> Literal["numerical", "categorical", "temporal"]:
+    def _validate_column_type(
+        self, targeted_data: pd.DataFrame
+    ) -> Literal["numerical", "categorical", "temporal", "boolean"]:
+        is_boolean = targeted_data.apply(is_bool_dtype)
         is_numerical = targeted_data.apply(is_numeric_dtype)
         is_temporal = targeted_data.apply(is_datetime64_any_dtype)
-        is_categorical = ~is_numerical & ~is_temporal
+        is_categorical = ~is_boolean & ~is_numerical & ~is_temporal
 
-        if is_numerical.all():
+        if is_boolean.all():
+            return "boolean"
+        elif is_numerical.all():
             return "numerical"
         elif is_temporal.all():
             return "temporal"

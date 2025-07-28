@@ -199,6 +199,96 @@ For the [`AgGrid`][vizro.models.AgGrid] model to sort and filter dates correctly
 
 No specific formatting is available for custom objects and strings, however you can make use of [Value Formatters](https://dash.plotly.com/dash-ag-grid/value-formatters) to format displayed strings automatically.
 
+### Resizing columns
+
+The [`AgGrid`][vizro.models.AgGrid] provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
+
+You can configure column sizing by setting the `columnSize` parameter in your `dash_ag_grid` function call. By default, the `columnSize` is set to `responsiveSizeToFit` within the `vm.AgGrid`. The available options are:
+
+- **`autoSize`**: Automatically adjusts column widths to fit their content. This is particularly useful when you have varying content lengths and want each column to be sized appropriately for readability.
+
+- **`sizeToFit`**: Resizes all columns proportionally to fill the entire width of the grid container. This ensures no horizontal scrolling is needed and the AgGrid uses all available space.
+
+- **`responsiveSizeToFit`**: Combines `sizeToFit` with automatic readjustment of the columns' widths when the grid container or columns change (such as when the browser window is resized or when filters are applied).
+
+- **`None`**: Maintains the default column widths without automatic resizing.
+
+For more advanced column sizing configurations, you can use the `columnSizeOptions` parameter in combination with `columnSize`.
+
+!!! example "AG Grid with column sizing"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="10"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        df = px.data.gapminder()
+
+        page = vm.Page(
+            title="AG Grid with Column Sizing",
+            components=[vm.AgGrid(id="ag-grid", figure=dash_ag_grid(data_frame=df, columnSize="responsiveSizeToFit"))],
+            controls=[
+                vm.Parameter(
+                    targets=["ag-grid.columnSize"],
+                    selector=vm.RadioItems(
+                        title="Select ColumnSize",
+                        options=[
+                            {"value": "autoSize", "label": "autoSize"},
+                            {"value": "responsiveSizeToFit", "label": "responsiveSizeToFit"},
+                            {"value": "sizeToFit", "label": "sizeToFit"},
+                            {"value": "NONE", "label": "None"},
+                        ],
+                        value="responsizeSizeToFit"
+                    ),
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: gapminder
+                  columnSize: responsiveSizeToFit
+                id: ag-grid
+                type: ag_grid
+            controls:
+              - selector:
+                    # Automatically adjusts column widths
+                  options: [{value: autoSize, label: autoSize},
+                    # Resizes all columns proportionally
+                     {value:responsiveSizeToFit: null, label: responsiveSizeToFit},
+                    # Combines `sizeToFit` with automatic readjustment of the columns' widths
+                     {value:sizeToFit: null, label: sizeToFit},
+                    # Maintains the default column widths
+                     {value: NONE, label:None: null}]
+                  value: responsiveSizeToFit
+                  title: Select ColumnSize
+                  type: radio_items
+                targets:
+                  - ag-grid.columnSize
+                type: parameter
+            title: AG Grid with Column Sizing
+        ```
+
+    === "Result"
+
+        [![AGGridColumnSize]][aggridcolumnsize]
+
+For detailed information about column sizing options and advanced configurations, refer to the [Dash AG Grid column sizing documentation](https://dash.plotly.com/dash-ag-grid/column-sizing).
+
 ### Styling and changing the AG Grid
 
 As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Below you can find an example of a styled AG Grid where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable. There are more ways to alter the grid beyond this showcase. AG Grid, like any other Vizro component, can be customized using custom CSS. You can find information in the [guide to overwriting CSS properties](custom-css.md#overwrite-css-for-selected-components).
@@ -666,6 +756,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 [aggrid]: ../../assets/user_guides/table/aggrid.png
 [aggrid2]: ../../assets/user_guides/table/formatted_aggrid.png
 [aggrid3]: ../../assets/user_guides/table/styled_aggrid.png
+[aggridcolumnsize]: ../../assets/user_guides/table/aggrid_columnSize.png
 [formattedgrid]: ../../assets/user_guides/components/formatted_aggrid.png
 [formattedtable]: ../../assets/user_guides/components/formatted_table.png
 [table]: ../../assets/user_guides/table/table.png
