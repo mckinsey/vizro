@@ -192,11 +192,11 @@ class Filter(VizroBaseModel):
 
         # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
         # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
-        # The filter is dynamic iff mentioned attributes ("options"/"min"/"max") are not explicitly provided and
+        # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
         # but should still count as manually set.
         if (
-            isinstance(self.selector, (SELECTORS["categorical"], SELECTORS["numerical"], SELECTORS["temporal"]))
+            not isinstance(self.selector, SELECTORS["boolean"])
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
