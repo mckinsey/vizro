@@ -266,9 +266,14 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
                 type: ag_grid
             controls:
               - selector:
-                  options: [{value: autoSize, label: autoSize}, {value: 
-                          responsiveSizeToFit, label: responsiveSizeToFit}, {value: 
-                          sizeToFit, label: sizeToFit}, {value: NONE, label: None}]
+                    # Automatically adjusts column widths
+                  options: [{value: autoSize, label: autoSize},
+                    # Resizes all columns proportionally
+                     {value:responsiveSizeToFit: null, label: responsiveSizeToFit},
+                    # Combines `sizeToFit` with automatic readjustment of the columns' widths
+                     {value:sizeToFit: null, label: sizeToFit},
+                    # Maintains the default column widths
+                     {value: NONE, label:None: null}]
                   value: responsiveSizeToFit
                   title: Select ColumnSize
                   type: radio_items
