@@ -160,12 +160,10 @@ class Dashboard(VizroBaseModel):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
-        # TODO NOW COMMET: only page load here, rest are in page.build
+        # Define callbacks when the dashboard is built but not every time the page is changed.
         action_components = []
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
             action._define_callback()
-            if action.id.startswith(ON_PAGE_LOAD_ACTION_PREFIX):
-                action_components.append(dcc.Store(id=f"{action.id}_finished"))
 
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),

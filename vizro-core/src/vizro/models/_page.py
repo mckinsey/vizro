@@ -163,20 +163,6 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            # TODO-AV2 A 3: can we simplify this to not use ActionsChain, just like we do for filters and parameters?
-            # See https://github.com/mckinsey/vizro/pull/363#discussion_r2021020062.
-            # TODO NOW: figger this bit out
-            # self.actions = [
-            #     ActionsChain(
-            #         id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
-            #         trigger=Trigger(
-            #             component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
-            #         ),
-            #
-            #     )
-            # ]
-            # TODO NOW: figure out best way to get this to be executed on page load - maybe _created store has special
-            # value to make sure it does actually run. Now that url_control exists this maybe works differently?
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
         # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
@@ -220,19 +206,22 @@ class Page(VizroBaseModel):
         components_container = _build_inner_layout(self.layout, self.components)
         components_container.id = "page-components"
 
+        # Components that are required to make action chains function correctly:
+        #   - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain can prevent
+        #     undesired triggering (workaround for Dash prevent_initial_call=True behaviour)
+        #   - {action.id}_finished for completion of an action callback to trigger the next action in the chain
+        #   - action._dash_components for particular actions (e.g. dcc.Download for export_data) - hopefully will be
+        #     removed in future
+        # These components are recreated on every page rather than going at the global dashboard level so that we do
+        # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behaviour).
         action_components = []
 
-        # TODO NOW COMMENT:all actions across all pages. Needs to be defined at
-        #  page level and not dashboard level so they don't get triggered automatically.
-        # TODO NOW:  - could maybe change to just this page actions?
+        # TODO NOW: should this just go through this page's actions or across whole dashboard? Probably doesn't
+        #  matter much apart form if we want to do cross-page actions.
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
-            # TODo NOW comment: need to puit this outside page definition and into global dashboard level to trigger
-            # OPL.
-            if not action.id.startswith(ON_PAGE_LOAD_ACTION_PREFIX):
-                action_components.append(dcc.Store(id=f"{action.id}_finished"))
             if action._first_in_chain:
                 action_components.append(dcc.Store(id=f"{action.id}_guarded_trigger"))
-            # TODO NOW: comment hopefully not needed in future
+            action_components.append(dcc.Store(id=f"{action.id}_finished"))
             action_components.extend(action._dash_components)
 
         # Keep these components in components_container, moving them outside make them not work properly.

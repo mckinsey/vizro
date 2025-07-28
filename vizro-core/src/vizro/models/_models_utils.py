@@ -94,6 +94,7 @@ def make_actions_chain(self) -> Self:
     Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
     """
     from vizro.actions import export_data, filter_interaction
+    from vizro.actions._on_page_load import _on_page_load
 
     converted_actions = []
 
@@ -124,8 +125,10 @@ def make_actions_chain(self) -> Self:
         # Needed for filter_interaction but maybe other things in future too.
         # Note this is not just same as trigger_component - it's always the first trigger of the chain.
         # action._parent_model_id = self.id
-        action._first_in_chain = first_in_chain
         action._trigger = trigger
+        action._first_in_chain = first_in_chain
+        # The actions chain guard should be called only for on page load.
+        action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
 
     # We should do self.actions = converted_actions but this leads to a recursion error. The below is a workaround
     # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.

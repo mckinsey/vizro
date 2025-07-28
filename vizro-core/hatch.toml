@@ -142,6 +142,7 @@ template = "examples"
 
 [envs.examples.env-vars]
 DASH_DEBUG = "true"
+# TODO NOW: revert this.
 VIZRO_LOG_LEVEL = "ERROR"
 
 [envs.lower-bounds]

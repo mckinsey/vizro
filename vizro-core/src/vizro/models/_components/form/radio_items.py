@@ -115,7 +115,7 @@ class RadioItems(VizroBaseModel):
                 if self.title
                 else None,
                 dbc.RadioItems(**(defaults | self.extra)),
-                dcc.Store(id=f"{self.id}_created", data=True) if self._dynamic else None,
+                dcc.Store(id=f"{self.id}_guard", data=True) if self._dynamic else None,
             ]
         )
 

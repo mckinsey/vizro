@@ -232,16 +232,16 @@ class Graph(VizroBaseModel):
 
     @_log_call
     def build(self):
-        clientside_callback(
-            ClientsideFunction(namespace="dashboard", function_name="update_graph_theme"),
-            output=[Output(self.id, "figure"), Output(self.id, "style")],
-            inputs=[
-                Input(self.id, "figure"),
-                Input("theme-selector", "value"),
-                State("vizro_themes", "data"),
-            ],
-            prevent_initial_call=True,
-        )
+        # clientside_callback(
+        #     ClientsideFunction(namespace="dashboard", function_name="update_graph_theme"),
+        #     output=[Output(self.id, "figure"), Output(self.id, "style")],
+        #     inputs=[
+        #         Input(self.id, "figure"),
+        #         Input("theme-selector", "value"),
+        #         State("vizro_themes", "data"),
+        #     ],
+        #     prevent_initial_call=True,
+        # )
 
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters
         # etc. are applied. It only appears on the screen for a brief instant, but we need to make sure it's

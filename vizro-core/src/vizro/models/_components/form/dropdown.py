@@ -185,7 +185,7 @@ class Dropdown(VizroBaseModel):
                 if self.title
                 else None,
                 dcc.Dropdown(**(defaults | self.extra)),
-                dcc.Store(id=f"{self.id}_created", data=True) if self._dynamic else None,
+                dcc.Store(id=f"{self.id}_guard", data=True) if self._dynamic else None,
             ]
         )
 
@@ -227,7 +227,7 @@ class Dropdown(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                 ),
-                dcc.Store(id=f"{self.id}_created", data=True),  # always dynamic so no need to check
+                dcc.Store(id=f"{self.id}_guard", data=True),  # always dynamic so no need to check
                 *hidden_select_all_dropdown,
             ]
         )

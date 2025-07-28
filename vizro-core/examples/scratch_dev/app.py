@@ -29,19 +29,19 @@ def my_custom_action(t: int):
 
 
 #
-
+#
 # page_1 = vm.Page(
 #     title="My first dashboard",
 #     components=[
-#         # vm.Graph(figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-#         vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
+#         vm.Graph(figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+#         # vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
 #     ],
 #     controls=[
 #         vm.Filter(column="continent", selector=vm.RadioItems()),
 #     ],
 # )
 
-# # TEST NEW ACTIONS SYNTAX
+# TEST NEW ACTIONS SYNTAX
 # page_2 = vm.Page(
 #     title="Simple custom action",
 #     components=[
@@ -59,7 +59,7 @@ def my_custom_action(t: int):
 #         vm.Filter(column="continent", selector=vm.RadioItems()),
 #     ],
 # )
-# #
+#
 # page_3 = vm.Page(
 #     title="Filter interaction graph",
 #     components=[
@@ -145,9 +145,10 @@ page_6 = vm.Page(
 
 dashboard = vm.Dashboard(pages=[page_6])
 
-"""Problems:
-- minor: on page load trigger system can probably be simplified
-"""
+# TODO NOW: check dropdown, checklist
+# TODO NOW: roll out to all other dynamic components
+# TODO NOW: check url params
+# TODO NOW: check vizro_download, vizro_url
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(

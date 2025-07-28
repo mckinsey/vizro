@@ -50,9 +50,11 @@ class _BaseAction(VizroBaseModel):
 
     # These are set in the make_actions_chain validator (same for both Action and _AbstractAction).
     # In the future a user would probably be able to specify something here that would look up a key in
-    # _action_triggers or just a full _IdProperty.
+    # _action_triggers or just a full _IdProperty. The _first_in_chain and _prevent_initial_call_of_guard would remain
+    # private though. These are required for correct functioning of the actions chain guard.
     _trigger: _IdProperty = PrivateAttr()
     _first_in_chain: bool = PrivateAttr()
+    _prevent_initial_call_of_guard: bool = PrivateAttr()
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -294,40 +296,61 @@ class _BaseAction(VizroBaseModel):
         external_callback_outputs = self._transformed_outputs
 
         if self._first_in_chain:
+            # If the action is the first one in the action chain then we need to insert an additional "guard"
+            # callback. This prevents the main action callback (action_callback) firing even in the case that the
+            # Input component is created in the layout. This is a workaround for the behaviour of
+            # prevent_initial_call=True which otherwise does not prevent initial callback execution when
+            # an Input component appears if an Output already exists in the page layout:
+            # https://dash.plotly.com/advanced-callbacks#prevent-callback-execution-upon-initial-component-render
+            # e.g. for the case of a dynamic filter, we want the guard to let through genuine callback triggers (user
+            # changes value of filter) vs. when the dropdown is created. This works as follows:
+            #   1. When a new dynamic component is created, a dcc.Store component labelled *_guard is created at the
+            #   same time with data=True.
+            #   2. When guard_action_chain callback is triggered, we work out whether the trigger of the callback
+            #   chain is genuine or not:
+            #      - if it's due to creation of component then we do not allow action chain to execute. This mimics
+            #        what prevent_initial_call=True on action_callback would ideally do for us but doesn't.
+            #      - if it's genuine then we allow action chain to execute
+            # The guard is needed only for the first action in the chain because subsequent actions can only be
+            # triggered by the *_finished dcc.Store which cannot be accidentally triggered since it's created fresh
+            # on every page.
             trigger_component_id = self._trigger.split(".")[0]
-            component_created_id = f"{trigger_component_id}_created"
+            component_guard_id = f"{trigger_component_id}_guard"
             trigger = Input(f"{self.id}_guarded_trigger", "data")
 
-            # HERE HERE HERE:
-            # Not sure if things working yet. Trying to figure out how to get guard to work correctly.
-            # Just moved guarded_trigger from dashboard-level to page-level.
-            # TODO NOW: make clientside
-            # TODO NOW: consider calling it "trigger_callback" and making it False. Instead of creaeted =Trued
+            # TODO NOW: make clientside, revert logging.critical changes.
+            # We want prevent_initial_call=True for all but the on page load callback. This means that the on page load
+            # callback goes through the same gateway system as everything else and will run when the page layout is
+            # generated.
+            # An alternative method would be to always set prevent_initial_call=True and trick Dash into still running
+            # the guard_action_chain by putting the Output in the global dashboard page layout, but changing
+            # prevent_initial_call feels cleaner since it means the dcc.Stores do not need to be split between page-
+            # and dashboard- level.
             @callback(
-                Output(f"{self.id}_guarded_trigger", "data", allow_duplicate=True),
+                Output(f"{self.id}_guarded_trigger", "data"),
                 Input(*self._trigger.split(".")),
-                State(component_created_id, "data", allow_optional=True),
-                prevent_initial_call=True,
-                # TODO NOW: maybe prevent_initial_call = False and can simplify opl scheme?
-                # TODO NOW COMMENT: no so long as keep allow_duplicate=True, which is necessary for multiple trigger
-                #  properties.
+                State(component_guard_id, "data", allow_optional=True),
+                prevent_initial_call=self._prevent_initial_call_of_guard,
             )
-            # Maybe give it external global output to trigger it.
-            # TODO COMMENT: prevent_initial_call_on_component_creation
             def guard_action_chain(value, created):
                 logger.critical("***** Guard action with id %s, function %s =====", self.id, self._action_name)
-                if created is None:
+                if created:
+                    # Guard component has data=True. This means the component has just been created and so we should
+                    # prevent running the actions chain because it's not a genuine trigger.
+                    logger.critical(f"not running actions chain, setting {component_guard_id} to False")
+                    # We must use set_props here rather than using Output(component_guard_id, "data") because the
+                    # component might not exist. This is allowed for a state with allow_optional=True but not for an
+                    # Output.
+                    set_props(component_guard_id, {"data": False})
+                    # This must be dash.no_update rather than PreventUpdate or set_props won't work.
+                    return dash.no_update
+                elif created is None:
+                    # Guard component doesn't exist, so the trigger must be genuine rather than due to creation of a
+                    # component.
                     logger.critical("not dynamic, running action")
                     return value
-                elif created:
-                    logger.critical("not running action")
-                    logger.critical(f"setting {component_created_id} to False")
-                    # TODO NOW: COMMENT - need to do this as don't always have Output existing and it can't be
-                    #  optional unlike Input
-                    set_props(component_created_id, {"data": False})
-                    # Can't do PreventUpdate or set_props won't work
-                    return dash.no_update
                 elif not created:
+                    # Guard component exists but is set to False so it's a genuine trigger of the actions chain.
                     logger.critical("running action")
                     return value
         else:
@@ -356,7 +379,7 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
-        def callback_wrapper(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
+        def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:
                 return {"internal": {"action_finished": time.time()}, "external": return_value}

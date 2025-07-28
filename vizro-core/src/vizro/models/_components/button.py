@@ -34,7 +34,6 @@ class Button(VizroBaseModel):
     type: Literal["button"] = "button"
     text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
-    # TODO NOW: test the button case
     actions: list[ActionType] = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
