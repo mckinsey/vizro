@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Enable `show_select_all` argument in `vm.Checklist`, which enables users to remove 'Select All' option. ([#1283](https://github.com/mckinsey/vizro/pull/1283))
+- Add `show_select_all` argument to `vm.Checklist` so that users can remove 'Select All' option. ([#1283](https://github.com/mckinsey/vizro/pull/1283))
 
 - Enable `vm.Switch` model as a new selector for `Filter` and `Parameter`. ([#1286](https://github.com/mckinsey/vizro/pull/1286))
 
