@@ -1196,11 +1196,10 @@ dashboard = vm.Dashboard(
         )
     ),
 )
-
+# Don't move this line into the __main__ block, otherwise HF will not be able to find the app
+app = Vizro().build(dashboard)
 
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
-
     banner = dbc.NavLink(
         ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
         href="https://github.com/mckinsey/vizro",
