@@ -392,9 +392,9 @@ As mentioned above, custom components can trigger actions. To enable the custom 
 
     ```py
     actions: list[ActionType] = []
-   
+
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
-   
+
     @property
     def _action_triggers(self):
         return {"__default__": f"{self.id}.active_index"}
@@ -414,33 +414,33 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         from vizro.models._models_utils import make_actions_chain
         from vizro.models.types import ActionType
         from vizro.models.types import capture
-        
-        
+
+
         class Carousel(vm.VizroBaseModel):  # (1)!
             type: Literal["carousel"] = "carousel"
             items: list
             actions: list[ActionType] = []
-        
+
             _make_actions_chain = model_validator(mode="after")(make_actions_chain)
-        
+
             @property
             def _action_triggers(self):
                 return {"__default__": f"{self.id}.active_index"}  # (2)!
-        
+
             def build(self):
                 return dbc.Carousel(id=self.id, items=self.items)
-        
-        
+
+
         vm.Page.add_type("components", Carousel)  # (3)!
-        
-        
+
+
         @capture("action")  # (4)!
         def slide_next_card(active_index):
             if active_index:
                 return "Second slide"
             return "First slide"
-        
-        
+
+
         page = vm.Page(
             title="Custom Component",
             components=[
@@ -461,7 +461,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
