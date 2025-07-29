@@ -62,8 +62,10 @@ narwhals==1.25.0
     # via plotly
 nest-asyncio==1.6.0
     # via dash
-numpy==2.0.2
-    # via pandas
+numpy==2.3.2
+    # via
+    #   -r requirements.in
+    #   pandas
 packaging==24.1
     # via
     #   black
