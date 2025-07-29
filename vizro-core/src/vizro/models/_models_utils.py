@@ -1,7 +1,6 @@
 import logging
 import warnings
 from functools import wraps
-from typing import Self
 
 from dash import html
 from pydantic import ValidationInfo

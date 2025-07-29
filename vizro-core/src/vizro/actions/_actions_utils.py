@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict, Union, cast, Iterable
+from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict, Union, cast
 
 import pandas as pd
 
@@ -21,7 +22,7 @@ from vizro.models.types import (
 )
 
 if TYPE_CHECKING:
-    from vizro.models import VizroBaseModel
+    pass
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 

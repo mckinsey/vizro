@@ -20,11 +20,11 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import (
     CapturedCallable,
     ControlType,
+    FigureWithFilterInteractionType,
     ModelID,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
-    FigureWithFilterInteractionType,
 )
 
 logger = logging.getLogger(__name__)
