@@ -5,19 +5,24 @@
 #dashboard-container .dash-spreadsheet-inner th {
   background-color: inherit;
   color: var(--text-primary);
-  padding: 10px 0;
+  padding: 10px 12px;
 }
 
 #dashboard-container .dash-spreadsheet-inner td {
   background-color: inherit;
   color: var(--text-primary);
+  padding: 10px 12px;
 }
 
 #dashboard-container .dash-spreadsheet-inner table {
   --hover: inherit;
 }
 
-#dashboard-container .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
+#dashboard-container
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  table {
   font-family: inter, sans-serif, Arial, serif;
 }
 

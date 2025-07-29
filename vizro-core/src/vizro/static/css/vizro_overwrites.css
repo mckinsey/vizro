@@ -10,6 +10,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --right-side-bg-iterated: var(--surfaces-bg03);
   --slider-rail-bg: var(--primary-100);
   --collapse-icon-bg: var(--primary-500);
+  --mantine-radius-default: 0;
 }
 
 [data-bs-theme="light"] {
@@ -20,6 +21,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
   --collapse-icon-bg: var(--primary-300);
+  --mantine-radius-default: 0;
 }
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
@@ -72,6 +74,12 @@ All the HEX values starting with --text-code are taken from the Github code high
 /* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
 label[for="theme-selector"] {
   display: none;
+}
+
+div.form-check.form-switch {
+  align-items: start;
+  display: flex;
+  gap: 8px;
 }
 
 /* Eventually bring over to vizro-bootstrap */

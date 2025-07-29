@@ -20,6 +20,7 @@ def managers_column_different_type():
     df_numerical = pd.DataFrame({"shared_column": [1]})
     df_temporal = pd.DataFrame({"shared_column": [datetime(2024, 1, 1)]})
     df_categorical = pd.DataFrame({"shared_column": ["a"]})
+    df_boolean = pd.DataFrame({"shared_column": [False]})
 
     vm.Page(
         id="test_page",
@@ -28,6 +29,7 @@ def managers_column_different_type():
             vm.Graph(id="column_numerical", figure=px.scatter(df_numerical)),
             vm.Graph(id="column_temporal", figure=px.scatter(df_temporal)),
             vm.Graph(id="column_categorical", figure=px.scatter(df_categorical)),
+            vm.Graph(id="column_boolean", figure=px.scatter(df_boolean)),
         ],
     )
     Vizro._pre_build()
@@ -55,6 +57,8 @@ def managers_column_only_exists_in_some():
                 id="column_temporal_exists_2",
                 figure=px.scatter(pd.DataFrame({"column_temporal": [datetime(2024, 1, 1), datetime(2024, 1, 2)]})),
             ),
+            vm.Graph(id="column_boolean_exists_1", figure=px.scatter(pd.DataFrame({"column_boolean": [True]}))),
+            vm.Graph(id="column_boolean_exists_2", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))),
         ],
     )
     Vizro._pre_build()
@@ -91,6 +95,16 @@ def target_to_data_frame():
         "column_temporal_exists_2": pd.DataFrame(
             {
                 "column_temporal": [datetime(2024, 1, 2), datetime(2024, 1, 3)],
+            }
+        ),
+        "column_boolean_exists_1": pd.DataFrame(
+            {
+                "column_boolean": [True, False],
+            }
+        ),
+        "column_boolean_exists_2": pd.DataFrame(
+            {
+                "column_boolean": [False, True],
             }
         ),
     }
@@ -188,6 +202,19 @@ class TestFilterFunctions:
             (["apple", "banana", "orange"], ["banana", "grape"], [False, True, False]),  # Test for strings
             ([1.1, 2.2, 3.3, 4.4, 5.5], [2.2, 4.4], [False, True, False, True, False]),  # Test for float values
             ([1, 2, 3, 4, 5], [], [False, False, False, False, False]),  # Test for empty value list
+            ([True, False, True, False], [True], [True, False, True, False]),  # Test for boolean True/False values
+            ([True, False, True, False], [False], [False, True, False, True]),  # Test for boolean True/False values
+            ([True, False, True, False], [True, False], [True, True, True, True]),  # Test for boolean both values
+            ([True, False, True, False], [], [False, False, False, False]),  # Test for boolean empty value list
+            ([1, 0, 1, 0], [1], [True, False, True, False]),  # Test for boolean 0/1 values
+            ([1, 0, 1, 0], [0], [False, True, False, True]),  # Test for boolean 0/1 values
+            ([1, 0, 1, 0], [1, 0], [True, True, True, True]),  # Test for boolean 0/1 both values
+            ([1, 0, 1, 0], [], [False, False, False, False]),  # Test for boolean 0/1 empty value list
+            # Test pandas automatic boolean/numeric conversion (crucial for Switch with 0/1 columns)
+            ([0, 1, 0, 1], [False], [True, False, True, False]),  # 0/1 data filtered with False
+            ([0, 1, 0, 1], [True], [False, True, False, True]),  # 0/1 data filtered with True
+            ([False, True, False, True], [0], [True, False, True, False]),  # True/False data filtered with 0
+            ([False, True, False, True], [1], [False, True, False, True]),  # True/False data filtered with 1
         ],
     )
     def test_filter_isin(self, data, value, expected):
@@ -294,6 +321,10 @@ class TestFilterStaticMethods:
         ],
     )
     def test_get_options(self, data_columns, expected):
+        """Check that the options are correctly set.
+
+        Does not apply to boolean selectors as the options are always set to True/False.
+        """
         targeted_data = pd.DataFrame({f"target_{i}": pd.Series(data) for i, data in enumerate(data_columns)})
         result = Filter._get_options(targeted_data)
         assert result == expected
@@ -341,6 +372,10 @@ class TestFilterStaticMethods:
         ],
     )
     def test_get_options_with_current_value(self, data_columns, current_value, expected):
+        """Check that the options are correctly set with current value.
+
+        Does not apply to boolean selectors as the options are always set to True/False.
+        """
         targeted_data = pd.DataFrame({f"target_{i}": pd.Series(data) for i, data in enumerate(data_columns)})
         result = Filter._get_options(targeted_data, current_value)
         assert result == expected
@@ -459,7 +494,10 @@ class TestFilterInstantiation:
 
 @pytest.mark.usefixtures("managers_column_only_exists_in_some")
 class TestFilterCall:
-    """Test Filter.__call__() method with target_to_data_frame and current_value inputs."""
+    """Test Filter.__call__() method with target_to_data_frame and current_value inputs.
+
+    Boolean selectors don't have dynamic behavior like other selectors, as their options are always set to True/False.
+    """
 
     def test_filter_call_categorical_valid(self, target_to_data_frame):
         filter = vm.Filter(
@@ -614,7 +652,7 @@ class TestFilterPreBuildMethod:
 
     @pytest.mark.parametrize(
         "filtered_column, expected_column_type",
-        [("country", "categorical"), ("year", "temporal"), ("lifeExp", "numerical")],
+        [("country", "categorical"), ("year", "temporal"), ("lifeExp", "numerical"), ("is_europe", "boolean")],
     )
     def test_column_type(self, filtered_column, expected_column_type, managers_one_page_two_graphs):
         filter = vm.Filter(column=filtered_column)
@@ -624,7 +662,7 @@ class TestFilterPreBuildMethod:
 
     @pytest.mark.parametrize(
         "filtered_column, expected_selector",
-        [("country", vm.Dropdown), ("year", vm.DatePicker), ("lifeExp", vm.RangeSlider)],
+        [("country", vm.Dropdown), ("year", vm.DatePicker), ("lifeExp", vm.RangeSlider), ("is_europe", vm.Switch)],
     )
     def test_selector_default_selector(self, filtered_column, expected_selector, managers_one_page_two_graphs):
         filter = vm.Filter(column=filtered_column)
@@ -656,6 +694,13 @@ class TestFilterPreBuildMethod:
             ("year", vm.RadioItems),
             ("year", vm.Checklist),
             ("year", vm.DatePicker),
+            ("is_europe", vm.Switch),
+            ("is_europe", vm.Dropdown),
+            ("is_europe", vm.RadioItems),
+            ("is_europe", vm.Checklist),
+            # Covers numerical columns with 0/1 data. See detailed comment in filter.py
+            # on disallowing boolean selectors for numerical columns.
+            ("lifeExp", vm.Switch),
         ],
     )
     def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
@@ -673,6 +718,12 @@ class TestFilterPreBuildMethod:
             ("lifeExp", vm.DatePicker, "DatePicker", "numerical"),
             ("year", vm.Slider, "Slider", "temporal"),
             ("year", vm.RangeSlider, "RangeSlider", "temporal"),
+            ("is_europe", vm.Slider, "Slider", "boolean"),
+            ("is_europe", vm.RangeSlider, "RangeSlider", "boolean"),
+            ("is_europe", vm.DatePicker, "DatePicker", "boolean"),
+            ("year", vm.Switch, "Switch", "temporal"),
+            # Also disallowed for categorical binary columns such as Off/On etc.
+            ("country", vm.Switch, "Switch", "categorical"),
         ],
     )
     def test_disallowed_selectors_per_column_type(
@@ -692,6 +743,8 @@ class TestFilterPreBuildMethod:
             ["column_numerical", "column_temporal"],
             ["column_numerical", "column_categorical"],
             ["column_temporal", "column_categorical"],
+            ["column_boolean", "column_temporal"],
+            ["column_boolean", "column_categorical"],
         ],
     )
     def test_validate_column_type(self, targets, managers_column_different_type):
@@ -828,6 +881,7 @@ class TestFilterPreBuildMethod:
             ("country", None, _filter_isin),
             ("year", None, _filter_between),
             ("year", vm.DatePicker(range=False), _filter_isin),
+            ("is_europe", None, _filter_isin),
         ],
     )
     def test_set_actions(self, filtered_column, selector, filter_function, managers_one_page_two_graphs):
@@ -927,6 +981,8 @@ class TestFilterBuild:
             ("pop", vm.RangeSlider()),
             ("year", vm.DatePicker()),
             ("year", vm.DatePicker(range=False)),
+            ("is_europe", vm.Switch()),
+            ("is_europe", vm.Switch(value=True)),
         ],
     )
     def test_filter_build(self, test_column, test_selector):
