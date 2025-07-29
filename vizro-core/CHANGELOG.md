@@ -11,6 +11,26 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.44'></a>
+
+# 0.1.44 — 2025-07-29
+
+## Added
+
+- Enable `show_select_all` argument in `vm.Checklist`, which enables users to remove 'Select All' option. ([#1283](https://github.com/mckinsey/vizro/pull/1283))
+
+- Enable `vm.Switch` model as a new selector for `Filter` and `Parameter`. ([#1286](https://github.com/mckinsey/vizro/pull/1286))
+
+## Changed
+
+- Made the left navigation panel narrower (from 324px to 280px) to give more space to dashboard content. ([#1277](https://github.com/mckinsey/vizro/pull/1277))
+
+## Fixed
+
+- Fix the `Dropdown` filter so it keeps its value after refreshing the page when it targets a figure that uses dynamic data. ([#1280](https://github.com/mckinsey/vizro/pull/1280))
+
+- Improve AgGrid column sizing behavior by removing `flex` from default column options and setting `columnSize: "responsiveSizeToFit"` as the default, ensuring columns automatically adjust to fit their content. ([#1986](https://github.com/mckinsey/vizro/pull/1986))
+
 <a id='changelog-0.1.43'></a>
 
 # 0.1.43 — 2025-07-09
