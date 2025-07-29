@@ -3,5 +3,5 @@ autoflake==2.3.1
 black==24.4.2
 isort==5.13.2
 plotly==6.0.0
-vizro==0.1.37
+vizro==0.1.44
 gunicorn
