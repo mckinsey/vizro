@@ -1,4 +1,4 @@
-name: tests for VizroAI UI
+name: Tests for VizroAI UI
 
 defaults:
   run:
