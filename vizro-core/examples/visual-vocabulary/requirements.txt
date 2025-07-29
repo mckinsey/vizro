@@ -22,24 +22,18 @@ click==8.1.7
     # via
     #   black
     #   flask
-dash==2.18.1
+dash==3.1.1
     # via
     #   dash-ag-grid
     #   dash-bootstrap-components
     #   dash-mantine-components
     #   vizro
-dash-ag-grid==31.2.0
+dash-ag-grid==32.3.0
     # via vizro
-dash-bootstrap-components==1.6.0
+dash-bootstrap-components==2.0.3
     # via vizro
-dash-core-components==2.0.0
-    # via dash
-dash-html-components==2.0.0
-    # via dash
-dash-mantine-components==0.15.3
+dash-mantine-components==2.1.0
     # via vizro
-dash-table==5.0.0
-    # via dash
 flask==3.0.3
     # via
     #   dash
@@ -116,7 +110,7 @@ tzdata==2024.2
     # via pandas
 urllib3==2.2.3
     # via requests
-vizro==0.1.37
+vizro==0.1.44
     # via -r requirements.in
 werkzeug==3.0.6
     # via
