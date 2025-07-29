@@ -1,8 +1,7 @@
 """Unit tests for vizro.models.Action."""
 
 import pytest
-from asserts import assert_component_equal
-from dash import Output, State, html
+from dash import Output, State
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
@@ -499,14 +498,6 @@ class TestActionOutputs:
         ):
             action = Action(function=action_with_no_args(), outputs=["known_model_with_no_default_props"])
             action._transformed_outputs
-
-
-class TestActionBuild:
-    def test_custom_action_build(self):
-        action = Action(id="action_test", function=action_with_no_args())
-        assert_component_equal(
-            action.build(), html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
-        )
 
 
 class TestBaseActionCallbackFunction:

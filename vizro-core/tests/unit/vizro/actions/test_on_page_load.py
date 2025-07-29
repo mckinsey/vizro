@@ -133,7 +133,7 @@ class TestOnPageLoad:
         x_parameter.pre_build()
 
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
-        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function(_controls=None)
+        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_test_page"].function(_controls=None)
 
         expected = {
             "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
@@ -191,7 +191,7 @@ class TestOnPageLoad:
         x_parameter.pre_build()
 
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
-        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function(_controls=None)
+        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_test_page"].function(_controls=None)
         expected = {
             "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
             "box_chart": target_box_filtered_continent_and_pop_parameter_y_and_x,

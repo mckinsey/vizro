@@ -2,10 +2,9 @@ from typing import Annotated, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, PlainSerializer
+from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
@@ -42,12 +41,8 @@ class UserInput(VizroBaseModel):
     placeholder: str = Field(default="", description="Default text to display in input field")
     # TODO: Before making public, consider how actions should be triggered and what the default property should be
     # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("value")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    # This would mean creating _action_triggers and using make_actions_chain.
+    actions: list[ActionType] = []
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

@@ -1,53 +1,59 @@
-"""This is a test app to test the dashboard layout."""
+from typing import Annotated, Literal
 
-from vizro import Vizro
+import dash_bootstrap_components as dbc
 import vizro.models as vm
+from pydantic import model_validator
+from vizro import Vizro
+from vizro.models._models_utils import make_actions_chain
+from vizro.models.types import ActionType
+from vizro.models.types import capture
 
 
-import pandas as pd
-import numpy as np
-from vizro.tables import dash_ag_grid
+class Carousel(vm.VizroBaseModel):  # (1)!
+    type: Literal["carousel"] = "carousel"
+    items: list
+    actions: list[ActionType] = []
 
-# Sample data
-data = {
-    "user_id": range(1, 11),
-    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Hannah", "Ian", "Jane"],
-    "age": np.random.randint(20, 50, size=10),
-    "signup_date": pd.date_range(start="2023-01-01", periods=10, freq="W"),
-    "active": np.random.choice([True, False], size=10),
-    "active_numeric": np.random.choice([0, 1], size=10),
-}
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self):
+        return {"__default__": f"{self.id}.active_index"}  # (2)!
+
+    def build(self):
+        return dbc.Carousel(id=self.id, items=self.items)
 
 
-df = pd.DataFrame(data)
+vm.Page.add_type("components", Carousel)  # (3)!
+
+
+@capture("action")  # (4)!
+def slide_next_card(active_index):
+    if active_index:
+        return "Second slide"
+    return "First slide"
 
 
 page = vm.Page(
-    title="Test page",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    controls=[
-        vm.Filter(
-            column="active",
-            selector=vm.Switch(
-                value=False,
-                title="Show active accounts",
-                description="This is a description for the new switch selector",
-            ),
+    title="Custom Component",
+    components=[
+        vm.Card(text="First slide", id="carousel-card"),
+        Carousel(  # (5)!
+            id="carousel",
+            items=[
+                {"key": "1", "src": "assets/slide_1.jpg"},
+                {"key": "2", "src": "assets/slide_2.jpg"},
+            ],
+            actions=[
+                vm.Action(  # (6)!
+                    function=slide_next_card(),
+                    inputs=["carousel.active_index"],
+                    outputs=["carousel-card.children"],
+                )
+            ],
         ),
-        vm.Filter(column="active"),
-        vm.Filter(
-            column="active_numeric",
-            selector=vm.Switch(
-                value=False,
-                title="Show active accounts",
-                description="This is a description for the new switch selector",
-            ),
-        ),
-        vm.Filter(column="active_numeric"),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
-
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+Vizro().build(dashboard).run()

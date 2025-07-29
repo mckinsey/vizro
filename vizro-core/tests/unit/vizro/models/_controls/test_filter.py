@@ -9,9 +9,8 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions._abstract_action import _AbstractAction
+from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
-from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 
 
@@ -890,13 +889,13 @@ class TestFilterPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
-        default_actions_chain = filter.selector.actions[0]
-        default_action = default_actions_chain.actions[0]
+        [default_action] = filter.selector.actions
 
-        assert isinstance(default_actions_chain, ActionsChain)
-        assert isinstance(default_action, _AbstractAction)
-        assert default_action.filter_function == filter_function
+        assert isinstance(default_action, _filter)
         assert default_action.id == f"__filter_action_{filter.id}"
+        assert default_action.filter_function == filter_function
+        assert default_action.column == filtered_column
+        assert default_action.targets == ["scatter_chart", "bar_chart"]
 
     # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
     #       all other tests. Also add tests for the custom selector that is an entirely new component and adjust docs.
@@ -927,13 +926,13 @@ class TestFilterPreBuildMethod:
         assert filter.selector.min == gapminder.lifeExp.min()
         assert filter.selector.max == gapminder.lifeExp.max()
 
-        default_actions_chain = filter.selector.actions[0]
-        default_action = default_actions_chain.actions[0]
+        [default_action] = filter.selector.actions
 
-        assert isinstance(default_actions_chain, ActionsChain)
-        assert isinstance(default_action, _AbstractAction)
-        assert default_action.filter_function == _filter_between
+        assert isinstance(default_action, _filter)
         assert default_action.id == f"__filter_action_{filter.id}"
+        assert default_action.column == "lifeExp"
+        assert default_action.filter_function == _filter_between
+        assert default_action.targets == ["scatter_chart", "bar_chart"]
 
     @pytest.mark.usefixtures("managers_one_page_container_controls")
     def test_container_filter_default_targets(self):
@@ -953,21 +952,18 @@ class TestFilterPreBuildMethod:
 
     def test_set_custom_action(self, managers_one_page_two_graphs, identity_action_function):
         action_function = identity_action_function()
+        custom_action = vm.Action(function=action_function)
 
         filter = vm.Filter(
             column="country",
             selector=vm.RadioItems(
-                actions=[vm.Action(function=action_function)],
+                actions=[custom_action],
             ),
         )
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
-        default_actions_chain = filter.selector.actions[0]
-        default_action = default_actions_chain.actions[0]
-
-        assert isinstance(default_actions_chain, ActionsChain)
-        assert default_action.function is action_function
+        assert filter.selector.actions == [custom_action]
 
 
 class TestFilterBuild:

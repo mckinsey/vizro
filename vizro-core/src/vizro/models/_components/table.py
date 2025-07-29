@@ -3,18 +3,16 @@ from typing import Annotated, Literal, Optional
 
 import pandas as pd
 from dash import State, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
-from pydantic.functional_serializers import PlainSerializer
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
-from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
+from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
-from vizro.models._models_utils import _log_call, warn_description_without_title
+from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, CapturedCallable, _IdProperty, validate_captured_callable
 
@@ -71,17 +69,15 @@ class Table(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("active_cell")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    actions: list[ActionType] = []
 
     _inner_component_id: str = PrivateAttr()
-
-    # Component properties for actions and interactions
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self._inner_component_id}.active_cell"}
 
     def model_post_init(self, context) -> None:
         super().model_post_init(context)
@@ -107,7 +103,7 @@ class Table(VizroBaseModel):
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         figure = self.figure(**kwargs)
         figure.id = self._inner_component_id
-        return figure
+        return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
@@ -140,7 +136,7 @@ class Table(VizroBaseModel):
             return data_frame
 
         # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-        source_table_actions = _get_component_actions(_get_parent_model(ctd_active_cell["id"]))
+        source_table_actions = _get_triggered_model(ctd_active_cell["id"]).actions
 
         for action in source_table_actions:
             # TODO-AV2 A 1: simplify this as in
