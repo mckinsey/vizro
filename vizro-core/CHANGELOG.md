@@ -23,7 +23,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Made the left navigation panel narrower (from 324px to 280px) to give more space to dashboard content. ([#1277](https://github.com/mckinsey/vizro/pull/1277))
+- Make the left navigation panel narrower (from 324px to 280px) to give more space to dashboard content. ([#1277](https://github.com/mckinsey/vizro/pull/1277))
 
 ## Fixed
 
