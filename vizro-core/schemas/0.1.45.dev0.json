@@ -290,7 +290,7 @@
     },
     "Checklist": {
       "additionalProperties": false,
-      "description": "Categorical multi-option selector `Checklist`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Categorical multi-option selector `Checklist`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    show_select_all (Optional[bool]): Whether to display the 'Select All' option that allows users to select or\n        deselect all available options with a single click. Defaults to `True`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -380,6 +380,12 @@
           "description": "Title to be displayed",
           "title": "Title",
           "type": "string"
+        },
+        "show_select_all": {
+          "default": true,
+          "description": "Whether to display the 'Select All' option that allows users to select or deselect all available options with a single click.",
+          "title": "Show Select All",
+          "type": "boolean"
         },
         "description": {
           "anyOf": [
@@ -899,7 +905,8 @@
                   "dropdown": "#/$defs/Dropdown",
                   "radio_items": "#/$defs/RadioItems",
                   "range_slider": "#/$defs/RangeSlider",
-                  "slider": "#/$defs/Slider"
+                  "slider": "#/$defs/Slider",
+                  "switch": "#/$defs/Switch"
                 },
                 "propertyName": "type"
               },
@@ -921,6 +928,9 @@
                 },
                 {
                   "$ref": "#/$defs/Slider"
+                },
+                {
+                  "$ref": "#/$defs/Switch"
                 }
               ]
             },
@@ -1527,7 +1537,8 @@
               "dropdown": "#/$defs/Dropdown",
               "radio_items": "#/$defs/RadioItems",
               "range_slider": "#/$defs/RangeSlider",
-              "slider": "#/$defs/Slider"
+              "slider": "#/$defs/Slider",
+              "switch": "#/$defs/Switch"
             },
             "propertyName": "type"
           },
@@ -1549,6 +1560,9 @@
             },
             {
               "$ref": "#/$defs/Slider"
+            },
+            {
+              "$ref": "#/$defs/Switch"
             }
           ],
           "title": "Selector"
@@ -1566,7 +1580,7 @@
     },
     "RadioItems": {
       "additionalProperties": false,
-      "description": "Categorical single-option selector `RadioItems`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Categorical single-option selector `RadioItems`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1932,6 +1946,69 @@
         }
       },
       "title": "Slider",
+      "type": "object"
+    },
+    "Switch": {
+      "additionalProperties": false,
+      "description": "Boolean single-option selector `Switch`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"switch\"]): Defaults to `\"switch\"`.\n    value (bool): Initial state of the switch. When `True`, the switch is \"on\".\n        When `False`, the switch is \"off\". Defaults to `False`.\n    title (str): Title/Label to be displayed to the right of the switch. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Switch` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "switch",
+          "default": "switch",
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "default": false,
+          "description": "Initial state of the switch. When `True`, the switch is enabled/on.\n        When `False`, the switch is disabled/off. Defaults to `False`.",
+          "title": "Value",
+          "type": "boolean"
+        },
+        "title": {
+          "default": "",
+          "description": "Title/Label to be displayed to the right of the switch.",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Switch",
       "type": "object"
     },
     "Table": {

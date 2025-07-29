@@ -240,6 +240,24 @@ def test_controls_tooltip_and_icon_light_theme(dash_br):
 
 
 @image_assertion
+def test_datepicker_calendar_light_theme(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(dash_br, page_name=cnst.DATEPICKER_PAGE)
+    # open datepicker calendar
+    dash_br.multiple_click("button[class*='DatePickerInput']", 1, delay=0.1)
+
+
+@image_assertion
+def test_datepicker_calendar_dark_theme(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(dash_br, page_name=cnst.DATEPICKER_PAGE)
+    # switch theme to dark
+    dash_br.multiple_click(theme_toggle_path(), 1)
+    # open datepicker calendar
+    dash_br.multiple_click("button[class*='DatePickerInput']", 1, delay=0.1)
+
+
+@image_assertion
 def test_controls_tooltip_and_icon_dark_theme(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(dash_br, page_name=cnst.EXTRAS_PAGE)
