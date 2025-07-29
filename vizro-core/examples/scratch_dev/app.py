@@ -85,7 +85,7 @@ page_3 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="continent", show_in_url=True),
+        vm.Filter(column="continent", show_in_url=True, id="f2"),
     ],
 )
 
