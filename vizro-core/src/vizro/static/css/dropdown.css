@@ -186,5 +186,5 @@ div.Select--multi .Select-value:has(.dropdown-select-all) {
 }
 
 .dash-dropdown .Select-clear-zone:hover {
-  color: var(--text-primaryHover);
+  color: var(--bs-primary-text-emphasis);
 }

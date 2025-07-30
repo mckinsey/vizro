@@ -5,7 +5,7 @@
 }
 
 .tooltip-icon:hover {
-  color: var(--text-primaryHover);
+  color: var(--bs-primary-text-emphasis);
 }
 
 .tooltip-inner  {

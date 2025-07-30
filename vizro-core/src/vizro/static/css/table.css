@@ -45,5 +45,5 @@
 #dashboard-container button.previous-page:hover,
 #dashboard-container button.next-page:hover,
 #dashboard-container button.last-page:hover {
-  color: var(--text-primaryHover) !important;
+  color: var(--bs-primary-text-emphasis) !important;
 }

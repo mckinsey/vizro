@@ -161,7 +161,7 @@
 }
 
 #collapse-icon.material-symbols-outlined:hover {
-  color: var(--text-primaryHover);
+  color: var(--bs-primary-text-emphasis);
 }
 
 #collapse-icon-outer {
