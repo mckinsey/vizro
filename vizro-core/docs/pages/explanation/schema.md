@@ -266,7 +266,7 @@ You can thus configure a Vizro dashboard according to a set of constraints that 
 
 ## The role of Pydantic
 
-The Vizro framework is powered by [Pydantic](https://docs.pydantic.dev/latest/), which is the most widely used data validation library for Python. Pydantic acts as the glue that connects Vizro's JSON schema to its actual implementation - a React frontend served by a Flask backend, facilitated by Dash.
+The Vizro framework is powered by [Pydantic](https://docs.pydanti), which is the most widely used data validation library for Python. Pydantic acts as the glue that connects Vizro's JSON schema to its actual implementation - a React frontend served by a Flask backend, facilitated by Dash.
 
 One core advantage of Pydantic is that it [can automatically produce a JSON schema](https://docs.pydantic.dev/latest/concepts/json_schema/) from our models (such as `vm.Page` or `vm.Filter`). Pydantic also supports custom validation beyond the functionality of JSON schema.
 
