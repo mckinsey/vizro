@@ -10,9 +10,9 @@ This tutorial should take **about half an hour to finish**, so grab a coffee or 
 
 !!! note
 
-    If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/first-dashboard.md) before diving into this one.
+    If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](first-dashboard.md) before diving into this one.
 
-**By the end of this tutorial, you have learned how to:**
+**By the end of this tutorial, you will have learned how to:**
 
 - Explore most of [Vizro's components](../user-guides/components.md).
 - Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to guide your chart creation.
@@ -1323,14 +1323,14 @@ The following steps add a title and logo to the dashboard:
 
 1. Set the `title` attribute of the [Dashboard][vizro.models.Dashboard] to "Tips Analysis Dashboard".
 1. Download the `logo` from [this link](https://raw.githubusercontent.com/mckinsey/vizro/refs/heads/main/vizro-core/examples/dev/assets/logo.svg) and save it in a folder named `assets`.
-1. Place the `assets` folder in the same directory as your `app.py/app.ipynb` file.
+1. Place the `assets` folder in the same directory as your `app.py` or `app.ipynb` file.
 
 Your directory structure should look like this:
 
 ```text title="Example folder structure"
 ├── app.py
-├── assets
-│   ├── logo.svg
+└── assets
+    └── logo.svg
 ```
 
 !!! example "Add a dashboard title and logo"
