@@ -172,8 +172,10 @@ class AgGrid(VizroBaseModel):
             for model in model_manager._get_models()
             if hasattr(model, "_inner_component_id") and model.id != self.id
         }
-
-        if self._inner_component_id in set(model_manager) | all_inner_component_ids:
+        if (
+            self._inner_component_id in [node.data.id for node in model_manager]
+            or self._inner_component_id in all_inner_component_ids
+        ):
             raise DuplicateIDError(
                 f"CapturedCallable with id={self._inner_component_id} has an id that is "
                 "already in use by another Vizro model or CapturedCallable. "

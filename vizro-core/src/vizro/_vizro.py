@@ -113,7 +113,7 @@ class Vizro:
         # the tree is updated during pre-build with models that are created in pre-build. (see comments in
         # _pre_build)
         model_manager._set_dashboard(dashboard)
-        self._pre_build(dashboard)
+        self._pre_build()
         self.dash.layout = dashboard.build()
 
         # Store the dashboard object for later use in the run method.
@@ -180,13 +180,13 @@ Provide a valid import path for these in your dashboard configuration."""
         # before higher-level models.
         # TODO[MS]: Make more official access to the tree
         for node in model_manager._ModelManager__dashboard_tree.iterator(method=IterMethod.POST_ORDER):
-            print("visiting", node.data.__class__.__name__, node.data.id)
+            # print("visiting", node.data.__class__.__name__, node.data.id)
             if hasattr(node.data, "pre_build"):
-                print("pre-building", node.data.__class__.__name__, node.data.id)
+                # print("pre-building", node.data.__class__.__name__, node.data.id)
 
                 node.data.pre_build()
-                print(model_manager.print_dashboard_tree())
-                print("--------------------------------")
+                # print(model_manager.print_dashboard_tree())
+                # print("--------------------------------")
         # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
         # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
         # This is important because the Page pre_build method checks whether filters are dynamic or not, which is

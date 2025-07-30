@@ -1216,3 +1216,6 @@ if __name__ == "__main__":
     app.run()
 
     # model_manager.print_dashboard_tree()
+
+    # for node in model_manager:
+    #     print(node.data.__class__.__name__, node.data.id)

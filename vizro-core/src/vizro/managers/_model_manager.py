@@ -7,7 +7,7 @@ import uuid
 from collections.abc import Collection, Generator, Iterable, Mapping
 from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
 
-from nutree import TypedTree
+from nutree import IterMethod, TypedTree
 
 from vizro.managers._managers_utils import _state_modifier
 
@@ -87,7 +87,8 @@ class ModelManager:
         """
         # TODO: should this yield models rather than model IDs? Should model_manager be more like set with a special
         #  lookup by model ID or more like dictionary?
-        yield from self.__models
+        # yield from self.__models
+        yield from self.__dashboard_tree.iterator(method=IterMethod.PRE_ORDER)
 
     # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
     def _get_models(
