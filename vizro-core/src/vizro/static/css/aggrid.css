@@ -22,7 +22,7 @@
   --ag-header-column-resize-handle-display: block;
   --ag-header-column-resize-handle-height: 30%;
   --ag-header-column-resize-handle-width: 1px;
-  --ag-header-column-resize-handle-color: var(--border-subtleAlpha02);
+  --ag-header-column-resize-handle-color: var(--bs-border-color-translucent);
   --ag-range-selection-border-color: transparent;
   --ag-input-focus-border-color: transparent;
 }
@@ -30,7 +30,7 @@
 /* Header ------- */
 #dashboard-container .ag-header-row {
   align-items: flex-start;
-  border-bottom: 1px solid var(--border-subtleAlpha02);
+  border-bottom: 1px solid var(--bs-border-color-translucent);
   display: flex;
 }
 
@@ -68,7 +68,7 @@
 /* Pop up menu ----- */
 #dashboard-container .ag-menu {
   background-color: var(--surfaces-bg02);
-  border: 1px solid var(--border-subtleAlpha02);
+  border: 1px solid var(--bs-border-color-translucent);
   color: var(--text-primary);
 }
 
