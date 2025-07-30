@@ -27,7 +27,7 @@ class Button(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
 
@@ -67,7 +67,7 @@ class Button(VizroBaseModel):
                 default={},
                 description="""Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.""",
             ),
