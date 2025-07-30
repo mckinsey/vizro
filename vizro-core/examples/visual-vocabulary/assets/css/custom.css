@@ -20,7 +20,7 @@ img[src*="#chart-icon"] {
 }
 
 .flex-item h4 {
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   margin: 0;
   padding-top: 12px;
   text-align: center;
@@ -42,12 +42,12 @@ img[src*="#chart-icon"] {
 }
 
 .intro-text {
-  border-left: 4px solid var(--text-secondary);
+  border-left: 4px solid var(--bs-secondary);
   padding: 4px 12px;
 }
 
 .intro-text h4 {
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   margin: 0;
 }
 
@@ -77,7 +77,7 @@ img[src*="#chart-icon"] {
 
 .anchor-container:focus,
 .anchor-container:hover {
-  background: var(--text-secondary);
+  background: var(--bs-secondary);
   color: var(--text-primary-inverted);
 }
 

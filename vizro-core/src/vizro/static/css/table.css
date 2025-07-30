@@ -32,7 +32,7 @@
 #dashboard-container .next-page,
 #dashboard-container .last-page {
   background: inherit;
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
 }
 
 #dashboard-container input.current-page,

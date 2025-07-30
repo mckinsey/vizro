@@ -69,7 +69,7 @@ div.Select--multi .Select-value {
   border: 0;
   border-radius: 0;
   box-shadow: var(--elevation-0);
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   font-size: 0.875rem;
   height: 100%;
   letter-spacing: -0.112px;
@@ -89,7 +89,7 @@ div.Select--multi .Select-value-label {
 div.Select--multi .Select-value-icon {
   background: inherit;
   border: none;
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   line-height: inherit;
   margin: 0;
   padding: 0;
@@ -98,7 +98,7 @@ div.Select--multi .Select-value-icon {
 /* Tag: Cross on hover */
 div.Select--multi .Select-value-icon:hover {
   background: inherit;
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
 }
 
 /* Tag: Arrow */

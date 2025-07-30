@@ -28,7 +28,7 @@
 }
 
 .container-title-collapse .material-symbols-outlined {
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
 }
 
 .container-title-collapse .material-symbols-outlined:hover {

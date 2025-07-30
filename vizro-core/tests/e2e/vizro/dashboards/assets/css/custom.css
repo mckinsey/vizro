@@ -15,7 +15,7 @@
 
 .anchor-container:focus,
 .anchor-container:hover {
-  background: var(--text-secondary);
+  background: var(--bs-secondary);
   color: var(--text-primary-inverted);
 }
 

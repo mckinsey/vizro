@@ -4,7 +4,7 @@
   --ag-active-color: var(--stateOverlays-selectedHover);
   --ag-background-color: transparent;
   --ag-odd-row-background-color: transparent;
-  --ag-header-foreground-color: var(--text-secondary);
+  --ag-header-foreground-color: var(--bs-secondary);
   --ag-data-color: var(--text-primary);
   --ag-header-background-color: transparent;
   --ag-icon-font-family: aggridquartz;
@@ -117,7 +117,7 @@
 }
 
 #dashboard-container .ag-text-field-input::placeholder {
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
 }
 
 #dashboard-container .ag-filter-apply-panel {
