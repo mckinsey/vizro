@@ -157,7 +157,7 @@
 }
 
 #dashboard-container .ag-standard-button {
-  background: var(--fill-active);
+  background: var(--bs-primary);
   border: none;
   border-radius: 0;
   box-shadow: var(--elevation-0);
@@ -176,7 +176,7 @@
       var(--stateOverlays-hover-inverted),
       var(--stateOverlays-hover-inverted)
     ),
-    var(--fill-active);
+    var(--bs-primary);
   color: var(--text-primary-inverted);
   text-decoration-line: underline;
 }
