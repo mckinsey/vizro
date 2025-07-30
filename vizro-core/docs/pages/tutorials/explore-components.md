@@ -10,9 +10,9 @@ This tutorial should take **about half an hour to finish**, so grab a coffee or 
 
 !!! note
 
-    If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/quickstart-tutorial.md) before diving into this one.
+    If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](first-dashboard.md) before diving into this one.
 
-**By the end of this tutorial, you have learned how to:**
+**By the end of this tutorial, you will have learned how to:**
 
 - Explore most of [Vizro's components](../user-guides/components.md).
 - Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to guide your chart creation.

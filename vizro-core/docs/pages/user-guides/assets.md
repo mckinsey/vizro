@@ -6,15 +6,15 @@ To add images, custom CSS or JS files, create a folder named `assets` in the roo
 
 ```text title="Example folder structure"
 ├── app.py
-├── assets
-│   ├── css
-│       ├── **/*.css
-│   ├── images
-│       ├── icons
-│           ├── collections.svg
-│       ├── app.svg
-│       ├── logo.svg
-│   ├── favicon.ico
+└── assets
+    ├── css
+    │   └── **/*.css
+    ├── images
+    │   ├── icons
+    │   │   └── collections.svg
+    │   ├── app.svg
+    │   └── logo.svg
+    └── favicon.ico
 ```
 
 !!! note "Dash Bootstrap Themes"
