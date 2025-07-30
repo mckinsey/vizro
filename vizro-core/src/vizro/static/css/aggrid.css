@@ -15,7 +15,7 @@
   --ag-border-radius: 0;
   --ag-border-color: transparent;
   --ag-row-border-style: solid;
-  --ag-row-border-color: var(--border-subtleAlpha01);
+  --ag-row-border-color: var(--bs-border-color);
   --ag-row-border-width: 1px;
   --ag-selected-row-background-color: var(--stateOverlays-selected);
   --ag-checkbox-checked-color: var(--text-primary);

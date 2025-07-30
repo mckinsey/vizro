@@ -66,7 +66,7 @@ and all containers need to have a white background on that page */
 }
 
 .container-controls-panel {
-  border-bottom: 1px solid var(--border-subtleAlpha01);
+  border-bottom: 1px solid var(--bs-border-color);
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
