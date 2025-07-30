@@ -14,6 +14,8 @@ For more information, refer to the API reference of the selector, or the documen
 - [`Checklist`][vizro.models.Checklist] based on [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist)
 - [`RadioItems`][vizro.models.RadioItems] based on [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems)
 
+If you have binary data (such as `False`/`True` or `0`/`1`), you might prefer to use a dedicated [boolean selector](#boolean-selectors) instead.
+
 !!! note "Configuring `options`"
 
     When configuring the `options` of the categorical selectors, you can either give:
@@ -43,6 +45,12 @@ For more information, refer to the API reference of the selector, or the documen
 !!! note
 
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
+
+## Boolean selectors
+
+For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
+
+- [`Switch`][vizro.models.Switch] based on [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/)
 
 ## Add a tooltip
 

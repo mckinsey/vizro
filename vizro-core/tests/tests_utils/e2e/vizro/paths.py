@@ -2,6 +2,10 @@ def theme_toggle_path():
     return "#theme-selector"
 
 
+def switch_path_using_filter_control_id(filter_control_id):
+    return f"#{filter_control_id} input[type='checkbox']"
+
+
 # Navigation
 
 
@@ -51,6 +55,10 @@ def dropdown_arrow_path(dropdown_id):
 
 def button_path():
     return "button[class='btn btn-primary']"
+
+
+def button_id_path(btn_id):
+    return f"button[id='{btn_id}']"
 
 
 def table_cell_value_path(table_id, row_number, column_number):

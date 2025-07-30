@@ -1,3 +1,12 @@
+/**
+ * Updates the dropdown selection state when the "Select All" option is toggled or when individual options are selected.
+ *
+ * @param {Array} dropdown_value - Array of currently selected dropdown values, may include "__SELECT_ALL"
+ * @param {Array<Object>} options - Array of dropdown option objects, each containing a "value" property
+ * @returns {Array} A tuple containing [isSelectAllChecked, newDropdownValue] where:
+ *   - isSelectAllChecked (boolean): Whether the "Select All" checkbox should be checked
+ *   - newDropdownValue (Array|dash_clientside.no_update): The new dropdown values or no_update if no change needed
+ */
 function update_dropdown_select_all(dropdown_value, options) {
   console.debug("update_dropdown_select_all");
 
