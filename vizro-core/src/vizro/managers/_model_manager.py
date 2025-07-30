@@ -52,7 +52,7 @@ class ModelManager:
     def print_dashboard_tree(self):
         return self.__dashboard_tree.print(
             title=False,
-            repr=lambda node: f"{node.data.__class__.__name__}(id={node.data.id})",  # {node.kind}:
+            repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}(id={node.data.id})",  #
         )
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
@@ -79,7 +79,7 @@ class ModelManager:
         # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
         return self.__dashboard_tree.find(data_id=model_id).data
 
-    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree. DONE
     def __iter__(self) -> Generator[ModelID, None, None]:
         """Iterates through all models.
 
@@ -105,10 +105,15 @@ class ModelManager:
 
         if model_type is FIGURE_MODELS:
             model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
-        models = self.__get_model_children(root_model) if root_model is not None else self.__models.values()
 
-        # Convert to list to avoid changing size when looping through at runtime.
-        for model in list(models):
+        if root_model is not None:
+            root_node = self.__dashboard_tree.find(data_id=root_model.id)
+            nodes = root_node.iterator(method=IterMethod.PRE_ORDER) if root_node else []
+        else:
+            nodes = self.__dashboard_tree.iterator(method=IterMethod.PRE_ORDER)
+
+        for node in nodes:
+            model = node.data
             if model_type is None or isinstance(model, model_type):
                 yield model  # type: ignore[misc]
 

@@ -25,7 +25,7 @@ class NavLink(VizroBaseModel):
 
     """
 
-    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    pages: Annotated[NavPagesType, Field(default=[])]
     label: str = Field(description="Text description of the icon for use in tooltip.")
     icon: Annotated[
         str,
@@ -38,7 +38,14 @@ class NavLink(VizroBaseModel):
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        # TODO[MS]: refactor properly
+        parent = model_manager._ModelManager__dashboard_tree.find(data_id=self.id)
+        grandparent = parent.parent
+        self.pages = self.pages or parents.data.pages or grandparent.data.pages
+        _validate_pages(self.pages)
+        self._nav_selector = Accordion._from_dict_in_build(
+            parent_id=self.id, field_name="_nav_selector", data={"pages": self.pages}
+        )
 
     @_log_call
     def build(self, *, active_page_id=None):

@@ -182,7 +182,7 @@ Provide a valid import path for these in your dashboard configuration."""
         for node in model_manager._ModelManager__dashboard_tree.iterator(method=IterMethod.POST_ORDER):
             # print("visiting", node.data.__class__.__name__, node.data.id)
             if hasattr(node.data, "pre_build"):
-                # print("pre-building", node.data.__class__.__name__, node.data.id)
+                print("pre-building", node.data.__class__.__name__, node.data.id)
 
                 node.data.pre_build()
                 # print(model_manager.print_dashboard_tree())

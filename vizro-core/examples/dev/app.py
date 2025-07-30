@@ -1213,9 +1213,16 @@ if __name__ == "__main__":
             class_name="anchor-container",
         )
     )
-    app.run()
+    # app.run()
 
-    # model_manager.print_dashboard_tree()
+    model_manager.print_dashboard_tree()
 
     # for node in model_manager:
     #     print(node.data.__class__.__name__, node.data.id)
+
+    # ├── _nav_selector: Accordion(id=4a276dda-34c3-494a-c12e-a9b8e7e13ed8)
+    # ├── _nav_selector: Accordion(id=d872298c-7b72-590b-f8f8-f071d360da69)
+    # ╰── _nav_selector: Accordion(id=dd620222-d9ef-e28b-3bcb-50b3961d8dcf)
+    # print(model_manager["4a276dda-34c3-494a-c12e-a9b8e7e13ed8"].__repr__())
+    # print(model_manager["d872298c-7b72-590b-f8f8-f071d360da69"].__repr__())
+    # print(model_manager["dd620222-d9ef-e28b-3bcb-50b3961d8dcf"].__repr__())

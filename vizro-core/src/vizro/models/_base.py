@@ -228,6 +228,9 @@ class VizroBaseModel(BaseModel):
     def _from_dict_in_build(cls, parent_id: str, field_name: str, data: dict[str, Any]) -> "VizroBaseModel":
         model = cls(**data)
         model_manager._ModelManager__dashboard_tree[parent_id].add(model, kind=field_name)
+        # MS: this call pre-build on models created with this alt init method
+        if hasattr(model, "pre_build"):
+            model.pre_build()
         return model
 
     @_log_call

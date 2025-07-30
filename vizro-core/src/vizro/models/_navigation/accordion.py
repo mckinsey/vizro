@@ -35,10 +35,17 @@ class Accordion(VizroBaseModel):
             str,
             list[ModelID],  # TODO[MS]:this is the type after validation, but the type before validation is NavPagesType
         ],
-        AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
     ]
+
+    @_log_call
+    def pre_build(self):
+        # TODO[MS]: refactor properly
+        parent = model_manager._ModelManager__dashboard_tree.find(data_id=self.id)
+        grandparent = parent.parent
+        self.pages = self.pages or parent.data.pages or grandparent.data.pages
+        _validate_pages(self.pages)
 
     @_log_call
     def build(self, *, active_page_id=None):
