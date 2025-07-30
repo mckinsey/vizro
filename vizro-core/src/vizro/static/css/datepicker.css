@@ -26,7 +26,7 @@
 
 .mantine-DatePickerInput-day[data-in-range] {
   background: var(--stateOverlays-selectedRange);
-  color: var(--text-primary);
+  color: var(--bs-primary);
 }
 
 .mantine-DatePickerInput-day[data-selected] {

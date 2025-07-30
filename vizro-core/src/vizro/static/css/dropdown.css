@@ -20,7 +20,7 @@ div.Select-menu-outer {
 
 /* Dropdown menu options */
 div.VirtualizedSelectOption {
-  color: var(--text-primary);
+  color: var(--bs-primary);
   font-weight: 400;
 }
 
@@ -80,7 +80,7 @@ div.Select--multi .Select-value {
 
 /* Tag: Label */
 div.Select--multi .Select-value-label {
-  color: var(--text-primary);
+  color: var(--bs-primary);
   line-height: 1.5rem;
   padding: 0 4px;
 }

@@ -35,7 +35,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 .nav-link:active, .nav-link.active {
-    color: var(--text-primary) !important;
+    color: var(--bs-primary) !important;
 }
 
 /* CARDS */

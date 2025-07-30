@@ -62,7 +62,7 @@ img[src*="#chart-icon"] {
 
 .anchor-container {
   align-items: center;
-  background: var(--text-primary);
+  background: var(--bs-primary);
   border-top-left-radius: 8px;
   bottom: 0;
   color: var(--text-primary-inverted) !important;

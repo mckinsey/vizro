@@ -4,13 +4,13 @@
 
 #dashboard-container .dash-spreadsheet-inner th {
   background-color: inherit;
-  color: var(--text-primary);
+  color: var(--bs-primary);
   padding: 10px 12px;
 }
 
 #dashboard-container .dash-spreadsheet-inner td {
   background-color: inherit;
-  color: var(--text-primary);
+  color: var(--bs-primary);
   padding: 10px 12px;
 }
 
@@ -38,7 +38,7 @@
 #dashboard-container input.current-page,
 .table-container input.current-page::placeholder {
   background: inherit;
-  color: var(--text-primary) !important;
+  color: var(--bs-primary) !important;
 }
 
 #dashboard-container button.first-page:hover,
