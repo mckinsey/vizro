@@ -74,7 +74,7 @@
 
 #dashboard-container .ag-ltr .ag-filter-filter input {
   background-color: var(--field-enabled);
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   display: flex;
   font-size: 0.875rem;
   font-weight: 400;
@@ -93,12 +93,12 @@
 
 #dashboard-container .ag-filter-select .ag-picker-field-wrapper {
   background-color: var(--field-enabled);
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
 }
 
 #dashboard-container .ag-select-list {
   background-color: var(--field-enabled);
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   color: var(--bs-primary);
   font-size: 0.875rem;
   line-height: 1.5rem;
@@ -160,7 +160,7 @@
   background: var(--bs-primary);
   border: none;
   border-radius: 0;
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   color: var(--text-primary-inverted);
   font-size: 0.875rem;
   font-weight: 600;

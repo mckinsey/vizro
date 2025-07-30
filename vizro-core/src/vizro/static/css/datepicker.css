@@ -2,7 +2,7 @@
 .mantine-DatePickerInput-input {
   background-color: var(--field-enabled);
   border: none;
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   color: var(--bs-secondary);
 }
 
@@ -15,7 +15,7 @@
 .mantine-Popover-dropdown {
   background: var(--field-enabled);
   border: inherit;
-  box-shadow: var(--elevation-1);
+  box-shadow: var(--bs-box-shadow);
   padding: 0.5rem;
 }
 

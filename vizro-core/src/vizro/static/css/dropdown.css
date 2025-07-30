@@ -3,7 +3,7 @@ div.dash-dropdown {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   font-size: 0.875rem;
 }
 
@@ -12,7 +12,7 @@ div.Select-menu-outer {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   font-size: 0.875rem;
   line-height: 1.5rem;
   margin-top: 4px;
@@ -68,7 +68,7 @@ div.Select--multi .Select-value {
   background-color: var(--dropdown-label-bg);
   border: 0;
   border-radius: 0;
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   color: var(--bs-secondary);
   font-size: 0.875rem;
   height: 100%;
