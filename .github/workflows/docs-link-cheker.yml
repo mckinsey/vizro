@@ -1,9 +1,9 @@
 name: Docs Links Checker
 
-permissions:
-  contents: read
-
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
