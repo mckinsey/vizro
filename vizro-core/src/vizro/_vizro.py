@@ -11,6 +11,7 @@ import dash
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
+from nutree import IterMethod
 from packaging.version import parse
 
 import vizro
@@ -106,7 +107,13 @@ class Vizro:
         pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
-        self._pre_build()
+        # AM rough notes: hard to place this correctly now since MM is needed in pre-build but also should be updated
+        # with new models during pre-build.
+        # MS: This seems for now to be a good place. The pre-build is using the tree in post-order traversal, and
+        # the tree is updated during pre-build with models that are created in pre-build. (see comments in
+        # _pre_build)
+        model_manager._set_dashboard(dashboard)
+        self._pre_build(dashboard)
         self.dash.layout = dashboard.build()
 
         # Store the dashboard object for later use in the run method.
@@ -165,22 +172,28 @@ Provide a valid import path for these in your dashboard configuration."""
         # Note that a pre_build method can itself add a model (e.g. an Action) to the model manager, and so we need to
         # iterate through set(model_manager) rather than model_manager itself or we loop through something that
         # changes size.
+        # TODO[MS]: Check that this works in the case where we dynamically add to the tree during pre-build.
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
         # In future may add a second pre_build loop after the first one.
+        # MS: I believe that this currently holds only for things that are created below in the tree.
+        # This currently uses the post-order traversal, since this guarantees that lower-level modes are pre-built
+        # before higher-level models.
+        # TODO[MS]: Make more official access to the tree
+        for node in model_manager._ModelManager__dashboard_tree.iterator(method=IterMethod.POST_ORDER):
+            print("visiting", node.data.__class__.__name__, node.data.id)
+            if hasattr(node.data, "pre_build"):
+                print("pre-building", node.data.__class__.__name__, node.data.id)
 
-        for filter in cast(Iterable[Filter], model_manager._get_models(Filter)):
-            # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
-            # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
-            # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
-            # defined in the filter's pre_build method. Also, the calculation of the data_frame Parameter targets
-            # depends on the filter targets, so they should be pre-built after the filters as well.
-            # It's also essential for filters to be pre-built before Container.pre_build runs or otherwise
-            # control.selector won't be set.
-            filter.pre_build()
-        for model_id in set(model_manager):
-            model = model_manager[model_id]
-            if hasattr(model, "pre_build") and not isinstance(model, Filter):
-                model.pre_build()
+                node.data.pre_build()
+                print(model_manager.print_dashboard_tree())
+                print("--------------------------------")
+        # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
+        # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
+        # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
+        # defined in the filter's pre_build method. Also, the calculation of the data_frame Parameter targets
+        # depends on the filter targets, so they should be pre-built after the filters as well.
+        # It's also essential for filters to be pre-built before Container.pre_build runs or otherwise
+        # control.selector won't be set.
 
     def __call__(self, environ: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]:
         """Implements WSGI application interface.

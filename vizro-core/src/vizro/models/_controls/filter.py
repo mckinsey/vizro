@@ -181,7 +181,9 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
-        self.selector = self.selector or SELECTORS[self._column_type][0]()
+        self.selector = self.selector or SELECTORS[self._column_type][0]._from_dict_in_build(
+            parent_id=self.id, field_name="selector", data={}
+        )
         self.selector.title = self.selector.title or self.column.title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
@@ -230,11 +232,15 @@ class Filter(VizroBaseModel):
                 filter_function = _filter_isin
 
             self.selector.actions = [
-                _filter(
-                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    column=self.column,
-                    filter_function=filter_function,
-                    targets=self.targets,
+                _filter._from_dict_in_build(
+                    parent_id=self.selector.id,
+                    field_name="actions",
+                    data=dict(
+                        id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                        column=self.column,
+                        filter_function=filter_function,
+                        targets=self.targets,
+                    ),
                 ),
             ]
 

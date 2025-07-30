@@ -7,6 +7,8 @@ import uuid
 from collections.abc import Collection, Generator, Iterable, Mapping
 from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
 
+from nutree import TypedTree
+
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
@@ -35,9 +37,26 @@ class DuplicateIDError(ValueError):
 class ModelManager:
     def __init__(self):
         self.__models: dict[ModelID, VizroBaseModel] = {}
+        # AM rough notes: need to handle CapturedCallable in future too? Which doesn't have .id
+        # AM rough notes: forward_attrs=True looks nice for simplifying syntax.
+        self.__dashboard_tree = TypedTree(calc_data_id=lambda tree, data: data.id)
         self._frozen_state = False
 
+    # AM rough notes: probably better to just instantiate model manager in Vizro and pass dashboard in init rather
+    # than doing it as separate method here.
+    # Ideal next checkpoint future state: work out whether to put this __init__.
+    def _set_dashboard(self, dashboard):
+        self.__dashboard_tree.clear()
+        self.__populate_tree(dashboard)
+
+    def print_dashboard_tree(self):
+        return self.__dashboard_tree.print(
+            title=False,
+            repr=lambda node: f"{node.data.__class__.__name__}(id={node.data.id})",  # {node.kind}:
+        )
+
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
+    # Ideal next checkpoint future state: this is removed.
     @_state_modifier
     def __setitem__(self, model_id: ModelID, model: Model):
         if model_id in self.__models:
@@ -48,15 +67,19 @@ class ModelManager:
             )
         self.__models[model_id] = model
 
+    # Ideal next checkpoint future state: this is removed. Maybe still be needed for temporary hack for actionschain
+    # needed during 0.1.x -> 0.2.0 transition.
     @_state_modifier
     def __delitem__(self, model_id: ModelID):
         # Only required to handle legacy actions and could be removed when those are no longer needed.
         del self.__models[model_id]
 
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree. DONE
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
         # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
-        return self.__models[model_id]
+        return self.__dashboard_tree.find(data_id=model_id).data
 
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
     def __iter__(self) -> Generator[ModelID, None, None]:
         """Iterates through all models.
 
@@ -66,6 +89,7 @@ class ModelManager:
         #  lookup by model ID or more like dictionary?
         yield from self.__models
 
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
     def _get_models(
         self,
         model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
@@ -87,6 +111,7 @@ class ModelManager:
             if model_type is None or isinstance(model, model_type):
                 yield model  # type: ignore[misc]
 
+    # Ideal next checkpoint future state: this method is removed.
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
         """Iterates through children of `model` with depth-first pre-order traversal."""
         from vizro.models import VizroBaseModel
@@ -102,6 +127,33 @@ class ModelManager:
         elif isinstance(model, Collection) and not isinstance(model, str):
             for child in model:
                 yield from self.__get_model_children(child)
+
+    def __populate_tree(self, model: Union[Model, Mapping, Collection], parent=None, field_name=None):
+        """Iterates through children of `model` with depth-first pre-order traversal."""
+        # AM rough notes: this is basically copied and pasted from __get_model_children and then modified to populate
+        # dashboard tree instead of yielding.
+        # MS: This misses items created in pre-build (like selectors) and "behind the scene" items like ActionsChain (and possibly more)
+        # TODO: work out a sensible scheme for handling these items, so far we work with alternative init in VizroBaseModel, luckily action chains are gone
+        from vizro.models import VizroBaseModel
+
+        if isinstance(model, VizroBaseModel):
+            if parent is None:
+                # AM rough notes:
+                # Populate root node of dashboard. Maybe dashboard should be actual tree root instead
+                # (so Tree("dashboard")) but note there's no way to attach data to it then.
+                self.__dashboard_tree.add(model, kind="dashboard")
+            else:
+                self.__dashboard_tree[parent].add(model, kind=field_name)
+
+            for model_field in model.__class__.model_fields:
+                self.__populate_tree(getattr(model, model_field), model, model_field)
+        elif isinstance(model, Mapping):
+            # We don't look through keys because Vizro models aren't hashable.
+            for child_model in model.values():
+                self.__populate_tree(child_model, parent, field_name)
+        elif isinstance(model, Collection) and not isinstance(model, str):
+            for child_model in model:
+                self.__populate_tree(child_model, parent, field_name)
 
     def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
         """Gets the page containing `model`."""
@@ -123,3 +175,30 @@ class ModelManager:
 
 
 model_manager = ModelManager()
+
+"""
+AM rough notes:
+Options for how to translate pydantic models into tree with anytree:
+1. model_dump -> dict -> import but then need to convert to children - might be able to keep isinstance since can 
+have non-json serialisable. Also problem with dashboard.model_dump(context={"add_name": True}, exclude_unset=False)
+on our simple dashboard used in _to_python tests - haven't investigated why.  
+2. use as Mixin. Means doing multiple inheritance and already have clash with Page.path.
+nutree seems much better overall.
+Keep get_models etc. centralised into MM for now but then maybe move to Dashboard model later.
+Might be useful to have property in every model to enable you to get to its Node in the tree or just a reference to the 
+whole dashboard tree? Basically this inserts model manager into every model so no need for global. 
+nutree supports custom tree traversal orders so we could write our own, but how would we define it in a better way than 
+priority = 1000 etc.?
+CURRENT STATUS OF ABOVE CODE:
+- tree seems to be populated correctly but worth checking
+- tried swapping getitem to use dashboard_tree and seems to partially work but hits problem with not finding ids 
+probably due to order of prebuild and putting things in the tree
+- next steps would be to try and remove __get_model_children and modifY other methods to use nutree navigation instead
+Rough thoughts on how we might handle _is_container property. Could keep as property and/or:
+key question is given model (or model.id), how to find corresponding node in the tree?
+Dropdown()._nutree_node.up(2)
+model_manager[dropdown_id].up(2)
+Storing just parent as property in all model's seems like a worse version of storing the corresponding node:
+dropdown._nutree_node
+dropdown.)nutree_tree[dropdown.id]
+"""

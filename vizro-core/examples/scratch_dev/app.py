@@ -1,59 +1,36 @@
-from typing import Annotated, Literal
-
-import dash_bootstrap_components as dbc
 import vizro.models as vm
-from pydantic import model_validator
+import vizro.plotly.express as px
+from nutree import IterMethod
 from vizro import Vizro
-from vizro.models._models_utils import make_actions_chain
-from vizro.models.types import ActionType
-from vizro.models.types import capture
+from vizro.managers import model_manager
 
-
-class Carousel(vm.VizroBaseModel):  # (1)!
-    type: Literal["carousel"] = "carousel"
-    items: list
-    actions: list[ActionType] = []
-
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
-
-    @property
-    def _action_triggers(self):
-        return {"__default__": f"{self.id}.active_index"}  # (2)!
-
-    def build(self):
-        return dbc.Carousel(id=self.id, items=self.items)
-
-
-vm.Page.add_type("components", Carousel)  # (3)!
-
-
-@capture("action")  # (4)!
-def slide_next_card(active_index):
-    if active_index:
-        return "Second slide"
-    return "First slide"
-
+gapminder = px.data.gapminder().query("year == 2007")
 
 page = vm.Page(
-    title="Custom Component",
+    title="Page Title",
+    description="Longer description of the page content",
     components=[
-        vm.Card(text="First slide", id="carousel-card"),
-        Carousel(  # (5)!
-            id="carousel",
-            items=[
-                {"key": "1", "src": "assets/slide_1.jpg"},
-                {"key": "2", "src": "assets/slide_2.jpg"},
-            ],
-            actions=[
-                vm.Action(  # (6)!
-                    function=slide_next_card(),
-                    inputs=["carousel.active_index"],
-                    outputs=["carousel-card.children"],
-                )
-            ],
-        ),
+        vm.Graph(
+            id="sunburst", figure=px.sunburst(gapminder, path=["continent", "country"], values="pop", color="lifeExp")
+        )
+    ],
+    controls=[
+        vm.Filter(column="continent"),
+        vm.Parameter(targets=["sunburst.color"], selector=vm.RadioItems(options=["lifeExp", "pop"], title="Color")),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
+dashboard = vm.Dashboard(id="dashboard", pages=[page])
+app = Vizro().build(dashboard)
+
+# print(model_manager["sunburst"])
+model_manager.print_dashboard_tree()
+
+# for node in model_manager._ModelManager__dashboard_tree.iterator(method=IterMethod.POST_ORDER):
+#     print(node.data.__class__.__name__, node.data.id)
+
+# vm.VizroBaseModel.from_dict_in_build(parent_id="dashboard", field_name="pages", data={"id": "test_model"})
+
+# model_manager.print_dashboard_tree()
+
+# app.run()

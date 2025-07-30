@@ -223,6 +223,13 @@ class VizroBaseModel(BaseModel):
         ),
     ]
 
+    # TODO[MS]: Make more official access to the tree
+    @classmethod
+    def _from_dict_in_build(cls, parent_id: str, field_name: str, data: dict[str, Any]) -> "VizroBaseModel":
+        model = cls(**data)
+        model_manager._ModelManager__dashboard_tree[parent_id].add(model, kind=field_name)
+        return model
+
     @_log_call
     def model_post_init(self, context: Any) -> None:
         model_manager[self.id] = self
