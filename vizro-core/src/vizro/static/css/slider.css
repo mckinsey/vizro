@@ -117,6 +117,7 @@ input.dash-input:invalid {
 
 .slider-text-input-field {
   background-color: transparent;
+  border: 0;
   color: var(--bs-secondary);
   font-size: 0.875rem;
   max-width: 80px; /* required for Mozilla */
