@@ -235,12 +235,12 @@ class Filter(VizroBaseModel):
                 _filter._from_dict_in_build(
                     parent_id=self.selector.id,
                     field_name="actions",
-                    data=dict(
-                        id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                        column=self.column,
-                        filter_function=filter_function,
-                        targets=self.targets,
-                    ),
+                    data={
+                        "id": f"{FILTER_ACTION_PREFIX}_{self.id}",
+                        "column": self.column,
+                        "filter_function": filter_function,
+                        "targets": self.targets,
+                    },
                 ),
             ]
 

@@ -41,7 +41,7 @@ class NavLink(VizroBaseModel):
         # TODO[MS]: refactor properly
         parent = model_manager._ModelManager__dashboard_tree.find(data_id=self.id)
         grandparent = parent.parent
-        self.pages = self.pages or parents.data.pages or grandparent.data.pages
+        self.pages = self.pages or parent.data.pages or grandparent.data.pages
         _validate_pages(self.pages)
         self._nav_selector = Accordion._from_dict_in_build(
             parent_id=self.id, field_name="_nav_selector", data={"pages": self.pages}

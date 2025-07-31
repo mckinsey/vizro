@@ -5,11 +5,11 @@ from typing import Annotated, Literal, Union
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import BeforeValidator, Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
+from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._navigation.nav_link import NavLink
 from vizro.models.types import ModelID
 
@@ -40,8 +40,11 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        # TODO[MS]: we may need to validate pages here?
         self.items = self.items or [
-            NavLink.from_dict_in_build(parent_id=self.id, field_name="items", data=dict(label=group_title, pages=pages))
+            NavLink._from_dict_in_build(
+                parent_id=self.id, field_name="items", data={"label": group_title, "pages": pages}
+            )
             for group_title, pages in self.pages.items()
         ]
 

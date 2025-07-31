@@ -15,6 +15,7 @@ from pydantic import (
     model_serializer,
 )
 from pydantic.fields import FieldInfo
+from typing_extensions import Self
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
@@ -225,7 +226,7 @@ class VizroBaseModel(BaseModel):
 
     # TODO[MS]: Make more official access to the tree
     @classmethod
-    def _from_dict_in_build(cls, parent_id: str, field_name: str, data: dict[str, Any]) -> "VizroBaseModel":
+    def _from_dict_in_build(cls, parent_id: str, field_name: str, data: dict[str, Any]) -> Self:
         model = cls(**data)
         model_manager._ModelManager__dashboard_tree[parent_id].add(model, kind=field_name)
         # MS: this call pre-build on models created with this alt init method

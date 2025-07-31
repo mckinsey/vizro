@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import random
 import uuid
-from collections.abc import Collection, Generator, Iterable, Mapping
-from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
+from collections.abc import Collection, Generator, Mapping
+from typing import TYPE_CHECKING, Optional, TypeVar, Union
 
 from nutree import IterMethod, TypedTree
 
@@ -52,7 +52,7 @@ class ModelManager:
     def print_dashboard_tree(self):
         return self.__dashboard_tree.print(
             title=False,
-            repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}(id={node.data.id})",  #
+            repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}(id={node.data.id})",
         )
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
@@ -90,7 +90,7 @@ class ModelManager:
         # yield from self.__models
         yield from self.__dashboard_tree.iterator(method=IterMethod.PRE_ORDER)
 
-    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree. DONE
     def _get_models(
         self,
         model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
@@ -115,31 +115,18 @@ class ModelManager:
         for node in nodes:
             model = node.data
             if model_type is None or isinstance(model, model_type):
-                yield model  # type: ignore[misc]
+                yield model
 
-    # Ideal next checkpoint future state: this method is removed.
-    def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
-        """Iterates through children of `model` with depth-first pre-order traversal."""
-        from vizro.models import VizroBaseModel
-
-        if isinstance(model, VizroBaseModel):
-            yield model
-            for model_field in model.__class__.model_fields:
-                yield from self.__get_model_children(getattr(model, model_field))
-        elif isinstance(model, Mapping):
-            # We don't look through keys because Vizro models aren't hashable.
-            for child in model.values():
-                yield from self.__get_model_children(child)
-        elif isinstance(model, Collection) and not isinstance(model, str):
-            for child in model:
-                yield from self.__get_model_children(child)
-
-    def __populate_tree(self, model: Union[Model, Mapping, Collection], parent=None, field_name=None):
+    def __populate_tree(
+        self, model: Union[Model, Mapping[str, Model], Collection[Model]], parent=None, field_name=None
+    ):
         """Iterates through children of `model` with depth-first pre-order traversal."""
         # AM rough notes: this is basically copied and pasted from __get_model_children and then modified to populate
         # dashboard tree instead of yielding.
-        # MS: This misses items created in pre-build (like selectors) and "behind the scene" items like ActionsChain (and possibly more)
-        # TODO: work out a sensible scheme for handling these items, so far we work with alternative init in VizroBaseModel, luckily action chains are gone
+        # MS: This misses items created in pre-build (like selectors) and "behind the scene" items like ActionsChain
+        # (and possibly more)
+        # TODO: work out a sensible scheme for handling these items, so far we work with alternative init in
+        # VizroBaseModel, luckily action chains are gone
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
@@ -160,17 +147,27 @@ class ModelManager:
         elif isinstance(model, Collection) and not isinstance(model, str):
             for child_model in model:
                 self.__populate_tree(child_model, parent, field_name)
+        # TODO[MS]: does there not need to be a case for not being a model? I guess that should
+        # just be caught by mypy
 
-    def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
+    def _get_model_page(self, model: Model) -> Page:
         """Gets the page containing `model`."""
         from vizro.models import Page
 
         if isinstance(model, Page):
             return model
 
-        for page in cast(Iterable[Page], self._get_models(Page)):
-            if model in self.__get_model_children(page):  # type: ignore[operator]
-                return page
+        # Find the model's node in the tree and walk up to find the Page
+        current_node = self.__dashboard_tree.find(data_id=model.id)
+        if not current_node:
+            raise ValueError(f"Model with id='{model.id}' not found in dashboard tree")
+
+        while current_node.parent:
+            current_node = current_node.parent
+            if isinstance(current_node.data, Page):
+                return current_node.data
+
+        raise ValueError(f"Model with id='{model.id}' is not contained within any Page")
 
     @staticmethod
     def _generate_id() -> ModelID:
@@ -185,19 +182,19 @@ model_manager = ModelManager()
 """
 AM rough notes:
 Options for how to translate pydantic models into tree with anytree:
-1. model_dump -> dict -> import but then need to convert to children - might be able to keep isinstance since can 
+1. model_dump -> dict -> import but then need to convert to children - might be able to keep isinstance since can
 have non-json serialisable. Also problem with dashboard.model_dump(context={"add_name": True}, exclude_unset=False)
-on our simple dashboard used in _to_python tests - haven't investigated why.  
+on our simple dashboard used in _to_python tests - haven't investigated why.
 2. use as Mixin. Means doing multiple inheritance and already have clash with Page.path.
 nutree seems much better overall.
-Keep get_models etc. centralised into MM for now but then maybe move to Dashboard model later.
-Might be useful to have property in every model to enable you to get to its Node in the tree or just a reference to the 
-whole dashboard tree? Basically this inserts model manager into every model so no need for global. 
-nutree supports custom tree traversal orders so we could write our own, but how would we define it in a better way than 
+Keep get_models etc. centralized into MM for now but then maybe move to Dashboard model later.
+Might be useful to have property in every model to enable you to get to its Node in the tree or just a reference to the
+whole dashboard tree? Basically this inserts model manager into every model so no need for global.
+nutree supports custom tree traversal orders so we could write our own, but how would we define it in a better way than
 priority = 1000 etc.?
 CURRENT STATUS OF ABOVE CODE:
 - tree seems to be populated correctly but worth checking
-- tried swapping getitem to use dashboard_tree and seems to partially work but hits problem with not finding ids 
+- tried swapping getitem to use dashboard_tree and seems to partially work but hits problem with not finding ids
 probably due to order of prebuild and putting things in the tree
 - next steps would be to try and remove __get_model_children and modifY other methods to use nutree navigation instead
 Rough thoughts on how we might handle _is_container property. Could keep as property and/or:
