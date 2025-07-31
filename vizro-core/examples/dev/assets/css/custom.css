@@ -25,7 +25,7 @@
 
 .anchor-container {
   align-items: center;
-  background: var(--text-primary);
+  background: var(--bs-primary);
   border-top-left-radius: 8px;
   bottom: 0;
   color: var(--text-primary-inverted) !important;
@@ -40,7 +40,7 @@
 
 .anchor-container:focus,
 .anchor-container:hover {
-  background: var(--text-secondary);
+  background: var(--bs-secondary);
   color: var(--text-primary-inverted);
 }
 
