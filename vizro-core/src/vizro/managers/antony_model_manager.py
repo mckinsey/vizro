@@ -5,9 +5,9 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Collection, Generator, Iterable, Mapping
-from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast, Any
+from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
 
-from nutree import Tree, TypedTree
+from nutree import TypedTree
 
 from vizro.managers._managers_utils import _state_modifier
 
@@ -192,24 +192,24 @@ model_manager = ModelManager()
 AM rough notes:
 
 Options for how to translate pydantic models into tree with anytree:
-1. model_dump -> dict -> import but then need to convert to children - might be able to keep isinstance since can 
+1. model_dump -> dict -> import but then need to convert to children - might be able to keep isinstance since can
 have non-json serialisable. Also problem with dashboard.model_dump(context={"add_name": True}, exclude_unset=False)
-on our simple dashboard used in _to_python tests - haven't investigated why.  
+on our simple dashboard used in _to_python tests - haven't investigated why.
 2. use as Mixin. Means doing multiple inheritance and already have clash with Page.path.
 
 nutree seems much better overall.
 
 Keep get_models etc. centralised into MM for now but then maybe move to Dashboard model later.
 
-Might be useful to have property in every model to enable you to get to its Node in the tree or just a reference to the 
-whole dashboard tree? Basically this inserts model manager into every model so no need for global. 
+Might be useful to have property in every model to enable you to get to its Node in the tree or just a reference to the
+whole dashboard tree? Basically this inserts model manager into every model so no need for global.
 
-nutree supports custom tree traversal orders so we could write our own, but how would we define it in a better way than 
+nutree supports custom tree traversal orders so we could write our own, but how would we define it in a better way than
 priority = 1000 etc.?
 
 CURRENT STATUS OF ABOVE CODE:
 - tree seems to be populated correctly but worth checking
-- tried swapping getitem to use dashboard_tree and seems to partially work but hits problem with not finding ids 
+- tried swapping getitem to use dashboard_tree and seems to partially work but hits problem with not finding ids
 probably due to order of prebuild and putting things in the tree
 - next steps would be to try and remove __get_model_children and modifY other methods to use nutree navigation instead
 
