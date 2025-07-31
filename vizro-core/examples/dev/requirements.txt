@@ -43,7 +43,9 @@ gunicorn==23.0.0
 idna==3.10
     # via requests
 importlib-metadata==8.5.0
-    # via dash
+    # via
+    #   dash
+    #   flask
 itsdangerous==2.2.0
     # via flask
 jinja2==3.1.4
@@ -56,7 +58,7 @@ mypy-extensions==1.0.0
     # via black
 nest-asyncio==1.6.0
     # via dash
-numpy==2.3.2
+numpy==2.0.1
     # via
     #   -r requirements.in
     #   pandas
@@ -88,11 +90,9 @@ python-dateutil==2.9.0.post0
     # via pandas
 pytz==2024.2
     # via pandas
-requests==2.32.3
+requests==2.32.4
     # via dash
 retrying==1.3.4
-    # via dash
-setuptools==75.3.0
     # via dash
 six==1.16.0
     # via
@@ -100,14 +100,19 @@ six==1.16.0
     #   retrying
 tenacity==9.0.0
     # via plotly
+tomli==2.2.1
+    # via
+    #   autoflake
+    #   black
 typing-extensions==4.12.2
     # via
+    #   black
     #   dash
     #   pydantic
     #   pydantic-core
 tzdata==2024.2
     # via pandas
-urllib3==2.2.3
+urllib3==2.5.0
     # via requests
 vizro==0.1.44
     # via -r requirements.in
