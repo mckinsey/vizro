@@ -159,7 +159,7 @@ You may want to use this strategy to:
 You can create an entirely new component by sub-classing our [VizroBaseModel][vizro.models.VizroBaseModel]. Note that
 using `VizroBaseModel` is mandatory if you want the new component to work in the Vizro framework.
 
-The aim of the example is to create a [`Jumbotron`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/jumbotron/), a component that currently does not exist in Vizro's existing component range. It is a lightweight container to call attention to featured content or information.
+The aim of the example is to create a [`Jumbotron`](https://www.dash-bootstrap-components.com/docs/components/jumbotron/), a component that currently does not exist in Vizro's existing component range. It is a lightweight container to call attention to featured content or information.
 
 ### The `build` and `pre_build` methods
 
