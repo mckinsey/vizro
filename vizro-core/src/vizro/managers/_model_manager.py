@@ -34,7 +34,6 @@ class DuplicateIDError(ValueError):
 
 class ModelManager:
     def __init__(self):
-        # self.__models: dict[ModelID, VizroBaseModel] = {}
         # AM rough notes: need to handle CapturedCallable in future too? Which doesn't have .id
         # AM rough notes: forward_attrs=True looks nice for simplifying syntax.
         self.__dashboard_tree = TypedTree(calc_data_id=lambda tree, data: data.id)
@@ -114,8 +113,8 @@ class ModelManager:
         # dashboard tree instead of yielding.
         # MS: This misses items created in pre-build (like selectors) and "behind the scene" items like ActionsChain
         # (and possibly more)
-        # TODO: work out a sensible scheme for handling these items, so far we work with alternative init in
-        # VizroBaseModel, luckily action chains are gone
+        # TODO: decide if alternative scheme with init in
+        # VizroBaseModel is satisfactory, luckily action chains are gone
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
@@ -182,10 +181,6 @@ whole dashboard tree? Basically this inserts model manager into every model so n
 nutree supports custom tree traversal orders so we could write our own, but how would we define it in a better way than
 priority = 1000 etc.?
 CURRENT STATUS OF ABOVE CODE:
-- tree seems to be populated correctly but worth checking
-- tried swapping getitem to use dashboard_tree and seems to partially work but hits problem with not finding ids
-probably due to order of prebuild and putting things in the tree
-- next steps would be to try and remove __get_model_children and modifY other methods to use nutree navigation instead
 Rough thoughts on how we might handle _is_container property. Could keep as property and/or:
 key question is given model (or model.id), how to find corresponding node in the tree?
 Dropdown()._nutree_node.up(2)

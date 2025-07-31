@@ -12,6 +12,7 @@ from dash import dash_table, dcc, get_asset_url, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.figures import kpi_card, kpi_card_reference
+from vizro.managers import model_manager
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 
@@ -1203,6 +1204,11 @@ dashboard = vm.Dashboard(
 if __name__ == "__main__":
     # Move app definition outside of __main__ block for the HF demo to work
     app = Vizro().build(dashboard)
+    # MS: The below currently does not work, but it would be desirable if at least a large part of it did.
+    # By that I mean that a large part of what is currently in .build of the dashboard would be potentially
+    # a validator on the dashboard model. The key question is what we then want build to do, I have the feeling
+    # that this would be to do with setting up actions and callbacks, but none of the user facing models/layouts
+    # app = Vizro().build(dashboard)
     app.dash.layout.children.append(
         dbc.NavLink(
             ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
@@ -1213,7 +1219,7 @@ if __name__ == "__main__":
     )
     app.run()
 
-    # model_manager.print_dashboard_tree()
+    model_manager.print_dashboard_tree()
 
     # for node in model_manager:
     #     print(node.data.__class__.__name__, node.data.id)
