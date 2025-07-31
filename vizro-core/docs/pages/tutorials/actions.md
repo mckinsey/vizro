@@ -333,7 +333,7 @@ vm.Action(
 
 
 serverside inefficient. here could be done frontend
-stateless, users don't interfere so long as don't alter global variables
+stateless, users don't interfere so long as don't alter global variables - need to point to Dash explanation for this
 
 
 
@@ -352,6 +352,13 @@ implicit chaining, repeat update_text action on switch, explicit multiple action
 mention actions = [...] but don't worry about it much since might be removed. Could do by breaking update_text into two separate actions
 
 
+some output field and property, not just model name
+collapse - built in action will be much clearer
+change tab
+update tooltip
+add alert
+change page - not for now
+run model
 
 ---
 
@@ -385,6 +392,13 @@ back button like in browser
 filters populate options but only fetches data on submit
 check #vizro-users Petar answers - most recent one that Li asked about
 check deepresearch summarising our issues
+narrow down the options while user is typing: https://vizro-cnx-demo.alpha.mckinsey.digital/customer-view---germany
+USE CONTROLS IN CONTAINERS
+"sample button"
+update and download
+refresh page - yes, even if have it built into actions
+
+tutorial on drillthrough etc. But do how to guide first since easier?
 
 Teach as if to new vizro user not familiar with Dash first
 Then compare to Dash in separate explanation
@@ -402,10 +416,10 @@ warning about many chained callbacks and how it's many HTTP requests
 https://github.com/mckinsey/vizro/pull/1054
 vizro_download, vizro_url  https://github.com/McK-Internal/vizro-internal/issues/1611
 direct reference to component, field name https://github.com/McK-Internal/vizro-internal/issues/1610 https://github.com/McK-Internal/vizro-internal/issues/1609
-dict output format https://github.com/McK-Internal/vizro-internal/issues/1608
-single [action] allowed
+Y dict output format https://github.com/McK-Internal/vizro-internal/issues/1608
+Y single [action] allowed
 built in special arguments (though structure of `_controls`)
-two sorts of action (Abstract and normal) 
+two sorts of action (Abstract and normal)
 actions chain 
 callbacks + actions combined
 page lifecyle - on page load, filter callback, etc.
