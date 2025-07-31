@@ -5,7 +5,6 @@ from functools import wraps
 from dash import html
 from pydantic import ValidationInfo
 
-from vizro.managers import model_manager
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)

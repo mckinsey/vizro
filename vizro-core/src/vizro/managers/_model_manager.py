@@ -9,8 +9,6 @@ from typing import TYPE_CHECKING, Optional, TypeVar, Union
 
 from nutree import IterMethod, TypedTree
 
-from vizro.managers._managers_utils import _state_modifier
-
 if TYPE_CHECKING:
     from vizro.models import Page, VizroBaseModel
     from vizro.models.types import ModelID

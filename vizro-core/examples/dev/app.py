@@ -1201,8 +1201,6 @@ dashboard = vm.Dashboard(
 
 
 if __name__ == "__main__":
-    from vizro.managers import model_manager
-
     # Move app definition outside of __main__ block for the HF demo to work
     app = Vizro().build(dashboard)
     app.dash.layout.children.append(

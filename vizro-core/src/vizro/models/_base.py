@@ -18,7 +18,7 @@ from pydantic.fields import FieldInfo
 from typing_extensions import Self
 
 from vizro.managers import model_manager
-from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
+from vizro.models._models_utils import REPLACEMENT_STRINGS
 from vizro.models.types import ModelID
 
 TO_PYTHON_TEMPLATE = """
