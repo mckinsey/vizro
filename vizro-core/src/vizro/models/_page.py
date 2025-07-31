@@ -163,7 +163,13 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
+            self.actions = [
+                _on_page_load._from_dict_in_build(
+                    parent_id=self.id,
+                    field_name="actions",
+                    data={"id": f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", "targets": targets},
+                )
+            ]
 
         # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
         url_controls = [

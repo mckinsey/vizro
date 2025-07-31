@@ -1213,9 +1213,9 @@ if __name__ == "__main__":
             class_name="anchor-container",
         )
     )
-    # app.run()
+    app.run()
 
-    model_manager.print_dashboard_tree()
+    # model_manager.print_dashboard_tree()
 
     # for node in model_manager:
     #     print(node.data.__class__.__name__, node.data.id)
