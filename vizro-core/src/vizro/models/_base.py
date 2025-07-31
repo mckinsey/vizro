@@ -234,10 +234,6 @@ class VizroBaseModel(BaseModel):
             model.pre_build()
         return model
 
-    @_log_call
-    def model_post_init(self, context: Any) -> None:
-        model_manager[self.id] = self
-
     # Previously in V1, we used to have an overwritten `.dict` method, that would add __vizro_model__ to the dictionary
     # if called in the correct context.
     # In addition, it was possible to exclude fields specified in __vizro_exclude_fields__.

@@ -36,7 +36,7 @@ class DuplicateIDError(ValueError):
 
 class ModelManager:
     def __init__(self):
-        self.__models: dict[ModelID, VizroBaseModel] = {}
+        # self.__models: dict[ModelID, VizroBaseModel] = {}
         # AM rough notes: need to handle CapturedCallable in future too? Which doesn't have .id
         # AM rough notes: forward_attrs=True looks nice for simplifying syntax.
         self.__dashboard_tree = TypedTree(calc_data_id=lambda tree, data: data.id)
@@ -57,22 +57,13 @@ class ModelManager:
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
     # Ideal next checkpoint future state: this is removed.
-    @_state_modifier
-    def __setitem__(self, model_id: ModelID, model: Model):
-        if model_id in self.__models:
-            raise DuplicateIDError(
-                f"Model with id={model_id} already exists. Models must have a unique id across the whole dashboard. "
-                f"If you are working from a Jupyter Notebook, please either restart the kernel, or "
-                f"use 'from vizro import Vizro; Vizro._reset()`."
-            )
-        self.__models[model_id] = model
 
     # Ideal next checkpoint future state: this is removed. Maybe still be needed for temporary hack for actionschain
     # needed during 0.1.x -> 0.2.0 transition.
-    @_state_modifier
-    def __delitem__(self, model_id: ModelID):
-        # Only required to handle legacy actions and could be removed when those are no longer needed.
-        del self.__models[model_id]
+    # @_state_modifier
+    # def __delitem__(self, model_id: ModelID):
+    #     # Only required to handle legacy actions and could be removed when those are no longer needed.
+    #     del self.__models[model_id]
 
     # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree. DONE
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
