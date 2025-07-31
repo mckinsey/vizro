@@ -6,7 +6,8 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._models_utils import make_actions_chain, warn_description_without_title
+from vizro.models._components.form._form_utils import set_in_container_flag
+from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
@@ -69,6 +70,10 @@ class Switch(VizroBaseModel):
     _in_container: bool = PrivateAttr(False)
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @_log_call
+    def pre_build(self):
+        set_in_container_flag(self)
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:

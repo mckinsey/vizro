@@ -117,12 +117,12 @@ class Container(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
-    @_log_call
-    def pre_build(self):
-        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise
-        # control.selector might not be set.
-        for control in self.controls:
-            control.selector._in_container = True
+    # @_log_call
+    # def pre_build(self):
+    # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise
+    # control.selector might not be set.
+    # for control in self.controls:
+    #     control.selector._in_container = True
 
     @_log_call
     def build(self):

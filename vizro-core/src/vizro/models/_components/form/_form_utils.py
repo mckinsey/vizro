@@ -5,6 +5,8 @@ from typing import Any, Optional, Union
 
 from pydantic import TypeAdapter, ValidationInfo
 
+from vizro.managers import model_manager
+from vizro.models import Container
 from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
@@ -132,3 +134,11 @@ def validate_date_picker_range(range, info: ValidationInfo):
         raise ValueError("Please set range=True if providing list of date values.")
 
     return range
+
+
+def set_in_container_flag(model):
+    """Sets the _in_container flag based on whether the model is inside a Container."""
+
+    model._in_container = isinstance(
+        model_manager._ModelManager__dashboard_tree.find(data_id=model.id).up(2).data, Container
+    )

@@ -166,26 +166,3 @@ class ModelManager:
 
 
 model_manager = ModelManager()
-
-"""
-AM rough notes:
-Options for how to translate pydantic models into tree with anytree:
-1. model_dump -> dict -> import but then need to convert to children - might be able to keep isinstance since can
-have non-json serialisable. Also problem with dashboard.model_dump(context={"add_name": True}, exclude_unset=False)
-on our simple dashboard used in _to_python tests - haven't investigated why.
-2. use as Mixin. Means doing multiple inheritance and already have clash with Page.path.
-nutree seems much better overall.
-Keep get_models etc. centralized into MM for now but then maybe move to Dashboard model later.
-Might be useful to have property in every model to enable you to get to its Node in the tree or just a reference to the
-whole dashboard tree? Basically this inserts model manager into every model so no need for global.
-nutree supports custom tree traversal orders so we could write our own, but how would we define it in a better way than
-priority = 1000 etc.?
-CURRENT STATUS OF ABOVE CODE:
-Rough thoughts on how we might handle _is_container property. Could keep as property and/or:
-key question is given model (or model.id), how to find corresponding node in the tree?
-Dropdown()._nutree_node.up(2)
-model_manager[dropdown_id].up(2)
-Storing just parent as property in all model's seems like a worse version of storing the corresponding node:
-dropdown._nutree_node
-dropdown.)nutree_tree[dropdown.id]
-"""
