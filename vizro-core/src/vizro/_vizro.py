@@ -174,7 +174,6 @@ Provide a valid import path for these in your dashboard configuration."""
         # changes size.
         # MS: This currently allows the above, but only if we create a model in part of the tree we have not visited yet.
         # Currently we ensure pre-build is run on all models by running pre-build immediately on newly created models.
-        # TODO[MS]: Check that this works in the case where we dynamically add to the tree during pre-build.
         for node in model_manager._get_tree().iterator(method=IterMethod.POST_ORDER):
             if hasattr(node.data, "pre_build"):
                 node.data.pre_build()

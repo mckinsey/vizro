@@ -32,7 +32,6 @@ class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
 
 
-# TODO: Parameters don't work yet!!
 class ModelManager:
     def __init__(self):
         # TODO: need to handle CapturedCallable in future too, which doesn't have .id
@@ -54,7 +53,10 @@ class ModelManager:
     # TODO[AM]: Check if removal of __del__ was ok due to legacy actions.
 
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
-        return self.__dashboard_tree.find(data_id=model_id).data
+        node = self.__dashboard_tree.find(data_id=model_id)
+        if node is None:
+            raise KeyError(f"Model with id='{model_id}' not found in dashboard tree")
+        return node.data
 
     def _get_node(self, model_id: ModelID) -> TypedNode[VizroBaseModel]:
         """Get the tree node for a given model ID."""

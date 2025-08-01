@@ -41,10 +41,8 @@ class Accordion(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO[MS]: refactor properly
         parent = model_manager._get_node(self.id)
-        grandparent = parent.parent
-        self.pages = self.pages or parent.data.pages or grandparent.data.pages
+        self.pages = self.pages or parent.pages or parent.parent.pages
         _validate_pages(self.pages)
 
     @_log_call

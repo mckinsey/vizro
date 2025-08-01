@@ -36,12 +36,8 @@ class NavLink(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        from vizro.models._navigation.accordion import Accordion
-
-        # TODO[MS]: refactor properly
         parent = model_manager._get_node(self.id)
-        grandparent = parent.parent
-        self.pages = self.pages or parent.data.pages or grandparent.data.pages
+        self.pages = self.pages or parent.pages or parent.parent.pages
         _validate_pages(self.pages)
         self._nav_selector = Accordion._from_dict_in_build(
             parent_id=self.id, field_name="_nav_selector", data={"pages": self.pages}

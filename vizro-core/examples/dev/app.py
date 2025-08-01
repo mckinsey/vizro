@@ -259,9 +259,7 @@ cards = vm.Page(
 figure = vm.Page(
     title="Figure",
     layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
-    components=[
-        vm.Figure(id=f"figure_{i}", figure=figure) for i, figure in enumerate(example_cards + example_reference_cards)
-    ],
+    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
     controls=[vm.Filter(column="Category")],
 )
 
@@ -1218,4 +1216,5 @@ if __name__ == "__main__":
         )
     )
     model_manager.print_dashboard_tree()
+
     app.run()

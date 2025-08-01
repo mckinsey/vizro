@@ -22,6 +22,6 @@ page = vm.Page(
 
 dashboard = vm.Dashboard(id="dashboard", pages=[page])
 app = Vizro().build(dashboard)
-# model_manager.print_dashboard_tree()
+model_manager.print_dashboard_tree()
 
 # app.run()
