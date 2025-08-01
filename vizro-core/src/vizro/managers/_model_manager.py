@@ -48,7 +48,7 @@ class ModelManager:
         """Pretty print the dashboard tree."""
         return self.__dashboard_tree.print(
             title=False,
-            repr=lambda node: f"{node.kind}: {node.__class__.__name__}(id={node.id})",
+            repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}(id={node.id})",
         )
 
     # TODO[AM]: Check if removal of __del__ was ok due to legacy actions.

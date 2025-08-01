@@ -172,28 +172,20 @@ Provide a valid import path for these in your dashboard configuration."""
         # Note that a pre_build method can itself add a model (e.g. an Action) to the model manager, and so we need to
         # iterate through set(model_manager) rather than model_manager itself or we loop through something that
         # changes size.
+        # MS: This currently allows the above, but only if we create a model in part of the tree we have not visited yet.
+        # Currently we ensure pre-build is run on all models by running pre-build immediately on newly created models.
         # TODO[MS]: Check that this works in the case where we dynamically add to the tree during pre-build.
-        # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
-        # In future may add a second pre_build loop after the first one.
-        # MS: I believe that this currently holds only for things that are created below in the tree.
-        # This currently uses the post-order traversal, since this guarantees that lower-level modes are pre-built
-        # before higher-level models.
-        # TODO[MS]: Make more official access to the tree
         for node in model_manager._get_tree().iterator(method=IterMethod.POST_ORDER):
-            # print("visiting", node.__class__.__name__, node.id)
             if hasattr(node.data, "pre_build"):
-                # print("pre-building", node.__class__.__name__, node.id)
-
                 node.data.pre_build()
-                # print(model_manager.print_dashboard_tree())
-                # print("--------------------------------")
-        # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
-        # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
-        # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
-        # defined in the filter's pre_build method. Also, the calculation of the data_frame Parameter targets
-        # depends on the filter targets, so they should be pre-built after the filters as well.
-        # It's also essential for filters to be pre-built before Container.pre_build runs or otherwise
-        # control.selector won't be set.
+        # Previous notes on important pre-build order:
+        # - Run pre_build on all filters first, then on all other models. This handles dependency between Filter
+        #   and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
+        # - This is important because the Page pre_build method checks whether filters are dynamic or not, which is
+        #   defined in the filter's pre_build method.
+        # TODO[AM]: Please check the below.
+        # - Also, the calculation of the data_frame Parameter targets depends on the filter targets, so they should be
+        #   pre-built after the filters as well.
 
     def __call__(self, environ: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]:
         """Implements WSGI application interface.
