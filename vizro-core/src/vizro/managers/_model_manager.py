@@ -36,6 +36,8 @@ class ModelManager:
     def __init__(self):
         # AM rough notes: need to handle CapturedCallable in future too? Which doesn't have .id
         # AM rough notes: forward_attrs=True looks nice for simplifying syntax.
+        # AM rough notes: importantly the nodes are just pointers to real objects so not duplicated in memory.
+        # assert d.first_child().data.pages[0] is d["Test page"].data
         self.__dashboard_tree = TypedTree(calc_data_id=lambda tree, data: data.id)
         self._frozen_state = False
 
@@ -43,7 +45,7 @@ class ModelManager:
     # than doing it as separate method here.
     # Ideal next checkpoint future state: work out whether to put this __init__.
     def _set_dashboard(self, dashboard):
-        self.__dashboard_tree.clear()
+        # self.__dashboard_tree.clear()
         self.__populate_tree(dashboard)
 
     def print_dashboard_tree(self):
@@ -66,6 +68,10 @@ class ModelManager:
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
         # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
         return self.__dashboard_tree.find(data_id=model_id).data
+        # AM rough notes: smart lookup in nutree allows lookup by id and model itself and probably good to use here.
+        # But there's unexpected behaviour/maybe a bug in nutree where you set Tree(calc_data_id) upfront.
+        # Probably easy to fix.
+        # Check performance of different look ups and whether to use find or find_first.
 
     # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree. DONE
     def __iter__(self) -> Generator[ModelID, None, None]:
@@ -76,7 +82,7 @@ class ModelManager:
         # TODO: should this yield models rather than model IDs? Should model_manager be more like set with a special
         #  lookup by model ID or more like dictionary?
         # yield from self.__models
-        yield from self.__dashboard_tree.iterator(method=IterMethod.PRE_ORDER)
+        yield from iter(self.__dashboard_tree)
 
     # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree. DONE
     def _get_models(
@@ -135,8 +141,6 @@ class ModelManager:
         elif isinstance(model, Collection) and not isinstance(model, str):
             for child_model in model:
                 self.__populate_tree(child_model, parent, field_name)
-        # TODO[MS]: does there not need to be a case for not being a model? I guess that should
-        # just be caught by mypy
 
     def _get_model_page(self, model: Model) -> Page:
         """Gets the page containing `model`."""
