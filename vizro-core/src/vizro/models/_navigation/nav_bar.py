@@ -5,11 +5,11 @@ from typing import Annotated, Literal, Union
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import BeforeValidator, Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
+from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._navigation.nav_link import NavLink
 from vizro.models.types import ModelID
 
@@ -33,7 +33,6 @@ class NavBar(VizroBaseModel):
     type: Literal["nav_bar"] = "nav_bar"
     pages: Annotated[
         dict[str, list[ModelID]],
-        AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
     ]
@@ -41,8 +40,12 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        # TODO[MS]: we may need to validate pages here?
         self.items = self.items or [
-            NavLink(label=group_title, pages=pages) for group_title, pages in self.pages.items()
+            NavLink._from_dict_in_build(
+                parent_id=self.id, field_name="items", data={"label": group_title, "pages": pages}
+            )
+            for group_title, pages in self.pages.items()
         ]
 
         for position, item in enumerate(self.items, 1):
@@ -50,11 +53,6 @@ class NavBar(VizroBaseModel):
             # If there are more than 9 items, then the 10th and all subsequent items are named filter_9+.
             icon_default = f"filter_{position}" if position <= 9 else "filter_9+"  # noqa: PLR2004
             item.icon = item.icon or icon_default
-
-        # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
-        # here.
-        for item in self.items:
-            item.pre_build()
 
         return self.items
 

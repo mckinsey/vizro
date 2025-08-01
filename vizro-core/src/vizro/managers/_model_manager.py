@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import random
 import uuid
-from collections.abc import Collection, Generator, Iterable, Mapping
-from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
+from collections.abc import Collection, Generator, Mapping
+from typing import TYPE_CHECKING, Optional, TypeVar, Union
 
-from vizro.managers._managers_utils import _state_modifier
+from nutree.typed_tree import TypedNode, TypedTree
 
 if TYPE_CHECKING:
-    from vizro.models import Page, VizroBaseModel
+    from vizro.models import Dashboard, Page, VizroBaseModel
     from vizro.models.types import ModelID
 
 
@@ -34,37 +34,43 @@ class DuplicateIDError(ValueError):
 
 class ModelManager:
     def __init__(self):
-        self.__models: dict[ModelID, VizroBaseModel] = {}
+        # TODO: need to handle CapturedCallable in future too, which doesn't have .id
+        self.__dashboard_tree = TypedTree(calc_data_id=lambda tree, data: data.id, forward_attrs=True)
         self._frozen_state = False
 
-    # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
-    @_state_modifier
-    def __setitem__(self, model_id: ModelID, model: Model):
-        if model_id in self.__models:
-            raise DuplicateIDError(
-                f"Model with id={model_id} already exists. Models must have a unique id across the whole dashboard. "
-                f"If you are working from a Jupyter Notebook, please either restart the kernel, or "
-                f"use 'from vizro import Vizro; Vizro._reset()`."
-            )
-        self.__models[model_id] = model
+    # TODO[AM]: probably better to just instantiate model manager in Vizro and pass dashboard in init rather
+    # than doing it as separate method here --> work out whether to put this __init__.
+    def _set_dashboard(self, dashboard: Dashboard):
+        self.__populate_tree(dashboard)
 
-    @_state_modifier
-    def __delitem__(self, model_id: ModelID):
-        # Only required to handle legacy actions and could be removed when those are no longer needed.
-        del self.__models[model_id]
+    def print_dashboard_tree(self):
+        """Pretty print the dashboard tree."""
+        return self.__dashboard_tree.print(
+            title=False,
+            repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}(id={node.id})",
+        )
+
+    # TODO[AM]: Check if removal of __del__ was ok due to legacy actions.
 
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
-        # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
-        return self.__models[model_id]
+        node = self.__dashboard_tree.find(data_id=model_id)
+        if node is None:
+            raise KeyError(f"Model with id='{model_id}' not found in dashboard tree")
+        return node.data
 
-    def __iter__(self) -> Generator[ModelID, None, None]:
-        """Iterates through all models.
+    def _get_node(self, model_id: ModelID) -> TypedNode[VizroBaseModel]:
+        """Get the tree node for a given model ID."""
+        return self.__dashboard_tree[model_id]
 
-        Note this yields model IDs rather key/value pairs to match the interface for a dictionary.
-        """
-        # TODO: should this yield models rather than model IDs? Should model_manager be more like set with a special
+    def _get_tree(self) -> TypedTree[VizroBaseModel]:
+        """Get the dashboard tree."""
+        return self.__dashboard_tree
+
+    def __iter__(self) -> Generator[TypedNode[VizroBaseModel], None, None]:
+        """Iterates through all models in depth-first pre-order traversal."""
+        # TODO: should this yield models rather than nodes? Should model_manager be more like set with a special
         #  lookup by model ID or more like dictionary?
-        yield from self.__models
+        yield from iter(self.__dashboard_tree)
 
     def _get_models(
         self,
@@ -73,46 +79,73 @@ class ModelManager:
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 
-        If `model_type` is specified, return only models matching that type. Otherwise, include all types.
-        If `root_model` is specified, return only models that are descendants of the given `root_model`.
+        Args:
+            model_type: If specified, return only models matching that type. Otherwise, include all types.
+            root_model: If specified, return only models that are descendants of the given `root_model`.
+
+        Yields:
+            Models matching the specified criteria in pre-order traversal.
         """
         import vizro.models as vm
 
         if model_type is FIGURE_MODELS:
             model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
-        models = self.__get_model_children(root_model) if root_model is not None else self.__models.values()
 
-        # Convert to list to avoid changing size when looping through at runtime.
-        for model in list(models):
+        # Determine which nodes to iterate through based on root_model
+        nodes = iter(self.__dashboard_tree[root_model.id]) if root_model is not None else iter(self.__dashboard_tree)
+
+        for node in nodes:
+            model = node.data
             if model_type is None or isinstance(model, model_type):
-                yield model  # type: ignore[misc]
+                yield model
 
-    def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
+    def __populate_tree(
+        self,
+        model: Union[Model, Mapping[str, Model], Collection[Model]],
+        parent: Optional[Model] = None,
+        field_name: Optional[str] = None,
+    ):
         """Iterates through children of `model` with depth-first pre-order traversal."""
+        # TODO: decide if we want to refine this method.
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
-            yield model
+            if parent is None:
+                # TODO: Maybe dashboard should be actual tree root instead (so Tree("dashboard")) but note there's no
+                # way to attach data to it then.
+                self.__dashboard_tree.add(model, kind="dashboard")
+            else:
+                self.__dashboard_tree[parent].add(model, kind=field_name)
+
             for model_field in model.__class__.model_fields:
-                yield from self.__get_model_children(getattr(model, model_field))
+                self.__populate_tree(getattr(model, model_field), model, model_field)
         elif isinstance(model, Mapping):
             # We don't look through keys because Vizro models aren't hashable.
-            for child in model.values():
-                yield from self.__get_model_children(child)
-        elif isinstance(model, Collection) and not isinstance(model, str):
-            for child in model:
-                yield from self.__get_model_children(child)
+            for child_model in model.values():
+                self.__populate_tree(child_model, parent, field_name)
+        elif isinstance(model, Collection):
+            for child_model in model:
+                if not isinstance(child_model, str):
+                    self.__populate_tree(child_model, parent, field_name)
 
-    def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
+    def _get_model_page(self, model: Model) -> Page:
         """Gets the page containing `model`."""
         from vizro.models import Page
 
         if isinstance(model, Page):
             return model
 
-        for page in cast(Iterable[Page], self._get_models(Page)):
-            if model in self.__get_model_children(page):  # type: ignore[operator]
-                return page
+        # Find the model's node in the tree and walk up to find the Page
+        current_node = self.__dashboard_tree[model.id]
+        if not current_node:
+            raise ValueError(f"Model with id='{model.id}' not found in dashboard tree")
+
+        while current_node.parent:
+            current_node = current_node.parent
+            if isinstance(current_node.data, Page):
+                return current_node.data
+
+        raise ValueError(f"Model with id='{model.id}' is not contained within any Page")
 
     @staticmethod
     def _generate_id() -> ModelID:

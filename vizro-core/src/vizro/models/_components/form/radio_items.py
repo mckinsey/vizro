@@ -8,6 +8,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
+    set_in_container_flag,
     validate_options_dict,
     validate_value,
 )
@@ -76,6 +77,10 @@ class RadioItems(VizroBaseModel):
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @_log_call
+    def pre_build(self):
+        set_in_container_flag(self)
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
