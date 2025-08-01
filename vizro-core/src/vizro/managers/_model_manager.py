@@ -38,7 +38,7 @@ class ModelManager:
         # AM rough notes: forward_attrs=True looks nice for simplifying syntax.
         # AM rough notes: importantly the nodes are just pointers to real objects so not duplicated in memory.
         # assert d.first_child().data.pages[0] is d["Test page"].data
-        self.__dashboard_tree = TypedTree(calc_data_id=lambda tree, data: data.id)
+        self.__dashboard_tree = TypedTree(calc_data_id=lambda tree, data: data.id, forward_attrs=True)
         self._frozen_state = False
 
     # AM rough notes: probably better to just instantiate model manager in Vizro and pass dashboard in init rather
@@ -51,7 +51,7 @@ class ModelManager:
     def print_dashboard_tree(self):
         return self.__dashboard_tree.print(
             title=False,
-            repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}(id={node.data.id})",
+            repr=lambda node: f"{node.kind}: {node.__class__.__name__}(id={node.id})",
         )
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?

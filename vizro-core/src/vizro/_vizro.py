@@ -180,9 +180,9 @@ Provide a valid import path for these in your dashboard configuration."""
         # before higher-level models.
         # TODO[MS]: Make more official access to the tree
         for node in model_manager._ModelManager__dashboard_tree.iterator(method=IterMethod.POST_ORDER):
-            # print("visiting", node.data.__class__.__name__, node.data.id)
+            # print("visiting", node.__class__.__name__, node.id)
             if hasattr(node.data, "pre_build"):
-                # print("pre-building", node.data.__class__.__name__, node.data.id)
+                # print("pre-building", node.__class__.__name__, node.id)
 
                 node.data.pre_build()
                 # print(model_manager.print_dashboard_tree())

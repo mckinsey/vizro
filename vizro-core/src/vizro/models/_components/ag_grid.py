@@ -173,7 +173,7 @@ class AgGrid(VizroBaseModel):
             if hasattr(model, "_inner_component_id") and model.id != self.id
         }
         if (
-            self._inner_component_id in [node.data.id for node in model_manager]
+            self._inner_component_id in [node.id for node in model_manager]
             or self._inner_component_id in all_inner_component_ids
         ):
             raise DuplicateIDError(

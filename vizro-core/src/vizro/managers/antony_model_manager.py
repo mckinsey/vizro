@@ -50,11 +50,11 @@ class ModelManager:
         d = self.__dashboard_tree
         # AM rough notes: importantly the nodes are just pointers to real objects so not duplicated in memory.
         # assert d.first_child().data.pages[0] is d["Test page"].data
-        d.print(title=False, repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}(id={node.data.id})")
+        d.print(title=False, repr=lambda node: f"{node.kind}: {node.__class__.__name__}(id={node.id})")
         # repr = {node.data!r} is maybe the default and shows all fields too
         d.to_mermaid_flowchart(
             "graph.md",
-            node_mapper='["{node.data.__class__.__name__}(id={node.data.id})"]',
+            node_mapper='["{node.__class__.__name__}(id={node.id})"]',
             direction="LR",
             add_root=False,
             title=False,
