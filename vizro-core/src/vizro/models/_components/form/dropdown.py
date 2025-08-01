@@ -5,17 +5,15 @@ from typing import Annotated, Any, Literal, Optional, Union, cast
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
-from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
     validate_options_dict,
     validate_value,
 )
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, MultiValueType, OptionsType, SingleValueType, _IdProperty
 
@@ -95,12 +93,7 @@ class Dropdown(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("value")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    actions: list[ActionType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -122,6 +115,11 @@ class Dropdown(VizroBaseModel):
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -187,6 +185,7 @@ class Dropdown(VizroBaseModel):
                 if self.title
                 else None,
                 dcc.Dropdown(**(defaults | self.extra)),
+                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ]
         )
 
@@ -228,12 +227,15 @@ class Dropdown(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                 ),
+                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True),
                 *hidden_select_all_dropdown,
             ]
         )
 
     @_log_call
     def build(self):
+        # TODO NOW: check that guard_actions_chain is implemented everywhere it should be. Is it better to implement
+        #  on selectors or in Filter.__call__ itself?
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
 
     def _update_dropdown_select_all(self):

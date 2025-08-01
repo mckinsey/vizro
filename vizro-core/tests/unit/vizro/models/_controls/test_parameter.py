@@ -3,9 +3,8 @@ from asserts import assert_component_equal
 from dash import html
 
 import vizro.models as vm
-from vizro.actions._abstract_action import _AbstractAction
+from vizro.actions._parameter_action import _parameter
 from vizro.managers import data_manager, model_manager
-from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.parameter import Parameter
 
 
@@ -149,31 +148,25 @@ class TestPreBuildMethod:
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
+        [default_action] = parameter.selector.actions
 
-        default_actions_chain = parameter.selector.actions[0]
-        default_action = default_actions_chain.actions[0]
-
-        assert isinstance(default_actions_chain, ActionsChain)
-        assert isinstance(default_action, _AbstractAction)
+        assert isinstance(default_action, _parameter)
         assert default_action.id == f"__parameter_action_{parameter.id}"
+        assert default_action.targets == ["scatter_chart.x"]
 
     def test_set_custom_action(self, managers_one_page_two_graphs, identity_action_function):
         action_function = identity_action_function()
+        custom_action = vm.Action(function=action_function)
         parameter = vm.Parameter(
             targets=["scatter_chart.x"],
             selector=vm.RadioItems(
                 options=["lifeExp", "gdpPercap", "pop"],
-                actions=[vm.Action(function=action_function)],
+                actions=[custom_action],
             ),
         )
         model_manager["test_page"].controls = [parameter]
         parameter.pre_build()
-
-        default_actions_chain = parameter.selector.actions[0]
-        default_action = default_actions_chain.actions[0]
-
-        assert isinstance(default_actions_chain, ActionsChain)
-        assert default_action.function is action_function
+        assert parameter.selector.actions == [custom_action]
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
@@ -205,7 +198,7 @@ class TestPreBuildMethod:
         model_manager["test_page"].controls.append(data_frame_parameter)
         data_frame_parameter.pre_build()
 
-        default_action = data_frame_parameter.selector.actions[0].actions[0]
+        [default_action] = data_frame_parameter.selector.actions
         assert set(default_action.targets) == expected_parameter_targets
 
 

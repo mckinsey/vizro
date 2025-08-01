@@ -7,18 +7,16 @@ import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, field_validator
-from pydantic.functional_serializers import PlainSerializer
+from pydantic import AfterValidator, BeforeValidator, Field, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested
 from vizro.actions import filter_interaction
-from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
+from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
-from vizro.models._models_utils import _log_call, warn_description_without_title
+from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionType,
@@ -88,12 +86,7 @@ class Graph(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("clickData")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    actions: list[ActionType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -109,6 +102,11 @@ class Graph(VizroBaseModel):
     ]
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.clickData"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -168,9 +166,10 @@ class Graph(VizroBaseModel):
             return data_frame
 
         source_graph_id: ModelID = ctd_click_data["id"]
-        source_graph_actions = _get_component_actions(model_manager[source_graph_id])
+        source_graph = cast(Graph, model_manager[source_graph_id])
+
         try:
-            custom_data_columns = cast(Graph, model_manager[source_graph_id])["custom_data"]
+            custom_data_columns = source_graph["custom_data"]
         except KeyError as exc:
             raise KeyError(
                 f"Missing 'custom_data' for the source graph with id {source_graph_id}. "
@@ -182,7 +181,7 @@ class Graph(VizroBaseModel):
 
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
-        for action in source_graph_actions:
+        for action in source_graph.actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
             #  Potentially this function would move to the filter_interaction action. That will be deprecated so
