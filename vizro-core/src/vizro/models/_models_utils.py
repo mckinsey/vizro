@@ -100,7 +100,6 @@ def make_actions_chain(self):
     # built in actions are always handled in the new way.
     for action in self.actions:
         if isinstance(action.function, (export_data, filter_interaction)):
-            # del model_manager[action.id]
             converted_actions.append(action.function)
         else:
             converted_actions.append(action)
