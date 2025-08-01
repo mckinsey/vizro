@@ -179,7 +179,7 @@ Provide a valid import path for these in your dashboard configuration."""
         # This currently uses the post-order traversal, since this guarantees that lower-level modes are pre-built
         # before higher-level models.
         # TODO[MS]: Make more official access to the tree
-        for node in model_manager._ModelManager__dashboard_tree.iterator(method=IterMethod.POST_ORDER):
+        for node in model_manager._get_tree().iterator(method=IterMethod.POST_ORDER):
             # print("visiting", node.__class__.__name__, node.id)
             if hasattr(node.data, "pre_build"):
                 # print("pre-building", node.__class__.__name__, node.id)

@@ -39,7 +39,7 @@ class NavLink(VizroBaseModel):
         from vizro.models._navigation.accordion import Accordion
 
         # TODO[MS]: refactor properly
-        parent = model_manager._ModelManager__dashboard_tree.find(data_id=self.id)
+        parent = model_manager._get_node(self.id)
         grandparent = parent.parent
         self.pages = self.pages or parent.data.pages or grandparent.data.pages
         _validate_pages(self.pages)

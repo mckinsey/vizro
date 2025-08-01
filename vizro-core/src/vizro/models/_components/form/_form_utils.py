@@ -138,6 +138,4 @@ def validate_date_picker_range(range, info: ValidationInfo):
 
 def set_in_container_flag(model):
     """Sets the _in_container flag based on whether the model is inside a Container."""
-    model._in_container = isinstance(
-        model_manager._ModelManager__dashboard_tree.find(data_id=model.id).up(2).data, Container
-    )
+    model._in_container = isinstance(model_manager._get_node(model.id).up(2).data, Container)
