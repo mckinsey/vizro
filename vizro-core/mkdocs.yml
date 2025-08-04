@@ -133,9 +133,11 @@ markdown_extensions:
 plugins:
   - search
   - autorefs
-  - llmstxt-md:
-        markdown_description: Vizro is an open-source Python-based toolkit. You can use it to build data visualization apps quickly and easily, without needing advanced engineering or design expertise.
-        sections:
+
+  - llmstxt: # https://pypi.org/project/mkdocs-llmstxt/
+      markdown_description: HTML scraped version
+      full_output: llms-full.txt
+      sections:
           "TUTORIALS": 
               - pages/tutorials/first-dashboard.md: "A quickstart dashboard"
               - pages/tutorials/explore-components.md: "An in-depth tutorial to introduce Vizro's key features"
@@ -187,7 +189,7 @@ plugins:
               - pages/explanation/schema.md: "The Vizro schema"
               - pages/explanation/authors.md: "Vizro contributor listing"
 
-
+        
 
   - mkdocstrings:
       handlers:
