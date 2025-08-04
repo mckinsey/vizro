@@ -102,6 +102,7 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
+  "mkdocs-llmstxt-md",
   "linkchecker",
   "mkdocs-pycafe",
   "PyGithub",
