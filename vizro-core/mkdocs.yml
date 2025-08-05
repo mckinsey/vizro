@@ -152,7 +152,7 @@ plugins:
       sections:
         "TUTORIALS":
           - pages/tutorials/first-dashboard.md: "A quickstart dashboard tutorial"
-          - pages/tutorials/explore-components.md: "An in-depth tutorial to introduce Vizro's key features (accompanying Video is avaiable)"
+          - pages/tutorials/explore-components.md: "An in-depth tutorial to introduce Vizro's key features (accompanying Video is available)"
         "FUNDAMENTAL CONCEPTS IN VIZRO":
           - pages/user-guides/install.md: "Guide on how to install Vizro"
           - pages/user-guides/dashboard.md: "Dashboard basics"
