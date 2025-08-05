@@ -56,13 +56,12 @@ nav:
       - Deprecations: pages/API-reference/deprecations.md
   - Find out more:
       - FAQs: pages/explanation/faq.md
+      - Examples gallery: https://vizro.mckinsey.com/
       - User examples: pages/explanation/your-examples.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
       - Vizro schema: pages/explanation/schema.md
       - Authors: pages/explanation/authors.md
-  - Examples gallery:
-      - Gallery: https://vizro.mckinsey.com/
   - ✨🆕 Cheatsheet: pages/cheatsheet/cheatsheet.html
   - Vizro-MCP:
       - Vizro-MCP: https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md
@@ -133,6 +132,8 @@ markdown_extensions:
 plugins:
   - search
   - autorefs
+  - open-in-new-tab:
+      add_icon: true
   - mkdocstrings:
       handlers:
         python:
