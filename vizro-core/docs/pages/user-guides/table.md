@@ -241,7 +241,7 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
                             {"value": "sizeToFit", "label": "sizeToFit"},
                             {"value": "NONE", "label": "None"},
                         ],
-                        value="responsizeSizeToFit"
+                        value="responsiveSizeToFit"
                     ),
                 )
             ],
