@@ -13,30 +13,30 @@ nav:
           - Run or deploy dashboards: pages/user-guides/run-deploy.md
       - COMPONENTS:
           - Components guides:
-            - Overview: pages/user-guides/components.md
-            - Graph: pages/user-guides/graph.md
-            - Table: pages/user-guides/table.md
-            - Figure: pages/user-guides/figure.md
-            - Card: pages/user-guides/card.md
-            - Text: pages/user-guides/text.md
-            - Button: pages/user-guides/button.md
-            - Container: pages/user-guides/container.md
-            - Tab: pages/user-guides/tabs.md
+              - Overview: pages/user-guides/components.md
+              - Graph: pages/user-guides/graph.md
+              - Table: pages/user-guides/table.md
+              - Figure: pages/user-guides/figure.md
+              - Card: pages/user-guides/card.md
+              - Text: pages/user-guides/text.md
+              - Button: pages/user-guides/button.md
+              - Container: pages/user-guides/container.md
+              - Tab: pages/user-guides/tabs.md
       - CONTROLS:
           - Controls guides:
-            - Overview: pages/user-guides/controls.md
-            - Filter: pages/user-guides/filters.md
-            - Parameter: pages/user-guides/parameters.md
-            - Selector: pages/user-guides/selectors.md
+              - Overview: pages/user-guides/controls.md
+              - Filter: pages/user-guides/filters.md
+              - Parameter: pages/user-guides/parameters.md
+              - Selector: pages/user-guides/selectors.md
       - NAVIGATION:
           - Navigation: pages/user-guides/navigation.md
       - VISUAL FORMATTING:
           - Visual formatting guides:
-            - Overview: pages/user-guides/visual-formatting.md
-            - Layout: pages/user-guides/layouts.md
-            - Theme: pages/user-guides/themes.md
-            - Assets: pages/user-guides/assets.md
-            - Custom CSS: pages/user-guides/custom-css.md
+              - Overview: pages/user-guides/visual-formatting.md
+              - Layout: pages/user-guides/layouts.md
+              - Theme: pages/user-guides/themes.md
+              - Assets: pages/user-guides/assets.md
+              - Custom CSS: pages/user-guides/custom-css.md
       - ACTIONS:
           - Actions: pages/user-guides/actions.md
       - DATA:
@@ -44,12 +44,12 @@ nav:
           - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - EXTENSIONS:
           - Extensions guides:
-            - Overview: pages/user-guides/extensions.md
-            - Custom charts: pages/user-guides/custom-charts.md
-            - Custom tables: pages/user-guides/custom-tables.md
-            - Custom components: pages/user-guides/custom-components.md
-            - Custom actions: pages/user-guides/custom-actions.md
-            - Custom figures: pages/user-guides/custom-figures.md
+              - Overview: pages/user-guides/extensions.md
+              - Custom charts: pages/user-guides/custom-charts.md
+              - Custom tables: pages/user-guides/custom-tables.md
+              - Custom components: pages/user-guides/custom-components.md
+              - Custom actions: pages/user-guides/custom-actions.md
+              - Custom figures: pages/user-guides/custom-figures.md
   - API reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
