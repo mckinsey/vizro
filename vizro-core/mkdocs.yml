@@ -135,18 +135,19 @@ plugins:
   - autorefs
 
   - llmstxt: # https://pypi.org/project/mkdocs-llmstxt/
-      markdown_description: Vizro is an open-source Python-based toolkit to build data visualization apps. 
+      markdown_description:
+        Vizro is an open-source Python-based toolkit to build data visualization apps.
 
-                            Every Vizro app is defined by a simple configuration, using the high-level categories
-                              * Components (charts, tables, cards, KPI indicators, forms and more), 
-                              * Controls (filters and parameters, using a range of selectors such as drop-down menus and sliders), 
-                              * Actions (interactions between components, drill-throughs, export functionality and more), 
-                              * Layouts (grid layouts or flexible containers, with a range of pre-set styles), 
-                              * Navigation (a range of app layout and navigation settings, including nested page hierarchies). 
+        Every Vizro app is defined by a simple configuration, using the high-level categories
+        * Components (charts, tables, cards, KPI indicators, forms and more),
+        * Controls (filters and parameters, using a range of selectors such as drop-down menus and sliders),
+        * Actions (interactions between components, drill-throughs, export functionality and more),
+        * Layouts (grid layouts or flexible containers, with a range of pre-set styles),
+        * Navigation (a range of app layout and navigation settings, including nested page hierarchies).
 
-                            Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation. 
+        Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
-                            Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
+        Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
       full_output: llms-full.txt
       sections:
         "TUTORIALS":
