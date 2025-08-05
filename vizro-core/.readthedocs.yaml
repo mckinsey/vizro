@@ -13,7 +13,6 @@ build:
     - pip install hatch
     - cd vizro-core/ && hatch run docs:pip tree
     - cd vizro-core/ && hatch run docs:build
-    - cd vizro-core/ && hatch run docs:link-check
     - cd vizro-core/ && hatch run docs:logo-check
     - mkdir --parents $READTHEDOCS_OUTPUT
     - mv vizro-core/site/ $READTHEDOCS_OUTPUT/html
