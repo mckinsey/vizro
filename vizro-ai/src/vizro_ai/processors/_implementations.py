@@ -6,7 +6,7 @@ from typing import Optional
 
 from vizro_ai.processors._base import (
     ChatMessage,
-    ChatProcessor, 
+    ChatProcessor,
     MessageType,
     _convert_structured_content_to_text,
     parse_markdown_stream,
@@ -159,4 +159,4 @@ class GraphProcessor(ChatProcessor):
             import logging
 
             logging.error("An error occurred in GraphProcessor:", exc_info=True)
-            yield ChatMessage(type=MessageType.ERROR, content="An internal error has occurred.") 
+            yield ChatMessage(type=MessageType.ERROR, content="An internal error has occurred.")

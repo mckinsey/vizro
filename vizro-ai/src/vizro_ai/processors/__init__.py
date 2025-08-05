@@ -3,14 +3,14 @@ from vizro_ai.processors._implementations import EchoProcessor, GraphProcessor, 
 from vizro_ai.processors.processors import echo_processor, graph_processor, openai_processor
 
 __all__ = [
-    "ChatMessage", 
-    "ChatProcessor", 
-    "MessageType", 
-    "parse_markdown_stream",
-    "EchoProcessor", 
-    "GraphProcessor", 
+    "ChatMessage",
+    "ChatProcessor",
+    "EchoProcessor",
+    "GraphProcessor",
+    "MessageType",
     "OpenAIProcessor",
-    "echo_processor", 
-    "openai_processor", 
-    "graph_processor"
-] 
+    "echo_processor",
+    "graph_processor",
+    "openai_processor",
+    "parse_markdown_stream",
+]

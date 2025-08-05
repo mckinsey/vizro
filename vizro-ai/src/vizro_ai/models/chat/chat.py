@@ -1,12 +1,10 @@
 """Chat model."""
 
 import json
-import uuid
 from typing import Literal, Optional, Union
 
 import dash
 import dash_bootstrap_components as dbc
-import plotly.graph_objects as go
 from dash import Input, Output, State, callback, clientside_callback, dcc, html
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
@@ -14,7 +12,6 @@ from flask import Response, request
 from pydantic import ConfigDict, Field, field_validator
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-
 from vizro.models.types import CapturedCallable, validate_captured_callable
 
 from vizro_ai.models.chat._constants import (
@@ -28,7 +25,6 @@ from vizro_ai.models.chat._constants import (
     ROOT_CONTAINER,
 )
 from vizro_ai.models.chat._utils import (
-    _create_code_block_component,
     _create_message_components,
     _flush_accumulated_text,
     _parse_sse_chunks,
@@ -48,7 +44,7 @@ class Chat(VizroBaseModel):
         height (str): Height of the chat component wrapper. Defaults to `"100%"`.
         storage_type (Literal["memory", "session", "local"]): Storage type for chat history
             persistence. Defaults to `"session"`.
-        processor (Union[ChatProcessor, CapturedCallable]): Chat processor for generating responses. 
+        processor (Union[ChatProcessor, CapturedCallable]): Chat processor for generating responses.
             Can be a ChatProcessor instance or a captured callable that returns a ChatProcessor.
             Defaults to `EchoProcessor()`.
 
@@ -65,13 +61,13 @@ class Chat(VizroBaseModel):
     storage_type: Literal["memory", "session", "local"] = Field(
         default="session", description="Storage type for chat history persistence"
     )
-    
+
     processor: Union[ChatProcessor, CapturedCallable] = Field(
         default_factory=EchoProcessor,
         json_schema_extra={"mode": "processor", "import_path": "vizro_ai.processors"},
-        description="Chat processor for generating responses. Can be a ChatProcessor instance or captured callable that returns a ChatProcessor."
+        description="Chat processor for generating responses. Can be a ChatProcessor instance or captured callable that returns a ChatProcessor.",
     )
-    
+
     _validate_processor = field_validator("processor", mode="before")(validate_captured_callable)
 
     def plug(self, app):
@@ -90,7 +86,9 @@ class Chat(VizroBaseModel):
 
                 def response_stream():
                     try:
-                        processor_instance = self.processor() if isinstance(self.processor, CapturedCallable) else self.processor
+                        processor_instance = (
+                            self.processor() if isinstance(self.processor, CapturedCallable) else self.processor
+                        )
                         for chat_message in processor_instance.get_response(messages, user_prompt):
                             yield sse_message(chat_message.to_json())
                         # Send standard SSE completion signal
@@ -290,26 +288,7 @@ class Chat(VizroBaseModel):
             if not buffer_data:
                 return []
 
-            components = []
-            for item in buffer_data:
-                if item["type"] == "text":
-                    components.append(
-                        dcc.Markdown(item["content"], className="markdown-container", style={"margin": 0})
-                    )
-                elif item["type"] == "code":
-                    code_id = f"{self.id}-code-{uuid.uuid4()}"
-                    components.append(_create_code_block_component(item["content"], code_id))
-                    components.append(html.Br())
-                elif item["type"] == "plotly_graph":
-                    fig_data = json.loads(item["content"])
-                    components.append(
-                        dcc.Graph(
-                            figure=go.Figure(fig_data),
-                        )
-                    )
-                    components.append(html.Br())
-
-            return components
+            return _create_message_components(buffer_data, self.id)
 
         @callback(
             Output(f"{self.id}-stream-buffer", "data"),
@@ -341,6 +320,7 @@ class Chat(VizroBaseModel):
                         {
                             "type": "code",
                             "content": msg_content,
+                            "metadata": msg_metadata,
                         }
                     )
                 elif msg_type == "plotly_graph":

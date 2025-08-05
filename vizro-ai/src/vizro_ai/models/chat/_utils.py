@@ -3,6 +3,7 @@
 import json
 import uuid
 
+import dash_mantine_components as dmc
 import plotly.graph_objects as go
 from dash import dcc, html
 
@@ -75,41 +76,23 @@ def _parse_sse_chunks(animation_data) -> list[dict]:
         return []
 
 
-def _create_code_block_component(code_content, code_id) -> html.Div:
+def _create_code_block_component(code_content, code_id, language="some-unsupported-lang") -> html.Div:
     """Create a consistent code block component with clipboard functionality.
 
     Args:
         code_content: The code content to display.
         code_id: Unique ID for the code block.
+        language: Programming language for syntax highlighting. Defaults to "some-unsupported-lang".
 
     Returns:
         Dash HTML component with code block and clipboard button.
     """
     return html.Div(
         [
-            dcc.Clipboard(
-                target_id=code_id,
-                className="code-clipboard",
-                style={
-                    "position": "absolute",
-                    "top": "8px",
-                    "right": "8px",
-                    "opacity": 0.7,
-                    "zIndex": 1000,
-                    "transition": "opacity 0.2s ease",
-                    "padding": "4px 6px",
-                    "cursor": "pointer",
-                },
-                title="Copy code",
-            ),
-            dcc.Markdown(
-                f"```\n{code_content}\n```",
+            dmc.CodeHighlight(
+                code=code_content,
                 id=code_id,
-                className="markdown-container code-block-container",
-                style={
-                    "fontFamily": "monospace",
-                    "padding": "10px",
-                },
+                language=language,
             ),
         ],
         style=CODE_BLOCK,
@@ -137,22 +120,26 @@ def _create_message_components(content, message_id):
 
     Args:
         content: List of content items with type and content.
-        message_id: Unique ID for this message.
+        message_id: Unique ID prefix for component IDs (can be message ID or component ID).
 
     Returns:
-        Dash HTML component containing the structured content.
+        List of Dash components or Dash HTML component containing the structured content.
     """
     components = []
 
     for item in content:
         item_type = item.get("type", "text")
         item_content = item.get("content", "")
+        item_metadata = item.get("metadata", {})
 
         if item_type == "text" and item_content.strip():
             components.append(dcc.Markdown(item_content, className="markdown-container", style={"margin": 0}))
         elif item_type == "code":
             code_id = f"{message_id}-code-{uuid.uuid4()}"
-            components.append(_create_code_block_component(item_content, code_id))
+            # Extract language from metadata with fallback to "some-unsupported-lang"
+            # https://www.dash-mantine-components.com/components/code-highlight#supported-languages
+            language = item_metadata.get("language", "some-unsupported-lang")
+            components.append(_create_code_block_component(item_content, code_id, language))
             components.append(html.Br())
         elif item_type == "plotly_graph":
             fig_data = json.loads(item_content)
@@ -163,4 +150,4 @@ def _create_message_components(content, message_id):
             )
             components.append(html.Br())
 
-    return html.Div(components) if components else ""
+    return components

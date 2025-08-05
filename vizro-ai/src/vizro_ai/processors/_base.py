@@ -128,20 +128,23 @@ def parse_markdown_stream(token_stream: Generator[str, None, None]) -> Generator
             # Starting a code block
             before, delimiter, after = buffer.partition("```")
 
-            # Yield any text before the code block
-            if before:
-                yield ChatMessage(type=MessageType.TEXT, content=before)
+            # Wait for a newline to complete language detection, unless we're clearly done
+            if "\n" in after or after.count("```") > 0:
+                # Yield any text before the code block
+                if before:
+                    yield ChatMessage(type=MessageType.TEXT, content=before)
 
-            # Extract language if present
-            lines = after.split("\n", 1)
-            if lines and lines[0].strip() and re.match(r"^\w+$", lines[0].strip()):
-                code_language = lines[0].strip()
-                buffer = lines[1] if len(lines) > 1 else ""
-            else:
-                code_language = ""
-                buffer = after
+                # Extract language if present
+                lines = after.split("\n", 1)
+                lang_candidate = lines[0].strip()
+                if lang_candidate and re.match(r"^[\w\-]+$", lang_candidate):
+                    code_language = lang_candidate
+                    buffer = lines[1] if len(lines) > 1 else ""
+                else:
+                    code_language = ""
+                    buffer = after
 
-            in_code_block = True
+                in_code_block = True
 
         elif in_code_block and "```" in buffer:
             # Ending a code block

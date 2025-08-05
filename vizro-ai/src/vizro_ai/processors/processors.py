@@ -3,13 +3,14 @@
 from typing import Optional
 
 from vizro.models.types import capture
+
 from vizro_ai.processors._implementations import EchoProcessor, GraphProcessor, OpenAIProcessor
 
 
 @capture("processor")
 def echo_processor() -> EchoProcessor:
     """Create an EchoProcessor instance.
-    
+
     Returns:
         EchoProcessor: Echo processor that repeats user input.
     """
@@ -24,13 +25,13 @@ def openai_processor(
     api_base: Optional[str] = None,
 ) -> OpenAIProcessor:
     """Create an OpenAIProcessor instance.
-    
+
     Args:
         model: The OpenAI model to use. Defaults to "gpt-4.1-nano".
         temperature: The temperature parameter for generation. Defaults to 0.7.
         api_key: Optional API key. If not provided, will look for OPENAI_API_KEY env var.
         api_base: Optional API base URL.
-        
+
     Returns:
         OpenAIProcessor: OpenAI processor instance.
     """
@@ -45,8 +46,8 @@ def openai_processor(
 @capture("processor")
 def graph_processor() -> GraphProcessor:
     """Create a GraphProcessor instance.
-    
+
     Returns:
         GraphProcessor: Graph processor that demonstrates chart rendering.
     """
-    return GraphProcessor() 
+    return GraphProcessor()

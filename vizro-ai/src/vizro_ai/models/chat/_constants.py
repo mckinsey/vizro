@@ -56,9 +56,7 @@ MESSAGE_BUBBLE = {
 }
 
 CODE_BLOCK = {
-    "position": "relative",
     "backgroundColor": "var(--surfaces-bg-card)",
-    "borderRadius": "10px",
 }
 
 # =============================================================================
