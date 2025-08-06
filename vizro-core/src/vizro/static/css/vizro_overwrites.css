@@ -31,11 +31,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 .nav-link {
-   color: var(--text-secondary) !important;
+   color: var(--bs-secondary) !important;
 }
 
 .nav-link:active, .nav-link.active {
-    color: var(--text-primary) !important;
+    color: var(--bs-primary) !important;
 }
 
 /* CARDS */

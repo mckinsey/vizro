@@ -983,7 +983,7 @@ def my_custom_table(data_frame=None, chosen_columns: Optional[list[str]] = None)
     columns = [{"name": i, "id": i} for i in chosen_columns]
     defaults = {
         "style_as_list_view": True,
-        "style_data": {"border_bottom": "1px solid var(--border-subtleAlpha01)", "height": "40px"},
+        "style_data": {"border_bottom": "1px solid var(--bs-border-color)", "height": "40px"},
         "style_header": {
             "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
             "border_top": "None",
@@ -1199,13 +1199,14 @@ dashboard = vm.Dashboard(
 
 
 if __name__ == "__main__":
+    # Move app definition outside of __main__ block for the HF demo to work
     app = Vizro().build(dashboard)
-
-    banner = dbc.NavLink(
-        ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
-        href="https://github.com/mckinsey/vizro",
-        target="_blank",
-        class_name="anchor-container",
+    app.dash.layout.children.append(
+        dbc.NavLink(
+            ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
+            href="https://github.com/mckinsey/vizro",
+            target="_blank",
+            class_name="anchor-container",
+        )
     )
-    app.dash.layout.children.append(banner)
     app.run()

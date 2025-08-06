@@ -5,3 +5,4 @@ isort==5.13.2
 plotly==6.0.0
 vizro==0.1.44
 gunicorn
+numpy!=2.0.2  # there is an issue with this specific version that the whl can't be built

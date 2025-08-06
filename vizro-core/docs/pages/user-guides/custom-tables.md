@@ -40,7 +40,7 @@ The following examples show a possible version of a custom table. In this case t
             columns = [{"name": i, "id": i} for i in chosen_columns]
             defaults = {
                 "style_as_list_view": True,
-                "style_data": {"border_bottom": "1px solid var(--border-subtleAlpha01)", "height": "40px"},
+                "style_data": {"border_bottom": "1px solid var(--bs-border-color)", "height": "40px"},
                 "style_header": {
                     "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
                     "border_top": "None",
