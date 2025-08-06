@@ -5,7 +5,6 @@
 import json
 import random
 import time
-from time import sleep
 from typing import Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
@@ -14,15 +13,14 @@ import plotly.express as px
 import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import ALL, Input, Output, State, callback, callback_context, dash, dcc, html, no_update
+from dash import ALL, Input, Output, State, callback, callback_context, dcc, html, no_update
 
 # from ploomber_cloud import functions
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
 from vizro.managers import data_manager
 from vizro.models._models_utils import _log_call
 from vizro.models.types import capture
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.tables import dash_ag_grid
 
 
 class VizroStore(vm.VizroBaseModel):
@@ -349,7 +347,6 @@ def update_todos_figure(store: Optional[dict[str, Any]]):
 )
 def checklist_pattern_callback(checklist_values: list, store: Optional[dict[str, Any]]):
     """Pattern matching callback that responds to any checklist change"""
-
     if not callback_context.triggered:
         return no_update
 
