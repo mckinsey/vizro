@@ -114,6 +114,7 @@ class Parameter(VizroBaseModel):
         if isinstance(self.selector, (Checklist, Dropdown, RadioItems)) and not self.selector.options:
             raise TypeError(f"{self.selector.type} requires the argument 'options' when used within Parameter.")
 
+    # The below could move to selector.pre_build() if desired
     def _set_selector_title(self):
         if not self.selector.title:
             self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
@@ -148,4 +149,10 @@ class Parameter(VizroBaseModel):
             # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
             self.targets.extend(list(filter_targets))
 
-            self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+            self.selector.actions = [
+                _parameter._from_dict_in_build(
+                    parent_id=self.id,
+                    field_name="actions",
+                    data={"id": f"{PARAMETER_ACTION_PREFIX}_{self.id}", "targets": self.targets},
+                )
+            ]
