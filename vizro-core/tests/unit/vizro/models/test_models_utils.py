@@ -5,7 +5,8 @@ import pytest
 from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.models._models_utils import warn_description_without_title
+from vizro.actions import export_data
+from vizro.models._models_utils import coerce_actions_type, warn_description_without_title
 
 
 @dataclass
@@ -53,3 +54,19 @@ class TestSharedValidators:
         info = MockValidationInfo(data={"title": ""})
         with pytest.warns(UserWarning, match="description.*title.*missing or empty"):
             warn_description_without_title("description", info)
+
+    def test_coerce_actions_type(self):
+        """Test that coerce_actions_type converts single actions to lists and leaves lists unchanged."""
+        # Single action -> list
+        single_action = vm.Action(function=export_data())
+        result = coerce_actions_type(single_action)
+        assert isinstance(result, list) and len(result) == 1 and result[0] == single_action
+
+        # List of actions -> unchanged
+        action_list = [vm.Action(function=export_data())]
+        result = coerce_actions_type(action_list)
+        assert result == action_list
+
+        # Integration: single action works with components
+        button = vm.Button(actions=export_data())
+        assert isinstance(button.actions, list) and len(button.actions) == 1

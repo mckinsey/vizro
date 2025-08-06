@@ -4,6 +4,7 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import export_data
 from vizro.tables import dash_ag_grid
+import vizro.plotly.express as px
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 
