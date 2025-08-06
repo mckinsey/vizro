@@ -6,7 +6,7 @@ import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from dash import dcc, get_asset_url, html
-from pydantic import AfterValidator, Field, PlainSerializer, BeforeValidator
+from pydantic import AfterValidator, BeforeValidator, Field, PlainSerializer
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call, coerce_actions_type
 from vizro.models.types import ActionType, capture
