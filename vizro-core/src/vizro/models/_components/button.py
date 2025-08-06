@@ -6,16 +6,9 @@ from pydantic import BeforeValidator, Field, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._models_utils import _log_call, make_actions_chain
+from vizro.models._models_utils import _log_call, coerce_actions_type, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
-
-
-def coerce_actions_type(actions: Any) -> list[Any]:
-    """Converts a single action into a list of actions for user convenience."""
-    if isinstance(actions, list):
-        return actions
-    return [actions]
 
 
 class Button(VizroBaseModel):
@@ -42,7 +35,7 @@ class Button(VizroBaseModel):
     type: Literal["button"] = "button"
     text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
-    actions: Annotated[list["ActionType"], BeforeValidator(coerce_actions_type)] = []
+    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
