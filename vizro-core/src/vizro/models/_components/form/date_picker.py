@@ -9,7 +9,12 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
-from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
+from vizro.models._models_utils import (
+    _log_call,
+    coerce_actions_type,
+    make_actions_chain,
+    warn_description_without_title,
+)
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
@@ -28,7 +33,8 @@ class DatePicker(VizroBaseModel):
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
+            Accepts either a single action or a list of actions. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
             any defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
@@ -66,7 +72,7 @@ class DatePicker(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: list[ActionType] = []
+    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],

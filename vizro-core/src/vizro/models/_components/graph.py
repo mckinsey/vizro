@@ -16,7 +16,12 @@ from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
-from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
+from vizro.models._models_utils import (
+    _log_call,
+    coerce_actions_type,
+    make_actions_chain,
+    warn_description_without_title,
+)
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionType,
@@ -45,7 +50,8 @@ class Graph(VizroBaseModel):
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
+            Accepts either a single action or a list of actions. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
@@ -86,7 +92,7 @@ class Graph(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: list[ActionType] = []
+    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],

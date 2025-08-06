@@ -13,7 +13,12 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
-from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
+from vizro.models._models_utils import (
+    _log_call,
+    coerce_actions_type,
+    make_actions_chain,
+    warn_description_without_title,
+)
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionType,
@@ -44,7 +49,8 @@ class AgGrid(VizroBaseModel):
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
+            Accepts either a single action or a list of actions. Defaults to `[]`.
 
     """
 
@@ -80,7 +86,7 @@ class AgGrid(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: list[ActionType] = []
+    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)

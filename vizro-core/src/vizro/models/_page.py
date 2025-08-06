@@ -27,6 +27,7 @@ from vizro.models._models_utils import (
     _build_inner_layout,
     _log_call,
     check_captured_callable_model,
+    coerce_actions_type,
     make_actions_chain,
     warn_description_without_title,
 )
@@ -64,12 +65,14 @@ class Page(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Page`.
+        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
             tags. Defaults to `None`.
-        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
+            Accepts either a single action or a list of actions. Defaults to `[]`.
 
     """
 
@@ -94,7 +97,7 @@ class Page(VizroBaseModel):
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
-    actions: list[ActionType] = []
+    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 

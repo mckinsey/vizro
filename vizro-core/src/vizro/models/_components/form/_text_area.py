@@ -5,7 +5,7 @@ from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._models_utils import _log_call, warn_description_without_title
+from vizro.models._models_utils import _log_call, coerce_actions_type, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
@@ -21,7 +21,8 @@ class TextArea(VizroBaseModel):
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (Optional[list[ActionType]]): Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
+            Accepts either a single action or a list of actions. Defaults to `[]`.
 
     """
 
@@ -43,7 +44,7 @@ class TextArea(VizroBaseModel):
     # TODO: Before making public, consider how actions should be triggered and what the default property should be
     # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
     # This would mean creating _action_triggers and using make_actions_chain.
-    actions: list[ActionType] = []
+    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

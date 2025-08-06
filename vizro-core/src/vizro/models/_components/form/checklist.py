@@ -11,7 +11,12 @@ from vizro.models._components.form._form_utils import (
     validate_options_dict,
     validate_value,
 )
-from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
+from vizro.models._models_utils import (
+    _log_call,
+    coerce_actions_type,
+    make_actions_chain,
+    warn_description_without_title,
+)
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, MultiValueType, OptionsType, _IdProperty
 
@@ -31,7 +36,8 @@ class Checklist(VizroBaseModel):
             deselect all available options with a single click. Defaults to `True`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
+            Accepts either a single action or a list of actions. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)
@@ -62,7 +68,7 @@ class Checklist(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: list[ActionType] = []
+    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
