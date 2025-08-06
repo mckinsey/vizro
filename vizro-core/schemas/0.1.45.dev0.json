@@ -80,42 +80,6 @@
       "title": "Action",
       "type": "object"
     },
-    "ActionsChain": {
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "default": "",
-          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "trigger": {
-          "$ref": "#/$defs/Trigger"
-        },
-        "actions": {
-          "default": [],
-          "items": {
-            "description": "Action.",
-            "oneOf": [
-              {
-                "$ref": "#/$defs/Action"
-              },
-              {
-                "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              }
-            ]
-          },
-          "title": "Actions",
-          "type": "array"
-        }
-      },
-      "required": ["trigger"],
-      "title": "ActionsChain",
-      "type": "object"
-    },
     "AgGrid": {
       "additionalProperties": false,
       "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `AgGrid`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
@@ -187,7 +151,7 @@
     },
     "Button": {
       "additionalProperties": false,
-      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `\"Click me!\"`.\n    href (str): URL (relative or absolute) to navigate to. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `filled`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `\"Click me!\"`.\n    href (str): URL (relative or absolute) to navigate to. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].\n        Accepts either a single action or a list of actions. Defaults to `[]`.\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `filled`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1494,7 +1458,18 @@
         "actions": {
           "default": [],
           "items": {
-            "$ref": "#/$defs/ActionsChain"
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
           },
           "title": "Actions",
           "type": "array"
@@ -2177,21 +2152,6 @@
       "required": ["text", "icon"],
       "title": "Tooltip",
       "type": "object"
-    },
-    "Trigger": {
-      "maxItems": 2,
-      "minItems": 2,
-      "prefixItems": [
-        {
-          "title": "Component Id",
-          "type": "string"
-        },
-        {
-          "title": "Component Property",
-          "type": "string"
-        }
-      ],
-      "type": "array"
     },
     "export_data": {
       "additionalProperties": false,

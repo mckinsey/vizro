@@ -11,6 +11,13 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
 
+def coerce_actions_type(actions: Any) -> list[Any]:
+    """Converts a single action into a list of actions for user convenience."""
+    if isinstance(actions, list):
+        return actions
+    return [actions]
+
+
 class Button(VizroBaseModel):
     """Component provided to `Page` to trigger any defined `action` in `Page`.
 
@@ -18,7 +25,8 @@ class Button(VizroBaseModel):
         type (Literal["button"]): Defaults to `"button"`.
         text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
+            Accepts either a single action or a list of actions. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
@@ -34,7 +42,7 @@ class Button(VizroBaseModel):
     type: Literal["button"] = "button"
     text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
-    actions: list[ActionType] = []
+    actions: Annotated[list["ActionType"], BeforeValidator(coerce_actions_type)] = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
