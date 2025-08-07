@@ -11,13 +11,12 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 To find out more, consult the [Vizro-MCP documentation](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/).
 
 ## Set up Vizro-MCP
+
 Vizro-MCP is best used with Claude Desktop, Cursor or VS Code. However, it can be used with most LLM products that enable configuration of MCP server usage.
 
 > 💡 Tip: For best performance, we recommend using the `claude-4-sonnet` model, or another high-performing model of your choice. Using the often offered `auto` setting may lead to inconsistent or unexpected results.
 
-
 Our documentation offers separate, detailed steps for [Claude Desktop](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-claude/), [Cursor](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-cursor/) and [VS Code](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-vscode/).
-
 
 ### Basic configuration
 
