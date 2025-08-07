@@ -5,9 +5,9 @@ from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._models_utils import _log_call, coerce_actions_type, warn_description_without_title
+from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 
 class UserInput(VizroBaseModel):
@@ -21,9 +21,7 @@ class UserInput(VizroBaseModel):
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
-            Accepts either a single action or a list of actions. Defaults to `[]`.
-
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["user_input"] = "user_input"
@@ -45,7 +43,7 @@ class UserInput(VizroBaseModel):
     # This would mean creating _action_triggers and using make_actions_chain.
     # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
     # the BeforeValidator, but this requires pydantic >= 2.9.
-    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
+    actions: ActionsType
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

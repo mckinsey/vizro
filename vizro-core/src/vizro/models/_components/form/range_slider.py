@@ -14,12 +14,11 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import (
     _log_call,
-    coerce_actions_type,
     make_actions_chain,
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 
 class RangeSlider(VizroBaseModel):
@@ -38,8 +37,7 @@ class RangeSlider(VizroBaseModel):
         title (str): Title to be displayed. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
-            Accepts either a single action or a list of actions. Defaults to `[]`.
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)
@@ -85,7 +83,7 @@ class RangeSlider(VizroBaseModel):
     ]
     # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
     # the BeforeValidator, but this requires pydantic >= 2.9.
-    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
+    actions: ActionsType
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],

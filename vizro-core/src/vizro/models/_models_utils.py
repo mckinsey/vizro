@@ -1,14 +1,12 @@
 import logging
 import warnings
-from collections.abc import Iterable
 from functools import wraps
-from typing import Union
 
 from dash import html
 from pydantic import ValidationInfo
 
 from vizro.managers import model_manager
-from vizro.models.types import ActionType, CapturedCallable, _SupportsCapturedCallable
+from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
 
@@ -133,10 +131,3 @@ def make_actions_chain(self):
     # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
     self.__dict__["actions"] = converted_actions
     return self
-
-
-def coerce_actions_type(actions: Union[Iterable[ActionType], ActionType]) -> Iterable[ActionType]:
-    """Converts a single action into a list of actions."""
-    if isinstance(actions, Iterable):
-        return actions
-    return [actions]

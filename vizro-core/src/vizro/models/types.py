@@ -8,6 +8,7 @@ import inspect
 import sys
 import warnings
 from collections import OrderedDict
+from collections.abc import Iterable
 from contextlib import contextmanager
 from datetime import date
 from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, cast, runtime_checkable
@@ -34,8 +35,6 @@ if sys.version_info >= (3, 10):
     from typing import TypeAlias
 else:
     from typing_extensions import TypeAlias
-
-from vizro.models._models_utils import coerce_actions_type
 
 
 def _get_layout_discriminator(layout: Any) -> Optional[str]:
@@ -711,7 +710,14 @@ ActionType = Annotated[
 `filter_interaction`][vizro.models.filter_interaction]."""
 
 
-ActionsType = Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
+def _coerce_actions_type(actions: Union[Iterable[ActionType], ActionType]) -> Iterable[ActionType]:
+    """Converts a single action into a list of actions."""
+    if isinstance(actions, Iterable):
+        return actions
+    return [actions]
+
+
+ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_actions_type), Field(default=[])]
 """List of actions that can be triggered by a component. Accepts either a single
 [`ActionType`][vizro.models.types.ActionType],  or a list of [`ActionType`][vizro.models.types.ActionType]."""
 

@@ -71,8 +71,6 @@ class Page(VizroBaseModel):
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-            Accepts either a single action or a list of actions. Defaults to `[]`.
-
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field

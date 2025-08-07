@@ -6,9 +6,9 @@ from pydantic import BeforeValidator, Field, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._models_utils import _log_call, coerce_actions_type, make_actions_chain
+from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 
 class Button(VizroBaseModel):
@@ -18,8 +18,7 @@ class Button(VizroBaseModel):
         type (Literal["button"]): Defaults to `"button"`.
         text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
-            Accepts either a single action or a list of actions. Defaults to `[]`.
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
@@ -37,7 +36,7 @@ class Button(VizroBaseModel):
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
     # the BeforeValidator, but this requires pydantic >= 2.9.
-    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
+    actions: ActionsType
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
