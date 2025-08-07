@@ -153,9 +153,9 @@ dashboard = vm.Dashboard(pages=[page])
 
 """
 Notes:
-* still need to work out whether to use message history or previous_response_id. How to restore chat when go back to 
+* still need to work out whether to use message history or previous_response_id. How to restore chat when go back to
 page? Remember Patch.
-* Streaming is not easy... Let's forget about it for now as a built-in feature, save it for fancy demos and then come 
+* Streaming is not easy... Let's forget about it for now as a built-in feature, save it for fancy demos and then come
 back to trying to build it in.
 """
 
