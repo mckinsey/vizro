@@ -4,31 +4,31 @@
 
 # Vizro-MCP
 
-Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts.
+Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside an LLM to help you create Vizro dashboards and charts.
 
 <img src="docs/assets/images/vizro-mcp.gif" width="600" alt="Vizro-MCP Demo">
 
-## Set up Vizro-MCP
+To find out more, consult the [Vizro-MCP documentation](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/).
 
+## Set up Vizro-MCP
 Vizro-MCP is best used with Claude Desktop, Cursor or VS Code. However, it can be used with most LLM products that enable configuration of MCP server usage.
 
 > 💡 Tip: For best performance, we recommend using the `claude-4-sonnet` model, or another high-performing model of your choice. Using the often offered `auto` setting may lead to inconsistent or unexpected results.
 
-Our documentation offers separate, detailed steps for [Claude Desktop](./docs/pages/guides/set-up-vizro-mcp-with-claude.md), [Cursor](./docs/pages/guides/set-up-vizro-mcp-with-cursor.md) and [VS Code](./docs/pages/guides/set-up-vizro-mcp-with-vscode.md).
+
+Our documentation offers separate, detailed steps for [Claude Desktop](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-claude/), [Cursor](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-cursor/) and [VS Code](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-vscode/).
+
 
 ### Basic configuration
 
-The following is for those familiar with MCP server setup who are comfortable with basic configuration settings.
+The following is for those familiar with MCP server setup who are comfortable with basic configuration settings. You must have downloaded and installed the LLM app you want to configure and use as a MCP host.
 
-#### Prerequisites
+<details>
+<summary><strong>Quick setup for Vizro-MCP using uv</strong></summary>
 
-- You must have downloaded and installed the LLM app you want to configure and use as a MCP host.
+You must first install [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
-- You must also install **either [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Docker](https://www.docker.com/get-started/)** by following the linked instructions.
-
-#### Set up Vizro-MCP using uv
-
-If you've installed uv, open a terminal window and type `uv` to confirm that is available. To get the path to `uvx`, type the following:
+Next, open a terminal window and type `uv` to confirm that is available. To get the path to `uvx`, type the following:
 
 ```shell
 which uv
@@ -56,9 +56,14 @@ Copy the path returned, and add the following to the JSON file used to configure
 | [Cursor](https://www.cursor.com/)         | [uv](https://docs.astral.sh/uv/getting-started/installation/) | [![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)                                                     |
 | [VS Code](https://code.visualstudio.com/) | [uv](https://docs.astral.sh/uv/guides/tools/)                 | [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D) |
 
-#### Set up Vizro-MCP using Docker
+</details>
 
-If you are using Docker, add the following to the JSON file used to configure MCP servers for your LLM app.
+<details>
+<summary><strong>Quick setup for Vizro-MCP using Docker</strong></summary>
+
+You must first install [Docker](https://www.docker.com/get-started/).
+
+Next, add the following to the JSON file used to configure MCP servers for your LLM app.
 
 ```
 {
@@ -107,17 +112,14 @@ Mount your data directory or directories into the container with the following e
 | [Cursor](https://www.cursor.com/)         | [Docker](https://www.docker.com/get-started/) | [![Install with Docker in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoiZG9ja2VyIHJ1biAtaSAtLXJtIG1jcC92aXpybyJ9)                                                                          | For local data access, [mount your data directory](#setup-instructions) |
 | [VS Code](https://code.visualstudio.com/) | [Docker](https://www.docker.com/get-started/) | [![Install with Docker in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22docker%22%2C%22args%22%3A%5B%22run%22%2C%22-i%22%2C%22--rm%22%2C%22mcp%2Fvizro%22%5D%7D) | For local data access, [mount your data directory](#setup-instructions) |
 
+</details>
 ## Disclaimers
 
-<details>
-<summary><strong>Transparency and trust</strong></summary>
+### Transparency and trust
 
 MCP servers are a relatively new concept, and it is important to be transparent about what the tools are capable of so you can make an informed choice as a user. Overall, the Vizro MCP server only reads data, and never writes, deletes or modifies any data on your machine.
 
-</details>
-
-<details>
-<summary><strong>Third party API</strong></summary>
+### Third party API
 
 Users are responsible for anything done via their host LLM application.
 
@@ -125,7 +127,7 @@ Users are responsible for procuring any and all rights necessary to access any t
 
 Users are wholly responsible for the use and security of the third-party generative AI tools and of Vizro.
 
-</details>
+### Legal information
 
 <details>
 <summary><strong>User acknowledgments</strong></summary>
