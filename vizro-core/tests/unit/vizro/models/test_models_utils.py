@@ -59,13 +59,13 @@ class TestSharedValidators:
         "actions_input",
         [
             vm.Action(function=export_data()),  # Single action
-            [vm.Action(function=export_data())],  # List of actions  
+            [vm.Action(function=export_data())],  # List of actions
         ],
     )
     def test_coerce_actions_type(self, actions_input):
         """Test that coerce_actions_type always returns the expected list format."""
         result = coerce_actions_type(actions_input)
-        
+
         expected = actions_input if isinstance(actions_input, list) else [actions_input]
         assert result == expected
 

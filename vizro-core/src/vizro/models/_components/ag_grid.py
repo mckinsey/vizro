@@ -86,6 +86,8 @@ class AgGrid(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
+    # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to 
+    # the BeforeValidator, but this requires pydantic >= 2.9.
     actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
