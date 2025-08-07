@@ -1,5 +1,6 @@
 import logging
 import warnings
+from collections.abc import Iterable
 from functools import wraps
 from typing import Union
 
@@ -134,8 +135,8 @@ def make_actions_chain(self):
     return self
 
 
-def coerce_actions_type(actions: Union[list[ActionType], ActionType]) -> list[ActionType]:
+def coerce_actions_type(actions: Union[Iterable[ActionType], ActionType]) -> Iterable[ActionType]:
     """Converts a single action into a list of actions."""
-    if isinstance(actions, list):
+    if isinstance(actions, Iterable):
         return actions
     return [actions]
