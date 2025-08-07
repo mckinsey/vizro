@@ -8,7 +8,7 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 <img src="docs/assets/images/vizro-mcp.gif" width="600" alt="Vizro-MCP Demo">
 
-To find out more, consult the [Vizro-MCP documentation](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/).
+To find out more, consult the [Vizro-MCP documentation](https://vizro.readthedocs.io/projects/vizro-mcp/).
 
 ## Set up Vizro-MCP
 
