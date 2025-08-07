@@ -35,7 +35,7 @@ class Button(VizroBaseModel):
     type: Literal["button"] = "button"
     text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
-    # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to 
+    # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
     # the BeforeValidator, but this requires pydantic >= 2.9.
     actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
     variant: Literal["plain", "filled", "outlined"] = Field(
