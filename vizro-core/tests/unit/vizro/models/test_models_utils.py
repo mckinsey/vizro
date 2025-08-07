@@ -55,18 +55,22 @@ class TestSharedValidators:
         with pytest.warns(UserWarning, match="description.*title.*missing or empty"):
             warn_description_without_title("description", info)
 
-    def test_coerce_actions_type(self):
-        """Test that coerce_actions_type converts single actions to lists and leaves lists unchanged."""
-        # Single action -> list
-        single_action = vm.Action(function=export_data())
-        result = coerce_actions_type(single_action)
-        assert isinstance(result, list) and len(result) == 1 and result[0] == single_action
+    @pytest.mark.parametrize(
+        "actions_input",
+        [
+            vm.Action(function=export_data()),  # Single action
+            [vm.Action(function=export_data())],  # List of actions  
+        ],
+    )
+    def test_coerce_actions_type(self, actions_input):
+        """Test that coerce_actions_type always returns the expected list format."""
+        result = coerce_actions_type(actions_input)
+        
+        expected = actions_input if isinstance(actions_input, list) else [actions_input]
+        assert result == expected
 
-        # List of actions -> unchanged
-        action_list = [vm.Action(function=export_data())]
-        result = coerce_actions_type(action_list)
-        assert result == action_list
-
-        # Integration: single action works with components
-        button = vm.Button(actions=export_data())
-        assert isinstance(button.actions, list) and len(button.actions) == 1
+    def test_coerce_actions_type_integration(self):
+        """Test that single actions work with actual components."""
+        action = export_data()
+        button = vm.Button(actions=action)
+        assert button.actions == [action]
