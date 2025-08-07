@@ -65,7 +65,7 @@ nav:
       - Gallery: https://vizro.mckinsey.com/
   - ✨🆕 Cheatsheet: pages/cheatsheet/cheatsheet.html
   - Vizro-MCP:
-      - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/
+      - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
