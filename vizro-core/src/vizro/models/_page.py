@@ -31,7 +31,7 @@ from vizro.models._models_utils import (
     make_actions_chain,
     warn_description_without_title,
 )
-from vizro.models.types import ActionType, _IdProperty
+from vizro.models.types import ActionType, _IdProperty, ActionsType
 
 from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip
@@ -71,7 +71,7 @@ class Page(VizroBaseModel):
             tags. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
             Accepts either a single action or a list of actions. Defaults to `[]`.
 
     """
@@ -99,7 +99,7 @@ class Page(VizroBaseModel):
     ]
     # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
     # the BeforeValidator, but this requires pydantic >= 2.9.
-    actions: Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
+    actions: ActionsType
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 

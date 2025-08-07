@@ -23,6 +23,7 @@ from pydantic import (
     TypeAdapter,
     ValidationError,
     ValidationInfo,
+    BeforeValidator,
 )
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
@@ -33,6 +34,8 @@ if sys.version_info >= (3, 10):
     from typing import TypeAlias
 else:
     from typing_extensions import TypeAlias
+
+from vizro.models._models_utils import coerce_actions_type
 
 
 def _get_layout_discriminator(layout: Any) -> Optional[str]:
@@ -706,6 +709,11 @@ ActionType = Annotated[
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
+
+
+ActionsType = Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
+"""List of actions that can be triggered by a component. Accepts either a single 
+[`ActionType`][vizro.models.types.ActionType],  or a list of [`ActionType`][vizro.models.types.ActionType]."""
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
