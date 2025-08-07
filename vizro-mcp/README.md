@@ -113,8 +113,6 @@ Mount your data directory or directories into the container with the following e
 
 </details>
 
-
-
 ## Disclaimers
 
 ### Transparency and trust
