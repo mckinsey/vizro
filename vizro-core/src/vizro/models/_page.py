@@ -27,11 +27,10 @@ from vizro.models._models_utils import (
     _build_inner_layout,
     _log_call,
     check_captured_callable_model,
-    coerce_actions_type,
     make_actions_chain,
     warn_description_without_title,
 )
-from vizro.models.types import ActionType, _IdProperty, ActionsType
+from vizro.models.types import ActionsType, _IdProperty
 
 from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip

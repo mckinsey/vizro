@@ -15,6 +15,7 @@ from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union,
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
+    BeforeValidator,
     Discriminator,
     Field,
     ImportString,
@@ -23,7 +24,6 @@ from pydantic import (
     TypeAdapter,
     ValidationError,
     ValidationInfo,
-    BeforeValidator,
 )
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
@@ -712,7 +712,7 @@ ActionType = Annotated[
 
 
 ActionsType = Annotated[list[ActionType], BeforeValidator(coerce_actions_type), Field(default=[])]
-"""List of actions that can be triggered by a component. Accepts either a single 
+"""List of actions that can be triggered by a component. Accepts either a single
 [`ActionType`][vizro.models.types.ActionType],  or a list of [`ActionType`][vizro.models.types.ActionType]."""
 
 # Extra type groups used for mypy casting
