@@ -8,7 +8,7 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     ---
 
-    [Quickstart tutorial](pages/tutorials/first-dashboard.md)
+    [Quickstart tutorial](pages/tutorials/quickstart-tutorial.md)
 
     [Explore Vizro tutorial](pages/tutorials/explore-components.md)
 

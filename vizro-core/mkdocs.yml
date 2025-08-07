@@ -3,7 +3,7 @@ site_url: https://vizro.readthedocs.io/en/stable/
 nav:
   - Vizro: index.md
   - Tutorials:
-      - A first dashboard: pages/tutorials/first-dashboard.md
+      - Quickstart tutorial: pages/tutorials/quickstart-tutorial.md
       - Explore Vizro: pages/tutorials/explore-components.md
   - How-to guides:
       - FUNDAMENTALS:

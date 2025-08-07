@@ -1,6 +1,6 @@
-# A first dashboard
+# Quickstart tutorial
 
-There is no setup needed for your first dashboard, thanks to the amazing [PyCafe](https://py.cafe/).
+There is no setup needed for your first dashboard, so you can get started with Vizro quickly, thanks to [PyCafe](https://py.cafe/).
 
 Click on the **Run and edit this code in Py.Cafe** link below to live-edit the dashboard.
 
