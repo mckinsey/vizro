@@ -16,7 +16,7 @@ Vizro-MCP is best used with Claude Desktop, Cursor or VS Code. However, it can b
 
 > 💡 Tip: For best performance, we recommend using the `claude-4-sonnet` model, or another high-performing model of your choice. Using the often offered `auto` setting may lead to inconsistent or unexpected results.
 
-Our documentation offers separate, detailed steps for [Claude Desktop](https://vizro.readthedocs.io/projects/vizro-mcp/pages/guides/set-up-vizro-mcp-with-claude/), [Cursor](https://vizro.readthedocs.io/projects/vizro-mcp/pages/guides/set-up-vizro-mcp-with-cursor/) and [VS Code](https://vizro.readthedocs.io/projects/vizro-mcp/pages/guides/set-up-vizro-mcp-with-vscode/).
+Our documentation offers separate, detailed steps for [Claude Desktop](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-claude/), [Cursor](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-cursor/) and [VS Code](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-vscode/).
 
 ### Basic configuration
 
