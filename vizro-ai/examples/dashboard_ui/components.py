@@ -6,9 +6,9 @@ import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from dash import dcc, get_asset_url, html
-from pydantic import AfterValidator, BeforeValidator, Field, PlainSerializer
+from pydantic import AfterValidator, Field, PlainSerializer
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._models_utils import _log_call, coerce_actions_type
+from vizro.models._models_utils import _log_call
 from vizro.models.types import ActionType, capture
 
 
@@ -21,14 +21,12 @@ class UserPromptTextArea(vm.VizroBaseModel):
         type (Literal["user_input"]): Defaults to `"user_text_area"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType].
-            Accepts either a single action or a list of actions. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
     """
 
     type: Literal["user_text_area"] = "user_text_area"
     actions: Annotated[
         list[ActionType],
-        BeforeValidator(coerce_actions_type),
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
@@ -54,8 +52,7 @@ class UserUpload(vm.VizroBaseModel):
     type: Literal["upload"] = "upload"
     actions: Annotated[
         list[ActionType],
-        BeforeValidator(coerce_actions_type),
-        AfterValidator(_action_validator_factory("value")),
+        AfterValidator(_action_validator_factory("contents")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
