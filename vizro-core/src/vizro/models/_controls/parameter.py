@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
-from dash import html
+from dash import dcc, html
 from pydantic import AfterValidator, Field, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
@@ -101,7 +101,14 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return html.Div(id=self.id, children=self.selector.build())
+        selector_build_obj = html.Div(id=self.id, children=self.selector.build())
+
+        if self.show_in_url and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj:
+            selector_build_obj.children.children.append(
+                dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False)
+            )
+
+        return selector_build_obj
 
     def _check_numerical_and_temporal_selectors_values(self):
         if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):
