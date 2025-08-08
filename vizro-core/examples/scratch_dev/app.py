@@ -42,7 +42,10 @@ page_1 = vm.Page(
 page_2 = vm.Page(
     title="Export data -> custom sleep action -> export data - [1 guard]",
     components=[
-        vm.Graph(id="page_2_graph", figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+        vm.Graph(
+            id="page_2_graph",
+            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+        ),
         vm.Button(
             id="page_2_button",
             text="Export data",
@@ -139,7 +142,9 @@ page_6 = vm.Page(
             targets=["page_6_graph.data_frame.continent"],
             selector=vm.RadioItems(
                 title="DFP - [1 guard]",
-                options=list(set(df_gapminder["continent"])), value="Europe", id="page_6_dfp_selector"
+                options=list(set(df_gapminder["continent"])),
+                value="Europe",
+                id="page_6_dfp_selector",
             ),
         ),
     ],
@@ -155,7 +160,7 @@ page_7 = vm.Page(
     ],
     controls=[
         vm.Filter(id="page_7_filter", column="continent", show_in_url=True),
-    ]
+    ],
 )
 
 
@@ -168,7 +173,7 @@ Test cases:
 5. check that page_8_filter_1 is set to the value from the URL and page_8_filter_2 is set to the default value.
 6. check that both filters are shown in the URL.
 7. change page_8_filter_1 and see how the filter-action is triggered.
-8. change page_8_filter_2 and see how the filter-action is triggered. (this was the problem if 
+8. change page_8_filter_2 and see how the filter-action is triggered. (this was the problem if
     guardian is not changed from the sync_url clientside callback)
 """
 page_8 = vm.Page(
@@ -182,7 +187,7 @@ page_8 = vm.Page(
     controls=[
         vm.Filter(id="page_8_filter_1", column="continent", show_in_url=True, selector=vm.RadioItems()),
         vm.Filter(id="page_8_filter_2", column="continent", show_in_url=True, selector=vm.RadioItems()),
-    ]
+    ],
 )
 
 
@@ -194,13 +199,17 @@ page_9 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_9_filter", column="continent", selector=vm.Dropdown(id="page_9_filter_selector"), show_in_url=True),
+        vm.Filter(
+            id="page_9_filter", column="continent", selector=vm.Dropdown(id="page_9_filter_selector"), show_in_url=True
+        ),
         vm.Parameter(
             id="page_9_dfp_parameter",
             targets=["page_9_graph.data_frame.continent"],
             selector=vm.RadioItems(
                 title="DFP - [1 guard]",
-                options=list(set(df_gapminder["continent"])), value="Europe", id="page_9_dfp_selector"
+                options=list(set(df_gapminder["continent"])),
+                value="Europe",
+                id="page_9_dfp_selector",
             ),
         ),
     ],
@@ -213,7 +222,9 @@ page_10 = vm.Page(
         vm.AgGrid(
             id="page_10_grid",
             figure=dash_ag_grid(data_frame="dynamic_df_gapminder_arg"),
-            actions=[vm.Action(function=filter_interaction(id="page_10_filter_interaction", targets=["page_10_graph"]))],
+            actions=[
+                vm.Action(function=filter_interaction(id="page_10_filter_interaction", targets=["page_10_graph"]))
+            ],
         ),
         vm.Graph(
             id="page_10_graph",
@@ -226,7 +237,7 @@ page_10 = vm.Page(
             id="page_10_filter",
             column="continent",
             selector=vm.Dropdown(id="page_10_filter_selector"),
-            show_in_url=True
+            show_in_url=True,
         ),
         vm.Parameter(
             id="page_10_dfp_parameter",
@@ -236,11 +247,13 @@ page_10 = vm.Page(
             ],
             selector=vm.RadioItems(
                 title="DFP - [3 guards]",
-                options=list(set(df_gapminder["continent"])), value="Europe", id="page_10_dfp_selector"
+                options=list(set(df_gapminder["continent"])),
+                value="Europe",
+                id="page_10_dfp_selector",
             ),
-            show_in_url=True
+            show_in_url=True,
         ),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10])

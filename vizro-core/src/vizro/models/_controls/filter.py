@@ -251,7 +251,11 @@ class Filter(VizroBaseModel):
         selector_build_obj = selector.build()
 
         # data=False is added instead of the data=True in case that URL is set but this filter is not the part of the URL params.
-        if selector_build_obj and self.show_in_url and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj:
+        if (
+            selector_build_obj
+            and self.show_in_url
+            and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj
+        ):
             selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
