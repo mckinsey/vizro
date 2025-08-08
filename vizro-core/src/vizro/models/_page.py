@@ -94,8 +94,6 @@ class Page(VizroBaseModel):
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
-    # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
-    # the BeforeValidator, but this requires pydantic >= 2.9.
     actions: ActionsType
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)

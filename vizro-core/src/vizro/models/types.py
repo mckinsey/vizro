@@ -8,7 +8,6 @@ import inspect
 import sys
 import warnings
 from collections import OrderedDict
-from collections.abc import Iterable
 from contextlib import contextmanager
 from datetime import date
 from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, cast, runtime_checkable
@@ -85,6 +84,15 @@ def _clean_module_string(module_string: str) -> str:
         if original in module_string:
             return new
     return ""
+
+
+# TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
+# the BeforeValidator, but this requires pydantic >= 2.9.
+def _coerce_actions_type(actions: Any) -> Any:
+    """Converts a single action into a list of actions."""
+    if isinstance(actions, list):
+        return actions
+    return [actions]
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -708,13 +716,6 @@ ActionType = Annotated[
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
-
-
-def _coerce_actions_type(actions: Union[Iterable[ActionType], ActionType]) -> Iterable[ActionType]:
-    """Converts a single action into a list of actions."""
-    if isinstance(actions, Iterable):
-        return actions
-    return [actions]
 
 
 ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_actions_type), Field(default=[])]

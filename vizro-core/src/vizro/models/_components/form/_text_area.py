@@ -42,8 +42,6 @@ class TextArea(VizroBaseModel):
     # TODO: Before making public, consider how actions should be triggered and what the default property should be
     # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
     # This would mean creating _action_triggers and using make_actions_chain.
-    # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
-    # the BeforeValidator, but this requires pydantic >= 2.9.
     actions: ActionsType
 
     @property
