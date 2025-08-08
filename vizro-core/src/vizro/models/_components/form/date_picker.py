@@ -3,15 +3,13 @@ from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
-from pydantic.functional_serializers import PlainSerializer
+from dash import dcc, html
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
-from vizro.models._models_utils import _log_call, warn_description_without_title
+from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
@@ -68,12 +66,7 @@ class DatePicker(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("value")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    actions: list[ActionType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -89,6 +82,12 @@ class DatePicker(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
+
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -131,6 +130,7 @@ class DatePicker(VizroBaseModel):
                 if self.title
                 else None,
                 dmc.DatePickerInput(**(defaults | self.extra)),
+                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ],
         )
 

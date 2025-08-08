@@ -11,6 +11,7 @@ import pandas as pd
 from vizro._constants import NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models.types import (
     FigureType,
     FigureWithFilterInteractionType,
@@ -21,8 +22,7 @@ from vizro.models.types import (
 )
 
 if TYPE_CHECKING:
-    from vizro.models import VizroBaseModel
-    from vizro.models.types import ActionType
+    pass
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
@@ -52,14 +52,6 @@ class CallbackTriggerDict(TypedDict):
 
 
 # Utility functions for helper functions used in pre-defined actions ----
-def _get_component_actions(component) -> list[ActionType]:
-    return (
-        [action for actions_chain in component.actions for action in actions_chain.actions]
-        if hasattr(component, "actions")
-        else []
-    )
-
-
 def _apply_filter_controls(
     data_frame: pd.DataFrame, ctds_filter: list[CallbackTriggerDict], target: ModelID
 ) -> pd.DataFrame:
@@ -77,7 +69,7 @@ def _apply_filter_controls(
     for ctd in ctds_filter:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
-        selector_actions = _get_component_actions(model_manager[ctd["id"]])
+        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
 
         for action in selector_actions:
             # TODO-AV2 A 1: simplify this as in
@@ -91,15 +83,12 @@ def _apply_filter_controls(
     return data_frame
 
 
-def _get_parent_model(_underlying_callable_object_id: str) -> VizroBaseModel:
-    from vizro.models import VizroBaseModel
-
-    for model in cast(Iterable[VizroBaseModel], model_manager._get_models()):
-        if hasattr(model, "_inner_component_id") and model._inner_component_id == _underlying_callable_object_id:
+def _get_triggered_model(input_component_id: str) -> FigureType:
+    # Goes directly from input_component_id to the model (like AgGrid).
+    for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS)):
+        if hasattr(model, "_inner_component_id") and model._inner_component_id == input_component_id:
             return model
-    raise KeyError(
-        f"No parent Vizro model found for underlying callable object with id: {_underlying_callable_object_id}."
-    )
+    raise KeyError(f"No triggered Vizro model found for {input_component_id=}.")
 
 
 def _apply_filter_interaction(
@@ -116,6 +105,11 @@ def _apply_filter_interaction(
 
     Returns: filtered DataFrame.
     """
+    # The filter_interaction model actually contains the id we require in its _parent_model_id field.
+    # We could use that if we had the action_id available here. Alternatively we could explicitly pass the
+    # input_component_id as a state and then use _get_triggered_model to look up the parent model. Both these methods
+    # would mean we can remove modelID from the states, but given that filter_interaction will be removed it's not worth
+    # rewriting now.
     for ctd_filter_interaction in ctds_filter_interaction:
         triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
         data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
@@ -199,13 +193,10 @@ def _get_parametrized_config(
 
     for ctd in ctds_parameter:
         # TODO: needs to be refactored so that it is independent of implementation details
-        parameter_value = ctd["value"]
+        parameter_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
+        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
 
-        selector = cast(SelectorType, model_manager[ctd["id"]])
-
-        parameter_value = _validate_selector_value_none(parameter_value)  # type: ignore[arg-type]
-
-        for action in _get_component_actions(selector):
+        for action in selector_actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
             #  Potentially this function would move to the filter_interaction action. That will be deprecated so

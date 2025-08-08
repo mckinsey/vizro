@@ -110,6 +110,9 @@ function sync_url_query_params_and_controls(...values_ids) {
   const triggerOPL = isPageOpened ? null : dash_clientside.no_update;
 
   // Prepare default selector values outputs
+  //  const outputSelectorValuesAllNoUpdate = new Array(controlMap.size).fill(
+  //    dash_clientside.no_update,
+  //  );
   const outputSelectorValues = new Array(controlMap.size).fill(
     dash_clientside.no_update,
   );
@@ -152,6 +155,46 @@ function sync_url_query_params_and_controls(...values_ids) {
     "",
     `${window.location.pathname}?${urlParams.toString()}`,
   );
+
+  // // Two approaches:
+  // // 1. Don't return filter values but use setProps instead. ---> Does NOT work as setProps trigger filter_action.
+  // // 2. Return SELECTOR_guard_actions_chain from the callback output too.
+  //
+  // // 1:
+  //  const outputSelectorIds = dash_clientside.callback_context.outputs_list;
+  //  for (let i = 1; i < outputSelectorIds.length; i++) {
+  //    const selectorId = outputSelectorIds[i]['id'];
+  //    const selectorValue = outputSelectorValues[i - 1];
+  //
+  //
+  //    if (selectorValue !== dash_clientside.no_update) {
+  //      dash_clientside.set_props(selectorId, {value: selectorValue});
+  //    }
+  //  }
+  //
+  //  return [triggerOPL, ...outputSelectorValuesAllNoUpdate];
+
+  // 2:
+  const outputSelectorIds = dash_clientside.callback_context.outputs_list;
+  for (let i = 1; i < outputSelectorIds.length; i++) {
+    const selectorId = outputSelectorIds[i]["id"];
+    const selectorValue = outputSelectorValues[i - 1];
+
+    if (selectorValue !== dash_clientside.no_update) {
+      dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
+        data: true,
+      });
+      //      outputSelectorValues[i - 1] = controlMap[selectorId]
+    } else {
+      dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
+        data: false,
+      });
+    }
+  }
+
+  // TRY TO RETURN THE OUTPUT SELECTOR VALUES ALWAYS
+  //  const outputSelectorValuesFromControlMap = Array.from(controlMap.values());
+  //  return [triggerOPL, ...outputSelectorValuesFromControlMap];
 
   return [triggerOPL, ...outputSelectorValues];
 }

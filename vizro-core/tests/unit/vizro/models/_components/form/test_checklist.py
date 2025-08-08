@@ -127,6 +127,7 @@ class TestChecklistInstantiation:
 
     def test_set_action_via_validator(self, identity_action_function):
         checklist = Checklist(actions=[Action(function=identity_action_function())])
+        # TODO NOW: update these tests throughout to test new make_actions_chain
         actions_chain = checklist.actions[0]
         assert actions_chain.trigger.component_property == "value"
 

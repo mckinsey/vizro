@@ -3,13 +3,14 @@ from __future__ import annotations
 import inspect
 import logging
 import re
+import time
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import Input, Output, State, callback, html
+from dash import Input, Output, State, callback, dash, set_props
 from dash.development.base_component import Component
-from pydantic import Field, TypeAdapter, field_validator
+from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -19,6 +20,8 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import (
     CapturedCallable,
     ControlType,
+    FigureWithFilterInteractionType,
+    ModelID,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
@@ -38,11 +41,6 @@ class ControlsStates(TypedDict):
     filter_interaction: list[dict[str, State]]
 
 
-# TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
-# title. See https://github.com/mckinsey/vizro/issues/1078.
-# Try to fix AgGrid problem with underlying input component id.
-
-
 class _BaseAction(VizroBaseModel):
     # The common interface shared between Action and _AbstractAction all raise NotImplementedError or are ClassVar.
     # This mypy type-check this class.
@@ -50,6 +48,18 @@ class _BaseAction(VizroBaseModel):
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
     outputs: ClassVar[Union[list[str], dict[str, str]]]
+
+    # These are set in the make_actions_chain validator (same for both Action and _AbstractAction).
+    # In the future a user would probably be able to specify something here that would look up a key in
+    # _action_triggers or just a full _IdProperty. The _first_in_chain and _prevent_initial_call_of_guard would remain
+    # private though. These are required for correct functioning of the actions chain guard.
+    _trigger: _IdProperty = PrivateAttr()
+    _first_in_chain: bool = PrivateAttr()
+    _prevent_initial_call_of_guard: bool = PrivateAttr()
+
+    # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
+    # model manager and removal of filter_interaction.
+    _parent_model_id: ModelID = PrivateAttr()
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -77,7 +87,7 @@ class _BaseAction(VizroBaseModel):
         # of the filter and parameter models in future. This property could match outputs and return just a dotted
         # string that is then transformed to State inside _transformed_inputs. This would prevent us from using
         # pattern-matching callback here though.
-        # See also notes in filter_interaction._get_triggered_model.
+        # Maybe want to revisit this as part of TODO-AV2 A 1.
         page = model_manager._get_model_page(self)
         return [
             State(*control.selector._action_inputs["__default__"].split("."))
@@ -89,9 +99,13 @@ class _BaseAction(VizroBaseModel):
         from vizro.actions import filter_interaction
 
         page = model_manager._get_model_page(self)
+
+        # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
+        # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
+        # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
-            action._get_triggered_model()._filter_interaction_input
-            for action in model_manager._get_models(filter_interaction, root_model=page)
+            cast(FigureWithFilterInteractionType, model_manager[action._parent_model_id])._filter_interaction_input
+            for action in model_manager._get_models(filter_interaction, page)
         ]
 
     @staticmethod
@@ -242,7 +256,7 @@ class _BaseAction(VizroBaseModel):
         inputs: Union[dict[str, Any], list[Any]],
         outputs: Union[dict[str, Output], list[Output], Output, None],
     ) -> Any:
-        logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
+        logger.critical("===== Running action with id %s, function %s =====", self.id, self._action_name)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
@@ -285,24 +299,75 @@ class _BaseAction(VizroBaseModel):
         return return_value
 
     @_log_call
-    def build(self) -> html.Div:
-        """Builds a callback for the Action model and returns required components for the callback.
-
-        Returns:
-            Div containing a list of required components (e.g. dcc.Download) for the Action model
-
-        """
-        # TODO: after sorting out model manager and pre-build order, lots of this should probably move to happen
-        #  some time before the build phase.
+    def _define_callback(self):
+        """Defines a callback for the Action model."""
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
-        callback_inputs = {
-            "external": external_callback_inputs,
-            "internal": {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")},
-        }
+        if self._first_in_chain:
+            # If the action is the first one in the action chain then we need to insert an additional "guard"
+            # callback. This prevents the main action callback (action_callback) firing even in the case that the
+            # Input component is created in the layout. This is a workaround for the behavior of
+            # prevent_initial_call=True which otherwise does not prevent initial callback execution when
+            # an Input component appears if an Output already exists in the page layout:
+            # https://dash.plotly.com/advanced-callbacks#prevent-callback-execution-upon-initial-component-render
+            # e.g. for the case of a dynamic filter, we want the guard to let through genuine callback triggers (user
+            # changes value of filter) vs. when the dropdown is created. This works as follows:
+            #   1. When a new dynamic component is created, a dcc.Store component labelled *_guard_actions_chain
+            #   is created at the same time with data=True.
+            #   2. When guard_action_chain callback is triggered, we work out whether the trigger of the callback
+            #   chain is genuine or not:
+            #      - if it's due to creation of component then we do not allow action chain to execute. This mimics
+            #        what prevent_initial_call=True on action_callback would ideally do for us but doesn't.
+            #      - if it's genuine then we allow action chain to execute
+            # The guard is needed only for the first action in the chain because subsequent actions can only be
+            # triggered by the *_finished dcc.Store which cannot be accidentally triggered since it's created fresh
+            # on every page.
+            trigger_component_id = self._trigger.split(".")[0]
+            component_guard_id = f"{trigger_component_id}_guard_actions_chain"
+            trigger = Input(f"{self.id}_guarded_trigger", "data")
+
+            # TODO NOW: make clientside, revert logging.critical changes.
+            # We want prevent_initial_call=True for all but the on page load callback. This means that the on page load
+            # callback goes through the same gateway system as everything else and will run when the page layout is
+            # generated.
+            # An alternative method would be to always set prevent_initial_call=True and trick Dash into still running
+            # the guard_action_chain by putting the Output in the global dashboard page layout, but changing
+            # prevent_initial_call feels cleaner since it means the dcc.Stores do not need to be split between page-
+            # and dashboard- level.
+            @callback(
+                Output(f"{self.id}_guarded_trigger", "data"),
+                Input(*self._trigger.split(".")),
+                State(component_guard_id, "data", allow_optional=True),
+                prevent_initial_call=self._prevent_initial_call_of_guard,
+            )
+            def guard_action_chain(value, created):
+                logger.critical("***** Guard action with id %s, function %s =====", self.id, self._action_name)
+                if created:
+                    # Guard component has data=True. This means the component has just been created and so we should
+                    # prevent running the actions chain because it's not a genuine trigger.
+                    logger.critical(f"not running actions chain, setting {component_guard_id} to False")
+                    # We must use set_props here rather than using Output(component_guard_id, "data") because the
+                    # component might not exist. This is allowed for a state with allow_optional=True but not for an
+                    # Output.
+                    set_props(component_guard_id, {"data": False})
+                    # This must be dash.no_update rather than PreventUpdate or set_props won't work.
+                    return dash.no_update
+                elif created is None:
+                    # Guard component doesn't exist, so the trigger must be genuine rather than due to creation of a
+                    # component.
+                    logger.critical("not dynamic, running action")
+                    return value
+                elif not created:
+                    # Guard component exists but is set to False so it's a genuine trigger of the actions chain.
+                    logger.critical("running action")
+                    return value
+        else:
+            trigger = Input(*self._trigger.split("."))
+
+        callback_inputs = {"external": external_callback_inputs, "internal": {"trigger": trigger}}
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
-            "internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)},
+            "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
@@ -314,7 +379,7 @@ class _BaseAction(VizroBaseModel):
             callback_outputs["external"] = external_callback_outputs
 
         logger.debug(
-            "===== Building callback for Action with id %s, function %s =====",
+            "===== Defining callback for Action with id %s, function %s =====",
             self.id,
             self._action_name,
         )
@@ -323,13 +388,11 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
-        def callback_wrapper(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
+        def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:
-                return {"internal": {"action_finished": None}, "external": return_value}
-            return {"internal": {"action_finished": None}}
-
-        return html.Div(id=f"{self.id}_action_model_components_div", children=self._dash_components, hidden=True)
+                return {"internal": {"action_finished": time.time()}, "external": return_value}
+            return {"internal": {"action_finished": time.time()}}
 
 
 class Action(_BaseAction):

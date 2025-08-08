@@ -22,16 +22,17 @@ from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _build_inner_layout,
     _log_call,
     check_captured_callable_model,
+    make_actions_chain,
     warn_description_without_title,
 )
-from vizro.models.types import _IdProperty
+from vizro.models.types import ActionType, _IdProperty
 
+from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType, FigureType, LayoutType
 
@@ -93,7 +94,13 @@ class Page(VizroBaseModel):
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
-    actions: list[ActionsChain] = []
+    actions: list[ActionType] = []
+
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
 
     @model_validator(mode="before")
     @classmethod
@@ -156,22 +163,7 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            # TODO-AV2 A 3: can we simplify this to not use ActionsChain, just like we do for filters and parameters?
-            # See https://github.com/mckinsey/vizro/pull/363#discussion_r2021020062.
-            self.actions = [
-                ActionsChain(
-                    id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
-                    trigger=Trigger(
-                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
-                    ),
-                    actions=[
-                        _on_page_load(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
-                            targets=targets,
-                        )
-                    ],
-                )
-            ]
+            self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
         # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
         url_controls = [
@@ -196,6 +188,8 @@ class Page(VizroBaseModel):
             # Similarly, we read the URL query parameters in the clientside callback with the window.location.pathname,
             # instead of using dcc.Location as a callback Input. Do it to align the behavior with the outputs and to
             # simplify the function inputs handling.
+            # TODO NOW: fix this and the new on page load order to make sure everything works correctly. Currently
+            # opening a page with show_in_url=True and a set URL parameter doesn't.
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
@@ -214,9 +208,28 @@ class Page(VizroBaseModel):
         components_container = _build_inner_layout(self.layout, self.components)
         components_container.id = "page-components"
 
+        # Components that are required to make action chains function correctly:
+        #   - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain can prevent
+        #     undesired triggering (workaround for Dash prevent_initial_call=True behavior)
+        #   - {action.id}_finished for completion of an action callback to trigger the next action in the chain
+        #   - action._dash_components for particular actions (e.g. dcc.Download for export_data) - hopefully will be
+        #     removed in future
+        # These components are recreated on every page rather than going at the global dashboard level so that we do
+        # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behavior).
+        action_components = []
+
+        # TODO NOW: should this just go through this page's actions or across whole dashboard? Probably doesn't
+        #  matter much apart from if we want to do cross-page actions.
+        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
+            if action._first_in_chain:
+                action_components.append(dcc.Store(id=f"{action.id}_guarded_trigger"))
+            action_components.append(dcc.Store(id=f"{action.id}_finished"))
+            action_components.extend(action._dash_components)
+
         # Keep these components in components_container, moving them outside make them not work properly.
         components_container.children.extend(
             [
+                *action_components,
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),

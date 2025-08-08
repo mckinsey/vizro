@@ -30,7 +30,6 @@ class Figure(VizroBaseModel):
         ),
     ]
 
-    # Component properties for actions and interactions
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     @property

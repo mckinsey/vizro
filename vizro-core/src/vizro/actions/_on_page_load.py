@@ -9,6 +9,7 @@ from vizro.models.types import ModelID, _Controls
 
 
 # TODO-AV2 A 3: rename _on_page_load if desired and make public. Similarly for other built-in actions.
+# Think about how to handle filter_function that is not JSON serialisable.
 class _on_page_load(_AbstractAction):
     type: Literal["_on_page_load"] = "_on_page_load"
 

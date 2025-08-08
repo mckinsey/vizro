@@ -181,11 +181,8 @@ class Jumbotron(vm.VizroBaseModel):
 
 2. Build the component using existing `dash` components.
 ```py
-return html.Div(
-        ...
-    )
-    ...
-)
+def build(self):
+    return html.Div(...)
 ```
 3. Since the new model will be inserted into the `components` argument of the [`Page`][vizro.models.Page], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`ComponentType`][vizro.models.types.ComponentType]. Hence we must:
     - define a new type:
@@ -391,15 +388,16 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 As mentioned above, custom components can trigger actions. To enable the custom component to trigger the action, add the `actions` field and specify which property triggers the actions:
 
 1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[ActionType]`.
-2. **Set the action through `_action_validator_factory`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
+2. **Set the action trigger through `make_actions_chain` and `_action_triggers`**. In the below example, any change in the `active_index` property of the custom component triggers the actions chain.
 
     ```py
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("active_index")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-        ]
+    actions: list[ActionType] = []
+
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @property
+    def _action_triggers(self):
+        return {"__default__": f"{self.id}.active_index"}
     ```
 
 
@@ -411,32 +409,32 @@ As mentioned above, custom components can trigger actions. To enable the custom 
 
         import dash_bootstrap_components as dbc
         import vizro.models as vm
-        from pydantic import AfterValidator, Field, PlainSerializer
+        from pydantic import model_validator
         from vizro import Vizro
+        from vizro.models._models_utils import make_actions_chain
         from vizro.models.types import ActionType
-        from vizro.models._action._actions_chain import _action_validator_factory
         from vizro.models.types import capture
 
 
         class Carousel(vm.VizroBaseModel):  # (1)!
             type: Literal["carousel"] = "carousel"
             items: list
-            actions: Annotated[
-                list[ActionType],
-                AfterValidator(_action_validator_factory("active_index")),  # (2)!
-                PlainSerializer(lambda x: x[0].actions),  # (3)!
-                Field(default=[]),
-            ]
+            actions: list[ActionType] = []
+
+            _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+            @property
+            def _action_triggers(self):
+                return {"__default__": f"{self.id}.active_index"}  # (2)!
 
             def build(self):
-                return dbc.Carousel(
-                    id=self.id,
-                    items=self.items,
-                )
+                return dbc.Carousel(id=self.id, items=self.items)
 
-        vm.Page.add_type("components", Carousel)  # (4)!
 
-        @capture("action")  # (5)!
+        vm.Page.add_type("components", Carousel)  # (3)!
+
+
+        @capture("action")  # (4)!
         def slide_next_card(active_index):
             if active_index:
                 return "Second slide"
@@ -447,14 +445,14 @@ As mentioned above, custom components can trigger actions. To enable the custom 
             title="Custom Component",
             components=[
                 vm.Card(text="First slide", id="carousel-card"),
-                Carousel(  # (6)!
+                Carousel(  # (5)!
                     id="carousel",
                     items=[
                         {"key": "1", "src": "assets/slide_1.jpg"},
                         {"key": "2", "src": "assets/slide_2.jpg"},
                     ],
                     actions=[
-                        vm.Action(  # (7)!
+                        vm.Action(  # (6)!
                             function=slide_next_card(),
                             inputs=["carousel.active_index"],
                             outputs=["carousel-card.children"],
@@ -469,8 +467,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         ```
 
         1. Here we subclass `VizroBaseModel` to create a new `Carousel` component.
-        1. We set the action so a change in the `active_index` property of the custom component triggers the action. `_action_validator_factory("active_index")` ensures that an `Action` model is correctly created and validated.
-        1. We tell the serializer to only serialize the `actions` field. This is important for when the dashboard configuration is exported (e.g., to YAML or JSON).
+        1. We set `_action_triggers` so that a change in the `active_index` property of the `dbc.Carousel`  component triggers the action.
         1. **Remember!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `Carousel` will be inserted into the `components` argument of the `Page` model, and thus must be added as an allowed type.
         1. We define a custom action `slide_next_card` using the `@capture("action")` decorator. This action will change the text of a `Card` component based on the active slide in the `Carousel`.
         1. We add the `Carousel` component to the page, providing items for the carousel.
