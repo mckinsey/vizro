@@ -387,7 +387,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 As mentioned above, custom components can trigger actions. To enable the custom component to trigger the action, add the `actions` field and specify which property triggers the actions:
 
-1. **Add the `actions` argument to your custom component**. While the type annotation is `list[ActionType]`, the `BeforeValidator(coerce_actions_type)` ensures you can provide either a single `ActionType` or a list of actions.
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is [`ActionsType`][vizro.models.types.ActionsType].
 2. **Set the action trigger through `make_actions_chain` and `_action_triggers`**. In the below example, any change in the `active_index` property of the custom component triggers the actions chain.
 
     ```py
@@ -409,9 +409,9 @@ As mentioned above, custom components can trigger actions. To enable the custom 
 
         import dash_bootstrap_components as dbc
         import vizro.models as vm
-        from pydantic import BeforeValidator, model_validator
+        from pydantic import model_validator
         from vizro import Vizro
-        from vizro.models._models_utils import coerce_actions_type, make_actions_chain
+        from vizro.models._models_utils import make_actions_chain
         from vizro.models.types import ActionsType, capture
 
 
