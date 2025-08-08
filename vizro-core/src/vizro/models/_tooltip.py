@@ -29,7 +29,7 @@ class Tooltip(VizroBaseModel):
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
             chosen by the Vizro team. This may have unexpected behavior. Visit the
-            [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/)
+            [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/tooltip/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
 
@@ -50,7 +50,7 @@ class Tooltip(VizroBaseModel):
                 default={},
                 description="""Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
                 defaults chosen by the Vizro team. This may have unexpected behavior. Visit the
-                [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/)
+                [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/tooltip/)
                 to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and
                 the underlying component may change in the future. Defaults to `{}`.""",
             ),
