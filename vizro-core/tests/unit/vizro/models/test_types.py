@@ -7,8 +7,9 @@ import pytest
 from pydantic import Field, ValidationError, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import VizroBaseModel
-from vizro.models.types import CapturedCallable, capture, validate_captured_callable
+from vizro.actions import export_data
+from vizro.models import Action, Button, VizroBaseModel
+from vizro.models.types import CapturedCallable, _coerce_actions_type, capture, validate_captured_callable
 
 
 def positional_only_function(a, /):
@@ -388,3 +389,25 @@ def test_graph_template_crash(set_pio_default_template):
         decorated_graph_function_crash(pd.DataFrame())
     # The default template should be unchanged even if the captured function crashes.
     assert pio.templates.default == set_pio_default_template
+
+
+class TestCoerceActionsType:
+    @pytest.mark.parametrize(
+        "actions_input",
+        [
+            Action(function=export_data()),  # Single action
+            [Action(function=export_data())],  # List of actions
+        ],
+    )
+    def test_coerce_actions_type(self, actions_input):
+        """Test that coerce_actions_type always returns the expected list format."""
+        result = _coerce_actions_type(actions_input)
+
+        expected = actions_input if isinstance(actions_input, list) else [actions_input]
+        assert result == expected
+
+    def test_coerce_actions_type_integration(self):
+        """Test that single actions work with actual components."""
+        action = export_data()
+        button = Button(actions=action)
+        assert button.actions == [action]

@@ -15,6 +15,7 @@ from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union,
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
+    BeforeValidator,
     Discriminator,
     Field,
     ImportString,
@@ -83,6 +84,13 @@ def _clean_module_string(module_string: str) -> str:
         if original in module_string:
             return new
     return ""
+
+
+def _coerce_actions_type(actions: Any) -> Any:
+    """Converts a single action into a list of actions."""
+    if isinstance(actions, list):
+        return actions
+    return [actions]
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -706,6 +714,12 @@ ActionType = Annotated[
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
+
+# TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
+# the BeforeValidator, but this requires pydantic >= 2.9.
+ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_actions_type), Field(default=[])]
+"""List of actions that can be triggered by a component. Accepts either a single
+[`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType]."""
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
