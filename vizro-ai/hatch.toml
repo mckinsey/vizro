@@ -39,7 +39,6 @@ VIZRO_AI_LOG_LEVEL = "DEBUG"
 [envs.default.scripts]
 example = "cd examples; python example.py"
 example-create-dashboard = "cd examples; python example_dashboard.py"
-example-ui = "cd examples/dashboard_ui; python app.py"
 lint = "pre-commit run {args} --all-files"
 notebook = "cd examples; jupyter notebook"
 pip = '"{env:HATCH_UV}" pip {args}'
