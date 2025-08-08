@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Removed
 
-- Remove `dashboard_ui` example. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Remove `dashboard_ui` example. ([#1332](https://github.com/mckinsey/vizro/pull/1332))
 
 
 <!--
