@@ -164,7 +164,9 @@ page_7 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_7_filter", column="continent", show_in_url=True, selector=vm.Dropdown(id="page_7_filter_selector")),
+        vm.Filter(
+            id="page_7_filter", column="continent", show_in_url=True, selector=vm.Dropdown(id="page_7_filter_selector")
+        ),
     ],
 )
 
@@ -190,8 +192,18 @@ page_8 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_8_filter_1", column="continent", show_in_url=True, selector=vm.RadioItems(id="page_8_filter_1_selector")),
-        vm.Filter(id="page_8_filter_2", column="continent", show_in_url=True, selector=vm.RadioItems(id="page_8_filter_2_selector")),
+        vm.Filter(
+            id="page_8_filter_1",
+            column="continent",
+            show_in_url=True,
+            selector=vm.RadioItems(id="page_8_filter_1_selector"),
+        ),
+        vm.Filter(
+            id="page_8_filter_2",
+            column="continent",
+            show_in_url=True,
+            selector=vm.RadioItems(id="page_8_filter_2_selector"),
+        ),
     ],
 )
 
@@ -225,7 +237,7 @@ Test case:
 1. navigate to page_10
 2. refresh the page_10
 3. change page_10_dfp_parameter value and check everything is ok
-4. change page_10_filter value and check everything is ok. 
+4. change page_10_filter value and check everything is ok.
    This used to fail because the "sync_url" callback made that the guard callback doesn't trigger.
    The issue: when the filter value was changed for the first time after a DFP update, nothing happened.
    Fix: in the "url_sync" callback, set "guard.data = False" for these filters so the filter change is detected.
