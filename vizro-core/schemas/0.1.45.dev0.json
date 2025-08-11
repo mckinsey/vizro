@@ -34,7 +34,7 @@
     },
     "Action": {
       "additionalProperties": false,
-      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function.\n    inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`\n        or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.\n    outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the action function. Each\n        output can be specified as `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.\n        Defaults to `[]`.",
+      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function.\n    inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`\n        or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.\n    outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].",
       "properties": {
         "id": {
           "default": "",
@@ -58,7 +58,6 @@
             }
           ],
           "default": [],
-          "description": "List or dictionary of outputs modified by the action function. Each output can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.",
           "title": "Outputs"
         },
         "type": {
