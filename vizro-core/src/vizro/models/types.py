@@ -88,10 +88,10 @@ def _clean_module_string(module_string: str) -> str:
 
 def _coerce_to_list(value: Any) -> Any:
     """Converts a single item into a list unless it's already a list or dict.
-    
+
     Args:
         value: The value to potentially coerce to a list
-        
+
     Returns:
         The original value if it's a list or dict, otherwise a list containing the value
     """
