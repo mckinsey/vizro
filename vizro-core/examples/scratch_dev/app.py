@@ -1,10 +1,12 @@
+import json
+
 from dotenv import load_dotenv
 
 
 from pydantic import Tag, Field
 from typing import Annotated, Optional
 
-from dash import html, dcc
+from dash import html, dcc, callback, Output, Input, State, Patch
 from typing import Literal
 from openai import OpenAI
 from pydantic import model_validator
@@ -37,7 +39,6 @@ class echo(_AbstractAction):
     prompt: str = Field(default_factory=lambda data: f"{data["chat_id"]}-input.value")
     # Or maybe input to match client.responses.create? Note input there can also
     # be whole history and not just latest although previous_response_id now easier way to do it.
-    # Could pass all messages or just previous_response_id.
 
     # TBD whether we need messages
     # messages: str
@@ -60,6 +61,7 @@ class openai_pirate(echo):
     # and just make people set it through env variable
     api_base: Optional[str] = None  # similarly with os.environ.get("OPENAI_BASE_URL")
     _client: OpenAI
+    messages: str = Field(default_factory=lambda data: f"{data["chat_id"]}-store.data")
     # expose instructions and other stuff as fields.
     # But ultimately users will want to customise a lot of things like tools etc. so should be able to easily write
     # their own.
@@ -71,10 +73,49 @@ class openai_pirate(echo):
     def pre_build(self):
         self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
 
-    def function(self, prompt):
-        response = self._client.responses.create(model=self.model, instructions="Talk like a pirate.", input=prompt)
+        # Should we define these callbacks in pre_build or in _define_callback with call to super()? Not sure yet.
+        # Should we use vizro_store? Only if needed for correct functioning on change page. Otherwise best to build
+        # in store here.
+        # Should be clientside.
+        @callback(
+            Output(f"{self.chat_id}-output", "children"),
+            Input(f"{self.chat_id}-store", "data"),
+        )
+        def store_to_html(messages):
+            def message_to_html(message):
+                return html.Div([html.B(message["role"]), html.P(message["content"])])
 
-        return response.output_text
+            return [message_to_html(message) for message in messages]
+
+        # Should be clientside.
+        @callback(
+            Output(f"{self.chat_id}-store", "data"),
+            # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
+            # make sure it.
+            Input(f"{self.chat_id}-submit", "n_clicks"),
+            State(*self.prompt.split(".")),
+            prevent_initial_call=True,
+        )
+        def prompt_to_store(_, prompt):
+            store = Patch()
+            store.append({"role": "user", "content": prompt})
+            return store
+
+    def function(self, prompt, messages):
+        # Need to repeat append here since this runs at same time as store update.
+        messages.append({"role": "user", "content": prompt})
+        response = self._client.responses.create(
+            model=self.model, input=messages, instructions="Talk like a pirate.", store=False
+        )
+
+        # Could do this with messages and it would also work fine.
+        store = Patch()
+        store.append({"role": "assistant", "content": response.output_text})
+        return store
+
+    @property
+    def outputs(self):
+        return [f"{self.chat_id}-store.data"]
 
 
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
@@ -117,9 +158,8 @@ class Chat(VizroBaseModel):
             [
                 dbc.Input(id=f"{self.id}-input", placeholder="Type something...", type="text", debounce=True),
                 dbc.Button(id=f"{self.id}-submit", children="Submit"),
-                html.Div(id=f"{self.id}-output"),
-                # html.H1("Store"),
-                # html.Pre(id=f"{self.id}-store"),
+                html.Div(id=f"{self.id}-output", children=[]),
+                dcc.Store(id=f"{self.id}-store", data=[], storage_type="local"),
             ]
         )
 
@@ -137,17 +177,17 @@ page = vm.Page(
             # actions=[
             #     echo(chat_id="chat"),
             # ],
-            actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-output.children"])],
+            # actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-output.children"])],
             # actions=[graph(chat_id="chat")],
             # actions=[
             #     vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-output.children"])
             # ],
-            # actions=[
-            #     openai_pirate(
-            #         # model=..., optional
-            #         chat_id="chat",
-            #     ),
-            # ],
+            actions=[
+                openai_pirate(
+                    # model=..., optional
+                    chat_id="chat",
+                ),
+            ],
         ),
         # Soon you wouldn't have to label with id like this. It would be done by looking up in the model
         # manager. So it would just like this and no need to specify id="chat" which looks silly right now.
@@ -167,8 +207,9 @@ dashboard = vm.Dashboard(pages=[page])
 
 """
 Notes:
-* still need to work out whether to use message history or previous_response_id. How to restore chat when go back to
-page? Remember Patch.
+* How to restore chat when go back to page?
+* How to handle different types? See options below.
+* How can user easily write in chat function that plugs in?
 * Streaming is not easy... Let's forget about it for now as a built-in feature, save it for fancy demos and then come
 back to trying to build it in.
 
@@ -178,6 +219,20 @@ pagination.
 If get message history from local then still need to populate somehow but not in OPL - could all be clientside and 
 outside actions. Probably easier overall.
 Use previous_response_id stored locally so there's possibility in future of moving message population to serverside.
+
+Can't use previous_response_id internally:
+Previous response cannot be used for this organization due to Zero Data Retention. 
+
+Options for handling messages/prompt:
+- messages as input property to do Dash component. Then don't need JSON duplication of it in store. Handle different 
+return types in Dash component rather than purely returning Dash components as here
+- JSON store version that produces HTML version with CSCB. Ways to update this:
+  - Option 1: prompt trigger updates store and triggers OpenAI callback at same time. This is done here.
+  - Option 2: prompt trigger updates store which then is trigger for OpenAI callback
+
+Things to improve in nearish future:
+- need to specify chat_id manually
+- way to plug into OPL if want to retrieve messages from server. Not urgent if do it all clientside.
 """
 
 if __name__ == "__main__":
