@@ -1,5 +1,6 @@
 import json
 
+import dash
 from dotenv import load_dotenv
 
 
@@ -16,6 +17,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions._abstract_action import _AbstractAction
+from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import make_actions_chain
 
@@ -80,10 +82,12 @@ class openai_pirate(echo):
         # Should be triggered in exact same way as main callback and at same time, but we assume it finishes before
         # other one because it's faster. Could this cause difficulties? Definitely requires multithreaded server at
         # least but that's ok. Would they ever not finish in right order? Not sure.
+        # This callback populates chat messages with latest input straight away rather than waiting to receive response.
+        # This makes it feel more responsive.
         @callback(
             # outputs are self.outputs
             Output(f"{self.chat_id}-store", "data"),
-            Output(f"{self.chat_id}-output", "children"),
+            Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
             # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
             # make sure it.
             Input(f"{self.chat_id}-submit", "n_clicks"),
@@ -97,16 +101,26 @@ class openai_pirate(echo):
             html_messages.append(self.message_to_html(latest_input))
             return store, html_messages
 
-    def message_to_html(self, message):
-        return html.Div([html.B(message["role"]), html.P(message["content"])])
+        # Horrible hack to restore chat history when you change page and return.
+        page = model_manager._get_model_page(self)
+
+        @callback(
+            Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+            Output("vizro_version", "children"),  # Extremely horrible hack we should change, just done here to make
+            # sure callback triggers (must have prevent_initial_call=True).
+            Input(*page._action_triggers["__default__"].split(".")),
+            State(f"{self.chat_id}-store", "data"),
+            prevent_initial_call=True,
+        )
+        def on_page_load(_, store):
+            return [self.message_to_html(message) for message in store], dash.no_update
 
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
+        # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
         latest_input = {"role": "user", "content": prompt}
         messages.append(latest_input)
-        response = self._client.responses.create(
-            model=self.model, input=messages, instructions="Talk like a pirate.", store=False
-        )
+        response = self.core_function(prompt, messages)
         latest_output = {"role": "assistant", "content": response.output_text}
 
         # Could do this without Patch and it would also work fine, but that would send more data across network than
@@ -115,6 +129,17 @@ class openai_pirate(echo):
         store.append(latest_output)
         html_messages.append(self.message_to_html(latest_output))
         return store, html_messages
+
+    # User writes this function. Can it be the same function for streaming and non streaming and still work?
+    # Not sure since responses.create has different return types.
+    def core_function(self, prompt, messages):
+        return self._client.responses.create(
+            model=self.model, input=messages, instructions="Talk like a pirate.", store=False
+        )
+
+    # User writes this function. Does it belong here or in Chat?
+    def message_to_html(self, message):
+        return html.Div([html.B(message["role"]), html.P(message["content"])])
 
     @property
     def outputs(self):
@@ -162,7 +187,7 @@ class Chat(VizroBaseModel):
                 dbc.Input(id=f"{self.id}-input", placeholder="Type something...", type="text", debounce=True),
                 dbc.Button(id=f"{self.id}-submit", children="Submit"),
                 html.Div(id=f"{self.id}-output", children=[]),
-                dcc.Store(id=f"{self.id}-store", data=[], storage_type="local"),
+                dcc.Store(id=f"{self.id}-store", data=[], storage_type="local"),  # TBD storage_type
             ]
         )
 
@@ -206,11 +231,12 @@ page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+page_2 = vm.Page(title="Dummy", components=[vm.Card(text="dummy")])
+
+dashboard = vm.Dashboard(pages=[page, page_2])
 
 """
 Notes:
-* How to restore chat when go back to page?
 * How to handle different types? See options below.
 * How can user easily write in chat function that plugs in?
 * Streaming is not easy... Let's forget about it for now as a built-in feature, save it for fancy demos and then come
@@ -231,16 +257,21 @@ Options for handling messages/prompt:
 return types in Dash component rather than purely returning Dash components as here. Effectively this is done by 
 store_to_html callback in this example. Still easier to do this way than Dash component, regardless of whether it's 
 SS or CS callback. Could maybe have user write function that plugs in to do render of message? Conclusion: do the 
-Dash stuff SS by hand for response updating message output. But need to work with streaming too so can't be done in 
-callback - must be returned at same time as store. 
+Dash stuff SS by hand for response updating message output. Remember SS callbacks will have no problems at all for local use so not such a big compromise.
+But need to work with streaming too so can't be done in callback - must be returned at same time as store, 
+so option 3 only realistic possibility. 
 - JSON store version that produces HTML version with SSCB. Ways to update this:
-  - Option 1: prompt trigger updates store and triggers OpenAI callback at same time. This is done here.
+  - Option 1: prompt trigger updates store and triggers OpenAI callback at same time.
   - Option 2: prompt trigger updates store which then is trigger for OpenAI callback
-  - Option 3: update HTML at same time as store. Then have duplicated data which is inelegant but not a problem. This is done here.
+  - Option 3: update HTML at same time as store. Then have duplicated data which is inelegant but not a big problem. 
+  Also makes on_page_load serverside - also not big problem. This is done here.
 
 Things to improve in nearish future:
 - need to specify chat_id manually
-- way to plug into OPL if want to retrieve messages from server. Not urgent if do it all clientside.
+- way to plug into OPL if want to retrieve messages from server. Not urgent if do it all clientside. But now that 
+translation of store messages to html is SS, need to be able to do this. Options:
+   - plug into OPL properly somehow
+   - write another callback here that is triggered by {ON_PAGE_LOAD_ACTION_PREFIX}_{page.id}. Done here in hacky way
 """
 
 if __name__ == "__main__":
