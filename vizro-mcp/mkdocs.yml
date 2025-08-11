@@ -10,7 +10,6 @@ nav:
       - Use any MCP host: pages/guides/set-up-vizro-mcp-basics.md
   - How-to guides:
       - Use prompt templates: pages/guides/use-prompt-templates.md
-      - Use tools: pages/guides/use-vizro-mcp-tools.md
       - Create only charts: pages/guides/create-charts-only.md
       - Use local or remote data: pages/guides/use-data.md
       - Get a live preview: pages/guides/get-live-preview.md
@@ -18,6 +17,7 @@ nav:
       - FAQs: pages/explanation/faqs.md
       - Contribute: pages/explanation/contribute.md
       - Disclaimers: pages/explanation/disclaimers.md
+  - API reference: pages/API-reference/API-reference.md
   - Vizro: https://vizro.readthedocs.io
   - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
