@@ -58,7 +58,7 @@
 }
 
 #header:not(:empty) {
-  border-bottom: 1px solid var(--border-subtleAlpha01);
+  border-bottom: 1px solid var(--bs-border-color);
 }
 
 #header.no-left {
@@ -100,7 +100,7 @@
 }
 
 #control-panel:not(:empty) {
-  border-bottom: 1px solid var(--border-subtleAlpha01);
+  border-bottom: 1px solid var(--bs-border-color);
 }
 
 .dashboard_title {
@@ -153,15 +153,15 @@
 
 #collapse-icon.material-symbols-outlined {
   background-color: var(--left-side-bg);
-  border: 1px solid var(--border-subtleAlpha01);
+  border: 1px solid var(--bs-border-color);
   border-radius: 50%;
-  color: var(--text-disabled);
+  color: var(--bs-tertiary-color);
   cursor: pointer;
   position: absolute;
 }
 
 #collapse-icon.material-symbols-outlined:hover {
-  color: var(--text-primaryHover);
+  color: var(--bs-primary-text-emphasis);
 }
 
 #collapse-icon-outer {

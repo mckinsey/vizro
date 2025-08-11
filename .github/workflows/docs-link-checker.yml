@@ -43,3 +43,11 @@ jobs:
           hatch run docs:pip tree
           hatch run docs:build
           hatch run docs:link-check
+
+      - name: Check vizro-mcp docs links
+        working-directory: ./vizro-mcp
+        if: always()
+        run: |
+          hatch run docs:pip tree
+          hatch run docs:build
+          hatch run docs:link-check
