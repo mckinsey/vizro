@@ -8,7 +8,7 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import Input, Output, State, callback, dash, set_props
+from dash import Input, Output, State, callback, dash, set_props, clientside_callback, ClientsideFunction
 from dash.development.base_component import Component
 from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -335,33 +335,14 @@ class _BaseAction(VizroBaseModel):
             # the guard_action_chain by putting the Output in the global dashboard page layout, but changing
             # prevent_initial_call feels cleaner since it means the dcc.Stores do not need to be split between page-
             # and dashboard- level.
-            @callback(
+            clientside_callback(
+                ClientsideFunction(namespace="action", function_name="guard_action_chain"),
                 Output(f"{self.id}_guarded_trigger", "data"),
                 Input(*self._trigger.split(".")),
                 State(component_guard_id, "data", allow_optional=True),
+                State(trigger_component_id, "id"),
                 prevent_initial_call=self._prevent_initial_call_of_guard,
             )
-            def guard_action_chain(value, created):
-                logger.critical("***** Guard action with id %s, function %s =====", self.id, self._action_name)
-                if created:
-                    # Guard component has data=True. This means the component has just been created and so we should
-                    # prevent running the actions chain because it's not a genuine trigger.
-                    logger.critical(f"not running actions chain, setting {component_guard_id} to False")
-                    # We must use set_props here rather than using Output(component_guard_id, "data") because the
-                    # component might not exist. This is allowed for a state with allow_optional=True but not for an
-                    # Output.
-                    set_props(component_guard_id, {"data": False})
-                    # This must be dash.no_update rather than PreventUpdate or set_props won't work.
-                    return dash.no_update
-                elif created is None:
-                    # Guard component doesn't exist, so the trigger must be genuine rather than due to creation of a
-                    # component.
-                    logger.critical("not dynamic, running action")
-                    return value
-                elif not created:
-                    # Guard component exists but is set to False so it's a genuine trigger of the actions chain.
-                    logger.critical("running action")
-                    return value
         else:
             trigger = Input(*self._trigger.split("."))
 

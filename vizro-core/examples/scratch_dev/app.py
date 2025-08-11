@@ -34,7 +34,7 @@ page_1 = vm.Page(
         vm.Graph(id="page_1_graph", figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
     ],
     controls=[
-        vm.Filter(id="page_1_filter", column="continent"),
+        vm.Filter(id="page_1_filter", column="continent", selector=vm.Dropdown(id="page_1_filter_selector")),
     ],
 )
 
@@ -57,7 +57,7 @@ page_2 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_2_filter", column="continent", selector=vm.RadioItems()),
+        vm.Filter(id="page_2_filter", column="continent", selector=vm.RadioItems(id="page_2_filter_selector")),
     ],
 )
 
@@ -87,7 +87,7 @@ page_3 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_3_filter", column="continent"),
+        vm.Filter(id="page_3_filter", column="continent", selector=vm.Dropdown(id="page_3_filter_selector")),
     ],
 )
 
@@ -111,7 +111,7 @@ page_4 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_4_filter", column="continent"),
+        vm.Filter(id="page_4_filter", column="continent", selector=vm.Dropdown(id="page_4_filter_selector")),
     ],
 )
 
@@ -124,7 +124,7 @@ page_5 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_4_dynamic_filter", column="continent", selector=vm.RadioItems(id="selector")),
+        vm.Filter(id="page_5_dynamic_filter", column="continent", selector=vm.RadioItems(id="page_5_filter_selector")),
     ],
 )
 
@@ -159,7 +159,7 @@ page_7 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_7_filter", column="continent", show_in_url=True),
+        vm.Filter(id="page_7_filter", column="continent", show_in_url=True, selector=vm.Dropdown(id="page_7_filter_selector")),
     ],
 )
 
@@ -185,8 +185,8 @@ page_8 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_8_filter_1", column="continent", show_in_url=True, selector=vm.RadioItems()),
-        vm.Filter(id="page_8_filter_2", column="continent", show_in_url=True, selector=vm.RadioItems()),
+        vm.Filter(id="page_8_filter_1", column="continent", show_in_url=True, selector=vm.RadioItems(id="page_8_filter_1_selector")),
+        vm.Filter(id="page_8_filter_2", column="continent", show_in_url=True, selector=vm.RadioItems(id="page_8_filter_2_selector")),
     ],
 )
 
@@ -246,15 +246,18 @@ page_10 = vm.Page(
                 "page_10_graph.data_frame.continent",
             ],
             selector=vm.RadioItems(
+                id="page_10_dfp_selector",
                 title="DFP - [3 guards]",
                 options=list(set(df_gapminder["continent"])),
                 value="Europe",
-                id="page_10_dfp_selector",
             ),
             show_in_url=True,
         ),
     ],
 )
+
+# TODO-NOW: Test when custom action made from vm.VizroBaseModel triggers the action.
+# TODO-NOW: Test when AgGrid is output of the filter-interaction action.
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10])
 

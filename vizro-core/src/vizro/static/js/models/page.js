@@ -156,45 +156,32 @@ function sync_url_query_params_and_controls(...values_ids) {
     `${window.location.pathname}?${urlParams.toString()}`,
   );
 
-  // // Two approaches:
-  // // 1. Don't return filter values but use setProps instead. ---> Does NOT work as setProps trigger filter_action.
-  // // 2. Return SELECTOR_guard_actions_chain from the callback output too.
+  // After this clientside callback, the "guard_action_chain" callback may run.
+  // For each selector, set the guard component to true or false based on the trigger:
+  // 1. User control change:
+  //    - Returned value is dash_clientside.no_update
+  //    - "guard_action_chain" runs after this
+  //    - Guard data already false (overwritten with false again)
   //
-  // // 1:
-  //  const outputSelectorIds = dash_clientside.callback_context.outputs_list;
-  //  for (let i = 1; i < outputSelectorIds.length; i++) {
-  //    const selectorId = outputSelectorIds[i]['id'];
-  //    const selectorValue = outputSelectorValues[i - 1];
+  // 2. URL parameters:
+  //    - Returned value is NOT dash_clientside.no_update
+  //    - "guard_action_chain" runs after this
+  //    - Guard data set to true to block the actions chain
   //
-  //
-  //    if (selectorValue !== dash_clientside.no_update) {
-  //      dash_clientside.set_props(selectorId, {value: selectorValue});
-  //    }
-  //  }
-  //
-  //  return [triggerOPL, ...outputSelectorValuesAllNoUpdate];
-
-  // 2:
+  // 3. Object recreated by another action (e.g. DFP):
+  //    - Returned value is dash_clientside.no_update
+  //    - "guard_action_chain" is SKIPPED -> (it's skipped as object is recreated and no_update is returned by this clientside callback)
+  //    - Guard data set to false so future changes trigger filter action
   const outputSelectorIds = dash_clientside.callback_context.outputs_list;
   for (let i = 1; i < outputSelectorIds.length; i++) {
     const selectorId = outputSelectorIds[i]["id"];
     const selectorValue = outputSelectorValues[i - 1];
+    const isFromUrl = selectorValue !== dash_clientside.no_update;
 
-    if (selectorValue !== dash_clientside.no_update) {
-      dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
-        data: true,
-      });
-      //      outputSelectorValues[i - 1] = controlMap[selectorId]
-    } else {
-      dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
-        data: false,
-      });
-    }
+    dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
+      data: isFromUrl,
+    });
   }
-
-  // TRY TO RETURN THE OUTPUT SELECTOR VALUES ALWAYS
-  //  const outputSelectorValuesFromControlMap = Array.from(controlMap.values());
-  //  return [triggerOPL, ...outputSelectorValuesFromControlMap];
 
   return [triggerOPL, ...outputSelectorValues];
 }
