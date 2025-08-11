@@ -94,7 +94,7 @@ class Page(VizroBaseModel):
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
-    actions: ActionsType
+    actions: ActionsType = []
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 

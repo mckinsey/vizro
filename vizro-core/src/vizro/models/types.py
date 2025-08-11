@@ -719,7 +719,8 @@ ActionType = Annotated[
 # the BeforeValidator, but this requires pydantic >= 2.9.
 ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_actions_type), Field(default=[])]
 """List of actions that can be triggered by a component. Accepts either a single
-[`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType]."""
+[`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType].
+Defaults to `[]`."""
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]

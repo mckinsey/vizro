@@ -391,7 +391,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
 2. **Set the action trigger through `make_actions_chain` and `_action_triggers`**. In the below example, any change in the `active_index` property of the custom component triggers the actions chain.
 
     ```py
-    actions: ActionsType
+    actions: ActionsType = []
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
@@ -418,7 +418,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         class Carousel(vm.VizroBaseModel):  # (1)!
             type: Literal["carousel"] = "carousel"
             items: list
-            actions: ActionsType
+            actions: ActionsType = []
 
             _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
