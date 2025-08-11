@@ -12,11 +12,11 @@ nav:
       - Use prompt templates: pages/guides/use-prompt-templates.md
       - Use tools: pages/guides/use-vizro-mcp-tools.md
       - Create only charts: pages/guides/create-charts-only.md
-      - Use developer builds: pages/guides/use-developer-build.md
       - Use local or remote data: pages/guides/use-data.md
       - Get a live preview: pages/guides/get-live-preview.md
   - Explanation:
       - FAQs: pages/explanation/faqs.md
+      - Contribute: pages/explanation/contribute.md
       - Disclaimers: pages/explanation/disclaimers.md
   - Vizro: https://vizro.readthedocs.io
   - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/

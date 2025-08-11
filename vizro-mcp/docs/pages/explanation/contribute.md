@@ -1,5 +1,10 @@
-# How to use a developer build of Vizro-MCP
+# Contribute to Vizro-MCP
 
+We are always happy to receive contributions to [Vizro](https://github.com/mckinsey/vizro) and Vizro-MCP!
+
+To contribute to Vizro-MCP you'll need to follow the same [contribution process as for the parent Vizro project](https://vizro.readthedocs.io/en/stable/pages/explanation/contributing/).
+
+## How to use a developer build of Vizro-MCP
 If you are a developer, or if you are running Vizro-MCP from source, you need to clone the [Vizro GitHub repository](https://github.com/mckinsey/vizro/tree/main).
 
 To configure the Vizro-MCP server details:
