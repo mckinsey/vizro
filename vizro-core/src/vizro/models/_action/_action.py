@@ -23,6 +23,7 @@ from vizro.models.types import (
     FigureWithFilterInteractionType,
     ModelID,
     OutputsType,
+    _coerce_to_list,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
@@ -226,22 +227,23 @@ class _BaseAction(VizroBaseModel):
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
         """Creates Dash Output objects from string specifications in self.outputs.
 
-        Converts self.outputs (list of strings or dictionary of strings where each string is in the format
+        Converts self.outputs (string, list of strings or dictionary of strings where each string is in the format
         '<component_id>.<property>' or '<component_id>') and converts into Dash Output objects.
-        For example, ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
+        For example, 'my_graph.figure' or ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
 
         Returns:
             Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
             or a dictionary mapping keys to Output objects if self.outputs is a dictionary of strings.
         """
+        coerced_outputs = _coerce_to_list(self.outputs)
 
         def _transform_output(output):
             # Action.outputs is already validated by pydantic as list[str] or dict[str, str]
             # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
             return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
-        if isinstance(self.outputs, list):
-            callback_outputs = [_transform_output(output) for output in self.outputs]
+        if isinstance(coerced_outputs, list):
+            callback_outputs = [_transform_output(output) for output in coerced_outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -250,7 +252,7 @@ class _BaseAction(VizroBaseModel):
                 callback_outputs = callback_outputs[0]
             return callback_outputs
 
-        return {output_name: _transform_output(output) for output_name, output in self.outputs.items()}
+        return {output_name: _transform_output(output) for output_name, output in coerced_outputs.items()}
 
     def _action_callback_function(
         self,

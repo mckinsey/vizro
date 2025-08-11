@@ -9,7 +9,7 @@ from dash.development.base_component import Component
 from pydantic import TypeAdapter
 
 from vizro.models._action._action import _BaseAction
-from vizro.models.types import _IdOrIdProperty
+from vizro.models.types import _coerce_to_list, _IdOrIdProperty
 
 
 # TODO-AV2 D 5: make public.
@@ -54,7 +54,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> Union[list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]:  # type: ignore[override]
+    def outputs(self) -> Union[_IdOrIdProperty, list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key
@@ -73,9 +73,10 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
-        # Action.outputs is already validated by pydantic as list[str] or dict[str, str], but for
+        # Action.outputs is already validated by pydantic as str, list[str] or dict[str, str] via OutputsType, but for
         # _AbstractAction.outputs we need to do the validation manually with TypeAdapter.
-        TypeAdapter(Union[list[str], dict[str, str]]).validate_python(self.outputs)
+        coerced_outputs = _coerce_to_list(self.outputs)
+        TypeAdapter(Union[list[str], dict[str, str]]).validate_python(coerced_outputs)
         return super()._transformed_outputs
 
     @property
