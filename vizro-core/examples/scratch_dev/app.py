@@ -76,46 +76,49 @@ class openai_pirate(echo):
         # Should we define these callbacks in pre_build or in _define_callback with call to super()? Not sure yet.
         # Should we use vizro_store? Only if needed for correct functioning on change page. Otherwise best to build
         # in store here.
-        # Should be clientside.
+        # Must be serverside to use self.message_to_html.
+        # Should be triggered in exact same way as main callback and at same time, but we assume it finishes before
+        # other one because it's faster. Could this cause difficulties? Definitely requires multithreaded server at
+        # least but that's ok. Would they ever not finish in right order? Not sure.
         @callback(
-            Output(f"{self.chat_id}-output", "children"),
-            Input(f"{self.chat_id}-store", "data"),
-        )
-        def store_to_html(messages):
-            def message_to_html(message):
-                return html.Div([html.B(message["role"]), html.P(message["content"])])
-
-            return [message_to_html(message) for message in messages]
-
-        # Should be clientside.
-        @callback(
+            # outputs are self.outputs
             Output(f"{self.chat_id}-store", "data"),
+            Output(f"{self.chat_id}-output", "children"),
             # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
             # make sure it.
             Input(f"{self.chat_id}-submit", "n_clicks"),
             State(*self.prompt.split(".")),
             prevent_initial_call=True,
         )
-        def prompt_to_store(_, prompt):
-            store = Patch()
-            store.append({"role": "user", "content": prompt})
-            return store
+        def update_with_user_input(_, prompt):
+            store, html_messages = Patch(), Patch()
+            latest_input = {"role": "user", "content": prompt}
+            store.append(latest_input)
+            html_messages.append(self.message_to_html(latest_input))
+            return store, html_messages
+
+    def message_to_html(self, message):
+        return html.Div([html.B(message["role"]), html.P(message["content"])])
 
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
-        messages.append({"role": "user", "content": prompt})
+        latest_input = {"role": "user", "content": prompt}
+        messages.append(latest_input)
         response = self._client.responses.create(
             model=self.model, input=messages, instructions="Talk like a pirate.", store=False
         )
+        latest_output = {"role": "assistant", "content": response.output_text}
 
-        # Could do this with messages and it would also work fine.
-        store = Patch()
-        store.append({"role": "assistant", "content": response.output_text})
-        return store
+        # Could do this without Patch and it would also work fine, but that would send more data across network than
+        # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
+        store, html_messages = Patch(), Patch()
+        store.append(latest_output)
+        html_messages.append(self.message_to_html(latest_output))
+        return store, html_messages
 
     @property
     def outputs(self):
-        return [f"{self.chat_id}-store.data"]
+        return [f"{self.chat_id}-store.data", f"{self.chat_id}-output.children"]
 
 
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
@@ -225,10 +228,15 @@ Previous response cannot be used for this organization due to Zero Data Retentio
 
 Options for handling messages/prompt:
 - messages as input property to do Dash component. Then don't need JSON duplication of it in store. Handle different 
-return types in Dash component rather than purely returning Dash components as here
-- JSON store version that produces HTML version with CSCB. Ways to update this:
+return types in Dash component rather than purely returning Dash components as here. Effectively this is done by 
+store_to_html callback in this example. Still easier to do this way than Dash component, regardless of whether it's 
+SS or CS callback. Could maybe have user write function that plugs in to do render of message? Conclusion: do the 
+Dash stuff SS by hand for response updating message output. But need to work with streaming too so can't be done in 
+callback - must be returned at same time as store. 
+- JSON store version that produces HTML version with SSCB. Ways to update this:
   - Option 1: prompt trigger updates store and triggers OpenAI callback at same time. This is done here.
   - Option 2: prompt trigger updates store which then is trigger for OpenAI callback
+  - Option 3: update HTML at same time as store. Then have duplicated data which is inelegant but not a problem. This is done here.
 
 Things to improve in nearish future:
 - need to specify chat_id manually
