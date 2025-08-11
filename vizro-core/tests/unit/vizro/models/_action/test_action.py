@@ -182,7 +182,11 @@ class TestLegacyActionOutputs:
             ([], [], []),
             ("component.property", ["component.property"], Output("component", "property")),
             ("known_ag_grid_id", ["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
-            ("known_ag_grid_id.cellClicked", ["known_ag_grid_id.cellClicked"], Output("underlying_ag_grid_id", "cellClicked")),
+            (
+                "known_ag_grid_id.cellClicked",
+                ["known_ag_grid_id.cellClicked"],
+                Output("underlying_ag_grid_id", "cellClicked"),
+            ),
             (["component.property"], ["component.property"], Output("component", "property")),
             (
                 ["component_1.property_1", "component_2.property_2"],
@@ -190,7 +194,11 @@ class TestLegacyActionOutputs:
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
             (["known_ag_grid_id"], ["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
-            (["known_ag_grid_id.cellClicked"], ["known_ag_grid_id.cellClicked"], Output("underlying_ag_grid_id", "cellClicked")),
+            (
+                ["known_ag_grid_id.cellClicked"],
+                ["known_ag_grid_id.cellClicked"],
+                Output("underlying_ag_grid_id", "cellClicked"),
+            ),
             ({}, {}, {}),
             (
                 {"output_1": "component.property"},
@@ -214,7 +222,9 @@ class TestLegacyActionOutputs:
             ),
         ],
     )
-    def test_outputs_valid(self, outputs, expected_outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop):
+    def test_outputs_valid(
+        self, outputs, expected_outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop
+    ):
         # inputs=[] added to force action to be legacy
         action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
 
@@ -432,7 +442,11 @@ class TestActionOutputs:
             ([], [], []),
             ("component.property", ["component.property"], Output("component", "property")),
             ("known_ag_grid_id", ["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
-            ("known_ag_grid_id.cellClicked", ["known_ag_grid_id.cellClicked"], Output("underlying_ag_grid_id", "cellClicked")),
+            (
+                "known_ag_grid_id.cellClicked",
+                ["known_ag_grid_id.cellClicked"],
+                Output("underlying_ag_grid_id", "cellClicked"),
+            ),
             (["component.property"], ["component.property"], Output("component", "property")),
             (
                 ["component_1.property_1", "component_2.property_2"],
@@ -440,7 +454,11 @@ class TestActionOutputs:
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
             (["known_ag_grid_id"], ["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
-            (["known_ag_grid_id.cellClicked"], ["known_ag_grid_id.cellClicked"], Output("underlying_ag_grid_id", "cellClicked")),
+            (
+                ["known_ag_grid_id.cellClicked"],
+                ["known_ag_grid_id.cellClicked"],
+                Output("underlying_ag_grid_id", "cellClicked"),
+            ),
             ({}, {}, {}),
             (
                 {"output_1": "component.property"},
@@ -464,7 +482,9 @@ class TestActionOutputs:
             ),
         ],
     )
-    def test_outputs_valid(self, outputs, expected_outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop):
+    def test_outputs_valid(
+        self, outputs, expected_outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop
+    ):
         action = Action(function=action_with_no_args(), outputs=outputs)
 
         assert action.outputs == expected_outputs
