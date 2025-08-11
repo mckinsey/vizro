@@ -416,7 +416,7 @@ class TestCoerceToList:
         assert result == expected_output
 
 
-class TestCoerceActionsType:
+class TestCoerceActionsAndOutputsType:
     @pytest.mark.parametrize(
         "actions_input",
         [
@@ -435,3 +435,31 @@ class TestCoerceActionsType:
         action = export_data()
         button = Button(actions=action)
         assert button.actions == [action]
+
+    @pytest.mark.parametrize(
+        "output, expected_output",
+        [
+            ("component.property", ["component.property"]),
+            ("model_id", ["model_id"]),
+            ([], []),
+            (["output1", "output2"], ["output1", "output2"]),
+            ({}, {}),
+            ({"key1": "output1"}, {"key1": "output1"}),
+            ({"key1": "output1", "key2": "output2"}, {"key1": "output1", "key2": "output2"}),
+        ],
+    )
+    def test_coerce_outputs_type(self, output, expected_output):
+        """Test that _coerce_to_list works correctly for Action.outputs (preserves lists and dicts)."""
+        result = _coerce_to_list(output)
+        assert result == expected_output
+
+    def test_coerce_outputs_type_integration(self):
+        """Test that single output strings work with Action model."""
+        action = Action(function=decorated_action_function(a=1, b=2), outputs="component.property") 
+        assert action.outputs == ["component.property"]
+        
+        action_list = Action(function=decorated_action_function(a=1, b=2), outputs=["component.property"])
+        assert action_list.outputs == ["component.property"]
+        
+        action_dict = Action(function=decorated_action_function(a=1, b=2), outputs={"output1": "component.property"})
+        assert action_dict.outputs == {"output1": "component.property"}
