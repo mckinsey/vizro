@@ -2,19 +2,30 @@
 
 import vizro.models as vm
 from vizro import Vizro
-from vizro.actions import export_data
-from vizro.tables import dash_ag_grid
 import vizro.plotly.express as px
+from vizro.models.types import capture
 
-df_gapminder = px.data.gapminder().query("year == 2007")
+
+# Test action with single string output (instead of list)
+@capture("action")
+def update_card_text():
+    return "Updated text content!"
 
 
 page = vm.Page(
     title="My first dashboard",
     layout=vm.Flex(),
     components=[
-        vm.AgGrid(figure=dash_ag_grid(df_gapminder)),
-        vm.Button(actions=export_data()),
+        vm.Text(text="Click the button to update this text", id="text-component"),
+        vm.Button(
+            text="Test Single Output",
+            actions=[
+                vm.Action(
+                    function=update_card_text(),
+                    outputs="text-component",
+                )
+            ],
+        ),
     ],
 )
 
