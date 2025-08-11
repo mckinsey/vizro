@@ -126,7 +126,7 @@ Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the d
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png" width="600">
 </a>
 
-## [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp)
+## [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/)
 
 **A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for Vizro.**
 

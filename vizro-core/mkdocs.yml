@@ -61,7 +61,7 @@ nav:
       - Vizro schema: pages/explanation/schema.md
       - Authors: pages/explanation/authors.md
   - Vizro-MCP:
-      - Vizro-MCP: https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md
+      - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
