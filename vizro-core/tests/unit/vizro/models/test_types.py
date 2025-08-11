@@ -453,13 +453,15 @@ class TestCoerceActionsAndOutputsType:
         result = _coerce_to_list(output)
         assert result == expected_output
 
-    def test_coerce_outputs_type_integration(self):
+    @pytest.mark.parametrize(
+        "outputs_input, expected_output",
+        [
+            ("component.property", ["component.property"]),
+            (["component.property"], ["component.property"]),
+            ({"output1": "component.property"}, {"output1": "component.property"}),
+        ],
+    )
+    def test_coerce_outputs_type_integration(self, outputs_input, expected_output):
         """Test that single output strings work with Action model."""
-        action = Action(function=decorated_action_function(a=1, b=2), outputs="component.property")
-        assert action.outputs == ["component.property"]
-
-        action_list = Action(function=decorated_action_function(a=1, b=2), outputs=["component.property"])
-        assert action_list.outputs == ["component.property"]
-
-        action_dict = Action(function=decorated_action_function(a=1, b=2), outputs={"output1": "component.property"})
-        assert action_dict.outputs == {"output1": "component.property"}
+        action = Action(function=decorated_action_function(a=1, b=2), outputs=outputs_input)
+        assert action.outputs == expected_output
