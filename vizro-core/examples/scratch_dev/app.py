@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 
 
-from pydantic import Tag
+from pydantic import Tag, Field
 from typing import Annotated, Optional
 
 from dash import html, dcc
@@ -33,9 +33,12 @@ def echo_function(prompt):
 # Or they can write it using a class, just like with an action.
 class echo(_AbstractAction):
     type: Literal["echo"] = "echo"
-    prompt: str  # Or maybe input to match client.responses.create? Note input there can also be whole history and not
-    # just latest although previous_response_id now easier way to do it. Could pass all messages or just previous_response_id.
-    output: str
+    chat_id: str
+    prompt: str = Field(default_factory=lambda data: f"{data["chat_id"]}-input.value")
+    # Or maybe input to match client.responses.create? Note input there can also
+    # be whole history and not just latest although previous_response_id now easier way to do it.
+    # Could pass all messages or just previous_response_id.
+
     # TBD whether we need messages
     # messages: str
 
@@ -44,7 +47,7 @@ class echo(_AbstractAction):
 
     @property
     def outputs(self):
-        return [self.output]
+        return [f"{self.chat_id}-output.children"]
 
 
 # Subclass echo just because I'm lazy, but actually maybe we should actually have some common built-in chat class that
@@ -76,6 +79,14 @@ class openai_pirate(echo):
 
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
 # no big cost recreating it every time.
+# Note the function versions still need you to specify prompt since can't use chat_id as a static argument.
+# This will get impractical once there's also message history and previous response id etc. So for user to write
+# their own easily they really need to be able to plug in just a function e.g. def chat_function in openai class that
+# gets called from inside function.
+# Could have some @capture("action", template=...) that makes the class for them so they can still do without
+# subclassing?
+# Overall this seems fine - you can manually write function or use various built in things to make it easier. Have
+# full flexibility but not too hard to write.
 @capture("action")
 def openai_pirate_function(prompt):
     client = OpenAI()
@@ -107,6 +118,8 @@ class Chat(VizroBaseModel):
                 dbc.Input(id=f"{self.id}-input", placeholder="Type something...", type="text", debounce=True),
                 dbc.Button(id=f"{self.id}-submit", children="Submit"),
                 html.Div(id=f"{self.id}-output"),
+                # html.H1("Store"),
+                # html.Pre(id=f"{self.id}-store"),
             ]
         )
 
@@ -122,21 +135,17 @@ page = vm.Page(
         Chat(
             id="chat",
             # actions=[
-            #    echo(
-            #        prompt="chat-input.value",
-            #        output="chat-output.children",
-            #    ),
+            #     echo(chat_id="chat"),
             # ],
-            # actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-output.children"])],
-            # actions=[graph(prompt="chat-input.value", output="chat-output.children")],
-            actions=[
-                vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-output.children"])
-            ],
+            actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-output.children"])],
+            # actions=[graph(chat_id="chat")],
+            # actions=[
+            #     vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-output.children"])
+            # ],
             # actions=[
             #     openai_pirate(
             #         # model=..., optional
-            #         prompt="chat-input.value",
-            #         output="chat-output.children",
+            #         chat_id="chat",
             #     ),
             # ],
         ),
@@ -145,7 +154,12 @@ page = vm.Page(
         # Chat(actions=[echo()])
         # prompt and output are optional and would have default value defined in pre_build of class that looks at
         # self._tree. Or better maybe there's some special syntax for "<parent>.value" that could be used for
-        # inputs/outputs. We could have a sort of lookup dictionary like in AIO components.
+        # inputs/outputs. We could have a sort of lookup dictionary like in AIO components. Then it works as above but
+        # just need to have automatic way of specify chat_id.
+        # prompt: str = "<something_special>.input"
+        # Where <something_special> translates to the correct ID somehow - will need to figure out how given that
+        # it's not the direct parent.
+        # Would be able to use same syntax for outputs property.
     ],
 )
 
@@ -157,6 +171,13 @@ Notes:
 page? Remember Patch.
 * Streaming is not easy... Let's forget about it for now as a built-in feature, save it for fancy demos and then come
 back to trying to build it in.
+
+If get message history from server then need to hook into OPL for it. Could be whole separate action from OPL since 
+it doesn't involve Figures. Could do this with OpenAI but looks like it's potentially several requests due to 
+pagination.
+If get message history from local then still need to populate somehow but not in OPL - could all be clientside and 
+outside actions. Probably easier overall.
+Use previous_response_id stored locally so there's possibility in future of moving message population to serverside.
 """
 
 if __name__ == "__main__":
