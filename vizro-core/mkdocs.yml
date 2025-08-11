@@ -34,7 +34,7 @@ nav:
           - Assets: pages/user-guides/assets.md
           - Custom CSS: pages/user-guides/custom-css.md
       - Actions: pages/user-guides/actions.md
-      - Data: 
+      - Data:
           - Overview: pages/user-guides/data.md
           - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - Extensions:
