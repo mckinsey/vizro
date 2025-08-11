@@ -4,7 +4,8 @@
 
     Vizro-AI dashboard generation is no longer actively developed and is superseded by [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). Vizro-AI supports only chart generation from version 0.4.0.
 
-    **For chart and dashboard generation, we recommend using [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). It doesn’t require an API key and works with familiar LLM applications like Claude Desktop, making it simpler to use.**
+    **For chart and dashboard generation, we recommend using [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). It doesn’t require an API key and works with familiar LLM applications like VS Code, Cursor, or Claude Desktop, making it simpler to use.**
+
 
 Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so you can use instructions in English, or other languages, to effortlessly create interactive charts and dashboards.
 

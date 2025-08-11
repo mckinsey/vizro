@@ -4,7 +4,8 @@
 
 Vizro-AI has largely been replaced by [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) and only supports chart generation from version 0.4.0.
 
-For chart and dashboard generation, we recommend using Vizro-MCP, since it doesn’t require an API key and works with familiar LLM applications like Claude Desktop, making it simpler to use.
+For chart and dashboard generation, we recommend using Vizro-MCP, since it doesn’t require an API key and works with familiar LLM applications like VS Code, Cursor, or Claude Desktop, making it simpler to use.
+
 
 ## Who works on Vizro-AI?
 
