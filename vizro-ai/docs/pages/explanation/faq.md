@@ -6,7 +6,6 @@ Vizro-AI has largely been replaced by [Vizro-MCP](https://vizro.readthedocs.io/p
 
 For chart and dashboard generation, we recommend using Vizro-MCP, since it doesn’t require an API key and works with familiar LLM applications like VS Code, Cursor, or Claude Desktop, making it simpler to use.
 
-
 ## Who works on Vizro-AI?
 
 ### Current team members
