@@ -455,11 +455,11 @@ class TestCoerceActionsAndOutputsType:
 
     def test_coerce_outputs_type_integration(self):
         """Test that single output strings work with Action model."""
-        action = Action(function=decorated_action_function(a=1, b=2), outputs="component.property") 
+        action = Action(function=decorated_action_function(a=1, b=2), outputs="component.property")
         assert action.outputs == ["component.property"]
-        
+
         action_list = Action(function=decorated_action_function(a=1, b=2), outputs=["component.property"])
         assert action_list.outputs == ["component.property"]
-        
+
         action_dict = Action(function=decorated_action_function(a=1, b=2), outputs={"output1": "component.property"})
         assert action_dict.outputs == {"output1": "component.property"}
