@@ -29,7 +29,7 @@ def my_custom_action(t: int):
 
 
 page_1 = vm.Page(
-    title="My first dashboard - [1 guard]",
+    title="My first dashboard - [0 guards]",
     components=[
         vm.Graph(id="page_1_graph", figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
     ],
@@ -40,7 +40,7 @@ page_1 = vm.Page(
 
 # TEST NEW ACTIONS SYNTAX
 page_2 = vm.Page(
-    title="Export data -> custom sleep action -> export data - [1 guard]",
+    title="Export data -> custom sleep action -> export data - [0 guard]",
     components=[
         vm.Graph(
             id="page_2_graph",
@@ -62,7 +62,7 @@ page_2 = vm.Page(
 )
 
 page_3 = vm.Page(
-    title="Filter interaction graph - [1 guard]",
+    title="Filter interaction graph - [0 guard]",
     components=[
         vm.Graph(
             id="page_3_graph",
@@ -92,7 +92,7 @@ page_3 = vm.Page(
 )
 
 page_4 = vm.Page(
-    title="Filter interaction grid - [2 guards]",
+    title="Filter interaction grid - [1 guard]",
     components=[
         vm.AgGrid(
             id="page_4_grid",
@@ -111,12 +111,17 @@ page_4 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_4_filter", column="continent", selector=vm.Dropdown(id="page_4_filter_selector")),
+        vm.Filter(
+            id="page_4_filter",
+            column="continent",
+            targets=["page_4_grid"],
+            selector=vm.Dropdown(title="Filter AgGrid - [1 guard]", id="page_4_filter_selector"),
+        ),
     ],
 )
 
 page_5 = vm.Page(
-    title="Dynamic filter - [2 guards]",
+    title="Dynamic filter - [1 guard]",
     components=[
         vm.Graph(
             id="page_5_graph",
@@ -129,7 +134,7 @@ page_5 = vm.Page(
 )
 
 page_6 = vm.Page(
-    title="DataFrame Parameter - [2 guards]",
+    title="DataFrame Parameter - [1 guard]",
     components=[
         vm.Graph(
             id="page_6_graph", figure=px.box("dynamic_df_gapminder_arg", x="continent", y="lifeExp", color="continent")
@@ -151,7 +156,7 @@ page_6 = vm.Page(
 )
 
 page_7 = vm.Page(
-    title="URL parameter filters - [2 guards on refresh]",
+    title="URL parameter filters - [1 guard on refresh]",
     components=[
         vm.Graph(
             id="page_7_graph",
@@ -165,19 +170,19 @@ page_7 = vm.Page(
 
 
 """
-Test cases:
+Test case:
 1. navigate to page_8
-2. refresh the page_8 (this made issues as filters in this process were changed by sync_url clientside callback)
+2. refresh the page_8 (this previously caused issues as filters in this process were changed by sync_url callback)
 3. change page_8_filter_1 and page_8_filter_2 values and check everything is ok
 4. copy the part of the URL that contains page_8_filter_1 but not page_8_filter_2. Open it in the new browser tab.
 5. check that page_8_filter_1 is set to the value from the URL and page_8_filter_2 is set to the default value.
 6. check that both filters are shown in the URL.
 7. change page_8_filter_1 and see how the filter-action is triggered.
-8. change page_8_filter_2 and see how the filter-action is triggered. (this was the problem if
-    guardian is not changed from the sync_url clientside callback)
+8. change page_8_filter_2 and see how the filter-action is triggered. (this previously caused issues. It's solved
+   by setting the guard to True from the url_sync callback)
 """
 page_8 = vm.Page(
-    title="Multi URL parameter filters - [3 guards or refresh]",
+    title="Multi URL parameter filters - [2 guards or refresh]",
     components=[
         vm.Graph(
             id="page_8_graph",
@@ -192,7 +197,7 @@ page_8 = vm.Page(
 
 
 page_9 = vm.Page(
-    title="DataFrame Parameter and URL Filter- [2 guards]",
+    title="DataFrame Parameter and URL Filter - [1 guard on refresh]",
     components=[
         vm.Graph(
             id="page_9_graph", figure=px.box("dynamic_df_gapminder_arg", x="continent", y="lifeExp", color="continent")
@@ -215,9 +220,18 @@ page_9 = vm.Page(
     ],
 )
 
-# TODO: Solve bug when DFP changes and after that filter changes. Correct number of guards on DFP.
+"""
+Test case:
+1. navigate to page_10
+2. refresh the page_10
+3. change page_10_dfp_parameter value and check everything is ok
+4. change page_10_filter value and check everything is ok. 
+   This used to fail because the "sync_url" callback made that the guard callback doesn't trigger.
+   The issue: when the filter value was changed for the first time after a DFP update, nothing happened.
+   Fix: in the "url_sync" callback, set "guard.data = False" for these filters so the filter change is detected.
+"""
 page_10 = vm.Page(
-    title="DFP + Dynamic filter + URL + filter interaction - [5 guards on refresh]",
+    title="DFP + Dynamic filter + URL + filter interaction - [4 guards on refresh]",
     components=[
         vm.AgGrid(
             id="page_10_grid",
@@ -232,11 +246,10 @@ page_10 = vm.Page(
         ),
     ],
     controls=[
-        # TODO: Try with different selectors
         vm.Filter(
             id="page_10_filter",
             column="continent",
-            selector=vm.Dropdown(id="page_10_filter_selector"),
+            selector=vm.Dropdown(title="Filter AgGrid - [1 guard]", id="page_10_filter_selector"),
             show_in_url=True,
         ),
         vm.Parameter(
@@ -247,7 +260,7 @@ page_10 = vm.Page(
             ],
             selector=vm.RadioItems(
                 id="page_10_dfp_selector",
-                title="DFP - [3 guards]",
+                title="DFP - [1 guard] - It does NOT trigger the filter guard. This is solved from the url_sync callback.",
                 options=list(set(df_gapminder["continent"])),
                 value="Europe",
             ),
@@ -255,9 +268,6 @@ page_10 = vm.Page(
         ),
     ],
 )
-
-# TODO-NOW: Test when custom action made from vm.VizroBaseModel triggers the action.
-# TODO-NOW: Test when AgGrid is output of the filter-interaction action.
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10])
 

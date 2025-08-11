@@ -1,9 +1,3 @@
-// TODO-NOW: If we make that custom components work without guard_component, we can consider:
-//  1. Remove allow_optional=True on guard_action_chain callback State.
-//  2. Change the guard_action_chain as callbacks Output.
-// TODO-NOW: Write a test for this function.
-
-
 /**
  * Prevents an "actions chain" from running when trigger object is just created.
  *
