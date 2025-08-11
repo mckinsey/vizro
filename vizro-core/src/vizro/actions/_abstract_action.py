@@ -9,7 +9,7 @@ from dash.development.base_component import Component
 from pydantic import TypeAdapter
 
 from vizro.models._action._action import _BaseAction
-from vizro.models.types import _coerce_to_list, _IdOrIdProperty, OutputsType
+from vizro.models.types import OutputsType, _IdOrIdProperty
 
 
 # TODO-AV2 D 5: make public.
