@@ -78,7 +78,7 @@ class AgGrid(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: ActionsType
+    actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)

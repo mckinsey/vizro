@@ -726,7 +726,8 @@ ActionType = Annotated[
 # the BeforeValidator, but this requires pydantic >= 2.9.
 ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_to_list), Field(default=[])]
 """List of actions that can be triggered by a component. Accepts either a single
-[`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType]."""
+[`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType].
+Defaults to `[]`."""
 
 # TODO: ideally outputs would have json_schema_input_type=Union[list[str], dict[str, str], str] attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.

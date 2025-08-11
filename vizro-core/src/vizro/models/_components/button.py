@@ -34,7 +34,7 @@ class Button(VizroBaseModel):
     type: Literal["button"] = "button"
     text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
-    actions: ActionsType
+    actions: ActionsType = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."

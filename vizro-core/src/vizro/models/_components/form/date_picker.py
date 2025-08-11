@@ -71,7 +71,7 @@ class DatePicker(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: ActionsType
+    actions: ActionsType = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
