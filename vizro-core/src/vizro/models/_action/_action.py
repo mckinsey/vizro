@@ -22,6 +22,7 @@ from vizro.models.types import (
     ControlType,
     FigureWithFilterInteractionType,
     ModelID,
+    OutputsType,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
@@ -402,9 +403,7 @@ class Action(_BaseAction):
         function (CapturedCallable): Action function.
         inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
             or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
-        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the action function. Each
-            output can be specified as `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
-            Defaults to `[]`.
+        outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -436,11 +435,7 @@ class Action(_BaseAction):
         description="""List of inputs provided to the action function. Each input can be specified as `<model_id>` or
         `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
     )
-    outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
-        default=[],
-        description="""List or dictionary of outputs modified by the action function. Each output can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
-    )
+    outputs: OutputsType = []
 
     @property
     def _dash_components(self) -> list[Component]:

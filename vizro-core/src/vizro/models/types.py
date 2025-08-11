@@ -86,11 +86,18 @@ def _clean_module_string(module_string: str) -> str:
     return ""
 
 
-def _coerce_actions_type(actions: Any) -> Any:
-    """Converts a single action into a list of actions."""
-    if isinstance(actions, list):
-        return actions
-    return [actions]
+def _coerce_to_list(value: Any) -> Any:
+    """Converts a single item into a list unless it's already a list or dict.
+    
+    Args:
+        value: The value to potentially coerce to a list
+        
+    Returns:
+        The original value if it's a list or dict, otherwise a list containing the value
+    """
+    if isinstance(value, (list, dict)):
+        return value
+    return [value]
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -717,9 +724,16 @@ ActionType = Annotated[
 
 # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
-ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_actions_type), Field(default=[])]
+ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_to_list), Field(default=[])]
 """List of actions that can be triggered by a component. Accepts either a single
 [`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType]."""
+
+# TODO: ideally outputs would have json_schema_input_type=Union[list[str], dict[str, str], str] attached to
+# the BeforeValidator, but this requires pydantic >= 2.9.
+OutputsType = Annotated[Union[list[str], dict[str, str]], BeforeValidator(_coerce_to_list), Field(default=[])]
+"""List or dictionary of outputs modified by the action function. Accepts either a single string,
+a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
+`<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
