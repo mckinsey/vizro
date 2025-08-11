@@ -180,6 +180,9 @@ class TestLegacyActionOutputs:
         "outputs, expected_transformed_outputs",
         [
             ([], []),
+            ("component.property", Output("component", "property")),
+            ("known_ag_grid_id", Output("known_ag_grid_id", "children")),
+            ("known_ag_grid_id.cellClicked", Output("underlying_ag_grid_id", "cellClicked")),
             (["component.property"], Output("component", "property")),
             (
                 ["component_1.property_1", "component_2.property_2"],
@@ -217,6 +220,7 @@ class TestLegacyActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
+            "unknown_model_id",
             ["unknown_model_id"],
             {"output_1": "unknown_model_id"},
         ],
@@ -234,6 +238,11 @@ class TestLegacyActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
+            "",
+            "component.",
+            ".property",
+            "component..property",
+            "component.property.property",
             [""],
             ["component."],
             [".property"],
@@ -416,6 +425,9 @@ class TestActionOutputs:
         "outputs, expected_transformed_outputs",
         [
             ([], []),
+            ("component.property", Output("component", "property")),
+            ("known_ag_grid_id", Output("known_ag_grid_id", "children")),
+            ("known_ag_grid_id.cellClicked", Output("underlying_ag_grid_id", "cellClicked")),
             (["component.property"], Output("component", "property")),
             (
                 ["component_1.property_1", "component_2.property_2"],
@@ -451,6 +463,7 @@ class TestActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
+            "unknown_model_id",
             ["unknown_model_id"],
             {"output_1": "unknown_model_id"},
         ],
@@ -467,6 +480,11 @@ class TestActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
+            "",
+            "component.",
+            ".property",
+            "component..property",
+            "component.property.property",
             [""],
             ["component."],
             [".property"],
