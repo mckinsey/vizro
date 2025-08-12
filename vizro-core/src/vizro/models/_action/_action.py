@@ -23,7 +23,6 @@ from vizro.models.types import (
     FigureWithFilterInteractionType,
     ModelID,
     OutputsType,
-    _coerce_to_list,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
