@@ -228,7 +228,7 @@ class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
     Args:
-        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
+        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard.
             When no ID is chosen, ID will be automatically generated.
 
     """
