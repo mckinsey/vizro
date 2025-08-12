@@ -96,7 +96,9 @@ class Page(VizroBaseModel):
     ]
     actions: list[ActionType] = []
 
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
