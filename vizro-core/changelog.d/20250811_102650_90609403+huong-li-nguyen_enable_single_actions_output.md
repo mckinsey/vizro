@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Enable single string outputs in `Action` model. You can now specify `outputs="component_id.property"` instead of `outputs=["component_id.property"]` for single outputs. ([#1334](https://github.com/mckinsey/vizro/pull/1334))
+- Enable single string outputs in `Action` model. You can now specify `outputs="component_id.property"` instead of `outputs=["component_id.property"]` for a single output. ([#1334](https://github.com/mckinsey/vizro/pull/1334))
 <!--
 ### Changed
 
