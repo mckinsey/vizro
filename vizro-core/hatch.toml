@@ -105,6 +105,7 @@ dependencies = [
   "mkdocs-llmstxt-md",
   "mkdocs-llmstxt",
   "linkchecker",
+  "mkdocs-open-in-new-tab",
   "mkdocs-pycafe",
   "PyGithub",
   "playwright"
