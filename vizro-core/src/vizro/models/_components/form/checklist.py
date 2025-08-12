@@ -82,6 +82,7 @@ class Checklist(VizroBaseModel):
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
+
     @model_validator(mode="after")
     def _make_actions_chain(self):
         return make_actions_chain(self)

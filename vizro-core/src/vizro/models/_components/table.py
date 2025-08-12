@@ -73,6 +73,7 @@ class Table(VizroBaseModel):
 
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
     @model_validator(mode="after")
     def _make_actions_chain(self):
         return make_actions_chain(self)
