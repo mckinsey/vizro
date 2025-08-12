@@ -10,6 +10,7 @@ repos:
       - id: check-json
         exclude: "devcontainer.json" # Contains comments.
       - id: trailing-whitespace
+        exclude: ^vizro-mcp/docs/pages/API-reference/API-reference\.md$
       - id: end-of-file-fixer
 
   - repo: https://github.com/codespell-project/codespell
