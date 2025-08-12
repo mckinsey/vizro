@@ -2,7 +2,7 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
+A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
 
 Unlike `Page`, the `Container` model offers additional visual customization options:
 
@@ -593,7 +593,7 @@ Here are a few cases where you might want to use `controls` within a `Container`
 
 ## The `extra` argument
 
-The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass extra arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
+The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/). Using the `extra` argument you can pass extra arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
 
 !!! note
 

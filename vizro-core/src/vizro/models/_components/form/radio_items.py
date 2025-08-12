@@ -75,7 +75,9 @@ class RadioItems(VizroBaseModel):
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:

@@ -94,7 +94,7 @@ Any attempt at a high-level explanation must rely on an oversimplification that 
 
 ??? details "Streamlit is great for rapid prototyping"
 
-    - **rapid prototyping** - Streamlit's architecture allows you to write apps the same way you write plain Python scripts. To unlock this, Streamlit apps have a unique data flow: any time something must be updated on the screen, Streamlit reruns your entire Python script from top to bottom. [[1]](https://docs.streamlit.io/library/get-started/main-concepts) This turns data scripts into sharable web apps in minutes. [[2]](https://streamlit.io/) Adding a widget is the same as declaring a variable. (No need to write a backend, define routes, handle HTTP requests, connect a frontend, write HTML, CSS, JavaScript, etc. [[3]](https://streamlit.io/))
+    - **rapid prototyping** - Streamlit's architecture allows you to write apps the same way you write plain Python scripts. To unlock this, Streamlit apps have a unique data flow: any time something must be updated on the screen, Streamlit reruns your entire Python script from top to bottom. [[1]](https://docs.streamlit.io/get-started/fundamentals/main-concepts) This turns data scripts into sharable web apps in minutes. [[2]](https://streamlit.io/) Adding a widget is the same as declaring a variable. (No need to write a backend, define routes, handle HTTP requests, connect a frontend, write HTML, CSS, JavaScript, etc. [[3]](https://streamlit.io/))
 
 ??? details "Dash is great for customization and scalability"
 

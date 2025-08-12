@@ -141,11 +141,16 @@ class Filter(VizroBaseModel):
 
         if isinstance(self.selector, SELECTORS["categorical"]):
             self.selector = cast(CategoricalSelectorType, self.selector)
-            return self.selector(options=self._get_options(targeted_data, current_value))
+            selector_build_obj = self.selector(options=self._get_options(targeted_data, current_value))
         elif isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             self.selector = cast(NumericalTemporalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data, current_value)
-            return self.selector(min=_min, max=_max)
+            selector_build_obj = self.selector(min=_min, max=_max)
+
+        # if selector_build_obj and self.show_in_url and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj:
+        #     selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+
+        return selector_build_obj
 
     @_log_call
     def pre_build(self):
@@ -244,6 +249,14 @@ class Filter(VizroBaseModel):
         selector = cast(SelectorType, self.selector)
 
         selector_build_obj = selector.build()
+
+        # data=False is added instead of the data=True in case that URL is set but this filter is not the part of the URL params.
+        if (
+            selector_build_obj
+            and self.show_in_url
+            and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj
+        ):
+            selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
             return html.Div(id=self.id, children=selector_build_obj)

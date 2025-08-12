@@ -1,4 +1,4 @@
-name: Unit tests for Vizro
+name: Unit tests for Vizro MCP
 
 defaults:
   run:

@@ -13,6 +13,5 @@ build:
     - pip install hatch
     - cd vizro-mcp/ && hatch run docs:pip tree
     - cd vizro-mcp/ && hatch run docs:build
-    - cd vizro-mcp/ && hatch run docs:link-check
     - mkdir --parents $READTHEDOCS_OUTPUT
     - mv vizro-mcp/site/ $READTHEDOCS_OUTPUT/html

@@ -36,7 +36,7 @@ jobs:
 
       - name: Send custom JSON data to Slack
         # used pinned commit hash for security reasons
-        uses: slackapi/slack-github-action@70cd7be8e40a46e8b0eced40b0de447bdb42f68e # v1.26.0
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         if: failure()
         with:
           payload: |

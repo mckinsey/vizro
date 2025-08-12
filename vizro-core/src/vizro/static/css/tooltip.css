@@ -1,11 +1,11 @@
 .tooltip-icon {
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   cursor: pointer;
   font-size: 20px;
 }
 
 .tooltip-icon:hover {
-  color: var(--text-primaryHover);
+  color: var(--bs-primary-text-emphasis);
 }
 
 .tooltip-inner  {

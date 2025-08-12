@@ -1,4 +1,4 @@
-name: JS Unit tests for Vizro
+name: JS unit tests for Vizro
 
 defaults:
   run:
@@ -10,6 +10,11 @@ on:
   pull_request:
     branches:
       - main
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: "3.12"
 
 jobs:
   test-js:
@@ -24,10 +29,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

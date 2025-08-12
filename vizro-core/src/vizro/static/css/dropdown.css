@@ -3,7 +3,7 @@ div.dash-dropdown {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   font-size: 0.875rem;
 }
 
@@ -12,7 +12,7 @@ div.Select-menu-outer {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   font-size: 0.875rem;
   line-height: 1.5rem;
   margin-top: 4px;
@@ -20,7 +20,7 @@ div.Select-menu-outer {
 
 /* Dropdown menu options */
 div.VirtualizedSelectOption {
-  color: var(--text-primary);
+  color: var(--bs-primary);
   font-weight: 400;
 }
 
@@ -68,8 +68,8 @@ div.Select--multi .Select-value {
   background-color: var(--dropdown-label-bg);
   border: 0;
   border-radius: 0;
-  box-shadow: var(--elevation-0);
-  color: var(--text-secondary);
+  box-shadow: var(--bs-box-shadow-sm);
+  color: var(--bs-secondary);
   font-size: 0.875rem;
   height: 100%;
   letter-spacing: -0.112px;
@@ -80,7 +80,7 @@ div.Select--multi .Select-value {
 
 /* Tag: Label */
 div.Select--multi .Select-value-label {
-  color: var(--text-primary);
+  color: var(--bs-primary);
   line-height: 1.5rem;
   padding: 0 4px;
 }
@@ -89,7 +89,7 @@ div.Select--multi .Select-value-label {
 div.Select--multi .Select-value-icon {
   background: inherit;
   border: none;
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   line-height: inherit;
   margin: 0;
   padding: 0;
@@ -98,7 +98,7 @@ div.Select--multi .Select-value-icon {
 /* Tag: Cross on hover */
 div.Select--multi .Select-value-icon:hover {
   background: inherit;
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
 }
 
 /* Tag: Arrow */
@@ -162,7 +162,7 @@ div.Select--multi.has-value .Select-multi-value-wrapper {
 }
 
 div.dropdown .VirtualizedSelectOption:nth-child(1):has(> div) {
-  border-bottom: 1px solid var(--border-subtleAlpha01);
+  border-bottom: 1px solid var(--bs-border-color);
   padding: 8px 4px;
 }
 
@@ -186,5 +186,5 @@ div.Select--multi .Select-value:has(.dropdown-select-all) {
 }
 
 .dash-dropdown .Select-clear-zone:hover {
-  color: var(--text-primaryHover);
+  color: var(--bs-primary-text-emphasis);
 }

@@ -571,7 +571,7 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 ## The `extra` argument
 
-The `Card` is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you can pass extra arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
+The `Card` is based on the underlying Dash component [`dbc.Card`](https://www.dash-bootstrap-components.com/docs/components/card/). Using the `extra` argument you can pass extra arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
 
 !!! note
 
