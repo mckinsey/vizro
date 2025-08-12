@@ -1,13 +1,15 @@
 import inspect
 import logging
+import random
 import textwrap
+import uuid
 from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
 
 import autoflake
 import black
 from pydantic import (
-    AfterValidator,
     BaseModel,
+    BeforeValidator,
     ConfigDict,
     Field,
     SerializationInfo,
@@ -20,6 +22,9 @@ from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
 from vizro.models.types import ModelID
 
+# As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
+# the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
+rd = random.Random(0)
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
 
@@ -209,8 +214,14 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
-def set_id(id: ModelID) -> ModelID:
-    return id or model_manager._generate_id()
+def _generate_id() -> ModelID:
+    return str(uuid.UUID(int=rd.getrandbits(128)))
+
+
+def set_id(value: Any) -> Any:
+    if value is None:
+        return _generate_id()
+    return value
 
 
 class VizroBaseModel(BaseModel):
@@ -224,9 +235,9 @@ class VizroBaseModel(BaseModel):
 
     id: Annotated[
         ModelID,
-        AfterValidator(set_id),
+        BeforeValidator(set_id),
         Field(
-            default="",
+            default=None,
             description="ID to identify model. Must be unique throughout the whole dashboard."
             "When no ID is chosen, ID will be automatically generated.",
             validate_default=True,
