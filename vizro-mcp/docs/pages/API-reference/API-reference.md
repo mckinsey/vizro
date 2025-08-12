@@ -15,4 +15,11 @@ Vizro-MCP provides the following tools. In general you should not need to use th
 - `validate_chart_code` - Validates the code created for a chart and returns feedback on its correctness.
 - `get_sample_data_info` - Provides information about sample datasets that can be used for testing and development.
 
-::: vizro_mcp options: merge_init_into_class: false docstring_options: ignore_init_summary: false
+
+## Reference
+
+::: vizro_mcp
+    options:
+        merge_init_into_class: false
+        docstring_options:
+            ignore_init_summary: false
