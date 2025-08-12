@@ -21,7 +21,7 @@
 }
 
 .tooltip-inner a:hover {
-  color: var(--bs-primary-text-emphasis-inverted);
+  color: var(--text-primaryHover-inverted);
 }
 
 .form-label, .button-text {
