@@ -48,7 +48,7 @@
 }
 
 #dashboard-container .ag-header-cell:hover {
-  border-bottom: 1px solid var(--border-hover);
+  border-bottom: 1px solid var(--bs-primary);
   color: var(--bs-primary);
 }
 
@@ -67,7 +67,7 @@
 
 /* Pop up menu ----- */
 #dashboard-container .ag-menu {
-  background-color: var(--surfaces-bg02);
+  background-color: var(--bs-tertiary-bg);
   border: 1px solid var(--bs-border-color-translucent);
   color: var(--bs-primary);
 }

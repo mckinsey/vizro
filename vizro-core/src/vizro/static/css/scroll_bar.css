@@ -4,7 +4,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--fill-subtle);
+  background: var(--bs-tertiary-color);
   border: 4px solid;
   border-color: var(--field-enabled);
 }
@@ -19,7 +19,7 @@
 }
 
 #nav-control-panel::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg02);
+  border-color: var(--bs-tertiary-bg);
 }
 
 .card::-webkit-scrollbar-thumb,

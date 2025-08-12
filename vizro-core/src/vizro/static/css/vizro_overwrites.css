@@ -5,9 +5,9 @@ for a pure Dash app.
 All the HEX values starting with --text-code are taken from the Github code highlighting style. */
 [data-bs-theme="dark"] {
   --dropdown-label-bg: var(--primary-800);
-  --left-side-bg: var(--surfaces-bg02);
-  --right-side-bg: var(--surfaces-bg03);
-  --right-side-bg-iterated: var(--surfaces-bg03);
+  --left-side-bg: var(--bs-tertiary-bg);
+  --right-side-bg: var(--bs-body-bg);
+  --right-side-bg-iterated: var(--bs-body-bg);
   --slider-rail-bg: var(--primary-100);
   --collapse-icon-bg: var(--primary-500);
   --mantine-radius-default: 0;
@@ -15,8 +15,8 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 [data-bs-theme="light"] {
   --dropdown-label-bg: var(--primary-300);
-  --left-side-bg: var(--surfaces-bg01);
-  --right-side-bg: var(--surfaces-bg01);
+  --left-side-bg: var(--bs-secondary-bg);
+  --right-side-bg: var(--bs-secondary-bg);
   --right-side-bg-iterated: var(--primary-300);
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);

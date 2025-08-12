@@ -29,7 +29,7 @@
 .rc-slider-handle:hover,
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging,
 .rc-slider-handle-click-focused:focus {
-  background-color: var(--surfaces-bg01);
+  background-color: var(--bs-secondary-bg);
   border: solid 6px var(--bs-primary);
   border-color: var(--bs-primary);
   border-radius: 100%;

@@ -55,7 +55,7 @@ div.Select-input > input {
 
 /* Border on focus */
 div.is-focused:not(.is-open) > .Select-control {
-  box-shadow: 0 0 0 2px var(--focus) inset;
+  box-shadow: 0 0 0 2px var(--bs-focus-ring-color) inset;
 }
 
 /* Single-select dropdown only ------------------- */
