@@ -217,21 +217,14 @@ class Page(VizroBaseModel):
         #   - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain callback
         #     can prevent undesired triggering (workaround for Dash prevent_initial_call=True behavior)
         #   - {action.id}_finished for completion of an action callback to trigger the next action in the chain
-        #   - action._dash_components for particular actions (e.g. dcc.Download for export_data) - hopefully will be
-        #     removed in future
+        #   - action._dash_components added in the exact implementations of particular actions
+        #     (e.g. dcc.Download for export_data) - hopefully will be removed in future
         # These components are recreated on every page rather than going at the global dashboard level so that we do
         # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behavior).
-        action_components = []
-
-        # TODO NOW: Maybe move everything to the action._dash_components.
-        # TODO NOW: Check if root_model should be set to self.
-        # TODO NOW: should this just go through this page's actions or across whole dashboard? Probably doesn't
-        #  matter much apart from if we want to do cross-page actions.
-        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
-            if action._first_in_chain:
-                action_components.append(dcc.Store(id=f"{action.id}_guarded_trigger"))
-            action_components.append(dcc.Store(id=f"{action.id}_finished"))
-            action_components.extend(action._dash_components)
+        action_components = [
+            action._dash_components
+            for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction, root_model=self))
+        ]
 
         # Keep these components in components_container, moving them outside make them not work properly.
         components_container.children.extend(
