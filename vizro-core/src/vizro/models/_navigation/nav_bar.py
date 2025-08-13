@@ -1,18 +1,21 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Annotated, Literal, Union, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro.managers import model_manager
-from vizro.models import Page, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.nav_link import NavLink
 from vizro.models.types import ModelID
+
+if TYPE_CHECKING:
+    from vizro.models import Page
 
 
 def coerce_pages_type(pages: Union[list[str], dict[str, list[str]]]) -> dict[str, list[str]]:
