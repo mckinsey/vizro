@@ -145,7 +145,6 @@ class Checklist(VizroBaseModel):
                     ],
                     className="checklist-inline" if self._in_container else None,
                 ),
-                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ],
         )
 

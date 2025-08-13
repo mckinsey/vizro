@@ -37,11 +37,11 @@ page_1 = vm.Page(
         vm.Graph(id="page_1_graph", figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
     ],
     controls=[
-        vm.Filter(id="page_1_filter", column="continent", selector=vm.Dropdown(id="page_1_filter_selector")),
+        # vm.Filter(id="page_1_filter", column="continent", selector=vm.Dropdown(id="page_1_filter_selector")),
     ],
 )
 
-# TEST NEW ACTIONS SYNTAX
+
 page_2 = vm.Page(
     title="Export data -> custom sleep action -> export data - [0 guard]",
     components=[

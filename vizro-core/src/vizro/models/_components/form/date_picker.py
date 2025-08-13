@@ -132,7 +132,6 @@ class DatePicker(VizroBaseModel):
                 if self.title
                 else None,
                 dmc.DatePickerInput(**(defaults | self.extra)),
-                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ],
         )
 
