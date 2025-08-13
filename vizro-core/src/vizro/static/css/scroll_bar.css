@@ -31,7 +31,7 @@
 #page-components::-webkit-scrollbar-thumb,
 .table-container::-webkit-scrollbar-thumb,
 .container-fluid::-webkit-scrollbar-thumb {
-  border-color: var(--right-side-bg);
+  border-color: var(--bs-body-bg);
 }
 
 /* Can't control thumb color so hover is turned off */
@@ -47,9 +47,9 @@
 
 .text::-webkit-scrollbar-thumb,
 .hljs::-webkit-scrollbar-thumb {
-  border-color: var(--right-side-bg);
+  border-color: var(--bs-body-bg);
 }
 
 .container-fluid > .grid-layout::-webkit-scrollbar-thumb {
-  border-color: var(--right-side-bg);
+  border-color: var(--bs-body-bg);
 }
