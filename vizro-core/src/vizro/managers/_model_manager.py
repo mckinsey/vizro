@@ -26,6 +26,14 @@ class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
 
 
+class PageNotFoundError(ValueError):
+    """Raised when a page cannot be found by title."""
+
+
+class AmbiguousPageError(ValueError):
+    """Raised when multiple pages are found with the same title."""
+
+
 class ModelManager:
     def __init__(self):
         self.__models: dict[ModelID, VizroBaseModel] = {}
@@ -108,8 +116,42 @@ class ModelManager:
             if model in self.__get_model_children(page):  # type: ignore[operator]
                 return page
 
+    def _get_page_lookup_maps(self) -> tuple[dict[ModelID, Page], dict[str, list[Page]]]:
+        """Build lookup maps for pages by ID and title.
+
+        Returns:
+            Tuple of (page_by_id, pages_by_title) dictionaries.
+        """
+        from vizro.models import Page
+
+        page_by_id: dict[ModelID, Page] = {}
+        pages_by_title: dict[str, list[Page]] = {}
+        for page in self._get_models(Page):
+            page_by_id[page.id] = page
+            pages_by_title.setdefault(page.title, []).append(page)
+
+        return page_by_id, pages_by_title
+
     def _clear(self):
         self.__init__()  # type: ignore[misc]
+
+    def _get_page_by_title(self, title: str) -> Page:
+        """Get a page by its title."""
+        _, pages_by_title = self._get_page_lookup_maps()
+
+        # Check if title exists
+        if title not in pages_by_title:
+            raise PageNotFoundError(f"No page found with title '{title}'.")
+
+        matching_pages = pages_by_title[title]
+        if len(matching_pages) > 1:
+            page_ids = [page.id for page in matching_pages]
+            raise AmbiguousPageError(
+                f"Multiple pages found with title '{title}'. Page IDs: {page_ids}. "
+                f"Page titles must be unique to avoid ambiguity."
+            )
+
+        return matching_pages[0]
 
 
 model_manager = ModelManager()

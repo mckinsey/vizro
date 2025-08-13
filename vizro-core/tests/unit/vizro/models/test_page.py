@@ -17,7 +17,6 @@ class TestPageInstantiation:
         assert page.layout.grid == [[0], [1]]
         assert page.controls == []
         assert page.title == "Page 1"
-        assert page.id == "Page 1"
         assert page.path == "/page-1"
         assert page.actions == []
         assert page._action_outputs == {
@@ -75,15 +74,6 @@ class TestPageInstantiation:
         vm.Page(id="my-id-1", title="Page 1", components=[vm.Button()])
         vm.Page(id="my-id-2", title="Page 1", components=[vm.Button()])
 
-    def test_set_id_duplicate_title_invalid(self):
-        with pytest.raises(
-            ValueError,
-            match="Page with id=Page 1 already exists. Page id is automatically set to the same as the page title. "
-            "If you have multiple pages with the same title then you must assign a unique id.",
-        ):
-            vm.Page(title="Page 1", components=[vm.Button()])
-            vm.Page(title="Page 1", components=[vm.Button()])
-
     @pytest.mark.parametrize(
         "test_path, expected",
         [
@@ -120,7 +110,7 @@ class TestPagePreBuildMethod:
         page.pre_build()
         assert len(page.actions) == 1
         assert isinstance(page.actions[0], ActionsChain)
-        assert page.actions[0].id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_Page 1"
+        assert page.actions[0].id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_{page.id}"
 
 
 # TODO: Add unit tests for page build method

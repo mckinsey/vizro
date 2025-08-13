@@ -13,7 +13,6 @@ from pydantic import (
     ValidationInfo,
     conlist,
     model_serializer,
-    model_validator,
 )
 from typing_extensions import TypedDict
 
@@ -42,6 +41,15 @@ from .types import ComponentType, ControlType, FigureType, LayoutType
 _PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
+# MS: how dangerous to rely on MM in validation? Probably this will immediately move to pre-build in next PR
+def _check_for_duplicate_path(path: str) -> bool:
+    registered_paths = [page.path for page in cast(Iterable[Page], model_manager._get_models(Page))]
+
+    if path in registered_paths:
+        return True
+    return False
+
+
 def set_path(path: str, info: ValidationInfo) -> str:
     # Based on how Github generates anchor links - see:
     # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
@@ -52,8 +60,15 @@ def set_path(path: str, info: ValidationInfo) -> str:
 
     # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
     if path:
+        if _check_for_duplicate_path(path):
+            raise ValueError(f"Path {path} is already used by another page.")
         return clean_path(path, "-_/")
-    return clean_path(info.data["id"], "-_")
+
+    # Try title first, then fall back to id if title path is duplicate
+    # MS: There is a small breaking change (I think) when once chooses a path that is the same as the home page,
+    # this case would work before, but not anymore.
+    path = clean_path(info.data["title"], "-_") if "title" in info.data else clean_path(info.data["id"], "-_")
+    return path if not _check_for_duplicate_path(path) else clean_path(info.data["id"], "-_")
 
 
 class Page(VizroBaseModel):
@@ -94,15 +109,6 @@ class Page(VizroBaseModel):
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
     actions: list[ActionsChain] = []
-
-    @model_validator(mode="before")
-    @classmethod
-    def set_id(cls, values):
-        if "title" not in values:
-            return values
-
-        values.setdefault("id", values["title"])
-        return values
 
     def model_post_init(self, context: Any) -> None:
         """Adds the model instance to the model manager."""

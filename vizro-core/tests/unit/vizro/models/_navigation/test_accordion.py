@@ -22,14 +22,18 @@ class TestAccordionInstantiation:
         assert hasattr(accordion, "id")
         assert accordion.pages == {}
 
-    def test_mandatory_and_optional(self, pages_as_dict):
+    def test_mandatory_and_optional(self, pages_as_dict, prebuilt_two_page_dashboard):
         accordion = vm.Accordion(id="accordion", pages=pages_as_dict)
         assert hasattr(accordion, "id")
-        assert accordion.pages == pages_as_dict
+        # Get IDs although we originally referred to page titles
+        transformed_pages = {"Group": [page.id for page in prebuilt_two_page_dashboard.pages]}
+        assert accordion.pages == transformed_pages
 
-    def test_valid_pages_as_list(self, pages_as_list):
+    def test_valid_pages_as_list(self, pages_as_list, prebuilt_two_page_dashboard):
         accordion = vm.Accordion(pages=pages_as_list)
-        assert accordion.pages == {ACCORDION_DEFAULT_TITLE: pages_as_list}
+        # Get IDs although we originally referred to page titles
+        transformed_pages = {ACCORDION_DEFAULT_TITLE: [page.id for page in prebuilt_two_page_dashboard.pages]}
+        assert accordion.pages == transformed_pages
 
     @pytest.mark.parametrize("pages", [{"Group": []}, []])
     def test_invalid_field_pages_no_ids_provided(self, pages):
@@ -43,7 +47,8 @@ class TestAccordionInstantiation:
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
     def test_invalid_page(self, pages):
         with pytest.raises(
-            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to argument 'pages'.")
+            ValidationError,
+            match=re.escape("Unknown page ID or title ['non existent page'] provided to argument 'pages'."),
         ):
             vm.Accordion(pages=pages)
 
@@ -110,8 +115,10 @@ class TestAccordionBuild:
     ]
 
     @pytest.mark.parametrize("pages, expected", test_cases)
-    def test_accordion(self, pages, expected):
-        accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id="Page 1")
+    def test_accordion(self, pages, expected, prebuilt_two_page_dashboard):
+        # Get IDs although we originally referred to page titles
+        page_id = prebuilt_two_page_dashboard.pages[0].id
+        accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id=page_id)
         assert_component_equal(accordion, dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(accordion["accordion"], expected, keys_to_strip={"class_name", "className"})
 
