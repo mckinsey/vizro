@@ -8,9 +8,17 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
+
+
+def validate_text(text, icon):
+    if text:
+        return text
+    if icon:
+        return ""
+    raise ValueError("Please provide either the text or icon argument.")
 
 
 class Button(VizroBaseModel):
@@ -20,6 +28,7 @@ class Button(VizroBaseModel):
         type (Literal["button"]): Defaults to `"button"`.
         text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
+        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
@@ -34,7 +43,12 @@ class Button(VizroBaseModel):
     """
 
     type: Literal["button"] = "button"
-    text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
+    text: Annotated[str, Field(description="Text to be displayed on button.", default="")]
+    icon: Annotated[
+        str,
+        AfterValidator(validate_icon),
+        Field(description="Icon name from Google Material icons library.", default=""),
+    ]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     actions: Annotated[
         list[ActionType],
@@ -82,18 +96,38 @@ class Button(VizroBaseModel):
         }
 
     @_log_call
+    def pre_build(self):
+        validate_text(self.text, self.icon)
+
+    @_log_call
     def build(self):
         variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
-        description = self.description.build().children if self.description else [None]
+        description = self._build_description()
+        icon = (
+            html.Span(self.icon, id=f"{self.id}-icon", className="material-symbols-outlined tooltip-icon")
+            if self.icon
+            else None,
+        )
 
         defaults = {
             "id": self.id,
-            "children": html.Span([self.text, *description], className="button-text"),
+            "children": html.Span([*icon, self.text, *description], className="button-text"),
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
             # To prevent unnecessary class chaining, the button's style variant should be specified using `color`.
             "color": variants[self.variant],
+            "class_name": "circular_button" if self.icon and not self.text else "",
         }
 
         return dbc.Button(**(defaults | self.extra))
+
+    def _build_description(self):
+        if not self.description:
+            return [None]
+
+        description = self.description.build().children
+        if not self.text:
+            description = [description[1]]
+            description[0].target = f"{self.id}-icon"
+        return description

@@ -49,7 +49,7 @@ def target_data_filtered_pop(request, gapminder_2007):
 @pytest.fixture
 def managers_one_page_without_graphs_one_button():
     """Instantiates a simple model_manager and data_manager with a page, and no graphs."""
-    vm.Page(id="test_page", title="My first dashboard", components=[vm.Button(id="button")])
+    vm.Page(id="test_page", title="My first dashboard", components=[vm.Button(id="button", text="Click me!")])
     Vizro._pre_build()
 
 
@@ -202,6 +202,7 @@ def config_for_testing_all_components_with_actions(request, standard_px_chart, a
                 actions=[
                     vm.Action(function=export_data_action_function),
                 ],
+                icon="download",
             ),
         ],
     )

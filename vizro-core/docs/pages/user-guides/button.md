@@ -240,6 +240,82 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
         [![ButtonTooltip]][buttontooltip]
 
+## Add an icon
+
+The `icon` argument enables you to add an icon to your button, using any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+
+You can use it alongside the `text` argument, or on its own to create a circular icon-only button.
+
+!!! example "Button with an icon"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="11 24"}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Buttons with an icon",
+            layout=vm.Flex(),
+            components=[
+                vm.Button(
+                    text="Visit link to learn more!",
+                    href="https://www.kaggle.com/datasets/uciml/iris",
+                    icon="link",
+                    variant="outlined",
+                ),
+                vm.Graph(
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        size="petal_length",
+                    ),
+                ),
+                vm.Button(
+                    icon="download",
+                    description="Download the data!",
+                    variant="outlined",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```{.yaml hl_lines="7 18"}
+        pages:
+          - title: Buttons with an icon
+            components:
+              - type: button
+                text: Visit link to learn more!
+                href: https://www.kaggle.com/datasets/uciml/iris
+                icon: link
+                variant: outlined
+              - figure:
+                  _target_: scatter
+                  x: sepal_width
+                  y: sepal_length
+                  color: species
+                  size: petal_length
+                  data_frame: iris
+                type: graph
+              - type: button
+                icon: download
+                description: Download the data!
+                actions:
+                  - function:
+                      _target_: export_data
+        ```
+
+    === "Result"
+
+        [![ButtonIcon]][buttonicon]
+
 ## The `extra` argument
 
 The `Button` is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/). Using the `extra` argument you can pass more arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
@@ -291,6 +367,7 @@ An example use would be to create an outlined success button. For this, you can 
 
 [button]: ../../assets/user_guides/components/button.png
 [buttonextra]: ../../assets/user_guides/components/button_style_extra.png
+[buttonicon]: ../../assets/user_guides/components/button-with-an-icon.png
 [buttontext]: ../../assets/user_guides/components/button_text.png
 [buttontooltip]: ../../assets/user_guides/components/button_tooltip.png
 [buttonvariant]: ../../assets/user_guides/components/button_style_variants.png

@@ -192,7 +192,7 @@ class TestPreBuildTable:
                     title="Test Page",
                     components=[
                         vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
-                        vm.Button(id="duplicate_table_id"),
+                        vm.Button(id="duplicate_table_id", text="test"),
                     ],
                 )
             ]

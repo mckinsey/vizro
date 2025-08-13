@@ -293,3 +293,7 @@ Current logic:
   flex-direction: row;
   gap: 12px;
 }
+
+.circular_button {
+  border-radius: 50%;
+}
