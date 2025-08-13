@@ -83,7 +83,10 @@ class AgGrid(VizroBaseModel):
     actions: list[ActionType] = []
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     def model_post_init(self, context) -> None:
         super().model_post_init(context)
