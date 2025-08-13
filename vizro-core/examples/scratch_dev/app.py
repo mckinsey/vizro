@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from pydantic import Tag, Field
 from typing import Annotated, Optional
 
-from dash import html, dcc, callback, Output, Input, State, Patch
+from dash import html, dcc, callback, Output, Input, State, Patch, clientside_callback
 from typing import Literal
 from openai import OpenAI
 from pydantic import model_validator
@@ -24,6 +24,10 @@ from vizro.models._models_utils import make_actions_chain
 from vizro.models.types import capture, ActionType
 
 import dash_bootstrap_components as dbc
+
+from dash_extensions import SSE
+from dash_extensions.streaming import sse_message, sse_options
+from flask import Response, request
 
 load_dotenv()
 
@@ -58,10 +62,12 @@ class echo(_AbstractAction):
 class openai_pirate(echo):
     # With the class-based definition there's room for static parameters like model and api_key which isn't possible
     # if you just write a function.
+    type: Literal["openai_pirate"] = "openai_pirate"
     model: str = "gpt-4.1-nano"
     api_key: Optional[str] = None  # takes from os.environ.get("OPENAI_API_KEY") by default so maybe even omit this
     # and just make people set it through env variable
     api_base: Optional[str] = None  # similarly with os.environ.get("OPENAI_BASE_URL")
+    stream: bool = True
     _client: OpenAI
     messages: str = Field(default_factory=lambda data: f"{data["chat_id"]}-store.data")
     # expose instructions and other stuff as fields.
@@ -106,7 +112,7 @@ class openai_pirate(echo):
 
         @callback(
             Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-            Output("vizro_version", "children"),  # Extremely horrible hack we should change, just done here to make
+            Output("vizro_version", "children", allow_duplicate=True),  # Extremely horrible hack we should change, just done here to make
             # sure callback triggers (must have prevent_initial_call=True).
             Input(*page._action_triggers["__default__"].split(".")),
             State(f"{self.chat_id}-store", "data"),
@@ -115,20 +121,103 @@ class openai_pirate(echo):
         def on_page_load(_, store):
             return [self.message_to_html(message) for message in store], dash.no_update
 
+        clientside_callback(
+            """
+            function(animatedText, existingChildren) {
+                if (!animatedText) return existingChildren;
+                
+                // Check if this is the [DONE] completion signal - if so, ignore it
+                if (animatedText === '[DONE]') {
+                    return existingChildren;
+                }
+                
+                // Clone existing children
+                const newChildren = [...(existingChildren || [])];
+                
+                // Find the last message and update it if it's from assistant
+                if (newChildren.length > 0) {
+                    const lastIdx = newChildren.length - 1;
+                    const lastMsg = newChildren[lastIdx];
+                    
+                    // Check if this is an assistant message being streamed
+                    if (lastMsg && lastMsg.props && lastMsg.props.children && 
+                        lastMsg.props.children[0] && lastMsg.props.children[0].props &&
+                        lastMsg.props.children[0].props.children === "assistant") {
+                        // Update the content of the assistant message
+                        lastMsg.props.children[1].props.children = animatedText;
+                    }
+                }
+                
+                return newChildren;
+            }
+            """,
+            Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+            Input(f"{self.chat_id}-sse", "animation"),
+            State(f"{self.chat_id}-output", "children"),
+            prevent_initial_call=True,
+        )
+
+        @dash.get_app().server.route(f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}")
+        def stream():
+            data = request.get_json()
+            messages = data.get("messages", [])
+            
+            def event_stream():
+                response_stream = self._client.responses.create(
+                    model=self.model,
+                    input=messages,
+                    instructions="Be polite.",
+                    store=False,
+                    stream=True
+                )
+                
+                for event in response_stream:
+                    if event.type == "response.output_text.delta":
+                        yield sse_message(event.delta)
+                
+                # Send standard SSE completion signal
+                # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
+                yield sse_message("[DONE]")
+            
+            return Response(event_stream(), mimetype="text/event-stream")
+
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
         # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
         latest_input = {"role": "user", "content": prompt}
         messages.append(latest_input)
-        response = self.core_function(prompt, messages)
-        latest_output = {"role": "assistant", "content": response.output_text}
+        
+        if self.stream:
+            # For streaming:
+            # 1. Add an empty assistant message as placeholder
+            # 2. Return SSE URL and options
+            # TODO: 3. Add a callback to update store when streaming is complete
+            
+            store, html_messages = Patch(), Patch()
+            
+            placeholder_msg = {"role": "assistant", "content": ""}
+            html_messages.append(self.message_to_html(placeholder_msg))
+            
+            return [
+                store,
+                html_messages,
+                f"/streaming-{self.chat_id}",
+                sse_options(
+                    json.dumps({"messages": messages}),
+                    headers={"Content-Type": "application/json"},
+                    method="POST"
+                )
+            ]
+        else:
+            response = self.core_function(prompt, messages)
+            latest_output = {"role": "assistant", "content": response.output_text}
 
-        # Could do this without Patch and it would also work fine, but that would send more data across network than
-        # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
-        store, html_messages = Patch(), Patch()
-        store.append(latest_output)
-        html_messages.append(self.message_to_html(latest_output))
-        return store, html_messages
+            # Could do this without Patch and it would also work fine, but that would send more data across network than
+            # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
+            store, html_messages = Patch(), Patch()
+            store.append(latest_output)
+            html_messages.append(self.message_to_html(latest_output))
+            return store, html_messages
 
     # User writes this function. Can it be the same function for streaming and non streaming and still work?
     # Not sure since responses.create has different return types.
@@ -143,7 +232,15 @@ class openai_pirate(echo):
 
     @property
     def outputs(self):
-        return [f"{self.chat_id}-store.data", f"{self.chat_id}-output.children"]
+        if self.stream:
+            return [
+                f"{self.chat_id}-store.data", 
+                f"{self.chat_id}-output.children",
+                f"{self.chat_id}-sse.url",
+                f"{self.chat_id}-sse.options"
+            ]
+        else:
+            return [f"{self.chat_id}-store.data", f"{self.chat_id}-output.children"]
 
 
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
@@ -188,6 +285,8 @@ class Chat(VizroBaseModel):
                 dbc.Button(id=f"{self.id}-submit", children="Submit"),
                 html.Div(id=f"{self.id}-output", children=[]),
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="local"),  # TBD storage_type
+                SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10),
+                html.Div(id=f"{self.id}-streaming-output", style={"display": "none"}),
             ]
         )
 
@@ -196,6 +295,7 @@ vm.Page.add_type("components", Chat)
 # Would just be Chat.add_type("actions", echo) in future but that still seems gross. Maybe need some way to avoid
 # doing this. Could have base class for ChatAction that people subclass - sounds like good idea.
 Chat.add_type("actions", Annotated[echo, Tag("echo")])
+Chat.add_type("actions", Annotated[openai_pirate, Tag("openai_pirate")])
 
 page = vm.Page(
     title="Chat",
@@ -233,7 +333,22 @@ page = vm.Page(
 
 page_2 = vm.Page(title="Dummy", components=[vm.Card(text="dummy")])
 
-dashboard = vm.Dashboard(pages=[page, page_2])
+page_nostream = vm.Page(
+    title="Chat (non-stream)",
+    components=[
+        Chat(
+            id="chat_nostream",
+            actions=[
+                openai_pirate(
+                    chat_id="chat_nostream",
+                    stream=False,
+                ),
+            ],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_nostream, page_2])
 
 """
 Notes:
@@ -275,4 +390,4 @@ translation of store messages to html is SS, need to be able to do this. Options
 """
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run(debug=False)
