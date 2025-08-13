@@ -108,7 +108,7 @@ px.scatter_matrix(
 
 ## Vizro Bootstrap in a pure Dash app
 
-Vizro apps use the [Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/) library of Bootstrap components for Dash. If you have a pure Dash app and want to use Vizro's themes, you can apply Vizro's Bootstrap stylesheet in a [similar way to other Dash Bootstrap themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/) through the `vizro.bootstrap` variable:
+Vizro apps use the [Dash Bootstrap Components](https://www.dash-bootstrap-components.com/) library of Bootstrap components for Dash. If you have a pure Dash app and want to use Vizro's themes, you can apply Vizro's Bootstrap stylesheet in a [similar way to other Dash Bootstrap themes](https://www.dash-bootstrap-components.com/docs/themes/) through the `vizro.bootstrap` variable:
 
 ```python
 import vizro
