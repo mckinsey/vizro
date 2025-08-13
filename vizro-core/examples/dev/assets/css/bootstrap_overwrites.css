@@ -7,6 +7,6 @@
 }
 
 .card {
-    padding: 0.75rem;
     overflow: scroll;
+    padding: 0.75rem;
 }
