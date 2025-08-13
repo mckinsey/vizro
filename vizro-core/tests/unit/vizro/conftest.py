@@ -110,9 +110,10 @@ def chart_with_temporal_data(stocks):
     return go.Figure(data=go.Scatter(x=stocks["Date"], y=stocks["AAPL.High"], mode="markers"))
 
 
+# Give one page an known ID, let the other be randomly generated
 @pytest.fixture()
 def page_1():
-    return vm.Page(title="Page 1", components=[vm.Button()])
+    return vm.Page(title="Page 1", id="page_1", components=[vm.Button()])
 
 
 @pytest.fixture()

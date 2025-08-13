@@ -14,9 +14,6 @@ from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_
 from vizro.models._navigation.nav_link import NavLink
 from vizro.models.types import ModelID
 
-if TYPE_CHECKING:
-    from vizro.models import Page
-
 
 def coerce_pages_type(pages: Union[list[str], dict[str, list[str]]]) -> dict[str, list[str]]:
     if isinstance(pages, Mapping):
@@ -45,6 +42,8 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        from vizro.models import Page
+
         self.items = self.items or [
             NavLink(
                 label=cast(Page, model_manager[group_title]).title if group_title in model_manager else group_title,

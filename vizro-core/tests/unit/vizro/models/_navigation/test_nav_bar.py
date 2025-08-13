@@ -37,7 +37,8 @@ class TestNavBarInstantiation:
         nav_bar = vm.NavBar(pages=pages_as_list)
         # Get IDs although we originally referred to page titles
         transformed_pages = {
-            "Page 1": [prebuilt_two_page_dashboard.pages[0].id],
+            # Correct as the group is taken from the defined list in the pages argument
+            "page_1": [prebuilt_two_page_dashboard.pages[0].id],
             "Page 2": [prebuilt_two_page_dashboard.pages[1].id],
         }
         assert nav_bar.pages == transformed_pages
