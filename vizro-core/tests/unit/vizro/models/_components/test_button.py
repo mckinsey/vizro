@@ -61,7 +61,7 @@ class TestButtonInstantiation:
 
     def test_invalid_text(self):
         with pytest.raises(ValueError, match="Please provide either the text or icon argument."):
-            vm.Button().pre_build()
+            vm.Button(text="")
 
 
 class TestBuildMethod:

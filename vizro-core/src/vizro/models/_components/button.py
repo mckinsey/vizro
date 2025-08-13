@@ -13,11 +13,11 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
 
-def validate_text(text, icon):
-    if text:
+def validate_text(text, info):
+    icon = info.data.get("icon")
+
+    if text or icon:
         return text
-    if icon:
-        return ""
     raise ValueError("Please provide either the text or icon argument.")
 
 
@@ -43,11 +43,13 @@ class Button(VizroBaseModel):
     """
 
     type: Literal["button"] = "button"
-    text: Annotated[str, Field(description="Text to be displayed on button.", default="")]
     icon: Annotated[
         str,
         AfterValidator(validate_icon),
         Field(description="Icon name from Google Material icons library.", default=""),
+    ]
+    text: Annotated[
+        str, AfterValidator(validate_text), Field(description="Text to be displayed on button.", default="Click me!")
     ]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     actions: Annotated[
@@ -94,10 +96,6 @@ class Button(VizroBaseModel):
             "text": f"{self.id}.children",
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
-
-    @_log_call
-    def pre_build(self):
-        validate_text(self.text, self.icon)
 
     @_log_call
     def build(self):

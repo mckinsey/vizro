@@ -29,6 +29,7 @@ page = vm.Page(
         ),
         vm.Button(
             icon="download",
+            text="",
             description="Download the data!",
             variant="outlined",
             actions=[vm.Action(function=export_data())],
