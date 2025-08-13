@@ -5,7 +5,6 @@
 
 .rc-slider-rail,
 .rc-slider-track {
-  background-color: var(--slider-rail-bg);
   height: 2px;
 }
 
@@ -14,7 +13,6 @@
 }
 
 .rc-slider-dot {
-  background-color: var(--slider-rail-bg);
   border: var(--field-enabled);
   bottom: 0;
   height: 6px;
