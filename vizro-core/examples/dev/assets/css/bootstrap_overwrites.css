@@ -10,3 +10,7 @@
     overflow: scroll;
     padding: 0.75rem;
 }
+
+legend {
+    font-size: inherit;
+}
