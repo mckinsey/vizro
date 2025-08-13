@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Annotated, Literal, Union, cast
+from typing import Annotated, Literal, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
