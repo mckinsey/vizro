@@ -9,6 +9,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --right-side-bg-iterated: var(--bs-body-bg);
   --slider-rail-bg: var(--primary-100);
   --mantine-radius-default: 0;
+  --field-enabled: var(--bs-primary-bg-subtle);
 }
 
 [data-bs-theme="light"] {
@@ -18,6 +19,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
   --mantine-radius-default: 0;
+  --field-enabled: var(--bs-primary-bg-subtle);
 }
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and

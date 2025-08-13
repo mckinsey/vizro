@@ -17,7 +17,7 @@
   --ag-row-border-style: solid;
   --ag-row-border-color: var(--bs-border-color);
   --ag-row-border-width: 1px;
-  --ag-selected-row-background-color: var(--stateOverlays-selected);
+  --ag-selected-row-background-color: var(--bs-primary-bg-subtle);
   --ag-checkbox-checked-color: var(--bs-primary);
   --ag-header-column-resize-handle-display: block;
   --ag-header-column-resize-handle-height: 30%;
@@ -62,7 +62,7 @@
 }
 
 #dashboard-container .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
-  background: var(--stateOverlays-selected);
+  background: var(--bs-primary-bg-subtle);
 }
 
 /* Pop up menu ----- */
@@ -73,7 +73,7 @@
 }
 
 #dashboard-container .ag-ltr .ag-filter-filter input {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
   box-shadow: var(--bs-box-shadow-sm);
   display: flex;
   font-size: 0.875rem;
@@ -92,12 +92,12 @@
 }
 
 #dashboard-container .ag-filter-select .ag-picker-field-wrapper {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
   box-shadow: var(--bs-box-shadow-sm);
 }
 
 #dashboard-container .ag-select-list {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
   box-shadow: var(--bs-box-shadow-sm);
   color: var(--bs-primary);
   font-size: 0.875rem;
@@ -109,7 +109,7 @@
 }
 
 #dashboard-container .ag-radio-button-input-wrapper {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
 }
 
 #dashboard-container .ag-radio-button-input-wrapper:focus-within {

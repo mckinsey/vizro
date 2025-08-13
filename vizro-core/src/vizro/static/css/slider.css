@@ -15,7 +15,7 @@
 
 .rc-slider-dot {
   background-color: var(--slider-rail-bg);
-  border: var(--field-enabled);
+  border: var(--bs-primary-bg-subtle);
   bottom: 0;
   height: 6px;
   width: 6px;
