@@ -13,9 +13,9 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 [data-bs-theme="light"] {
-  --dropdown-label-bg: var(--primary-300);
+  --dropdown-label-bg: var(--bs-primary-bg-subtle);
   --left-side-bg: var(--bs-body-bg);
-  --right-side-bg-iterated: var(--primary-300);
+  --right-side-bg-iterated: var(--bs-primary-bg-subtle);
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
   --mantine-radius-default: 0;

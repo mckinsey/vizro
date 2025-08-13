@@ -25,7 +25,7 @@
 .card::-webkit-scrollbar-thumb,
 .card-nav::-webkit-scrollbar-thumb,
 .hljs::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg-card);
+  border-color: var(--bs-primary-bg-subtle);
 }
 
 #page-components::-webkit-scrollbar-thumb,
