@@ -103,7 +103,10 @@ class Parameter(VizroBaseModel):
     def build(self):
         selector_build_obj = html.Div(id=self.id, children=self.selector.build())
 
+        # if self.show_in_url:
         if self.show_in_url and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj:
+            # Add the guard to the show_in_url filter if it is not already present. Set it to False and let the sync_url
+            # clientside callback update it to True when needed. It'll happen when the filter value comes from the URL.
             selector_build_obj.children.children.append(
                 dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False)
             )

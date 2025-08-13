@@ -2,6 +2,7 @@
 # # check out https://github.com/mckinsey/vizro for more info about Vizro
 # # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -12,6 +13,8 @@ from time import sleep
 from vizro.managers import data_manager
 
 df_gapminder = px.data.gapminder().query("year == 2007")
+df_gapminder['date_column'] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq='D')
+df_gapminder['number_column'] = range(len(df_gapminder))
 
 
 def load_dynamic_gapminder_data(continent: str = "Europe"):
@@ -209,7 +212,7 @@ page_8 = vm.Page(
 
 
 page_9 = vm.Page(
-    title="DataFrame Parameter and URL Filter - [1 guard on refresh]",
+    title="DataFrame Parameter and URL Filter - [2 guards on refresh]",
     components=[
         vm.Graph(
             id="page_9_graph", figure=px.box("dynamic_df_gapminder_arg", x="continent", y="lifeExp", color="continent")
@@ -217,7 +220,10 @@ page_9 = vm.Page(
     ],
     controls=[
         vm.Filter(
-            id="page_9_filter", column="continent", selector=vm.Dropdown(id="page_9_filter_selector"), show_in_url=True
+            id="page_9_dropdown_filter",
+            column="continent",
+            selector=vm.Dropdown(id="page_9_dropdown_filter_selector"),
+            show_in_url=True,
         ),
         vm.Parameter(
             id="page_9_dfp_parameter",
@@ -271,8 +277,8 @@ page_10 = vm.Page(
                 "page_10_graph.data_frame.continent",
             ],
             selector=vm.RadioItems(
-                id="page_10_dfp_selector",
-                title="DFP - [1 guard] - It does NOT trigger the filter guard. This is solved from the url_sync callback.",
+                id="page_10_dfp_parameter_selector",
+                title="DFP - [2 guards]",
                 options=list(set(df_gapminder["continent"])),
                 value="Europe",
             ),
@@ -281,7 +287,69 @@ page_10 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10])
+
+page_11 = vm.Page(
+    title="Test all selectors - [12 guards on refresh]",
+    components=[
+        vm.Graph(
+            id="page_11_graph",
+            figure=px.scatter("dynamic_df_gapminder_arg", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id="page_11_filter_dropdown",
+            column="continent",
+            selector=vm.Dropdown(id="page_11_filter_dropdown_selector"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="page_11_filter_radio_items",
+            column="continent",
+            selector=vm.RadioItems(id="page_11_filter_radio_items_selector"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="page_11_filter_checklist",
+            column="continent",
+            selector=vm.Checklist(id="page_11_filter_checklist_selector"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="page_11_filter_slider",
+            column="number_column",
+            selector=vm.Slider(id="page_11_filter_slider_selector"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="page_11_filter_range_slider",
+            column="number_column",
+            selector=vm.RangeSlider(id="page_11_filter_range_slider_selector"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="page_11_filter_date_picker",
+            column="date_column",
+            selector=vm.DatePicker(id="page_11_filter_date_picker_selector"),
+            show_in_url=True,
+        ),
+        vm.Parameter(
+            id="page_11_dfp_parameter",
+            targets=[
+                "page_11_graph.data_frame.continent",
+            ],
+            selector=vm.RadioItems(
+                id="page_11_dfp_parameter_selector",
+                title="DFP - [6 guard]",
+                options=list(set(df_gapminder["continent"])),
+                value="Europe",
+            ),
+            show_in_url=True,
+        ),
+    ]
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10, page_11])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)

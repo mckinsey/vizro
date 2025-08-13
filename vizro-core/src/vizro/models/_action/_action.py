@@ -327,7 +327,6 @@ class _BaseAction(VizroBaseModel):
             component_guard_id = f"{trigger_component_id}_guard_actions_chain"
             trigger = Input(f"{self.id}_guarded_trigger", "data")
 
-            # TODO NOW: make clientside, revert logging.critical changes.
             # We want prevent_initial_call=True for all but the on page load callback. This means that the on page load
             # callback goes through the same gateway system as everything else and will run when the page layout is
             # generated.

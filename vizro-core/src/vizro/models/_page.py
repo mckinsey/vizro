@@ -176,11 +176,15 @@ class Page(VizroBaseModel):
         ]
 
         if url_controls:
-            selector_values_outputs = [Output(control.selector.id, "value") for control in url_controls]
             selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
             control_ids_states = [State(control.id, "id") for control in url_controls]
+            # `control_selector_ids_states` holds metadata needed for setting selector values
+            # and their selector guard component via a clientside callback (`dash_clientside.set_props`).
+            # SetProps is used to avoid sending selector values as callback outputs, which can cause unpredictable
+            # triggering of the guard-actions-chain callback.
+            control_selector_ids_states = [State(control.selector.id, "id") for control in url_controls]
 
             # The URL is updated in the clientside callback with the `history.replaceState`, instead of using a
             # dcc.Location as a callback Output. Do it because the dcc.Location uses `history.pushState` under the hood
@@ -188,14 +192,13 @@ class Page(VizroBaseModel):
             # Similarly, we read the URL query parameters in the clientside callback with the window.location.pathname,
             # instead of using dcc.Location as a callback Input. Do it to align the behavior with the outputs and to
             # simplify the function inputs handling.
-            # TODO NOW: fix this and the new on page load order to make sure everything works correctly. Currently
-            # opening a page with show_in_url=True and a set URL parameter doesn't.
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
-                *selector_values_outputs,
+                Input(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
                 *selector_values_inputs,
                 *control_ids_states,
+                *control_selector_ids_states
             )
 
     @_log_call
@@ -209,8 +212,8 @@ class Page(VizroBaseModel):
         components_container.id = "page-components"
 
         # Components that are required to make action chains function correctly:
-        #   - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain can prevent
-        #     undesired triggering (workaround for Dash prevent_initial_call=True behavior)
+        #   - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain callback
+        #     can prevent undesired triggering (workaround for Dash prevent_initial_call=True behavior)
         #   - {action.id}_finished for completion of an action callback to trigger the next action in the chain
         #   - action._dash_components for particular actions (e.g. dcc.Download for export_data) - hopefully will be
         #     removed in future
@@ -218,6 +221,8 @@ class Page(VizroBaseModel):
         # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behavior).
         action_components = []
 
+        # TODO NOW: Maybe move everything to the action._dash_components.
+        # TODO NOW: Check if root_model should be set to self.
         # TODO NOW: should this just go through this page's actions or across whole dashboard? Probably doesn't
         #  matter much apart from if we want to do cross-page actions.
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):

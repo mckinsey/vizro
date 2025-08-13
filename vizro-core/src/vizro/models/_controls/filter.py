@@ -147,8 +147,9 @@ class Filter(VizroBaseModel):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_build_obj = self.selector(min=_min, max=_max)
 
-        # if selector_build_obj and self.show_in_url and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj:
-        #     selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+        # TODO NOW: See how to handle guard store creation.
+        # if self._dynamic:
+        #     selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=True))
 
         return selector_build_obj
 
@@ -250,7 +251,13 @@ class Filter(VizroBaseModel):
 
         selector_build_obj = selector.build()
 
-        # data=False is added instead of the data=True in case that URL is set but this filter is not the part of the URL params.
+        # if self._dynamic:
+        #     selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=True))
+        # elif self.show_in_url:
+        #     # Add the guard to the show_in_url filter if it is not already present. Set it to False and let the sync_url
+        #     # clientside callback update it to True when needed. It'll happen when the filter value comes from the URL.
+        #     selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+
         if (
             selector_build_obj
             and self.show_in_url
