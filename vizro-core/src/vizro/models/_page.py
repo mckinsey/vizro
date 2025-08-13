@@ -200,7 +200,7 @@ class Page(VizroBaseModel):
                 Input(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
                 *selector_values_inputs,
                 *control_ids_states,
-                *control_selector_ids_states
+                *control_selector_ids_states,
             )
 
     @_log_call

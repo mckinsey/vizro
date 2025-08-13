@@ -99,11 +99,13 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
   const selectorIds = values_ids.slice(2 * numberOfInputs);
 
   // Prepare output selector values, initially set to no_update.
-  const outputSelectorValues = new Array(numberOfInputs).fill(dash_clientside.no_update);
+  const outputSelectorValues = new Array(numberOfInputs).fill(
+    dash_clientside.no_update,
+  );
 
   // Map<controlId, selectorValue>
   const controlMap = new Map(
-    controlIds.map((id, i) => [id, selectorValues[i]])
+    controlIds.map((id, i) => [id, selectorValues[i]]),
   );
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -162,11 +164,13 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
     const selectorId = selectorIds[i];
     const selectorValue = outputSelectorValues[i];
     if (selectorValue !== dash_clientside.no_update) {
-      dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {data: true});
-      dash_clientside.set_props(selectorId, {value: selectorValue});
+      dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
+        data: true,
+      });
+      dash_clientside.set_props(selectorId, { value: selectorValue });
     }
   }
-  return triggerOPL
+  return triggerOPL;
 }
 
 window.encodeUrlParams = encodeUrlParams;

@@ -13,8 +13,8 @@ from time import sleep
 from vizro.managers import data_manager
 
 df_gapminder = px.data.gapminder().query("year == 2007")
-df_gapminder['date_column'] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq='D')
-df_gapminder['number_column'] = range(len(df_gapminder))
+df_gapminder["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D")
+df_gapminder["number_column"] = range(len(df_gapminder))
 
 
 def load_dynamic_gapminder_data(continent: str = "Europe"):
@@ -346,10 +346,12 @@ page_11 = vm.Page(
             ),
             show_in_url=True,
         ),
-    ]
+    ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10, page_11])
+dashboard = vm.Dashboard(
+    pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10, page_11]
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)
