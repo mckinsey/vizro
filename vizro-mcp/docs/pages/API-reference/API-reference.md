@@ -4,7 +4,7 @@ The API reference serves mostly as a reference what tools are available to the m
 
 !!! note
     The `validate_dashboard_config` tool opens a link to a live preview of the dashboard, which will take you to [PyCafe](https://py.cafe). If you don't want to open the link, you can tell the LLM to not do so.
-    
+
     The `load_and_analyze_data` tool loads a CSV file from a local path or URL into a pandas DataFrame and provides detailed analysis of its structure and content. It only uses `pd.read_xxx`, so in general there is no need to worry about privacy or data security. However, you should only run Vizro-MCP locally, not as a hosted server, because there is currently no authentication to manage access.
 
 
