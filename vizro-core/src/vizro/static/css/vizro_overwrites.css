@@ -6,7 +6,6 @@ All the HEX values starting with --text-code are taken from the Github code high
 [data-bs-theme="dark"] {
   --left-side-bg: var(--bs-tertiary-bg);
   --right-side-bg-iterated: var(--bs-body-bg);
-  --slider-rail-bg: var(--primary-100);
   --mantine-radius-default: 0;
 }
 
@@ -14,7 +13,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--bs-body-bg);
   --right-side-bg-iterated: var(--bs-primary-bg-subtle);
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
-  --slider-rail-bg: var(--primary-900);
   --mantine-radius-default: 0;
 }
 
@@ -75,5 +73,3 @@ div.form-check.form-switch {
   display: flex;
   gap: 8px;
 }
-
-/* Eventually bring over to vizro-bootstrap */
