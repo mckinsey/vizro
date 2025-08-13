@@ -42,7 +42,7 @@ def echo_function(prompt):
 class echo(_AbstractAction):
     type: Literal["echo"] = "echo"
     chat_id: str
-    prompt: str = Field(default_factory=lambda data: f"{data["chat_id"]}-input.value")
+    prompt: str = Field(default_factory=lambda data: f"{data['chat_id']}-input.value")
     # Or maybe input to match client.responses.create? Note input there can also
     # be whole history and not just latest although previous_response_id now easier way to do it.
 
@@ -69,7 +69,7 @@ class openai_pirate(echo):
     api_base: Optional[str] = None  # similarly with os.environ.get("OPENAI_BASE_URL")
     stream: bool = True
     _client: OpenAI
-    messages: str = Field(default_factory=lambda data: f"{data["chat_id"]}-store.data")
+    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
     # expose instructions and other stuff as fields.
     # But ultimately users will want to customise a lot of things like tools etc. so should be able to easily write
     # their own.
@@ -112,7 +112,9 @@ class openai_pirate(echo):
 
         @callback(
             Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-            Output("vizro_version", "children", allow_duplicate=True),  # Extremely horrible hack we should change, just done here to make
+            Output(
+                "vizro_version", "children", allow_duplicate=True
+            ),  # Extremely horrible hack we should change, just done here to make
             # sure callback triggers (must have prevent_initial_call=True).
             Input(*page._action_triggers["__default__"].split(".")),
             State(f"{self.chat_id}-store", "data"),
@@ -125,29 +127,29 @@ class openai_pirate(echo):
             """
             function(animatedText, existingChildren) {
                 if (!animatedText) return existingChildren;
-                
+
                 // Check if this is the [DONE] completion signal - if so, ignore it
                 if (animatedText === '[DONE]') {
                     return existingChildren;
                 }
-                
+
                 // Clone existing children
                 const newChildren = [...(existingChildren || [])];
-                
+
                 // Find the last message and update it if it's from assistant
                 if (newChildren.length > 0) {
                     const lastIdx = newChildren.length - 1;
                     const lastMsg = newChildren[lastIdx];
-                    
+
                     // Check if this is an assistant message being streamed
-                    if (lastMsg && lastMsg.props && lastMsg.props.children && 
+                    if (lastMsg && lastMsg.props && lastMsg.props.children &&
                         lastMsg.props.children[0] && lastMsg.props.children[0].props &&
                         lastMsg.props.children[0].props.children === "assistant") {
                         // Update the content of the assistant message
                         lastMsg.props.children[1].props.children = animatedText;
                     }
                 }
-                
+
                 return newChildren;
             }
             """,
@@ -157,28 +159,26 @@ class openai_pirate(echo):
             prevent_initial_call=True,
         )
 
-        @dash.get_app().server.route(f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}")
+        @dash.get_app().server.route(
+            f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
+        )
         def stream():
             data = request.get_json()
             messages = data.get("messages", [])
-            
+
             def event_stream():
                 response_stream = self._client.responses.create(
-                    model=self.model,
-                    input=messages,
-                    instructions="Be polite.",
-                    store=False,
-                    stream=True
+                    model=self.model, input=messages, instructions="Be polite.", store=False, stream=True
                 )
-                
+
                 for event in response_stream:
                     if event.type == "response.output_text.delta":
                         yield sse_message(event.delta)
-                
+
                 # Send standard SSE completion signal
                 # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
                 yield sse_message("[DONE]")
-            
+
             return Response(event_stream(), mimetype="text/event-stream")
 
     def function(self, prompt, messages):
@@ -186,27 +186,25 @@ class openai_pirate(echo):
         # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
         latest_input = {"role": "user", "content": prompt}
         messages.append(latest_input)
-        
+
         if self.stream:
             # For streaming:
             # 1. Add an empty assistant message as placeholder
             # 2. Return SSE URL and options
             # TODO: 3. Add a callback to update store when streaming is complete
-            
+
             store, html_messages = Patch(), Patch()
-            
+
             placeholder_msg = {"role": "assistant", "content": ""}
             html_messages.append(self.message_to_html(placeholder_msg))
-            
+
             return [
                 store,
                 html_messages,
                 f"/streaming-{self.chat_id}",
                 sse_options(
-                    json.dumps({"messages": messages}),
-                    headers={"Content-Type": "application/json"},
-                    method="POST"
-                )
+                    json.dumps({"messages": messages}), headers={"Content-Type": "application/json"}, method="POST"
+                ),
             ]
         else:
             response = self.core_function(prompt, messages)
@@ -234,10 +232,10 @@ class openai_pirate(echo):
     def outputs(self):
         if self.stream:
             return [
-                f"{self.chat_id}-store.data", 
+                f"{self.chat_id}-store.data",
                 f"{self.chat_id}-output.children",
                 f"{self.chat_id}-sse.url",
-                f"{self.chat_id}-sse.options"
+                f"{self.chat_id}-sse.options",
             ]
         else:
             return [f"{self.chat_id}-store.data", f"{self.chat_id}-output.children"]
@@ -357,33 +355,33 @@ Notes:
 * Streaming is not easy... Let's forget about it for now as a built-in feature, save it for fancy demos and then come
 back to trying to build it in.
 
-If get message history from server then need to hook into OPL for it. Could be whole separate action from OPL since 
-it doesn't involve Figures. Could do this with OpenAI but looks like it's potentially several requests due to 
+If get message history from server then need to hook into OPL for it. Could be whole separate action from OPL since
+it doesn't involve Figures. Could do this with OpenAI but looks like it's potentially several requests due to
 pagination.
-If get message history from local then still need to populate somehow but not in OPL - could all be clientside and 
+If get message history from local then still need to populate somehow but not in OPL - could all be clientside and
 outside actions. Probably easier overall.
 Use previous_response_id stored locally so there's possibility in future of moving message population to serverside.
 
 Can't use previous_response_id internally:
-Previous response cannot be used for this organization due to Zero Data Retention. 
+Previous response cannot be used for this organization due to Zero Data Retention.
 
 Options for handling messages/prompt:
-- messages as input property to do Dash component. Then don't need JSON duplication of it in store. Handle different 
-return types in Dash component rather than purely returning Dash components as here. Effectively this is done by 
-store_to_html callback in this example. Still easier to do this way than Dash component, regardless of whether it's 
-SS or CS callback. Could maybe have user write function that plugs in to do render of message? Conclusion: do the 
+- messages as input property to do Dash component. Then don't need JSON duplication of it in store. Handle different
+return types in Dash component rather than purely returning Dash components as here. Effectively this is done by
+store_to_html callback in this example. Still easier to do this way than Dash component, regardless of whether it's
+SS or CS callback. Could maybe have user write function that plugs in to do render of message? Conclusion: do the
 Dash stuff SS by hand for response updating message output. Remember SS callbacks will have no problems at all for local use so not such a big compromise.
-But need to work with streaming too so can't be done in callback - must be returned at same time as store, 
-so option 3 only realistic possibility. 
+But need to work with streaming too so can't be done in callback - must be returned at same time as store,
+so option 3 only realistic possibility.
 - JSON store version that produces HTML version with SSCB. Ways to update this:
   - Option 1: prompt trigger updates store and triggers OpenAI callback at same time.
   - Option 2: prompt trigger updates store which then is trigger for OpenAI callback
-  - Option 3: update HTML at same time as store. Then have duplicated data which is inelegant but not a big problem. 
+  - Option 3: update HTML at same time as store. Then have duplicated data which is inelegant but not a big problem.
   Also makes on_page_load serverside - also not big problem. This is done here.
 
 Things to improve in nearish future:
 - need to specify chat_id manually
-- way to plug into OPL if want to retrieve messages from server. Not urgent if do it all clientside. But now that 
+- way to plug into OPL if want to retrieve messages from server. Not urgent if do it all clientside. But now that
 translation of store messages to html is SS, need to be able to do this. Options:
    - plug into OPL properly somehow
    - write another callback here that is triggered by {ON_PAGE_LOAD_ACTION_PREFIX}_{page.id}. Done here in hacky way
