@@ -252,6 +252,31 @@ class ModelWithFieldSetting(vm.VizroBaseModel):
         return result
 
 
+class TestModelID:
+    def test_model_id_default(self):
+        model = Model()
+        assert model.id is not None
+        assert isinstance(model.id, str)
+
+    def test_model_id_set(self):
+        model = Model(id="model_id")
+        assert model.id == "model_id"
+
+    def test_model_id_set_to_none(self):
+        model = Model(id=None)
+        assert model.id is not None
+        assert isinstance(model.id, str)
+
+    def test_model_id_set_to_empty_string(self):
+        model = Model(id="")
+        assert model.id == ""
+
+    @pytest.mark.parametrize("invalid_type", [1, 1.0, True, False, [], {}])
+    def test_model_id_set_to_invalid_type(self, invalid_type):
+        with pytest.raises(ValidationError, match="Input should be a valid string"):
+            Model(id=invalid_type)
+
+
 class TestDict:
     def test_dict_no_args(self):
         model = Model(id="model_id")
