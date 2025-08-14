@@ -2,17 +2,8 @@
 function isHomePage() {
   const currentPath = window.location.pathname;
 
-  // Homepage patterns: ends with /stable/ or /latest/
-  const isHome =
-    currentPath.endsWith("/stable/index.html") ||
-    currentPath.endsWith("/latest/index.html") ||
-    currentPath.endsWith("/stable/") ||
-    currentPath.endsWith("/latest/") ||
-    currentPath === "/stable" ||
-    currentPath === "/latest" ||
-    currentPath === "/";
-
-  return isHome;
+  // If URL contains 'pages', it's definitely not homepage
+  if (!currentPath.includes("/pages/")) return true;
 }
 
 // Generate markdown URL from current page URL
