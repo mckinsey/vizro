@@ -67,7 +67,7 @@ def managers_one_page_two_graphs_one_button(box_chart, scatter_chart):
         components=[
             vm.Graph(id="box_chart", figure=box_chart),
             vm.Graph(id="scatter_chart", figure=scatter_chart),
-            vm.Button(id="button", text="test"),
+            vm.Button(id="button"),
         ],
     )
     Vizro._pre_build()

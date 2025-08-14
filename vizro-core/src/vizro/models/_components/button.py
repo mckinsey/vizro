@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -13,12 +13,13 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
 
-def validate_text(text, info):
+def validate_text(text, info: ValidationInfo):
     icon = info.data.get("icon")
 
-    if text or icon:
-        return text
-    raise ValueError("Please provide either the text or icon argument.")
+    if not text and not icon:
+        raise ValueError("Please provide either the text or icon argument.")
+
+    return text
 
 
 class Button(VizroBaseModel):
@@ -26,9 +27,9 @@ class Button(VizroBaseModel):
 
     Args:
         type (Literal["button"]): Defaults to `"button"`.
+        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
         text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
@@ -109,13 +110,13 @@ class Button(VizroBaseModel):
 
         defaults = {
             "id": self.id,
-            "children": html.Span([*icon, self.text, *description], className="button-text"),
+            "children": html.Span([*icon, self.text, *description], className="btn-text"),
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
             # To prevent unnecessary class chaining, the button's style variant should be specified using `color`.
             "color": variants[self.variant],
-            "class_name": "circular_button" if self.icon and not self.text else "",
+            "class_name": "btn-circular" if self.icon and not self.text else "",
         }
 
         return dbc.Button(**(defaults | self.extra))
@@ -126,6 +127,9 @@ class Button(VizroBaseModel):
 
         description = self.description.build().children
         if not self.text:
-            description = [description[1]]
-            description[0].target = f"{self.id}-icon"
+            description_tooltip = description[1]
+            # if text="" tooltip icon is not rendered, in which case the target for the tooltip moves to the button icon
+            description_tooltip.target = f"{self.id}-icon"
+            return [description_tooltip]
+
         return description

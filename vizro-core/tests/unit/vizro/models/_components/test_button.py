@@ -14,7 +14,7 @@ class TestButtonInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
     def test_create_default_button_mandatory_only(self):
-        button = vm.Button(text="Click me!")
+        button = vm.Button()
         assert hasattr(button, "id")
         assert button.type == "button"
         assert button.text == "Click me!"
@@ -51,7 +51,7 @@ class TestButtonInstantiation:
         }
 
     def test_set_action_via_validator(self):
-        button = vm.Button(actions=[vm.Action(function=export_data())], text="Export data")
+        button = vm.Button(actions=[vm.Action(function=export_data())])
         actions_chain = button.actions[0]
         assert actions_chain.trigger.component_property == "n_clicks"
 
@@ -70,7 +70,7 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span([None, "Click me!", None], className="button-text"),
+                html.Span([None, "Click me!", None], className="btn-text"),
                 id="button",
                 href="",
                 target="_top",
@@ -81,13 +81,11 @@ class TestBuildMethod:
 
     def test_button_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
-        result = vm.Button(
-            id="button", text="Click me!", extra={"color": "success", "outline": True, "href": "www.google.com"}
-        ).build()
+        result = vm.Button(id="button", extra={"color": "success", "outline": True, "href": "www.google.com"}).build()
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span([None, "Click me!", None], className="button-text"),
+                html.Span([None, "Click me!", None], className="btn-text"),
                 id="button",
                 color="success",
                 outline=True,
@@ -104,7 +102,7 @@ class TestBuildMethod:
             button,
             dbc.Button(
                 id="button_id",
-                children=html.Span([None, "My text!", None], className="button-text"),
+                children=html.Span([None, "My text!", None], className="btn-text"),
                 href="www.google.com",
                 target="_top",
                 color="primary",
@@ -123,7 +121,7 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                children=html.Span([None, "Click me!", None], className="button-text"),
+                children=html.Span([None, "Click me!", None], className="btn-text"),
                 href="",
                 target="_top",
                 color=expected_color,
@@ -153,7 +151,7 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span([None, "Click me", *expected_description], className="button-text"),
+                html.Span([None, "Click me", *expected_description], className="btn-text"),
                 id="button",
                 href="",
                 target="_top",
@@ -164,7 +162,7 @@ class TestBuildMethod:
 
     @pytest.mark.parametrize(
         "icon, text, class_name",
-        [("home", "Test", ""), ("home", "", "circular_button")],
+        [("home", "Test", ""), ("home", "", "btn-circular")],
     )
     def test_button_build_with_icon(self, icon, text, class_name):
         button = vm.Button(id="button_id", icon=icon, text=text).build()
@@ -174,7 +172,7 @@ class TestBuildMethod:
             button,
             dbc.Button(
                 id="button_id",
-                children=html.Span([expected_icon, f"{text}", None], className="button-text"),
+                children=html.Span([expected_icon, f"{text}", None], className="btn-text"),
                 target="_top",
                 href="",
                 color="primary",

@@ -250,7 +250,7 @@ You can use it alongside the `text` argument, or on its own to create a circular
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="11 24"}
+        ```{.python pycafe-link hl_lines="9 25"}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -259,9 +259,8 @@ You can use it alongside the `text` argument, or on its own to create a circular
             layout=vm.Flex(),
             components=[
                 vm.Button(
-                    text="Visit link to learn more!",
-                    href="https://www.kaggle.com/datasets/uciml/iris",
-                    icon="link",
+                    icon="download",
+                    description="Download the data!",
                     variant="outlined",
                 ),
                 vm.Graph(
@@ -274,8 +273,9 @@ You can use it alongside the `text` argument, or on its own to create a circular
                     ),
                 ),
                 vm.Button(
-                    icon="download",
-                    description="Download the data!",
+                    text="View Data Source",
+                    href="https://www.kaggle.com/datasets/uciml/iris",
+                    icon="link",
                     variant="outlined",
                 ),
             ],
@@ -292,10 +292,11 @@ You can use it alongside the `text` argument, or on its own to create a circular
           - title: Buttons with an icon
             components:
               - type: button
-                text: Visit link to learn more!
-                href: https://www.kaggle.com/datasets/uciml/iris
-                icon: link
-                variant: outlined
+                icon: download
+                description: Download the data!
+                actions:
+                  - function:
+                      _target_: export_data
               - figure:
                   _target_: scatter
                   x: sepal_width
@@ -305,11 +306,10 @@ You can use it alongside the `text` argument, or on its own to create a circular
                   data_frame: iris
                 type: graph
               - type: button
-                icon: download
-                description: Download the data!
-                actions:
-                  - function:
-                      _target_: export_data
+                text: Visit link to learn more!
+                href: https://www.kaggle.com/datasets/uciml/iris
+                icon: link
+                variant: outlined
         ```
 
     === "Result"

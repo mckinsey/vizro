@@ -294,6 +294,8 @@ Current logic:
   gap: 12px;
 }
 
-.circular_button {
+.btn-circular {
   border-radius: 50%;
+  height: 32px;
+  width: 32px;
 }

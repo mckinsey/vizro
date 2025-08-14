@@ -12,11 +12,11 @@ page = vm.Page(
     layout=vm.Flex(),
     components=[
         vm.Button(
-            text="Visit link to learn more about iris dataset!",
-            href="https://www.kaggle.com/datasets/uciml/iris",
-            icon="link",
-            variant="outlined",
+            icon="download",
+            text="",
             description="Download the data!",
+            variant="outlined",
+            actions=[vm.Action(function=export_data())],
         ),
         vm.Graph(
             figure=px.scatter(
@@ -28,11 +28,10 @@ page = vm.Page(
             ),
         ),
         vm.Button(
-            icon="download",
-            text="",
-            description="Download the data!",
+            text="View Data Source",
+            href="https://www.kaggle.com/datasets/uciml/iris",
+            icon="link",
             variant="outlined",
-            actions=[vm.Action(function=export_data())],
         ),
     ],
 )
