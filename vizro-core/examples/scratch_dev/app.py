@@ -136,20 +136,20 @@ class openai_pirate(echo):
                 """
                 function(animatedText, existingChildren) {
                     if (!animatedText) return existingChildren;
-    
+
                     // Check if this is the [DONE] completion signal - if so, ignore it
                     if (animatedText === '[DONE]') {
                         return existingChildren;
                     }
-    
+
                     // Clone existing children
                     const newChildren = [...(existingChildren || [])];
-    
+
                     // Find the last message and update it if it's from assistant
                     if (newChildren.length > 0) {
                         const lastIdx = newChildren.length - 1;
                         const lastMsg = newChildren[lastIdx];
-    
+
                         // Check if this is an assistant message being streamed
                         if (lastMsg && lastMsg.props && lastMsg.props.children &&
                             lastMsg.props.children[0] && lastMsg.props.children[0].props &&
@@ -158,7 +158,7 @@ class openai_pirate(echo):
                             lastMsg.props.children[1].props.children = animatedText;
                         }
                     }
-    
+
                     return newChildren;
                 }
                 """,
@@ -175,7 +175,7 @@ class openai_pirate(echo):
                     if (!animatedText || animatedText === '[DONE]') {
                         return window.dash_clientside.no_update;
                     }
-    
+
                     const newData = [...(storeData || [])];
                     const last = newData.length > 0 ? newData[newData.length - 1] : null;
                     if (last && last.role === 'assistant') {
