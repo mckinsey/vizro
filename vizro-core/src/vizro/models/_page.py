@@ -222,7 +222,6 @@ class Page(VizroBaseModel):
         # These components are recreated on every page rather than going at the global dashboard level so that we do
         # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behavior).
         action_components = []
-
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction, root_model=self)):
             action_components.extend(action._dash_components)
 

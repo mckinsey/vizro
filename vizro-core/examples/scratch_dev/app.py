@@ -349,8 +349,39 @@ page_11 = vm.Page(
     ],
 )
 
+page_12 = vm.Page(
+    title="Test bidirectional interactions - [4 guards on refresh]",
+    layout=vm.Grid(grid=[[0, 2], [1, 3]]),
+    components=[
+        vm.AgGrid(
+            id="page_12_grid_1",
+            title="On click - [1 guard]",
+            figure=dash_ag_grid(data_frame=df_gapminder),
+            actions=[vm.Action(function=filter_interaction(targets=["page_12_grid_2"]))],
+        ),
+        vm.AgGrid(
+            id="page_12_grid_2",
+            title="On click - [1 guard]",
+            figure=dash_ag_grid(data_frame=df_gapminder),
+            actions=[vm.Action(function=filter_interaction(targets=["page_12_grid_1"]))],
+        ),
+        vm.Graph(
+            id="page_12_graph_1",
+            title="On click - [0 guards]",
+            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent", custom_data=["continent"]),
+            actions=[vm.Action(function=filter_interaction(targets=["page_12_graph_2"]))],
+        ),
+        vm.Graph(
+            id="page_12_graph_2",
+            title="On click - [0 guards]",
+            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent", custom_data=["continent"]),
+            actions=[vm.Action(function=filter_interaction(targets=["page_12_graph_1"]))],
+        ),
+    ],
+)
+
 dashboard = vm.Dashboard(
-    pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10, page_11]
+    pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10, page_11, page_12]
 )
 
 if __name__ == "__main__":
