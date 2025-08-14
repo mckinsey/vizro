@@ -119,6 +119,5 @@ function addMarkdownButtons() {
 
 document$.subscribe(function () {
   console.log("Page loaded/changed - checking for buttons");
-  //   setTimeout(addMarkdownButtons, 50);
   addMarkdownButtons();
 });
