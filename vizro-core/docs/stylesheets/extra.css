@@ -62,3 +62,21 @@ td:not([class]):not(:last-child) {
   background-color: rgb(3, 3, 3);
   mask-image: var(--md-admonition-icon--details);
 }
+
+.md-content:has(.markdown-buttons) h1 {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.markdown-buttons button {
+  padding: 8px 16px;
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  font-size: 0.7rem;
+  cursor: pointer;
+}
