@@ -10,7 +10,7 @@ from vizro.managers import model_manager
 from vizro.models.types import ModelID, NavPagesType
 
 if TYPE_CHECKING:
-    from vizro.models import Page
+    pass
 
 # Error message constants
 _AMBIGUOUS_PAGE_ERROR_MSG = (
@@ -50,7 +50,7 @@ def _resolve_page_reference(
 
 # This will need to move to pre-build in next PR - hopefully there is no problems
 # introduced with handling things this way
-def _validate_pages(pages: NavPagesType) -> NavPagesType:  # noqa: PLR0912
+def _validate_pages(pages: NavPagesType) -> NavPagesType:
     """Reusable validator to check if provided Page titles exist as registered pages."""
     # Build lookup maps in a single pass through all pages
     page_by_id, pages_by_title = model_manager._get_page_lookup_maps()
