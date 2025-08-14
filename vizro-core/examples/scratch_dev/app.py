@@ -92,7 +92,7 @@ class openai_pirate(echo):
         # This makes it feel more responsive.
         @callback(
             # outputs are self.outputs
-            Output(f"{self.chat_id}-store", "data"),
+            Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
             Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
             # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
             # make sure it.
@@ -156,6 +156,31 @@ class openai_pirate(echo):
             Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
             Input(f"{self.chat_id}-sse", "animation"),
             State(f"{self.chat_id}-output", "children"),
+            prevent_initial_call=True,
+        )
+
+        # Persist assistant message progressively on each non-empty animated chunk
+        clientside_callback(
+            """
+            function(animatedText, sseData, storeData) {
+                if (!animatedText || animatedText === '[DONE]') {
+                    return window.dash_clientside.no_update;
+                }
+
+                const newData = [...(storeData || [])];
+                const last = newData.length > 0 ? newData[newData.length - 1] : null;
+                if (last && last.role === 'assistant') {
+                    newData[newData.length - 1] = {role: 'assistant', content: animatedText};
+                } else {
+                    newData.push({role: 'assistant', content: animatedText});
+                }
+                return newData;
+            }
+            """,
+            Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
+            Input(f"{self.chat_id}-sse", "animation"),
+            State(f"{self.chat_id}-sse", "data"),
+            State(f"{self.chat_id}-store", "data"),
             prevent_initial_call=True,
         )
 
@@ -294,7 +319,7 @@ class Chat(VizroBaseModel):
                 dbc.Input(id=f"{self.id}-input", placeholder="Type something...", type="text", debounce=True),
                 dbc.Button(id=f"{self.id}-submit", children="Submit"),
                 html.Div(id=f"{self.id}-output", children=[]),
-                dcc.Store(id=f"{self.id}-store", data=[], storage_type="local"),  # TBD storage_type
+                dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),  # TBD storage_type
                 SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10),
                 html.Div(id=f"{self.id}-streaming-output", style={"display": "none"}),
             ]
