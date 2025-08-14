@@ -98,7 +98,9 @@ class RangeSlider(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
 
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
@@ -195,7 +197,6 @@ class RangeSlider(VizroBaseModel):
                     className="slider-label-input",
                 ),
                 dcc.RangeSlider(**(defaults | self.extra)),
-                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ]
         )
 

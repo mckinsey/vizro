@@ -139,16 +139,22 @@ class Filter(VizroBaseModel):
                 "change type while the dashboard is running."
             )
 
-        if isinstance(self.selector, SELECTORS["categorical"]):
-            self.selector = cast(CategoricalSelectorType, self.selector)
-            selector_build_obj = self.selector(options=self._get_options(targeted_data, current_value))
-        elif isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            self.selector = cast(NumericalTemporalSelectorType, self.selector)
-            _min, _max = self._get_min_max(targeted_data, current_value)
-            selector_build_obj = self.selector(min=_min, max=_max)
+        # Cast is justified as the selector is set in pre_build and is not None.
+        selector = cast(SelectorType, self.selector)
 
-        # if selector_build_obj and self.show_in_url and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj:
-        #     selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+        if isinstance(selector, SELECTORS["categorical"]):
+            selector = cast(CategoricalSelectorType, selector)
+            selector_build_obj = selector(options=self._get_options(targeted_data, current_value))
+        elif isinstance(selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
+            selector = cast(NumericalTemporalSelectorType, selector)
+            _min, _max = self._get_min_max(targeted_data, current_value)
+            selector_build_obj = selector(min=_min, max=_max)
+
+        if self._dynamic:
+            if f"{selector.id}_guard_actions_chain" in selector_build_obj:
+                selector_build_obj[f"{selector.id}_guard_actions_chain"].data = True
+            else:
+                selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True))
 
         return selector_build_obj
 
@@ -250,13 +256,11 @@ class Filter(VizroBaseModel):
 
         selector_build_obj = selector.build()
 
-        # data=False is added instead of the data=True in case that URL is set but this filter is not the part of the URL params.
-        if (
-            selector_build_obj
-            and self.show_in_url
-            and f"{self.selector.id}_guard_actions_chain" not in selector_build_obj
-        ):
-            selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+        # Add the guard to the show_in_url filter selector in the build process because clientside callback sync_url
+        # will be triggered and may adjust its value. Set it to False and let the sync_url
+        # clientside callback update it to True when needed. It'll happen when the filter value comes from the URL.
+        if self.show_in_url:
+            selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
             return html.Div(id=self.id, children=selector_build_obj)
