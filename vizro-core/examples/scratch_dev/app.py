@@ -401,9 +401,9 @@ page_13 = vm.Page(
             actions=[
                 page_13_export_data_action,
                 page_13_export_data_action,
-            ]
+            ],
         ),
-    ]
+    ],
 )
 
 
@@ -414,12 +414,11 @@ page_14 = vm.Page(
             id="page_14_button",
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: x)("page_14_button.n_clicks"),
-                    outputs=["page_14_button.text"]
+                    function=capture("action")(lambda x: x)("page_14_button.n_clicks"), outputs=["page_14_button.text"]
                 )
             ],
         ),
-    ]
+    ],
 )
 
 
@@ -434,8 +433,8 @@ page_15 = vm.Page(
             text="Change checklist value",
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: radio_items_options[int(x)%3])("page_15_button.n_clicks"),
-                    outputs=["page_15_checklist.value"]
+                    function=capture("action")(lambda x: radio_items_options[int(x) % 3])("page_15_button.n_clicks"),
+                    outputs=["page_15_checklist.value"],
                 )
             ],
         ),
@@ -445,20 +444,35 @@ page_15 = vm.Page(
             value=radio_items_options[0],
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: x)("page_15_checklist.value"),
-                    outputs=["page_15_card.text"]
+                    function=capture("action")(lambda x: x)("page_15_checklist.value"), outputs=["page_15_card.text"]
                 )
             ],
         ),
         vm.Card(
             id="page_15_card",
             text="Card text",
-        )
+        ),
     ],
 )
 
 dashboard = vm.Dashboard(
-    pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10, page_11, page_12, page_13, page_14, page_15]
+    pages=[
+        page_1,
+        page_2,
+        page_3,
+        page_4,
+        page_5,
+        page_6,
+        page_7,
+        page_8,
+        page_9,
+        page_10,
+        page_11,
+        page_12,
+        page_13,
+        page_14,
+        page_15,
+    ]
 )
 
 if __name__ == "__main__":
