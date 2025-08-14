@@ -144,19 +144,17 @@ class Filter(VizroBaseModel):
 
         if isinstance(selector, SELECTORS["categorical"]):
             selector = cast(CategoricalSelectorType, selector)
-            selector_build_obj = selector(options=self._get_options(targeted_data, current_value))
+            selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
         elif isinstance(selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             selector = cast(NumericalTemporalSelectorType, selector)
             _min, _max = self._get_min_max(targeted_data, current_value)
-            selector_build_obj = selector(min=_min, max=_max)
+            selector_call_obj = selector(min=_min, max=_max)
 
+        # For dynamic filters, return the guard component (data=True) to prevent unexpected filter action firing.
         if self._dynamic:
-            if f"{selector.id}_guard_actions_chain" in selector_build_obj:
-                selector_build_obj[f"{selector.id}_guard_actions_chain"].data = True
-            else:
-                selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True))
+            selector_call_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True))
 
-        return selector_build_obj
+        return selector_call_obj
 
     @_log_call
     def pre_build(self):
@@ -256,11 +254,11 @@ class Filter(VizroBaseModel):
 
         selector_build_obj = selector.build()
 
-        # Add the guard to the show_in_url filter selector in the build process because clientside callback sync_url
-        # will be triggered and may adjust its value. Set it to False and let the sync_url
-        # clientside callback update it to True when needed. It'll happen when the filter value comes from the URL.
         if self.show_in_url:
-            selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
+            # Add the guard to the show_in_url filter selector in the build phase because clientside callback
+            # sync_url will be triggered and may adjust its value. Set it to False and let the sync_url clientside
+            # callback update it to True when needed. It'll happen when the filter value comes from the URL.
+            selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
             return html.Div(id=self.id, children=selector_build_obj)

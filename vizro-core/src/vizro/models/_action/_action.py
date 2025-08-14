@@ -63,12 +63,19 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _dash_components(self) -> list[Component]:
-        # Users cannot add Dash components using vm.Action.
-        dash_components: list[Component] = []
+        """Internal components needed to run the actions chain system.
 
+        Includes:
+        - {action.id}_finished for completion of an action callback to trigger the next action in the chain
+        - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain callback prevent
+            undesired triggering (workaround for Dash prevent_initial_call=True behavior)
+
+        In theory, subclasses can add additional components to the list, as done in export_data, but this should not be
+        generally encouraged. In the future it might not be possible.
+        """
+        dash_components = [dcc.Store(id=f"{self.id}_finished")]
         if self._first_in_chain:
             dash_components.append(dcc.Store(id=f"{self.id}_guarded_trigger"))
-        dash_components.append(dcc.Store(id=f"{self.id}_finished"))
 
         return dash_components
 
