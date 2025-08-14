@@ -11,6 +11,7 @@ from vizro.actions import filter_interaction, export_data
 from vizro.models.types import capture
 from time import sleep
 from vizro.managers import data_manager
+from vizro.models.types import capture
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 df_gapminder["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D")
@@ -40,7 +41,6 @@ page_1 = vm.Page(
         # vm.Filter(id="page_1_filter", column="continent", selector=vm.Dropdown(id="page_1_filter_selector")),
     ],
 )
-
 
 page_2 = vm.Page(
     title="Export data -> custom sleep action -> export data - [0 guard]",
@@ -384,8 +384,81 @@ page_12 = vm.Page(
     ],
 )
 
+# TODO-NOW: Reusing the action does not work as expected. It probably does not work due to duplicate dcc.Store IDs.
+#  This doesn't
+
+page_13_export_data_action = export_data()
+page_13 = vm.Page(
+    title="Test reusing the action",
+    components=[
+        vm.Graph(
+            id="page_13_graph",
+            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+        ),
+        vm.Button(
+            id="page_13_button",
+            text="Export data",
+            actions=[
+                page_13_export_data_action,
+                page_13_export_data_action,
+            ]
+        ),
+    ]
+)
+
+
+page_14 = vm.Page(
+    title="Page without OPL",
+    components=[
+        vm.Button(
+            id="page_14_button",
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda x: x)("page_14_button.n_clicks"),
+                    outputs=["page_14_button.text"]
+                )
+            ],
+        ),
+    ]
+)
+
+
+vm.Page.add_type("components", vm.RadioItems)
+radio_items_options = ["Option 1", "Option 2", "Option 3"]
+page_15 = vm.Page(
+    title="Action chain triggers another action chain",
+    layout=vm.Grid(grid=[[0, 1, 2]]),
+    components=[
+        vm.Button(
+            id="page_15_button",
+            text="Change checklist value",
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda x: radio_items_options[int(x)%3])("page_15_button.n_clicks"),
+                    outputs=["page_15_checklist.value"]
+                )
+            ],
+        ),
+        vm.RadioItems(
+            id="page_15_checklist",
+            options=radio_items_options,
+            value=radio_items_options[0],
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda x: x)("page_15_checklist.value"),
+                    outputs=["page_15_card.text"]
+                )
+            ],
+        ),
+        vm.Card(
+            id="page_15_card",
+            text="Card text",
+        )
+    ],
+)
+
 dashboard = vm.Dashboard(
-    pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10, page_11, page_12]
+    pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10, page_11, page_12, page_13, page_14, page_15]
 )
 
 if __name__ == "__main__":
