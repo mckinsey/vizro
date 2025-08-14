@@ -14,11 +14,11 @@ page_5 = vm.Page(
     components=[
         vm.Button(
             text="Collapse all containers",
-            actions=[collapse_expand_containers(collapse=["container3", "container4"])],
+            actions=[collapse_expand_containers(collapse=["container1", "container2", "container3", "container4"])],
         ),
         vm.Button(
             text="Expand all containers",
-            actions=[collapse_expand_containers(expand=["container1", "container2"])],
+            actions=[collapse_expand_containers(expand=["container1", "container2", "container3", "container4"])],
         ),
         vm.Container(
             title="",
@@ -28,13 +28,13 @@ page_5 = vm.Page(
                     id="container1",
                     title="Container 1",
                     components=[vm.Graph(figure=px.bar(iris, x="species", y="petal_length"))],
-                    collapsed=True,
+                    collapsed=False,
                 ),
                 vm.Container(
                     id="container2",
                     title="Container 2",
                     components=[vm.Graph(figure=px.bar(iris, x="species", y="petal_length"))],
-                    collapsed=True,
+                    collapsed=False,
                 ),
                 vm.Container(
                     id="container3",

@@ -12,18 +12,11 @@ class collapse_expand_containers(_AbstractAction):
     type: Literal["collapse_expand_containers"] = "collapse_expand_containers"
     collapse: list[ModelID] = Field(default=[], description="List of target collapsible container ids to collapse.")
     expand: list[ModelID] = Field(default=[], description="List of target collapsible container ids to expand.")
-    #  toggle would need multiple state as input. Maybe possible in future but not now. Add new ticket for
-    #  this.
+    #  toggle would need multiple state as input. Maybe possible in future but not now. Add new ticket for this
     # toggle: list[str]
-    # Could also add reset: list[str] in future but easy for user to do that manually already.
 
     @_log_call
     def pre_build(self):
-        # Need to check:
-        # - are collapse/expand lists of containers in model manager - error if not
-        # - are all specified containers collapsible - error if not
-        # - are collapse and expand lists mutually exclusive - error if not
-        # - anything else?
         from vizro.models import Container
 
         if not self.collapse and not self.expand:
