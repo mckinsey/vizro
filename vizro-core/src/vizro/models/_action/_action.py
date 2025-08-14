@@ -320,7 +320,7 @@ class _BaseAction(VizroBaseModel):
             # https://dash.plotly.com/advanced-callbacks#prevent-callback-execution-upon-initial-component-render
             # e.g. for the case of a dynamic filter, we want the guard to let through genuine callback triggers (user
             # changes value of filter) vs. when the dropdown is created. This works as follows:
-            #   1. When a new dynamic component is created, a dcc.Store component labelled *_guard_actions_chain
+            #   1. When a new dynamic component is created, a dcc.Store component labeled *_guard_actions_chain
             #   is created at the same time with data=True.
             #   2. When guard_action_chain callback is triggered, we work out whether the trigger of the callback
             #   chain is genuine or not:
