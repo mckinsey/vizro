@@ -21,34 +21,34 @@ df = pd.DataFrame(data)
 
 
 page = vm.Page(
-    # id="page_1",
-    title="Page",
+    id="page_1",
+    title="XX Page",
     components=[vm.AgGrid(figure=dash_ag_grid(df))],
 )
 
 page2 = vm.Page(
-    # id="page_2",
-    title="Page",
+    id="page_2",
+    title="XX Page",
     components=[vm.AgGrid(figure=dash_ag_grid(df))],
 )
 
 page3 = vm.Page(
-    # id="page_3",
-    title="Page",
+    id="page_3",
+    title="XX Page",
     components=[vm.AgGrid(figure=dash_ag_grid(df))],
 )
 
 
 dashboard = vm.Dashboard(
     pages=[page, page2, page3],
-    # navigation=vm.Navigation(
-    #     nav_selector=vm.NavBar(
-    #         items=[
-    #             vm.NavLink(label="Section 1", pages=["Page 1", "Page 2"]),
-    #             vm.NavLink(label="Section 2", pages=["Page 3"]),
-    #         ]
-    #     ),
-    # ),
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Section 1", pages=["page_1", "page_2"]),
+                vm.NavLink(label="Section 2", pages=["page_3"]),
+            ]
+        ),
+    ),
 )
 
 if __name__ == "__main__":
@@ -61,10 +61,29 @@ if __name__ == "__main__":
 - same title, ids --> success, sets as path the id
 - home page is special, there the path is always empty
 
+Breaking to current:
+
+- if non duplicated title and explicit id: BEFORE: used id             AFTER: title
+- if non duplicated title and no id:       BEFORE: used title (via id) AFTER: title
+- if duplicated title and explicit id:     BEFORE: used id             AFTER: id
+- if duplicated title and no id:           BEFORE: error (via id)      AFTER: id (random generated) or error if you define navigation yourself
+
+For code:
+- detect duplicated title in validator (set_path) but it will move to pre-build
+- if duplicated we dont care about if it was explicitly set ==> so all we do in set path: was title duplicated, if yes use id, otherwise use title
+
+
 How do we want it now:
-- if user sets title, that's the path
+- if user sets title, that's the path (before it was always ID!!!)
 - if duplicate title, then ID is the path
 - duplicate ID is not allowed
+
+What about:
+- ID and title independent
+- title gives path
+- if duplicate title, then there is an error --> need to provide ID AND path
+(so path never derived from ID)
+- if title and id, its title
 
 
 So I think what we need as validation is the following:

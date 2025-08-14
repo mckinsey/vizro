@@ -59,6 +59,7 @@ def set_path(path: str, info: ValidationInfo) -> str:
         return path if path.startswith("/") else "/" + path
 
     # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
+    # maybe remove?
     if path:
         if _check_for_duplicate_path(path):
             raise ValueError(f"Path {path} is already used by another page.")
@@ -67,7 +68,10 @@ def set_path(path: str, info: ValidationInfo) -> str:
     # Try title first, then fall back to id if title path is duplicate
     # MS: There is a small breaking change (I think) when once chooses a path that is the same as the home page,
     # this case would work before, but not anymore.
-    path = clean_path(info.data["title"], "-_") if "title" in info.data else clean_path(info.data["id"], "-_")
+    # Checking for duplicate is effectively doing for duplicate title ==> change the function above!
+    path = (
+        clean_path(info.data["title"], "-_") if "title" in info.data else clean_path(info.data["id"], "-_")
+    )  # check else statement
     return path if not _check_for_duplicate_path(path) else clean_path(info.data["id"], "-_")
 
 
