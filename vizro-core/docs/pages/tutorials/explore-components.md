@@ -10,7 +10,7 @@ This tutorial should take **about half an hour to finish**, so grab a coffee or 
 
 !!! note
 
-    If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/first-dashboard.md) before diving into this one.
+    If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/quickstart-tutorial.md) before diving into this one.
 
 **By the end of this tutorial, you have learned how to:**
 

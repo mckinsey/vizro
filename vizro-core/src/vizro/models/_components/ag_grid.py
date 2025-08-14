@@ -81,7 +81,10 @@ class AgGrid(VizroBaseModel):
     actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     def model_post_init(self, context) -> None:
         super().model_post_init(context)
@@ -112,7 +115,7 @@ class AgGrid(VizroBaseModel):
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
-        # specified. It's here since we want to use __call__ without arguments more in future.
+        # specified. It's here since we want to use __call__ without arguments more in the future.
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
