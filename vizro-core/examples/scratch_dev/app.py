@@ -2,6 +2,7 @@
 # # check out https://github.com/mckinsey/vizro for more info about Vizro
 # # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
+from dash import callback, Input, Output, dcc
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -455,6 +456,111 @@ page_15 = vm.Page(
     ],
 )
 
+
+@capture("action")
+def my_custom_export():
+    return dcc.send_data_frame(df_gapminder.to_csv, "mydf.csv")
+
+
+@capture("action")
+def my_custom_location(x=17):
+    return f"/page-{x}"
+
+
+page_16 = vm.Page(
+    title="Test vizro_download and vizro_url using vizro actions",
+    path="page-16",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="page_16_graph",
+                    figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+                ),
+                vm.Button(
+                    id="page_16_button_download",
+                    text="Export data!",
+                    actions=[vm.Action(function=my_custom_export(), outputs=["vizro_download.data"])],
+                ),
+                vm.Button(
+                    id="copy_page_16_button_download",
+                    text="Copy Export data!",
+                    actions=[vm.Action(function=my_custom_export(), outputs=["vizro_download.data"])],
+                ),
+                vm.Button(
+                    id="page_16_button_location",
+                    text="Go to page 17!",
+                    actions=[vm.Action(function=my_custom_location(), outputs=["vizro_url.href"])],
+                ),
+                vm.Button(
+                    id="copy_page_16_button_location",
+                    text="Copy Go to page 17!",
+                    actions=[vm.Action(function=my_custom_location(), outputs=["vizro_url.href"])],
+                ),
+            ],
+        ),
+    ],
+)
+
+
+# - Callbacks -
+# --- Download ---
+@callback(
+    Output("vizro_download", "data", allow_duplicate=True),
+    Input("page_17_button_download", "n_clicks"),
+    prevent_initial_call=True,
+)
+def export_callback(_):
+    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+
+
+@callback(
+    Output("vizro_download", "data", allow_duplicate=True),
+    Input("copy_page_17_button_download", "n_clicks"),
+    prevent_initial_call=True,
+)
+def export_callback(_):
+    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+
+
+# --- Location ---
+@callback(
+    Output("vizro_url", "href", allow_duplicate=True),
+    Input("page_17_button_location", "n_clicks"),
+    prevent_initial_call=True,
+)
+def change_location_callback(_):
+    return "/page-16"
+
+
+@callback(
+    Output("vizro_url", "href", allow_duplicate=True),
+    Input("copy_page_17_button_location", "n_clicks"),
+    prevent_initial_call=True,
+)
+def change_location_callback(_):
+    return "/page-16"
+
+
+page_17 = vm.Page(
+    title="Test vizro_download and vizro_url using dash callbacks",
+    path="page-17",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="page_17_graph",
+                    figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+                ),
+                vm.Button(id="page_17_button_download", text="Export data!"),
+                vm.Button(id="copy_page_17_button_download", text="Copy Export data!"),
+                vm.Button(id="page_17_button_location", text="Go to page 16!"),
+                vm.Button(id="copy_page_17_button_location", text="Copy Go to page 16!"),
+            ],
+        ),
+    ],
+)
+
 dashboard = vm.Dashboard(
     pages=[
         page_1,
@@ -472,6 +578,8 @@ dashboard = vm.Dashboard(
         page_13,
         page_14,
         page_15,
+        page_16,
+        page_17,
     ]
 )
 
