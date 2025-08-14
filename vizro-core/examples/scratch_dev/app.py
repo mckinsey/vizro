@@ -368,13 +368,17 @@ page_12 = vm.Page(
         vm.Graph(
             id="page_12_graph_1",
             title="On click - [0 guards]",
-            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent", custom_data=["continent"]),
+            figure=px.scatter(
+                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent", custom_data=["continent"]
+            ),
             actions=[vm.Action(function=filter_interaction(targets=["page_12_graph_2"]))],
         ),
         vm.Graph(
             id="page_12_graph_2",
             title="On click - [0 guards]",
-            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent", custom_data=["continent"]),
+            figure=px.scatter(
+                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent", custom_data=["continent"]
+            ),
             actions=[vm.Action(function=filter_interaction(targets=["page_12_graph_1"]))],
         ),
     ],

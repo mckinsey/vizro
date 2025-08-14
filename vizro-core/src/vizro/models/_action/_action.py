@@ -8,7 +8,7 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import dcc, ClientsideFunction, Input, Output, State, callback, clientside_callback
+from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc
 from dash.development.base_component import Component
 from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema

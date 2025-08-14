@@ -5,7 +5,6 @@ import inspect
 from typing import Union
 
 from dash import Output
-from dash.development.base_component import Component
 from pydantic import TypeAdapter
 
 from vizro.models._action._action import _BaseAction
