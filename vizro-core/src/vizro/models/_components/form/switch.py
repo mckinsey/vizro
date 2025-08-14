@@ -69,7 +69,9 @@ class Switch(VizroBaseModel):
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
 
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     @_log_call
     def pre_build(self):

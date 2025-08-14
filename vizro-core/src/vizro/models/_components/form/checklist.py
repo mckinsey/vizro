@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -83,7 +83,10 @@ class Checklist(VizroBaseModel):
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     @_log_call
     def pre_build(self):
@@ -147,7 +150,6 @@ class Checklist(VizroBaseModel):
                     ],
                     className="checklist-inline" if self._in_container else None,
                 ),
-                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ],
         )
 

@@ -1,6 +1,5 @@
 import vizro.models as vm
 import vizro.plotly.express as px
-from nutree import IterMethod
 from vizro import Vizro
 from vizro.managers import model_manager
 

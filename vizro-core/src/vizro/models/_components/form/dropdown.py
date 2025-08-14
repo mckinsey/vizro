@@ -116,7 +116,10 @@ class Dropdown(VizroBaseModel):
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     @_log_call
     def pre_build(self):
@@ -190,7 +193,6 @@ class Dropdown(VizroBaseModel):
                 if self.title
                 else None,
                 dcc.Dropdown(**(defaults | self.extra)),
-                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ]
         )
 
@@ -232,7 +234,6 @@ class Dropdown(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                 ),
-                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True),
                 *hidden_select_all_dropdown,
             ]
         )

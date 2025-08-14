@@ -1,3 +1,5 @@
+"""Dev app to try things out."""
+
 # # Vizro is an open-source toolkit for creating modular data visualization applications.
 # # check out https://github.com/mckinsey/vizro for more info about Vizro
 # # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
@@ -9,7 +11,6 @@ from typing import Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px

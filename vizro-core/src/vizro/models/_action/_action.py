@@ -8,7 +8,7 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback
+from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc
 from dash.development.base_component import Component
 from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -63,7 +63,14 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _dash_components(self) -> list[Component]:
-        raise NotImplementedError
+        # Users cannot add Dash components using vm.Action.
+        dash_components: list[Component] = []
+
+        if self._first_in_chain:
+            dash_components.append(dcc.Store(id=f"{self.id}_guarded_trigger"))
+        dash_components.append(dcc.Store(id=f"{self.id}_finished"))
+
+        return dash_components
 
     @property
     def _legacy(self):
@@ -327,7 +334,6 @@ class _BaseAction(VizroBaseModel):
             component_guard_id = f"{trigger_component_id}_guard_actions_chain"
             trigger = Input(f"{self.id}_guarded_trigger", "data")
 
-            # TODO NOW: make clientside, revert logging.critical changes.
             # We want prevent_initial_call=True for all but the on page load callback. This means that the on page load
             # callback goes through the same gateway system as everything else and will run when the page layout is
             # generated.
@@ -422,11 +428,6 @@ class Action(_BaseAction):
         description="""List or dictionary of outputs modified by the action function. Each output can be specified as
             `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
     )
-
-    @property
-    def _dash_components(self) -> list[Component]:
-        # Users cannot add Dash components using vm.Action.
-        return []
 
     @property
     def _legacy(self) -> bool:
