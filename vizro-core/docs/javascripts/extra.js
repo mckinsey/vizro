@@ -68,20 +68,7 @@ async function copyMarkdownContent() {
       copyButton.disabled = false;
     }, 1500);
   } catch (fetchError) {
-    await navigator.clipboard.writeText(markdown);
-
-    setTimeout(() => {
-      copyButton.textContent = originalText;
-      copyButton.disabled = false;
-    }, 1500);
-  } catch (error) {
-    // Restore button UI
-    if (copyButton) {
-      copyButton.textContent = originalText;
-      copyButton.disabled = false;
-    }
-    // Log error
-    console.error("Error copying markdown to clipboard:", error);
+    console.error("Error fetching markdown:", fetchError);
   }
 }
 
