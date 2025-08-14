@@ -106,7 +106,7 @@ function addMarkdownButtons() {
   // Create View button
   const viewButton = document.createElement("button");
   viewButton.id = "md-open";
-  viewButton.textContent = "View as markdown";
+  viewButton.textContent = "View as Markdown";
   viewButton.addEventListener("click", openMarkdownInNewTab);
 
   // Append buttons to container
