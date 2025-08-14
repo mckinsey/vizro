@@ -130,22 +130,21 @@ class openai_pirate(echo):
             return [self.message_to_html(message) for message in store], dash.no_update
 
         if self.stream:
-            # Question for Lingyi: what is happening here?! WHy is it so complicated and why do we have two
-            # clientside callbacks?
+            # updates both UI and store simultaneously
             clientside_callback(
                 """
-                function(animatedText, existingChildren) {
-                    if (!animatedText) return existingChildren;
-
-                    // Check if this is the [DONE] completion signal - if so, ignore it
-                    if (animatedText === '[DONE]') {
-                        return existingChildren;
+                function(animatedText, existingChildren, sseData, storeData) {
+                    // Handle empty or completion signals
+                    if (!animatedText) {
+                        return [existingChildren, window.dash_clientside.no_update];
                     }
 
-                    // Clone existing children
-                    const newChildren = [...(existingChildren || [])];
+                    if (animatedText === '[DONE]') {
+                        return [existingChildren, window.dash_clientside.no_update];
+                    }
 
-                    // Find the last message and update it if it's from assistant
+                    // Update UI (children)
+                    const newChildren = [...(existingChildren || [])];
                     if (newChildren.length > 0) {
                         const lastIdx = newChildren.length - 1;
                         const lastMsg = newChildren[lastIdx];
@@ -159,23 +158,7 @@ class openai_pirate(echo):
                         }
                     }
 
-                    return newChildren;
-                }
-                """,
-                Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-                Input(f"{self.chat_id}-sse", "animation"),
-                State(f"{self.chat_id}-output", "children"),
-                prevent_initial_call=True,
-            )
-
-            # Persist assistant message progressively on each non-empty animated chunk
-            clientside_callback(
-                """
-                function(animatedText, sseData, storeData) {
-                    if (!animatedText || animatedText === '[DONE]') {
-                        return window.dash_clientside.no_update;
-                    }
-
+                    // Update store data
                     const newData = [...(storeData || [])];
                     const last = newData.length > 0 ? newData[newData.length - 1] : null;
                     if (last && last.role === 'assistant') {
@@ -183,13 +166,20 @@ class openai_pirate(echo):
                     } else {
                         newData.push({role: 'assistant', content: animatedText});
                     }
-                    return newData;
+
+                    return [newChildren, newData];
                 }
                 """,
-                Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
+                [
+                    Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+                    Output(f"{self.chat_id}-store", "data", allow_duplicate=True)
+                ],
                 Input(f"{self.chat_id}-sse", "animation"),
-                State(f"{self.chat_id}-sse", "data"),
-                State(f"{self.chat_id}-store", "data"),
+                [
+                    State(f"{self.chat_id}-output", "children"),
+                    State(f"{self.chat_id}-sse", "data"),
+                    State(f"{self.chat_id}-store", "data")
+                ],
                 prevent_initial_call=True,
             )
 
