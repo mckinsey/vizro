@@ -201,16 +201,16 @@
           "title": "Type",
           "type": "string"
         },
-        "text": {
-          "default": "",
-          "description": "Text to be displayed on button.",
-          "title": "Text",
-          "type": "string"
-        },
         "icon": {
           "default": "",
           "description": "Icon name from Google Material icons library.",
           "title": "Icon",
+          "type": "string"
+        },
+        "text": {
+          "default": "Click me!",
+          "description": "Text to be displayed on button.",
+          "title": "Text",
           "type": "string"
         },
         "href": {
