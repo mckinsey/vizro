@@ -4,7 +4,7 @@
 
 Welcome to Vizro! 👋 This guide will help you get started with installing and setting up Vizro for building interactive dashboards.
 
-You can use [PyCafe](https://py.cafe/) to work with Vizro without installing it, as demonstrated in the [first dashboard tutorial](../tutorials/first-dashboard.md). Using PyCafe is a great way to try out Vizro quickly. For more information, see the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
+You can use [PyCafe](https://py.cafe/) to work with Vizro without installing it, as demonstrated in the [first dashboard tutorial](../tutorials/quickstart-tutorial.md). Using PyCafe is a great way to try out Vizro quickly. For more information, see the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
 If you prefer to work locally, this guide will walk you through installing Vizro onto your machine. We'll also cover how to verify your installation and keep Vizro up to date.
 
