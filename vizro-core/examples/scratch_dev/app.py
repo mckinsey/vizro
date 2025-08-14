@@ -159,27 +159,39 @@ class openai_pirate(echo):
             prevent_initial_call=True,
         )
 
-        @dash.get_app().server.route(
+    def plug(self, app):
+        """Register streaming routes with the Dash app.
+
+        Args:
+            app: The Dash application instance.
+        """
+        if not self.stream:
+            return
+
+        @app.server.route(
             f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
         )
-        def stream():
-            data = request.get_json()
-            messages = data.get("messages", [])
+        def streaming_chat():
+            try:
+                data = request.get_json() or {}
+                messages = data.get("messages", [])
 
-            def event_stream():
-                response_stream = self._client.responses.create(
-                    model=self.model, input=messages, instructions="Be polite.", store=False, stream=True
-                )
+                def event_stream():
+                    response_stream = self._client.responses.create(
+                        model=self.model, input=messages, instructions="Be polite.", store=False, stream=True
+                    )
 
-                for event in response_stream:
-                    if event.type == "response.output_text.delta":
-                        yield sse_message(event.delta)
+                    for event in response_stream:
+                        if event.type == "response.output_text.delta":
+                            yield sse_message(event.delta)
 
-                # Send standard SSE completion signal
-                # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
-                yield sse_message("[DONE]")
+                    # Send standard SSE completion signal
+                    # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
+                    yield sse_message("[DONE]")
 
-            return Response(event_stream(), mimetype="text/event-stream")
+                return Response(event_stream(), mimetype="text/event-stream")
+            except Exception:
+                return Response("An internal error has occurred.", status=500)
 
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
@@ -295,6 +307,8 @@ vm.Page.add_type("components", Chat)
 Chat.add_type("actions", Annotated[echo, Tag("echo")])
 Chat.add_type("actions", Annotated[openai_pirate, Tag("openai_pirate")])
 
+pirate_stream_action = openai_pirate(chat_id="chat")
+
 page = vm.Page(
     title="Chat",
     components=[
@@ -308,12 +322,7 @@ page = vm.Page(
             # actions=[
             #     vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-output.children"])
             # ],
-            actions=[
-                openai_pirate(
-                    # model=..., optional
-                    chat_id="chat",
-                ),
-            ],
+            actions=[pirate_stream_action],
         ),
         # Soon you wouldn't have to label with id like this. It would be done by looking up in the model
         # manager. So it would just like this and no need to specify id="chat" which looks silly right now.
@@ -388,4 +397,5 @@ translation of store messages to html is SS, need to be able to do this. Options
 """
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=False)
+    app = Vizro(plugins=[pirate_stream_action])
+    app.build(dashboard).run(debug=False)
