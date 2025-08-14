@@ -15,9 +15,10 @@ from pydantic import (
     model_serializer,
 )
 from pydantic.fields import FieldInfo
+from typing_extensions import Self
 
 from vizro.managers import model_manager
-from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
+from vizro.models._models_utils import REPLACEMENT_STRINGS
 from vizro.models.types import ModelID
 
 TO_PYTHON_TEMPLATE = """
@@ -223,9 +224,15 @@ class VizroBaseModel(BaseModel):
         ),
     ]
 
-    @_log_call
-    def model_post_init(self, context: Any) -> None:
-        model_manager[self.id] = self
+    # TODO[MS]: Make more official access to the tree
+    @classmethod
+    def _from_dict_in_build(cls, parent_id: str, field_name: str, data: dict[str, Any]) -> Self:
+        model = cls(**data)
+        model_manager._get_node(parent_id).add(model, kind=field_name)
+        # MS: this call pre-build on models created with this alt init method
+        if hasattr(model, "pre_build"):
+            model.pre_build()
+        return model
 
     # Previously in V1, we used to have an overwritten `.dict` method, that would add __vizro_model__ to the dictionary
     # if called in the correct context.
