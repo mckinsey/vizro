@@ -129,7 +129,7 @@ def managers_one_page_two_graphs_with_dynamic_data(box_chart_dynamic_data_frame,
         components=[
             vm.Graph(id="box_chart", figure=box_chart_dynamic_data_frame),
             vm.Graph(id="scatter_chart", figure=scatter_chart_dynamic_data_frame),
-            vm.Button(id="button", text="test"),
+            vm.Button(id="button"),
         ],
     )
     Vizro._pre_build()
@@ -197,7 +197,7 @@ def manager_for_testing_actions_output_input_prop(ag_grid_with_id):
         id="test_page",
         title="My first dashboard",
         components=[
-            vm.Button(id="known_model_with_no_default_props", text="test"),
+            vm.Button(id="known_model_with_no_default_props"),
             vm.AgGrid(id="known_ag_grid_id", figure=ag_grid_with_id),
         ],
         controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known_dropdown_filter_id"))],

@@ -209,7 +209,7 @@ class TestPreBuildAgGrid:
                     title="Test Page",
                     components=[
                         vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
-                        vm.Button(id="duplicate_ag_grid_id", text="test"),
+                        vm.Button(id="duplicate_ag_grid_id"),
                     ],
                 )
             ]

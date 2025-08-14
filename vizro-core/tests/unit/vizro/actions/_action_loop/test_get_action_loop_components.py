@@ -83,7 +83,6 @@ def managers_one_page_two_components_two_controls(vizro_app, dash_data_table_wit
                     vm.Button(
                         id="export_data_button",
                         actions=[vm.Action(id="export_data_action", function=export_data())],
-                        icon="download",
                     ),
                 ],
                 controls=[
