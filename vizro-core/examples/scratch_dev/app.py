@@ -193,9 +193,7 @@ class openai_pirate(echo):
         if not self.stream:
             return
 
-        @app.server.route(
-            f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
-        )
+        @app.server.route(f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}")
         def streaming_chat():
             try:
                 data = request.get_json() or {}
