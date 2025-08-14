@@ -180,3 +180,35 @@ class TestBuildMethod:
             ),
             keys_to_strip={"id"},
         )
+
+    def test_button_build_description_with_icon_no_text(self):
+        """Test that description argument correctly builds the tooltip and targets the button icon when text=''."""
+        button = vm.Button(
+            id="button_id",
+            icon="home",
+            text="",
+            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        expected_icon = html.Span("home", id="button_id-icon", className="material-symbols-outlined tooltip-icon")
+        expected_description = [
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                id="info",
+                target="button_id-icon",
+                autohide=False,
+            ),
+        ]
+
+        assert_component_equal(
+            button,
+            dbc.Button(
+                id="button_id",
+                children=html.Span([expected_icon, "", *expected_description], className="btn-text"),
+                target="_top",
+                href="",
+                color="primary",
+                class_name="btn-circular",
+            ),
+            keys_to_strip={"id"},
+        )

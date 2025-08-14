@@ -28,7 +28,7 @@ class Button(VizroBaseModel):
     Args:
         type (Literal["button"]): Defaults to `"button"`.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
-        text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `"Click me!"`.
+        text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
@@ -122,13 +122,15 @@ class Button(VizroBaseModel):
         return dbc.Button(**(defaults | self.extra))
 
     def _build_description(self):
+        """Builds and returns the description elements. If text='' tooltip icon is not rendered and tooltip target
+        is reassigned to the button icon.
+        """
         if not self.description:
             return [None]
 
         description = self.description.build().children
         if not self.text:
             description_tooltip = description[1]
-            # if text="" tooltip icon is not rendered, in which case the target for the tooltip moves to the button icon
             description_tooltip.target = f"{self.id}-icon"
             return [description_tooltip]
 

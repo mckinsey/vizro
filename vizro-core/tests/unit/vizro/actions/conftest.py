@@ -86,7 +86,7 @@ def managers_one_page_two_graphs_one_table_one_aggrid_one_button(
             vm.Graph(id="scatter_chart", figure=scatter_chart),
             vm.Table(id="vizro_table", figure=dash_data_table_with_id),
             vm.AgGrid(id="ag_grid", figure=ag_grid_with_id),
-            vm.Button(id="button", text="test"),
+            vm.Button(id="button"),
         ],
     )
     Vizro._pre_build()
