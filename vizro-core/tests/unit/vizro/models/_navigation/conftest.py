@@ -5,14 +5,15 @@ import pytest
 import vizro.models as vm
 
 
+# Refer to first page by ID, refer to second page by Title
 @pytest.fixture()
 def pages_as_list():
-    return ["Page 1", "Page 2"]
+    return ["page_1", "Page 2"]
 
 
 @pytest.fixture
 def pages_as_dict():
-    return {"Group": ["Page 1", "Page 2"]}
+    return {"Group": ["page_1", "Page 2"]}
 
 
 @pytest.fixture()

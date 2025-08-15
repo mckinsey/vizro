@@ -8,12 +8,8 @@ from pydantic import (
     AfterValidator,
     BeforeValidator,
     Field,
-    FieldSerializationInfo,
-    SerializerFunctionWrapHandler,
     ValidationInfo,
     conlist,
-    model_serializer,
-    model_validator,
 )
 from typing_extensions import TypedDict
 
@@ -42,6 +38,15 @@ from .types import ComponentType, ControlType, FigureType, LayoutType
 _PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
+# TODO[MS]: Probably this will immediately move to pre-build in next PR
+def _check_for_duplicate_path(path: str) -> bool:
+    registered_paths = [page.path for page in cast(Iterable[Page], model_manager._get_models(Page))]
+
+    if path in registered_paths:
+        return True
+    return False
+
+
 def set_path(path: str, info: ValidationInfo) -> str:
     # Based on how Github generates anchor links - see:
     # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
@@ -51,9 +56,20 @@ def set_path(path: str, info: ValidationInfo) -> str:
         return path if path.startswith("/") else "/" + path
 
     # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
+    # maybe remove?
     if path:
+        if _check_for_duplicate_path(path):
+            raise ValueError(f"Path {path} is already used by another page.")
         return clean_path(path, "-_/")
-    return clean_path(info.data["id"], "-_")
+
+    # Changes to previous iteration before PR 1339:
+    #
+    # - if non duplicated title and explicit id: BEFORE: used id             AFTER: title
+    # - if non duplicated title and no id:       BEFORE: used title (via id) AFTER: title
+    # - if duplicated title and explicit id:     BEFORE: used id             AFTER: id
+    # - if duplicated title and no id:           BEFORE: error (via id)      AFTER: id (rand gen) or err (nav defined)
+    path = clean_path(info.data["title"], "-_") if "title" in info.data else "invalid"  # pydantic validation will catch
+    return path if not _check_for_duplicate_path(path) else clean_path(info.data["id"], "-_")
 
 
 class Page(VizroBaseModel):
@@ -90,19 +106,11 @@ class Page(VizroBaseModel):
         ),
     ]
     controls: list[ControlType] = []
+    # Note that order matters for the path validation, so we need to set it after the title and id validators
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
     actions: list[ActionsChain] = []
-
-    @model_validator(mode="before")
-    @classmethod
-    def set_id(cls, values):
-        if "title" not in values:
-            return values
-
-        values.setdefault("id", values["title"])
-        return values
 
     def model_post_init(self, context: Any) -> None:
         """Adds the model instance to the model manager."""
@@ -113,18 +121,6 @@ class Page(VizroBaseModel):
                 f"Page with id={self.id} already exists. Page id is automatically set to the same "
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
-
-    # This is a modification of the original `model_serializer` decorator that allows for the `context` to be passed
-    # It allows skipping the `id` serialization if it is the same as the `title`
-    @model_serializer(mode="wrap")  # type: ignore[type-var]
-    def _serialize_id(self, handler: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
-        result = handler(self)
-        if info.context is not None and info.context.get("add_name", False):
-            result["__vizro_model__"] = self.__class__.__name__
-        if self.title == self.id:
-            result.pop("id", None)
-            return result
-        return result
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

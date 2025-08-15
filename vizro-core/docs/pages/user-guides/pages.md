@@ -90,9 +90,9 @@ You can also navigate through the different pages by going directly to the relev
 
 ## Customize the page URL
 
-By default, the page URL is automatically generated based on the `id` of the page. For example, if `id="This is my first page"` the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
+By default, the page URL is automatically generated based on the `title` of the page. For example, if `title="This is my first page"` the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
 
-Note that the page `id` defaults to be the same as the page `title` if not set. If you have multiple pages with the same `title` then you must assign a unique `id`.
+If you have multiple pages with the same `title` then the url defaults to the `id` of the page. You may want to assign a custom `id` such that the url is contextual and not randomly generated.
 
 The first page always has the URL prefix `/` assigned. A custom URL can, therefore, not be created for the first page.
 

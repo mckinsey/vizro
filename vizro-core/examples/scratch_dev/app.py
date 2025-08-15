@@ -1,11 +1,9 @@
 """This is a test app to test the dashboard layout."""
 
-from vizro import Vizro
-import vizro.models as vm
-
-
-import pandas as pd
 import numpy as np
+import pandas as pd
+import vizro.models as vm
+from vizro import Vizro
 from vizro.tables import dash_ag_grid
 
 # Sample data
@@ -23,31 +21,35 @@ df = pd.DataFrame(data)
 
 
 page = vm.Page(
-    title="Test page",
+    id="page_1",
+    title="XX Page",
     components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    controls=[
-        vm.Filter(
-            column="active",
-            selector=vm.Switch(
-                value=False,
-                title="Show active accounts",
-                description="This is a description for the new switch selector",
-            ),
-        ),
-        vm.Filter(column="active"),
-        vm.Filter(
-            column="active_numeric",
-            selector=vm.Switch(
-                value=False,
-                title="Show active accounts",
-                description="This is a description for the new switch selector",
-            ),
-        ),
-        vm.Filter(column="active_numeric"),
-    ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+page2 = vm.Page(
+    id="page_2",
+    title="XX Page",
+    components=[vm.AgGrid(figure=dash_ag_grid(df))],
+)
+
+page3 = vm.Page(
+    id="page_3",
+    title="XX Page",
+    components=[vm.AgGrid(figure=dash_ag_grid(df))],
+)
+
+
+dashboard = vm.Dashboard(
+    pages=[page, page2, page3],
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Section 1", pages=["page_1", "page_2"]),
+                vm.NavLink(label="Section 2", pages=["page_3"]),
+            ]
+        ),
+    ),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

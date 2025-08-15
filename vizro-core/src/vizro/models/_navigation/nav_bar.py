@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Annotated, Literal, Union
+from typing import Annotated, Literal, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field
 
+from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
@@ -41,8 +42,16 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        from vizro.models import Page
+
+        # If the group title is actually a model ID (most likely because it was automatically set), then we
+        # prefer to have the title of that page be used as reference
         self.items = self.items or [
-            NavLink(label=group_title, pages=pages) for group_title, pages in self.pages.items()
+            NavLink(
+                label=cast(Page, model_manager[group_title]).title if group_title in model_manager else group_title,
+                pages=pages,
+            )
+            for group_title, pages in self.pages.items()
         ]
 
         for position, item in enumerate(self.items, 1):
