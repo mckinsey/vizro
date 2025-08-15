@@ -9,7 +9,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import export_data
 from vizro.models import Action, Button, VizroBaseModel
-from vizro.models.types import CapturedCallable, _coerce_actions_type, capture, validate_captured_callable
+from vizro.models.types import CapturedCallable, _coerce_to_list, capture, validate_captured_callable
 
 
 def positional_only_function(a, /):
@@ -391,7 +391,32 @@ def test_graph_template_crash(set_pio_default_template):
     assert pio.templates.default == set_pio_default_template
 
 
-class TestCoerceActionsType:
+class TestCoerceToList:
+    @pytest.mark.parametrize(
+        "input_value, expected_output",
+        [
+            # Single items should be converted to lists
+            ("single_string", ["single_string"]),
+            (42, [42]),
+            (True, [True]),
+            (None, [None]),
+            # Lists should be preserved
+            ([], []),
+            (["item1", "item2"], ["item1", "item2"]),
+            ([1, 2, 3], [1, 2, 3]),
+            # Dicts should be preserved
+            ({}, {}),
+            ({"key": "value"}, {"key": "value"}),
+            ({"key1": "value1", "key2": "value2"}, {"key1": "value1", "key2": "value2"}),
+        ],
+    )
+    def test_coerce_to_list(self, input_value, expected_output):
+        """Test that _coerce_to_list correctly handles various input types."""
+        result = _coerce_to_list(input_value)
+        assert result == expected_output
+
+
+class TestCoerceActionsAndOutputsType:
     @pytest.mark.parametrize(
         "actions_input",
         [
@@ -400,9 +425,8 @@ class TestCoerceActionsType:
         ],
     )
     def test_coerce_actions_type(self, actions_input):
-        """Test that coerce_actions_type always returns the expected list format."""
-        result = _coerce_actions_type(actions_input)
-
+        """Test that _coerce_to_list works correctly for actions (preserves lists only)."""
+        result = _coerce_to_list(actions_input)
         expected = actions_input if isinstance(actions_input, list) else [actions_input]
         assert result == expected
 
@@ -411,3 +435,33 @@ class TestCoerceActionsType:
         action = export_data()
         button = Button(actions=action)
         assert button.actions == [action]
+
+    @pytest.mark.parametrize(
+        "output, expected_output",
+        [
+            ("component.property", ["component.property"]),
+            ("model_id", ["model_id"]),
+            ([], []),
+            (["output1", "output2"], ["output1", "output2"]),
+            ({}, {}),
+            ({"key1": "output1"}, {"key1": "output1"}),
+            ({"key1": "output1", "key2": "output2"}, {"key1": "output1", "key2": "output2"}),
+        ],
+    )
+    def test_coerce_outputs_type(self, output, expected_output):
+        """Test that _coerce_to_list works correctly for Action.outputs (preserves lists and dicts)."""
+        result = _coerce_to_list(output)
+        assert result == expected_output
+
+    @pytest.mark.parametrize(
+        "outputs_input, expected_output",
+        [
+            ("component.property", ["component.property"]),
+            (["component.property"], ["component.property"]),
+            ({"output1": "component.property"}, {"output1": "component.property"}),
+        ],
+    )
+    def test_coerce_outputs_type_integration(self, outputs_input, expected_output):
+        """Test that single output strings work with Action model."""
+        action = Action(function=decorated_action_function(a=1, b=2), outputs=outputs_input)
+        assert action.outputs == expected_output

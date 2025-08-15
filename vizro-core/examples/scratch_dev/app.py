@@ -422,7 +422,7 @@ page_14 = vm.Page(
             id="page_14_button",
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: x)("page_14_button.n_clicks"), outputs=["page_14_button.text"]
+                    function=capture("action")(lambda x: x)("page_14_button.n_clicks"), outputs="page_14_button.text"
                 )
             ],
         ),
@@ -442,7 +442,7 @@ page_15 = vm.Page(
             actions=[
                 vm.Action(
                     function=capture("action")(lambda x: radio_items_options[int(x) % 3])("page_15_button.n_clicks"),
-                    outputs=["page_15_checklist.value"],
+                    outputs="page_15_checklist.value",
                 )
             ],
         ),
@@ -452,7 +452,7 @@ page_15 = vm.Page(
             value=radio_items_options[0],
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: x)("page_15_checklist.value"), outputs=["page_15_card.text"]
+                    function=capture("action")(lambda x: x)("page_15_checklist.value"), outputs="page_15_card.text"
                 )
             ],
         ),
@@ -487,22 +487,22 @@ page_16 = vm.Page(
                 vm.Button(
                     id="page_16_button_download",
                     text="Export data!",
-                    actions=[vm.Action(function=my_custom_export(), outputs=["vizro_download.data"])],
+                    actions=vm.Action(function=my_custom_export(), outputs="vizro_download.data"),
                 ),
                 vm.Button(
                     id="copy_page_16_button_download",
                     text="Copy Export data!",
-                    actions=[vm.Action(function=my_custom_export(), outputs=["vizro_download.data"])],
+                    actions=vm.Action(function=my_custom_export(), outputs="vizro_download.data"),
                 ),
                 vm.Button(
                     id="page_16_button_location",
                     text="Go to page 17!",
-                    actions=[vm.Action(function=my_custom_location(), outputs=["vizro_url.href"])],
+                    actions=vm.Action(function=my_custom_location(), outputs="vizro_url.href"),
                 ),
                 vm.Button(
                     id="copy_page_16_button_location",
                     text="Copy Go to page 17!",
-                    actions=[vm.Action(function=my_custom_location(), outputs=["vizro_url.href"])],
+                    actions=vm.Action(function=my_custom_location(), outputs="vizro_url.href"),
                 ),
             ],
         ),
@@ -518,7 +518,7 @@ page_16 = vm.Page(
     prevent_initial_call=True,
 )
 def export_callback(_):
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+    return dcc.send_data_frame(df_gapminder.to_csv, "mydf.csv")
 
 
 @callback(
@@ -527,7 +527,7 @@ def export_callback(_):
     prevent_initial_call=True,
 )
 def export_callback(_):
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+    return dcc.send_data_frame(df_gapminder.to_csv, "mydf.csv")
 
 
 # --- Location ---
