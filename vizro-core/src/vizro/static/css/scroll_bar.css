@@ -4,9 +4,9 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--fill-subtle);
+  background: var(--bs-tertiary-color);
   border: 4px solid;
-  border-color: var(--field-enabled);
+  border-color: var(--bs-primary-bg-subtle);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -19,19 +19,19 @@
 }
 
 #nav-control-panel::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg02);
+  border-color: var(--bs-tertiary-bg);
 }
 
 .card::-webkit-scrollbar-thumb,
 .card-nav::-webkit-scrollbar-thumb,
 .hljs::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg-card);
+  border-color: var(--bs-primary-bg-subtle);
 }
 
 #page-components::-webkit-scrollbar-thumb,
 .table-container::-webkit-scrollbar-thumb,
 .container-fluid::-webkit-scrollbar-thumb {
-  border-color: var(--right-side-bg);
+  border-color: var(--bs-body-bg);
 }
 
 /* Can't control thumb color so hover is turned off */
@@ -47,9 +47,9 @@
 
 .text::-webkit-scrollbar-thumb,
 .hljs::-webkit-scrollbar-thumb {
-  border-color: var(--right-side-bg);
+  border-color: var(--bs-body-bg);
 }
 
 .container-fluid > .grid-layout::-webkit-scrollbar-thumb {
-  border-color: var(--right-side-bg);
+  border-color: var(--bs-body-bg);
 }

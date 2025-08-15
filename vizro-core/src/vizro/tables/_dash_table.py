@@ -40,8 +40,8 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataT
         "style_data_conditional": [
             {
                 "if": {"state": "active"},
-                "backgroundColor": "var(--stateOverlays-selected)",
-                "border": "1px solid var(--stateOverlays-selected)",
+                "backgroundColor": "var(--bs-primary-bg-subtle)",
+                "border": "1px solid var(--bs-primary-bg-subtle)",
             }
         ],
     }
