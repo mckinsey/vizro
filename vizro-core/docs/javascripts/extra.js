@@ -31,14 +31,17 @@ function openMarkdownInNewTab() {
 async function copyMarkdownContent() {
   const markdownUrl = generateMarkdownUrl();
 
-  // Find the copy button and store original text
+  // Find the copy button and store original HTML
   const copyButton = document.querySelector(".markdown-buttons #md-copy");
-  const originalText = copyButton ? copyButton.textContent : "Copy for LLM";
+  const originalHTML = copyButton
+    ? copyButton.innerHTML
+    : '<span class="material-symbols-outlined">chat_paste_go</span> Copy for LLM';
 
   try {
     // Update button text to show loading state
     if (copyButton) {
-      copyButton.textContent = "Copying...";
+      copyButton.innerHTML =
+        '<span class="material-symbols-outlined loading">progress_activity</span> Copying...';
       copyButton.disabled = true;
     }
 
@@ -55,11 +58,23 @@ async function copyMarkdownContent() {
     navigator.clipboard.writeText(markdown);
 
     setTimeout(() => {
-      copyButton.textContent = originalText;
-      copyButton.disabled = false;
+      if (copyButton) {
+        copyButton.innerHTML = originalHTML;
+        copyButton.disabled = false;
+      }
     }, 1500);
   } catch (fetchError) {
     console.error("Error fetching markdown:", fetchError);
+
+    // Reset button on error
+    if (copyButton) {
+      copyButton.innerHTML =
+        '<span class="material-symbols-outlined">error</span> Error';
+      setTimeout(() => {
+        copyButton.innerHTML = originalHTML;
+        copyButton.disabled = false;
+      }, 1500);
+    }
   }
 }
 
@@ -88,21 +103,38 @@ function addMarkdownButtons() {
   const buttonsDiv = document.createElement("div");
   buttonsDiv.className = "markdown-buttons";
 
-  // Create Copy button
-  const copyButton = document.createElement("button");
-  copyButton.id = "md-copy";
-  copyButton.textContent = "Copy for LLM";
-  copyButton.addEventListener("click", copyMarkdownContent);
+  // Button configuration
+  const buttonConfigs = [
+    {
+      id: "md-copy",
+      icon: "chat_paste_go",
+      text: " Copy for LLM",
+      handler: copyMarkdownContent,
+    },
+    {
+      id: "md-open",
+      icon: "markdown_copy",
+      text: " View as Markdown",
+      handler: openMarkdownInNewTab,
+    },
+  ];
 
-  // Create View button
-  const viewButton = document.createElement("button");
-  viewButton.id = "md-open";
-  viewButton.textContent = "View as Markdown";
-  viewButton.addEventListener("click", openMarkdownInNewTab);
+  // Create buttons from configuration
+  buttonConfigs.forEach(config => {
+    const button = document.createElement("button");
+    button.id = config.id;
 
-  // Append buttons to container
-  buttonsDiv.appendChild(copyButton);
-  buttonsDiv.appendChild(viewButton);
+    // Add icon span
+    const icon = document.createElement("span");
+    icon.className = "material-symbols-outlined";
+    icon.textContent = config.icon;
+
+    button.appendChild(icon);
+    button.appendChild(document.createTextNode(config.text));
+    button.addEventListener("click", config.handler);
+
+    buttonsDiv.appendChild(button);
+  });
 
   // Insert after h1
   h1Title.parentNode.insertBefore(buttonsDiv, h1Title.nextSibling);

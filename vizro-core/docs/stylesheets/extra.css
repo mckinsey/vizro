@@ -74,9 +74,34 @@ td:not([class]):not(:last-child) {
 }
 
 .markdown-buttons button {
-  background: var(--md-primary-fg-color);
-  color: var(--md-primary-bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: none;
+  border-bottom: 1px solid var(--md-primary-fg-color);
   cursor: pointer;
-  font-size: 0.7rem;
-  padding: 8px 16px;
+  font-size: 0.6rem;
+}
+
+.markdown-buttons button#md-copy {
+  width: 125px;
+}
+
+.markdown-buttons button span {
+  font-size: 20px;
+}
+
+.material-symbols-outlined.loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
