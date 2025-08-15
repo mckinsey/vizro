@@ -68,7 +68,8 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
 ## Include a subset of pages
 
-To include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id` or `title`. In case you have duplicate titles, you should use the `id` to refer to the page.
+To include only some of the dashboard pages in the navigation, list them in the `pages` argument of the `Navigation` model.
+To refer to a page inside the `Navigation` model, you should always use the page's `id` or `title`. If you have duplicate titles, use the `id` to refer to the page.
 
 !!! example "Navigation with only some pages"
 
