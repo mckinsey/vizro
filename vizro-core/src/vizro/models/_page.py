@@ -31,7 +31,7 @@ from vizro.models._models_utils import (
     make_actions_chain,
     warn_description_without_title,
 )
-from vizro.models.types import ActionType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip
@@ -65,13 +65,13 @@ class Page(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Page`.
+        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
             tags. Defaults to `None`.
-        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
-
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
@@ -95,7 +95,7 @@ class Page(VizroBaseModel):
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
-    actions: list[ActionType] = []
+    actions: ActionsType = []
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

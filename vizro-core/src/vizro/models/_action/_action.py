@@ -22,6 +22,7 @@ from vizro.models.types import (
     ControlType,
     FigureWithFilterInteractionType,
     ModelID,
+    OutputsType,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
@@ -47,7 +48,7 @@ class _BaseAction(VizroBaseModel):
     # function and outputs are overridden as fields in Action and abstract methods in _AbstractAction. Using ClassVar
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
-    outputs: ClassVar[Union[list[str], dict[str, str]]]
+    outputs: ClassVar[OutputsType]
 
     # These are set in the make_actions_chain validator (same for both Action and _AbstractAction).
     # In the future a user would probably be able to specify something here that would look up a key in
@@ -93,6 +94,10 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _action_name(self) -> str:
+        raise NotImplementedError
+
+    @property
+    def _validated_outputs(self) -> OutputsType:
         raise NotImplementedError
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
@@ -239,9 +244,10 @@ class _BaseAction(VizroBaseModel):
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
         """Creates Dash Output objects from string specifications in self.outputs.
 
-        Converts self.outputs (list of strings or dictionary of strings where each string is in the format
-        '<component_id>.<property>' or '<component_id>') and converts into Dash Output objects.
-        For example, ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
+        Converts self._validated_outputs (list of strings or dictionary of strings where each string is in the
+        format '<component_id>.<property>' or '<component_id>') and converts into Dash Output objects.
+        For example, 'my_graph.figure' or ['my_graph.figure'] becomes
+            [Output(component_id='my_graph', component_property='figure', allow_duplicate=True)].
 
         Returns:
             Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
@@ -253,8 +259,10 @@ class _BaseAction(VizroBaseModel):
             # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
             return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
-        if isinstance(self.outputs, list):
-            callback_outputs = [_transform_output(output) for output in self.outputs]
+        # By this point self._validated_outputs is guaranteed to be OutputsType i.e. list[str] or dict[str, str].
+        # A single str value will have been coerced to list already.
+        if isinstance(self._validated_outputs, list):
+            callback_outputs = [_transform_output(output) for output in self._validated_outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -263,7 +271,7 @@ class _BaseAction(VizroBaseModel):
                 callback_outputs = callback_outputs[0]
             return callback_outputs
 
-        return {output_name: _transform_output(output) for output_name, output in self.outputs.items()}
+        return {output_name: _transform_output(output) for output_name, output in self._validated_outputs.items()}
 
     def _action_callback_function(
         self,
@@ -396,9 +404,7 @@ class Action(_BaseAction):
         function (CapturedCallable): Action function.
         inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
             or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
-        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the action function. Each
-            output can be specified as `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
-            Defaults to `[]`.
+        outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -430,11 +436,7 @@ class Action(_BaseAction):
         description="""List of inputs provided to the action function. Each input can be specified as `<model_id>` or
         `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
     )
-    outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
-        default=[],
-        description="""List or dictionary of outputs modified by the action function. Each output can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
-    )
+    outputs: OutputsType  # type: ignore[misc]
 
     @property
     def _legacy(self) -> bool:
@@ -481,3 +483,9 @@ class Action(_BaseAction):
     @property
     def _action_name(self) -> str:
         return self.function._function.__name__  # type:ignore[union-attr]
+
+    @property
+    def _validated_outputs(self) -> OutputsType:
+        # self.outputs has already been coerced to OutputsType so this is just an alias. We define it just so that
+        # the interface of Action and _AbstractAction match.
+        return self.outputs
