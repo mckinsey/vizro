@@ -246,7 +246,8 @@ class _BaseAction(VizroBaseModel):
 
         Converts self._validated_outputs (list of strings or dictionary of strings where each string is in the
         format '<component_id>.<property>' or '<component_id>') and converts into Dash Output objects.
-        For example, 'my_graph.figure' or ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
+        For example, 'my_graph.figure' or ['my_graph.figure'] becomes
+            [Output(component_id='my_graph', component_property='figure', allow_duplicate=True)].
 
         Returns:
             Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
