@@ -69,8 +69,8 @@ class Button(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
-        # AfterValidator(warn_description_without_title) is not needed here because 'text' is mandatory and
-        # must have at least one character.
+        # AfterValidator(warn_description_without_title) is not needed here because either 'text' or 'icon' argument
+        # is mandatory.
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the button text.
@@ -122,7 +122,7 @@ class Button(VizroBaseModel):
         return dbc.Button(**(defaults | self.extra))
 
     def _build_description(self):
-        """Conditionally returns the tooltip based on the provided `text` and icon arguments.
+        """Conditionally returns the tooltip based on the provided `text` and `icon` arguments.
 
         If text='', the tooltip icon is omitted, and the tooltip text is shown when hovering over the button icon.
         Otherwise, the tooltip icon is displayed.
@@ -132,8 +132,9 @@ class Button(VizroBaseModel):
 
         description = self.description.build().children
         if not self.text:
-            description_tooltip = description[1]
-            description_tooltip.target = f"{self.id}-icon"
-            return [description_tooltip]
+            # retrieves the dbc.Tooltip instance from the vm.Tooltip model to update its tooltip target
+            tooltip_component = description[1]
+            tooltip_component.target = f"{self.id}-icon"
+            return [tooltip_component]
 
         return description
