@@ -5,7 +5,7 @@ from __future__ import annotations
 import random
 import uuid
 from types import SimpleNamespace
-from typing import Annotated, Any, List, Optional, Self, Union
+from typing import Annotated, Any, List, Literal, Optional, Self, Union
 
 from nutree.typed_tree import TypedTree
 from pydantic import (
@@ -34,41 +34,52 @@ class VizroBaseModel(BaseModel):
     ]
     _tree: Optional[TypedTree] = PrivateAttr(None)  # initialised in model_after
 
-    @field_validator("*", mode="wrap")
-    @classmethod
-    def build_tree_field_wrap(
-        cls,
-        value: Any,
-        handler: ValidatorFunctionWrapHandler,
-        info: ValidationInfo,
-    ) -> Any:
-        if info.context is not None and "build_tree" in info.context:
-            #### Field stack ####
-            if "id_stack" not in info.context:
-                info.context["id_stack"] = []
-            if "field_stack" not in info.context:
-                info.context["field_stack"] = []
-            if info.field_name == "id":
-                info.context["id_stack"].append(value)
-            else:
-                info.context["id_stack"].append(info.data.get("id", "no id"))
-            info.context["field_stack"].append(info.field_name)
-            #### Level and indentation ####
-            # indent = info.context["level"] * " " * 4
-            # info.context["level"] += 1
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        # print("==== INIT SUBCLASS ====")
+        field_names = [f for f in cls.__annotations__.keys() if (not f.startswith("_") and f != "type")]
+        # print("==== FIELDS ====")
+        # print(field_names)
 
-        #### Validation ####
-        validated_stuff = handler(value)
+        if field_names:
 
-        if info.context is not None and "build_tree" in info.context:
-            #### Field stack ####
-            info.context["id_stack"].pop()
-            info.context["field_stack"].pop()
+            @field_validator(*field_names, mode="wrap")
+            @classmethod
+            def build_tree_field_wrap(
+                cls,
+                value: Any,
+                handler: ValidatorFunctionWrapHandler,
+                info: ValidationInfo,
+            ) -> Any:
+                if info.context is not None and "build_tree" in info.context:
+                    #### Field stack ####
+                    if "id_stack" not in info.context:
+                        info.context["id_stack"] = []
+                    if "field_stack" not in info.context:
+                        info.context["field_stack"] = []
+                    if info.field_name == "id":
+                        info.context["id_stack"].append(value)
+                    else:
+                        info.context["id_stack"].append(info.data.get("id", "no id"))
+                    info.context["field_stack"].append(info.field_name)
+                    #### Level and indentation ####
+                    # indent = info.context["level"] * " " * 4
+                    # info.context["level"] += 1
 
-            #### Level and indentation ####
-            # info.context["level"] -= 1
-            # indent = info.context["level"] * " " * 4
-        return validated_stuff
+                #### Validation ####
+                validated_stuff = handler(value)
+
+                if info.context is not None and "build_tree" in info.context:
+                    #### Field stack ####
+                    info.context["id_stack"].pop()
+                    info.context["field_stack"].pop()
+
+                    #### Level and indentation ####
+                    # info.context["level"] -= 1
+                    # indent = info.context["level"] * " " * 4
+                return validated_stuff
+
+            cls.build_tree_field_wrap = build_tree_field_wrap
 
     @model_validator(mode="wrap")
     @classmethod
@@ -172,9 +183,27 @@ class Dashboard(VizroBaseModel):
     pages: list[Page]
 
 
+class OtherComponent(VizroBaseModel):
+    type: Literal["other_component"] = "other_component"
+    x: str = "other_component"
+
+
+class Component(VizroBaseModel):
+    type: Literal["component"] = "component"
+    x: Union[str, list[SubComponent]]
+
+
+class SubComponent(VizroBaseModel):
+    y: str = "subcomponent"
+
+
+ComponentType = Annotated[Union[Component, OtherComponent], Field(discriminator="type")]
+# ComponentType = Component
+
+
 class Page(VizroBaseModel):
     title: str
-    components: List[Component]
+    components: list[ComponentType]
 
     # @model_validator(mode="before")
     # @classmethod
@@ -200,21 +229,22 @@ class Page(VizroBaseModel):
             ]
 
 
-class Component(VizroBaseModel):
-    x: Union[str, list[SubComponent]]
-
-
-class SubComponent(VizroBaseModel):
-    y: str = "subcomponent"
-
-
 # It shouldn't matter how you get to this point - with pydantic models like Dashboard() or not. Since "build_tree"
 # won't be set in the validation context, nothing will modify the tree.
 dashboard_data = {
     "title": "dashboard_title",
     "pages": [
-        {"components": [{"x": "c1"}, {"x": [{}]}], "title": "page_1"},
-        {"components": [{"x": "c3"}], "title": "page_2"},
+        {
+            "components": [
+                {"x": "c1", "type": "component"},
+                {
+                    "x": [{}],
+                    "type": "component",
+                },
+            ],
+            "title": "page_1",
+        },
+        {"components": [{"x": "c3", "type": "component"}], "title": "page_2"},
     ],
 }
 
@@ -241,8 +271,8 @@ for page in dashboard.pages:
 # print()
 # # The tree is still a single shared one, even once it's modified.
 assert dashboard._tree is dashboard.pages[0]._tree
-assert dashboard._tree is dashboard.pages[1]._tree
-dashboard._tree.print()
+# assert dashboard._tree is dashboard.pages[1]._tree
+# dashboard._tree.print()
 
 """
 BIG QUESTIONS:
@@ -259,3 +289,5 @@ pre_build method. But advantage might be that all pre_builds run iteratively aut
 Ideal world:
 
 """
+
+### https://docs.python.org/3/howto/annotations.html
