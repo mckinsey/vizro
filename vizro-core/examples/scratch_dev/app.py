@@ -17,6 +17,7 @@ from vizro.models.types import capture
 df_gapminder = px.data.gapminder().query("year == 2007")
 df_gapminder["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D")
 df_gapminder["number_column"] = range(len(df_gapminder))
+df_gapminder["is_europe"] = df_gapminder["continent"] == "Europe"
 
 
 def load_dynamic_gapminder_data(continent: str = "Europe"):
@@ -332,6 +333,12 @@ page_11 = vm.Page(
             id="page_11_filter_date_picker",
             column="date_column",
             selector=vm.DatePicker(id="page_11_filter_date_picker_selector"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="page_11_filter_switch",
+            column="is_europe",
+            selector=vm.Switch(id="page_11_filter_switch_selector", title="Is Europe?"),
             show_in_url=True,
         ),
         vm.Parameter(

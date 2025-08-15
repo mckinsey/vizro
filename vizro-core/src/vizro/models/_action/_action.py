@@ -332,7 +332,7 @@ class _BaseAction(VizroBaseModel):
             #   2. When guard_action_chain callback is triggered, we work out whether the trigger of the callback
             #   chain is genuine or not:
             #      - if it's due to creation of component then we do not allow action chain to execute. This mimics
-            #        what prevent_initial_call=True on action_callback would ideally do for us but doesn't.
+            #        what prevent_initial_call=True on action_callback would ideally do.
             #      - if it's genuine then we allow action chain to execute
             # The guard is needed only for the first action in the chain because subsequent actions can only be
             # triggered by the *_finished dcc.Store which cannot be accidentally triggered since it's created fresh
