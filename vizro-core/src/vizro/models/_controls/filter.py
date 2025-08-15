@@ -262,7 +262,7 @@ class Filter(VizroBaseModel):
             # Add the guard to the show_in_url filter selector in the build phase because clientside callback
             # sync_url will be triggered and may adjust its value. Set it to False and let the sync_url clientside
             # callback update it to True when needed. It'll happen when the filter value comes from the URL.
-            selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+            selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
             return html.Div(id=self.id, children=selector_build_obj)

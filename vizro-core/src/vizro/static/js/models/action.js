@@ -18,6 +18,8 @@ function guard_action_chain(value, created, trigger_component_id) {
     );
 
     // Set the guard component's data to false so that future triggers from this component are treated as genuine.
+    // We must use set_props here rather than using Output(component_guard_id, "data") because the
+    // component might not exist. This is allowed for a state with allow_optional=True but not for an Output.
     dash_clientside.set_props(`${trigger_component_id}_guard_actions_chain`, {
       data: false,
     });
