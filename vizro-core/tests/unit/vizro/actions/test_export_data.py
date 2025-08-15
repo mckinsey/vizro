@@ -202,6 +202,7 @@ def config_for_testing_all_components_with_actions(request, standard_px_chart, a
                 actions=[
                     vm.Action(function=export_data_action_function),
                 ],
+                icon="download",
             ),
         ],
     )

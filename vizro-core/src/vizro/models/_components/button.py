@@ -2,15 +2,24 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
+
+
+def validate_text(text, info: ValidationInfo):
+    icon = info.data.get("icon")
+
+    if not text and not icon:
+        raise ValueError("Please provide either the `text` or `icon` argument.")
+
+    return text
 
 
 class Button(VizroBaseModel):
@@ -18,7 +27,8 @@ class Button(VizroBaseModel):
 
     Args:
         type (Literal["button"]): Defaults to `"button"`.
-        text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `"Click me!"`.
+        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
+        text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
@@ -34,7 +44,14 @@ class Button(VizroBaseModel):
     """
 
     type: Literal["button"] = "button"
-    text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
+    icon: Annotated[
+        str,
+        AfterValidator(validate_icon),
+        Field(description="Icon name from Google Material icons library.", default=""),
+    ]
+    text: Annotated[
+        str, AfterValidator(validate_text), Field(description="Text to be displayed on button.", default="Click me!")
+    ]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     actions: Annotated[
         list[ActionType],
@@ -84,16 +101,39 @@ class Button(VizroBaseModel):
     @_log_call
     def build(self):
         variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
-        description = self.description.build().children if self.description else [None]
+        description = self._build_description()
+        icon = (
+            html.Span(self.icon, id=f"{self.id}-icon", className="material-symbols-outlined tooltip-icon")
+            if self.icon
+            else None,
+        )
 
         defaults = {
             "id": self.id,
-            "children": html.Span([self.text, *description], className="button-text"),
+            "children": html.Span([*icon, self.text, *description], className="btn-text"),
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
             # To prevent unnecessary class chaining, the button's style variant should be specified using `color`.
             "color": variants[self.variant],
+            "class_name": "btn-circular" if self.icon and not self.text else "",
         }
 
         return dbc.Button(**(defaults | self.extra))
+
+    def _build_description(self):
+        """Conditionally returns the tooltip based on the provided `text` and icon arguments.
+
+        If text='', the tooltip icon is omitted, and the tooltip text is shown when hovering over the button icon.
+        Otherwise, the tooltip icon is displayed.
+        """
+        if not self.description:
+            return [None]
+
+        description = self.description.build().children
+        if not self.text:
+            description_tooltip = description[1]
+            description_tooltip.target = f"{self.id}-icon"
+            return [description_tooltip]
+
+        return description
