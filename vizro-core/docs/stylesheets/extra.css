@@ -74,15 +74,15 @@ td:not([class]):not(:last-child) {
 }
 
 .markdown-buttons button {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 4px 8px;
   background: none;
   border-bottom: 1px solid var(--md-primary-fg-color);
   cursor: pointer;
+  display: flex;
   font-size: 0.6rem;
+  gap: 4px;
+  justify-content: center;
+  padding: 4px 8px;
 }
 
 .markdown-buttons button#md-copy {
@@ -101,6 +101,7 @@ td:not([class]):not(:last-child) {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
