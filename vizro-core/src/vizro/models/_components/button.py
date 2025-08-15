@@ -122,8 +122,9 @@ class Button(VizroBaseModel):
         return dbc.Button(**(defaults | self.extra))
 
     def _build_description(self):
-        """Builds and returns the description elements. If text='' tooltip icon is not rendered and tooltip target
-        is reassigned to the button icon.
+        """Builds and returns the description elements.
+
+        If text='' tooltip icon is not rendered and tooltip target is reassigned to the button icon.
         """
         if not self.description:
             return [None]
