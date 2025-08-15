@@ -68,7 +68,7 @@ def set_path(path: str, info: ValidationInfo) -> str:
     # - if non duplicated title and no id:       BEFORE: used title (via id) AFTER: title
     # - if duplicated title and explicit id:     BEFORE: used id             AFTER: id
     # - if duplicated title and no id:           BEFORE: error (via id)      AFTER: id (rand gen) or err (nav defined)
-    path = clean_path(info.data["title"], "-_")
+    path = clean_path(info.data["title"], "-_") if "title" in info.data else "invalid"  # pydantic validation will catch
     return path if not _check_for_duplicate_path(path) else clean_path(info.data["id"], "-_")
 
 
