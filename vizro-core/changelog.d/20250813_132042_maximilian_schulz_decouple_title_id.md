@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Model ID is now independently set from the page title. Referring to Pages in Navigation can be done by ID or title. ([#1339](https://github.com/mckinsey/vizro/pull/1339))
+- Page ID is now set independently from the page title. You can refer to a page in navigation by ID or title. ([#1339](https://github.com/mckinsey/vizro/pull/1339))
 
 
 <!--

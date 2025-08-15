@@ -44,6 +44,8 @@ class NavBar(VizroBaseModel):
     def pre_build(self):
         from vizro.models import Page
 
+        # If the group title is actually a model ID (most likely because it was automatically set), then we
+        # prefer to have the title of that page be used as reference
         self.items = self.items or [
             NavLink(
                 label=cast(Page, model_manager[group_title]).title if group_title in model_manager else group_title,

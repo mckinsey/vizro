@@ -8,11 +8,8 @@ from pydantic import (
     AfterValidator,
     BeforeValidator,
     Field,
-    FieldSerializationInfo,
-    SerializerFunctionWrapHandler,
     ValidationInfo,
     conlist,
-    model_serializer,
 )
 from typing_extensions import TypedDict
 
@@ -123,18 +120,6 @@ class Page(VizroBaseModel):
                 f"Page with id={self.id} already exists. Page id is automatically set to the same "
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
-
-    # This is a modification of the original `model_serializer` decorator that allows for the `context` to be passed
-    # It allows skipping the `id` serialization if it is the same as the `title`
-    @model_serializer(mode="wrap")  # type: ignore[type-var]
-    def _serialize_id(self, handler: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
-        result = handler(self)
-        if info.context is not None and info.context.get("add_name", False):
-            result["__vizro_model__"] = self.__class__.__name__
-        if self.title == self.id:
-            result.pop("id", None)
-            return result
-        return result
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

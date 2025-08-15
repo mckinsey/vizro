@@ -214,13 +214,9 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
-def _generate_id() -> ModelID:
-    return str(uuid.UUID(int=rd.getrandbits(128)))
-
-
 def set_id(value: Any) -> Any:
     if value is None:
-        return _generate_id()
+        return str(uuid.UUID(int=rd.getrandbits(128)))
     return value
 
 
@@ -254,7 +250,7 @@ class VizroBaseModel(BaseModel):
     # This was like pydantic's own __exclude_fields__ but this is not possible in V2 due to the non-recursive nature of
     # the model_dump method. Now this serializer allows to add the model name to the dictionary when serializing the
     # model if called with context {"add_name": True}.
-    # Excluding specific fields is now done via overwriting this serializer (see e.g. Page model).
+    # Excluding specific fields is now done via overwriting this serializer.
     # Useful threads that were started:
     # https://stackoverflow.com/questions/79272335/remove-field-from-all-nested-pydantic-models
     # https://github.com/pydantic/pydantic/issues/11099
