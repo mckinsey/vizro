@@ -1201,20 +1201,22 @@ dashboard = vm.Dashboard(
 
 if __name__ == "__main__":
     # Move app definition outside of __main__ block for the HF demo to work
-    app = Vizro().build(dashboard)
+    # app = Vizro().build(dashboard)
     # MS: The below currently does not work, but it would be desirable if at least a large part of it did.
     # By that I mean that a large part of what is currently in .build of the dashboard would be potentially
     # a validator on the dashboard model. The key question is what we then want build to do, I have the feeling
     # that this would be to do with setting up actions and callbacks, but none of the user facing models/layouts
     # app = Vizro().build(dashboard)
-    app.dash.layout.children.append(
-        dbc.NavLink(
-            ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
-            href="https://github.com/mckinsey/vizro",
-            target="_blank",
-            class_name="anchor-container",
-        )
-    )
+    # app.dash.layout.children.append(
+    #     dbc.NavLink(
+    #         ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
+    #         href="https://github.com/mckinsey/vizro",
+    #         target="_blank",
+    #         class_name="anchor-container",
+    #     )
+    # )
     model_manager.print_dashboard_tree()
+    print("=" * 50)
+    dashboard._tree.print()
 
-    app.run()
+    # app.run()
