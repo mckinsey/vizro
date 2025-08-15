@@ -1,8 +1,7 @@
 """Unit tests for vizro.models.Action."""
 
 import pytest
-from asserts import assert_component_equal
-from dash import Output, State, html
+from dash import Output, State
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
@@ -178,46 +177,65 @@ class TestLegacyActionInputs:
 
 class TestLegacyActionOutputs:
     @pytest.mark.parametrize(
-        "outputs, expected_transformed_outputs",
+        "outputs, expected_outputs, expected_transformed_outputs",
         [
-            ([], []),
-            (["component.property"], Output("component", "property")),
+            ([], [], []),
+            ("component.property", ["component.property"], Output("component", "property")),
+            ("known_ag_grid_id", ["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
             (
+                "known_ag_grid_id.cellClicked",
+                ["known_ag_grid_id.cellClicked"],
+                Output("underlying_ag_grid_id", "cellClicked"),
+            ),
+            (["component.property"], ["component.property"], Output("component", "property")),
+            (
+                ["component_1.property_1", "component_2.property_2"],
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
-            (["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
-            (["known_ag_grid_id.cellClicked"], Output("underlying_ag_grid_id", "cellClicked")),
-            ({}, {}),
+            (["known_ag_grid_id"], ["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
             (
+                ["known_ag_grid_id.cellClicked"],
+                ["known_ag_grid_id.cellClicked"],
+                Output("underlying_ag_grid_id", "cellClicked"),
+            ),
+            ({}, {}, {}),
+            (
+                {"output_1": "component.property"},
                 {"output_1": "component.property"},
                 {"output_1": Output("component", "property")},
             ),
             (
                 {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
+                {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
                 {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
             (
+                {"output_1": "known_ag_grid_id"},
                 {"output_1": "known_ag_grid_id"},
                 {"output_1": Output("known_ag_grid_id", "children")},
             ),
             (
                 {"output_1": "known_ag_grid_id.cellClicked"},
+                {"output_1": "known_ag_grid_id.cellClicked"},
                 {"output_1": Output("underlying_ag_grid_id", "cellClicked")},
             ),
         ],
     )
-    def test_outputs_valid(self, outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop):
+    def test_outputs_valid(
+        self, outputs, expected_outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop
+    ):
         # inputs=[] added to force action to be legacy
         action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
 
         assert action._legacy
-        assert action.outputs == outputs
+        assert action.outputs == expected_outputs
         assert action._transformed_outputs == expected_transformed_outputs
 
     @pytest.mark.parametrize(
         "outputs",
         [
+            "unknown_model_id",
             ["unknown_model_id"],
             {"output_1": "unknown_model_id"},
         ],
@@ -235,6 +253,11 @@ class TestLegacyActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
+            "",
+            "component.",
+            ".property",
+            "component..property",
+            "component.property.property",
             [""],
             ["component."],
             [".property"],
@@ -414,44 +437,63 @@ class TestBuiltinRuntimeArgs:
 
 class TestActionOutputs:
     @pytest.mark.parametrize(
-        "outputs, expected_transformed_outputs",
+        "outputs, expected_outputs, expected_transformed_outputs",
         [
-            ([], []),
-            (["component.property"], Output("component", "property")),
+            ([], [], []),
+            ("component.property", ["component.property"], Output("component", "property")),
+            ("known_ag_grid_id", ["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
             (
+                "known_ag_grid_id.cellClicked",
+                ["known_ag_grid_id.cellClicked"],
+                Output("underlying_ag_grid_id", "cellClicked"),
+            ),
+            (["component.property"], ["component.property"], Output("component", "property")),
+            (
+                ["component_1.property_1", "component_2.property_2"],
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
-            (["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
-            (["known_ag_grid_id.cellClicked"], Output("underlying_ag_grid_id", "cellClicked")),
-            ({}, {}),
+            (["known_ag_grid_id"], ["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
             (
+                ["known_ag_grid_id.cellClicked"],
+                ["known_ag_grid_id.cellClicked"],
+                Output("underlying_ag_grid_id", "cellClicked"),
+            ),
+            ({}, {}, {}),
+            (
+                {"output_1": "component.property"},
                 {"output_1": "component.property"},
                 {"output_1": Output("component", "property")},
             ),
             (
                 {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
+                {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
                 {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
             (
+                {"output_1": "known_ag_grid_id"},
                 {"output_1": "known_ag_grid_id"},
                 {"output_1": Output("known_ag_grid_id", "children")},
             ),
             (
                 {"output_1": "known_ag_grid_id.cellClicked"},
+                {"output_1": "known_ag_grid_id.cellClicked"},
                 {"output_1": Output("underlying_ag_grid_id", "cellClicked")},
             ),
         ],
     )
-    def test_outputs_valid(self, outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop):
+    def test_outputs_valid(
+        self, outputs, expected_outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop
+    ):
         action = Action(function=action_with_no_args(), outputs=outputs)
 
-        assert action.outputs == outputs
+        assert action.outputs == expected_outputs
         assert action._transformed_outputs == expected_transformed_outputs
 
     @pytest.mark.parametrize(
         "outputs",
         [
+            "unknown_model_id",
             ["unknown_model_id"],
             {"output_1": "unknown_model_id"},
         ],
@@ -468,6 +510,11 @@ class TestActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
+            "",
+            "component.",
+            ".property",
+            "component..property",
+            "component.property.property",
             [""],
             ["component."],
             [".property"],
@@ -499,14 +546,6 @@ class TestActionOutputs:
         ):
             action = Action(function=action_with_no_args(), outputs=["known_model_with_no_default_props"])
             action._transformed_outputs
-
-
-class TestActionBuild:
-    def test_custom_action_build(self):
-        action = Action(id="action_test", function=action_with_no_args())
-        assert_component_equal(
-            action.build(), html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
-        )
 
 
 class TestBaseActionCallbackFunction:

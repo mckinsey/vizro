@@ -5,6 +5,7 @@ from functools import wraps
 from dash import html
 from pydantic import ValidationInfo
 
+from vizro.managers import model_manager
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
@@ -78,3 +79,55 @@ def warn_description_without_title(description, info: ValidationInfo):
             UserWarning,
         )
     return description
+
+
+def make_actions_chain(self):
+    """Creates actions chain from a list of actions.
+
+    Ideally this would have been implemented as an AfterValidator for the actions field but we need access to
+    action_triggers, which needs the parent model instance. Hence it must be done as a model validator.
+
+    This runs after model_post_init so that self._inner_component_id will have already been set correctly in
+    Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
+    """
+    from vizro.actions import export_data, filter_interaction
+    from vizro.actions._on_page_load import _on_page_load
+
+    converted_actions = []
+
+    # Convert any built in actions written in the legacy style vm.Action(function=filter_interaction(...)) or
+    # vm.Action(function=export_data(...)) to the new style filter_interaction(...) or export_data(...).
+    # We need to delete the old action models from the model manager so they don't get built. After that,
+    # built in actions are always handled in the new way.
+    for action in self.actions:
+        if isinstance(action.function, (export_data, filter_interaction)):
+            del model_manager[action.id]
+            converted_actions.append(action.function)
+        else:
+            converted_actions.append(action)
+
+    for i, action in enumerate(converted_actions):
+        first_in_chain = i == 0
+
+        if first_in_chain:
+            # First action in the chain uses the model's specified trigger. In future we would allow multiple keys in
+            # the _action_triggers dictionary and then we'd need to look up the relevant entry here. For now there's
+            # just __default__ so we always use that.
+            trigger = self._action_triggers["__default__"]
+        else:
+            # All subsequent actions in the chain are triggered by the previous action's completion.
+            trigger = f"{converted_actions[i - 1].id}_finished.data"
+
+        action._trigger = trigger
+        action._first_in_chain = first_in_chain
+        # The actions chain guard should be called only for on page load.
+        action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
+
+        # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
+        # model manager and removal of filter_interaction.
+        action._parent_model_id = self.id
+
+    # We should do self.actions = converted_actions but this leads to a recursion error. The below is a workaround
+    # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
+    self.__dict__["actions"] = converted_actions
+    return self

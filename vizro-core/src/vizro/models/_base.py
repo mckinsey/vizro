@@ -20,9 +20,6 @@ from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
 from vizro.models.types import ModelID
 
-ACTIONS_CHAIN = "ActionsChain"
-ACTION = "actions"
-
 TO_PYTHON_TEMPLATE = """
 ############ Imports ##############
 import vizro.plotly.express as px
@@ -73,20 +70,13 @@ def _dict_to_python(object: Any) -> str:
     if isinstance(object, dict) and "__vizro_model__" in object:
         __vizro_model__ = object.pop("__vizro_model__")
 
-        # This is required to back-engineer the actions chains. It is easier to handle in the string conversion here
-        # than in the dict creation, because we end up with nested lists when being forced to return a list of actions.
-        # If we handle it in dict of vm.BaseModel, then we created an unexpected dict return.
-        if __vizro_model__ == ACTIONS_CHAIN:
-            action_data = object[ACTION]
-            return ", ".join(_dict_to_python(item) for item in action_data)
-        else:
-            # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
-            # rather than repr recursively.
-            fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
-            # Always use built-in actions from the vizro.actions (va) namespace, not vizro.models (vm).
-            # Enforces explicit namespacing to avoid ambiguity between built-in actions.
-            namespace = "va" if __vizro_model__ in dir(va) else "vm"
-            return f"{namespace}.{__vizro_model__}({fields})"
+        # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
+        # rather than repr recursively.
+        fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
+        # Always use built-in actions from the vizro.actions (va) namespace, not vizro.models (vm).
+        # Enforces explicit namespacing to avoid ambiguity between built-in actions.
+        namespace = "va" if __vizro_model__ in dir(va) else "vm"
+        return f"{namespace}.{__vizro_model__}({fields})"
 
     elif isinstance(object, dict):
         fields = ", ".join(f"'{field_name}': {_dict_to_python(value)}" for field_name, value in object.items())
