@@ -1,4 +1,4 @@
-import json
+import base64
 
 import dash
 from dotenv import load_dotenv
@@ -130,41 +130,37 @@ class openai_pirate(echo):
             return [self.message_to_html(message) for message in store], dash.no_update
 
         if self.stream:
-            # updates both UI and store simultaneously
             clientside_callback(
                 """
-                function(animatedText, existingChildren, sseData, storeData) {
-                    // Handle empty or completion signals
-                    if (!animatedText) {
+                function(animatedText, existingChildren, storeData) {
+                    if (!animatedText || animatedText === '[DONE]') {
                         return [existingChildren, window.dash_clientside.no_update];
                     }
 
-                    if (animatedText === '[DONE]') {
-                        return [existingChildren, window.dash_clientside.no_update];
-                    }
-
-                    // Update UI (children)
-                    const newChildren = [...(existingChildren || [])];
-                    if (newChildren.length > 0) {
-                        const lastIdx = newChildren.length - 1;
-                        const lastMsg = newChildren[lastIdx];
-
-                        // Check if this is an assistant message being streamed
-                        if (lastMsg && lastMsg.props && lastMsg.props.children &&
-                            lastMsg.props.children[0] && lastMsg.props.children[0].props &&
-                            lastMsg.props.children[0].props.children === "assistant") {
-                            // Update the content of the assistant message
-                            lastMsg.props.children[1].props.children = animatedText;
+                    // Decode base64 chunks separated by delimiter
+                    let fullText = '';
+                    const chunks = animatedText.split('|END|').filter(c => c);
+                    for (const chunk of chunks) {
+                        try {
+                            fullText += atob(chunk);
+                        } catch (e) {
+                            // Skip invalid chunks
                         }
                     }
 
-                    // Update store data
+                    // Update UI and store
+                    const newChildren = [...(existingChildren || [])];
                     const newData = [...(storeData || [])];
-                    const last = newData.length > 0 ? newData[newData.length - 1] : null;
-                    if (last && last.role === 'assistant') {
-                        newData[newData.length - 1] = {role: 'assistant', content: animatedText};
-                    } else {
-                        newData.push({role: 'assistant', content: animatedText});
+                    
+                    if (newChildren.length > 0) {
+                        const last = newChildren[newChildren.length - 1];
+                        if (last.props?.children?.[0]?.props?.children === "assistant") {
+                            last.props.children[1].props.children = fullText;
+                        }
+                    }
+                    
+                    if (newData.length > 0 && newData[newData.length - 1].role === 'assistant') {
+                        newData[newData.length - 1].content = fullText;
                     }
 
                     return [newChildren, newData];
@@ -177,7 +173,6 @@ class openai_pirate(echo):
                 Input(f"{self.chat_id}-sse", "animation"),
                 [
                     State(f"{self.chat_id}-output", "children"),
-                    State(f"{self.chat_id}-sse", "data"),
                     State(f"{self.chat_id}-store", "data")
                 ],
                 prevent_initial_call=True,
@@ -220,7 +215,11 @@ class openai_pirate(echo):
                             # It doesn't work but I feel like something like this might be possible?
                             # yield sse_message(html.P(event.delta))
                             # yield sse_message(html.P(event.delta).to_plotly_json())
-                            yield sse_message(event.delta)
+                            # Encode delta to preserve special characters and newlines
+                            # Send base64 with delimiter for easy splitting
+                            # If we simply pass sse_message(event.delta) then tokens like `**\n\n` get escaped
+                            encoded_delta = base64.b64encode(event.delta.encode('utf-8')).decode('utf-8')
+                            yield sse_message(encoded_delta + "|END|")
 
                     # Send standard SSE completion signal
                     # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
@@ -238,11 +237,6 @@ class openai_pirate(echo):
         messages.append(latest_input)
 
         if self.stream:
-            # For streaming:
-            # 1. Add an empty assistant message as placeholder
-            # 2. Return SSE URL and options
-            # TODO: 3. Add a callback to update store when streaming is complete
-
             store, html_messages = Patch(), Patch()
 
             placeholder_msg = {"role": "assistant", "content": ""}
@@ -270,12 +264,15 @@ class openai_pirate(echo):
     # Note responses.create has different return types in these cases.
     def core_function(self, prompt, messages):
         return self._client.responses.create(
-            model=self.model, input=messages, instructions="Talk like a pirate.", store=False, stream=self.stream
+            model=self.model, input=messages, instructions="Be polite.", store=False, stream=self.stream
         )
 
     # User writes this function. Does it belong here or in Chat?
     def message_to_html(self, message):
-        return html.Div([html.B(message["role"]), html.P(message["content"])])
+        return html.Div([
+            html.B(message["role"]), 
+            dcc.Markdown(message["content"], dangerously_allow_html=True)
+        ])
 
     @property
     def outputs(self):
@@ -396,7 +393,10 @@ page_nostream = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_nostream, page_2])
+dashboard = vm.Dashboard(
+    pages=[page, page_nostream, page_2],
+    theme="vizro_light",
+    )
 
 """
 Notes:
