@@ -26,14 +26,6 @@ class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
 
 
-class PageNotFoundError(ValueError):
-    """Raised when a page cannot be found by title."""
-
-
-class AmbiguousPageError(ValueError):
-    """Raised when multiple pages are found with the same title."""
-
-
 class ModelManager:
     def __init__(self):
         self.__models: dict[ModelID, VizroBaseModel] = {}

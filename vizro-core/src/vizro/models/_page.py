@@ -38,7 +38,7 @@ from .types import ComponentType, ControlType, FigureType, LayoutType
 _PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
-# MS: how dangerous to rely on MM in validation? Probably this will immediately move to pre-build in next PR
+# TODO[MS]: Probably this will immediately move to pre-build in next PR
 def _check_for_duplicate_path(path: str) -> bool:
     registered_paths = [page.path for page in cast(Iterable[Page], model_manager._get_models(Page))]
 
@@ -62,13 +62,13 @@ def set_path(path: str, info: ValidationInfo) -> str:
             raise ValueError(f"Path {path} is already used by another page.")
         return clean_path(path, "-_/")
 
-    # Try title first, then fall back to id if title path is duplicate
-    # MS: There is a small breaking change (I think) when once chooses a path that is the same as the home page,
-    # this case would work before, but not anymore.
-    # Checking for duplicate is effectively doing for duplicate title ==> change the function above!
-    path = (
-        clean_path(info.data["title"], "-_") if "title" in info.data else clean_path(info.data["id"], "-_")
-    )  # check else statement
+    # Changes to previous iteration before PR 1339:
+    #
+    # - if non duplicated title and explicit id: BEFORE: used id             AFTER: title
+    # - if non duplicated title and no id:       BEFORE: used title (via id) AFTER: title
+    # - if duplicated title and explicit id:     BEFORE: used id             AFTER: id
+    # - if duplicated title and no id:           BEFORE: error (via id)      AFTER: id (rand gen) or err (nav defined)
+    path = clean_path(info.data["title"], "-_")
     return path if not _check_for_duplicate_path(path) else clean_path(info.data["id"], "-_")
 
 
@@ -106,6 +106,7 @@ class Page(VizroBaseModel):
         ),
     ]
     controls: list[ControlType] = []
+    # Note that order matters for the path validation, so we need to set it after the title and id validators
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]

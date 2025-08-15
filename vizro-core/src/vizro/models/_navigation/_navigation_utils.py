@@ -1,16 +1,13 @@
 from __future__ import annotations
 
 from itertools import chain
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 import dash_bootstrap_components as dbc
 from typing_extensions import TypedDict
 
 from vizro.managers import model_manager
 from vizro.models.types import ModelID, NavPagesType
-
-if TYPE_CHECKING:
-    pass
 
 # Error message constants
 _AMBIGUOUS_PAGE_ERROR_MSG = (
@@ -59,7 +56,7 @@ def _resolve_list_of_page_references(
     return unknown_pages, validated_list
 
 
-# This will need to move to pre-build in next PR - hopefully there is no problems
+# TODO[MS]: This will need to move to pre-build in next PR - hopefully there is no problems
 # introduced with handling things this way
 def _validate_pages(pages: NavPagesType) -> NavPagesType:
     """Reusable validator to check if provided Page titles exist as registered pages."""
@@ -82,7 +79,7 @@ def _validate_pages(pages: NavPagesType) -> NavPagesType:
         unknown_pages, validated_list = _resolve_list_of_page_references(pages, title_to_ids)
 
     if unknown_pages:
-        available_titles = list(title_to_ids.keys())  # list(titles_to_ids)
+        available_titles = list(title_to_ids.keys())
         raise ValueError(
             _UNKNOWN_PAGES_ERROR_MSG.format(unknown_pages=unknown_pages, available_titles=available_titles)
         )
