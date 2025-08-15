@@ -64,12 +64,19 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _dash_components(self) -> list[Component]:
-        # Users cannot add Dash components using vm.Action.
-        dash_components: list[Component] = []
+        """Internal components needed to run the actions chain system.
 
+        Includes:
+        - {action.id}_finished for completion of an action callback to trigger the next action in the chain
+        - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain callback prevent
+            undesired triggering (workaround for Dash prevent_initial_call=True behavior)
+
+        In theory, subclasses can add additional components to the list, as done in export_data, but this should not be
+        generally encouraged. In the future it might not be possible.
+        """
+        dash_components = [dcc.Store(id=f"{self.id}_finished")]
         if self._first_in_chain:
             dash_components.append(dcc.Store(id=f"{self.id}_guarded_trigger"))
-        dash_components.append(dcc.Store(id=f"{self.id}_finished"))
 
         return dash_components
 
@@ -332,7 +339,7 @@ class _BaseAction(VizroBaseModel):
             #   2. When guard_action_chain callback is triggered, we work out whether the trigger of the callback
             #   chain is genuine or not:
             #      - if it's due to creation of component then we do not allow action chain to execute. This mimics
-            #        what prevent_initial_call=True on action_callback would ideally do for us but doesn't.
+            #        what prevent_initial_call=True on action_callback would ideally do.
             #      - if it's genuine then we allow action chain to execute
             # The guard is needed only for the first action in the chain because subsequent actions can only be
             # triggered by the *_finished dcc.Store which cannot be accidentally triggered since it's created fresh
