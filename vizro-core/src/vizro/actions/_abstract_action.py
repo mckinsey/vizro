@@ -77,13 +77,6 @@ class _AbstractAction(_BaseAction, abc.ABC):
         return TypeAdapter(OutputsType).validate_python(self.outputs)
 
     @property
-    def _dash_components(self) -> list[Component]:
-        # This can be overridden in subclasses now but will probably not exist in future. Instead we will have built in
-        # components like dcc.Download which are used by user-defined actions and (probably) built-in ones.
-        # See https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
-        return []
-
-    @property
     def _legacy(self) -> bool:
         return False
 
