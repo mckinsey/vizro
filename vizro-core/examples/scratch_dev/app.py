@@ -291,7 +291,7 @@ page_10 = vm.Page(
 
 
 page_11 = vm.Page(
-    title="Test all selectors - [13 guards on refresh]",
+    title="Test all selectors - [14 guards on refresh]",
     components=[
         vm.Graph(
             id="page_11_graph",

@@ -101,7 +101,8 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        selector_build_obj = self.selector.build()
+        # Wrap the selector in a Div so that the "guard" component can be added.
+        selector_build_obj = html.Div(children=[self.selector.build()])
 
         if self.show_in_url:
             # Add the guard to the show_in_url parameter selector in the build phase because clientside callback
