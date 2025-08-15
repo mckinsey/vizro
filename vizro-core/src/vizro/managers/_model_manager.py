@@ -116,21 +116,14 @@ class ModelManager:
             if model in self.__get_model_children(page):  # type: ignore[operator]
                 return page
 
-    def _get_page_lookup_maps(self) -> tuple[dict[ModelID, Page], dict[str, list[Page]]]:
-        """Build lookup maps for pages by ID and title.
-
-        Returns:
-            Tuple of (page_by_id, pages_by_title) dictionaries.
-        """
+    def _get_page_lookup_maps(self) -> dict[str, list[ModelID]]:
+        """Build lookup map for pages by title."""
         from vizro.models import Page
 
         title_to_ids: dict[str, list[ModelID]] = {}
 
-        page_by_id: dict[ModelID, Page] = {}
-        pages_by_title: dict[str, list[Page]] = {}
         for page in self._get_models(Page):
-            page_by_id[page.id] = page
-            pages_by_title.setdefault(page.title, []).append(page)
+            title_to_ids.setdefault(page.title, []).append(page.id)
 
         return title_to_ids
 
