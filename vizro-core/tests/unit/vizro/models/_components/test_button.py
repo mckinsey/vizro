@@ -60,7 +60,7 @@ class TestButtonInstantiation:
             vm.Button(variant="test")
 
     def test_invalid_text(self):
-        with pytest.raises(ValueError, match="Please provide either the text or icon argument."):
+        with pytest.raises(ValueError, match="Please provide either the `text` or `icon` argument."):
             vm.Button(text="")
 
 
@@ -116,7 +116,7 @@ class TestBuildMethod:
         [("plain", "link"), ("filled", "primary"), ("outlined", "secondary")],
     )
     def test_button_with_variant(self, variant, expected_color):
-        result = vm.Button(variant=variant, text="Click me!").build()
+        result = vm.Button(variant=variant).build()
 
         assert_component_equal(
             result,
@@ -178,7 +178,6 @@ class TestBuildMethod:
                 color="primary",
                 class_name=class_name,
             ),
-            keys_to_strip={"id"},
         )
 
     def test_button_build_description_with_icon_no_text(self):
@@ -210,5 +209,4 @@ class TestBuildMethod:
                 color="primary",
                 class_name="btn-circular",
             ),
-            keys_to_strip={"id"},
         )

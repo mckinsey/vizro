@@ -17,7 +17,7 @@ def validate_text(text, info: ValidationInfo):
     icon = info.data.get("icon")
 
     if not text and not icon:
-        raise ValueError("Please provide either the text or icon argument.")
+        raise ValueError("Please provide either the `text` or `icon` argument.")
 
     return text
 
@@ -122,9 +122,10 @@ class Button(VizroBaseModel):
         return dbc.Button(**(defaults | self.extra))
 
     def _build_description(self):
-        """Builds and returns the description elements.
+        """Conditionally returns the tooltip based on the provided `text` and icon arguments.
 
-        If text='' tooltip icon is not rendered and tooltip target is reassigned to the button icon.
+        If text='', the tooltip icon is omitted, and the tooltip text is shown when hovering over the button icon.
+        Otherwise, the tooltip icon is displayed.
         """
         if not self.description:
             return [None]

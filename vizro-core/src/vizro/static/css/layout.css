@@ -157,6 +157,7 @@
   border-radius: 50%;
   color: var(--bs-tertiary-color);
   cursor: pointer;
+  font-size: 26px;
   position: absolute;
 }
 

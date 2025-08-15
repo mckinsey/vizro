@@ -34,6 +34,7 @@ page = vm.Page(
             variant="outlined",
         ),
     ],
+    controls=[vm.Filter(column="species")],
 )
 
 dashboard = vm.Dashboard(pages=[page])
