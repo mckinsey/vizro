@@ -227,7 +227,8 @@ extra:
       content: "CYb3cxosCgsN2QDQVaSGQpMQCesqpsGQ3oTM02NtvkY"
 extra_css:
   - stylesheets/extra.css
-
+extra_javascript:
+  - javascripts/extra.js
 # Strictest settings possible, and will be elevated to ERROR when run with --strict.
 # See https://www.mkdocs.org/user-guide/configuration/#validation.
 validation:
