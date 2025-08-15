@@ -518,7 +518,7 @@ page_16 = vm.Page(
     prevent_initial_call=True,
 )
 def export_callback(_):
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+    return dcc.send_data_frame(df_gapminder.to_csv, "mydf.csv")
 
 
 @callback(
@@ -527,7 +527,7 @@ def export_callback(_):
     prevent_initial_call=True,
 )
 def export_callback(_):
-    return dcc.send_data_frame(iris.to_csv, "mydf.csv")
+    return dcc.send_data_frame(df_gapminder.to_csv, "mydf.csv")
 
 
 # --- Location ---
