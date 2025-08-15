@@ -1201,7 +1201,7 @@ dashboard = vm.Dashboard(
 
 if __name__ == "__main__":
     # Move app definition outside of __main__ block for the HF demo to work
-    # app = Vizro().build(dashboard)
+    app = Vizro().build(dashboard)
     # MS: The below currently does not work, but it would be desirable if at least a large part of it did.
     # By that I mean that a large part of what is currently in .build of the dashboard would be potentially
     # a validator on the dashboard model. The key question is what we then want build to do, I have the feeling
@@ -1217,6 +1217,11 @@ if __name__ == "__main__":
     # )
     model_manager.print_dashboard_tree()
     print("=" * 50)
-    dashboard._tree.print()
+    # dashboard2 = vm.Dashboard.model_validate(dashboard, context={"build_tree": True})
+    # Print only id and kind from the dashboard tree
+    # dashboard2._tree.print(
+    #     title=False,
+    #     repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}(id={node.id})",
+    # )
 
     # app.run()
