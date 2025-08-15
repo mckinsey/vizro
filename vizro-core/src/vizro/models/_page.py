@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from itertools import chain
 from typing import Annotated, Any, Optional, cast
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -213,17 +214,14 @@ class Page(VizroBaseModel):
         components_container = _build_inner_layout(self.layout, self.components)
         components_container.id = "page-components"
 
-        # Components that are required to make action chains function correctly:
-        #   - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain callback
-        #     can prevent undesired triggering (workaround for Dash prevent_initial_call=True behavior)
-        #   - {action.id}_finished for completion of an action callback to trigger the next action in the chain
-        #   - action._dash_components added in the exact implementations of particular actions
-        #     (e.g. dcc.Download for export_data) - hopefully will be removed in future
         # These components are recreated on every page rather than going at the global dashboard level so that we do
         # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behavior).
-        action_components = []
-        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction, root_model=self)):
-            action_components.extend(action._dash_components)
+        action_components = list(
+            chain.from_iterable(
+                action._dash_components
+                for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction, root_model=self))
+            )
+        )
 
         # Keep these components in components_container, moving them outside make them not work properly.
         components_container.children.extend(

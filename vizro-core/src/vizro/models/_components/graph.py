@@ -139,6 +139,10 @@ class Graph(VizroBaseModel):
             # argument `running` on the clientside callback but this only exists for serverside callbacks, so we do it
             # manually.
             set_props(self.id, {"style": {"visibility": "hidden"}})
+
+        # No "guard" component needed for vm.Graph. The reason is that vm.Graph has never been recreated after it's
+        # built. Only that updates is its "figure" property after the build method.
+        # Guard components are only for components (e.g. AgGrid, dynamic Filter) that get fully recreated.
         return fig
 
     # Convenience wrapper/syntactic sugar.
