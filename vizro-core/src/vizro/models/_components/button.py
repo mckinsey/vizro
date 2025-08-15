@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
+from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -90,6 +90,13 @@ class Button(VizroBaseModel):
             ),
         ]
     ]
+
+    @model_validator(mode="after")
+    def validate_text(self):
+        if not self.text and not self.icon:
+            raise ValueError("Please provide either the `text` or `icon` argument.")
+
+        return self
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
