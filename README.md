@@ -12,6 +12,8 @@
 
 [![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
+[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/mckinsey/vizro)](https://archestra.ai/mcp-catalog/mckinsey__vizro)
+
 [Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) | [Vizro examples gallery](http://vizro.mckinsey.com/)
 
 <picture>
