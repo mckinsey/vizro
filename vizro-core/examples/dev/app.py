@@ -8,7 +8,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dash_table, dcc, get_asset_url, html
+from dash import dash_table, dcc, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.figures import kpi_card, kpi_card_reference

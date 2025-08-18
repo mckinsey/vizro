@@ -5,7 +5,7 @@ from __future__ import annotations
 import random
 import uuid
 from types import SimpleNamespace
-from typing import Annotated, Any, List, Literal, Optional, Self, Union
+from typing import Annotated, Any, Literal, Optional, Self, Union
 
 from nutree.typed_tree import TypedTree
 from pydantic import (
@@ -282,14 +282,14 @@ assert dashboard._tree is dashboard.pages[0]._tree
 
 """
 BIG QUESTIONS:
-- does it work on Vizro itself? Can we used TypedTree with model.id automatically. If there's bugs here then report 
+- does it work on Vizro itself? Can we used TypedTree with model.id automatically. If there's bugs here then report
 them
-- will ordering of validators in subclasses break stuff here? Shouldn't interfere in any way I think since this tree 
+- will ordering of validators in subclasses break stuff here? Shouldn't interfere in any way I think since this tree
 stuff is independent of everything else.
 - does rerunning validators cause us problems? Probably not.
 - do we want validate_assignment=True or not?
-- can we do pre_build itself using model_validate with context={"pre_build": True}. Is this actually useful in any 
-way compared to iterating through tree? Probably not as have less control over ordering. Would still write code in 
+- can we do pre_build itself using model_validate with context={"pre_build": True}. Is this actually useful in any
+way compared to iterating through tree? Probably not as have less control over ordering. Would still write code in
 pre_build method. But advantage might be that all pre_builds run iteratively automatically when created.
 
 Ideal world:
