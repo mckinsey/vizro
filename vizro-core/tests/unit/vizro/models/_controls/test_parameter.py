@@ -237,6 +237,7 @@ class TestParameterBuild:
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
+
         result = parameter.build()
         expected = html.Div(
             id="parameter-id",

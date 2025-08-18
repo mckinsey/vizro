@@ -1061,8 +1061,8 @@ class TestFilterBuild:
     def test_filter_show_in_url_build(self, test_column, test_selector):
         filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector, show_in_url=True)
         model_manager["test_page"].controls = [filter]
-
         filter.pre_build()
+
         result = filter.build()
         expected = html.Div(
             id="filter-id",
