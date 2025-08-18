@@ -387,11 +387,11 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 As mentioned above, custom components can trigger actions. To enable the custom component to trigger the action, add the `actions` field and specify which property triggers the actions:
 
-1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[ActionType]`.
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is [`ActionsType`][vizro.models.types.ActionsType].
 2. **Set the action trigger through `make_actions_chain` and `_action_triggers`**. In the below example, any change in the `active_index` property of the custom component triggers the actions chain.
 
     ```py
-    actions: list[ActionType] = []
+    actions: ActionsType = []
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
@@ -412,14 +412,13 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         from pydantic import model_validator
         from vizro import Vizro
         from vizro.models._models_utils import make_actions_chain
-        from vizro.models.types import ActionType
-        from vizro.models.types import capture
+        from vizro.models.types import ActionsType, capture
 
 
         class Carousel(vm.VizroBaseModel):  # (1)!
             type: Literal["carousel"] = "carousel"
             items: list
-            actions: list[ActionType] = []
+            actions: ActionsType = []
 
             _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 

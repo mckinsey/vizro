@@ -8,7 +8,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 
 class Button(VizroBaseModel):
@@ -18,7 +18,7 @@ class Button(VizroBaseModel):
         type (Literal["button"]): Defaults to `"button"`.
         text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
@@ -34,7 +34,7 @@ class Button(VizroBaseModel):
     type: Literal["button"] = "button"
     text: Annotated[str, Field(default="Click me!", description="Text to be displayed on button.", min_length=1)]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
-    actions: list[ActionType] = []
+    actions: ActionsType = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."

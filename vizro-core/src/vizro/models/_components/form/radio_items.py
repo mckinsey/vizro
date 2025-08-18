@@ -14,7 +14,7 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, OptionsType, SingleValueType, _IdProperty
+from vizro.models.types import ActionsType, OptionsType, SingleValueType, _IdProperty
 
 
 class RadioItems(VizroBaseModel):
@@ -31,7 +31,7 @@ class RadioItems(VizroBaseModel):
         title (str): Title to be displayed. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
@@ -56,7 +56,7 @@ class RadioItems(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: list[ActionType] = []
+    actions: ActionsType = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],

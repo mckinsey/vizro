@@ -160,8 +160,7 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
   // set its values and the selector’s guard flag to **true**.
   // This ensures triggering the guard action chain callback
   // and prevents unnecessary actions from being triggered by the value change.
-  for (let i = 0; i < selectorIds.length; i++) {
-    const selectorId = selectorIds[i];
+  selectorIds.forEach((selectorId, i) => {
     const selectorValue = outputSelectorValues[i];
     if (selectorValue !== dash_clientside.no_update) {
       dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
@@ -169,7 +168,7 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
       });
       dash_clientside.set_props(selectorId, { value: selectorValue });
     }
-  }
+  });
   return triggerOPL;
 }
 

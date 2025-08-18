@@ -131,10 +131,10 @@ class TestAgGridInstantiation:
         assert my_ag_grid.figure == standard_ag_grid
         assert my_ag_grid.actions == []
 
-    def test_set_action_via_validator(self, standard_ag_grid, identity_action_function):
-        ag_grid = vm.AgGrid(figure=standard_ag_grid, actions=[Action(function=identity_action_function())])
-        actions_chain = ag_grid.actions[0]
-        assert actions_chain.trigger.component_property == "cellClicked"
+    def test_ag_grid_trigger(self, ag_grid_with_id, identity_action_function):
+        ag_grid = vm.AgGrid(figure=ag_grid_with_id, actions=[Action(function=identity_action_function())])
+        action = ag_grid.actions[0]
+        assert action._trigger == "underlying_ag_grid_id.cellClicked"
 
 
 class TestDunderMethodsAgGrid:
@@ -152,13 +152,13 @@ class TestDunderMethodsAgGrid:
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
         ag_grid.pre_build()
         # ag_grid() is the same as ag_grid.__call__()
-        assert ag_grid().id == "__input_text_ag_grid"
+        assert "__input_text_ag_grid" in ag_grid()
 
     def test_underlying_id_is_provided(self, dash_ag_grid_with_id):
         ag_grid = vm.AgGrid(figure=dash_ag_grid_with_id)
         ag_grid.pre_build()
         # ag_grid() is the same as ag_grid.__call__()
-        assert ag_grid().id == "underlying_table_id"
+        assert "underlying_table_id" in ag_grid()
 
 
 class TestProcessAgGridDataFrame:
@@ -232,7 +232,7 @@ class TestBuildAgGrid:
                     None,
                     None,
                     html.Div(
-                        children=[html.Div()],
+                        children=html.Div(),
                         className="table-container",
                     ),
                     None,
@@ -265,7 +265,7 @@ class TestBuildAgGrid:
                     None,
                     html.Div(
                         id="text_ag_grid",
-                        children=[html.Div(id=underlying_id_expected)],
+                        children=html.Div(id=underlying_id_expected),
                         className="table-container",
                     ),
                     None,
@@ -292,7 +292,7 @@ class TestBuildAgGrid:
                     html.H3([html.Span("Title"), None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
-                        children=[html.Div()],
+                        children=html.Div(),
                         className="table-container",
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
@@ -330,7 +330,7 @@ class TestBuildAgGrid:
                     html.H3([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     html.Div(
-                        children=[html.Div()],
+                        children=html.Div(),
                         className="table-container",
                     ),
                     None,
