@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -128,7 +128,7 @@ class Button(VizroBaseModel):
 
         return dbc.Button(**(defaults | self.extra))
 
-    def _build_description(self):
+    def _build_description(self) -> list[Union[None, dbc.Tooltip, html.Span]]:
         """Conditionally returns the tooltip based on the provided `text` and `icon` arguments.
 
         If text='', the tooltip icon is omitted, and the tooltip text is shown when hovering over the button icon.
