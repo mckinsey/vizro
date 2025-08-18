@@ -112,10 +112,10 @@ class TestTableInstantiation:
         assert my_table.figure == standard_dash_table
         assert my_table.actions == []
 
-    def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
-        table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])
-        actions_chain = table.actions[0]
-        assert actions_chain.trigger.component_property == "active_cell"
+    def test_table_trigger(self, dash_data_table_with_id, identity_action_function):
+        table = vm.Table(figure=dash_data_table_with_id, actions=[Action(function=identity_action_function())])
+        action = table.actions[0]
+        assert action._trigger == "underlying_table_id.active_cell"
 
 
 class TestDunderMethodsTable:
@@ -133,13 +133,13 @@ class TestDunderMethodsTable:
         table = vm.Table(id="table", figure=standard_dash_table)
         table.pre_build()
         # table() is the same as table.__call__()
-        assert table().id == "__input_table"
+        assert "__input_table" in table()
 
     def test_underlying_id_is_provided(self, dash_data_table_with_id):
         table = vm.Table(figure=dash_data_table_with_id)
         table.pre_build()
         # table() is the same as table.__call__()
-        assert table().id == "underlying_table_id"
+        assert "underlying_table_id" in table()
 
 
 class TestProcessTableDataFrame:

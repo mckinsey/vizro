@@ -1,7 +1,8 @@
 """Unit tests for vizro.models.Action."""
 
 import pytest
-from dash import Output, State
+from asserts import assert_component_equal
+from dash import Output, State, dcc
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
@@ -38,11 +39,14 @@ def action_with_mock_outputs(request):
 
 
 class TestLegacyActionInstantiation:
-    def test_action_mandatory_only(self):
+    def test_action_first_in_chain_mandatory_only(self):
         function = action_with_no_args()
 
         # inputs=[] added to force action to be legacy
-        action = Action(function=function, inputs=[])
+        action = Action(id="action-id", function=function, inputs=[])
+
+        # Private attribute set by parent component's validation, not Action's.
+        action._first_in_chain = True
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -50,7 +54,31 @@ class TestLegacyActionInstantiation:
         assert action.outputs == []
 
         assert action._legacy
-        assert action._dash_components == []
+        assert_component_equal(
+            action._dash_components, [dcc.Store(id="action-id_finished"), dcc.Store(id="action-id_guarded_trigger")]
+        )
+        assert action._transformed_inputs == []
+        assert action._transformed_outputs == []
+        assert action._parameters == set()
+        assert action._runtime_args == {}
+        assert action._action_name == "action_with_no_args"
+
+    def test_action_not_first_in_chain_mandatory_only(self):
+        function = action_with_no_args()
+
+        # inputs=[] added to force action to be legacy
+        action = Action(id="action-id", function=function, inputs=[])
+
+        # Private attribute set by parent component's validation, not Action's.
+        action._first_in_chain = False
+
+        assert hasattr(action, "id")
+        assert action.function is function
+        assert action.inputs == []
+        assert action.outputs == []
+
+        assert action._legacy
+        assert_component_equal(action._dash_components, [dcc.Store(id="action-id_finished")])
         assert action._transformed_inputs == []
         assert action._transformed_outputs == []
         assert action._parameters == set()
@@ -335,16 +363,40 @@ class TestIsActionLegacy:
 class TestActionInstantiation:
     """Tests model instantiation."""
 
-    def test_action_mandatory_only(self):
+    def test_action_first_in_chain_mandatory_only(self):
         function = action_with_no_args()
-        action = Action(function=function)
+        action = Action(id="action-id", function=function)
+
+        # Private attribute set by parent component's validation, not Action's.
+        action._first_in_chain = True
 
         assert hasattr(action, "id")
         assert action.function is function
         assert action.inputs == []
         assert action.outputs == []
 
-        assert action._dash_components == []
+        assert_component_equal(
+            action._dash_components, [dcc.Store(id="action-id_finished"), dcc.Store(id="action-id_guarded_trigger")]
+        )
+        assert action._transformed_inputs == {}
+        assert action._transformed_outputs == []
+        assert action._parameters == set()
+        assert action._runtime_args == {}
+        assert action._action_name == "action_with_no_args"
+
+    def test_action_not_first_in_chain_mandatory_only(self):
+        function = action_with_no_args()
+        action = Action(id="action-id", function=function)
+
+        # Private attribute set by parent component's validation, not Action's.
+        action._first_in_chain = False
+
+        assert hasattr(action, "id")
+        assert action.function is function
+        assert action.inputs == []
+        assert action.outputs == []
+
+        assert_component_equal(action._dash_components, [dcc.Store(id="action-id_finished")])
         assert action._transformed_inputs == {}
         assert action._transformed_outputs == []
         assert action._parameters == set()

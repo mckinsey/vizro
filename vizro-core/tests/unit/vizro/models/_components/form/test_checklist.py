@@ -125,11 +125,10 @@ class TestChecklistInstantiation:
         with pytest.raises(ValidationError, match="Input should be a valid list"):
             Checklist(value="A", options=["A", "B", "C"])
 
-    def test_set_action_via_validator(self, identity_action_function):
-        checklist = Checklist(actions=[Action(function=identity_action_function())])
-        # TODO NOW: update these tests throughout to test new make_actions_chain
-        actions_chain = checklist.actions[0]
-        assert actions_chain.trigger.component_property == "value"
+    def test_checklist_trigger(self, identity_action_function):
+        checklist = Checklist(id="checklist-id", actions=[Action(function=identity_action_function())])
+        action = checklist.actions[0]
+        assert action._trigger == "checklist-id.value"
 
 
 class TestChecklistBuild:

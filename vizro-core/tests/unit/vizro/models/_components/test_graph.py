@@ -147,10 +147,10 @@ class TestDunderMethodsGraph:
         graph = vm.Graph(figure=standard_px_chart).__call__()
         assert graph == standard_px_chart
 
-    def test_set_action_via_validator(self, standard_px_chart, identity_action_function):
-        graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=identity_action_function())])
-        actions_chain = graph.actions[0]
-        assert actions_chain.trigger.component_property == "clickData"
+    def test_graph_trigger(self, standard_px_chart, identity_action_function):
+        graph = vm.Graph(id="graph-id", figure=standard_px_chart, actions=[Action(function=identity_action_function())])
+        action = graph.actions[0]
+        assert action._trigger == "graph-id.clickData"
 
 
 class TestAttributesGraph:

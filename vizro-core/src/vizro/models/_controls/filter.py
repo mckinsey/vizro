@@ -154,8 +154,7 @@ class Filter(VizroBaseModel):
         selector_call_obj = html.Div(children=[selector_call_obj])
 
         # For dynamic filters, return the guard component (data=True) to prevent unexpected filter action firing.
-        if self._dynamic:
-            selector_call_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True))
+        selector_call_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True))
 
         return selector_call_obj
 
