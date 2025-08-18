@@ -112,6 +112,7 @@ class Page(VizroBaseModel):
     ]
     actions: list[ActionsChain] = []
 
+    # get rid of this either way
     def model_post_init(self, context: Any) -> None:
         """Adds the model instance to the model manager."""
         try:
