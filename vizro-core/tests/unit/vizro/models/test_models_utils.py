@@ -57,50 +57,50 @@ class TestSharedValidators:
 
 
 class TestMakeActionsChain:
-    def test_model_with_custom_actions_valid(self, identity_action_function):
+    def test_model_with_empty_actions(self, mock_class_model_with_actions):
+        model = mock_class_model_with_actions()
+        assert model.actions == []
+
+    def test_model_with_custom_actions(self, mock_class_model_with_actions, identity_action_function):
         action = vm.Action(function=identity_action_function())
 
         # Assign actions to a Vizro model so that make_actions_chain can be tested
-        model = vm.Button(actions=action)
+        model = mock_class_model_with_actions(actions=action)
 
         assert model.actions == [action]
 
-    def test_model_with_builtin_actions_valid(self):
+    def test_model_with_builtin_actions(self, mock_class_model_with_actions):
         action = export_data()
 
         # Assign actions to a Vizro model so that make_actions_chain can be tested
-        model = vm.Button(actions=action)
+        model = mock_class_model_with_actions(actions=action)
 
         assert model.actions == [action]
 
-    def test_model_with_empty_actions(self):
-        model = vm.Button()
-        assert model.actions == []
-
-    def test_model_with_multiple_actions(self, identity_action_function):
+    def test_model_with_multiple_actions(self, mock_class_model_with_actions, identity_action_function):
         action_1 = vm.Action(function=identity_action_function())
         action_2 = export_data()
 
         # Assign actions to a Vizro model so that make_actions_chain can be tested
-        model = vm.Button(actions=[action_1, action_2])
+        model = mock_class_model_with_actions(actions=[action_1, action_2])
 
         assert model.actions == [action_1, action_2]
 
-    def test_model_actions_protected_attributes(self, identity_action_function):
+    def test_model_action_protected_attributes(self, mock_class_model_with_actions, identity_action_function):
         action_1 = vm.Action(id="action-1-id", function=identity_action_function())
         action_2 = export_data(id="action-2-id")
 
         # Assign actions to a Vizro model so that make_actions_chain can be tested
-        vm.Button(id="button-id", actions=[action_1, action_2])
+        mock_class_model_with_actions(id="model-id", actions=[action_1, action_2])
 
         assert action_1._first_in_chain is True
         assert action_2._first_in_chain is False
 
-        assert action_1._trigger == "button-id.n_clicks"
+        assert action_1._trigger == "model-id.default_property"
         assert action_2._trigger == "action-1-id_finished.data"
 
         assert action_1._prevent_initial_call_of_guard is True
         assert action_2._prevent_initial_call_of_guard is True
 
-        assert action_1._parent_model_id == "button-id"
-        assert action_2._parent_model_id == "button-id"
+        assert action_1._parent_model_id == "model-id"
+        assert action_2._parent_model_id == "model-id"
