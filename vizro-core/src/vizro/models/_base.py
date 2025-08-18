@@ -15,9 +15,10 @@ from pydantic import (
     model_serializer,
 )
 from pydantic.fields import FieldInfo
+from typing_extensions import Self
 
 from vizro.managers import model_manager
-from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
+from vizro.models._models_utils import REPLACEMENT_STRINGS
 from vizro.models.types import ModelID
 
 TO_PYTHON_TEMPLATE = """
@@ -223,9 +224,135 @@ class VizroBaseModel(BaseModel):
         ),
     ]
 
-    @_log_call
-    def model_post_init(self, context: Any) -> None:
-        model_manager[self.id] = self
+    # def __init_subclass__(cls, **kwargs):
+    #     super().__init_subclass__(**kwargs)
+    #     # print("==== INIT SUBCLASS ====")
+    #     field_names = [f for f in cls.__annotations__.keys() if (not f.startswith("_") and f != "type")]
+    #     # print("==== FIELDS ====")
+    #     # print(f"Class: {cls.__name__} has fields: {field_names} ,<<< {[f for f in cls.__annotations__.keys()]}")
+
+    #     if field_names:
+
+    #         @field_validator(*field_names, mode="wrap", check_fields=False)
+    #         @classmethod
+    #         def build_tree_field_wrap(
+    #             cls,
+    #             value: Any,
+    #             handler: ValidatorFunctionWrapHandler,
+    #             info: ValidationInfo,
+    #         ) -> Any:
+    #             if info.context is not None and "build_tree" in info.context:
+    #                 #### Field stack ####
+    #                 if "id_stack" not in info.context:
+    #                     info.context["id_stack"] = []
+    #                 if "field_stack" not in info.context:
+    #                     info.context["field_stack"] = []
+    #                 if info.field_name == "id":
+    #                     info.context["id_stack"].append(value)
+    #                 else:
+    #                     info.context["id_stack"].append(info.data.get("id", "no id"))
+    #                 info.context["field_stack"].append(info.field_name)
+    #                 #### Level and indentation ####
+    #                 # indent = info.context["level"] * " " * 4
+    #                 # info.context["level"] += 1
+
+    #             #### Validation ####
+    #             validated_stuff = handler(value)
+
+    #             if info.context is not None and "build_tree" in info.context:
+    #                 #### Field stack ####
+    #                 info.context["id_stack"].pop()
+    #                 info.context["field_stack"].pop()
+
+    #                 #### Level and indentation ####
+    #                 # info.context["level"] -= 1
+    #                 # indent = info.context["level"] * " " * 4
+    #             return validated_stuff
+
+    #         cls.build_tree_field_wrap = build_tree_field_wrap
+
+    # @model_validator(mode="wrap")
+    # @classmethod
+    # def build_tree_model_wrap(cls, data: Any, handler: ModelWrapValidatorHandler[Self], info: ValidationInfo) -> Self:
+    #     #### ID ####
+    #     # Check Page ID case!
+    #     # Even change way we set it in Page (path logic etc - ideally separate PR)
+    #     # Leave page setting ID logic for now.
+    #     model_id = "UNKNOWN_ID"
+    #     if isinstance(data, dict):
+    #         if "id" not in data or data["id"] is None:
+    #             model_id = str(uuid.uuid4())
+    #             data["id"] = model_id
+    #             # print(f"    Setting id to {model_id}")
+    #         elif isinstance(data["id"], str):
+    #             model_id = data["id"]
+    #             # print(f"    Using id {model_id}")
+    #     elif hasattr(data, "id"):
+    #         model_id = data.id
+    #         # print(f"    Using id {model_id}")
+    #     else:
+    #         print("GRANDE PROBLEMA!!!")
+
+    #     if info.context is not None and "build_tree" in info.context:
+    #         #### Level and indentation ####
+    #         if "level" not in info.context:
+    #             info.context["level"] = 0
+    #         indent = info.context["level"] * " " * 4
+    #         info.context["level"] += 1
+
+    #         #### Tree ####
+    #         print(
+    #             f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'}"
+    #         )
+
+    #         if "parent_model" in info.context:
+    #             # print("IF PARENT MODEL")
+    #             info.context["tree"] = info.context["parent_model"]._tree
+    #             tree = info.context["tree"]
+    #             tree[info.context["parent_model"].id].add(
+    #                 SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+    #             )
+    #             # info.context["tree"].print()
+    #         elif "tree" not in info.context:
+    #             # print("NO PARENT MODEL, NO TREE")
+    #             tree = TypedTree("Root", calc_data_id=lambda tree, data: data.id)
+    #             tree.add(SimpleNamespace(id=model_id), kind="dashboard")  # make this more general
+    #             info.context["tree"] = tree
+    #             # info.context["tree"].print()
+    #         else:
+    #             # print("NO PARENT MODEL, TREE")
+    #             tree = info.context["tree"]
+    #             # in words: add a node as children to the parent (so id one higher up), but add as kind
+    #             # the field in which you currently are
+    #             # ID STACK and FIELD STACK are different "levels" of the tree.
+    #             tree[info.context["id_stack"][-1]].add(
+    #                 SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+    #             )
+    #         # print("-" * 50)
+
+    #     #### Validation ####
+    #     validated_stuff = handler(data)
+    #     if info.context is not None and "build_tree" in info.context:
+    #         #### Replace placeholder nodes and propagate tree to all models ####
+    #         info.context["tree"][validated_stuff.id].set_data(validated_stuff)
+    #         validated_stuff._tree = info.context["tree"]
+
+    #         #### Level and indentation ####
+    #         info.context["level"] -= 1
+    #         indent = info.context["level"] * " " * 4
+    #         print(f"{indent}{cls.__name__} ")  # After validation: {info.context['field_stack']}
+
+    #     return validated_stuff
+
+    # TODO[MS]: Make more official access to the tree
+    @classmethod
+    def _from_dict_in_build(cls, parent_id: str, field_name: str, data: dict[str, Any]) -> Self:
+        model = cls(**data)
+        model_manager._get_node(parent_id).add(model, kind=field_name)
+        # MS: this call pre-build on models created with this alt init method
+        if hasattr(model, "pre_build"):
+            model.pre_build()
+        return model
 
     # Previously in V1, we used to have an overwritten `.dict` method, that would add __vizro_model__ to the dictionary
     # if called in the correct context.
@@ -341,4 +468,5 @@ class VizroBaseModel(BaseModel):
     model_config = ConfigDict(
         extra="forbid",  # Good for spotting user typos and being strict.
         validate_assignment=True,  # Run validators when a field is assigned after model instantiation.
+        revalidate_instances="always",
     )

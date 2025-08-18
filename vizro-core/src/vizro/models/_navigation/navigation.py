@@ -4,7 +4,7 @@ from typing import Annotated, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, Field
+from pydantic import Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -23,17 +23,15 @@ class Navigation(VizroBaseModel):
 
     """
 
-    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    pages: Annotated[NavPagesType, Field(default=[])]  # can we have a Navigation without pages??
     nav_selector: Optional[NavSelectorType] = None
 
     @_log_call
     def pre_build(self):
-        # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
-        # here. Note that not all nav_selectors have pre_build (Accordion does not).
-        self.nav_selector = self.nav_selector or Accordion()
-        self.nav_selector.pages = self.nav_selector.pages or self.pages
-        if hasattr(self.nav_selector, "pre_build"):
-            self.nav_selector.pre_build()
+        _validate_pages(self.pages)
+        self.nav_selector = self.nav_selector or Accordion._from_dict_in_build(
+            parent_id=self.id, field_name="nav_selector", data={}
+        )
 
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
