@@ -9,9 +9,15 @@ from vizro.models.types import ModelID
 
 
 class collapse_expand_containers(_AbstractAction):
+    """Exports visible data of target charts/components.
+
+    Args:
+        collapse (list[ModelID]): List of collapsible container ids to collapse.
+        expand (list[ModelID]): List of collapsible container ids to expand.
+    """
     type: Literal["collapse_expand_containers"] = "collapse_expand_containers"
-    collapse: list[ModelID] = Field(default=[], description="List of target collapsible container ids to collapse.")
-    expand: list[ModelID] = Field(default=[], description="List of target collapsible container ids to expand.")
+    collapse: list[ModelID] = Field(default=[], description="List of collapsible container ids to collapse.")
+    expand: list[ModelID] = Field(default=[], description="List of collapsible container ids to expand.")
     #  toggle would need multiple state as input. Maybe possible in future but not now. Add new ticket for this
     # toggle: list[str]
 
