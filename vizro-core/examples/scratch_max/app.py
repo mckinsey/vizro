@@ -1,439 +1,299 @@
-"""Dev app to try things out."""
+"""Maxi trial"""
 
-# # Vizro is an open-source toolkit for creating modular data visualization applications.
-# # check out https://github.com/mckinsey/vizro for more info about Vizro
-# # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
+from __future__ import annotations
 
-import json
 import random
-import time
-from typing import Any, Literal, Optional
+import uuid
+from types import SimpleNamespace
+from typing import Annotated, Any, List, Literal, Optional, Self, Union
 
-import dash_bootstrap_components as dbc
-import pandas as pd
-import plotly.graph_objects as go
-import vizro.models as vm
-import vizro.plotly.express as px
-from dash import ALL, Input, Output, State, callback, callback_context, dcc, html, no_update
-
-# from ploomber_cloud import functions
-from vizro import Vizro
-from vizro.managers import data_manager
-from vizro.models._models_utils import _log_call
-from vizro.models.types import capture
-from vizro.tables import dash_ag_grid
-
-
-class VizroStore(vm.VizroBaseModel):
-    id: str
-    type: Literal["vizro_store"] = "vizro_store"
-
-    @_log_call
-    def build(self):
-        return dcc.Store(id=self.id, storage_type="session")
-
-
-vm.Container.add_type("components", VizroStore)
-vm.Page.add_type("components", VizroStore)
-vm.Page.add_type("controls", vm.Slider)
-vm.Page.add_type("controls", vm.RadioItems)
-vm.Page.add_type("controls", vm.Button)
-
-df_gapminder = px.data.gapminder().query("year == 2007")
-
-
-def load_dynamic_gapminder_data(continent: str = "Europe"):
-    return df_gapminder[df_gapminder["continent"] == continent]
-
-
-data_manager["dynamic_df_gapminder_arg"] = load_dynamic_gapminder_data
-data_manager["dynamic_df_gapminder"] = lambda: df_gapminder
-
-
-page_1 = vm.Page(
-    title="My first dashboard",
-    components=[
-        # vm.Graph(figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-        vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
-    ],
-    controls=[
-        vm.Filter(column="continent", id="f", show_in_url=True),
-    ],
+from nutree.typed_tree import TypedTree
+from pydantic import (
+    BaseModel,
+    Field,
+    ModelWrapValidatorHandler,
+    PrivateAttr,
+    ValidatorFunctionWrapHandler,
+    field_validator,
+    model_validator,
 )
+from pydantic_core.core_schema import ValidationInfo
+
+rd = random.Random(0)
 
 
-# PAGE 2 = Test store concept and slow calculations
-@capture("action")
-def reset_store():
-    return {}
-
-
-@capture("action")
-def update_card_text(input_param: str, store: Optional[dict[str, Any]]):
-    store = store or {}
-    return f"You selected species **{input_param}** and the store is {store}"
-
-
-@capture("action")
-def update_store_from_selectors(input_param: str, store: Optional[dict[str, Any]]):
-    store = store or {}
-    store["current_params"] = input_param
-    return store
-
-
-# PR[MS]: I could not get this to work, but didn't try too hard. Looked like i was struggling on Ploomber side
-# In general I think this sort of thing is a good example how how people should handle potentially model interactions
-# Generally speaking I am also interested in dash[async] for DB access etc - also see the non-blocking comment below
-# @functions.serverless(requirements=["scikit-learn==1.4.0"])
-def square(x: int, delay: int = 0):
-    time.sleep(delay)
-    return x**2
-
-
-@capture("action")
-def mega_calculation(store: Optional[dict[str, Any]], delay: int = 0):
-    store = store or {}
-    calculation_id = f"calculation_{time.time()}"
-    result = square(store["current_params"], delay)
-    store[calculation_id] = {
-        "params": store["current_params"],
-        "result": f"The square of {store['current_params']} is {result}",
-    }
-    return store
-
-
-page_2 = vm.Page(
-    title="Using a store and simulating model run",
-    components=[
-        VizroStore(id="page2-store"),
-        vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-        vm.Card(text="Placeholder text", id="my_card"),
-    ],
-    layout=vm.Grid(grid=[["1", "2"], ["0", "0"]]),
-    controls=[
-        vm.RadioItems(id="radio", options=[0, 1, 5], value=0, title="How mega the calculation is"),
-        vm.Slider(
-            id="slider",
-            title="Square this number",
-            min=0,
-            max=5,
-            step=0.5,
-            value=2,
-            actions=[
-                vm.Action(
-                    function=update_store_from_selectors(),
-                    inputs=["slider.value", "page2-store.data"],
-                    outputs=["page2-store.data"],
-                ),
-                # PR[MS]: this only triggers on selector change - resets to default on Page refresh
-                vm.Action(
-                    function=update_card_text(),
-                    inputs=["slider.value", "page2-store.data"],
-                    outputs=["my_card.text"],
-                ),
-            ],
+class VizroBaseModel(BaseModel):
+    id: Annotated[
+        str,
+        Field(
+            default=None,
+            description="ID to identify model. Must be unique throughout the whole dashboard."
+            "When no ID is chosen, ID will be automatically generated.",
+            validate_default=True,
         ),
-        # PR[MS]: Seems to be non-blocking (good) so that I can switch page, however
-        # fails if the output is not anymore on the page  (bad) -> not sure what we desire
-        vm.Button(
-            text="Click me!",
-            actions=[
-                vm.Action(
-                    function=update_store_from_selectors(),
-                    inputs=["slider.value", "page2-store.data"],
-                    outputs=["page2-store.data"],
-                ),
-                vm.Action(
-                    function=mega_calculation(),
-                    inputs=["page2-store.data", "radio.value"],
-                    outputs=["page2-store.data"],
-                ),
-                vm.Action(
-                    function=update_card_text(),
-                    inputs=["slider.value", "page2-store.data"],
-                    outputs=["my_card.text"],
-                ),
-            ],
-        ),
-        vm.Button(
-            text="Reset store",
-            actions=[
-                vm.Action(
-                    function=reset_store(),
-                    outputs=["page2-store.data"],
-                ),
-            ],
-        ),
-    ],
-)
+    ]
+    _tree: Optional[TypedTree] = PrivateAttr(None)  # initialised in model_after
 
+    # @classmethod
+    # def __pydantic_init_subclass__(cls, **kwargs):
+    #     super().__pydantic_init_subclass__(**kwargs)
+    #     print("==== PYDANTIC INIT SUBCLASS ====")
 
-# PAGE 3 - Double filtering due to Pivoted data
-# PR[MS]: This works overall pretty great now - ideally it can be simplified with a predefined action
-# and maybe with less filter creation??
-@capture("graph")
-def heatmap(data_frame: pd.DataFrame) -> go.Figure:
-    fig = px.imshow(
-        data_frame,
-        text_auto=True,  # Show the values on the heatmap
-        labels=dict(x="Company", y="Product", color="Average Sales"),
-        # color_continuous_scale="Viridis",
-    )
+    @classmethod
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        print("==== INIT SUBCLASS ====")
+        field_names = [f for f in cls.__annotations__.keys() if (not f.startswith("_") and f != "type")]
+        # print("==== FIELDS ====")
+        # print(field_names)
 
-    fig.update_layout(
-        title="Average Sales by Product and Company",
-        xaxis_title="Company",
-        yaxis_title="Product",
-    )
+        if field_names:
 
-    return fig
+            @field_validator(*field_names, mode="wrap")
+            @classmethod
+            def build_tree_field_wrap(
+                cls,
+                value: Any,
+                handler: ValidatorFunctionWrapHandler,
+                info: ValidationInfo,
+            ) -> Any:
+                if info.context is not None and "build_tree" in info.context:
+                    #### Field stack ####
+                    if "id_stack" not in info.context:
+                        info.context["id_stack"] = []
+                    if "field_stack" not in info.context:
+                        info.context["field_stack"] = []
+                    if info.field_name == "id":
+                        info.context["id_stack"].append(value)
+                    else:
+                        info.context["id_stack"].append(info.data.get("id", "no id"))
+                    info.context["field_stack"].append(info.field_name)
+                    #### Level and indentation ####
+                    # indent = info.context["level"] * " " * 4
+                    # info.context["level"] += 1
 
+                #### Validation ####
+                validated_stuff = handler(value)
 
-def generate_random_dataset(num_samples_per_combination: int = 5) -> pd.DataFrame:
-    companies = ["Apple", "Microsoft", "Amazon", "Google"]
-    products = ["Smartphones", "Laptops", "Tablets", "Wearables"]
-    channels = ["Online", "Retail", "Direct Sales"]
-    data = {"Product": [], "Company": [], "Channel": [], "Sales": []}
-    for product in products:
-        for company in companies:
-            for _ in range(num_samples_per_combination):
-                data["Product"].append(product)
-                data["Company"].append(company)
-                channel = random.choice(channels)
-                data["Channel"].append(channel)
-                sales = random.randint(100, 10000)
-                data["Sales"].append(sales)
+                if info.context is not None and "build_tree" in info.context:
+                    #### Field stack ####
+                    info.context["id_stack"].pop()
+                    info.context["field_stack"].pop()
 
-    return pd.DataFrame(data)
+                    #### Level and indentation ####
+                    # info.context["level"] -= 1
+                    # indent = info.context["level"] * " " * 4
+                return validated_stuff
 
+            cls.build_tree_field_wrap = build_tree_field_wrap
 
-df_sales = generate_random_dataset(num_samples_per_combination=3)
-# Create a pivot table to calculate average sales for each Product-Company combination
-df_sales_pivot = df_sales.pivot_table(
-    index="Product",
-    columns="Company",
-    values="Sales",
-    aggfunc="mean",  # Calculate the average sales
-)
+    @model_validator(mode="wrap")
+    @classmethod
+    def build_tree_model_wrap(cls, data: Any, handler: ModelWrapValidatorHandler[Self], info: ValidationInfo) -> Self:
+        #### ID ####
+        # Check Page ID case!
+        # Even change way we set it in Page (path logic etc - ideally separate PR)
+        # Leave page setting ID logic for now.
+        model_id = "UNKNOWN_ID"
+        if isinstance(data, dict):
+            if "id" not in data or data["id"] is None:
+                model_id = str(uuid.uuid4())
+                data["id"] = model_id
+                # print(f"    Setting id to {model_id}")
+            elif isinstance(data["id"], str):
+                model_id = data["id"]
+                # print(f"    Using id {model_id}")
+        elif hasattr(data, "id"):
+            model_id = data.id
+            # print(f"    Using id {model_id}")
+        else:
+            print("GRANDE PROBLEMA!!!")
 
+        if info.context is not None and "build_tree" in info.context:
+            #### Level and indentation ####
+            if "level" not in info.context:
+                info.context["level"] = 0
+            indent = info.context["level"] * " " * 4
+            info.context["level"] += 1
 
-@capture("action")
-def update_card_text_2(click_data: dict):
-    """Update card text with click data information."""
-    if not click_data:
-        return "No data selected. Click on the heatmap to see details."
-
-    return f"Click data: {click_data}"
-
-
-@capture("action")
-def update_filter_selectors(click_data: dict[str, Any]) -> tuple[Optional[str], Optional[str]]:
-    """Update filter selectors based on heatmap click data."""
-    if not click_data or "points" not in click_data:
-        return None, None
-    point = click_data["points"][0]
-    company = point.get("x")
-    product = point.get("y")
-    return company, product
-
-
-page_3 = vm.Page(
-    title="Filter interaction graph",
-    layout=vm.Grid(grid=[["0", "1"], ["0", "1"], ["0", "2"]]),
-    components=[
-        vm.Graph(
-            id="heatmap",
-            figure=heatmap(df_sales_pivot),
-            actions=[
-                vm.Action(
-                    function=update_card_text_2(),
-                    inputs=["heatmap.clickData"],
-                    outputs=["my_card_2.text"],
-                ),
-                vm.Action(
-                    function=update_filter_selectors(),
-                    inputs=["heatmap.clickData"],
-                    outputs=["filter_company_selector.value", "filter_product_selector.value"],
-                ),
-            ],
-        ),
-        vm.AgGrid(
-            id="ag_grid_interaction",
-            figure=dash_ag_grid(data_frame=df_sales),
-        ),
-        vm.Card(text="Placeholder text", id="my_card_2"),
-    ],
-    controls=[
-        vm.Filter(
-            targets=["ag_grid_interaction"],
-            column="Company",
-            selector=vm.Dropdown(id="filter_company_selector"),
-            id="filter_company",
-        ),
-        vm.Filter(
-            targets=["ag_grid_interaction"],
-            column="Product",
-            selector=vm.Dropdown(id="filter_product_selector"),
-            id="filter_product",
-        ),
-    ],
-)
-
-
-# PAGE 4 - Action creating new components, that maybe themselves can target/be targeted by other actions
-"""
-I think we should try and simulate a ToDo list as an example of a CRUD application
-
-Feedback:
-- It is possible until we want to target individual items of the list --> then we start needing (I think) pattern matching stuff
-- Overall the two main dash functionalities are: Pattern matching and some form of custom figure
-- the figure is really just a dummy to target with an action
-- For my liking this is still too much dash, but the million dollar question is: how to make this Vizro only?? Do we even
-want this?
-- Would All in one components that we publish be a good idea? Or maybe custom react components that we can target with just actions?
-
-"""
-
-
-@capture("figure")
-def placeholder_card(data_frame: pd.DataFrame) -> html.Div:
-    return html.Div([dbc.Card(dcc.Markdown("Placeholder text"))])
-
-
-@capture("action")
-def add_todo_to_store(text: str, store: Optional[dict[str, Any]]):
-    store = store or {}
-    store.setdefault("todos", [])
-    todos = store["todos"]
-
-    highest_id = max([todo.get("id", 0) for todo in todos], default=0) if todos else 0
-    todos.append({"id": highest_id + 1, "text": text, "completed": False})
-
-    return store
-
-
-@capture("action")
-def update_todos_figure(store: Optional[dict[str, Any]]):
-    store = store or {}
-    todos = store.get("todos", [])
-    return html.Div(
-        [
-            html.Div(
-                [
-                    dcc.Checklist(
-                        options=[{"label": "", "value": f"todo_{todo['id']}"}],
-                        value=[f"todo_{todo['id']}"] if todo["completed"] else [],
-                        inline=True,
-                        style={"display": "inline-block", "marginRight": "10px"},
-                        id={"type": "todo-checklist", "index": todo["id"]},  # Dictionary ID for pattern matching
-                    ),
-                    dbc.Card(
-                        dcc.Markdown(f"### Todo #{todo['id']}\n{todo['text']}"),
-                        style={"display": "inline-block", "width": "90%"},
-                    ),
-                ],
-                style={"display": "flex", "alignItems": "center", "marginBottom": "10px"},
+            #### Tree ####
+            print(
+                f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'}"
             )
-            for todo in todos
-        ],
-        className="multiple-cards-container",
-    )
+
+            if "parent_model" in info.context:
+                # print("IF PARENT MODEL")
+                info.context["tree"] = info.context["parent_model"]._tree
+                tree = info.context["tree"]
+                tree[info.context["parent_model"].id].add(
+                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                )
+                # info.context["tree"].print()
+            elif "tree" not in info.context:
+                # print("NO PARENT MODEL, NO TREE")
+                tree = TypedTree("Root", calc_data_id=lambda tree, data: data.id)
+                tree.add(SimpleNamespace(id=model_id), kind="dashboard")  # make this more general
+                info.context["tree"] = tree
+                # info.context["tree"].print()
+            else:
+                # print("NO PARENT MODEL, TREE")
+                tree = info.context["tree"]
+                # in words: add a node as children to the parent (so id one higher up), but add as kind
+                # the field in which you currently are
+                # ID STACK and FIELD STACK are different "levels" of the tree.
+                tree[info.context["id_stack"][-1]].add(
+                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                )
+            # print("-" * 50)
+
+        #### Validation ####
+        validated_stuff = handler(data)
+        if info.context is not None and "build_tree" in info.context:
+            #### Replace placeholder nodes and propagate tree to all models ####
+            info.context["tree"][validated_stuff.id].set_data(validated_stuff)
+            validated_stuff._tree = info.context["tree"]
+
+            #### Level and indentation ####
+            info.context["level"] -= 1
+            indent = info.context["level"] * " " * 4
+            print(f"{indent}{cls.__name__} After validation: {info.context['field_stack']}")
+
+        return validated_stuff
+
+    @classmethod
+    # AM NOTE: name TBC.
+    def from_pre_build(cls, data, parent_model, field_name):
+        # Note this always adds new models to the tree. It's not currently possible to replace or remove a node.
+        # It should work with any parent_model, but ideally we should only use it to make children of the calling
+        # model, so that parent_model=self in the call (where self isn't the created model instance, it's the calling
+        # model).
+        # Since we have revalidate_instances = "always", calling model_validate on a single model will also execute
+        # the validators on children models.
+        return cls.model_validate(
+            data,
+            context={
+                "build_tree": True,
+                "parent_model": parent_model,
+                "field_stack": [field_name],
+                "id_stack": [parent_model.id],
+            },
+        )
+
+    class Config:
+        revalidate_instances = "always"
+        validate_assignment = True
 
 
-@callback(
-    Output("store_page_4", "data"),
-    Input({"type": "todo-checklist", "index": ALL}, "value"),
-    State("store_page_4", "data"),
-    prevent_initial_call=True,
-)
-def checklist_pattern_callback(checklist_values: list, store: Optional[dict[str, Any]]):
-    """Pattern matching callback that responds to any checklist change"""
-    if not callback_context.triggered:
-        return no_update
-
-    # Pattern matching callback -> this bit is basically not possible for Vizro I suppose?
-    triggered_id = callback_context.triggered[0]["prop_id"]
-    component_id = json.loads(triggered_id.split(".")[0])
-    todo_index = component_id["index"]
-
-    triggered_value = callback_context.triggered[0]["value"]
-    is_checked = len(triggered_value) > 0  # If list is not empty, it's checked
-
-    store = store or {}
-    todos = store.get("todos", [])
-    for todo in todos:
-        if todo["id"] == todo_index:
-            todo["completed"] = is_checked
-            break
-
-    store["todos"] = todos
-    return store
+class Dashboard(VizroBaseModel):
+    title: str
+    pages: list[Page]
 
 
-@capture("action")
-def reset_store_page_4():
-    store = {}
-    store["todos"] = []
-    return store
+class OtherComponent(VizroBaseModel):
+    type: Literal["other_component"] = "other_component"
+    x: str = "other_component"
 
 
-@capture("action")
-def remove_done_todos(store: Optional[dict[str, Any]]):
-    store = store or {}
-    todos = store.get("todos", [])
-    store["todos"] = [todo for todo in todos if not todo["completed"]]
-    return store
+class Component(VizroBaseModel):
+    type: Literal["component"] = "component"
+    x: Union[str, list[SubComponent]]
 
 
-vm.Page.add_type("components", vm.TextArea)
+class SubComponent(VizroBaseModel):
+    y: str = "subcomponent"
 
-page_4 = vm.Page(
-    title="Action creating new components (CRUD) application",
-    layout=vm.Grid(grid=[[0, 1, 2, 4, 5], [3, 3, 3, 3, 3], [3, 3, 3, 3, 3], [3, 3, 3, 3, 3]]),
-    components=[
-        vm.TextArea(id="text_area"),
-        vm.Button(
-            text="Add",
-            id="button_add",
-            actions=[
-                vm.Action(
-                    function=add_todo_to_store(),
-                    inputs=["text_area.value", "store_page_4.data"],
-                    outputs=["store_page_4.data"],
-                ),
-                vm.Action(
-                    function=update_todos_figure(),
-                    inputs=["store_page_4.data"],
-                    outputs=["figure_1.children"],
-                ),
+
+ComponentType = Annotated[Union[Component, OtherComponent], Field(discriminator="type")]
+# ComponentType = Component
+
+
+class Page(VizroBaseModel):
+    title: str
+    components: list[ComponentType]
+
+    # @model_validator(mode="before")
+    # @classmethod
+    # def set_id(cls, values):
+    #     if "title" not in values:
+    #         return values
+
+    #     values.setdefault("id", values["title"])
+    #     return values
+
+    def pre_build(self):
+        print(f"Updating page {self=}")
+
+        if self.components[0].x == "c3":
+            # Works on nested things without doing from_pre_build on each! SubComponent is just a "regular"
+            # SubComponent()
+            self.components = [
+                Component.from_pre_build(
+                    {"x": [SubComponent(y="new c3"), SubComponent(y="another new c3")]},
+                    self,
+                    "components",
+                )
+            ]
+
+
+# It shouldn't matter how you get to this point - with pydantic models like Dashboard() or not. Since "build_tree"
+# won't be set in the validation context, nothing will modify the tree.
+dashboard_data = {
+    "title": "dashboard_title",
+    "pages": [
+        {
+            "components": [
+                {"x": "c1", "type": "component"},
+                {
+                    "x": [{}],
+                    "type": "component",
+                },
             ],
-        ),
-        vm.Button(
-            text="Remove done",
-            id="button_remove_done",
-            actions=[
-                vm.Action(function=remove_done_todos(), inputs=["store_page_4.data"], outputs=["store_page_4.data"]),
-                vm.Action(function=update_todos_figure(), inputs=["store_page_4.data"], outputs=["figure_1.children"]),
-            ],
-        ),
-        # PR[MS]: Again this resets on page refresh - we probably need an action that attaches to `on_page_load`
-        vm.Figure(id="figure_1", figure=placeholder_card(df_gapminder)),
-        vm.Button(
-            text="Reset ToDo list",
-            id="button_reset",
-            actions=[
-                vm.Action(function=reset_store_page_4(), outputs=["store_page_4.data"]),
-                vm.Action(function=update_todos_figure(), inputs=["store_page_4.data"], outputs=["figure_1.children"]),
-            ],
-        ),
-        VizroStore(id="store_page_4"),
+            "title": "page_1",
+        },
+        {"components": [{"x": "c3", "type": "component"}], "title": "page_2"},
     ],
-)
+}
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
+# "build_tree": True has to be explicitly specified to o build the tree, so that users can still call model_validate()
+# themselves without needing to specify "build_tree": False.
+dashboard = Dashboard.model_validate(dashboard_data, context={"build_tree": True})
 
-app = Vizro().build(dashboard)
+# a single shared tree:
+assert dashboard._tree is dashboard.pages[0]._tree
+# print("==== The tree ====")
+# print(dashboard.pages[0]._tree.print())
+# print(dashboard.pages[0].id)
+# print("---")
+# dashboard.pages[0]._tree.print()
+# print()
+dashboard._tree.print()
 
-if __name__ == "__main__":
-    # PR[MS]: Debug mode does not reload anymore?!
-    app.run(debug=True)
+# Haven't thought about the order of these operations yet, but from tree creation point of view it shouldn't make a
+# difference any more!!
+print("-" * 50)
+for page in dashboard.pages:
+    page.pre_build()
+
+# print()
+# # The tree is still a single shared one, even once it's modified.
+assert dashboard._tree is dashboard.pages[0]._tree
+# assert dashboard._tree is dashboard.pages[1]._tree
+# dashboard._tree.print()
+
+"""
+BIG QUESTIONS:
+- does it work on Vizro itself? Can we used TypedTree with model.id automatically. If there's bugs here then report 
+them
+- will ordering of validators in subclasses break stuff here? Shouldn't interfere in any way I think since this tree 
+stuff is independent of everything else.
+- does rerunning validators cause us problems? Probably not.
+- do we want validate_assignment=True or not?
+- can we do pre_build itself using model_validate with context={"pre_build": True}. Is this actually useful in any 
+way compared to iterating through tree? Probably not as have less control over ordering. Would still write code in 
+pre_build method. But advantage might be that all pre_builds run iteratively automatically when created.
+
+Ideal world:
+
+"""
+
+### https://docs.python.org/3/howto/annotations.html
