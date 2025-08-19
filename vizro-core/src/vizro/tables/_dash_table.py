@@ -33,15 +33,15 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataT
         "style_cell": {"position": "static"},
         "style_data": {"border_bottom": "1px solid var(--bs-border-color)", "height": "40px"},
         "style_header": {
-            "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
+            "border_bottom": "1px solid var(--bs-border-color-translucent)",
             "border_top": "None",
             "height": "32px",
         },
         "style_data_conditional": [
             {
                 "if": {"state": "active"},
-                "backgroundColor": "var(--stateOverlays-selected)",
-                "border": "1px solid var(--stateOverlays-selected)",
+                "backgroundColor": "var(--bs-primary-bg-subtle)",
+                "border": "1px solid var(--bs-primary-bg-subtle)",
             }
         ],
     }

@@ -31,7 +31,7 @@
 }
 
 #right-side {
-  background: var(--right-side-bg);
+  background: var(--bs-body-bg);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
