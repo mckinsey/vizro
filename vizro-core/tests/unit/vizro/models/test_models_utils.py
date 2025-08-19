@@ -1,17 +1,39 @@
 import re
 from dataclasses import dataclass
+from typing import Literal
 
 import pytest
-from pydantic import ValidationError
+from pydantic import ValidationError, model_validator
 
 import vizro.models as vm
 from vizro.actions import export_data
-from vizro.models._models_utils import warn_description_without_title
+from vizro.models._models_utils import make_actions_chain, warn_description_without_title
+from vizro.models.types import ActionsType, _IdProperty
 
 
 @dataclass
 class MockValidationInfo:
     data: dict
+
+
+class MockModelWithActions(vm.VizroBaseModel):
+    type: Literal["mock_model_with_actions"] = "mock_model_with_actions"
+
+    actions: ActionsType = []
+
+    # Add to circumvent the PydanticUserError: `MockModelWithActions` is not fully defined; call `model_rebuild()`.
+    # Added here and not globally or in the TestMakeActionsChain class to enable test_check_captured_callable to pass.
+    def __new__(cls, *args, **kwargs):
+        vm.Page.add_type("components", cls)
+        return super().__new__(cls)
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.default_property"}
 
 
 class TestSharedValidators:
@@ -57,41 +79,41 @@ class TestSharedValidators:
 
 
 class TestMakeActionsChain:
-    def test_model_with_empty_actions(self, mock_class_model_with_actions):
-        model = mock_class_model_with_actions()
+    def test_model_with_empty_actions(self):
+        model = MockModelWithActions()
         assert model.actions == []
 
-    def test_model_with_custom_actions(self, mock_class_model_with_actions, identity_action_function):
+    def test_model_with_custom_actions(self, identity_action_function):
         action = vm.Action(function=identity_action_function())
 
         # Assign actions to a Vizro model so that make_actions_chain can be tested
-        model = mock_class_model_with_actions(actions=action)
+        model = MockModelWithActions(actions=action)
 
         assert model.actions == [action]
 
-    def test_model_with_builtin_actions(self, mock_class_model_with_actions):
+    def test_model_with_builtin_actions(self):
         action = export_data()
 
         # Assign actions to a Vizro model so that make_actions_chain can be tested
-        model = mock_class_model_with_actions(actions=action)
+        model = MockModelWithActions(actions=action)
 
         assert model.actions == [action]
 
-    def test_model_with_multiple_actions(self, mock_class_model_with_actions, identity_action_function):
+    def test_model_with_multiple_actions(self, identity_action_function):
         action_1 = vm.Action(function=identity_action_function())
         action_2 = export_data()
 
         # Assign actions to a Vizro model so that make_actions_chain can be tested
-        model = mock_class_model_with_actions(actions=[action_1, action_2])
+        model = MockModelWithActions(actions=[action_1, action_2])
 
         assert model.actions == [action_1, action_2]
 
-    def test_model_action_protected_attributes(self, mock_class_model_with_actions, identity_action_function):
+    def test_model_action_protected_attributes(self, identity_action_function):
         action_1 = vm.Action(id="action-1-id", function=identity_action_function())
         action_2 = export_data(id="action-2-id")
 
         # Assign actions to a Vizro model so that make_actions_chain can be tested
-        mock_class_model_with_actions(id="model-id", actions=[action_1, action_2])
+        MockModelWithActions(id="model-id", actions=[action_1, action_2])
 
         assert action_1._first_in_chain is True
         assert action_2._first_in_chain is False
