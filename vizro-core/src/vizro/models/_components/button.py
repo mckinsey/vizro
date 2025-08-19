@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -11,15 +11,6 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
-
-
-def validate_text(text, info: ValidationInfo):
-    icon = info.data.get("icon")
-
-    if not text and not icon:
-        raise ValueError("Please provide either the `text` or `icon` argument.")
-
-    return text
 
 
 class Button(VizroBaseModel):
@@ -49,9 +40,7 @@ class Button(VizroBaseModel):
         AfterValidator(validate_icon),
         Field(description="Icon name from Google Material icons library.", default=""),
     ]
-    text: Annotated[
-        str, AfterValidator(validate_text), Field(description="Text to be displayed on button.", default="Click me!")
-    ]
+    text: Annotated[str, Field(description="Text to be displayed on button.", default="Click me!")]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     actions: Annotated[
         list[ActionType],
@@ -128,7 +117,7 @@ class Button(VizroBaseModel):
 
         return dbc.Button(**(defaults | self.extra))
 
-    def _build_description(self) -> list[Union[None, dbc.Tooltip, html.Span]]:
+    def _build_description(self) -> list[Optional[Union[dbc.Tooltip, html.Span]]]:
         """Conditionally returns the tooltip based on the provided `text` and `icon` arguments.
 
         If text='', the tooltip icon is omitted, and the tooltip text is shown when hovering over the button icon.
