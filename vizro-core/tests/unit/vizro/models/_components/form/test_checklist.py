@@ -127,7 +127,7 @@ class TestChecklistInstantiation:
 
     def test_checklist_trigger(self, identity_action_function):
         checklist = Checklist(id="checklist-id", actions=[Action(function=identity_action_function())])
-        action = checklist.actions[0]
+        [action] = checklist.actions
         assert action._trigger == "checklist-id.value"
 
 

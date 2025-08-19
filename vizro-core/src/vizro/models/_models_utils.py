@@ -85,7 +85,7 @@ def make_actions_chain(self):
     """Creates actions chain from a list of actions.
 
     Ideally this would have been implemented as an AfterValidator for the actions field, but we need access to
-    action_triggers class property, which needs the parent model instance. Hence, it must be done as a model validator.
+    action_triggers property, which needs the parent model instance. Hence, it must be done as a model validator.
 
     This runs after model_post_init so that self._inner_component_id will have already been set correctly in
     Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...

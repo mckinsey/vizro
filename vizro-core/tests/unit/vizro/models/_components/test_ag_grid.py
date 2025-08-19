@@ -2,9 +2,10 @@
 
 import re
 
+import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 import pytest
-from asserts import assert_component_equal
+from asserts import STRIP_ALL, assert_component_equal
 from dash import dcc, html
 from pydantic import ValidationError
 
@@ -149,16 +150,50 @@ class TestDunderMethodsAgGrid:
             ag_grid["unknown_args"]
 
     def test_underlying_id_is_auto_generated(self, standard_ag_grid):
-        ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
+        ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid)
         ag_grid.pre_build()
         # ag_grid() is the same as ag_grid.__call__()
-        assert "__input_text_ag_grid" in ag_grid()
+        result_ag_grid = ag_grid()
+
+        # Assert that the AgGrid.__call__() is the html.Div
+        assert_component_equal(result_ag_grid, html.Div(), keys_to_strip=STRIP_ALL)
+
+        # Assert that html.Div children contains the underlying AgGrid component and guard actions chain store component
+        [result_ag_grid_table, result_ag_grid_guard_store] = result_ag_grid.children
+
+        assert result_ag_grid_table.id == "__input_ag_grid_id"
+        assert_component_equal(
+            result_ag_grid_table,
+            dag.AgGrid(),
+            keys_to_strip=STRIP_ALL,
+        )
+        assert_component_equal(
+            result_ag_grid_guard_store,
+            dcc.Store(id="__input_ag_grid_id_guard_actions_chain", data=True),
+        )
 
     def test_underlying_id_is_provided(self, dash_ag_grid_with_id):
-        ag_grid = vm.AgGrid(figure=dash_ag_grid_with_id)
+        ag_grid = vm.AgGrid(id="ag_grid_id", figure=dash_ag_grid_with_id)
         ag_grid.pre_build()
         # ag_grid() is the same as ag_grid.__call__()
-        assert "underlying_table_id" in ag_grid()
+        result_ag_grid = ag_grid()
+
+        # Assert that the AgGrid.__call__() is the html.Div
+        assert_component_equal(result_ag_grid, html.Div(), keys_to_strip=STRIP_ALL)
+
+        # Assert that html.Div children contains the underlying AgGrid component and guard actions chain store component
+        [result_ag_grid_table, result_ag_grid_guard_store] = result_ag_grid.children
+
+        assert result_ag_grid_table.id == "underlying_table_id"
+        assert_component_equal(
+            result_ag_grid_table,
+            dag.AgGrid(),
+            keys_to_strip=STRIP_ALL,
+        )
+        assert_component_equal(
+            result_ag_grid_guard_store,
+            dcc.Store(id="underlying_table_id_guard_actions_chain", data=True),
+        )
 
 
 class TestProcessAgGridDataFrame:
