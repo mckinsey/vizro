@@ -58,28 +58,13 @@ Let's start with a very simple single-page app that contains a [button](../user-
 
         TODO screenshot
 
-??? details
-
-    We haven't yet defined any actions, but behind the scenes Vizro has already defined some Dash callbacks for you:
-    * A callback to change the dashboard theme when the theme selector is toggled. 
-    * A callback associated with [Dash pages](https://dash.plotly.com/urls) that will make the app work when more pages are added.
-
-    While developing, you can see all the Dash callbacks in Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). This is shown when running in debug mode with [`run(debug=True)`](../user-guides/run-deploy.md#/#automatic-reloading-and-debugging).
-
-    TODO screenshot
-
-    For a large or complex app, the callback graph quickly grows and becomes difficult to navigate. To make debugging easier you can temporarily comment out all but one page in your app to show only the relevant callbacks in the graph. 
-
-
-TODO tip somewhere When debugging, it can also be very useful to insert a breakpoint inside the code of an action.  [VS Code](https://code.visualstudio.com/docs/debugtest/debugging#_breakpoints) 
-
 So far we have specified that a button should be included in the page layout but haven't configured what should happen when the button is clicked. Let's define an action for that.
 
 !!! example "A simple action"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="1 3-13 21-24 26"}
+        ```{.python pycafe-link hl_lines="1 5-13 21-24 26"}
         from datetime import datetime, timezone
 
         import vizro.models as vm
@@ -123,12 +108,16 @@ So far we have specified that a button should be included in the page layout but
 
         TODO screenshot
 
+Congratulations on writing your first action! Before clicking the button, the text shows "Click the button". When you click the button, the `update_text` action is triggered. This Python function executes on the server to find the current time in the UTC timezone and return a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the component with `id="time_text"`. As explained in the [Dash documentation](https://dash.plotly.com/basic-callbacks), this is called _reactive programming_.
+
+As we cover increasingly uses for actions, it can be very helpful to understand the actions using a flowchart similar to Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). We can visualise the above example as follows:
+
 ```mermaid
 graph TD  
   submit_button == trigger ==> update_text([update_text]) -- output --> time_text
 ```
 
-Congratulations on writing your first action! Before clicking the button, the text shows "Click the button". When you click the button, the `update_text` action is triggered. This Python function executes on the server to find the current time and return a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the component with `id="time_text"`. As explained in the [Dash documentation](https://dash.plotly.com/basic-callbacks), this is called _reactive programming_.
+In this flowchart, the rectangular boxes refer to Vizro models that are used as trigger and output for an action. The action function is shown in a round box, and we use a thick line for the trigger. The `vm.Button` does not yet have `id="submit_button"` set; we use this label pre-emptively in the diagram to refer to the `vm.Button`.
 
 ## Runtime input
 
@@ -246,6 +235,8 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_text` actio
 
         TODO screenshot
 
+Let's look at what the actions flowchart looks like. We now have a new model with `id="clock_switch"` that is used as runtime input to the `update_text` action. We indicate runtime inputs using a dotted line. 
+
 ```mermaid
 graph TD
   subgraph screen_1[" "]
@@ -259,11 +250,6 @@ graph TD
 
 
 Note that toggling the `clock_switch` does not by itself trigger `update_text`. The switch is used as a runtime input but the action is triggered only by clicking the button. In fact, this is a key principle governing Vizro actions: **an action can have any number of inputs and outputs but only one trigger**.  
-
-TODO
-In Vizro there are two types of runtime input.
-Refer later to see what other non-runtime inputs might be
-Put all that stuff later?
 
 ## Multiple inputs and outputs
 
@@ -330,12 +316,13 @@ We have just said that an action can have any number of inputs and outputs, so l
 
         TODO screenshot
 
+Here's the updated actions flowchart: 
 
 ```mermaid
 graph TD
   subgraph screen_1[" "]
     clock_switch
-    date_format
+    date_radio_items
     submit_button
   end
 
@@ -344,7 +331,7 @@ graph TD
     date_text
   end
     
-  clock_switch & date_format -. runtime input .-> update_text -- output --> time_text & date_text
+  clock_switch & date_radio_items -. runtime input .-> update_text -- output --> time_text & date_text
   submit_button == trigger ==> update_text([update_text])
 
 ```
@@ -370,10 +357,11 @@ vm.Action(
 ## Actions chains
 
 Sometimes you need a single trigger to execute multiple actions. Vizro uses _chains_ of actions to achieve this. There are two different ways to form an actions chain:
+
 * Explicit actions chain. When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro executes these actions in order, so that `action_2` executes only when `action_1` has completed.
 * Implicit actions chain. When one action outputs a trigger of another action then the subsequent action is triggered automatically. For example, say that `action_submit` is triggerd by `vm.Button(id="submit_button")`, in other words when the button is clicked. If another action that has `output="submit_button"` completes then `action_submit` is automatically triggered as if the button had been clicked. 
 
-Looking at examples of each of these types of actions chain will make it much clearer.
+Looking at some examples of each of these types of actions chain will make it much clearer.
 
 ### Explicit actions chain
 
@@ -396,26 +384,7 @@ vm.Button(
 )
 ```
 
-
-```mermaid
-graph TD
-  subgraph screen_1[" "]
-    clock_switch
-    date_format
-    submit_button
-  end
-
-  subgraph screen_2[" "]
-    time_text
-    date_text
-    weather_text
-  end
-    
-  clock_switch & date_format -. runtime input .-> update_text -- output --> time_text & date_text & weather_text
-  fetch_weather -- output --> weather_text
-  submit_button == trigger ==> update_text
-  update_text([update_text]) == trigger ==> fetch_weather([fetch_weather])
-```
+The full code for this explicit actions chain is shown below.
 
 !!! example "Explicit actions chain"
 
@@ -492,11 +461,33 @@ graph TD
 
         TODO screenshot
 
+The actions flowchart now has a new output for `weather_text` and also a new action `fetch_weather`. The trigger for this is completion of the action `update_text`. Note that both these actions share the same `weather_text`; in Vizro, a model can be an input or output for any number of actions.
+
+```mermaid
+graph TD
+  subgraph screen_1[" "]
+    clock_switch
+    date_radio_items
+    submit_button
+  end
+
+  subgraph screen_2[" "]
+    time_text
+    date_text
+    weather_text
+  end
+    
+  clock_switch & date_radio_items -. runtime input .-> update_text -- output --> time_text & date_text & weather_text
+  fetch_weather -- output --> weather_text
+  submit_button == trigger ==> update_text
+  update_text([update_text]) == trigger ==> fetch_weather([fetch_weather])
+```
+
 ### Implicit actions chain
 
-Now we're going to add a dropdown menu that allows the user to choose between seeing the weather in Washington, D.C. or in Berlin. When the user selects the city we also update the time and date shown to the format preferred by that location: for Washington, D.C., this is 12-hour clock and MM/DD/YY format; for Berlin, it is 24-hour clock and DD/MM/YY format. When these formats update, we also want to submit the form. just as if the user had clicked the `"vm.Button(id="submit_button")`.
+Now we're going to add a dropdown menu that allows the user to choose between seeing the weather in Washington, D.C. or in Berlin. When the user selects the city we also update the time and date shown to the format preferred by that location: for Washington, D.C., this is 12-hour clock and MM/DD/YY format; for Berlin, it is 24-hour clock and DD/MM/YY format. When these formats update, we also want to submit the form just as if the user had clicked `vm.Button(id="submit_button")`.
 
-To achieve this, we write a new action `update_time_date_formats` that sets the time and date formats and also outputs `"vm.Button(id="submit_button")`. When this action completes, Vizro automatically triggers the actions that would be triggered by clicking the button. This forms an implicit chain connection between the `update_time_date_formats` action and the actions associated with the button. Even though we have not explicitly chained the `update_time_date_formats` action to any others, it is implicitly chained to `update_text` since the `update_time_date_formats` automatically triggers `update_text`. Since `update_text` is itself the first action in an explicit chain, after it has completed, the subsequent action `fetch_weather` executes. 
+To achieve this, we write a new action `update_time_date_formats` that sets the time and date formats and also outputs to `submit_button`. When this action completes, Vizro automatically triggers the actions that would be triggered by clicking `submit_button`. This forms an implicit connection between the `update_time_date_formats` action and the actions associated with the button. Even though we have not explicitly chained the `update_time_date_formats` action to any others, it is implicitly chained to `update_text` since the `update_time_date_formats` automatically triggers `update_text`. Since `update_text` is itself the first action in an explicit chain, after it has completed, the subsequent action `fetch_weather` executes. 
 
 Hence when the location dropdown is updated, the following three actions are triggered in order:
 
@@ -504,35 +495,6 @@ Hence when the location dropdown is updated, the following three actions are tri
 2. `update_text`
 3. `fetch_weather`
 
-```mermaid
-graph TD
-  subgraph screen_1[" "]
-    location_dropdown
-  end
-
-  subgraph screen_2[" "]
-    clock_switch
-    date_radio_items
-    submit_button
-  end
-
-  subgraph screen_3[" "]
-    time_text
-    date_text
-    weather_text
-  end
- 
-  clock_switch & date_radio_items -. runtime input .-> update_text -- output --> time_text & date_text & weather_text
-  location_dropdown -. runtime input .-> update_time_date_formats -- output --> clock_switch & date_radio_items & submit_button
- 
-  location_dropdown == trigger ==> update_time_date_formats
-  update_time_date_formats([update_time_date_formats]) == trigger ==> submit_button
-  submit_button == trigger ==> update_text
-  update_text([update_text]) == trigger ==> fetch_weather([fetch_weather])
-  
-  location_dropdown -. runtime input .-> fetch_weather -- output --> weather_text
-
-```
 !!! example "Implicit actions chain"
 
     === "app.py"
@@ -627,118 +589,156 @@ graph TD
 
         TODO screenshot
 
-Note that an implicit action chain can only be formed by triggering the _first_ action of an explicit chain (or a single action, if there is only one action in the chain). Here, `update_time_date_formats` triggers the first action `update_text` in the chain `[update_text, fetch_weather]`, which then triggers the chained action `fetch_weather`. It is not possible for an action to implicitly chain on to `fetch_weather`: there is no way for `fetch_weather` to run other than through the completion of `update_text`. 
-
-It is still possible to set the time and date formats and submit the form manually, as before. For example, you might like to know the weather in Berlin but prefer to use the 12-hour clock. A user can select Berlin, click the switch to use 12-hour clock and then submit the form again. However, clicking the submit button now feels quite cumbersome. We are going to implement a few final enhancements to our example to improve the user experience and learn a few more things about actions. 
-
-## 
-
-```{.python pycafe-link hl_lines="1 2 10-25 41-42 61-67 70-80"}
-from datetime import datetime
-from zoneinfo import ZoneInfo
-
-import requests
-import vizro.models as vm
-from vizro import Vizro
-from vizro.models.types import capture
-
-
-@capture("action")
-def update_time_text(use_24_hour_clock, location):
-    time_format = "%H:%M:%S %Z" if use_24_hour_clock else "%I:%M:%S %p %Z"
-    timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
-    now = datetime.now(ZoneInfo(timezone_name))
-    time = now.strftime(time_format)
-    return f"The time is {time}"
-
-
-@capture("action")
-def update_date_text(date_format, location):
-    date_format = "%d/%m/%y" if date_format == "DD/MM/YY" else "%m/%d/%y"
-    timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
-    now = datetime.now(ZoneInfo(timezone_name))
-    date = now.strftime(date_format)
-    return f"The date is {date}"
-
-
-@capture("action")
-def fetch_weather(location):
-    berlin_params = {"latitude": 52.5, "longitude": 13.4, "current": "temperature_2m"}
-    washington_dc_params = {"latitude": 38.9, "longitude": -77.0, "current": "temperature_2m"}
-    params = berlin_params if location == "Berlin" else washington_dc_params
-    r = requests.get("https://api.open-meteo.com/v1/forecast", params=params)
-    temperature = r.json()["current"]["temperature_2m"]
-    return f"The current temperature in {location} is {temperature}°C"
-
-
-@capture("action")
-def update_time_date_formats(location):
-    if location == "Berlin":
-        return True, "DD/MM/YY", "Fetching current weather..."
-    return False, "MM/DD/YY", "Fetching current weather..."
-
-
-vm.Container.add_type("components", vm.Switch)
-vm.Container.add_type("components", vm.RadioItems)
-vm.Container.add_type("components", vm.Dropdown)
-
-page = vm.Page(
-    title="My first custom action",
-    layout=vm.Flex(),
-    components=[
-        vm.Container(
-            layout=vm.Flex(direction="row"),
-            variant="outlined",
-            components=[
-                vm.Dropdown(
-                    id="location_dropdown",
-                    options=["Berlin", "Washington, D.C."],
-                    multi=False,
-                    actions=[
-                        vm.Action(
-                            function=update_time_date_formats("location_dropdown"),
-                            outputs=["clock_switch", "date_radio_items", "weather_text"],
-                        ),
-                        vm.Action(function=fetch_weather("location_dropdown"), outputs="weather_text"),
-                    ],
-                    extra={"style": {"min-width": "200px"}},
-                ),
-                vm.Switch(
-                    id="clock_switch",
-                    title="24-hour clock",
-                    value=True,
-                    actions=vm.Action(function=update_time_text("clock_switch", "location_dropdown"), outputs="time_text"),
-                ),
-                vm.RadioItems(
-                    id="date_radio_items",
-                    options=["DD/MM/YY", "MM/DD/YY"],
-                    actions=vm.Action(function=update_date_text("date_radio_items", "location_dropdown"), outputs="date_text),
-                ),
-            ],
-        ),
-        vm.Text(id="time_text", text="Click the button"),
-        vm.Text(id="date_text", text="Click the button"),
-        vm.Text(id="weather_text", text="Click the button"),
-    ],
-)
-
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
-```
-
+Our actions flowchart is starting to grow quite large now that there's three actions, but really all that's different is the new `update_time_date_formats` actions and its associated inputs, outputs and triggers. Try following the line of triggers denoted with thick arrows. The actions `[update_date, fetch_weather]` that are in an explicit chain are directly connected by a thick arrow. On the other hand, the implicit connection between `update_time_date_formats` and `update_text` is not a direct connection but instead goes through the `submit_button` model. Note also that the `location_dropdown` model is used as a trigger and a runtime input simultaneously.
 
 ```mermaid
 graph TD
   subgraph screen_1[" "]
-    location_dropdown
+    clock_switch
+    date_radio_items
+    submit_button
   end
 
   subgraph screen_2[" "]
+    time_text
+    date_text
+    weather_text
+  end
+ 
+  clock_switch & date_radio_items -. runtime input .-> update_text -- output --> time_text & date_text & weather_text
+  location_dropdown -. runtime input .-> update_time_date_formats -- output --> clock_switch & date_radio_items & submit_button
+ 
+  location_dropdown == trigger ==> update_time_date_formats([update_time_date_formats])
+  submit_button == trigger ==> update_text
+  update_text([update_text]) == trigger ==> fetch_weather([fetch_weather])
+  
+  location_dropdown -. runtime input .-> fetch_weather -- output --> weather_text
+```
+
+An implicit action chain can only be formed by triggering the _first_ action of an explicit chain (or a single action, if there is only one action in the chain). Here, `update_time_date_formats` triggers the first action `update_text` in the chain `[update_text, fetch_weather]`, which then triggers the chained action `fetch_weather`. It is not possible for an action to implicitly chain on to `fetch_weather` directly: there is no way for `fetch_weather` to run other than through the completion of `update_text`. 
+
+It is still possible to set the time and date formats and submit the form manually, as before. For example, you might like to know the weather in Berlin but prefer to use the 12-hour clock. A user can select Berlin, click the switch to use 12-hour clock and then submit the form again. However, clicking the submit button now feels quite cumbersome. We are going to implement a few final enhancements to our example to improve the user experience. 
+
+## Parallel actions
+
+To make the app feel more responsive, we're going to remove the submit button and instead use  `clock_switch` and `date_radio_items` as triggers themselves. The `update_text` action currently uses both `clock_switch` and `date_radio_items` as inputs and returns both `time_text` and `date_text` as outputs. However, really the `clock_switch` only affects `time_text`, and `date_radio_items` only affects `date_text`. Let's split `update_text` into two independent actions to reflect this: `update_time_text`, which updates only `time_text`, and `update_date_text`, which updates only `date_text`. As an additional enhancement we add `location_dropdown` as an input to these actions so that we can use the correct timezone for Washington, D.C. and Berlin. 
+
+!!! example "Parallel actions"
+
+    === "app.py"
+        ```{.python pycafe-link hl_lines="1-2 10-25 41-42 64 66 74 79"}
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        
+        import requests
+        import vizro.models as vm
+        from vizro import Vizro
+        from vizro.models.types import capture
+        
+        
+        @capture("action")
+        def update_time_text(use_24_hour_clock, location):
+            time_format = "%H:%M:%S %Z" if use_24_hour_clock else "%I:%M:%S %p %Z"
+            timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
+            now = datetime.now(ZoneInfo(timezone_name))  # (1)!
+            time = now.strftime(time_format)
+            return f"The time is {time}"
+        
+        
+        @capture("action")
+        def update_date_text(date_format, location):
+            date_format = "%d/%m/%y" if date_format == "DD/MM/YY" else "%m/%d/%y"
+            timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
+            now = datetime.now(ZoneInfo(timezone_name))
+            date = now.strftime(date_format)
+            return f"The date is {date}"
+        
+        
+        @capture("action")
+        def fetch_weather(location):
+            berlin_params = {"latitude": 52.5, "longitude": 13.4, "current": "temperature_2m"}
+            washington_dc_params = {"latitude": 38.9, "longitude": -77.0, "current": "temperature_2m"}
+            params = berlin_params if location == "Berlin" else washington_dc_params
+            r = requests.get("https://api.open-meteo.com/v1/forecast", params=params)
+            temperature = r.json()["current"]["temperature_2m"]
+            return f"The current temperature in {location} is {temperature}°C"
+        
+        
+        @capture("action")
+        def update_time_date_formats(location):
+            if location == "Berlin":
+                return True, "DD/MM/YY", "Fetching current weather..."  # (1)!
+            return False, "MM/DD/YY", "Fetching current weather..."
+        
+        
+        vm.Container.add_type("components", vm.Switch)
+        vm.Container.add_type("components", vm.RadioItems)
+        vm.Container.add_type("components", vm.Dropdown)
+        
+        page = vm.Page(
+            title="My first custom action",
+            layout=vm.Flex(),
+            components=[
+                vm.Container(
+                    layout=vm.Flex(direction="row"),
+                    variant="outlined",
+                    components=[
+                        vm.Dropdown(
+                            id="location_dropdown",
+                            options=["Berlin", "Washington, D.C."],
+                            multi=False,
+                            actions=[
+                                vm.Action(
+                                    function=update_time_date_formats("location_dropdown"),
+                                    outputs=["clock_switch", "date_radio_items", "weather_text"],
+                                ),
+                                vm.Action(function=fetch_weather("location_dropdown"), outputs="weather_text"),
+                            ],
+                            extra={"style": {"min-width": "200px"}},
+                        ),
+                        vm.Switch(
+                            id="clock_switch",
+                            title="24-hour clock",
+                            value=True,
+                            actions=vm.Action(function=update_time_text("clock_switch", "location_dropdown"), outputs="time_text"),  # (3)!
+                        ),
+                        vm.RadioItems(
+                            id="date_radio_items",
+                            options=["DD/MM/YY", "MM/DD/YY"],
+                            actions=vm.Action(function=update_date_text("date_radio_items", "location_dropdown"), outputs="date_text"),
+                        ),
+                    ],
+                ),
+                vm.Text(id="time_text", text="Click the button"),
+                vm.Text(id="date_text", text="Click the button"),
+                vm.Text(id="weather_text", text="Click the button"),
+            ],
+        )
+        
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+        
+
+        1. `update_time_text` and `update_date_text` are now timezone-sensitive. We use the `location` set by the dropdown to choose the appropriate timezone.
+        2. Now that `submit_button` no longer exists, it is the responsibility of `update_time_date_formats` to update `weather_text` with the "Fetching current weather..." text. This action is otherwise unchanged. 
+
+    === "Result"
+
+        TODO screenshot
+
+Play around with the app for a while to make sure you understand its behavior, When you click the switch, just the time text updates, and when you click the radio items, just the date text updates. When you use the dropdown, the switch and radio items update (which in turns updates the time and date text) and the weather is fetched after an initial holding message is shown.
+
+Now that you're familiar with the notation of an actions flowchart we're going to make a few simplifications so that it doesn't get too large to understand easily. We no longer show the runtime inputs at all, and we omit the labels from the lines showing outputs and triggers (still shown with thick lines). 
+
+```mermaid
+graph TD
+  subgraph screen_1[" "]
     clock_switch
     date_radio_items
   end
 
-  subgraph screen_3[" "]
+  subgraph screen_2[" "]
     time_text
     date_text
     weather_text
@@ -746,7 +746,7 @@ graph TD
  
   update_time_text --> time_text
   update_date_text --> date_text
-  update_time_date_formats --> clock_switch & date_radio_items & weather_text
+  update_time_date_formats --> weather_text & clock_switch & date_radio_items 
   fetch_weather --> weather_text
 
   location_dropdown ==> update_time_date_formats([update_time_date_formats])
@@ -756,12 +756,15 @@ graph TD
 
 ```
 
-have omitted labels and runtime inputs
+We still have an explicit actions chain `[update_time_date_formats, fetch_weather]`, since these are directly connected by a thick arrow. The connection between `update_time_date_formats` and the `update_time_text` and `update_date_text` actions is implicit since there is no direct connection; the line goes through intermediate models `clock_switch` and `date_radio_items`.
 
-go back and comment on utc
+We now have four actions. In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, it also implicitly triggers `update_time_text` and `update_date_text` simultaneously.  
+
+
+
 
 note possible as explicit
-
+not one way to structure architecture
 `raise PreventUpdate` etc. what if first action crashes
 execution of other actions in chain isolated, can only trigger first
 security
@@ -947,8 +950,29 @@ vizro has built in actions
 attach to trigger not define globally
 need to provide id in Dash for trigger component
 trigger not passed in
+duplicated outputs fine
 one vs multiple triggers
 
 
 
 """
+
+In Vizro there are two types of runtime input. In section on runtime inputs, refer later to see what other non-runtime inputs might be
+
+
+# Dash section
+??? details
+
+    We haven't yet defined any actions, but behind the scenes Vizro has already defined some Dash callbacks for you:
+
+    * A callback to change the dashboard theme when the theme selector is toggled. 
+    * A callback associated with [Dash pages](https://dash.plotly.com/urls) that will make the app work when more pages are added.
+
+    While developing, you can see all the Dash callbacks in Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). This is shown when running in debug mode with [`run(debug=True)`](../user-guides/run-deploy.md#/#automatic-reloading-and-debugging).
+
+    TODO screenshot
+
+    For a large or complex app, the callback graph quickly grows and becomes difficult to navigate. To make debugging easier you can temporarily comment out all but one page in your app to show only the relevant callbacks in the graph. 
+
+
+TODO tip somewhere When debugging, it can also be very useful to insert a breakpoint inside the code of an action.  [VS Code](https://code.visualstudio.com/docs/debugtest/debugging#_breakpoints) 
