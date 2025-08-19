@@ -20,13 +20,14 @@ div.Select-menu-outer {
 
 /* Dropdown menu options */
 div.VirtualizedSelectOption {
-  color: var(--bs-primary);
+  color: var(--bs-body-color);
   font-weight: 400;
 }
 
 /* Dropdown menu hover effect */
 div.VirtualizedSelectFocusedOption {
   background-color: var(--hover-bg-subtle);
+  color: var(--bs-primary);
 }
 
 /* Input box for existing values and user input */
@@ -80,7 +81,7 @@ div.Select--multi .Select-value {
 
 /* Tag: Label */
 div.Select--multi .Select-value-label {
-  color: var(--bs-primary);
+  color: var(--bs-body-color);
   line-height: 1.5rem;
   padding: 0 4px;
 }
@@ -116,7 +117,7 @@ div.has-value.is-pseudo-focused.Select--single
   .Select-value
   .Select-value-label {
   color: var(
-    --text-primary
+    --bs-body-color
   ) !important; /* Required so text color don't change caused by adding table */
 }
 

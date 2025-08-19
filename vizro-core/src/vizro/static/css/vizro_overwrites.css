@@ -76,3 +76,9 @@ div.form-check.form-switch {
   display: flex;
   gap: 8px;
 }
+
+
+.card-nav:hover, .card-nav.hover {
+  background: var(--bs-primary-bg-subtle);
+  border: 1px solid var(--bs-border-color);
+}
