@@ -69,15 +69,14 @@ async function copyMarkdownContent() {
       if (copyButton) {
         copyButton.innerHTML =
           '<span class="material-symbols-outlined">check_circle</span> Copied!';
+
+        setTimeout(() => {
+          copyButton.innerHTML = originalHTML;
+          copyButton.disabled = false;
+        }, 1500);
       }
 
       // Reset to original state after 1.5 seconds total
-      setTimeout(() => {
-        if (copyButton) {
-          copyButton.innerHTML = originalHTML;
-          copyButton.disabled = false;
-        }
-      }, 1500);
     }, remainingTime);
   } catch (fetchError) {
     console.error("Error fetching markdown:", fetchError);
@@ -136,7 +135,7 @@ function addMarkdownButtons() {
   ];
 
   // Create buttons from configuration
-  buttonConfigs.forEach((config) => {
+  buttonConfigs.forEach(config => {
     const button = document.createElement("button");
     button.id = config.id;
 
