@@ -42,7 +42,7 @@ decades for that name. Use a unique color for each name.
 
 When the LLM is ready, it opens an instance of [PyCafe](https://py.cafe/) and displays the chart in a Vizro dashboard. The exact result depends on the LLM and what you receive may vary. This is one possible output:
 
-![](../../assets/images/song-decades--iteration1.png)
+![](../../assets/images/song-decades-iteration1.png)
 
 ### Iteration on the bump chart
 
@@ -93,8 +93,6 @@ The prompt iteration generates this output, although your version may be slightl
 ![](../../assets/images/song-decades-iteration3.png)
 
 The exact positioning of the label seems to be difficult to achieve, and in part this is expected when working with Plotly. You may need to iterate a few times to get the exact placement, or you may find other issues crop up, since that is the nature of using a non-deterministic model. 
-
-![](../../assets/images/song-decades-iteration4.png)
 
 When you are happy with your version, it is a good idea to copy the configuration from the `validate_dashboard_config` section of the output and save it to GitHub, in case you need it in future. You may also want to convert the PyCafe code to save it as a public project, using the Push button:
 
