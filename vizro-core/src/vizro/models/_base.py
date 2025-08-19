@@ -9,7 +9,6 @@ import autoflake
 import black
 from pydantic import (
     BaseModel,
-    BeforeValidator,
     ConfigDict,
     Field,
     SerializationInfo,
