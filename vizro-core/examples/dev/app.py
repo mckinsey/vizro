@@ -1201,7 +1201,10 @@ dashboard = vm.Dashboard(
 if __name__ == "__main__":
     # Move app definition outside of __main__ block for the HF demo to work
     # BOOTSTRAP, MINTY, LUMEN, CYBORG, DARKLY, LITERA, SLATE, SOLAR, SUPERHERO, UNITED, YETI
-    app = Vizro(external_stylesheets=[dbc.themes.MINTY]).build(dashboard)
+    # GOOD: BOOTSTRAP, MINTY, LITERA, UNITED
+    # OK: LUMEN, SOLAR
+    # NAJA: CYBORG, DARKLY, SLATE, SUPERHERO
+    app = Vizro(external_stylesheets=[dbc.themes.YETI]).build(dashboard)
     app.dash.layout.children.append(
         dbc.NavLink(
             ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
