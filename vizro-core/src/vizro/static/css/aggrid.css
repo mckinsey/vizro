@@ -1,7 +1,7 @@
 .ag-theme-quartz.ag-theme-vizro,
 .ag-theme-quartz-dark.ag-theme-vizro {
   --ag-font-family: inter, sans-serif, arial, serif;
-  --ag-active-color: var(--stateOverlays-selectedHover);
+  --ag-active-color: var(--bs-border-color-translucent);
   --ag-background-color: transparent;
   --ag-odd-row-background-color: transparent;
   --ag-header-foreground-color: var(--bs-secondary);
@@ -17,7 +17,7 @@
   --ag-row-border-style: solid;
   --ag-row-border-color: var(--bs-border-color);
   --ag-row-border-width: 1px;
-  --ag-selected-row-background-color: var(--stateOverlays-selected);
+  --ag-selected-row-background-color: var(--bs-primary-bg-subtle);
   --ag-checkbox-checked-color: var(--bs-primary);
   --ag-header-column-resize-handle-display: block;
   --ag-header-column-resize-handle-height: 30%;
@@ -48,7 +48,7 @@
 }
 
 #dashboard-container .ag-header-cell:hover {
-  border-bottom: 1px solid var(--border-hover);
+  border-bottom: 1px solid var(--bs-primary);
   color: var(--bs-primary);
 }
 
@@ -62,18 +62,18 @@
 }
 
 #dashboard-container .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
-  background: var(--stateOverlays-selected);
+  background: var(--bs-primary-bg-subtle);
 }
 
 /* Pop up menu ----- */
 #dashboard-container .ag-menu {
-  background-color: var(--surfaces-bg02);
+  background-color: var(--bs-tertiary-bg);
   border: 1px solid var(--bs-border-color-translucent);
   color: var(--bs-primary);
 }
 
 #dashboard-container .ag-ltr .ag-filter-filter input {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
   box-shadow: var(--bs-box-shadow-sm);
   display: flex;
   font-size: 0.875rem;
@@ -92,12 +92,12 @@
 }
 
 #dashboard-container .ag-filter-select .ag-picker-field-wrapper {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
   box-shadow: var(--bs-box-shadow-sm);
 }
 
 #dashboard-container .ag-select-list {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
   box-shadow: var(--bs-box-shadow-sm);
   color: var(--bs-primary);
   font-size: 0.875rem;
@@ -105,11 +105,11 @@
 }
 
 #dashboard-container .ag-select-list-item.ag-active-item {
-  background-color: var(--stateOverlays-hover);
+  background-color: var(--hover-bg-subtle);
 }
 
 #dashboard-container .ag-radio-button-input-wrapper {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
 }
 
 #dashboard-container .ag-radio-button-input-wrapper:focus-within {
@@ -171,6 +171,7 @@
   text-transform: none;
 }
 
+/* TODO: Remove stateOverlays here once we've figured out how to simplify buttons */
 #dashboard-container .ag-standard-button:hover {
   background: linear-gradient(
       var(--stateOverlays-hover-inverted),
