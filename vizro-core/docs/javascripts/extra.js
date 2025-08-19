@@ -135,7 +135,7 @@ function addMarkdownButtons() {
   ];
 
   // Create buttons from configuration
-  buttonConfigs.forEach(config => {
+  buttonConfigs.forEach((config) => {
     const button = document.createElement("button");
     button.id = config.id;
 
