@@ -1202,7 +1202,7 @@ if __name__ == "__main__":
     # Move app definition outside of __main__ block for the HF demo to work
     # DBC-THEMES: BOOTSTRAP, MINTY, LUMEN, CYBORG, DARKLY, LITERA, SLATE, SOLAR, SUPERHERO, UNITED, YETI
     # GOOD: BOOTSTRAP, MINTY, LITERA, UNITED, LUMEN
-    # NOT SO GOOD: SOLAR, CYBORG, DARKLY, SLATE, SUPERHERO (these are all dark themes only, and don't look good on light theme)
+    # NOT SO GOOD: SOLAR, CYBORG, DARKLY, SLATE, SUPERHERO (all dark themes only don't look good on light)
     app = Vizro(external_stylesheets=[dbc.themes.DARKLY]).build(dashboard)
     app.dash.layout.children.append(
         dbc.NavLink(
