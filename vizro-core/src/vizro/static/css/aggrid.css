@@ -105,7 +105,7 @@
 }
 
 #dashboard-container .ag-select-list-item.ag-active-item {
-  background-color: var(--stateOverlays-hover);
+  background-color: var(--hover-bg-subtle);
 }
 
 #dashboard-container .ag-radio-button-input-wrapper {

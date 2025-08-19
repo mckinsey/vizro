@@ -25,12 +25,11 @@
 }
 
 .mantine-DatePickerInput-day[data-in-range] {
-  background: var(--stateOverlays-selectedRange);
   color: var(--bs-primary);
 }
 
 .mantine-DatePickerInput-day[data-selected] {
-  background: var(--stateOverlays-selected-inverted);
+  background: var(--bs-primary);
   color: var(--text-primary-inverted);
   text-decoration: underline;
 }
@@ -45,8 +44,8 @@
 .mantine-DatePickerInput-day:hover,
 .mantine-PickerControl-pickerControl:hover,
 .mantine-DatePickerInput-monthsListControl:hover {
-  background: var(--stateOverlays-hover) !important;
-  color: var(--bs-primary-text-emphasis) !important;
+  background: var(--bs-primary) !important;
+  color: var(--text-primary-inverted) !important;
 }
 
 /* Header inside calendar view */

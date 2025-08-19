@@ -26,7 +26,7 @@ div.VirtualizedSelectOption {
 
 /* Dropdown menu hover effect */
 div.VirtualizedSelectFocusedOption {
-  background-color: var(--stateOverlays-hover);
+  background-color: var(--hover-bg-subtle);
 }
 
 /* Input box for existing values and user input */
