@@ -59,7 +59,7 @@ def set_path(path: str, info: ValidationInfo) -> str:
     # maybe remove?
     if path:
         if _check_for_duplicate_path(path):
-            raise ValueError(f"Path {path} is already used by another page.")
+            raise ValueError(f"Path {path} cannot be used by more than one page.")
         return clean_path(path, "-_/")
 
     # Changes to previous iteration before PR 1339:

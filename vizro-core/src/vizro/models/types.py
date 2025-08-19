@@ -671,6 +671,8 @@ ComponentType = Annotated[
 [`Text`][vizro.models.Text], [`Tabs`][vizro.models.Tabs],
 or [`AgGrid`][vizro.models.AgGrid]."""
 
+# TODO: ideally description would have json_schema_input_type=Union[str, ModelID] because of the ID/title ambiguity,
+#  but this requires pydantic >= 2.9.
 NavPagesType = Union[list[ModelID], dict[str, list[ModelID]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 

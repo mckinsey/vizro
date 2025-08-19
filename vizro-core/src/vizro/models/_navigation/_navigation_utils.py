@@ -13,7 +13,7 @@ from vizro.models.types import ModelID, NavPagesType
 # Error message constants
 _AMBIGUOUS_PAGE_ERROR_MSG = (
     "Ambiguous page reference '{page_ref}': Multiple pages found with title '{page_ref}'. "
-    "Page IDs: {page_ids}. Page titles must be unique to avoid ambiguity."
+    "Page IDs: {page_ids}. You should refer to these pages by ID to avoid ambiguity."
 )
 _UNKNOWN_PAGES_ERROR_MSG = (
     "Unknown page ID or title {unknown_pages} provided to argument 'pages'. Available page titles: {available_titles}"
@@ -49,11 +49,11 @@ def _resolve_list_of_page_references(
     validated_list: list[ModelID] = []
 
     for page_ref in group_pages:
-        resolved_id = _resolve_page_reference(page_ref, title_to_ids)
-        if resolved_id is None:
+        resolved_ref = _resolve_page_reference(page_ref, title_to_ids)
+        if resolved_ref is None:
             unknown_pages.append(page_ref)
         else:
-            validated_list.append(resolved_id)
+            validated_list.append(resolved_ref)
     return unknown_pages, validated_list
 
 
@@ -68,20 +68,24 @@ def _validate_pages(pages: NavPagesType) -> NavPagesType:
     for page in model_manager._get_models(Page):
         title_to_ids[page.title].append(page.id)
 
-    # Check if pages is empty (either an empty list or a dict with empty values)
-    if (isinstance(pages, dict) and not any(pages.values())) or (isinstance(pages, list) and not pages):
-        raise ValueError(_EMPTY_PAGES_ERROR_MSG)
-
     # Process pages based on structure (dict or list)
+    unknown_pages: list[str] = []
+
     if isinstance(pages, dict):
+        if not any(pages.values()):
+            raise ValueError(_EMPTY_PAGES_ERROR_MSG)
+
         validated_dict = {}
-        unknown_pages = []
 
         for group_name, group_pages in pages.items():
-            group_unknown_pages, validated_list = _resolve_list_of_page_references(group_pages, title_to_ids)
-            validated_dict[group_name] = validated_list
+            group_unknown_pages, validated_list_in_group = _resolve_list_of_page_references(group_pages, title_to_ids)
+            validated_dict[group_name] = validated_list_in_group
             unknown_pages.extend(group_unknown_pages)
+
     else:
+        if not pages:
+            raise ValueError(_EMPTY_PAGES_ERROR_MSG)
+
         unknown_pages, validated_list = _resolve_list_of_page_references(pages, title_to_ids)
 
     if unknown_pages:
@@ -89,8 +93,7 @@ def _validate_pages(pages: NavPagesType) -> NavPagesType:
         raise ValueError(
             _UNKNOWN_PAGES_ERROR_MSG.format(unknown_pages=unknown_pages, available_titles=available_titles)
         )
-    return_value = validated_dict if isinstance(pages, dict) else validated_list
-    return return_value
+    return validated_dict if isinstance(pages, dict) else validated_list
 
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
