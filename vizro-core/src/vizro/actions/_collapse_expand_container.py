@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -20,14 +20,23 @@ class collapse_expand_containers(_AbstractAction):
     collapse: list[ModelID] = Field(default=[], description="List of collapsible container ids to collapse.")
     expand: list[ModelID] = Field(default=[], description="List of collapsible container ids to expand.")
     #  toggle would need multiple state as input. Maybe possible in future but not now. Add new ticket for this
-    # toggle: list[str]
+    # toggle: list[ModelID]
+
+    @model_validator(mode="after")
+    def validate_collapse_or_expand_present(self):
+        if not self.collapse and not self.expand:
+            raise ValueError("Please provide either the `collapse` or `expand` argument.")
+
+        return self
+
+    @model_validator(mode="after")
+    def alidate_collapse_and_expand_overlap(self):
+        if set(self.collapse) & set(self.expand):
+            raise ValueError("Collapse and expand lists cannot contain the same elements!")
 
     @_log_call
     def pre_build(self):
         from vizro.models import Container
-
-        if not self.collapse and not self.expand:
-            raise ValueError("At least one of 'collapse' or 'expand' lists must be defined.")
 
         user_container_ids = self.collapse + self.expand
 
@@ -43,9 +52,6 @@ class collapse_expand_containers(_AbstractAction):
 
         if invalid_targets:
             raise ValueError(f"Invalid component IDs found: {invalid_targets}")
-
-        if set(self.collapse) & set(self.expand):
-            raise ValueError("Collapse and expand lists cannot contain the same elements!")
 
     def function(self) -> dict[ModelID, Any]:
         """Collapse or expand containers on page."""
