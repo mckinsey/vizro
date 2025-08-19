@@ -79,7 +79,6 @@ async function copyMarkdownContent() {
         }
       }, 1500);
     }, remainingTime);
-
   } catch (fetchError) {
     console.error("Error fetching markdown:", fetchError);
 
