@@ -12,7 +12,8 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 [data-bs-theme="light"] {
   --left-side-bg: var(--bs-body-bg);
-  /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white.*/
+
+  /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --right-side-bg-iterated: var(--surfaces-bg-card);
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --mantine-radius-default: 0;
