@@ -5,7 +5,7 @@
 
 .rc-slider-rail,
 .rc-slider-track {
-  background-color: var(--slider-rail-bg);
+  background-color: var(--hover-bg-subtle);
   height: 2px;
 }
 
@@ -14,8 +14,8 @@
 }
 
 .rc-slider-dot {
-  background-color: var(--slider-rail-bg);
-  border: var(--field-enabled);
+  background-color: var(--hover-bg-subtle);
+  border: none;
   bottom: 0;
   height: 6px;
   width: 6px;
@@ -29,7 +29,7 @@
 .rc-slider-handle:hover,
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging,
 .rc-slider-handle-click-focused:focus {
-  background-color: var(--surfaces-bg01);
+  background-color: var(--bs-secondary-bg);
   border: solid 6px var(--bs-primary);
   border-color: var(--bs-primary);
   border-radius: 100%;
