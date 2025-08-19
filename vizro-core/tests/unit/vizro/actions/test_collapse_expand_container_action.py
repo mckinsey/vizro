@@ -52,7 +52,22 @@ class TestCollapseExpandContainersActionPreBuild:
             action.pre_build()
 
 
+@pytest.mark.usefixtures("managers_one_page_two_containers")
 class TestCollapseExpandContainersFunction:
     """Tests collapse_expand_containers functionality."""
 
-    pass
+    def test_collapse_expand_container_function(self):
+        # Add action to relevant component
+        model_manager["button"].actions = [
+            collapse_expand_containers(
+                id="test_action", collapse=["container_expanded"], expand=["container_collapsed"]
+            )
+        ]
+        action = model_manager["test_action"]
+        action.pre_build()
+        # Run action by picking the above added action function and executing it with ()
+        result = action.function()
+
+        expected = {"container_expanded": True, "container_collapsed": False}
+
+        assert result == expected
