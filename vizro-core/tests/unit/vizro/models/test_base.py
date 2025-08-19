@@ -237,10 +237,6 @@ class TestModelID:
         model = Model(id="model_id")
         assert model.id == "model_id"
 
-    def test_model_id_set_to_none(self):
-        model = Model(id=None)
-        assert str(uuid.UUID(model.id)) == model.id
-
     def test_model_id_set_to_empty_string(self):
         model = Model(id="")
         assert model.id == ""
