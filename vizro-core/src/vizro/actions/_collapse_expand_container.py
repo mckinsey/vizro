@@ -12,9 +12,10 @@ class collapse_expand_containers(_AbstractAction):
     """Exports visible data of target charts/components.
 
     Args:
-        collapse (list[ModelID]): List of collapsible container ids to collapse.
-        expand (list[ModelID]): List of collapsible container ids to expand.
+        collapse (list[ModelID]): List of collapsible container ids to collapse. Defaults to `[]`.
+        expand (list[ModelID]): List of collapsible container ids to expand. Defaults to `[]`.
     """
+
     type: Literal["collapse_expand_containers"] = "collapse_expand_containers"
     collapse: list[ModelID] = Field(default=[], description="List of collapsible container ids to collapse.")
     expand: list[ModelID] = Field(default=[], description="List of collapsible container ids to expand.")
@@ -47,7 +48,7 @@ class collapse_expand_containers(_AbstractAction):
             raise ValueError("Collapse and expand lists cannot contain the same elements!")
 
     def function(self) -> dict[ModelID, Any]:
-        """Collapsed or expand containers on page."""
+        """Collapse or expand containers on page."""
         return dict.fromkeys(self.collapse, True) | dict.fromkeys(self.expand, False)
 
     @property
