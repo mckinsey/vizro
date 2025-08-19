@@ -119,6 +119,7 @@ graph TD
 
 In this flowchart, the rectangular boxes refer to Vizro models that are used as trigger and output for an action. The action function is shown in a round box, and we use a thick line for the trigger. The `vm.Button` does not yet have `id="submit_button"` set; we use this label pre-emptively in the diagram to refer to the `vm.Button`.
 
+
 ## Runtime input
 
 Now we will see how you can add a _runtime input_ to your actions. A runtime input is the value or _state_ of a component on the user's screen while the dashboard is running. What this means will soon become clear by extending our example! As before, let's start by adding something to the layout and then consider how to extend our action. Here we create a small form by adding a [`Switch`][vizro.models.Switch] to the layout that lets the user specify whether they would like to use a 12- or 24-hour clock.
@@ -617,6 +618,10 @@ graph TD
 
 An implicit action chain can only be formed by triggering the _first_ action of an explicit chain (or a single action, if there is only one action in the chain). Here, `update_time_date_formats` triggers the first action `update_text` in the chain `[update_text, fetch_weather]`, which then triggers the chained action `fetch_weather`. It is not possible for an action to implicitly chain on to `fetch_weather` directly: there is no way for `fetch_weather` to run other than through the completion of `update_text`. 
 
+!!! tip
+  
+  When you're building more complicated chains of actions, it's often useful to _start_ by sketching an actions flowchart and then work out how to configure the actions to achieve it.
+
 It is still possible to set the time and date formats and submit the form manually, as before. For example, you might like to know the weather in Berlin but prefer to use the 12-hour clock. A user can select Berlin, click the switch to use 12-hour clock and then submit the form again. However, clicking the submit button now feels quite cumbersome. We are going to implement a few final enhancements to our example to improve the user experience. 
 
 ## Parallel actions
@@ -758,38 +763,186 @@ graph TD
 
 We still have an explicit actions chain `[update_time_date_formats, fetch_weather]`, since these are directly connected by a thick arrow. The connection between `update_time_date_formats` and the `update_time_text` and `update_date_text` actions is implicit since there is no direct connection; the line goes through intermediate models `clock_switch` and `date_radio_items`.
 
-We now have four actions. In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, it also implicitly triggers `update_time_text` and `update_date_text` simultaneously.  
+In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_text` and `update_date_text` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its output(s) on screen as soon as it has completed. If you add `time.sleep(3)` to each of the `fetch_weather`, `update_time_text` and `update_date_text` actions to make them take 3 seconds longer to complete then the total delay will be 3 seconds rather than 9 seconds.
 
+??? details Parallel execution is not guaranteed
 
+    The reason we say that the actions will _in general_ run in parallel is that, as [explained in the Dash documentation](https://dash.plotly.com/advanced-callbacks#as-a-direct-result-of-user-interaction), execution depends on the server environment. If you [use the Flask development server](../user-guides/run-deploy.md#develop-in-python-script), it is set to run multi-threaded and so actions can execute in parallel. In production, if you [use gunicorn](../user-guides/run-deploy.md#gunicorn) with multiple workers then multiple actions can run in parallel.
 
+    However, if you [work in PyCafe](../user-guides/run-deploy.md#develop-in-pycafe) you will find that multiple actions cannot run in parallel. This is a [known limitation of PyCafe](https://py.cafe/docs/how#limitations-of-pycafe). In this case, the three actions `fetch_weather`, `update_time_text` and `update_date_text` run serially, in an order that should not be relied upon. The same would happen if you ran the Flask development server with `threaded=False` or ran `gunicorn` with a single worker.
 
-note possible as explicit
-not one way to structure architecture
-`raise PreventUpdate` etc. what if first action crashes
-execution of other actions in chain isolated, can only trigger first
-security
+## Handle errors and debug
+
+So far we have just considered the "happy path" where all actions run as planned. Let's briefly look at what happens if an action does not complete successfully.
+
+For example, let's say that the HTTP request to Open-Meteo in `fetch_weather` failed due to a network problem. You can simulate this just by putting a typo in the URL requested by `requests.get` so that a Python exception `requests.exceptions.ConnectionError`  is raised. If you run the above example then when the `fetch_weather` action runs you will see an error message about `requests.exceptions.ConnectionError` in the logs where you execute `python app.py`. If you develop in [debug mode with `run(debug=True)`](../user-guides/run-deploy.md#automatic-reloading-and-debugging) then the exception and traceback is shown in your browser, which tends to be more convenient.
+
+Once a Python exception has been raised in a Vizro action, execution of the action ceases immediately and no outputs of that action will be updated, Any actions that would be triggered by successful completion of the action, either in an explicit or implicit action chain, will not execute. To the end user it will not be apparent that an error has occurred; their screen will simply not show an update.  
+
+!!! tip
+  
+  If you wish to deliberately cancel execution of an action then you can [`raise dash.exceptions.PreventUpdate`](https://dash.plotly.com/advanced-callbacks#catching-errors-with-preventupdate). This will mean that none of the action's outputs are updated, and hence no chained actions execute. For more fine-grained control, you can instead prevent update to only _some_ of the outputs of an action by [returning `dash.no_update`](https://dash.plotly.com/advanced-callbacks#displaying-errors-with-dash.no_update). In this case, only those chained actions that are triggered by outputs that did not update will be prevented from executing.
+  
+When developing your app, it can also be very useful to insert a breakpoint inside the code of an action. This enables you to pause execution of an action, inspect variables and understand what is happening. You can add breakpoints with most popular coding tools, for example [VS Code](https://code.visualstudio.com/docs/debugtest/debugging#_breakpoints).
+
+## Security
+yCHeck Dash security guide
+
 Keep it Independent of Dash
 
+
+## Performance
+
+hint about cscb referring to new Dash section
+serverside inefficient. here could be done frontend
 warning about many chained callbacks and how it's many HTTP requests
 
-reuse same upate_text action on both input components
-show how errors are handled
+
+stateless, users don't interfere so long as don't alter global variables - need to point to Dash explanation for this
 
 
-example where we repeat update_text action on switch? To make it eager
-
+## Challenges
 
 ```
 # challenge to change to farenheit using state
-# note about parallel execution as in Dash
 # advanced: more items in dropdown. Click on map of world and get long/lat
 ```
 
 
-PUT EXAMPLE OF ACTION IN SWITCH AS SOMETHING THAT SHOULDN'T NEED TO SPECIFY ID, LIKE CHAT 
-Also write p plug into oPL thoughts
+## Recap
+action contains inputs/outpust etc.
+explain key principles of actions like single trigger
 
-tidy mermaid diagrams earlier and say like Dash callback graph
+TODO changelog
+update other bits of docs
+AgGrid inner ID - should be no examples like that to remove but check
+NEED TO UPDATE ALL DOCS function=export_data() etc. Search throughout
+Update all actions examples in docs that have unecssary [actions] or [outputs]
+
+
+ I think "built in" and "custom" is the best terminology to use but we can also say "user-defined" since it makes sense. Let's avoid using "predefined" though. SEARCH FOR USAGE OF THIS
+
+deprecations - do after
+
+
+https://github.com/mckinsey/vizro/pull/1054
+vizro_download, vizro_url  https://github.com/McK-Internal/vizro-internal/issues/1611
+Y direct reference to component, field name https://github.com/McK-Internal/vizro-internal/issues/1610 https://github.com/McK-Internal/vizro-internal/issues/1609
+Y dict output format https://github.com/McK-Internal/vizro-internal/issues/1608
+Y single [action] allowed
+Y single [output] allowed
+built in special arguments (though structure of `_controls` not finalised)
+two sorts of action (Abstract and normal)
+Y actions chain 
+callbacks + actions combined
+page lifecyle - on page load, filter callback, etc.
+YAML configuration of captured callable
+
+---
+
+Tutorial more than how-to. Tutorial refers to more detail in explanation. Tutorial is learning-oriented
+How to use built in actions and How to write a custom action. How to is task-oriented
+
+
+
+---
+collapse - built in action will be much clearer
+change tab
+update tooltip
+add alert
+change page - not for now
+
+Good example ideas:
+CRUD
+table as input
+filter/parameter that updates text too - Example states input that uses filter - would need to implement vm.Filter _action_input first
+API call/run model example - simple calculation but not full model. Scenario from table example
+database? save to file?
+click on table to drilldown to product page like labs telemetry - even before proper interact
+
+
+update tooltip
+popup when selected rows clicked to do alert
+remove selected rows and save to disk
+download png button? Or download selected data?
+clear selection button
+want input/output aggrid?
+output text
+update graph description
+select aggrid rows
+editable table
+remove rows, write to disk
+could be parameter interaction even though built in
+something where action doesn't work and we need Dash callback
+trigger not there explicitly
+filters populate options but only fetches data on submit
+"sample button"
+update and download
+refresh page - yes, even if have it built into actions
+
+
+Tutorial on drillthrough etc. Do want this even before it's properly built in and will remain useful because it shows how things work. Definitely do this with controls in containers 
+But do how to guide first since easier?
+drill through - probably don't document yet. Maybe write more about URL query params?
+---
+
+same example as in simple action that changes page and uses store 
+
+state to store that's then used e.g. on a different page
+
+toast alert for successful validation, clear form
+change collapse of navigation accordion by default - something to do with opl
+
+collapse/uncollapse all containers
+text saying what controls are selected e.g. in graph header
+live updates - refresh page
+back button like in browser
+
+check #vizro-users Petar answers - most recent one that Li asked about
+check deepresearch summarising our issues
+narrow down the options while user is typing: https://vizro-cnx-demo.alpha.mckinsey.digital/customer-view---germany
+
+
+Reference for built in arguments, objects, properties/fields
+
+---
+# Dash compared to Vizro 
+
+## Rough notes
+Vizro vs Dash notes
+runtime input vs. state
+trigger vs. input
+vizro has built in actions
+attach to trigger not define globally
+need to provide id in Dash for trigger component
+trigger not passed in
+duplicated outputs fine
+one vs multiple triggers
+prevent_initial_call=True always
+actions loop
+
+
+
+In Vizro there are two types of runtime input. In section on runtime inputs, refer later to see what other non-runtime inputs might be
+
+Where to put explanation or Dash compared to Vizro? Put in explanation section we already have.
+Write Dash equivalent or simple vizro app
+Show some output field and property which isn't just model name
+
+## Dash callback graph
+??? details
+
+    We haven't yet defined any actions, but behind the scenes Vizro has already defined some Dash callbacks for you:
+
+    * A callback to change the dashboard theme when the theme selector is toggled. 
+    * A callback associated with [Dash pages](https://dash.plotly.com/urls) that will make the app work when more pages are added.
+
+    While developing, you can see all the Dash callbacks in Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). This is shown when running in debug mode with [`run(debug=True)`](../user-guides/run-deploy.md#/#automatic-reloading-and-debugging).
+
+    TODO screenshot
+
+    For a large or complex app, the callback graph quickly grows and becomes difficult to navigate. To make debugging easier you can temporarily comment out all but one page in your app to show only the relevant callbacks in the graph. 
+
 
 
 
@@ -831,148 +984,4 @@ A Vizro action always uses a specific Dash component and property for the action
 
 
 
-serverside inefficient. here could be done frontend
-stateless, users don't interfere so long as don't alter global variables - need to point to Dash explanation for this
 
-
-
-to recap:
-action contains inputs/outpust etc.
-explain key principles of actions like single trigger
-
-Example states input that uses filter - would need to implement something here first on vm.Filter
-
-TODO THROUGHOUT refer to explanation for what Dash equivalent would look like
-
-Some output field and property which isn't just model name
-collapse - built in action will be much clearer
-change tab
-update tooltip
-add alert
-change page - not for now
-
----
-Good example ideas:
-CRUD
-table as input
-filter/parameter that updates text too
-API call/run model example - simple calculation but not full model. Scenario from table example
-database? save to file?
-click on table to drilldown to product page like labs telemetry - even before proper interact
-
-update tooltip
-popup when selected rows clicked to do alert
-remove selected rows and save to disk
-download png button? Or download selected data?
-clear selection button
-want input/output aggrid?
-output text
-update graph description
-select aggrid rows
-editable table
-remove rows, write to disk
-could be parameter interaction even though built in
-something where action doesn't work and we need Dash callback
-trigger not there explicitly
-filters populate options but only fetches data on submit
-"sample button"
-update and download
-refresh page - yes, even if have it built into actions
-
-
-Tutorial on drillthrough etc. Do want this even before it's properly built in and will remain useful because it shows how things work. Do this with controls in containers 
-But do how to guide first since easier?
----
-
-same date example that changes page and uses store 
-
-state to store that's then used e.g. on a different page
-
-toast alert for successful validation, clear form
-change collapse of navigation accordion by default - something to do with opl
-
-collapse/uncollapse all containers
-text saying what controls are selected e.g. in graph header
-live updates - refresh page
-back button like in browser
-
-check #vizro-users Petar answers - most recent one that Li asked about
-check deepresearch summarising our issues
-narrow down the options while user is typing: https://vizro-cnx-demo.alpha.mckinsey.digital/customer-view---germany
-
----
-Teach as if to new vizro user not familiar with Dash first
-Then compare to Dash in separate explanation
-
----
-Where to put explanation?
-
----
-I think "built in" and "custom" is the best terminology to use but we can also say "user-defined" since it makes sense. Let's avoid using "predefined" though. SEARCH FOR USAGE OF THIS
-
-
-
-https://github.com/mckinsey/vizro/pull/1054
-vizro_download, vizro_url  https://github.com/McK-Internal/vizro-internal/issues/1611
-Y direct reference to component, field name https://github.com/McK-Internal/vizro-internal/issues/1610 https://github.com/McK-Internal/vizro-internal/issues/1609
-Y dict output format https://github.com/McK-Internal/vizro-internal/issues/1608
-Y single [action] allowed
-Y single [output] allowed
-built in special arguments (though structure of `_controls` not finalised)
-two sorts of action (Abstract and normal)
-actions chain 
-callbacks + actions combined
-page lifecyle - on page load, filter callback, etc.
-YAML configuration of captured callable
-
-drill through - probably don't document yet. Maybe write more about URL query params?
-
-deprecations - do after
-
-security - injection. CHeck Dash security guide
-
-AgGrid inner ID - should be no examples like that to remove but check
-
-tutorial more than how-to. Tutorial refers to more detail in explanation. Tutorial is learning-oriented
-How to use built in actions and How to write a custom action. How to is task-oriented
-explanation for Dash vs. vizro and actions loop
-prevent_initial_call=True always
-
-Reference for built in arguments, objects, properties/fields
-
-NEED TO UPDATE ALL DOCS function=export_data() etc. Search throughout
-Update all actions examples in docs that have unecssary [actions] or [outputs]
-
-Vizro vs Dash notes
-runtime input vs. state
-trigger vs. input
-vizro has built in actions
-attach to trigger not define globally
-need to provide id in Dash for trigger component
-trigger not passed in
-duplicated outputs fine
-one vs multiple triggers
-
-
-
-"""
-
-In Vizro there are two types of runtime input. In section on runtime inputs, refer later to see what other non-runtime inputs might be
-
-
-# Dash section
-??? details
-
-    We haven't yet defined any actions, but behind the scenes Vizro has already defined some Dash callbacks for you:
-
-    * A callback to change the dashboard theme when the theme selector is toggled. 
-    * A callback associated with [Dash pages](https://dash.plotly.com/urls) that will make the app work when more pages are added.
-
-    While developing, you can see all the Dash callbacks in Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). This is shown when running in debug mode with [`run(debug=True)`](../user-guides/run-deploy.md#/#automatic-reloading-and-debugging).
-
-    TODO screenshot
-
-    For a large or complex app, the callback graph quickly grows and becomes difficult to navigate. To make debugging easier you can temporarily comment out all but one page in your app to show only the relevant callbacks in the graph. 
-
-
-TODO tip somewhere When debugging, it can also be very useful to insert a breakpoint inside the code of an action.  [VS Code](https://code.visualstudio.com/docs/debugtest/debugging#_breakpoints) 
