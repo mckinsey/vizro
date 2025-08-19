@@ -89,7 +89,7 @@ div.Select--multi .Select-value-label {
 div.Select--multi .Select-value-icon {
   background: inherit;
   border: none;
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   line-height: inherit;
   margin: 0;
   padding: 0;
