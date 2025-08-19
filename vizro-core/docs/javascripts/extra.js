@@ -62,7 +62,7 @@ async function copyMarkdownContent() {
         copyButton.innerHTML = originalHTML;
         copyButton.disabled = false;
       }
-    }, 1500);
+    }, 1000);
   } catch (fetchError) {
     console.error("Error fetching markdown:", fetchError);
 
@@ -120,7 +120,7 @@ function addMarkdownButtons() {
   ];
 
   // Create buttons from configuration
-  buttonConfigs.forEach((config) => {
+  buttonConfigs.forEach(config => {
     const button = document.createElement("button");
     button.id = config.id;
 
