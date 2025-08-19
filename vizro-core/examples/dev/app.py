@@ -1160,6 +1160,7 @@ extensions = [custom_charts, custom_tables, custom_actions, custom_figures, cust
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
+    theme="vizro_light",
     pages=[home, *components, *controls, *actions, *layout, *extensions],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
@@ -1204,7 +1205,7 @@ if __name__ == "__main__":
     # GOOD: BOOTSTRAP, MINTY, LITERA, UNITED
     # OK: LUMEN, SOLAR
     # NAJA: CYBORG, DARKLY, SLATE, SUPERHERO
-    app = Vizro(external_stylesheets=[dbc.themes.YETI]).build(dashboard)
+    app = Vizro(external_stylesheets=["https://cdn.mckinsey.com/libraries/Bootstrap/v1.3.0/mck-bootstrap.min.css"]).build(dashboard)
     app.dash.layout.children.append(
         dbc.NavLink(
             ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
