@@ -45,6 +45,9 @@ async function copyMarkdownContent() {
       copyButton.disabled = true;
     }
 
+    // Track timing to ensure minimum 500ms for copying state
+    const startTime = Date.now();
+
     // Fetch the markdown file
     const response = await fetch(markdownUrl);
 
@@ -57,12 +60,25 @@ async function copyMarkdownContent() {
     // Copy to clipboard
     navigator.clipboard.writeText(markdown);
 
+    // Calculate remaining time to ensure minimum 300ms
+    const elapsedTime = Date.now() - startTime;
+    const remainingTime = Math.max(0, 300 - elapsedTime);
+
+    // Show "Copied!" after minimum time has passed
     setTimeout(() => {
       if (copyButton) {
-        copyButton.innerHTML = originalHTML;
-        copyButton.disabled = false;
+        copyButton.innerHTML =
+          '<span class="material-symbols-outlined">check_circle</span> Copied!';
       }
-    }, 1000);
+
+      // Reset to original state after 1.5 seconds total
+      setTimeout(() => {
+        if (copyButton) {
+          copyButton.innerHTML = originalHTML;
+          copyButton.disabled = false;
+        }
+      }, 1500);
+    }, remainingTime);
   } catch (fetchError) {
     console.error("Error fetching markdown:", fetchError);
 
