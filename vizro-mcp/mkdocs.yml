@@ -8,6 +8,8 @@ nav:
       - Use Cursor: pages/guides/set-up-vizro-mcp-with-cursor.md
       - Use VS Code: pages/guides/set-up-vizro-mcp-with-vscode.md
       - Use any MCP host: pages/guides/set-up-vizro-mcp-basics.md
+  - Tutorials:
+      - Songs dashboard tutorial: pages/tutorials/songs-dashboard-tutorial.md
   - How-to guides:
       - Use prompt templates: pages/guides/use-prompt-templates.md
       - Use tools: pages/guides/use-vizro-mcp-tools.md
