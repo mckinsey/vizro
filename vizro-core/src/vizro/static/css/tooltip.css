@@ -1,5 +1,5 @@
 .tooltip-icon {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   cursor: pointer;
   font-size: 20px;
 }

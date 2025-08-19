@@ -116,7 +116,7 @@
 }
 
 #dashboard-container .ag-text-field-input::placeholder {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 #dashboard-container .ag-filter-apply-panel {
