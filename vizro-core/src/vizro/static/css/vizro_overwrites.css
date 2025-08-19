@@ -24,6 +24,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
 .navbar {
   background: var(--left-side-bg) !important;
+  border: none;
 }
 
 .nav-link {
@@ -37,6 +38,8 @@ All the HEX values starting with --text-code are taken from the Github code high
 /* CARDS */
 .card {
   margin: 4px;
+  overflow: scroll;
+  padding: 0.75rem;
 }
 
 .card .nav-link {
@@ -82,4 +85,19 @@ div.form-check.form-switch {
 .card-nav:hover, .card-nav.hover {
   background: var(--bs-primary-bg-subtle);
   border: 1px solid var(--bs-border-color);
+}
+
+
+/* To make other bootstrap themes look nicely inside vizro app. */
+.navbar .nav-link {
+  padding: 1rem;
+}
+
+.accordion {
+  width: 100%;
+}
+
+
+legend {
+  font-size: inherit;
 }
