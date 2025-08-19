@@ -171,6 +171,7 @@
   text-transform: none;
 }
 
+/* TODO: Remove stateOverlays here once we've figured out how to simplify buttons */
 #dashboard-container .ag-standard-button:hover {
   background: linear-gradient(
       var(--stateOverlays-hover-inverted),
