@@ -1,4 +1,4 @@
-name: Vizro http requests checks
+name: e2e vizro http requests checks
 
 defaults:
   run:
@@ -16,7 +16,7 @@ env:
   PYTHON_VERSION: "3.12"
 
 jobs:
-  create-status:
+  test-e2e-vizro-http-requests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,12 +33,6 @@ jobs:
       - name: Run tests
         run: |
           hatch run test-e2e-vizro-http-requests
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-traces
-          path: test-results/
 
       - name: Create artifacts
         uses: actions/upload-artifact@v4
