@@ -32,7 +32,6 @@ from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
-from vizro.models._components.progress_indicator import ProgressIndicator
 from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
@@ -136,6 +135,10 @@ class Dashboard(VizroBaseModel):
             tags. Defaults to `None`.""",
         ),
     ]
+    show_progress_indicator: bool = Field(
+        default=False,
+        description="Whether to show global progress indicator when actions are running. Defaults to `False`.",
+    )
 
     @_log_call
     def pre_build(self):
@@ -318,10 +321,20 @@ class Dashboard(VizroBaseModel):
             id="settings",
         )
 
-        progress_indicator = ProgressIndicator()
+        progress_indicator = html.Span(
+            className="material-symbols-outlined progress_indicator",
+            children="forward_media",
+            id="global-progress-indicator",
+        )
+
+        # Only include progress indicator if enabled
+        header_controls_children = []
+        if self.show_progress_indicator:
+            header_controls_children.append(progress_indicator)
+        header_controls_children.append(settings)
 
         header_controls = html.Div(
-            id="header-controls", children=[progress_indicator.build(), settings]
+            id="header-controls", children=header_controls_children
         )
 
         logo, logo_dark, logo_light = self._get_logo_images()

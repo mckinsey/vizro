@@ -80,8 +80,13 @@
   gap: 10px;
 }
 
+.progress_indicator {
+  opacity: 0;
+}
+
 .progress_indicator.active {
   animation: spin 1s linear infinite;
+  opacity: 1;
 }
 
 .progress_indicator.hidden {

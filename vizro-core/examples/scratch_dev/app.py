@@ -25,7 +25,9 @@ from vizro.managers import data_manager
 from vizro.models.types import capture
 
 df_gapminder = px.data.gapminder().query("year == 2007")
-df_gapminder["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D")
+df_gapminder["date_column"] = pd.date_range(
+    start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D"
+)
 df_gapminder["number_column"] = range(len(df_gapminder))
 df_gapminder["is_europe"] = df_gapminder["continent"] == "Europe"
 
@@ -47,10 +49,19 @@ def my_custom_action(t: int):
 page_1 = vm.Page(
     title="My first dashboard - [0 guards]",
     components=[
-        vm.Graph(id="page_1_graph", figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
+        vm.Graph(
+            id="page_1_graph",
+            figure=px.histogram(
+                df_gapminder, x="lifeExp", color="continent", barmode="group"
+            ),
+        ),
     ],
     controls=[
-        vm.Filter(id="page_1_filter", column="continent", selector=vm.Dropdown(id="page_1_filter_selector")),
+        vm.Filter(
+            id="page_1_filter",
+            column="continent",
+            selector=vm.Dropdown(id="page_1_filter_selector"),
+        ),
     ],
 )
 
@@ -59,7 +70,9 @@ page_2 = vm.Page(
     components=[
         vm.Graph(
             id="page_2_graph",
-            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+            figure=px.scatter(
+                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"
+            ),
         ),
         vm.Button(
             id="page_2_button",
@@ -72,7 +85,11 @@ page_2 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_2_filter", column="continent", selector=vm.RadioItems(id="page_2_filter_selector")),
+        vm.Filter(
+            id="page_2_filter",
+            column="continent",
+            selector=vm.RadioItems(id="page_2_filter_selector"),
+        ),
     ],
 )
 
@@ -102,7 +119,11 @@ page_3 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="page_3_filter", column="continent", selector=vm.Dropdown(id="page_3_filter_selector")),
+        vm.Filter(
+            id="page_3_filter",
+            column="continent",
+            selector=vm.Dropdown(id="page_3_filter_selector"),
+        ),
     ],
 )
 
@@ -130,7 +151,9 @@ page_4 = vm.Page(
             id="page_4_filter",
             column="continent",
             targets=["page_4_grid"],
-            selector=vm.Dropdown(title="Filter AgGrid - [1 guard]", id="page_4_filter_selector"),
+            selector=vm.Dropdown(
+                title="Filter AgGrid - [1 guard]", id="page_4_filter_selector"
+            ),
         ),
     ],
 )
@@ -140,11 +163,21 @@ page_5 = vm.Page(
     components=[
         vm.Graph(
             id="page_5_graph",
-            figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+            figure=px.scatter(
+                "dynamic_df_gapminder",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
         ),
     ],
     controls=[
-        vm.Filter(id="page_5_dynamic_filter", column="continent", selector=vm.RadioItems(id="page_5_filter_selector")),
+        vm.Filter(
+            id="page_5_dynamic_filter",
+            column="continent",
+            selector=vm.RadioItems(id="page_5_filter_selector"),
+        ),
     ],
 )
 
@@ -152,11 +185,21 @@ page_6 = vm.Page(
     title="DataFrame Parameter - [1 guard]",
     components=[
         vm.Graph(
-            id="page_6_graph", figure=px.box("dynamic_df_gapminder_arg", x="continent", y="lifeExp", color="continent")
+            id="page_6_graph",
+            figure=px.box(
+                "dynamic_df_gapminder_arg",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
         ),
     ],
     controls=[
-        vm.Filter(id="page_6_filter", column="continent", selector=vm.Dropdown(id="page_6_filter_selector")),
+        vm.Filter(
+            id="page_6_filter",
+            column="continent",
+            selector=vm.Dropdown(id="page_6_filter_selector"),
+        ),
         vm.Parameter(
             id="page_6_dfp_parameter",
             targets=["page_6_graph.data_frame.continent"],
@@ -175,12 +218,17 @@ page_7 = vm.Page(
     components=[
         vm.Graph(
             id="page_7_graph",
-            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+            figure=px.scatter(
+                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"
+            ),
         ),
     ],
     controls=[
         vm.Filter(
-            id="page_7_filter", column="continent", show_in_url=True, selector=vm.Dropdown(id="page_7_filter_selector")
+            id="page_7_filter",
+            column="continent",
+            show_in_url=True,
+            selector=vm.Dropdown(id="page_7_filter_selector"),
         ),
     ],
 )
@@ -203,7 +251,9 @@ page_8 = vm.Page(
     components=[
         vm.Graph(
             id="page_8_graph",
-            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+            figure=px.scatter(
+                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"
+            ),
         ),
     ],
     controls=[
@@ -227,7 +277,13 @@ page_9 = vm.Page(
     title="DataFrame Parameter and URL Filter - [2 guards on refresh]",
     components=[
         vm.Graph(
-            id="page_9_graph", figure=px.box("dynamic_df_gapminder_arg", x="continent", y="lifeExp", color="continent")
+            id="page_9_graph",
+            figure=px.box(
+                "dynamic_df_gapminder_arg",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
         ),
     ],
     controls=[
@@ -267,19 +323,31 @@ page_10 = vm.Page(
             id="page_10_grid",
             figure=dash_ag_grid(data_frame="dynamic_df_gapminder_arg"),
             actions=[
-                vm.Action(function=filter_interaction(id="page_10_filter_interaction", targets=["page_10_graph"]))
+                vm.Action(
+                    function=filter_interaction(
+                        id="page_10_filter_interaction", targets=["page_10_graph"]
+                    )
+                )
             ],
         ),
         vm.Graph(
             id="page_10_graph",
-            figure=px.scatter("dynamic_df_gapminder_arg", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+            figure=px.scatter(
+                "dynamic_df_gapminder_arg",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
         ),
     ],
     controls=[
         vm.Filter(
             id="page_10_filter",
             column="continent",
-            selector=vm.Dropdown(title="Filter AgGrid - [1 guard]", id="page_10_filter_selector"),
+            selector=vm.Dropdown(
+                title="Filter AgGrid - [1 guard]", id="page_10_filter_selector"
+            ),
             show_in_url=True,
         ),
         vm.Parameter(
@@ -305,7 +373,13 @@ page_11 = vm.Page(
     components=[
         vm.Graph(
             id="page_11_graph",
-            figure=px.scatter("dynamic_df_gapminder_arg", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+            figure=px.scatter(
+                "dynamic_df_gapminder_arg",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
         ),
     ],
     controls=[
@@ -375,29 +449,47 @@ page_12 = vm.Page(
             id="page_12_grid_1",
             title="On click - [1 guard]",
             figure=dash_ag_grid(data_frame=df_gapminder),
-            actions=[vm.Action(function=filter_interaction(targets=["page_12_grid_2"]))],
+            actions=[
+                vm.Action(function=filter_interaction(targets=["page_12_grid_2"]))
+            ],
         ),
         vm.AgGrid(
             id="page_12_grid_2",
             title="On click - [1 guard]",
             figure=dash_ag_grid(data_frame=df_gapminder),
-            actions=[vm.Action(function=filter_interaction(targets=["page_12_grid_1"]))],
+            actions=[
+                vm.Action(function=filter_interaction(targets=["page_12_grid_1"]))
+            ],
         ),
         vm.Graph(
             id="page_12_graph_1",
             title="On click - [0 guards]",
             figure=px.scatter(
-                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent", custom_data=["continent"]
+                df_gapminder,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+                custom_data=["continent"],
             ),
-            actions=[vm.Action(function=filter_interaction(targets=["page_12_graph_2"]))],
+            actions=[
+                vm.Action(function=filter_interaction(targets=["page_12_graph_2"]))
+            ],
         ),
         vm.Graph(
             id="page_12_graph_2",
             title="On click - [0 guards]",
             figure=px.scatter(
-                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent", custom_data=["continent"]
+                df_gapminder,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+                custom_data=["continent"],
             ),
-            actions=[vm.Action(function=filter_interaction(targets=["page_12_graph_1"]))],
+            actions=[
+                vm.Action(function=filter_interaction(targets=["page_12_graph_1"]))
+            ],
         ),
     ],
 )
@@ -411,7 +503,9 @@ page_13 = vm.Page(
     components=[
         vm.Graph(
             id="page_13_graph",
-            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+            figure=px.scatter(
+                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"
+            ),
         ),
         vm.Button(
             id="page_13_button",
@@ -432,7 +526,8 @@ page_14 = vm.Page(
             id="page_14_button",
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: x)("page_14_button.n_clicks"), outputs="page_14_button.text"
+                    function=capture("action")(lambda x: x)("page_14_button.n_clicks"),
+                    outputs="page_14_button.text",
                 )
             ],
         ),
@@ -451,7 +546,9 @@ page_15 = vm.Page(
             text="Change checklist value",
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: radio_items_options[int(x) % 3])("page_15_button.n_clicks"),
+                    function=capture("action")(
+                        lambda x: radio_items_options[int(x) % 3]
+                    )("page_15_button.n_clicks"),
                     outputs="page_15_checklist.value",
                 )
             ],
@@ -462,7 +559,8 @@ page_15 = vm.Page(
             value=radio_items_options[0],
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: x)("page_15_checklist.value"), outputs="page_15_card.text"
+                    function=capture("action")(lambda x: x)("page_15_checklist.value"),
+                    outputs="page_15_card.text",
                 )
             ],
         ),
@@ -492,27 +590,41 @@ page_16 = vm.Page(
             components=[
                 vm.Graph(
                     id="page_16_graph",
-                    figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+                    figure=px.scatter(
+                        df_gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
                 ),
                 vm.Button(
                     id="page_16_button_download",
                     text="Export data!",
-                    actions=vm.Action(function=my_custom_export(), outputs="vizro_download.data"),
+                    actions=vm.Action(
+                        function=my_custom_export(), outputs="vizro_download.data"
+                    ),
                 ),
                 vm.Button(
                     id="copy_page_16_button_download",
                     text="Copy Export data!",
-                    actions=vm.Action(function=my_custom_export(), outputs="vizro_download.data"),
+                    actions=vm.Action(
+                        function=my_custom_export(), outputs="vizro_download.data"
+                    ),
                 ),
                 vm.Button(
                     id="page_16_button_location",
                     text="Go to page 17!",
-                    actions=vm.Action(function=my_custom_location(), outputs="vizro_url.href"),
+                    actions=vm.Action(
+                        function=my_custom_location(), outputs="vizro_url.href"
+                    ),
                 ),
                 vm.Button(
                     id="copy_page_16_button_location",
                     text="Copy Go to page 17!",
-                    actions=vm.Action(function=my_custom_location(), outputs="vizro_url.href"),
+                    actions=vm.Action(
+                        function=my_custom_location(), outputs="vizro_url.href"
+                    ),
                 ),
             ],
         ),
@@ -567,12 +679,20 @@ page_17 = vm.Page(
             components=[
                 vm.Graph(
                     id="page_17_graph",
-                    figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+                    figure=px.scatter(
+                        df_gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
                 ),
                 vm.Button(id="page_17_button_download", text="Export data!"),
                 vm.Button(id="copy_page_17_button_download", text="Copy Export data!"),
                 vm.Button(id="page_17_button_location", text="Go to page 16!"),
-                vm.Button(id="copy_page_17_button_location", text="Copy Go to page 16!"),
+                vm.Button(
+                    id="copy_page_17_button_location", text="Copy Go to page 16!"
+                ),
             ],
         ),
     ],
@@ -597,7 +717,8 @@ dashboard = vm.Dashboard(
         page_15,
         page_16,
         page_17,
-    ]
+    ],
+    show_progress_indicator=True,
 )
 
 if __name__ == "__main__":
