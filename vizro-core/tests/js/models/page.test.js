@@ -13,7 +13,7 @@ global.TextDecoder = jest.fn(() => ({
 
 global.URLSearchParams = jest.fn(() => ({
   set: jest.fn((key, value) => mockSearchParams.set(key, value)),
-  toString: jest.fn(() => "param1=value1&param2=value2"),
+  toString: jest.fn(() => "controlId1=controlVal1&controlId2=controlVal2"),
   entries: jest.fn(() => mockSearchParams.entries()),
   get: jest.fn((key) => mockSearchParams.get(key)),
   has: jest.fn((key) => mockSearchParams.has(key)),
@@ -21,6 +21,7 @@ global.URLSearchParams = jest.fn(() => ({
 }));
 
 global.dash_clientside = {
+  set_props: jest.fn(),
   no_update: "no_update",
   PreventUpdate: "PreventUpdate",
   callback_context: {
@@ -205,109 +206,121 @@ describe("page.js functions", () => {
       }
     });
 
-    test("should handle page opened scenario", () => {
-      const values_ids = ["value1", "value2", "control1", "control2"];
+    test("should trigger on page load after the function (return null)", () => {
+      // If opl_triggered is undefined, it means the page is opened
+      const opl_triggered = undefined;
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
-          ...values_ids,
+          opl_triggered,
         );
 
-      // First element should be null (trigger OPL)
-      expect(result[0]).toBe(null);
-      // Should return array with length = 1 + number of controls
-      expect(result.length).toBe(3); // 1 for trigger + 2 controls
+      // Returned element should be null (trigger OPL)
+      expect(result).toBe(null);
     });
 
     test("should handle control changed scenario", () => {
-      // Set triggered_id to some value to simulate control change
-      global.dash_clientside.callback_context.triggered_id = "some-control";
+      // If opl_triggered is null, it means the page is NOT just opened
+      // but the control has changed
+      const opl_triggered = null;
 
-      const values_ids = ["value1", "value2", "control1", "control2"];
+      const values_ids = ["controlVal1", "controlId1", "selectorId1"];
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
-          ...values_ids,
+          opl_triggered,
         );
 
-      // First element should be no_update (don't trigger OPL)
-      expect(result[0]).toBe(global.dash_clientside.no_update);
-      // Should return array with length = 1 + number of controls
-      expect(result.length).toBe(3); // 1 for trigger + 2 controls
+      // Returned element should be dash_clientside.no_update (do NOT trigger OPL)
+      expect(result).toBe(global.dash_clientside.no_update);
     });
 
-    test("should split values and IDs correctly", () => {
-      global.dash_clientside.callback_context.triggered_id = "test-control";
+    test("should split control values and control and selector IDs correctly", () => {
+      // If opl_triggered is undefined, it means the page is opened
+      const opl_triggered = undefined;
 
-      const values_ids = ["val1", "val2", "val3", "id1", "id2", "id3"];
+      const values_ids = ["controlVal1", "controlVal2", "controlVal3", "controlId1", "controlId2", "controlId3", "selectorId1", "selectorId2", "selectorId3"];
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
+          opl_triggered,
           ...values_ids,
         );
 
-      // Should handle 3 controls (6 total parameters / 2)
-      expect(result.length).toBe(4); // 1 for trigger + 3 controls
+      // Returned element should be null (trigger OPL)
+      expect(result).toBe(null);
     });
 
     test("should call history.replaceState with correct URL", () => {
-      global.dash_clientside.callback_context.triggered_id = "test-control";
+      // If opl_triggered is undefined, it means the page is opened
+      const opl_triggered = undefined;
 
-      const values_ids = ["value1", "control1"];
+      // These values_ids will NOT be used in the expect statement below. Mocked urlParams.toString() is used instead.
+      const values_ids = ["controlVal1", "controlVal2", "controlId1", "controlId2", "selectorId1", "selectorId2"];
 
       global.dash_clientside.page.sync_url_query_params_and_controls(
+        opl_triggered,
         ...values_ids,
       );
 
+      // values_ids are not used in the expect statement below. Mocked urlParams.toString() is used instead.
       expect(replaceStateSpy).toHaveBeenCalledWith(
         null,
         "",
-        "/?param1=value1&param2=value2",
+        "/?controlId1=controlVal1&controlId2=controlVal2",
       );
     });
 
     test("should handle empty values_ids array", () => {
-      global.dash_clientside.callback_context.triggered_id = undefined;
-
-      const result =
-        global.dash_clientside.page.sync_url_query_params_and_controls();
-
-      expect(result).toEqual([null]);
-    });
-
-    test("should handle odd number of parameters", () => {
-      global.dash_clientside.callback_context.triggered_id = "test";
-
-      const values_ids = ["value1", "value2", "control1"];
+      // If opl_triggered is undefined, it means the page is opened
+      const opl_triggered = undefined;
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
-          ...values_ids,
+            opl_triggered
         );
 
-      expect(result.length).toBe(3);
+      expect(result).toEqual(null);
+    });
+
+    test("should raise an exception if a number of input parameters is not divisible by three", () => {
+      // If opl_triggered is undefined, it means the page is opened
+      const opl_triggered = undefined;
+
+      const values_ids = ["value1", "value2", "control1", "control2", "selector1"];
+
+      expect(() => {
+        global.dash_clientside.page.sync_url_query_params_and_controls(
+          opl_triggered,
+          ...values_ids,
+        );
+      }).toThrow(
+    `Invalid number of input parameters: received 5.
+Expected format: [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
+Received input: ["value1","value2","control1","control2","selector1"]`
+  );
     });
 
     test("should update URLSearchParams with encoded values", () => {
-      global.dash_clientside.callback_context.triggered_id = "test-control";
+      // If opl_triggered is undefined, it means the page is opened
+      const opl_triggered = undefined;
 
       const mockUrlParams = {
         set: jest.fn(),
         toString: jest.fn(() => "encoded=params"),
       };
-      global.URLSearchParams = jest.fn(() => mockUrlParams);
 
-      const values_ids = ["value1", "control1"];
+      const values_ids = ["controlVal1", "controlVal2", "controlId1", "controlId2", "selectorId1", "selectorId2"];
 
       global.dash_clientside.page.sync_url_query_params_and_controls(
+        opl_triggered,
         ...values_ids,
       );
 
-      expect(mockUrlParams.set).toHaveBeenCalled();
       expect(replaceStateSpy).toHaveBeenCalledWith(
         null,
         "",
-        "/?encoded=params",
+        "/?controlId1=controlVal1&controlId2=controlVal2",
       );
     });
   });

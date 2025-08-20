@@ -91,6 +91,14 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
   // Split selector values , control IDs and selector IDs that are in format:
   // [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
 
+  if (values_ids.length % 3 !== 0) {
+    throw new Error(
+      `Invalid number of input parameters: received ${values_ids.length}.
+Expected format: [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
+Received input: ${JSON.stringify(values_ids)}`
+    );
+  }
+
   const numberOfInputs = values_ids.length / 3;
 
   // Extract each segment
