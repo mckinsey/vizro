@@ -81,38 +81,48 @@ function decodeUrlParams(encodedMap, applyOnKeys) {
   return decodedMap;
 }
 
-function sync_url_query_params_and_controls(...values_ids) {
+function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
   // Control IDs are required due to Dash's limitations on clientside callback flexible signatures, so that we can:
   //   1. Map url query parameters to control selector value outputs properly.
   //   2. Map control selector value input to url query parameters properly.
   // The solution relies on the fact that the order of control IDs matches the order of the
   // control selector value inputs and their corresponding outputs.
 
-  // Split control inputs and selector values that are in format:
-  // [selector-1-value, selector-2-value, selector-N-value, ..., control-1-id, control-2-id, control-N-id, ...]
+  // Split selector values , control IDs and selector IDs that are in format:
+  // [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
 
-  const half = values_ids.length / 2;
+  if (values_ids.length % 3 !== 0) {
+    throw new Error(
+      `Invalid number of input parameters: received ${values_ids.length}.
+Expected format: [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
+Received input: ${JSON.stringify(values_ids)}`,
+    );
+  }
 
-  // controlMap is in format: Map<controlId, controlSelectorValue>
-  const controlMap = new Map(
-    values_ids.slice(half).map((id, i) => [id, values_ids[i]]),
+  const numberOfInputs = values_ids.length / 3;
+
+  // Extract each segment
+  const selectorValues = values_ids.slice(0, numberOfInputs);
+  const controlIds = values_ids.slice(numberOfInputs, 2 * numberOfInputs);
+  const selectorIds = values_ids.slice(2 * numberOfInputs);
+
+  // Prepare output selector values, initially set to no_update.
+  const outputSelectorValues = new Array(numberOfInputs).fill(
+    dash_clientside.no_update,
   );
 
-  const relevantControlIds = Array.from(controlMap.keys());
+  // Map<controlId, selectorValue>
+  const controlMap = new Map(
+    controlIds.map((id, i) => [id, selectorValues[i]]),
+  );
 
   const urlParams = new URLSearchParams(window.location.search);
 
   // Flag to check if the page is opened or a control has changed.
-  const isPageOpened =
-    dash_clientside.callback_context.triggered_id === undefined;
+  const isPageOpened = opl_triggered === undefined;
 
   // Conditionally trigger the OPL action: return `null` to trigger it, or dash_clientside.no_update to skip.
   const triggerOPL = isPageOpened ? null : dash_clientside.no_update;
-
-  // Prepare default selector values outputs
-  const outputSelectorValues = new Array(controlMap.size).fill(
-    dash_clientside.no_update,
-  );
 
   if (isPageOpened) {
     console.debug("sync_url_query_params_and_controls: Page opened");
@@ -123,7 +133,7 @@ function sync_url_query_params_and_controls(...values_ids) {
     // Decoded URL parameters in format: Map<controlId, controlSelectorValue>
     const decodedParamMap = decodeUrlParams(
       urlParams,
-      relevantControlIds, // Apply decoding only to control IDs
+      controlIds, // Apply decoding only to control IDs
     );
 
     // Values from the URL take precedence if page is just opened.
@@ -140,7 +150,7 @@ function sync_url_query_params_and_controls(...values_ids) {
   }
 
   // Encode controlMap to URL parameters.
-  encodeUrlParams(controlMap, relevantControlIds).forEach((value, id) =>
+  encodeUrlParams(controlMap, controlIds).forEach((value, id) =>
     urlParams.set(id, value),
   );
 
@@ -153,7 +163,21 @@ function sync_url_query_params_and_controls(...values_ids) {
     `${window.location.pathname}?${urlParams.toString()}`,
   );
 
-  return [triggerOPL, ...outputSelectorValues];
+  // After this clientside callback, the "guard_action_chain" callback may run.
+  // If the selector value is updated based on the URL parameters,
+  // set its values and the selector’s guard flag to **true**.
+  // This ensures triggering the guard action chain callback
+  // and prevents unnecessary actions from being triggered by the value change.
+  selectorIds.forEach((selectorId, i) => {
+    const selectorValue = outputSelectorValues[i];
+    if (selectorValue !== dash_clientside.no_update) {
+      dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
+        data: true,
+      });
+      dash_clientside.set_props(selectorId, { value: selectorValue });
+    }
+  });
+  return triggerOPL;
 }
 
 window.encodeUrlParams = encodeUrlParams;

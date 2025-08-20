@@ -1,5 +1,6 @@
 import pytest
 from asserts import assert_component_equal
+from dash import dcc, html
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 
@@ -569,7 +570,12 @@ class TestParameter:
 
         # Result and expected dynamic filter object
         result_dynamic_filter = result_figures.pop("dynamic_filter_id")
-        expected_dynamic_filter = dynamic_filter.selector(options=["Asia"])
+        expected_dynamic_filter = html.Div(
+            [
+                dynamic_filter.selector(options=["Asia"]),
+                dcc.Store(id="dynamic_filter_id_selector_guard_actions_chain", data=True),
+            ]
+        )
         assert_component_equal(result_dynamic_filter, expected_dynamic_filter)
 
         expected_figures = {
