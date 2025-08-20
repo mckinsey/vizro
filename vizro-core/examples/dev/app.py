@@ -6,6 +6,7 @@ from typing import Literal, Optional
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash import dash_table, dcc, get_asset_url, html
@@ -14,6 +15,23 @@ from vizro.actions import export_data, filter_interaction
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
+
+pio.templates["vizro_light"].layout.font.family = "McKinseySans, Arial,  sans-serif, serif"
+pio.templates["vizro_light"].layout.colorway = [
+    "#061F79",
+    "#00A9F4",
+    "#75F0E7",
+    "#2251FF",
+    "#14B8AB",
+    "#0679C3",
+    "#9C217D",
+    "#F17E7E",
+    "#108980",
+]
+
+# Set the modified template as the default template
+pio.templates.default = "vizro_light"
+
 
 iris = px.data.iris()
 tips = px.data.tips()
@@ -1205,7 +1223,9 @@ if __name__ == "__main__":
     # GOOD: BOOTSTRAP, MINTY, LITERA, UNITED
     # OK: LUMEN, SOLAR
     # NAJA: CYBORG, DARKLY, SLATE, SUPERHERO
-    app = Vizro(external_stylesheets=["https://cdn.mckinsey.com/libraries/Bootstrap/v1.3.0/mck-bootstrap.min.css"]).build(dashboard)
+    app = Vizro(
+        external_stylesheets=["https://cdn.mckinsey.com/libraries/Bootstrap/v1.3.0/mck-bootstrap.min.css"]
+    ).build(dashboard)
     app.dash.layout.children.append(
         dbc.NavLink(
             ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],

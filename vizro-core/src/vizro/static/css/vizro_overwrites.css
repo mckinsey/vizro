@@ -90,6 +90,7 @@ div.form-check.form-switch {
 
 /* To make other bootstrap themes look nicely inside vizro app. */
 .navbar .nav-link {
+  border: none;
   padding: 1rem;
 }
 

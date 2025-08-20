@@ -152,7 +152,7 @@
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--bs-body-bg);
+  background-color: var(--left-side-bg);
   border: 1px solid var(--bs-border-color);
   border-radius: 50%;
   color: var(--bs-tertiary-color);
