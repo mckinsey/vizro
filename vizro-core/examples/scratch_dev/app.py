@@ -578,6 +578,112 @@ page_17 = vm.Page(
     ],
 )
 
+
+iris = px.data.iris()
+
+e2e_failing_test_dropdown_persistence_with_all_values = vm.Page(
+    title="filters page (tabs + containers)",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    id="filters_tab_container",
+                    title="Filters Tab Container",
+                    components=[
+                        vm.Container(
+                            id="filters components container",
+                            title="filters components container",
+                            layout=vm.Grid(grid=[[0, 1], [0, 1], [0, 2]]),
+                            components=[
+                                vm.Graph(
+                                    id="scatter",
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="sepal_width",
+                                    ),
+                                ),
+                                vm.Card(
+                                    text="""
+                    ![icon-top](assets/images/icons/content/features.svg)
+
+                    Leads to the home page on click.
+                    """,
+                                    href="/",
+                                ),
+                                vm.Button(
+                                    text="Export data",
+                                    actions=[
+                                        vm.Action(
+                                            function=export_data(
+                                                targets=["scatter"],
+                                                file_format="csv",
+                                            )
+                                        ),
+                                        vm.Action(
+                                            function=export_data(
+                                                targets=["scatter"],
+                                                file_format="xlsx",
+                                            )
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        )
+                    ],
+                )
+            ]
+        ),
+        vm.Graph(
+            id="box graph",
+            figure=px.box(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="sepal_width",
+            ),
+            extra={"config": {"displayModeBar": False}},
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id="dropdown_filter_control_id",
+            column="species",
+            show_in_url=True,
+            targets=["scatter", "box graph"],
+            selector=vm.Dropdown(id="drop-filters-page"),
+        ),
+        vm.Filter(
+            id="radio_filter_control_id",
+            column="species",
+            show_in_url=True,
+            targets=["scatter", "box graph"],
+            selector=vm.RadioItems(
+                id="radio-filters-page", options=["setosa", "versicolor", "virginica"]
+            ),
+        ),
+        vm.Filter(
+            column="species",
+            targets=["scatter"],
+            selector=vm.Checklist(
+                id="check filters-page", options=["setosa", "versicolor", "virginica"]
+            ),
+        ),
+        vm.Filter(
+            column="petal_width",
+            targets=["scatter"],
+            selector=vm.Slider(id="slider-filters-page", step=0.5),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            targets=["scatter", "box graph"],
+            selector=vm.RangeSlider(id="range slider-filters-page", step=1.0),
+        ),
+    ],
+)
+
+
 dashboard = vm.Dashboard(
     pages=[
         page_1,
@@ -597,6 +703,7 @@ dashboard = vm.Dashboard(
         page_15,
         page_16,
         page_17,
+        e2e_failing_test_dropdown_persistence_with_all_values,
     ]
 )
 
