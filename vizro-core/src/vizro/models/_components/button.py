@@ -83,7 +83,7 @@ class Button(VizroBaseModel):
     @model_validator(mode="after")
     def validate_text(self):
         if not self.text and not self.icon:
-            raise ValueError("Please provide either the `text` or `icon` argument.")
+            raise ValueError("You must provide either the `text` or `icon` argument.")
 
         return self
 
@@ -112,7 +112,7 @@ class Button(VizroBaseModel):
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
             # To prevent unnecessary class chaining, the button's style variant should be specified using `color`.
             "color": variants[self.variant],
-            "class_name": "btn-circular" if self.icon and not self.text else "",
+            "class_name": "btn-circular" if not self.text else "",
         }
 
         return dbc.Button(**(defaults | self.extra))
@@ -128,7 +128,8 @@ class Button(VizroBaseModel):
 
         description = self.description.build().children
         if not self.text:
-            # retrieves the dbc.Tooltip instance from the vm.Tooltip model to update its tooltip target
+            # When there's no text, we don't display the tooltip icon.
+            # Instead we update the tooltip target to the button's icon.
             tooltip_component = description[1]
             tooltip_component.target = f"{self.id}-icon"
             return [tooltip_component]

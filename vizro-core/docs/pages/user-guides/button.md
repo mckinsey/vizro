@@ -259,7 +259,7 @@ You can use it alongside the `text` argument, or on its own to create a circular
             layout=vm.Flex(),
             components=[
                 vm.Button(
-                    icon="download",
+                    icon="Download",
                     description="Download the data!",
                     variant="outlined",
                 ),
@@ -275,7 +275,7 @@ You can use it alongside the `text` argument, or on its own to create a circular
                 vm.Button(
                     text="View Data Source",
                     href="https://www.kaggle.com/datasets/uciml/iris",
-                    icon="link",
+                    icon="Link",
                     variant="outlined",
                 ),
             ],
@@ -292,7 +292,7 @@ You can use it alongside the `text` argument, or on its own to create a circular
           - title: Buttons with an icon
             components:
               - type: button
-                icon: download
+                icon: Download
                 description: Download the data!
                 actions:
                   - function:
@@ -308,7 +308,7 @@ You can use it alongside the `text` argument, or on its own to create a circular
               - type: button
                 text: Visit link to learn more!
                 href: https://www.kaggle.com/datasets/uciml/iris
-                icon: link
+                icon: Link
                 variant: outlined
         ```
 

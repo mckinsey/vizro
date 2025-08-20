@@ -14,7 +14,7 @@ page = vm.Page(
         vm.Button(
             icon="download",
             text="",
-            description="Download the data!",
+            description=vm.Tooltip(text="Download the data!", icon="info"),
             variant="outlined",
             actions=[vm.Action(function=export_data())],
         ),

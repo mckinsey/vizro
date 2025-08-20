@@ -60,7 +60,7 @@ class TestButtonInstantiation:
             vm.Button(variant="test")
 
     def test_invalid_text(self):
-        with pytest.raises(ValueError, match="Please provide either the `text` or `icon` argument."):
+        with pytest.raises(ValueError, match="You must provide either the `text` or `icon` argument."):
             vm.Button(text="")
 
 
@@ -172,7 +172,7 @@ class TestBuildMethod:
             button,
             dbc.Button(
                 id="button_id",
-                children=html.Span([expected_icon, f"{text}", None], className="btn-text"),
+                children=html.Span([expected_icon, text, None], className="btn-text"),
                 target="_top",
                 href="",
                 color="primary",
