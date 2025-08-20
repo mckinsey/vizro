@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Annotated, Literal, Union, cast
+from collections.abc import Iterable, Mapping
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -15,11 +15,13 @@ from vizro.models._navigation.nav_link import NavLink
 from vizro.models.types import ModelID
 
 
-# TODO[MS]: Is the below actually correct? This is used in BeforeValidators, but the input type is not Any!
-def coerce_pages_type(pages: Union[list[str], dict[str, list[str]]]) -> dict[str, list[str]]:
+def coerce_pages_type(pages: Any) -> Any:
     if isinstance(pages, Mapping):
         return pages
-    return {page: [page] for page in pages}
+    elif isinstance(pages, Iterable):
+        return {page: [page] for page in pages}
+    else:
+        return pages
 
 
 class NavBar(VizroBaseModel):

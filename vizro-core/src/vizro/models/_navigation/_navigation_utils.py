@@ -42,13 +42,13 @@ def _resolve_page_reference(
 
 
 def _resolve_list_of_page_references(
-    group_pages: list[str], title_to_ids: dict[str, list[ModelID]]
+    page_ref_list: list[str], title_to_ids: dict[str, list[ModelID]]
 ) -> tuple[list[str], list[ModelID]]:
     """Resolve a list of page references to page IDs."""
     unknown_pages: list[str] = []
     validated_list: list[ModelID] = []
 
-    for page_ref in group_pages:
+    for page_ref in page_ref_list:
         resolved_ref = _resolve_page_reference(page_ref, title_to_ids)
         if resolved_ref is None:
             unknown_pages.append(page_ref)
