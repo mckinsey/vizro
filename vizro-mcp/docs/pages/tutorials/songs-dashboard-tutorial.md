@@ -30,7 +30,7 @@ Finally, we ask Claude to build a dashboard containing both charts and give feed
 
 We will start by using the [timeless_names.csv](https://github.com/the-pudding/data/blob/master/names-in-songs/timeless_names.csv) data, which captures the 10 names most commonly occurring in songs for each decade between 1960s and 2010s. We will remove the rows where the person is FALSE, since these are where it is uncertain if the name refers to a person or to something else, such as a brand (for example "Calvin Klein"), month (for example, "April"), season (for example, "Summer"), and so on.
 
-Submit this prompt to Claude Desktop, or your preferred LLM.
+Submit this prompt to Claude Desktop, or your preferred host.
 
 ```text
 Use this data https://github.com/the-pudding/data/blob/master/names-in-songs/timeless_names.csv and preprocess it to remove all rows where person==FALSE.
