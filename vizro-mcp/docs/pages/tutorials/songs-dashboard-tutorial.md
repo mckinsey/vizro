@@ -1,4 +1,4 @@
-# Vizro-MCP songs dashboard tutorial
+# Claude Desktop and Vizro-MCP tutorial
 
 ## About this tutorial
 
