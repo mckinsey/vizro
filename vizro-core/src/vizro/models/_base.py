@@ -226,7 +226,7 @@ class VizroBaseModel(BaseModel):
         ModelID,
         Field(
             default_factory=lambda: str(uuid.UUID(int=rd.getrandbits(128))),
-            description="ID to identify model. Must be unique throughout the whole dashboard."
+            description="ID to identify model. Must be unique throughout the whole dashboard. "
             "When no ID is chosen, ID will be automatically generated.",
             validate_default=True,
         ),
