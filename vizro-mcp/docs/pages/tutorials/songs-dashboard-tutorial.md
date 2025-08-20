@@ -76,7 +76,7 @@ From the prompt iteration, Claude generated this chart, shown in PyCafe:
 
 ![](../../assets/images/song-decades-iteration2.png)
 
-The result has a much better scale and the labelling is helpful but it's not perfect. We can ask again to improve it, either in the same chat or by commenting on the configuration output with the chart:
+The result has a much better scale and the labeling is helpful but it's not perfect. We can ask again to improve it, either in the same chat or by commenting on the configuration output with the chart:
 
 ```text
 Almost there! Pay attention to the labels.
@@ -100,7 +100,7 @@ When you are happy with your version, it is a good idea to copy the configuratio
 
 ## A scatter plot to show song rankings
 
-We'll now add another chart to the Vizro dashboard. This will show names found in songs that made it to the top 10 of the Billboard Hot 100 between 1958 and 2019. The chart will show each year, and use colours to show the song's ranking
+We'll now add another chart to the Vizro dashboard. This will show names found in songs that made it to the top 10 of the Billboard Hot 100 between 1958 and 2019. The chart will show each year, and use colors to show the song's ranking
 
 ```text
 Use https://raw.githubusercontent.com/the-pudding/data/master/names-in-songs/unique.csv and preprocess the data to remove all rows where person==FALSE and all rows where name==Baby. Remove any null values.
@@ -179,7 +179,7 @@ A further set of changes:
 ```text
 On the top chart, make this double height.
 Try the name labels in a dark theme so use black rectangles
-with coloured text and white outline.
+with colored text and white outline.
 On the bottom chart, add artist to the hovertext for each point.
 ```
 
