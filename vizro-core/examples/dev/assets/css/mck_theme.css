@@ -30,7 +30,6 @@
     --bs-dark: #051c2c;
 
     /* Are not defined in the current mck min file */
-
     --left-side-bg: #fafafa;
     --bs-border-color: #e6e6e6; /* #b3b3b3; */
     --bs-body-color: #333333;
@@ -175,22 +174,15 @@ div.VirtualizedSelectFocusedOption {
   .form-check {
     height: 20px;
     margin-bottom: 0.25rem;
+    display: flex;
   }
 
-/* Custom form controls */
+/* Custom radio buttons only */
 .form-check .form-check-input {
-    opacity: 0;
-    position: absolute;
-    width: 0;
-    height: 0;
-    margin: 0;
+    visibility: hidden;
 }
 
-.form-check .form-check-input + label {
-    cursor: pointer;
-}
-
-.form-check .form-check-input + label:before {
+.form-check .form-check-input[type="radio"] + label:before {
     content: '';
     position: absolute;
     left: 0;
@@ -198,17 +190,13 @@ div.VirtualizedSelectFocusedOption {
     transform: translateY(-50%);
     width: 16px;
     height: 16px;
-    border: 1px solid #6d6f77;
-    background: white;
-    transition: all 0.2s ease;
-}
-
-.form-check .form-check-input[type="radio"] + label:before {
+    border: 1px solid rgb(179, 179, 179);
     border-radius: 50%;
+    background: white;
 }
 
-.form-check .form-check-input:checked + label:before {
-    background: var(--bs-primary);
+.form-check .form-check-input[type="radio"]:checked + label:before {
+    background: #fff;
     border-color: var(--bs-primary);
 }
 
@@ -221,21 +209,35 @@ div.VirtualizedSelectFocusedOption {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: white;
+    background: var(--bs-primary);
+}
+
+
+/* Custom checkboxes */
+.form-check .form-check-input[type="checkbox"] + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 1px solid #6d6f77;
+}
+
+.form-check .form-check-input[type="checkbox"]:checked + label:before {
+    background: var(--bs-primary);
+    border-color: var(--bs-primary);
 }
 
 .form-check .form-check-input[type="checkbox"]:checked + label:after {
     content: '';
     position: absolute;
-    left: 3px;
-    top: 50%;
+    left: 6px;
+    top: 45%;
     transform: translateY(-50%) rotate(45deg);
-    width: 6px;
+    width: 5px;
     height: 10px;
-    border: 1px solid white;
-    border-width: 0 2px 2px 0;
-}
-
-.form-check .form-check-input:focus + label:before {
-    box-shadow: 0 0 0 3px rgba(26, 133, 255, 0.25);
+    border: solid white;
+    border-width: 0 1px 1px 0;
 }
