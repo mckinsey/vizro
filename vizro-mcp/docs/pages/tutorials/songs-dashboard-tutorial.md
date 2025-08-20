@@ -100,7 +100,7 @@ The prompt iteration generates this output, although your version may be slightl
 
 The exact positioning of the label seems to be difficult to achieve, and in part this is expected when working with Plotly. You may need to iterate a few times to get the exact placement, or you may find other issues crop up, since that is the nature of using a non-deterministic model.
 
-When you are happy with your version, it is a good idea to copy the configuration output from the prompt and save it to GitHub, in case you need it in future. You may also want to convert the PyCafe code to save it as a public project, using the Push button:
+When you are happy with your version, it is a good idea to copy the output and save it to GitHub, in case you need it in future. You may also want to convert the PyCafe code to save it as a public project, using the Push button:
 
 ![](../../assets/images/save-pycafe.png)
 
