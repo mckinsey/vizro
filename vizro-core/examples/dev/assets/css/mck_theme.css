@@ -174,7 +174,10 @@ div.VirtualizedSelectFocusedOption {
   .form-check {
     height: 20px;
     margin-bottom: 0.25rem;
-    display: flex;
+  }
+
+  .form-check-label  {
+    height: 20px;
   }
 
 /* Custom radio buttons only */
