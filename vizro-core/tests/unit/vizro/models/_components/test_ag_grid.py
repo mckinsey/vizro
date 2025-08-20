@@ -267,7 +267,7 @@ class TestBuildAgGrid:
                     None,
                     None,
                     html.Div(
-                        children=html.Div(),
+                        children=[html.Div()],
                         className="table-container",
                     ),
                     None,
@@ -300,7 +300,7 @@ class TestBuildAgGrid:
                     None,
                     html.Div(
                         id="text_ag_grid",
-                        children=html.Div(id=underlying_id_expected),
+                        children=[html.Div(id=underlying_id_expected)],
                         className="table-container",
                     ),
                     None,
@@ -327,7 +327,7 @@ class TestBuildAgGrid:
                     html.H3([html.Span("Title"), None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
-                        children=html.Div(),
+                        children=[html.Div()],
                         className="table-container",
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
@@ -365,7 +365,7 @@ class TestBuildAgGrid:
                     html.H3([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     html.Div(
-                        children=html.Div(),
+                        children=[html.Div()],
                         className="table-container",
                     ),
                     None,

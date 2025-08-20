@@ -1494,18 +1494,7 @@
         "actions": {
           "default": [],
           "items": {
-            "description": "Action.",
-            "oneOf": [
-              {
-                "$ref": "#/$defs/Action"
-              },
-              {
-                "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              }
-            ]
+            "$ref": "#/$defs/ActionsChain"
           },
           "title": "Actions",
           "type": "array"
@@ -2188,6 +2177,21 @@
       "required": ["text", "icon"],
       "title": "Tooltip",
       "type": "object"
+    },
+    "Trigger": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "title": "Component Id",
+          "type": "string"
+        },
+        {
+          "title": "Component Property",
+          "type": "string"
+        }
+      ],
+      "type": "array"
     },
     "export_data": {
       "additionalProperties": false,

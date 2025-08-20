@@ -208,7 +208,7 @@ class AgGrid(VizroBaseModel):
                     # The `id=self._inner_component_id` is set to avoid the "Non-existing object" Dash exception.
                     html.Div(
                         id=self.id,
-                        children=html.Div(id=self._inner_component_id),
+                        children=[html.Div(id=self._inner_component_id)],
                         className="table-container",
                     ),
                     dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
