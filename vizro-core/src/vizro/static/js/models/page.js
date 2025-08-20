@@ -95,7 +95,7 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
     throw new Error(
       `Invalid number of input parameters: received ${values_ids.length}.
 Expected format: [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
-Received input: ${JSON.stringify(values_ids)}`
+Received input: ${JSON.stringify(values_ids)}`,
     );
   }
 

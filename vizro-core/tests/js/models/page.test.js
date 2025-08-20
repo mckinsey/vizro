@@ -239,7 +239,17 @@ describe("page.js functions", () => {
       // If opl_triggered is undefined, it means the page is opened
       const opl_triggered = undefined;
 
-      const values_ids = ["controlVal1", "controlVal2", "controlVal3", "controlId1", "controlId2", "controlId3", "selectorId1", "selectorId2", "selectorId3"];
+      const values_ids = [
+        "controlVal1",
+        "controlVal2",
+        "controlVal3",
+        "controlId1",
+        "controlId2",
+        "controlId3",
+        "selectorId1",
+        "selectorId2",
+        "selectorId3",
+      ];
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
@@ -256,7 +266,14 @@ describe("page.js functions", () => {
       const opl_triggered = undefined;
 
       // These values_ids will NOT be used in the expect statement below. Mocked urlParams.toString() is used instead.
-      const values_ids = ["controlVal1", "controlVal2", "controlId1", "controlId2", "selectorId1", "selectorId2"];
+      const values_ids = [
+        "controlVal1",
+        "controlVal2",
+        "controlId1",
+        "controlId2",
+        "selectorId1",
+        "selectorId2",
+      ];
 
       global.dash_clientside.page.sync_url_query_params_and_controls(
         opl_triggered,
@@ -277,7 +294,7 @@ describe("page.js functions", () => {
 
       const result =
         global.dash_clientside.page.sync_url_query_params_and_controls(
-            opl_triggered
+          opl_triggered,
         );
 
       expect(result).toEqual(null);
@@ -287,7 +304,13 @@ describe("page.js functions", () => {
       // If opl_triggered is undefined, it means the page is opened
       const opl_triggered = undefined;
 
-      const values_ids = ["value1", "value2", "control1", "control2", "selector1"];
+      const values_ids = [
+        "value1",
+        "value2",
+        "control1",
+        "control2",
+        "selector1",
+      ];
 
       expect(() => {
         global.dash_clientside.page.sync_url_query_params_and_controls(
@@ -295,10 +318,10 @@ describe("page.js functions", () => {
           ...values_ids,
         );
       }).toThrow(
-    `Invalid number of input parameters: received 5.
+        `Invalid number of input parameters: received 5.
 Expected format: [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
-Received input: ["value1","value2","control1","control2","selector1"]`
-  );
+Received input: ["value1","value2","control1","control2","selector1"]`,
+      );
     });
 
     test("should update URLSearchParams with encoded values", () => {
@@ -310,7 +333,14 @@ Received input: ["value1","value2","control1","control2","selector1"]`
         toString: jest.fn(() => "encoded=params"),
       };
 
-      const values_ids = ["controlVal1", "controlVal2", "controlId1", "controlId2", "selectorId1", "selectorId2"];
+      const values_ids = [
+        "controlVal1",
+        "controlVal2",
+        "controlId1",
+        "controlId2",
+        "selectorId1",
+        "selectorId2",
+      ];
 
       global.dash_clientside.page.sync_url_query_params_and_controls(
         opl_triggered,
