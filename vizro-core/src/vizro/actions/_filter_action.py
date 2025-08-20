@@ -25,6 +25,7 @@ class _filter(_AbstractAction):
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
         """
         from time import sleep
+
         sleep(0.5)
         # This is identical to _on_page_load.
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This

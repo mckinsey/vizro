@@ -659,16 +659,12 @@ e2e_failing_test_dropdown_persistence_with_all_values = vm.Page(
             column="species",
             show_in_url=True,
             targets=["scatter", "box graph"],
-            selector=vm.RadioItems(
-                id="radio-filters-page", options=["setosa", "versicolor", "virginica"]
-            ),
+            selector=vm.RadioItems(id="radio-filters-page", options=["setosa", "versicolor", "virginica"]),
         ),
         vm.Filter(
             column="species",
             targets=["scatter"],
-            selector=vm.Checklist(
-                id="check filters-page", options=["setosa", "versicolor", "virginica"]
-            ),
+            selector=vm.Checklist(id="check filters-page", options=["setosa", "versicolor", "virginica"]),
         ),
         vm.Filter(
             column="petal_width",
