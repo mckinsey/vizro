@@ -95,8 +95,8 @@ h5 {
 
 #dashboard-container .dash-spreadsheet-inner th {
     background: var(--bs-tertiary-bg);
+    font-weight: 600;
     border: 0;
-
 }
 
 .navbar .nav-link {
