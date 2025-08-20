@@ -30,10 +30,11 @@ if TYPE_CHECKING:
 class Vizro:
     """The main class of the `vizro` package."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, use_vizro_bootstrap: bool = True, **kwargs):
         """Initializes Dash app, stored in `self.dash`.
 
         Args:
+            use_vizro_bootstrap: Whether to include vizro-bootstrap.min.css. Defaults to True.
             **kwargs : Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
@@ -69,13 +70,11 @@ class Vizro:
         with suppress(ValueError):
             ComponentRegistry.registry.discard("vizro")
 
-        # Only inject vizro-bootstrap.min.css if external_stylesheets is not provided.
-        external_stylesheets = kwargs.get("external_stylesheets")
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
-            if external_stylesheets and path.suffix == ".css" and path.name == "vizro-bootstrap.min.css":
-                continue  # skip vizro-bootstrap.min.css if user provided external_stylesheets
+            if not use_vizro_bootstrap and path.suffix == ".css" and path.name == "vizro-bootstrap.min.css":
+                continue  # skip vizro-bootstrap.min.css if user set use_vizro_bootstrap=False
             if path.suffix == ".css":
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
