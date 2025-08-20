@@ -25,7 +25,8 @@ class Accordion(VizroBaseModel):
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.
-        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
+            Defaults to `{}`.
 
     """
 
@@ -37,7 +38,7 @@ class Accordion(VizroBaseModel):
         ],
         AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
-        Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
+        Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
 
     @_log_call

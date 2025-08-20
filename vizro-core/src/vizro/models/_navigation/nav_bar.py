@@ -15,6 +15,7 @@ from vizro.models._navigation.nav_link import NavLink
 from vizro.models.types import ModelID
 
 
+# TODO[MS]: Is the below actually correct? This is used in BeforeValidators, but the input type is not Any!
 def coerce_pages_type(pages: Union[list[str], dict[str, list[str]]]) -> dict[str, list[str]]:
     if isinstance(pages, Mapping):
         return pages
@@ -26,7 +27,8 @@ class NavBar(VizroBaseModel):
 
     Args:
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
-        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
+            Defaults to `{}`.
         items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
 
     """
@@ -36,7 +38,7 @@ class NavBar(VizroBaseModel):
         dict[str, list[ModelID]],
         AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
-        Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
+        Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
     items: list[NavLink] = []
 
@@ -44,11 +46,13 @@ class NavBar(VizroBaseModel):
     def pre_build(self):
         from vizro.models import Page
 
-        # If the group title is actually a model ID (most likely because it was automatically set), then we
-        # prefer to have the title of that page be used as reference
         self.items = self.items or [
             NavLink(
-                label=cast(Page, model_manager[group_title]).title if group_title in model_manager else group_title,
+                # If the group title is a model ID, then we prefer to have the title of that page be used
+                # as Tooltip label
+                label=cast(Page, model_manager[group_title]).title
+                if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
+                else group_title,
                 pages=pages,
             )
             for group_title, pages in self.pages.items()

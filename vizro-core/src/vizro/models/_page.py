@@ -8,8 +8,8 @@ from pydantic import (
     AfterValidator,
     BeforeValidator,
     Field,
-    ValidationInfo,
     conlist,
+    model_validator,
 )
 from typing_extensions import TypedDict
 
@@ -38,38 +38,12 @@ from .types import ComponentType, ControlType, FigureType, LayoutType
 _PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
-# TODO[MS]: Probably this will immediately move to pre-build in next PR
-def _check_for_duplicate_path(path: str) -> bool:
-    registered_paths = [page.path for page in cast(Iterable[Page], model_manager._get_models(Page))]
-
-    if path in registered_paths:
-        return True
-    return False
-
-
-def set_path(path: str, info: ValidationInfo) -> str:
-    # Based on how Github generates anchor links - see:
-    # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
-    def clean_path(path: str, allowed_characters: str) -> str:
-        path = path.strip().lower().replace(" ", "-")
-        path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
-        return path if path.startswith("/") else "/" + path
-
-    # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
-    # maybe remove?
-    if path:
-        if _check_for_duplicate_path(path):
-            raise ValueError(f"Path {path} cannot be used by more than one page.")
-        return clean_path(path, "-_/")
-
-    # Changes to previous iteration before PR 1339:
-    #
-    # - if non duplicated title and explicit id: BEFORE: used id             AFTER: title
-    # - if non duplicated title and no id:       BEFORE: used title (via id) AFTER: title
-    # - if duplicated title and explicit id:     BEFORE: used id             AFTER: id
-    # - if duplicated title and no id:           BEFORE: error (via id)      AFTER: id (rand gen) or err (nav defined)
-    path = clean_path(info.data["title"], "-_") if "title" in info.data else "invalid"  # pydantic validation will catch
-    return path if not _check_for_duplicate_path(path) else clean_path(info.data["id"], "-_")
+# Based on how Github generates anchor links - see:
+# https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
+def clean_path(path: str, allowed_characters: str) -> str:
+    path = path.strip().lower().replace(" ", "-")
+    path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
+    return path if path.startswith("/") else "/" + path
 
 
 class Page(VizroBaseModel):
@@ -106,11 +80,31 @@ class Page(VizroBaseModel):
         ),
     ]
     controls: list[ControlType] = []
-    # Note that order matters for the path validation, so we need to set it after the title and id validators
-    path: Annotated[
-        str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
-    ]
+    path: Annotated[str, Field(default="", description="Path to navigate to page.")]
     actions: list[ActionsChain] = []
+
+    # This should ideally be a field validator, but we need access to the model_fields_set
+    @model_validator(mode="after")
+    def validate_path(self):
+        fields_set = self.model_fields_set
+        if self.path:
+            new_path = clean_path(self.path, "-_/")
+        elif "id" in fields_set:
+            new_path = clean_path(self.id, "-_")
+        else:
+            new_path = clean_path(self.title, "-_")
+
+        # Check for duplicate path - will move to pre_build in next PR
+        for page in cast(Iterable[Page], model_manager._get_models(Page)):
+            # Need to check for id equality to avoid checking the same page against itself
+            if not self.id == page.id and new_path == page.path:
+                raise ValueError(f"Path {new_path} cannot be used by more than one page.")
+
+        # We should do self.path = new_path but this leads to a recursion error. The below is a workaround
+        # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
+        self.__dict__["path"] = new_path
+
+        return self
 
     # get rid of this either way
     def model_post_init(self, context: Any) -> None:
