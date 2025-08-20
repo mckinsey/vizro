@@ -60,7 +60,7 @@ class TestSwitchInstantiation:
 
     def test_switch_trigger(self, identity_action_function):
         switch = vm.Switch(id="switch-id", actions=[vm.Action(function=identity_action_function())])
-        action = switch.actions[0]
+        [action] = switch.actions
         assert action._trigger == "switch-id.value"
 
 

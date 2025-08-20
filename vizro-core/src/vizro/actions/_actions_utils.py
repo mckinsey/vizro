@@ -21,9 +21,6 @@ from vizro.models.types import (
     SingleValueType,
 )
 
-if TYPE_CHECKING:
-    pass
-
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
 

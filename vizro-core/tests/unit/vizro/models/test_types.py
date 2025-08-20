@@ -420,8 +420,8 @@ class TestCoerceActionsAndOutputsType:
     @pytest.mark.parametrize(
         "actions_input",
         [
-            Action(function=export_data()),  # Single action
-            [Action(function=export_data())],  # List of actions
+            export_data(),  # Single action
+            [export_data()],  # List of actions
         ],
     )
     def test_coerce_actions_type(self, actions_input):

@@ -293,7 +293,7 @@ class TestSliderInstantiation:
 
     def test_slider_trigger(self, identity_action_function):
         slider = vm.Slider(id="slider-id", actions=[vm.Action(function=identity_action_function())])
-        action = slider.actions[0]
+        [action] = slider.actions
         assert action._trigger == "slider-id.value"
 
 

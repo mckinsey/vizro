@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable passing a single action to the `actions` argument e.g. `actions=export_data()`. ([#1328](https://github.com/mckinsey/vizro/pull/1328))
+- Enable passing a single action to the `actions` argument without nesting it in a list. You can now specify `actions=vm.Action(...)` instead of `actions=[vm.Action(...)]`. ([#1328](https://github.com/mckinsey/vizro/pull/1328))
 
 
 <!--
