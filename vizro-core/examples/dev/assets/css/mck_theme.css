@@ -40,6 +40,7 @@
     --bs-tertiary-bg: #e6e6e6;
     --bs-box-shadow: 0 2px 4px -1px rgba(5,28,44,.2),0 0 1px 0 rgba(5,28,44,.2);
     --bs-box-shadow-sm: 0 2px 4px -1px rgba(5,28,44,.2),0 0 1px 0 rgba(5,28,44,.2);
+    --bs-border-radius: 0;
 
   }
 
@@ -166,37 +167,21 @@ div.VirtualizedSelectFocusedOption {
 
 
   /* FORMS */
-
   input[type="checkbox"], input[type="radio"] {
     height: 16px;
     width: 16px;
   }
 
-
-  input[type="checkbox"] {
-    border-radius: 0;
-  }
-
-  .form-check-input {
-    border-radius: 0;
-    margin-top: 0;
-  }
-
-  .form-check-input:checked {
-    background-color: var(--bs-primary) !important;
-  }
-
   .form-check {
-    align-items: center;
-    display: flex;
     height: 20px;
+    margin-bottom: 0.25rem;
   }
 
 /* TODO: Doesn't seem to have an effect at all*/
-.form-check input[type="checkbox"].form-check-input:checked,
-input[type="checkbox"].form-check-input:checked,
-.form-check-input[type="checkbox"]:checked {
-    /* Test: Red background to verify the rule is working */
-    background-color: red !important;
+.form-check-input:checked[type=checkbox] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
 }
 
+.form-check-input:checked {
+    background-color: var(--bs-primary);
+}
