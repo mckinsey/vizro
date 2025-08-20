@@ -74,6 +74,29 @@
   height: 100%;
 }
 
+#header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress_indicator.active {
+  animation: spin 1s linear infinite;
+}
+
+.progress_indicator.hidden {
+  opacity: 0;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 #page-components {
   flex: 1;
   overflow: auto;

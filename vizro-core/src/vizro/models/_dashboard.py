@@ -32,6 +32,7 @@ from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
+from vizro.models._components.progress_indicator import ProgressIndicator
 from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
@@ -82,7 +83,9 @@ _OuterPageContentType = TypedDict(
 )
 
 
-def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
+def set_navigation_pages(
+    navigation: Optional[Navigation], info: ValidationInfo
+) -> Optional[Navigation]:
     if "pages" not in info.data:
         return navigation
 
@@ -108,12 +111,18 @@ class Dashboard(VizroBaseModel):
 
     pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
+        default="vizro_dark",
+        description="Theme to be applied across dashboard. Defaults to `vizro_dark`.",
     )
     navigation: Annotated[
-        Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
+        Optional[Navigation],
+        AfterValidator(set_navigation_pages),
+        Field(default=None, validate_default=True),
     ]
-    title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
+    title: str = Field(
+        default="",
+        description="Dashboard title to appear on every page on top left-side.",
+    )
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
@@ -136,7 +145,11 @@ class Dashboard(VizroBaseModel):
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"
-        meta_img = self._infer_image("app") or self._infer_image("logo") or self._infer_image("logo_dark")
+        meta_img = (
+            self._infer_image("app")
+            or self._infer_image("logo")
+            or self._infer_image("logo_dark")
+        )
         dashboard_description_text = self.description.text if self.description else None
 
         for order, page in enumerate(self.pages):
@@ -146,7 +159,11 @@ class Dashboard(VizroBaseModel):
             dash.register_page(
                 module=page.id,
                 name=page.title,
-                description=page.description.text if page.description else dashboard_description_text,
+                description=(
+                    page.description.text
+                    if page.description
+                    else dashboard_description_text
+                ),
                 image=meta_img,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
                 path=page.path,
@@ -161,11 +178,15 @@ class Dashboard(VizroBaseModel):
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
         # Define callbacks when the dashboard is built but not every time the page is changed.
-        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
+        for action in cast(
+            Iterable[_BaseAction], model_manager._get_models(_BaseAction)
+        ):
             action._define_callback()
 
         clientside_callback(
-            ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
+            ClientsideFunction(
+                namespace="dashboard", function_name="update_dashboard_theme"
+            ),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
             Input("theme-selector", "value"),
@@ -173,7 +194,9 @@ class Dashboard(VizroBaseModel):
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
             clientside_callback(
-                ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
+                ClientsideFunction(
+                    namespace="dashboard", function_name="collapse_nav_panel"
+                ),
                 [
                     Output("collapse-left-side", "is_open"),
                     Output("collapse-icon", "style"),
@@ -190,8 +213,12 @@ class Dashboard(VizroBaseModel):
                 dcc.Store(
                     id="vizro_themes",
                     data={
-                        "vizro_dark": pio.templates.merge_templates("vizro_dark", dashboard_overrides),
-                        "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
+                        "vizro_dark": pio.templates.merge_templates(
+                            "vizro_dark", dashboard_overrides
+                        ),
+                        "vizro_light": pio.templates.merge_templates(
+                            "vizro_light", dashboard_overrides
+                        ),
                     },
                 ),
                 dash.page_container,
@@ -234,8 +261,12 @@ class Dashboard(VizroBaseModel):
         path_to_logo_light = get_asset_url(logo_light_img) if logo_light_img else None
 
         logo = html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo)
-        logo_dark = html.Img(id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark)
-        logo_light = html.Img(id="logo-light", src=path_to_logo_light, hidden=not path_to_logo_light)
+        logo_dark = html.Img(
+            id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark
+        )
+        logo_light = html.Img(
+            id="logo-light", src=path_to_logo_light, hidden=not path_to_logo_light
+        )
 
         return logo, logo_dark, logo_light
 
@@ -250,11 +281,16 @@ class Dashboard(VizroBaseModel):
                 controls, and content components for the page.
         """
         # Shared across pages but slightly differ in content. Could possibly be done by a clientside callback.
-        page_description = page.description.build().children if page.description else [None]
-        page_title = html.H2(
-            id="page-title", children=[html.Span(page.title, id=f"{page.id}_title"), *page_description]
+        page_description = (
+            page.description.build().children if page.description else [None]
         )
-        navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        page_title = html.H2(
+            id="page-title",
+            children=[html.Span(page.title, id=f"{page.id}_title"), *page_description],
+        )
+        navigation: _NavBuildType = cast(Navigation, self.navigation).build(
+            active_page_id=page.id
+        )
         nav_bar = navigation["nav-bar"]
         nav_panel = navigation["nav-panel"]
 
@@ -264,7 +300,9 @@ class Dashboard(VizroBaseModel):
         page_components = page_content["page-components"]
 
         # Identical across pages
-        dashboard_description = self.description.build().children if self.description else [None]
+        dashboard_description = (
+            self.description.build().children if self.description else [None]
+        )
         dashboard_title = (
             html.H2(id="dashboard-title", children=[self.title, *dashboard_description])
             if self.title
@@ -279,14 +317,27 @@ class Dashboard(VizroBaseModel):
             ),
             id="settings",
         )
+
+        progress_indicator = ProgressIndicator()
+
+        header_controls = html.Div(
+            id="header-controls", children=[progress_indicator.build(), settings]
+        )
+
         logo, logo_dark, logo_light = self._get_logo_images()
         custom_header_content = self.custom_header()
         custom_header = html.Div(
-            id="header-custom", children=custom_header_content, hidden=_all_hidden(custom_header_content)
+            id="header-custom",
+            children=custom_header_content,
+            hidden=_all_hidden(custom_header_content),
         )
 
         header_left_content = [logo, logo_dark, logo_light, dashboard_title]
-        header_left = html.Div(id="header-left", children=header_left_content, hidden=_all_hidden(header_left_content))
+        header_left = html.Div(
+            id="header-left",
+            children=header_left_content,
+            hidden=_all_hidden(header_left_content),
+        )
         header_right_content = [custom_header]
 
         # Construct required parent containers
@@ -295,9 +346,9 @@ class Dashboard(VizroBaseModel):
 
         # Apply different container position logic based on condition
         if _all_hidden(header_left_content + header_right_content):
-            page_header_content.append(settings)
+            page_header_content.append(header_controls)
         else:
-            header_right_content.append(settings)
+            header_right_content.append(header_controls)
 
         header_right = html.Div(
             id="header-right",
@@ -307,7 +358,9 @@ class Dashboard(VizroBaseModel):
 
         nav_control_panel_content = [nav_panel, control_panel]
         nav_control_panel = html.Div(
-            id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content)
+            id="nav-control-panel",
+            children=nav_control_panel_content,
+            hidden=_all_hidden(nav_control_panel_content),
         )
 
         return html.Div(
@@ -355,7 +408,11 @@ class Dashboard(VizroBaseModel):
         )
         collapse_icon_outer = html.Div(
             children=[
-                html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
+                html.Span(
+                    id="collapse-icon",
+                    children="keyboard_arrow_left",
+                    className="material-symbols-outlined",
+                ),
                 dbc.Tooltip(
                     id="collapse-tooltip",
                     children="Hide Menu",
@@ -389,10 +446,17 @@ class Dashboard(VizroBaseModel):
         right_side = outer_page["right-side"]
         header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[collapse_left_side, collapse_icon_outer, right_side])
+        page_main = html.Div(
+            id="page-main",
+            children=[collapse_left_side, collapse_icon_outer, right_side],
+        )
         page_main_outer = html.Div(
             children=[header, page_main],
-            className="page-main-outer no-left" if _all_hidden(collapse_icon_outer) else "page-main-outer",
+            className=(
+                "page-main-outer no-left"
+                if _all_hidden(collapse_icon_outer)
+                else "page-main-outer"
+            ),
         )
         return page_main_outer
 
@@ -409,7 +473,9 @@ class Dashboard(VizroBaseModel):
         # The svg file is available through the _dash-component-suites/vizro route, as used in Dash's
         # _relative_url_path, but that feels too private to access directly. Hence read the file in directly rather
         # than referring to its path.
-        error_404_svg = base64.b64encode((VIZRO_ASSETS_PATH / "images/error_404.svg").read_bytes()).decode("utf-8")
+        error_404_svg = base64.b64encode(
+            (VIZRO_ASSETS_PATH / "images/error_404.svg").read_bytes()
+        ).decode("utf-8")
         return html.Div(
             [
                 # Theme switch is added such that the 404 page has the same theme as the user-selected one.
@@ -422,14 +488,27 @@ class Dashboard(VizroBaseModel):
                 html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
                 html.H3("This page could not be found."),
                 html.P("Make sure the URL you entered is correct."),
-                dbc.Button(children="Take me home", href=get_relative_path("/"), class_name="mt-4"),
+                dbc.Button(
+                    children="Take me home",
+                    href=get_relative_path("/"),
+                    class_name="mt-4",
+                ),
             ],
             className="d-flex flex-column align-items-center justify-content-center min-vh-100",
         )
 
     @staticmethod
     def _infer_image(filename: str):
-        valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
+        valid_extensions = [
+            ".apng",
+            ".avif",
+            ".gif",
+            ".jpeg",
+            ".jpg",
+            ".png",
+            ".svg",
+            ".webp",
+        ]
         assets_folder = Path(dash.get_app().config.assets_folder)
         if assets_folder.is_dir():
             for path in Path(assets_folder).rglob(f"{filename}.*"):
