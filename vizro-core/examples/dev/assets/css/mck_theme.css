@@ -46,7 +46,7 @@
   h1, h2, h3, h4, h5 {
     margin-bottom: 0.5rem;
   }
- 
+
 
 
 h1 {
@@ -70,8 +70,8 @@ h5 {
 }
 
 .container-title-collapse {
-    padding: 0;
     margin: 0;
+    padding: 0;
 }
 
 .card .nav-link {
@@ -102,15 +102,6 @@ h5 {
     width: 60px;
 }
 
-.form-check {
-    margin-bottom: 0.5rem;
-}
-
-.form-check-input {
-    font-size: 24px;
-
-}
-
 .rc-slider-rail, .rc-slider-dot {
     background: var(--bs-tertiary-bg);
 }
@@ -119,13 +110,13 @@ h5 {
 #dashboard-container .ag-standard-button {
     background-color: var(--bs-primary);
     border: 1px solid var(--bs-primary);
-    color: #fff;
+    color: #ffffff;
 }
 
 #dashboard-container .ag-standard-button:hover {
     background-color: #0033f0;
     border-color: #0033f0;
-    color: #fff;
+    color: #ffffff;
 }
 
 
@@ -153,7 +144,7 @@ div.VirtualizedSelectFocusedOption {
 
 
   .mantine-DatePickerInput-day[data-selected], .mantine-DatePickerInput-day:hover, .mantine-PickerControl-pickerControl:hover, .mantine-DatePickerInput-monthsListControl:hover {
-    color: #fff !important;
+    color: #ffffff !important;
   }
 
   label, legend, .form-label {
@@ -167,3 +158,45 @@ div.VirtualizedSelectFocusedOption {
   .table-container {
     font-size: 0.875rem;
   }
+
+  #dashboard-title, #page-title {
+    margin-top:0;
+    padding-top: 0;
+  }
+
+
+  /* FORMS */
+
+  input[type="checkbox"], input[type="radio"] {
+    height: 16px;
+    width: 16px;
+  }
+
+
+  input[type="checkbox"] {
+    border-radius: 0;
+  }
+
+  .form-check-input {
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .form-check-input:checked {
+    background-color: var(--bs-primary) !important;
+  }
+
+  .form-check {
+    align-items: center;
+    display: flex;
+    height: 20px;
+  }
+
+/* TODO: Doesn't seem to have an effect at all*/
+.form-check input[type="checkbox"].form-check-input:checked,
+input[type="checkbox"].form-check-input:checked,
+.form-check-input[type="checkbox"]:checked {
+    /* Test: Red background to verify the rule is working */
+    background-color: red !important;
+}
+

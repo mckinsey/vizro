@@ -1224,7 +1224,8 @@ if __name__ == "__main__":
     # OK: LUMEN, SOLAR
     # NAJA: CYBORG, DARKLY, SLATE, SUPERHERO
     app = Vizro(
-        external_stylesheets=["https://cdn.mckinsey.com/libraries/Bootstrap/v1.3.0/mck-bootstrap.min.css"]
+        use_vizro_bootstrap=False,
+        external_stylesheets=["https://cdn.mckinsey.com/libraries/Bootstrap/v1.3.0/mck-bootstrap.min.css"],
     ).build(dashboard)
     app.dash.layout.children.append(
         dbc.NavLink(
