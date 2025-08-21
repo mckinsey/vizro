@@ -127,10 +127,6 @@ class Dashboard(VizroBaseModel):
             tags. Defaults to `None`.""",
         ),
     ]
-    show_progress_indicator: bool = Field(
-        default=True,
-        description="Whether to show global progress indicator when actions are running. Defaults to `False`.",
-    )
 
     @_log_call
     def pre_build(self):
@@ -290,13 +286,9 @@ class Dashboard(VizroBaseModel):
             id="global-progress-indicator",
         )
 
-        # Only include progress indicator if enabled
-        header_controls_children = []
-        if self.show_progress_indicator:
-            header_controls_children.append(progress_indicator)
-        header_controls_children.append(settings)
-
-        header_controls = html.Div(id="header-controls", children=header_controls_children)
+        header_controls = html.Div(
+            id="header-controls", children=[progress_indicator, settings]
+        )
 
         logo, logo_dark, logo_light = self._get_logo_images()
         custom_header_content = self.custom_header()
