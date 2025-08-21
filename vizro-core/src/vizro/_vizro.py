@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict, Union, cast
 
 import dash
 import plotly.io as pio
@@ -30,11 +30,10 @@ if TYPE_CHECKING:
 class Vizro:
     """The main class of the `vizro` package."""
 
-    def __init__(self, *, use_vizro_bootstrap: bool = True, **kwargs):
+    def __init__(self, **kwargs):
         """Initializes Dash app, stored in `self.dash`.
 
         Args:
-            use_vizro_bootstrap: Whether to include vizro-bootstrap.min.css. Defaults to True.
             **kwargs : Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
@@ -67,6 +66,11 @@ class Vizro:
         with suppress(ValueError):
             ComponentRegistry.registry.discard("vizro")
 
+        # Automatically detect if Bootstrap CSS is provided in external_stylesheets
+        use_vizro_bootstrap = not self._has_bootstrap_css(kwargs.get("external_stylesheets", []))
+
+        # vizro-bootstrap.min.css must be first so that it can be overridden, e.g. by bootstrap_overrides.css.
+        # After that, all other items are sorted alphabetically.
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
@@ -77,9 +81,34 @@ class Vizro:
             elif path.suffix == ".js":
                 self.dash.scripts.append_script(_make_resource_spec(path))
             else:
+                # map files and fonts and images. These are treated like scripts since this is how Dash handles them.
+                # This adds paths to self.dash.registered_paths so that they can be accessed without throwing an
+                # error in dash._validate.validate_js_path.
                 self.dash.scripts.append_script(_make_resource_spec(path))
 
         data_manager.cache.init_app(self.dash.server)
+
+    @staticmethod
+    def _has_bootstrap_css(external_stylesheets: list[Union[str, dict[str, str]]]) -> bool:
+        """Detect if Bootstrap CSS is present in external stylesheets.
+
+        Args:
+            external_stylesheets: List of external stylesheet URLs or objects
+
+        Returns:
+            bool: True if Bootstrap CSS is detected, False otherwise
+        """
+        if not external_stylesheets:
+            return False
+
+        for stylesheet in external_stylesheets:
+            if isinstance(stylesheet, str):
+                if "bootstrap" in stylesheet.lower():
+                    return True
+            elif isinstance(stylesheet, dict) and "href" in stylesheet:
+                if "bootstrap" in stylesheet["href"].lower():
+                    return True
+        return False
 
     def build(self, dashboard: Dashboard):
         """Builds the `dashboard`.
