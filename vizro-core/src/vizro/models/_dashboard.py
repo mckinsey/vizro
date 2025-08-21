@@ -286,9 +286,7 @@ class Dashboard(VizroBaseModel):
             id="global-progress-indicator",
         )
 
-        header_controls = html.Div(
-            id="header-controls", children=[progress_indicator, settings]
-        )
+        header_controls = html.Div(id="header-controls", children=[progress_indicator, settings])
 
         logo, logo_dark, logo_light = self._get_logo_images()
         custom_header_content = self.custom_header()
