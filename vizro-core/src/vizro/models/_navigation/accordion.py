@@ -1,5 +1,4 @@
 import itertools
-from collections.abc import Mapping
 from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
@@ -14,8 +13,8 @@ from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models.types import ModelID
 
 
-def coerce_pages_type(pages: Any) -> Any:
-    if isinstance(pages, Mapping):
+def coerce_pages_type(pages: Any) -> dict[Any, Any]:
+    if isinstance(pages, dict):
         return pages
     return {ACCORDION_DEFAULT_TITLE: pages}
 

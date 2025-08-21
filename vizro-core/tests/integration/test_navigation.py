@@ -89,12 +89,6 @@ navbar_flat_cases = [
         lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.NavBar(pages=["Page 2"])),
         lambda: vm.Navigation(nav_selector=vm.NavBar(pages=["page_2"])),
     ),
-    (
-        lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.NavBar()),  # Isn't this identical to above?
-        lambda: vm.Navigation(
-            nav_selector=vm.NavBar(items=[vm.NavLink(label="Page 1", pages=["page_1"], icon="Filter 1")])
-        ),
-    ),
 ]
 
 navbar_grouped_cases = [

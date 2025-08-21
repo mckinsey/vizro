@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from itertools import chain
-from typing import Annotated, Any, Optional, cast
+from typing import Annotated, Optional, cast
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import (
@@ -17,7 +17,7 @@ from typing_extensions import TypedDict
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
-from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
@@ -96,10 +96,9 @@ class Page(VizroBaseModel):
     # This should ideally be a field validator, but we need access to the model_fields_set
     @model_validator(mode="after")
     def validate_path(self):
-        fields_set = self.model_fields_set
         if self.path:
             new_path = clean_path(self.path, "-_/")
-        elif "id" in fields_set:
+        elif "id" in self.model_fields_set:
             new_path = clean_path(self.id, "-_")
         else:
             new_path = clean_path(self.title, "-_")
@@ -115,17 +114,6 @@ class Page(VizroBaseModel):
         self.__dict__["path"] = new_path
 
         return self
-
-    # get rid of this either way
-    def model_post_init(self, context: Any) -> None:
-        """Adds the model instance to the model manager."""
-        try:
-            super().model_post_init(context)
-        except DuplicateIDError as exc:
-            raise ValueError(
-                f"Page with id={self.id} already exists. Page id is automatically set to the same "
-                f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
-            ) from exc
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

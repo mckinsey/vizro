@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
 from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
@@ -16,9 +15,7 @@ from vizro.models.types import ModelID
 
 
 def coerce_pages_type(pages: Any) -> Any:
-    if isinstance(pages, Mapping):
-        return pages
-    elif isinstance(pages, Iterable):
+    if isinstance(pages, list):
         return {page: [page] for page in pages}
     else:
         return pages
@@ -50,8 +47,8 @@ class NavBar(VizroBaseModel):
 
         self.items = self.items or [
             NavLink(
-                # If the group title is a model ID, then we prefer to have the title of that page be used
-                # as Tooltip label
+                # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
+                # then we prefer to have the title rather than id of that page be used
                 label=cast(Page, model_manager[group_title]).title
                 if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
                 else group_title,
