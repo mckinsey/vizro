@@ -3,14 +3,12 @@ from typing import Annotated, Any, Literal, Optional, Union
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
 from pydantic import AfterValidator, BeforeValidator, Field, model_validator
-from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._models_utils import _log_call, validate_icon
+from vizro.models._models_utils import _log_call, make_actions_chain, validate_icon
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 
 class Button(VizroBaseModel):
@@ -21,7 +19,7 @@ class Button(VizroBaseModel):
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
@@ -42,12 +40,7 @@ class Button(VizroBaseModel):
     ]
     text: Annotated[str, Field(description="Text to be displayed on button.", default="Click me!")]
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("n_clicks")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
+    actions: ActionsType = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
@@ -86,6 +79,13 @@ class Button(VizroBaseModel):
             raise ValueError("You must provide either the `text` or `icon` argument.")
 
         return self
+
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.n_clicks"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
