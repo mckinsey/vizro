@@ -1,9 +1,10 @@
 # Write your own actions
 
-In this tutorial, you will learn...
-
-TODO Cross link to user guideS
-Use attach terminology
+<!--
+TODO NOW:
+- write this: In this tutorial, you will learn...
+- cross link to user guide
+-->
 
 !!! note
 
@@ -23,13 +24,13 @@ Many [Vizro models][vizro.models] have an `actions` argument that can contain on
 In Vizro, there are two types of action:
 
 * [Built-in actions](../user-guides/actions.md). These cover many common dashboard operations such as downloading data and cross-filtering. These actions can be imported from `vizro.actions`.
-* [Custom actions](../user-guides/custom-actions.md). These are written by a user to achieve behaviour outside of Vizro's built-in actions.
+* [Custom actions](../user-guides/custom-actions.md). These are written by a user to achieve behaviour outside of Vizro's built-in actions and use the [`Action` model][vizro.models.Action].
 
 !!! note
 
     Do you have an idea for a built-in action that you think would be useful for many Vizro users? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
 
-This tutorial mainly concerns how to write your own custom actions, although you will also gain a better understanding of how Vizro's built-in actions work. You do not need to know anything about Dash callbacks to complete the tutorial. If you are already familiar with Dash callbacks then we recommend completing the tutorial quickly to familiarise yourself with how Vizro actions work, and you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](...).
+This tutorial mainly concerns how to write your own custom actions, although you will also gain a better understanding of how Vizro's built-in actions work. You do not need to know anything about Dash callbacks to complete the tutorial. If you are already familiar with Dash callbacks then we recommend completing the tutorial quickly to familiarise yourself with how Vizro actions work, and you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md).
 
 ## A simple action
 
@@ -61,7 +62,7 @@ Let's start with a very simple single-page app that contains a [button](../user-
 
         TODO screenshot
 
-So far we have specified that a button should be included in the page layout but haven't configured what should happen when the button is clicked. Let's define an action for that.
+So far we have specified that a button should be included in the page layout but haven't configured what should happen when the button is clicked. Let's define an action for that and attach it to the button.
 
 !!! example "A simple action"
 
@@ -251,7 +252,9 @@ graph TD
   submit_button == trigger ==> update_text([update_text])
 ```
 
-Note that toggling the `clock_switch` does not by itself trigger `update_text`. The switch is used as a runtime input but the action is triggered only by clicking the button. In fact, this is a key principle governing Vizro actions: an action can have any number of inputs and outputs but only one trigger.  
+Note that toggling the `clock_switch` does not by itself trigger `update_text`. The switch is used as a runtime input but the action is triggered only by clicking the button. In fact, this is a key principle governing Vizro actions: an action can have any number of inputs and outputs but only one trigger.
+
+Action inputs and outputs can be used in multiple actions; there can be any number of actions that use the same `clock_switch` and `submit_button` inputs or `time_text` output.
 
 ## Multiple inputs and outputs
 
@@ -363,7 +366,7 @@ Sometimes you need a single trigger to execute multiple actions. Vizro uses _cha
 * Explicit actions chain. When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro executes these actions in order, so that `action_2` executes only when `action_1` has completed.
 * Implicit actions chain. When one action outputs a trigger of another action then the subsequent action is triggered automatically. For example, say that `action_submit` is triggerd by `vm.Button(id="submit_button")`, in other words when the button is clicked. If another action that has `output="submit_button"` completes then `action_submit` is automatically triggered as if the button had been clicked. 
 
-Looking at some examples of each of these types of actions chain will make it much clearer.
+Looking at some examples of each of these types of actions chain will make it much clearer. All principles of actions chains applies equally to both custom and [built-in actions](../user-guides/actions.md). You can freely mix built-in and custom actions in both explicit and implicit actions chains. Built-in actions and custom actions behave identically in terms of when they are triggered and how they execute.
 
 !!! note
     
@@ -777,21 +780,25 @@ In terms of execution order, we know that `fetch_weather` can only execute once 
 
 ## Handle errors and debug
 
-So far we have just considered the "happy path" where all actions run as planned. Let's briefly look at what happens if an action does not complete successfully.
+So far we have just considered the "happy path" where all actions run as planned. Let's also look at what happens if an action does not complete successfully.
 
-For example, let's say that the HTTP request to Open-Meteo in `fetch_weather` failed due to a network problem. You can simulate this just by putting a typo in the URL requested by `requests.get` so that a Python exception `requests.exceptions.ConnectionError`  is raised. If you run the above example then when the `fetch_weather` action runs you will see an error message about `requests.exceptions.ConnectionError` in the logs where you execute `python app.py`. If you develop in [debug mode with `run(debug=True)`](../user-guides/run-deploy.md#automatic-reloading-and-debugging) then the exception and traceback is shown in your browser, which tends to be more convenient.
+For example, let's say that the [HTTP request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview) to Open-Meteo in `fetch_weather` fails due to a network problem. You can simulate this just by putting a typo in the URL requested by `requests.get` so that a Python exception `requests.exceptions.ConnectionError` is raised. If you run the above example then when the `fetch_weather` action runs you will see an error message about `requests.exceptions.ConnectionError` in the console logs where you execute `python app.py`.
 
-Once a Python exception has been raised in a Vizro action, execution of the action ceases immediately and no outputs of that action will be updated, Any actions that would be triggered by successful completion of the action, either in an explicit or implicit action chain, will not execute. To the end user it will not be apparent that an error has occurred; their screen will simply not show an update.  
+!!! tip
+   
+    If you develop in [debug mode with `run(debug=True)`](../user-guides/run-deploy.md#automatic-reloading-and-debugging) then the exception and traceback are shown in your browser, which is usually more convenient.
+
+    When developing your app, it can also be very useful to insert a breakpoint inside the code of an action. This enables you to pause execution of an action, inspect variables and understand what is happening. You can add breakpoints with most popular coding tools, for example [VS Code](https://code.visualstudio.com/docs/debugtest/debugging#_breakpoints).
+
+Once a Python exception has been raised in a Vizro action, execution of the action ceases immediately and no outputs of that action will be updated. Any actions that would be triggered by successful completion of the action, either in an explicit or implicit action chain, will not execute. To the end user it will not be apparent that an error has occurred; their screen will simply not show an update.  
 
 !!! tip
   
-    If you wish to deliberately cancel execution of an action then you can [`raise dash.exceptions.PreventUpdate`](https://dash.plotly.com/advanced-callbacks#catching-errors-with-preventupdate). This will mean that none of the action's outputs are updated, and hence no chained actions execute. For more fine-grained control, you can instead prevent update to only _some_ of the outputs of an action by [returning `dash.no_update`](https://dash.plotly.com/advanced-callbacks#displaying-errors-with-dash.no_update). In this case, only those chained actions that are triggered by outputs that did not update will be prevented from executing.
-  
-When developing your app, it can also be very useful to insert a breakpoint inside the code of an action. This enables you to pause execution of an action, inspect variables and understand what is happening. You can add breakpoints with most popular coding tools, for example [VS Code](https://code.visualstudio.com/docs/debugtest/debugging#_breakpoints).
+    If you wish to deliberately cancel execution of an action then you can [`raise dash.exceptions.PreventUpdate`](https://dash.plotly.com/advanced-callbacks#catching-errors-with-preventupdate). This will mean that none of the action's outputs are updated and no chained actions execute. For more fine-grained control, you can instead prevent update to only _some_ of the outputs of an action by [returning `dash.no_update`](https://dash.plotly.com/advanced-callbacks#displaying-errors-with-dash.no_update). In this case, only those chained actions that are triggered by outputs that did not update will be prevented from executing.
 
 ## Security
 
-When writing your own actions, you should always [be careful when handling runtime input from untrusted users](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). Remember that when a Vizro action is triggered, there is an HTTP request sent from the user's browser to the server. This contains the values of the action's runtime inputs fetched from the user's screen. However, there are ways for a malicious user to artificially construct an HTTP request that sends arbitrary values to the server. You should never assume that the value of runtime inputs in your Python action function is restricted to those that you have configured to be shown on the user's screen.
+When writing actions, you should always [be careful when handling runtime input from untrusted users](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). Remember that when a Vizro action is triggered, there is an HTTP request sent from the user's browser to the server. In theory, this contains the values of the action's runtime inputs fetched from the user's screen. However, in practice, there are ways for a malicious user to artificially construct an HTTP request that sends arbitrary values to the server. You should never assume that the value of runtime inputs in your Python action function is restricted to those that you have configured to be shown on the user's screen.
 
 For example, our `vm.Dropdown(id="location_dropdown")` has `options=["Berlin", "Washington, D.C."]`, which presents only those two location options on the user's screen. Let's look at one action which uses this as runtime input:   
 
@@ -802,9 +809,9 @@ def update_time_text(use_24_hour_clock, location):
     timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
 ```
 
-We might expect the value of `location` to be either "Berlin" or "Washington, D.C.", as per the dropdown's available options, but we can never guarantee that this is the case. A malicious user can trigger `update_time_text` with an arbitrary value for `location`. As the code is written, there's no security risk. The highlighted ensures that if `location` is set to any value other than "Berlin", the timezone is set to "America/New_York". This will be the case for both the expected trusted user input `location="Washington, D.C."` and arbitrary untrusted input such as `location="Paris"`, `location=100` and `location=None`.
+We might expect the value of `location` to be either "Berlin" or "Washington, D.C.", as per the dropdown's available options, but we can never guarantee that this is the case. A malicious user can trigger `update_time_text` with _any_ JSON-compatible value for `location`. The code written here has no security risk because if `location` is set to any value other than "Berlin" then the timezone is set to "America/New_York". This will be the case for both the expected trusted user input `location="Washington, D.C."` and arbitrary untrusted input such as `location="Paris"`, `location=100` and `location=None`.
 
-Imagine that we had a secret database of all the world's timezones that includes some classified locations that are not known to the general public. The `update_time_text` action looks up the timezone of the runtime input `location` in the database:  
+However, imagine that we had a secret database of all the world's timezones that includes some classified locations not known to the general public. The `update_time_text` action looks up the timezone of the runtime input `location` in the database:  
 ```py
 SECRET_TIMEZONE_DATABASE = {
     "Berlin": "Europe/Berlin",
@@ -823,12 +830,12 @@ Even though we have set `options=["Berlin", "Washington, D.C."]` in our `vm.Drop
 ```py
 @capture("action")
 def update_time_text(use_24_hour_clock, location):
-    if location not in ("Berlin", "Washington, D.C."):
+    if location not in ["Berlin", "Washington, D.C."]:
         raise PreventUpdate
     timezone_name = SECRET_TIMEZONE_DATABASE[location]
 ```
 
-In many cases, untrusted user input does _not_ pose a security risk. For example, if we looked up `SECRET_TIMEZONE_DATABASE["nonexistent key"]` then Python would raise a `KeyError` exception, which would [cancel execution of the action](#handle-errors-and-debug) and not update any information on the user's screen. However, there are [certain scenarios](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619), such as file system manipulation and SQL queries, where you should be particularly vigilant when writing actions that handle untrusted user input.
+In many cases, untrusted user input does _not_ pose a security risk. For example, if we looked up `SECRET_TIMEZONE_DATABASE["nonexistent key"]` then Python would raise a `KeyError` exception, which would [cancel execution of the action](#handle-errors-and-debug) and not update any information on the user's screen. However, there are [certain scenarios](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619), such as file system manipulation and SQL queries, where you should be particularly vigilant.
 
 ## Key principles of actions
 
@@ -837,20 +844,15 @@ We've now finished working through our example code. To recap, let's summarise s
 * An action is a Python function that executes when it is triggered by a user.
 * An action can have any number of inputs and outputs but only one trigger.
 * Any number of actions can be chained together. There are two ways to chain actions:
-  * Explicitly: when you set `actions=[action_1, action_2, ...]` then `action_2` only runs after `action_1` has completed.
-  * Implicitly: when one action outputs something that triggers another action.
+    * Explicitly: when you set `actions=[action_1, action_2, ...]` then `action_2` only runs after `action_1` has completed.
+    * Implicitly: when one action outputs something that triggers another action.
 * When multiple actions are triggered simultaneously, they usually execute in parallel.
 * You can cancel execution of an action and subsequent chained actions by raising an exception.
-* You should always assume that inputs to your actions have been generated by an untrusted user.
+* For security, you should always assume that inputs to your actions have been generated by an untrusted user.
 
 
 HERE HERE:
-strip out legacy Action(...) from any tests that have it and shouldn't
-emphasise fine to use same inputs and output multiple times
-make action_inputs/outputs/triggers public?
-note which parts also apply to built-in actions e.g. explicit chains etc.
-compare to built-in actions at top e.g. to say need to write own Actions model
-make page for Vizro vs. Dash explanation, split stuff off on to it as rough/hidden notes and refer to that page. Make it exist but put in coming soon.
+
 changelog:
   refer to model
   single action and output
@@ -858,16 +860,19 @@ changelog:
   dict for output format https://github.com/McK-Internal/vizro-internal/issues/1608
   insert inputs directly in custom action function call `my_custom_action("dropdown_id.value")`
 show a before and after version of old vs new actions
-update other bits of docs e.g. custom actions
-AgGrid inner ID - should be no examples like that to remove but check
-NEED TO UPDATE ALL DOCS function=export_data() etc. Search throughout
-Update all actions examples in docs that have unecssary [actions] or [outputs]
+
 API docs for inbuilt actions
+
+
+check graph and aggrid pages
+button, custom component, user guide on actrions
+
 deprecations - do now or after?
+make action_inputs/outputs/triggers public
+
 
 For PR description
 I think "built in" and "custom" is the best terminology to use but we can also say "user-defined" since it makes sense or just no word at all - like "write your own action". Let's avoid using "predefined" though. SEARCH FOR USAGE OF THIS
-
 Keep it Independent of Dash
 Sections I'm not happy with (implicit chaining explanation)
 TOo long - collapse code parts?
@@ -947,99 +952,3 @@ narrow down the options while user is typing: https://vizro-cnx-demo.alpha.mckin
 
 
 Reference for built in arguments, objects, properties/fields
-
----
-# Dash compared to Vizro 
-
-## Rough notes
-Vizro vs Dash notes
-runtime input vs. state
-trigger vs. input
-vizro has built in actions
-attach to trigger not define globally
-need to provide id in Dash for trigger component
-trigger not passed in
-duplicated outputs fine
-one vs multiple triggers
-prevent_initial_call=True always
-actions loop
-pattern matching callbacks
-
-Explain how  can combine Dash callbacks and Vizro action, e.g. Vizro actions can use Dash components/properties so easy to adapt. Can have some additional clientside callbacks - give example from simple action. 
-
-In Vizro there are two types of runtime input. In section on runtime inputs, refer later to see what other non-runtime inputs might be
-
-Where to put explanation or Dash compared to Vizro? Put in explanation section we already have.
-Write Dash equivalent or simple vizro app
-Show some output field and property which isn't just model name
-
-## Dash callback graph
-??? details
-
-    We haven't yet defined any actions, but behind the scenes Vizro has already defined some Dash callbacks for you:
-
-    * A callback to change the dashboard theme when the theme selector is toggled. 
-    * A callback associated with [Dash pages](https://dash.plotly.com/urls) that will make the app work when more pages are added.
-
-    While developing, you can see all the Dash callbacks in Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). This is shown when running in debug mode with [`run(debug=True)`](../user-guides/run-deploy.md#/#automatic-reloading-and-debugging).
-
-    TODO screenshot
-
-    For a large or complex app, the callback graph quickly grows and becomes difficult to navigate. To make debugging easier you can temporarily comment out all but one page in your app to show only the relevant callbacks in the graph. 
-
-
-
-
-## Trigger, input and output properties
-
-Still needed given explanation in custom actions how to? Probably just a shortened version of it.
-
-A single Vizro model produces one or more Dash components, each of which has several properties. For example, the Dash component corresponding to `vm.Text` is [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown). The above examples' `vm.Text(id="time_text", text="Click the button")` produces something like the following Dash component:
-```py
-dcc.Markdown(id="time_text", children="Click the button")
-```
-
-To update the text shown in this component as an output in a Dash callback, you would refer to `Output("time_text", "children")`. In Vizro, you could instead refer to `outputs="time_text.children"`. However, to simplify the notation, Vizro offers several shorthands:
-* `outputs="time_text.text"` where the format is `<model_id>.<argument_name>`. Here we update the `text` argument of the `vm.Text` model that has `id="time_text"`. 
-* `outputs="time_text"` where the format is `<model_id>`. This automatically connects to the default Dash component property that is part of the Vizro model. The default depends on the Vizro model but corresponds to the most commonly used property. In this example it would address the `text` argument of the `vm.Text` model because that is the most common part to update. 
-
-The above two shorthands work exactly the same as the full `outputs="time_text.children"`.
-
-Let's look at another example. The Dash component corresponding to `vm.Switch` is [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/). The above examples' `vm.Switch(id="clock_switch", title="24-hour clock", value=True)` produces something like the following:
-```py
-dbc.Switch(
-    id="clock_switch",
-    value=True,
-    label=html.Span(id="clock_switch_title", children="24-hour-clock"),
-)
-```
-
-As well as the "core" `dbc.Switch` component, the `vm.Switch` model produces a `html.Span` component to contain the label. When using `vm.Switch` model as an action trigger or runtime input (as in the examples' `use_24_hour_clock="clock_switch"`), the `value` of the switch is the default Dash component property. Hence `use_24_hour_clock="clock_switch"` is shorthand for `use_24_hour_clock="clock_switch.value"`.
-
-If the `vm.Switch` is used as an output then there are multiple different Dash components and properties that could be updated:
-* `outputs="clock_switch"` is equivalent to `outputs="clock_switch.value"` and updates the `value` of the `dbc.Switch`.
-* `outputs="clock_switch.title` is equivalent to `outputs="clock_switch_title.children"` and updates the `title` of the `dbc.Switch`. 
-
-A Vizro action always uses a specific Dash component and property for the action trigger, runtime inputs and outputs. However, as explained in the [how to](...) you should prefer to use the Vizro shorthands where possible rather than referring to the underlying Dash components (for example, use `clock_switch.title` in preference to `clock_switch_title.children`). This is more intuitive and more stable. While using a pure Dash component `id` and property will remain possible in Vizro actions, we consider the exact underlying Dash components to be implementation details, and so the Dash components available and their `id`s may change between non-breaking Vizro releases.
-
-!!! note
-
-    Are you addressing an underlying Dash component that you think should be addressed by Vizro more easily? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
-
-
-## Performance
-
-Every Vizro action corresponds to an HTTP request, so that it takes some time for the client to communicate with the server. When you run your app locally, this delay not be noticeable, since the client and the server are running on the same computer, but when you [deploy your app](https://vizro.readthedocs.io/en/stable/pages/user-guides/run-deploy/#production) there is network latency introduced. This may or may not become a performance bottleneck for your app. 
-
-There is no upper limit to the length of actions chains (explicit or implicit). However, if you intend to deploy your app, it is best to keep them of a reasonable length. There is no hard and fast rule for what constitutes "reasonable", since it depends on many factors such as what your actions do, the amount of data transferred, the number of users of your app and your server setup. However, as a rough guide, it is usually best to avoid actions chains with more than five actions that run serially. 
-
-If you hit performance limits then you might like to consider using [Dash clientside callbacks](https://dash.plotly.com/clientside-callbacks). These execute purely on the clientside and do not perform an HTTP request, so there is no network latency. The code is written in JavaScript rather than Python. These callbacks live outside the Vizro actions system but are fully compatible with Vizro actions: you can write an app containing both Vizro actions and Dash clientside callbacks.  
-
-## Statelessness
-
-stateless, users don't interfere so long as don't alter global variables - need to point to Dash explanation for this
-https://dash.plotly.com/sharing-data-between-callbacks#why-global-variables-will-break-your-app
-includes `data_manager`
-
-
-

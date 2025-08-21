@@ -5,7 +5,7 @@ nav:
   - Tutorials:
       - Quickstart tutorial: pages/tutorials/quickstart-tutorial.md
       - Explore Vizro: pages/tutorials/explore-components.md
-      - Write your own actions: pages/tutorials/actions.md
+      - Write your own actions: pages/tutorials/custom-actions.md
   - How-to guides:
       - Fundamentals:
           - Install Vizro: pages/user-guides/install.md
@@ -54,13 +54,16 @@ nav:
       - Kedro integration: pages/API-reference/kedro-integration.md
       - Deprecations: pages/API-reference/deprecations.md
   - Find out more:
-      - FAQs: pages/explanation/faq.md
-      - Examples gallery: https://vizro.mckinsey.com/
-      - User examples: pages/explanation/your-examples.md
-      - Contribute to Vizro: pages/explanation/contributing.md
-      - Documentation style: pages/explanation/documentation-style-guide.md
-      - Vizro schema: pages/explanation/schema.md
-      - Authors: pages/explanation/authors.md
+      - Technical:
+        - Vizro schema: pages/explanation/schema.md
+        - Vizro actions and Dash callbacks: pages/explanation/actions-and-callbacks.md
+      - About Vizro:
+        - FAQs: pages/explanation/faq.md
+        - Examples gallery: https://vizro.mckinsey.com/
+        - User examples: pages/explanation/your-examples.md
+        - Contribute to Vizro: pages/explanation/contributing.md
+        - Documentation style: pages/explanation/documentation-style-guide.md
+        - Authors: pages/explanation/authors.md
   - Vizro-MCP:
       - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
 

@@ -53,7 +53,7 @@ import vizro.models as vm
 vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 ```
 
-## Attach an action
+## Trigger an action
 
 You can use the [`Button`][vizro.models.Button] to trigger an action function, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
 

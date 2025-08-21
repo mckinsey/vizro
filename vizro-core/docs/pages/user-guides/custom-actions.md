@@ -1,8 +1,8 @@
 # How to create custom actions
 
-Actions dictate how your app behaves in response to user input, for example what happens when someone clicks a button or a point on a graph. If you need to perform a function that are not available in Vizro's [built-in actions](actions.md) then you need to write your own custom action. We also have an in-depth [tutorial on writing your own action](../tutorials/actions.md) that teaches many of the concepts you see here in more detail. 
+Actions dictate how your app behaves in response to user input, for example what happens when someone clicks a button or a point on a graph. If you need to perform a function that are not available in Vizro's [built-in actions](actions.md) then you need to write your own custom action. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions) that teaches many of the concepts you see here in more detail. 
 
-Vizro's actions system is built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](...).
+Vizro's actions system is built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md).
 
 !!! note
 
@@ -50,6 +50,7 @@ actions = vm.Action(
 ### Actions chain
 
 If you define multiple actions in an [actions chain](...) then you can freely mix built-in and custom actions. Built-in actions and custom actions behave identically in terms of when they are triggered.
+
 Here is an example chain including the custom actions `action_function` and `another_action_function` and the built-in `export_data`:
 ```python
 actions = [
@@ -78,9 +79,13 @@ actions = [
    
     The returned values of an action function with multiple outputs are matched to the `outputs` in order. For actions with many return values, it can be a good idea to instead return a dictionary where returned values are labelled by string keys. In this case, `outputs` should also be a dictionary with matching keys, and the order of entries does not matter.
 
-## Attach an action to a button
+### Security
 
-It is very common to use a [button](button.md) to trigger an action. Here is an example based on our [companion tutorial on custom actions](../tutorials/actions.md). We have an action `update_text` finds the current time using a 12- or 24-hour clock.
+When writing actions, uou should never assume that the value of inputs in your action function is restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions#security).
+
+## Trigger an action with a button
+
+It is very common to use a [button](button.md) to trigger an action. Here is an example based on our [companion tutorial on custom actions](../tutorials/custom-actions). We have an action `update_text` finds the current time using a 12- or 24-hour clock.
 
 ```python
 from datetime import datetime
@@ -111,7 +116,7 @@ vm.Button(
 
 Here is the full example code that includes the input component `vm.Switch(id="clock_switch")` and output component `vm.Time(id="time_text")`.
 
-!!! example "Attach an action to a button"
+!!! example "Trigger an action with a button"
 
     === "app.py"
 
@@ -133,7 +138,7 @@ Here is the full example code that includes the input component `vm.Switch(id="c
         vm.Page.add_type("components", vm.Switch)  # (1)!
         
         page = vm.Page(
-            title="Action attached to button",
+            title="Action trigger by button",
             layout=vm.Flex(),
             components=[
                 vm.Switch(id="clock_switch", title="24-hour clock", value=True),
@@ -160,9 +165,9 @@ Here is the full example code that includes the input component `vm.Switch(id="c
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `update_text` action is triggered. This finds the current time and returns a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`. 
 
-For more advanced variants based on this, such as multiple inputs and outputs and actions chains, refer to the [full tutorial](../tutorials/actions.md). 
+For more advanced variants based on this, such as multiple inputs and outputs and actions chains, refer to the [full tutorial](../tutorials/custom-actions). 
 
-## Attach an action to a graph
+## Trigger an action with a graph
 
 This is already possible, and documentation is coming soon!
 
@@ -172,7 +177,7 @@ For most actions that you write, you should only need to specify `<model_id>` fo
 
 ### Model arguments as input and output
 
-The syntax for using a particular model argument as an action input or output is `<model_id>.<argument_name>`. For example, let's alter the [above example](#attach-an-action-to-a-button) that specifies the 12- or 24-hour clock. In the previous code, the action was triggered when a button is clicked; now we change the action to be triggered when the switch itself is clicked. We also now want to update the `title` of the switch at the same time. We do this by using `"clock_switch.title"` in `outputs`. We highlight the code changes below.
+The syntax for using a particular model argument as an action input or output is `<model_id>.<argument_name>`. For example, let's alter the [above example](#trigger-an-action-to-a-button) that specifies the 12- or 24-hour clock. In the previous code, the action was triggered when a button is clicked; now we change the action to be triggered when the switch itself is clicked. We also now want to update the `title` of the switch at the same time. We do this by using `"clock_switch.title"` in `outputs`. We highlight the code changes below.
 
 !!! example "Use model argument as output"
     === "app.py"
@@ -196,7 +201,7 @@ The syntax for using a particular model argument as an action input or output is
         vm.Page.add_type("components", vm.Switch)  # (1)!
         
         page = vm.Page(
-            title="Action attached to button",
+            title="Action triggered by switch",
             layout=vm.Flex(),
             components=[
                 vm.Switch(
@@ -269,5 +274,8 @@ If you are already familiar with Dash then here are some other common equivalenc
 * `"my_graph` is shorthand for the underlying Dash property `"my_graph.figure"`.
 * For all [selectors](selectors.md), `"my_selector"` is shorthand for the underlying Dash property `"my_selector.value"`.
 
-TODO YAML configuration
-Remove old screenshots
+<!-- 
+TODO NOW:
+- YAML configuration
+- Remove old screenshots
+-->
