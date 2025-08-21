@@ -18,8 +18,7 @@ To check that Cursor is correctly set up to use Vizro-MCP, pass in a prompt:
 
 The response received should be similar to the following:
 
-Yes! I do have access to Vizro-MCP tools. I can see several Vizro MCP functions available that allow me to help you create charts and dashboards using Vizro.
-Here's what I can do with Vizro-MCP:
+Yes! I do have access to Vizro-MCP tools. I can see several Vizro MCP functions available that allow me to help you create charts and dashboards using Vizro. Here's what I can do with Vizro-MCP:
 
 **Available Vizro-MCP Capabilities:**
 
@@ -32,7 +31,7 @@ Here's what I can do with Vizro-MCP:
 
 ## Strategy
 
-There is no single, correct way to use Vizro-MCP. You will find your own preferred way of entering prompts and giving feedback on the results, and this will also depend on the underlying LLM that you have chosen. 
+There is no single, correct way to use Vizro-MCP. You will find your own preferred way of entering prompts and giving feedback on the results, and this will also depend on the underlying LLM that you have chosen.
 
 In this tutorial, you'll learn how to create a Vizro chart by passing a simple prompt to Cursor and then iterating upon it. We'll show the exact prompts and chart output we received to illustrate the process.
 
@@ -43,15 +42,14 @@ If you have a preferred workflow for Cursor, you can continue to use that. In th
 We are going to ask Cursor to create a treemap chart that shows the hierarchy of artists who have created the most songs with names in them. We ask Cursor to do some basic pre-processing of the data before using it, to eliminate usage of words that are probably not intended to be names. Here is the initial prompt for use with `claude-4-sonnet`:
 
 > Hi, I want you to clear out the workspace. Then use Vizro-MCP tools with auto_open=true so you can open the code you generate for me directly in pycafe.
-> 
+>
 > I would like you to create a single Vizro chart. Use https://raw.githubusercontent.com/the-pudding/data/master/names-in-songs/unique.csv and preprocess the data to remove all rows where person==FALSE and all rows where name==Baby. Remove any null values. I would like you to identify the artists that use the most different names in their songs. Find the top 20 artists. Plot a treemap which shows each artist and sizes their boxes according to the number of different names they've used. For each artist, in the treemap, show separate boxes for each name, and size them according to the number of different songs that artist has used that name.
 
 Cursor will run and may ask you permission to run `get_vizro_chart_or_dashboard_plan`, which you should accept by clicking `Run tool`. Similarly accept any other steps that Cursor suggests.
 
 ![](../../assets/images/get_chart_or_dashboard_plan.png)
- 
 
-When Cursor is satisfied that the configuration is valid, it opens an instance of [PyCafe](https://py.cafe/) and displays the code and Vizro visualization. The exact result depends on the LLM and what you receive may vary. 
+When Cursor is satisfied that the configuration is valid, it opens an instance of [PyCafe](https://py.cafe/) and displays the code and Vizro visualization. The exact result depends on the LLM and what you receive may vary.
 
 ![](../../assets/images/treemap-iteration1.png)
 
@@ -59,13 +57,11 @@ When Cursor is satisfied that the configuration is valid, it opens an instance o
 
     PyCafe will only open if your chart or dashboard uses data that can be downloaded from a public link. If your data is stored locally, you should copy the generated code into a `.py` file to run where it can access the data.
 
-
 You can now prompt Cursor to make some improvements as needed. Some of the iteration prompts we used are included below to give you examples of how to request changes. We also prompted to resize the graphic to the viewport, and to hide the labels on the navigation bars.
-
 
 ## Iterate to improve labels
 
-> It's looking good. I'd like to change the labels now. For each of the 20 boxes at the top of the hierarchy I'd like to see the number of names used in brackets. So for example 'Ray Stevens (20 names)'. The hovertext should just show artist and songcount, don't show parent and id. At the next level of hierarchy, I'd like to see each name on the box where it fits and the hovertext should show name and songcount (don't show parent and id). Can you go to another level of hierarchy and show boxes for each of the songs for each name? 
+> It's looking good. I'd like to change the labels now. For each of the 20 boxes at the top of the hierarchy I'd like to see the number of names used in brackets. So for example 'Ray Stevens (20 names)'. The hovertext should just show artist and songcount, don't show parent and id. At the next level of hierarchy, I'd like to see each name on the box where it fits and the hovertext should show name and songcount (don't show parent and id). Can you go to another level of hierarchy and show boxes for each of the songs for each name?
 
 ![](../../assets/images/treemap-iteration2.png)
 
@@ -89,8 +85,7 @@ Looking at the chart, we could get more interesting information by changing the 
 
 We can use another column from the dataset to make the chart more informative:
 
-> For each name in the lowest level of the hierarchy, can you add the sentence in which it is found by taking it from the data. Add it to the hovertext for each name box. 
-
+> For each name in the lowest level of the hierarchy, can you add the sentence in which it is found by taking it from the data. Add it to the hovertext for each name box.
 
 ## Save the prompt for your dashboard
 
@@ -104,36 +99,40 @@ to regenerate the dashboard and charts above?
 This is the output:
 
 > Here's the comprehensive prompt that would have built this entire chart in one go:
-> 
+>
 > I want you to create a single Vizro chart using Vizro-MCP tools that opens directly in PyCafe. Please:
 
 > 1. **Clear the workspace completely** - remove all existing files <br/>
+
 1. **Use Vizro-MCP tools** with `auto_open=true` to open the generated code directly in PyCafe <br/>
 1. **Create a treemap visualization** using this dataset: `https://raw.githubusercontent.com/the-pudding/data/master/names-in-songs/unique.csv` <br/>
 
 > **Data Preprocessing Requirements:** <br/>
+
 - Remove all rows where `person == False` <br/>
 - Remove all rows where `name == "Baby"` <br/>
 - Remove any null values <br/>
 - Find the top 10 artists who use the most different names in their songs <br/>
 
 > **Chart Structure:** <br/>
+
 - **Hierarchy**: Artist → Song → Name (3 levels) <br/>
 - **Artist level**: Show artist name with count of unique names in brackets, e.g., "Drake (107 names)" <br/>
 - **Song level**: Individual songs by each artist, sized by number of names in that song <br/>
 - **Name level**: Individual names within each song, sized by frequency of that name in the song <br/>
 
 > **Visual Requirements:** <br/>
+
 - **Space filling**: Ensure boxes completely fill their containing areas with no empty spaces <br/>
-- **Hover functionality**:  <br/>
-  - Artist level: Show artist info, song count, and total unique names <br/>
-  - Song level: Show song title and number of names in that song <br/>
-  - Name level: Show the actual sentence from the lyrics where that name appears <br/>
+- **Hover functionality**: <br/>
+    - Artist level: Show artist info, song count, and total unique names <br/>
+    - Song level: Show song title and number of names in that song <br/>
+    - Name level: Show the actual sentence from the lyrics where that name appears <br/>
 - **No navigation breadcrumbs**: Hide the pathbar completely to avoid hover text issues <br/>
 - **Viewport fitting**: Set height to 600px with autosize width to fit the browser viewport <br/>
 
-
 > **Final Output:** <br/>
+
 - A working treemap that opens in PyCafe <br/>
 - Clean, professional appearance with proper spacing <br/>
 - Interactive exploration through clicking (no navigation bar) <br/>
@@ -154,14 +153,8 @@ You should now be familiar with the process of iterating prompts in Cursor to ge
 - **Embed**: builds an `iFrame` which contains all the code for the dashboard.
 - **Code**: provides the dashboard code with Markdown and HTML formatting.
 
-
-
 ## Summary
 
 Congratulations! You have seen how to work with Vizro-MCP and Cursor to build a Vizro chart. The chart is a simple example, but can be customized or added to a dashboard alongside additional charts, controls or customizations, as described in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/).
 
 To learn more about the main elements of Vizro dashboard code, we recommend you work through the introductory ["Explore Vizro" tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/). The tutorial, and accompanying video, will enable you to explore the dashboard code generated by Vizro-MCP and give you ideas of how to modify it by hand rather than through a prompt, should you prefer to fine tune it.
-   
-
-
-
