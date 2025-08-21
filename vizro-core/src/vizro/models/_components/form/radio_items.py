@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -13,7 +13,7 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, OptionsType, SingleValueType, _IdProperty
+from vizro.models.types import ActionsType, OptionsType, SingleValueType, _IdProperty
 
 
 class RadioItems(VizroBaseModel):
@@ -30,7 +30,7 @@ class RadioItems(VizroBaseModel):
         title (str): Title to be displayed. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
@@ -55,7 +55,7 @@ class RadioItems(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: list[ActionType] = []
+    actions: ActionsType = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -75,7 +75,10 @@ class RadioItems(VizroBaseModel):
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
@@ -115,7 +118,6 @@ class RadioItems(VizroBaseModel):
                 if self.title
                 else None,
                 dbc.RadioItems(**(defaults | self.extra)),
-                dcc.Store(id=f"{self.id}_guard_actions_chain", data=True) if self._dynamic else None,
             ]
         )
 

@@ -84,13 +84,13 @@ def warn_description_without_title(description, info: ValidationInfo):
 def make_actions_chain(self):
     """Creates actions chain from a list of actions.
 
-    Ideally this would have been implemented as an AfterValidator for the actions field but we need access to
-    action_triggers, which needs the parent model instance. Hence it must be done as a model validator.
+    Ideally this would have been implemented as an AfterValidator for the actions field, but we need access to
+    action_triggers property, which needs the parent model instance. Hence, it must be done as a model validator.
 
     This runs after model_post_init so that self._inner_component_id will have already been set correctly in
     Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
     """
-    from vizro.actions import export_data, filter_interaction
+    from vizro.actions import export_data, filter_interaction, collapse_expand_containers
     from vizro.actions._on_page_load import _on_page_load
 
     converted_actions = []
@@ -100,7 +100,7 @@ def make_actions_chain(self):
     # We need to delete the old action models from the model manager so they don't get built. After that,
     # built in actions are always handled in the new way.
     for action in self.actions:
-        if isinstance(action.function, (export_data, filter_interaction)):
+        if isinstance(action.function, (export_data, filter_interaction, collapse_expand_containers)):
             del model_manager[action.id]
             converted_actions.append(action.function)
         else:

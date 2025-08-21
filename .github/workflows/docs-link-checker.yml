@@ -1,0 +1,53 @@
+name: Docs Links Checker
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Allow for running this manually.
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Check vizro-core docs links
+        working-directory: ./vizro-core
+        run: |
+          hatch run docs:pip tree
+          hatch run docs:build
+          hatch run docs:link-check
+
+      - name: Check vizro-ai docs links
+        working-directory: ./vizro-ai
+        if: always()
+        run: |
+          hatch run docs:pip tree
+          hatch run docs:build
+          hatch run docs:link-check
+
+      - name: Check vizro-mcp docs links
+        working-directory: ./vizro-mcp
+        if: always()
+        run: |
+          hatch run docs:pip tree
+          hatch run docs:build
+          hatch run docs:link-check

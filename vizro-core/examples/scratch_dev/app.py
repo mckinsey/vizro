@@ -5,7 +5,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import collapse_expand_containers
+from vizro.actions import collapse_expand_containers, export_data
 
 iris = px.data.iris()
 
@@ -18,7 +18,7 @@ page_5 = vm.Page(
         ),
         vm.Button(
             text="Expand all containers",
-            actions=[collapse_expand_containers(expand=["container1", "container2", "container3", "container4"])],
+            actions=collapse_expand_containers(expand=["container1", "container2", "container3", "container4"]),
         ),
         vm.Container(
             title="",

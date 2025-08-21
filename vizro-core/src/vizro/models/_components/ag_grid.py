@@ -13,14 +13,13 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
-from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
-from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import (
-    ActionType,
-    CapturedCallable,
-    _IdProperty,
-    validate_captured_callable,
+from vizro.models._models_utils import (
+    _log_call,
+    make_actions_chain,
+    warn_description_without_title,
 )
+from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +43,7 @@ class AgGrid(VizroBaseModel):
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
-
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["ag_grid"] = "ag_grid"
@@ -80,10 +78,13 @@ class AgGrid(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    actions: list[ActionType] = []
+    actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
     def model_post_init(self, context) -> None:
         super().model_post_init(context)
@@ -114,7 +115,7 @@ class AgGrid(VizroBaseModel):
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
-        # specified. It's here since we want to use __call__ without arguments more in future.
+        # specified. It's here since we want to use __call__ without arguments more in the future.
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
@@ -207,7 +208,7 @@ class AgGrid(VizroBaseModel):
                     # The `id=self._inner_component_id` is set to avoid the "Non-existing object" Dash exception.
                     html.Div(
                         id=self.id,
-                        children=html.Div(id=self._inner_component_id),
+                        children=[html.Div(id=self._inner_component_id)],
                         className="table-container",
                     ),
                     dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")

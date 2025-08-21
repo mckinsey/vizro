@@ -32,7 +32,7 @@ nav:
   #      - Contributing: pages/contribute/contributing.md
   - Vizro: https://vizro.readthedocs.io
 
-  - Vizro-MCP: https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md
+  - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
 
 #  This infers the version number of the latest release of whole repo, so we're hiding it for sub-packed in extra.css
 repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai

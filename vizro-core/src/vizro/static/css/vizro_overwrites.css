@@ -4,24 +4,18 @@ for a pure Dash app.
 
 All the HEX values starting with --text-code are taken from the Github code highlighting style. */
 [data-bs-theme="dark"] {
-  --dropdown-label-bg: var(--primary-800);
-  --left-side-bg: var(--surfaces-bg02);
-  --right-side-bg: var(--surfaces-bg03);
-  --right-side-bg-iterated: var(--surfaces-bg03);
-  --slider-rail-bg: var(--primary-100);
-  --collapse-icon-bg: var(--primary-500);
+  --left-side-bg: var(--bs-tertiary-bg);
+  --right-side-bg-iterated: var(--bs-body-bg);
   --mantine-radius-default: 0;
+  --hover-bg-subtle: var(--bs-gray-900);
 }
 
 [data-bs-theme="light"] {
-  --dropdown-label-bg: var(--primary-300);
-  --left-side-bg: var(--surfaces-bg01);
-  --right-side-bg: var(--surfaces-bg01);
-  --right-side-bg-iterated: var(--primary-300);
+  --left-side-bg: var(--bs-body-bg);
+  --right-side-bg-iterated: var(--bs-primary-bg-subtle);
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
-  --slider-rail-bg: var(--primary-900);
-  --collapse-icon-bg: var(--primary-300);
   --mantine-radius-default: 0;
+  --hover-bg-subtle: var(--bs-gray-100);
 }
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
@@ -31,11 +25,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 .nav-link {
-   color: var(--text-secondary) !important;
+   color: var(--bs-secondary) !important;
 }
 
 .nav-link:active, .nav-link.active {
-    color: var(--text-primary) !important;
+    color: var(--bs-primary) !important;
 }
 
 /* CARDS */
@@ -81,5 +75,3 @@ div.form-check.form-switch {
   display: flex;
   gap: 8px;
 }
-
-/* Eventually bring over to vizro-bootstrap */

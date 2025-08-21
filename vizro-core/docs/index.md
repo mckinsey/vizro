@@ -1,3 +1,9 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
 # Vizro
 
 Vizro is an open-source Python-based toolkit. You can use it to build data visualization apps quickly and easily, without needing advanced engineering or design expertise.
@@ -8,40 +14,44 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     ---
 
-    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard.md)
+    [Quickstart tutorial](pages/tutorials/quickstart-tutorial.md)
 
-    [:octicons-arrow-right-24: Explore Vizro tutorial](pages/tutorials/explore-components.md)
-
-    [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md)
-
-    [:octicons-arrow-right-24: Develop with PyCafe](pages/user-guides/run-deploy.md#develop-in-pycafe)
+    [Explore Vizro tutorial](pages/tutorials/explore-components.md)
 
 - :fontawesome-solid-chart-column:{ .lg .middle } __Vizro features__
 
     ---
 
-    [:octicons-arrow-right-24: Fundamentals](pages/user-guides/dashboard.md)
+    [Fundamentals](pages/user-guides/dashboard.md)
 
-    [:octicons-arrow-right-24: Components overview](pages/user-guides/components.md)
+    [Components overview](pages/user-guides/components.md)
 
-    [:octicons-arrow-right-24: Visual formatting](pages/user-guides/visual-formatting.md)
+    [Visual formatting](pages/user-guides/visual-formatting.md)
 
-    [:octicons-arrow-right-24: Extend and customize Vizro](pages/user-guides/extensions.md)
-
-- :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
-
-    ---
-
-    [:octicons-arrow-right-24: Contribute code](pages/explanation/contributing.md)
-
-    [:octicons-arrow-right-24: Contribute to our docs](pages/explanation/documentation-style-guide.md)
+    [Extend and customize Vizro](pages/user-guides/extensions.md)
 
 - :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __Gen AI assistance__
 
     ---
 
-    [:octicons-arrow-right-24: Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
+    [:fontawesome-solid-star: Vizro-MCP :fontawesome-solid-star:](https://vizro.readthedocs.io/projects/vizro-mcp/)
 
-    [:fontawesome-solid-star: Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
+    [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
+
+- :fontawesome-solid-book-open:{ .lg .middle } __Find out more__
+
+    ---
+
+    [FAQs](pages/explanation/faq.md)
+
+    [:sparkles:Cheatsheet:sparkles:](pages/cheatsheet/cheatsheet.html)
+
+- :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
+
+    ---
+
+    [Contribute code](pages/explanation/contributing.md)
+
+    [Contribute to our docs](pages/explanation/documentation-style-guide.md)
 
 </div>

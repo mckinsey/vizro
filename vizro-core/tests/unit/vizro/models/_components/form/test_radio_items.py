@@ -124,10 +124,10 @@ class TestRadioItemsInstantiation:
         with pytest.raises(ValidationError, match="validation errors for RadioItems"):
             RadioItems(value=[1], options=[1, 2, 3, 4, 5])
 
-    def test_set_action_via_validator(self, identity_action_function):
-        radio_items = RadioItems(actions=[Action(function=identity_action_function())])
-        actions_chain = radio_items.actions[0]
-        assert actions_chain.trigger.component_property == "value"
+    def test_radio_items_trigger(self, identity_action_function):
+        radio_items = RadioItems(id="radio-items-id", actions=[Action(function=identity_action_function())])
+        [action] = radio_items.actions
+        assert action._trigger == "radio-items-id.value"
 
 
 class TestRadioItemsBuild:

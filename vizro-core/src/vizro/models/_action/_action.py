@@ -8,7 +8,7 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import Input, Output, State, callback, dash, set_props
+from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc
 from dash.development.base_component import Component
 from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -22,6 +22,7 @@ from vizro.models.types import (
     ControlType,
     FigureWithFilterInteractionType,
     ModelID,
+    OutputsType,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
@@ -30,7 +31,7 @@ from vizro.models.types import (
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from vizro.actions import export_data, filter_interaction
+    from vizro.actions import export_data, filter_interaction, collapse_expand_containers
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
@@ -47,7 +48,7 @@ class _BaseAction(VizroBaseModel):
     # function and outputs are overridden as fields in Action and abstract methods in _AbstractAction. Using ClassVar
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
-    outputs: ClassVar[Union[list[str], dict[str, str]]]
+    outputs: ClassVar[OutputsType]
 
     # These are set in the make_actions_chain validator (same for both Action and _AbstractAction).
     # In the future a user would probably be able to specify something here that would look up a key in
@@ -63,7 +64,21 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _dash_components(self) -> list[Component]:
-        raise NotImplementedError
+        """Internal components needed to run the actions chain system.
+
+        Includes:
+        - {action.id}_finished for completion of an action callback to trigger the next action in the chain
+        - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain callback prevent
+            undesired triggering (workaround for Dash prevent_initial_call=True behavior)
+
+        In theory, subclasses can add additional components to the list, as done in export_data, but this should not be
+        generally encouraged. In the future it might not be possible.
+        """
+        dash_components = [dcc.Store(id=f"{self.id}_finished")]
+        if self._first_in_chain:
+            dash_components.append(dcc.Store(id=f"{self.id}_guarded_trigger"))
+
+        return dash_components
 
     @property
     def _legacy(self):
@@ -79,6 +94,10 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _action_name(self) -> str:
+        raise NotImplementedError
+
+    @property
+    def _validated_outputs(self) -> OutputsType:
         raise NotImplementedError
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
@@ -225,9 +244,10 @@ class _BaseAction(VizroBaseModel):
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
         """Creates Dash Output objects from string specifications in self.outputs.
 
-        Converts self.outputs (list of strings or dictionary of strings where each string is in the format
-        '<component_id>.<property>' or '<component_id>') and converts into Dash Output objects.
-        For example, ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
+        Converts self._validated_outputs (list of strings or dictionary of strings where each string is in the
+        format '<component_id>.<property>' or '<component_id>') and converts into Dash Output objects.
+        For example, 'my_graph.figure' or ['my_graph.figure'] becomes
+            [Output(component_id='my_graph', component_property='figure', allow_duplicate=True)].
 
         Returns:
             Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
@@ -239,24 +259,26 @@ class _BaseAction(VizroBaseModel):
             # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
             return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
-        if isinstance(self.outputs, list):
-            callback_outputs = [_transform_output(output) for output in self.outputs]
+        # By this point self._validated_outputs is guaranteed to be OutputsType i.e. list[str] or dict[str, str].
+        # A single str value will have been coerced to list already.
+        if isinstance(self._validated_outputs, list):
+            callback_outputs = [_transform_output(output) for output in self._validated_outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
-                callback_outputs = callback_outputs[0]
+                [callback_outputs] = callback_outputs
             return callback_outputs
 
-        return {output_name: _transform_output(output) for output_name, output in self.outputs.items()}
+        return {output_name: _transform_output(output) for output_name, output in self._validated_outputs.items()}
 
     def _action_callback_function(
         self,
         inputs: Union[dict[str, Any], list[Any]],
         outputs: Union[dict[str, Output], list[Output], Output, None],
     ) -> Any:
-        logger.critical("===== Running action with id %s, function %s =====", self.id, self._action_name)
+        logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
@@ -313,12 +335,12 @@ class _BaseAction(VizroBaseModel):
             # https://dash.plotly.com/advanced-callbacks#prevent-callback-execution-upon-initial-component-render
             # e.g. for the case of a dynamic filter, we want the guard to let through genuine callback triggers (user
             # changes value of filter) vs. when the dropdown is created. This works as follows:
-            #   1. When a new dynamic component is created, a dcc.Store component labelled *_guard_actions_chain
+            #   1. When a new dynamic component is created, a dcc.Store component labeled *_guard_actions_chain
             #   is created at the same time with data=True.
             #   2. When guard_action_chain callback is triggered, we work out whether the trigger of the callback
             #   chain is genuine or not:
             #      - if it's due to creation of component then we do not allow action chain to execute. This mimics
-            #        what prevent_initial_call=True on action_callback would ideally do for us but doesn't.
+            #        what prevent_initial_call=True on action_callback would ideally do.
             #      - if it's genuine then we allow action chain to execute
             # The guard is needed only for the first action in the chain because subsequent actions can only be
             # triggered by the *_finished dcc.Store which cannot be accidentally triggered since it's created fresh
@@ -327,7 +349,6 @@ class _BaseAction(VizroBaseModel):
             component_guard_id = f"{trigger_component_id}_guard_actions_chain"
             trigger = Input(f"{self.id}_guarded_trigger", "data")
 
-            # TODO NOW: make clientside, revert logging.critical changes.
             # We want prevent_initial_call=True for all but the on page load callback. This means that the on page load
             # callback goes through the same gateway system as everything else and will run when the page layout is
             # generated.
@@ -335,33 +356,14 @@ class _BaseAction(VizroBaseModel):
             # the guard_action_chain by putting the Output in the global dashboard page layout, but changing
             # prevent_initial_call feels cleaner since it means the dcc.Stores do not need to be split between page-
             # and dashboard- level.
-            @callback(
+            clientside_callback(
+                ClientsideFunction(namespace="action", function_name="guard_action_chain"),
                 Output(f"{self.id}_guarded_trigger", "data"),
                 Input(*self._trigger.split(".")),
                 State(component_guard_id, "data", allow_optional=True),
+                State(trigger_component_id, "id"),
                 prevent_initial_call=self._prevent_initial_call_of_guard,
             )
-            def guard_action_chain(value, created):
-                logger.critical("***** Guard action with id %s, function %s =====", self.id, self._action_name)
-                if created:
-                    # Guard component has data=True. This means the component has just been created and so we should
-                    # prevent running the actions chain because it's not a genuine trigger.
-                    logger.critical(f"not running actions chain, setting {component_guard_id} to False")
-                    # We must use set_props here rather than using Output(component_guard_id, "data") because the
-                    # component might not exist. This is allowed for a state with allow_optional=True but not for an
-                    # Output.
-                    set_props(component_guard_id, {"data": False})
-                    # This must be dash.no_update rather than PreventUpdate or set_props won't work.
-                    return dash.no_update
-                elif created is None:
-                    # Guard component doesn't exist, so the trigger must be genuine rather than due to creation of a
-                    # component.
-                    logger.critical("not dynamic, running action")
-                    return value
-                elif not created:
-                    # Guard component exists but is set to False so it's a genuine trigger of the actions chain.
-                    logger.critical("running action")
-                    return value
         else:
             trigger = Input(*self._trigger.split("."))
 
@@ -402,9 +404,7 @@ class Action(_BaseAction):
         function (CapturedCallable): Action function.
         inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
             or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
-        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the action function. Each
-            output can be specified as `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
-            Defaults to `[]`.
+        outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -421,7 +421,7 @@ class Action(_BaseAction):
     # now specifies a user defined action in YAML (ok if not possible initially since it's not already) - could just
     # enable class-based one? Presumably import_path is no longer relevant though.
     function: Annotated[  # type: ignore[misc, assignment]
-        SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
+        SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction, collapse_expand_containers]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
@@ -436,16 +436,7 @@ class Action(_BaseAction):
         description="""List of inputs provided to the action function. Each input can be specified as `<model_id>` or
         `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
     )
-    outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
-        default=[],
-        description="""List or dictionary of outputs modified by the action function. Each output can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
-    )
-
-    @property
-    def _dash_components(self) -> list[Component]:
-        # Users cannot add Dash components using vm.Action.
-        return []
+    outputs: OutputsType  # type: ignore[misc]
 
     @property
     def _legacy(self) -> bool:
@@ -492,3 +483,9 @@ class Action(_BaseAction):
     @property
     def _action_name(self) -> str:
         return self.function._function.__name__  # type:ignore[union-attr]
+
+    @property
+    def _validated_outputs(self) -> OutputsType:
+        # self.outputs has already been coerced to OutputsType so this is just an alias. We define it just so that
+        # the interface of Action and _AbstractAction match.
+        return self.outputs

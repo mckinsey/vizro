@@ -26,13 +26,13 @@ class collapse_expand_containers(_AbstractAction):
     def validate_collapse_or_expand_present(self):
         if not self.collapse and not self.expand:
             raise ValueError("Please provide either the `collapse` or `expand` argument.")
-
         return self
 
     @model_validator(mode="after")
-    def alidate_collapse_and_expand_overlap(self):
+    def validate_collapse_and_expand_overlap(self):
         if set(self.collapse) & set(self.expand):
             raise ValueError("Collapse and expand lists cannot contain the same elements!")
+        return self
 
     @_log_call
     def pre_build(self):

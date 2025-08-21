@@ -1,11 +1,11 @@
 .ag-theme-quartz.ag-theme-vizro,
 .ag-theme-quartz-dark.ag-theme-vizro {
   --ag-font-family: inter, sans-serif, arial, serif;
-  --ag-active-color: var(--stateOverlays-selectedHover);
+  --ag-active-color: var(--bs-border-color-translucent);
   --ag-background-color: transparent;
   --ag-odd-row-background-color: transparent;
-  --ag-header-foreground-color: var(--text-secondary);
-  --ag-data-color: var(--text-primary);
+  --ag-header-foreground-color: var(--bs-secondary);
+  --ag-data-color: var(--bs-primary);
   --ag-header-background-color: transparent;
   --ag-icon-font-family: aggridquartz;
   --ag-icon-size: 0.875rem;
@@ -15,14 +15,14 @@
   --ag-border-radius: 0;
   --ag-border-color: transparent;
   --ag-row-border-style: solid;
-  --ag-row-border-color: var(--border-subtleAlpha01);
+  --ag-row-border-color: var(--bs-border-color);
   --ag-row-border-width: 1px;
-  --ag-selected-row-background-color: var(--stateOverlays-selected);
-  --ag-checkbox-checked-color: var(--text-primary);
+  --ag-selected-row-background-color: var(--bs-primary-bg-subtle);
+  --ag-checkbox-checked-color: var(--bs-primary);
   --ag-header-column-resize-handle-display: block;
   --ag-header-column-resize-handle-height: 30%;
   --ag-header-column-resize-handle-width: 1px;
-  --ag-header-column-resize-handle-color: var(--border-subtleAlpha02);
+  --ag-header-column-resize-handle-color: var(--bs-border-color-translucent);
   --ag-range-selection-border-color: transparent;
   --ag-input-focus-border-color: transparent;
 }
@@ -30,7 +30,7 @@
 /* Header ------- */
 #dashboard-container .ag-header-row {
   align-items: flex-start;
-  border-bottom: 1px solid var(--border-subtleAlpha02);
+  border-bottom: 1px solid var(--bs-border-color-translucent);
   display: flex;
 }
 
@@ -48,8 +48,8 @@
 }
 
 #dashboard-container .ag-header-cell:hover {
-  border-bottom: 1px solid var(--border-hover);
-  color: var(--text-primary);
+  border-bottom: 1px solid var(--bs-primary);
+  color: var(--bs-primary);
 }
 
 /* Rows ------- */
@@ -62,19 +62,19 @@
 }
 
 #dashboard-container .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
-  background: var(--stateOverlays-selected);
+  background: var(--bs-primary-bg-subtle);
 }
 
 /* Pop up menu ----- */
 #dashboard-container .ag-menu {
-  background-color: var(--surfaces-bg02);
-  border: 1px solid var(--border-subtleAlpha02);
-  color: var(--text-primary);
+  background-color: var(--bs-tertiary-bg);
+  border: 1px solid var(--bs-border-color-translucent);
+  color: var(--bs-primary);
 }
 
 #dashboard-container .ag-ltr .ag-filter-filter input {
-  background-color: var(--field-enabled);
-  box-shadow: var(--elevation-0);
+  background-color: var(--bs-primary-bg-subtle);
+  box-shadow: var(--bs-box-shadow-sm);
   display: flex;
   font-size: 0.875rem;
   font-weight: 400;
@@ -92,24 +92,24 @@
 }
 
 #dashboard-container .ag-filter-select .ag-picker-field-wrapper {
-  background-color: var(--field-enabled);
-  box-shadow: var(--elevation-0);
+  background-color: var(--bs-primary-bg-subtle);
+  box-shadow: var(--bs-box-shadow-sm);
 }
 
 #dashboard-container .ag-select-list {
-  background-color: var(--field-enabled);
-  box-shadow: var(--elevation-0);
-  color: var(--text-primary);
+  background-color: var(--bs-primary-bg-subtle);
+  box-shadow: var(--bs-box-shadow-sm);
+  color: var(--bs-primary);
   font-size: 0.875rem;
   line-height: 1.5rem;
 }
 
 #dashboard-container .ag-select-list-item.ag-active-item {
-  background-color: var(--stateOverlays-hover);
+  background-color: var(--hover-bg-subtle);
 }
 
 #dashboard-container .ag-radio-button-input-wrapper {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
 }
 
 #dashboard-container .ag-radio-button-input-wrapper:focus-within {
@@ -117,7 +117,7 @@
 }
 
 #dashboard-container .ag-text-field-input::placeholder {
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
 }
 
 #dashboard-container .ag-filter-apply-panel {
@@ -146,7 +146,7 @@
 
 /* Floating Filter */
 #dashboard-container .ag-floating-filter-input {
-  color: var(--text-primary);
+  color: var(--bs-primary);
   height: 40px;
 }
 
@@ -157,10 +157,10 @@
 }
 
 #dashboard-container .ag-standard-button {
-  background: var(--fill-active);
+  background: var(--bs-primary);
   border: none;
   border-radius: 0;
-  box-shadow: var(--elevation-0);
+  box-shadow: var(--bs-box-shadow-sm);
   color: var(--text-primary-inverted);
   font-size: 0.875rem;
   font-weight: 600;
@@ -171,12 +171,13 @@
   text-transform: none;
 }
 
+/* TODO: Remove stateOverlays here once we've figured out how to simplify buttons */
 #dashboard-container .ag-standard-button:hover {
   background: linear-gradient(
       var(--stateOverlays-hover-inverted),
       var(--stateOverlays-hover-inverted)
     ),
-    var(--fill-active);
+    var(--bs-primary);
   color: var(--text-primary-inverted);
   text-decoration-line: underline;
 }

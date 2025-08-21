@@ -1,6 +1,6 @@
 import pytest
 from asserts import assert_component_equal
-from dash import html
+from dash import dcc, html
 
 import vizro.models as vm
 from vizro.actions._parameter_action import _parameter
@@ -220,6 +220,30 @@ class TestParameterBuild:
         page.controls = [parameter]
         parameter.pre_build()
         result = parameter.build()
-        expected = html.Div(id="parameter-id", children=test_input.build())
+        expected = html.Div(id="parameter-id", children=html.Div(children=[test_input.build()]))
+
+        assert_component_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            vm.Checklist(options=["lifeExp", "gdpPercap", "pop"]),
+            vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"]),
+            vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        ],
+    )
+    def test_show_in_url_build_parameter(self, test_input):
+        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input, show_in_url=True)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        parameter.pre_build()
+
+        result = parameter.build()
+        expected = html.Div(
+            id="parameter-id",
+            children=html.Div(
+                children=[test_input.build(), dcc.Store(id=f"{parameter.selector.id}_guard_actions_chain", data=False)]
+            ),
+        )
 
         assert_component_equal(result, expected)
