@@ -127,6 +127,10 @@ class Dashboard(VizroBaseModel):
             tags. Defaults to `None`.""",
         ),
     ]
+    show_progress_indicator: bool = Field(
+        default=True,
+        description="Whether to show global progress indicator when actions are running. Defaults to `False`.",
+    )
 
     @_log_call
     def pre_build(self):
@@ -279,6 +283,23 @@ class Dashboard(VizroBaseModel):
             ),
             id="settings",
         )
+
+        progress_indicator = html.Span(
+            className="material-symbols-outlined progress_indicator",
+            children="forward_media",
+            id="global-progress-indicator",
+        )
+
+        # Only include progress indicator if enabled
+        header_controls_children = []
+        if self.show_progress_indicator:
+            header_controls_children.append(progress_indicator)
+        header_controls_children.append(settings)
+
+        header_controls = html.Div(
+            id="header-controls", children=header_controls_children
+        )
+
         logo, logo_dark, logo_light = self._get_logo_images()
         custom_header_content = self.custom_header()
         custom_header = html.Div(
@@ -295,9 +316,9 @@ class Dashboard(VizroBaseModel):
 
         # Apply different container position logic based on condition
         if _all_hidden(header_left_content + header_right_content):
-            page_header_content.append(settings)
+            page_header_content.append(header_controls)
         else:
-            header_right_content.append(settings)
+            header_right_content.append(header_controls)
 
         header_right = html.Div(
             id="header-right",
