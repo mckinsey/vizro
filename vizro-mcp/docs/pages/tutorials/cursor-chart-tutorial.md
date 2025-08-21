@@ -22,12 +22,13 @@ Yes! I do have access to Vizro-MCP tools. I can see several Vizro MCP functions 
 Here's what I can do with Vizro-MCP:
 
 **Available Vizro-MCP Capabilities:**
-1. Get chart/dashboard creation plans - Get instructions for creating Vizro charts or dashboards
-1. Access model schemas - Get JSON schemas for Vizro models (like Card, Dashboard, Page)
-1. Work with sample data - Access sample datasets (iris, tips, stocks, gapminder)
-1. Analyze your data - Load and analyze data files (CSV, JSON, Excel, Parquet, etc.)
-1. Validate configurations - Validate Vizro dashboard configurations and generate Python code
-1. Validate custom charts - Validate custom chart code with PyCafe integration
+
+1. Get chart/dashboard creation plans - Get instructions for creating Vizro charts or dashboards <br/>
+1. Access model schemas - Get JSON schemas for Vizro models (like Card, Dashboard, Page) <br/>
+1. Work with sample data - Access sample datasets (iris, tips, stocks, gapminder) <br/>
+1. Analyze your data - Load and analyze data files (CSV, JSON, Excel, Parquet, etc.) <br/>
+1. Validate configurations - Validate Vizro dashboard configurations and generate Python code <br/>
+1. Validate custom charts - Validate custom chart code with PyCafe integration <br/>
 
 ## Strategy
 
@@ -106,38 +107,38 @@ This is the output:
 > 
 > I want you to create a single Vizro chart using Vizro-MCP tools that opens directly in PyCafe. Please:
 
-> 1. **Clear the workspace completely** - remove all existing files
-1. **Use Vizro-MCP tools** with `auto_open=true` to open the generated code directly in PyCafe
-1. **Create a treemap visualization** using this dataset: `https://raw.githubusercontent.com/the-pudding/data/master/names-in-songs/unique.csv`
+> 1. **Clear the workspace completely** - remove all existing files <br/>
+1. **Use Vizro-MCP tools** with `auto_open=true` to open the generated code directly in PyCafe <br/>
+1. **Create a treemap visualization** using this dataset: `https://raw.githubusercontent.com/the-pudding/data/master/names-in-songs/unique.csv` <br/>
 
-> **Data Preprocessing Requirements:**
-- Remove all rows where `person == False`
-- Remove all rows where `name == "Baby"`
-- Remove any null values
-- Find the top 10 artists who use the most different names in their songs
+> **Data Preprocessing Requirements:** <br/>
+- Remove all rows where `person == False` <br/>
+- Remove all rows where `name == "Baby"` <br/>
+- Remove any null values <br/>
+- Find the top 10 artists who use the most different names in their songs <br/>
 
-> **Chart Structure:**
-- **Hierarchy**: Artist → Song → Name (3 levels)
-- **Artist level**: Show artist name with count of unique names in brackets, e.g., "Drake (107 names)"
-- **Song level**: Individual songs by each artist, sized by number of names in that song
-- **Name level**: Individual names within each song, sized by frequency of that name in the song
+> **Chart Structure:** <br/>
+- **Hierarchy**: Artist → Song → Name (3 levels) <br/>
+- **Artist level**: Show artist name with count of unique names in brackets, e.g., "Drake (107 names)" <br/>
+- **Song level**: Individual songs by each artist, sized by number of names in that song <br/>
+- **Name level**: Individual names within each song, sized by frequency of that name in the song <br/>
 
-> **Visual Requirements:**
-- **Space filling**: Ensure boxes completely fill their containing areas with no empty spaces
-- **Hover functionality**: 
-  - Artist level: Show artist info, song count, and total unique names
-  - Song level: Show song title and number of names in that song
-  - Name level: Show the actual sentence from the lyrics where that name appears
-- **No navigation breadcrumbs**: Hide the pathbar completely to avoid hover text issues
-- **Viewport fitting**: Set height to 600px with autosize width to fit the browser viewport
+> **Visual Requirements:** <br/>
+- **Space filling**: Ensure boxes completely fill their containing areas with no empty spaces <br/>
+- **Hover functionality**:  <br/>
+  - Artist level: Show artist info, song count, and total unique names <br/>
+  - Song level: Show song title and number of names in that song <br/>
+  - Name level: Show the actual sentence from the lyrics where that name appears <br/>
+- **No navigation breadcrumbs**: Hide the pathbar completely to avoid hover text issues <br/>
+- **Viewport fitting**: Set height to 600px with autosize width to fit the browser viewport <br/>
 
 
-> **Final Output:**
-- A working treemap that opens in PyCafe
-- Clean, professional appearance with proper spacing
-- Interactive exploration through clicking (no navigation bar)
-- Informative hover text at all levels
-- Proper viewport sizing without scrolling issues
+> **Final Output:** <br/>
+- A working treemap that opens in PyCafe <br/>
+- Clean, professional appearance with proper spacing <br/>
+- Interactive exploration through clicking (no navigation bar) <br/>
+- Informative hover text at all levels <br/>
+- Proper viewport sizing without scrolling issues <br/>
 
 > Please use Vizro-MCP tools throughout the process and ensure the chart opens directly in PyCafe with `auto_open=true`.
 
