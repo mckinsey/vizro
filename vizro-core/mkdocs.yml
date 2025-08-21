@@ -130,8 +130,6 @@ markdown_extensions:
 plugins:
   - search
   - autorefs
-  - open-in-new-tab:
-      add_icon: true
   - llmstxt: # https://pypi.org/project/mkdocs-llmstxt/
       markdown_description:
         Vizro is an open-source Python-based toolkit to build data visualization apps.
