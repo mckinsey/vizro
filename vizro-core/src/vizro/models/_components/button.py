@@ -80,6 +80,7 @@ class Button(VizroBaseModel):
 
         return self
 
+    @model_validator(mode="after")
     def _make_actions_chain(self):
         return make_actions_chain(self)
 
