@@ -184,7 +184,9 @@ class openai_pirate(echo):
         # Question for Lingyi: if we do it the "wrong" way with @dash.get_app().server.route() in pre_build,
         # can you easily find any setups where it doesn't work? e.g. Maybe with gunicorn it doesn't?
         # Question: why do we set endpoint here?
-        @dash.get_app().server.route(f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}")
+        @dash.get_app().server.route(
+            f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
+        )
         def streaming_chat():
             stuff = Stuff(**request.get_json())
 
@@ -213,7 +215,6 @@ class openai_pirate(echo):
                 yield sse_message()
 
             return Response(event_stream(), mimetype="text/event-stream")
-
 
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
