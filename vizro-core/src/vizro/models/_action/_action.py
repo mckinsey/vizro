@@ -393,11 +393,13 @@ class _BaseAction(VizroBaseModel):
             output=callback_outputs,
             inputs=callback_inputs,
             prevent_initial_call=True,
-            running=[(
-                Output("global-progress-indicator", "className"),
-                "material-symbols-outlined progress_indicator active",
-                "material-symbols-outlined progress_indicator"
-            )]
+            running=[
+                (
+                    Output("global-progress-indicator", "className"),
+                    "material-symbols-outlined progress_indicator active",
+                    "material-symbols-outlined progress_indicator",
+                )
+            ],
         )
         def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
