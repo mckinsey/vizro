@@ -4,16 +4,15 @@
 
     Vizro-MCP's prompt templates are available in Claude Desktop and Cursor, but may not allowed by other MCP hosts.
 
-You can use the prompt templates to create specific dashboards quickly. 
+You can use the prompt templates to create specific dashboards quickly.
 
-In Claude Desktop, click on the plus icon below the chat, and choose _`Add from vizro-mcp`_. 
+In Claude Desktop, click on the plus icon below the chat, and choose _`Add from vizro-mcp`_.
 
 ![Claude Desktop MCP Server Icon](../../assets/images/claude_prompt.png)
 
 In Cursor, access the prompt templates by typing `/` into the prompt, which will bring up a list of prompts available:
 
 ![](../../assets/images/use-cursor-prompt-template.png)
-
 
 The templates available currently as as follows:
 
