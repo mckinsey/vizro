@@ -165,7 +165,11 @@ Here is the full example code that includes the input component `vm.Switch(id="c
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `update_text` action is triggered. This finds the current time and returns a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`. 
 
-For more advanced variants based on this, such as multiple inputs and outputs and actions chains, refer to the [full tutorial](../tutorials/custom-actions). 
+For more advanced variants based on this, such as multiple inputs and outputs and actions chains, refer to the [full tutorial](../tutorials/custom-actions).
+
+!!! tip
+
+    If you have many buttons that trigger actions then you might like to [give them icons](button.md/#add-an-icon). You can even have icon-only buttons with no text.
 
 ## Trigger an action with a graph
 

@@ -2,7 +2,7 @@
 
 This guide shows you how to use buttons to interact with your data in the dashboard.
 
-The Button component is commonly used for interactive dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/).
+The Button component is commonly used for dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/).
 
 To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page].
 
@@ -55,9 +55,9 @@ vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 
 ## Trigger an action
 
-You can use the [`Button`][vizro.models.Button] to trigger an action function, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
+You can use the [`Button`][vizro.models.Button] to trigger actions. These actions could be [built-in ](actions.md) or [custom](custom-actions.md#trigger-an-action-with-a-button). Use the `Button.actions` argument to configure the action that executes when the button is clicked.
 
-The example below demonstrates how to configure a button to export the filtered data of a target chart using the [export_data][vizro.actions.export_data] action function.
+The example below demonstrates how to configure a button to export the filtered data of a target chart using the [`export_data`][vizro.actions.export_data] action. If you have many buttons that trigger actions then you might like to [give them icons](#add-an-icon). You can even have icon-only buttons with no text.
 
 !!! example "Button with action"
 
@@ -86,7 +86,7 @@ The example below demonstrates how to configure a button to export the filtered 
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[vm.Action(function=export_data())],
+                    actions=export_data(),
                 ),
             ]
         )
@@ -116,8 +116,7 @@ The example below demonstrates how to configure a button to export the filtered 
                 text: Export data
                 id: export_data
                 actions:
-                  - function:
-                      _target_: export_data
+                  _target_: export_data
             layout:
               type: flex
             title: My first page

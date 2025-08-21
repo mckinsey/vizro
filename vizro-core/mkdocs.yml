@@ -48,7 +48,7 @@ nav:
   - API reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
-      - Action functions: pages/API-reference/action-callables.md
+      - Actions: pages/API-reference/actions.md
       - Table functions: pages/API-reference/table-callables.md
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md

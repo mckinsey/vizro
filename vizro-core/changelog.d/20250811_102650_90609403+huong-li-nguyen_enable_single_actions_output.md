@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Enable passing a single output to the `Action` model  without nesting it in a list. You can now specify `outputs="component_id.property"` instead of `outputs=["component_id.property"]`. ([#1334](https://github.com/mckinsey/vizro/pull/1334))
+- Enable passing a single output to the `Action` model without nesting it in a list. You can now specify `outputs="component_id.property"` instead of `outputs=["component_id.property"]`. ([#1334](https://github.com/mckinsey/vizro/pull/1334))
 <!--
 ### Changed
 
