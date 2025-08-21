@@ -151,14 +151,14 @@ class openai_pirate(echo):
                     // Update UI and store
                     const newChildren = [...(existingChildren || [])];
                     const newData = [...(storeData || [])];
-                    
+
                     if (newChildren.length > 0) {
                         const last = newChildren[newChildren.length - 1];
                         if (last.props?.children?.[0]?.props?.children === "assistant") {
                             last.props.children[1].props.children = fullText;
                         }
                     }
-                    
+
                     if (newData.length > 0 && newData[newData.length - 1].role === 'assistant') {
                         newData[newData.length - 1].content = fullText;
                     }
@@ -168,13 +168,10 @@ class openai_pirate(echo):
                 """,
                 [
                     Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-                    Output(f"{self.chat_id}-store", "data", allow_duplicate=True)
+                    Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
                 ],
                 Input(f"{self.chat_id}-sse", "animation"),
-                [
-                    State(f"{self.chat_id}-output", "children"),
-                    State(f"{self.chat_id}-store", "data")
-                ],
+                [State(f"{self.chat_id}-output", "children"), State(f"{self.chat_id}-store", "data")],
                 prevent_initial_call=True,
             )
 
@@ -189,7 +186,6 @@ class openai_pirate(echo):
         # Question: why do we set endpoint here?
         @dash.get_app().server.route(f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}")
         def streaming_chat():
-            # try:
             stuff = Stuff(**request.get_json())
 
             def event_stream():
@@ -209,7 +205,7 @@ class openai_pirate(echo):
                         # Encode delta to preserve special characters and newlines
                         # Send base64 with delimiter for easy splitting
                         # If we simply pass sse_message(event.delta) then tokens like `**\n\n` get escaped
-                        encoded_delta = base64.b64encode(event.delta.encode('utf-8')).decode('utf-8')
+                        encoded_delta = base64.b64encode(event.delta.encode("utf-8")).decode("utf-8")
                         yield sse_message(encoded_delta + "|END|")
 
                 # Send standard SSE completion signal
@@ -259,10 +255,7 @@ class openai_pirate(echo):
 
     # User writes this function. Does it belong here or in Chat?
     def message_to_html(self, message):
-        return html.Div([
-            html.B(message["role"]), 
-            dcc.Markdown(message["content"], dangerously_allow_html=True)
-        ])
+        return html.Div([html.B(message["role"]), dcc.Markdown(message["content"], dangerously_allow_html=True)])
 
     @property
     def outputs(self):
@@ -386,7 +379,7 @@ page_nostream = vm.Page(
 dashboard = vm.Dashboard(
     pages=[page, page_nostream, page_2],
     theme="vizro_light",
-    )
+)
 
 """
 Notes:
