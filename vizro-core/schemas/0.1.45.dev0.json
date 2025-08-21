@@ -147,7 +147,7 @@
     },
     "Button": {
       "additionalProperties": false,
-      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Needs to have at least 1 character. Defaults to `\"Click me!\"`.\n    href (str): URL (relative or absolute) to navigate to. Defaults to `\"\"`.\n    actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `filled`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.\n    text (str): Text to be displayed on button. Defaults to `\"Click me!\"`.\n    href (str): URL (relative or absolute) to navigate to. Defaults to `\"\"`.\n    actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `filled`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -160,10 +160,15 @@
           "title": "Type",
           "type": "string"
         },
+        "icon": {
+          "default": "",
+          "description": "Icon name from Google Material icons library.",
+          "title": "Icon",
+          "type": "string"
+        },
         "text": {
           "default": "Click me!",
           "description": "Text to be displayed on button.",
-          "minLength": 1,
           "title": "Text",
           "type": "string"
         },
