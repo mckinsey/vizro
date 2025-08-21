@@ -352,7 +352,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
         [![CardImageStyled]][cardimagestyled]
 
-Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
+Use the following URL hashes in your image path to apply Vizro's default styling.
 
 ## Float an image inside the card
 

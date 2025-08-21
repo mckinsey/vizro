@@ -5,6 +5,7 @@ nav:
   - Tutorials:
       - Quickstart tutorial: pages/tutorials/quickstart-tutorial.md
       - Explore Vizro: pages/tutorials/explore-components.md
+      - Write your own actions: pages/tutorials/actions.md
   - How-to guides:
       - Fundamentals:
           - Install Vizro: pages/user-guides/install.md

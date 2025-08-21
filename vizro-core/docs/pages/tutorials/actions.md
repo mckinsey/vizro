@@ -2,9 +2,12 @@
 
 In this tutorial, you will learn...
 
+TODO Cross link to user guideS
+Use attach terminology
+
 !!! note
 
-    This tutorial assumes a basic knowledge of Vizro. If you haven't already done so, you should get started with Vizro in the [first dashboard tutorial](first-dashboard.md) or work through a [more in-depth tutorial](explore-components.md).
+    This tutorial assumes a basic knowledge of Vizro. If you haven't already done so, you should get started with Vizro in the [quickstart tutorial](quickstart-tutorial.md) or work through a [more in-depth tutorial](explore-components.md).
 
 ## What is an action?
 
@@ -15,7 +18,7 @@ Vizro models such as `vm.Dashboard`, `vm.Page`, `vm.Graph` and `vm.Filter` confi
 
 For example, the [`vm.Filter`](../user-guides/filters.md) model configures both the layout and the interactivity of a filter. The `selector` argument configures which selector component (such as a dropdown or checklist) to render on screen. There's also an `actions` argument that configures what happens when a user changes the value of the selector. You generally don't set this `actions `argument because by default it is set to a filtering action that updates components on the page that depend on the column being filtered. 
 
-Many Vizro models have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ when a user interacts with a component. This function can depend on _inputs_ from the user's screen and update _outputs_ on the user's screen.
+Many [Vizro models][vizro.models] have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ when a user interacts with a component. This function can depend on _inputs_ from the user's screen and update _outputs_ on the user's screen.
 
 In Vizro, there are two types of action:
 
@@ -118,7 +121,6 @@ graph TD
 ```
 
 In this flowchart, the rectangular boxes refer to Vizro models that are used as trigger and output for an action. The action function is shown in a round box, and we use a thick line for the trigger. The `vm.Button` does not yet have `id="submit_button"` set; we use this label pre-emptively in the diagram to refer to the `vm.Button`.
-
 
 ## Runtime input
 
@@ -230,7 +232,7 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_text` actio
 
         1. We add an argument `use_24_hour_clock` to `update_text`. This will receive a boolean value `True` or `False`.
         2. `time_format` now changes depending on the the value of `use_24_hour_clock`.
-        3. The argument `use_24_hour_clock` is _bound_ at runtime to the value of the `clock_switch` component. This will be `True` or `False` depending on whether the switch is toggled on or off. Here we used keyword argument as `update_text(use_24_hour_clock="clock_switch")` but, just like a normal Python function call, we could also use a positional argument as `update_text("clock_switch")`.
+        3. The argument `use_24_hour_clock` is _bound_ at runtime to the value of the `clock_switch` component. This will be `True` or `False` depending on whether the switch is toggled on or off. Here we used a keyword argument as `update_text(use_24_hour_clock="clock_switch")` but, just like a normal Python function call, we could also use a positional argument as `update_text("clock_switch")`.
           
     === "Result"
 
@@ -248,7 +250,6 @@ graph TD
   clock_switch -. runtime input .-> update_text -- output --> time_text
   submit_button == trigger ==> update_text([update_text])
 ```
-
 
 Note that toggling the `clock_switch` does not by itself trigger `update_text`. The switch is used as a runtime input but the action is triggered only by clicking the button. In fact, this is a key principle governing Vizro actions: an action can have any number of inputs and outputs but only one trigger.  
 
@@ -707,7 +708,7 @@ To make the app feel more responsive, we're going to remove the submit button an
                         ),
                         vm.Switch(
                             id="clock_switch",
-                            title="24-hour clock",
+                            title="24-hour clock", value=True,
                             value=True,
                             actions=vm.Action(function=update_time_text("clock_switch", "location_dropdown"), outputs="time_text"),  # (3)!
                         ),
@@ -727,7 +728,6 @@ To make the app feel more responsive, we're going to remove the submit button an
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
-        
 
         1. `update_time_text` and `update_date_text` are now timezone-sensitive. We use the `location` set by the dropdown to choose the appropriate timezone.
         2. Now that `submit_button` no longer exists, it is the responsibility of `update_time_date_formats` to update `weather_text` with the "Fetching current weather..." text. This action is otherwise unchanged. 
@@ -845,14 +845,25 @@ We've now finished working through our example code. To recap, let's summarise s
 
 
 HERE HERE:
+strip out legacy Action(...) from any tests that have it and shouldn't
+emphasise fine to use same inputs and output multiple times
+make action_inputs/outputs/triggers public?
+note which parts also apply to built-in actions e.g. explicit chains etc.
+compare to built-in actions at top e.g. to say need to write own Actions model
 make page for Vizro vs. Dash explanation, split stuff off on to it as rough/hidden notes and refer to that page. Make it exist but put in coming soon.
-changelog
+changelog:
+  refer to model
+  single action and output
+  write export_data without vm.Action for builtin actions
+  dict for output format https://github.com/McK-Internal/vizro-internal/issues/1608
+  insert inputs directly in custom action function call `my_custom_action("dropdown_id.value")`
+show a before and after version of old vs new actions
 update other bits of docs e.g. custom actions
 AgGrid inner ID - should be no examples like that to remove but check
 NEED TO UPDATE ALL DOCS function=export_data() etc. Search throughout
 Update all actions examples in docs that have unecssary [actions] or [outputs]
- 
-deprecations - do after
+API docs for inbuilt actions
+deprecations - do now or after?
 
 For PR description
 I think "built in" and "custom" is the best terminology to use but we can also say "user-defined" since it makes sense or just no word at all - like "write your own action". Let's avoid using "predefined" though. SEARCH FOR USAGE OF THIS
@@ -862,19 +873,15 @@ Sections I'm not happy with (implicit chaining explanation)
 TOo long - collapse code parts?
 WHy mermaid separate and not tabbned
 
-https://github.com/mckinsey/vizro/pull/1054
-vizro_download, vizro_url  https://github.com/McK-Internal/vizro-internal/issues/1611
-Y direct reference to component, field name https://github.com/McK-Internal/vizro-internal/issues/1610 https://github.com/McK-Internal/vizro-internal/issues/1609
-Y dict output format https://github.com/McK-Internal/vizro-internal/issues/1608
-Y single [action] allowed
-Y single [output] allowed
+
+Still to document:
+vizro_download, vizro_url https://github.com/McK-Internal/vizro-internal/issues/1611
+reference model field name https://github.com/McK-Internal/vizro-internal/issues/1610 https://github.com/McK-Internal/vizro-internal/issues/1609
 built in special arguments (though structure of `_controls` not finalised)
-two sorts of action (Abstract and normal)
-Y actions chain 
+AbstractAction: look at https://github.com/mckinsey/vizro/pull/1054 and Miro board
 callbacks + actions combined
 page lifecyle - on page load, filter callback, etc.
 YAML configuration of captured callable
-
 ---
 
 Tutorial more than how-to. Tutorial refers to more detail in explanation. Tutorial is learning-oriented
@@ -956,6 +963,7 @@ duplicated outputs fine
 one vs multiple triggers
 prevent_initial_call=True always
 actions loop
+pattern matching callbacks
 
 Explain how  can combine Dash callbacks and Vizro action, e.g. Vizro actions can use Dash components/properties so easy to adapt. Can have some additional clientside callbacks - give example from simple action. 
 
@@ -984,7 +992,7 @@ Show some output field and property which isn't just model name
 
 ## Trigger, input and output properties
 
-Don't put this section here - too much Dash. Yes - just keep it simple and not talking about multiple properties and components here until gets more advanced.
+Still needed given explanation in custom actions how to? Probably just a shortened version of it.
 
 A single Vizro model produces one or more Dash components, each of which has several properties. For example, the Dash component corresponding to `vm.Text` is [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown). The above examples' `vm.Text(id="time_text", text="Click the button")` produces something like the following Dash component:
 ```py
@@ -993,7 +1001,7 @@ dcc.Markdown(id="time_text", children="Click the button")
 
 To update the text shown in this component as an output in a Dash callback, you would refer to `Output("time_text", "children")`. In Vizro, you could instead refer to `outputs="time_text.children"`. However, to simplify the notation, Vizro offers several shorthands:
 * `outputs="time_text.text"` where the format is `<model_id>.<argument_name>`. Here we update the `text` argument of the `vm.Text` model that has `id="time_text"`. 
-* `outputs="time_text"` where the format is `<model_id>`. This automatically connects to the default Dash component property that is part of the Vizro model. The default depends on the Vizro model but corresponds to the most commonly used property. In this example it would target the `text` argument of the `vm.Text` model because that is the most common part to update. 
+* `outputs="time_text"` where the format is `<model_id>`. This automatically connects to the default Dash component property that is part of the Vizro model. The default depends on the Vizro model but corresponds to the most commonly used property. In this example it would address the `text` argument of the `vm.Text` model because that is the most common part to update. 
 
 The above two shorthands work exactly the same as the full `outputs="time_text.children"`.
 
@@ -1016,7 +1024,7 @@ A Vizro action always uses a specific Dash component and property for the action
 
 !!! note
 
-    Are you targetting an underlying Dash component that you think should be addressed by Vizro more easily? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
+    Are you addressing an underlying Dash component that you think should be addressed by Vizro more easily? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
 
 
 ## Performance

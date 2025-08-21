@@ -992,10 +992,7 @@ vm.Graph(
                     <pre><code># Export data action
 from vizro.actions import export_data
 
-actions=[vm.Action(
-    function=export_data(),
-    ),
-]</code></pre>
+actions=export_data()</code></pre>
                   </div>
                   <button class="copy-button" onclick="copyCode(this)">
                     Copy
@@ -1011,10 +1008,7 @@ actions=[vm.Action(
                     <pre><code># Cross-filtering
 from vizro.actions import filter_interaction
 
-actions=[vm.Action(
-    function=filter_interaction(targets=["your-target-component-id"]),
-    ),
-]</code></pre>
+actions=filter_interaction(targets=["your-target-component-id"])</code></pre>
                   </div>
                   <button class="copy-button" onclick="copyCode(this)">
                     Copy
@@ -1135,9 +1129,8 @@ def update_card_text(species):
 
 # Use with Action
 vm.Action(
-    function=update_card_text(),
-    inputs=["my_selector.value"],
-    outputs=["my_card.children"],
+    function=update_card_text("my_selector"),
+    outputs="my_card",
 )</code></pre>
                   </div>
                   <button class="copy-button" onclick="copyCode(this)">
