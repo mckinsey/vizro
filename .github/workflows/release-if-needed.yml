@@ -12,7 +12,7 @@ jobs:
   check-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -40,7 +40,7 @@ jobs:
       needs.check-version.outputs.new_release == 'True'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -84,7 +84,7 @@ jobs:
       needs.check-version.outputs.new_release == 'True'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           token: ${{ secrets.VIZRO_SVC_PAT }}
