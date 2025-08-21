@@ -59,8 +59,10 @@ class TestSwitchInstantiation:
         assert isinstance(switch.value, bool)
 
     def test_switch_trigger(self, identity_action_function):
-        switch = vm.Switch(id="switch-id", actions=[vm.Action(function=identity_action_function())])
-        action = switch.actions[0]
+        switch = vm.Switch(
+            id="switch-id", actions=[vm.Action(function=identity_action_function())]
+        )
+        [action] = switch.actions
         assert action._trigger == "switch-id.value"
 
 
@@ -71,7 +73,10 @@ class TestSwitchBuild:
         switch = vm.Switch(value=True, title="Show active").build()
 
         expected_switch = dbc.Switch(
-            value=True, label=[html.Span(children="Show active"), None], persistence=True, persistence_type="session"
+            value=True,
+            label=[html.Span(children="Show active"), None],
+            persistence=True,
+            persistence_type="session",
         )
         assert_component_equal(switch, expected_switch, keys_to_strip={"id"})
 
@@ -84,9 +89,15 @@ class TestSwitchBuild:
         ).build()
 
         expected_description = [
-            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            html.Span(
+                "info",
+                id="info-icon",
+                className="material-symbols-outlined tooltip-icon",
+            ),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                children=dcc.Markdown(
+                    "Test description", id="info-text", className="card-text"
+                ),
                 id="info",
                 target="info-icon",
                 autohide=False,

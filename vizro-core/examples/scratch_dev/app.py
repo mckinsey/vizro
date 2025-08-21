@@ -2,16 +2,6 @@
 # # check out https://github.com/mckinsey/vizro for more info about Vizro
 # # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
-# TODO-NOW:
-#  - UNIT-TESTS:
-#   - FIX OLD TESTS
-#   - ADD NEW tests for changed files:
-#     -
-#  - JS-TESTS
-#  - Update page loading flow.
-#  - Review PR by adding comments from the notion
-
-
 from dash import callback, Input, Output, dcc
 import pandas as pd
 import vizro.models as vm

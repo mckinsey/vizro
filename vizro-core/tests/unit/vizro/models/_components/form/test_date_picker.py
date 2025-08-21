@@ -63,25 +63,38 @@ class TestDatePickerInstantiation:
         assert date_picker.title == str(title)
 
     def test_date_picker_trigger(self, identity_action_function):
-        date_picker = vm.DatePicker(id="date-picker-id", actions=[vm.Action(function=identity_action_function())])
-        action = date_picker.actions[0]
+        date_picker = vm.DatePicker(
+            id="date-picker-id",
+            actions=[vm.Action(function=identity_action_function())],
+        )
+        [action] = date_picker.actions
         assert action._trigger == "date-picker-id.value"
 
-    @pytest.mark.parametrize("min, max", [("2024-01-01", None), (None, "2024-01-01"), ("2024-01-01", "2024-02-01")])
+    @pytest.mark.parametrize(
+        "min, max",
+        [("2024-01-01", None), (None, "2024-01-01"), ("2024-01-01", "2024-02-01")],
+    )
     def test_valid_min_max(self, min, max):
         date_picker = vm.DatePicker(min=min, max=max)
 
-        assert date_picker.min == (datetime.strptime(min, "%Y-%m-%d").date() if min else None)
-        assert date_picker.max == (datetime.strptime(max, "%Y-%m-%d").date() if max else None)
+        assert date_picker.min == (
+            datetime.strptime(min, "%Y-%m-%d").date() if min else None
+        )
+        assert date_picker.max == (
+            datetime.strptime(max, "%Y-%m-%d").date() if max else None
+        )
 
     def test_validate_max_invalid_min_greater_than_max(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
+            ValidationError,
+            match="Maximum value of selector is required to be larger than minimum value.",
         ):
             vm.DatePicker(min="2024-02-01", max="2024-01-01")
 
     def test_validate_max_invalid_date_format(self):
-        with pytest.raises(ValidationError, match="Input should be a valid date or datetime"):
+        with pytest.raises(
+            ValidationError, match="Input should be a valid date or datetime"
+        ):
             vm.DatePicker(min="50-50-50", max="50-50-50")
 
     def test_validate_range_true_datepicker_value_valid(self):
@@ -96,23 +109,44 @@ class TestDatePickerInstantiation:
         expected_value = date(2024, 1, 1)
         assert date_picker.value == expected_value
 
-    @pytest.mark.parametrize("range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])])
+    @pytest.mark.parametrize(
+        "range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])]
+    )
     def test_validate_datepicker_value_invalid(self, range, value):
-        with pytest.raises(ValidationError, match="Please provide a valid value between the min and max value."):
+        with pytest.raises(
+            ValidationError,
+            match="Please provide a valid value between the min and max value.",
+        ):
             vm.DatePicker(min="1999-01-01", max="1999-02-01", range=range, value=value)
 
-    @pytest.mark.parametrize("range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])])
+    @pytest.mark.parametrize(
+        "range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])]
+    )
     def test_validate_datepicker_range_valid(self, range, value):
-        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=range, value=value)
+        date_picker = vm.DatePicker(
+            min="2024-01-01", max="2024-02-01", range=range, value=value
+        )
         assert date_picker.range == range
 
     @pytest.mark.parametrize(
         "range, value",
         [
-            (True, "2024-01-01"),  # range True produces DateRangePicker, value needs to be list with 2 dates
-            (True, ["2024-01-01"]),  # range True produces DateRangePicker, value needs to be list with 2 dates
-            (False, ["2024-01-01"]),  # range False produces DatePicker, value needs to be single date
-            (False, ["2024-01-01", "2024-03-01"]),  # range False produces DatePicker, value needs to be single date
+            (
+                True,
+                "2024-01-01",
+            ),  # range True produces DateRangePicker, value needs to be list with 2 dates
+            (
+                True,
+                ["2024-01-01"],
+            ),  # range True produces DateRangePicker, value needs to be list with 2 dates
+            (
+                False,
+                ["2024-01-01"],
+            ),  # range False produces DatePicker, value needs to be single date
+            (
+                False,
+                ["2024-01-01", "2024-03-01"],
+            ),  # range False produces DatePicker, value needs to be single date
         ],
     )
     def test_validate_datepicker_range_invalid(self, range, value):
@@ -121,15 +155,25 @@ class TestDatePickerInstantiation:
 
 
 class TestBuildMethod:
-    @pytest.mark.parametrize("range, value", [(False, "2023-01-05"), (True, ["2023-01-05", "2023-01-07"])])
+    @pytest.mark.parametrize(
+        "range, value", [(False, "2023-01-05"), (True, ["2023-01-05", "2023-01-07"])]
+    )
     def test_datepicker_build(self, range, value):
         date_picker = vm.DatePicker(
-            min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Title"
+            min="2023-01-01",
+            max="2023-07-01",
+            range=range,
+            value=value,
+            id="datepicker_id",
+            title="Title",
         ).build()
 
         expected_datepicker = html.Div(
             [
-                dbc.Label([html.Span("Title", id="datepicker_id_title"), None], html_for="datepicker_id"),
+                dbc.Label(
+                    [html.Span("Title", id="datepicker_id_title"), None],
+                    html_for="datepicker_id",
+                ),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -160,7 +204,10 @@ class TestBuildMethod:
 
         expected_datepicker = html.Div(
             [
-                dbc.Label([html.Span("Title", id="datepicker_id_title"), None], html_for="datepicker_id"),
+                dbc.Label(
+                    [html.Span("Title", id="datepicker_id_title"), None],
+                    html_for="datepicker_id",
+                ),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -191,9 +238,15 @@ class TestBuildMethod:
             description=vm.Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
         expected_description = [
-            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            html.Span(
+                "info",
+                id="info-icon",
+                className="material-symbols-outlined tooltip-icon",
+            ),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                children=dcc.Markdown(
+                    "Test description", id="info-text", className="card-text"
+                ),
                 id="info",
                 target="info-icon",
                 autohide=False,
@@ -202,7 +255,10 @@ class TestBuildMethod:
         expected_datepicker = html.Div(
             [
                 dbc.Label(
-                    [html.Span("Title", id="datepicker_id_title"), *expected_description],
+                    [
+                        html.Span("Title", id="datepicker_id_title"),
+                        *expected_description,
+                    ],
                     html_for="datepicker_id",
                 ),
                 dmc.DatePickerInput(

@@ -34,7 +34,13 @@ class TestButtonInstantiation:
         ],
     )
     def test_create_button_mandatory_and_optional(self, text, href, variant):
-        button = vm.Button(id="button-id", text=text, href=href, variant=variant, description="This is description")
+        button = vm.Button(
+            id="button-id",
+            text=text,
+            href=href,
+            variant=variant,
+            description="This is description",
+        )
 
         assert button.id == "button-id"
         assert button.type == "button"
@@ -50,15 +56,19 @@ class TestButtonInstantiation:
 
     def test_button_trigger(self):
         button = vm.Button(id="button-id", actions=[vm.Action(function=export_data())])
-        action = button.actions[0]
+        [action] = button.actions
         assert action._trigger == "button-id.n_clicks"
 
     def test_invalid_variant(self):
-        with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
+        with pytest.raises(
+            ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."
+        ):
             vm.Button(variant="test")
 
     def test_invalid_text(self):
-        with pytest.raises(ValidationError, match="String should have at least 1 character"):
+        with pytest.raises(
+            ValidationError, match="String should have at least 1 character"
+        ):
             vm.Button(text="")
 
 
@@ -79,7 +89,9 @@ class TestBuildMethod:
     def test_button_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         result = vm.Button(
-            id="button", text="Click me!", extra={"color": "success", "outline": True, "href": "www.google.com"}
+            id="button",
+            text="Click me!",
+            extra={"color": "success", "outline": True, "href": "www.google.com"},
         ).build()
         assert_component_equal(
             result,
@@ -94,7 +106,9 @@ class TestBuildMethod:
         )
 
     def test_button_build_with_href(self):
-        button = vm.Button(id="button_id", text="My text!", href="www.google.com").build()
+        button = vm.Button(
+            id="button_id", text="My text!", href="www.google.com"
+        ).build()
         expected = dbc.Button(
             id="button_id",
             children=html.Span(["My text!", None], className="button-text"),
@@ -130,9 +144,15 @@ class TestBuildMethod:
         ).build()
 
         expected_description = [
-            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            html.Span(
+                "info",
+                id="info-icon",
+                className="material-symbols-outlined tooltip-icon",
+            ),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                children=dcc.Markdown(
+                    "Test description", id="info-text", className="card-text"
+                ),
                 id="info",
                 target="info-icon",
                 autohide=False,

@@ -15,7 +15,10 @@ def expected_slider():
         [
             html.Div(
                 [
-                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
+                    dbc.Label(
+                        [html.Span("Title", id="slider_id_title"), None],
+                        html_for="slider_id",
+                    ),
                     html.Div(
                         [
                             dcc.Input(
@@ -58,7 +61,10 @@ def expected_slider_extra():
         [
             html.Div(
                 [
-                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
+                    dbc.Label(
+                        [html.Span("Title", id="slider_id_title"), None],
+                        html_for="slider_id",
+                    ),
                     html.Div(
                         [
                             dcc.Input(
@@ -99,9 +105,13 @@ def expected_slider_extra():
 @pytest.fixture()
 def expected_slider_with_description():
     expected_description = [
-        html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+        html.Span(
+            "info", id="info-icon", className="material-symbols-outlined tooltip-icon"
+        ),
         dbc.Tooltip(
-            children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+            children=dcc.Markdown(
+                "Test description", id="info-text", className="card-text"
+            ),
             id="info",
             target="info-icon",
             autohide=False,
@@ -112,7 +122,10 @@ def expected_slider_with_description():
             html.Div(
                 [
                     dbc.Label(
-                        [html.Span("Title", id="slider_id_title"), *expected_description],
+                        [
+                            html.Span("Title", id="slider_id_title"),
+                            *expected_description,
+                        ],
                         html_for="slider_id",
                     ),
                     html.Div(
@@ -207,7 +220,8 @@ class TestSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
+            ValidationError,
+            match="Maximum value of selector is required to be larger than minimum value.",
         ):
             vm.Slider(min=10, max=0)
 
@@ -219,10 +233,15 @@ class TestSliderInstantiation:
 
     @pytest.mark.parametrize("value", [11, -1])
     def test_validate_slider_value_invalid(self, value):
-        with pytest.raises(ValidationError, match="Please provide a valid value between the min and max value."):
+        with pytest.raises(
+            ValidationError,
+            match="Please provide a valid value between the min and max value.",
+        ):
             vm.Slider(min=0, max=10, value=value)
 
-    @pytest.mark.parametrize("step, expected", [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)])
+    @pytest.mark.parametrize(
+        "step, expected", [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)]
+    )
     def test_validate_step_valid(self, step, expected):
         slider = vm.Slider(min=0, max=10, step=step)
 
@@ -244,8 +263,14 @@ class TestSliderInstantiation:
         "marks, expected",
         [
             # TODO[MS]: why is this not failing, should it not be converted to float?
-            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
-            ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
+            (
+                {i: str(i) for i in range(0, 10, 5)},
+                {i: str(i) for i in range(0, 10, 5)},
+            ),  # int - str
+            (
+                {1.0: "1", 1.5: "1.5"},
+                {1: "1", 1.5: "1.5"},
+            ),  # float - str (but see validator)
             (None, None),
         ],
     )
@@ -281,7 +306,9 @@ class TestSliderInstantiation:
         ],
     )
     def test_set_step_and_marks(self, step, marks, expected_marks, expected_class):
-        slider = vm.Slider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
+        slider = vm.Slider(
+            min=0, max=10, step=step, marks=marks, id="slider-id"
+        ).build()
         assert slider["slider-id"].marks == expected_marks
         assert slider["slider-id"].className == expected_class
 
@@ -292,14 +319,18 @@ class TestSliderInstantiation:
         assert slider.title == str(title)
 
     def test_slider_trigger(self, identity_action_function):
-        slider = vm.Slider(id="slider-id", actions=[vm.Action(function=identity_action_function())])
-        action = slider.actions[0]
+        slider = vm.Slider(
+            id="slider-id", actions=[vm.Action(function=identity_action_function())]
+        )
+        [action] = slider.actions
         assert action._trigger == "slider-id.value"
 
 
 class TestBuildMethod:
     def test_slider_build(self, expected_slider):
-        slider = vm.Slider(id="slider_id", min=0, max=10, step=1, value=5, title="Title").build()
+        slider = vm.Slider(
+            id="slider_id", min=0, max=10, step=1, value=5, title="Title"
+        ).build()
 
         assert_component_equal(slider, expected_slider)
 

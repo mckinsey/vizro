@@ -306,7 +306,7 @@ class _BaseAction(VizroBaseModel):
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
-                callback_outputs = callback_outputs[0]
+                [callback_outputs] = callback_outputs
             return callback_outputs
 
         return {
@@ -447,16 +447,7 @@ class _BaseAction(VizroBaseModel):
             )
 
         @callback(
-            output=callback_outputs,
-            inputs=callback_inputs,
-            prevent_initial_call=True,
-            running=[
-                (
-                    Output("global-progress-indicator", "className"),
-                    "material-symbols-outlined progress_indicator active",
-                    "material-symbols-outlined progress_indicator",
-                )
-            ],
+            output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True
         )
         def action_callback(
             external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]

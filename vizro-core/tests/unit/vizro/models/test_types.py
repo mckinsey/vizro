@@ -9,7 +9,12 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import export_data
 from vizro.models import Action, Button, VizroBaseModel
-from vizro.models.types import CapturedCallable, _coerce_to_list, capture, validate_captured_callable
+from vizro.models.types import (
+    CapturedCallable,
+    _coerce_to_list,
+    capture,
+    validate_captured_callable,
+)
 
 
 def positional_only_function(a, /):
@@ -20,7 +25,9 @@ def var_positional_function(*args):
     pass
 
 
-@pytest.mark.parametrize("function", [positional_only_function, var_positional_function])
+@pytest.mark.parametrize(
+    "function", [positional_only_function, var_positional_function]
+)
 def test_invalid_parameter_kind(function):
     with pytest.raises(
         ValueError,
@@ -47,7 +54,9 @@ def captured_callable(request):
 
 
 @pytest.mark.parametrize(
-    "captured_callable", [positional_or_keyword_function, keyword_only_function, var_keyword_function], indirect=True
+    "captured_callable",
+    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
+    indirect=True,
 )
 class TestCallKeywordArguments:
     def test_call_provide_required_argument(self, captured_callable):
@@ -57,13 +66,17 @@ class TestCallKeywordArguments:
         assert captured_callable(a=5, b=2, c=6) == 5 + 2 + 6
 
 
-@pytest.mark.parametrize("captured_callable", [positional_or_keyword_function], indirect=True)
+@pytest.mark.parametrize(
+    "captured_callable", [positional_or_keyword_function], indirect=True
+)
 def test_call_positional_arguments(captured_callable):
     assert captured_callable(3) == 1 + 2 + 3
 
 
 @pytest.mark.parametrize(
-    "captured_callable", [positional_or_keyword_function, keyword_only_function, var_keyword_function], indirect=True
+    "captured_callable",
+    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
+    indirect=True,
 )
 class TestDunderMethods:
     def test_getitem_known_args(self, captured_callable):
@@ -80,18 +93,33 @@ class TestDunderMethods:
 
 
 @pytest.mark.parametrize(
-    "captured_callable", [positional_or_keyword_function, keyword_only_function, var_keyword_function], indirect=True
+    "captured_callable",
+    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
+    indirect=True,
 )
 def test_call_positional_and_keyword_supplied(captured_callable):
-    with pytest.raises(ValueError, match="does not support calling with both positional and keyword arguments"):
+    with pytest.raises(
+        ValueError,
+        match="does not support calling with both positional and keyword arguments",
+    ):
         captured_callable(3, c=4)
 
 
 @pytest.mark.parametrize(
     "captured_callable, expectation",
     [
-        (positional_or_keyword_function, pytest.raises(TypeError, match="missing 1 required positional argument: 'c'")),
-        (keyword_only_function, pytest.raises(TypeError, match="missing 1 required keyword-only argument: 'c'")),
+        (
+            positional_or_keyword_function,
+            pytest.raises(
+                TypeError, match="missing 1 required positional argument: 'c'"
+            ),
+        ),
+        (
+            keyword_only_function,
+            pytest.raises(
+                TypeError, match="missing 1 required keyword-only argument: 'c'"
+            ),
+        ),
         (var_keyword_function, pytest.raises(KeyError, match="'c'")),
     ],
     indirect=["captured_callable"],
@@ -113,10 +141,22 @@ class TestCallMissingArgument:
     [
         (
             positional_or_keyword_function,
-            pytest.raises(TypeError, match="takes 1 positional arguments but 2 were given"),
+            pytest.raises(
+                TypeError, match="takes 1 positional arguments but 2 were given"
+            ),
         ),
-        (keyword_only_function, pytest.raises(TypeError, match="takes 0 positional arguments but 2 were given")),
-        (var_keyword_function, pytest.raises(TypeError, match="takes 0 positional arguments but 2 were given")),
+        (
+            keyword_only_function,
+            pytest.raises(
+                TypeError, match="takes 0 positional arguments but 2 were given"
+            ),
+        ),
+        (
+            var_keyword_function,
+            pytest.raises(
+                TypeError, match="takes 0 positional arguments but 2 were given"
+            ),
+        ),
     ],
     indirect=["captured_callable"],
 )
@@ -129,8 +169,14 @@ class TestCallPositionalArguments:
 @pytest.mark.parametrize(
     "captured_callable, expectation",
     [
-        (positional_or_keyword_function, pytest.raises(TypeError, match="got an unexpected keyword argument")),
-        (keyword_only_function, pytest.raises(TypeError, match="got an unexpected keyword argument")),
+        (
+            positional_or_keyword_function,
+            pytest.raises(TypeError, match="got an unexpected keyword argument"),
+        ),
+        (
+            keyword_only_function,
+            pytest.raises(TypeError, match="got an unexpected keyword argument"),
+        ),
         (var_keyword_function, pytest.raises(KeyError, match="'c'")),
     ],
     indirect=["captured_callable"],
@@ -161,8 +207,12 @@ def invalid_decorated_graph_function():
 
 class ModelWithAction(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "action", "import_path": __name__})
-    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+    function: SkipJsonSchema[CapturedCallable] = Field(
+        json_schema_extra={"mode": "action", "import_path": __name__}
+    )
+    _validate_figure = field_validator("function", mode="before")(
+        validate_captured_callable
+    )
 
 
 class ModelWithActionDifferentImportPath(VizroBaseModel):
@@ -170,19 +220,29 @@ class ModelWithActionDifferentImportPath(VizroBaseModel):
     function: SkipJsonSchema[CapturedCallable] = Field(
         json_schema_extra={"mode": "action", "import_path": "different_import_path"}
     )
-    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("function", mode="before")(
+        validate_captured_callable
+    )
 
 
 class ModelWithGraph(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "graph", "import_path": __name__})
-    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+    function: SkipJsonSchema[CapturedCallable] = Field(
+        json_schema_extra={"mode": "graph", "import_path": __name__}
+    )
+    _validate_figure = field_validator("function", mode="before")(
+        validate_captured_callable
+    )
 
 
 class ModelWithInvalidModule(VizroBaseModel):
     # The import_path doesn't exist. This lets us also simulate importing the function from a different module.
-    function: CapturedCallable = Field(json_schema_extra={"mode": "graph", "import_path": "invalid.module"})
-    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+    function: CapturedCallable = Field(
+        json_schema_extra={"mode": "graph", "import_path": "invalid.module"}
+    )
+    _validate_figure = field_validator("function", mode="before")(
+        validate_captured_callable
+    )
 
 
 class TestModelFieldPython:
@@ -191,7 +251,9 @@ class TestModelFieldPython:
         assert model.function(c=3, d=4) == 1 + 2 + 3 + 4
 
     def test_decorated_graph_function(self):
-        model = ModelWithGraph(function=decorated_graph_function(data_frame=pd.DataFrame()))
+        model = ModelWithGraph(
+            function=decorated_graph_function(data_frame=pd.DataFrame())
+        )
         assert model.function() == go.Figure()
 
     def test_undecorated_function(self):
@@ -217,11 +279,17 @@ class TestModelFieldPython:
 
 class TestCapture:
     def test_decorated_graph_function_missing_data_frame(self):
-        with pytest.raises(ValueError, match="decorated_graph_function must supply a value to data_frame argument"):
+        with pytest.raises(
+            ValueError,
+            match="decorated_graph_function must supply a value to data_frame argument",
+        ):
             decorated_graph_function()
 
     def test_invalid_decorated_graph_function(self):
-        with pytest.raises(ValueError, match="invalid_decorated_graph_function must have data_frame argument"):
+        with pytest.raises(
+            ValueError,
+            match="invalid_decorated_graph_function must have data_frame argument",
+        ):
             invalid_decorated_graph_function()
 
 
@@ -245,18 +313,29 @@ class TestModelFieldJSONConfig:
         assert model.function() == 1 + 2 + 3 + 4
 
     def test_different_import_path(self):
-        config = {"_target_": f"{__name__}.decorated_action_function", "a": 1, "b": 2, "c": 3}
+        config = {
+            "_target_": f"{__name__}.decorated_action_function",
+            "a": 1,
+            "b": 2,
+            "c": 3,
+        }
         model = ModelWithActionDifferentImportPath(function=config)
         assert isinstance(model.function, CapturedCallable)
         assert model.function() == 1 + 2 + 3 + 4
 
     def test_decorated_graph_function(self):
-        config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
+        config = {
+            "_target_": "decorated_graph_function",
+            "data_frame": "data_source_name",
+        }
         model = ModelWithGraph(function=config)
         assert model.function() == go.Figure()
 
     def test_decorated_graph_function_different_import_path(self):
-        config = {"_target_": f"{__name__}.decorated_graph_function", "data_frame": "data_source_name"}
+        config = {
+            "_target_": f"{__name__}.decorated_graph_function",
+            "data_frame": "data_source_name",
+        }
         model = ModelWithInvalidModule(function=config)
         assert model.function() == go.Figure()
 
@@ -268,7 +347,8 @@ class TestModelFieldJSONConfig:
     def test_invalid_import(self):
         config = {"_target_": "invalid_function"}
         with pytest.raises(
-            ValidationError, match="Failed to import function 'invalid_function' from any of the attempted paths"
+            ValidationError,
+            match="Failed to import function 'invalid_function' from any of the attempted paths",
         ):
             ModelWithGraph(function=config)
 
@@ -300,17 +380,27 @@ class TestModelFieldJSONConfig:
             ModelWithGraph(function=config)
 
     def test_invalid_import_path(self):
-        config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
+        config = {
+            "_target_": "decorated_graph_function",
+            "data_frame": "data_source_name",
+        }
 
         with pytest.raises(
-            ValueError, match="Failed to import function 'decorated_graph_function' from any of the attempted paths"
+            ValueError,
+            match="Failed to import function 'decorated_graph_function' from any of the attempted paths",
         ):
             ModelWithInvalidModule(function=config)
 
     def test_captured_callable_without_import_possible(self):
-        config = {"function": {"_target_": "not_importable_function", "data_frame": "data_source_name"}}
+        config = {
+            "function": {
+                "_target_": "not_importable_function",
+                "data_frame": "data_source_name",
+            }
+        }
         model = ModelWithGraph.model_validate(
-            config, context={"allow_undefined_captured_callable": ["not_importable_function"]}
+            config,
+            context={"allow_undefined_captured_callable": ["not_importable_function"]},
         )
         assert isinstance(model.function, CapturedCallable)
         assert isinstance(model.function._function, str)
@@ -321,10 +411,26 @@ class TestCapturedCallableRepr:
     @pytest.mark.parametrize(
         "function_input, repr_method, expected_output",
         [
-            (decorated_action_function, "__repr__", f"{__name__}.decorated_action_function(a=1, b=2, c=3)"),
-            (decorated_action_function, "__repr_clean__", "decorated_action_function(a=1, b=2, c=3)"),
-            ("not_importable_function", "__repr__", "not_importable_function(1, 2, c=3)"),
-            ("not_importable_function", "__repr_clean__", "not_importable_function(1, 2, c=3)"),
+            (
+                decorated_action_function,
+                "__repr__",
+                f"{__name__}.decorated_action_function(a=1, b=2, c=3)",
+            ),
+            (
+                decorated_action_function,
+                "__repr_clean__",
+                "decorated_action_function(a=1, b=2, c=3)",
+            ),
+            (
+                "not_importable_function",
+                "__repr__",
+                "not_importable_function(1, 2, c=3)",
+            ),
+            (
+                "not_importable_function",
+                "__repr_clean__",
+                "not_importable_function(1, 2, c=3)",
+            ),
         ],
     )
     def test_repr_methods(self, function_input, repr_method, expected_output):
@@ -376,14 +482,20 @@ def set_pio_default_template(request):
     ],
     indirect=["set_pio_default_template"],
 )
-def test_graph_templates(set_pio_default_template, template_argument, expected_template):
-    graph = decorated_graph_function_with_template(pd.DataFrame(), template=template_argument)
+def test_graph_templates(
+    set_pio_default_template, template_argument, expected_template
+):
+    graph = decorated_graph_function_with_template(
+        pd.DataFrame(), template=template_argument
+    )
     assert graph.layout.template == pio.templates[expected_template]
     # The default template should be unchanged after running the captured function.
     assert pio.templates.default == set_pio_default_template
 
 
-@pytest.mark.parametrize("set_pio_default_template", ["plotly", "vizro_dark", "vizro_light"], indirect=True)
+@pytest.mark.parametrize(
+    "set_pio_default_template", ["plotly", "vizro_dark", "vizro_light"], indirect=True
+)
 def test_graph_template_crash(set_pio_default_template):
     with pytest.raises(RuntimeError, match="Crash"):
         decorated_graph_function_crash(pd.DataFrame())
@@ -407,7 +519,10 @@ class TestCoerceToList:
             # Dicts should be preserved
             ({}, {}),
             ({"key": "value"}, {"key": "value"}),
-            ({"key1": "value1", "key2": "value2"}, {"key1": "value1", "key2": "value2"}),
+            (
+                {"key1": "value1", "key2": "value2"},
+                {"key1": "value1", "key2": "value2"},
+            ),
         ],
     )
     def test_coerce_to_list(self, input_value, expected_output):
@@ -420,8 +535,8 @@ class TestCoerceActionsAndOutputsType:
     @pytest.mark.parametrize(
         "actions_input",
         [
-            Action(function=export_data()),  # Single action
-            [Action(function=export_data())],  # List of actions
+            export_data(),  # Single action
+            [export_data()],  # List of actions
         ],
     )
     def test_coerce_actions_type(self, actions_input):
@@ -445,7 +560,10 @@ class TestCoerceActionsAndOutputsType:
             (["output1", "output2"], ["output1", "output2"]),
             ({}, {}),
             ({"key1": "output1"}, {"key1": "output1"}),
-            ({"key1": "output1", "key2": "output2"}, {"key1": "output1", "key2": "output2"}),
+            (
+                {"key1": "output1", "key2": "output2"},
+                {"key1": "output1", "key2": "output2"},
+            ),
         ],
     )
     def test_coerce_outputs_type(self, output, expected_output):
@@ -463,5 +581,7 @@ class TestCoerceActionsAndOutputsType:
     )
     def test_coerce_outputs_type_integration(self, outputs_input, expected_output):
         """Test that single output strings work with Action model."""
-        action = Action(function=decorated_action_function(a=1, b=2), outputs=outputs_input)
+        action = Action(
+            function=decorated_action_function(a=1, b=2), outputs=outputs_input
+        )
         assert action.outputs == expected_output

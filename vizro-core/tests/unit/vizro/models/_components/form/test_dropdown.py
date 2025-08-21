@@ -66,8 +66,14 @@ class TestDropdownInstantiation:
                 [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}],
             ),
             (
-                [{"label": "New York", "value": "NYC"}, {"label": "Berlin", "value": "BER"}],
-                [{"label": "New York", "value": "NYC"}, {"label": "Berlin", "value": "BER"}],
+                [
+                    {"label": "New York", "value": "NYC"},
+                    {"label": "Berlin", "value": "BER"},
+                ],
+                [
+                    {"label": "New York", "value": "NYC"},
+                    {"label": "Berlin", "value": "BER"},
+                ],
             ),
             (
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
@@ -86,14 +92,18 @@ class TestDropdownInstantiation:
         assert dropdown.title == ""
         assert dropdown.actions == []
 
-    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]])
+    @pytest.mark.parametrize(
+        "test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]]
+    )
     def test_create_dropdown_invalid_options_type(self, test_options):
         with pytest.raises(ValidationError, match="Input should be a valid"):
             Dropdown(options=test_options)
 
     def test_create_dropdown_invalid_options_dict(self):
         with pytest.raises(ValidationError, match="Field required"):
-            Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
+            Dropdown(
+                options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}]
+            )
 
     @pytest.mark.parametrize(
         "test_value, options, multi",
@@ -115,7 +125,11 @@ class TestDropdownInstantiation:
             ([1, 2], [1, 2, 3], True),
             ([1.0, 2.0], [1.0, 2.0, 3.0], True),
             ([False, True], [True, False], True),
-            (["A", "B"], [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], True),
+            (
+                ["A", "B"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}],
+                True,
+            ),
         ],
     )
     def test_create_dropdown_valid_value(self, test_value, options, multi):
@@ -140,16 +154,23 @@ class TestDropdownInstantiation:
         ],
     )
     def test_create_dropdown_invalid_value(self, test_value, options):
-        with pytest.raises(ValidationError, match="Please provide a valid value from `options`."):
+        with pytest.raises(
+            ValidationError, match="Please provide a valid value from `options`."
+        ):
             Dropdown(value=test_value, options=options)
 
     def test_create_dropdown_invalid_multi(self):
-        with pytest.raises(ValidationError, match="Please set multi=True if providing a list of default values."):
+        with pytest.raises(
+            ValidationError,
+            match="Please set multi=True if providing a list of default values.",
+        ):
             Dropdown(value=[1, 2], multi=False, options=[1, 2, 3, 4, 5])
 
     def test_dropdown_trigger(self, identity_action_function):
-        dropdown = Dropdown(id="dropdown-id", actions=[Action(function=identity_action_function())])
-        action = dropdown.actions[0]
+        dropdown = Dropdown(
+            id="dropdown-id", actions=[Action(function=identity_action_function())]
+        )
+        [action] = dropdown.actions
         assert action._trigger == "dropdown-id.value"
 
 
@@ -164,31 +185,53 @@ class TestDropdownBuild:
                 ["A", "B", "C"],
                 False,
                 ["A"],
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                [
+                    {"label": "A", "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
             ),
             (
                 ["A", "B", "C"],
                 ["A", "B", "C"],
                 True,
                 ["A", "B", "C"],
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                [
+                    {"label": "A", "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
             ),
             (
                 None,
                 ["A", "B", "C"],
                 True,
                 ["A", "B", "C"],
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                [
+                    {"label": "A", "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
             ),
         ],
     )
     def test_dropdown_with_all_option(
-        self, value, options, expected_select_all_value, expected_value, expected_options
+        self,
+        value,
+        options,
+        expected_select_all_value,
+        expected_value,
+        expected_options,
     ):
-        dropdown = Dropdown(value=value, options=options, title="Title", id="dropdown_id").build()
+        dropdown = Dropdown(
+            value=value, options=options, title="Title", id="dropdown_id"
+        ).build()
         expected_dropdown = html.Div(
             [
-                dbc.Label([html.Span("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
+                dbc.Label(
+                    [html.Span("Title", id="dropdown_id_title"), None],
+                    html_for="dropdown_id",
+                ),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[
@@ -220,13 +263,22 @@ class TestDropdownBuild:
         assert_component_equal(dropdown, expected_dropdown)
 
     def test_dropdown_without_all_option(self):
-        dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
+        dropdown = Dropdown(
+            id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title"
+        ).build()
         expected_dropdown = html.Div(
             [
-                dbc.Label([html.Span("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
+                dbc.Label(
+                    [html.Span("Title", id="dropdown_id_title"), None],
+                    html_for="dropdown_id",
+                ),
                 dcc.Dropdown(
                     id="dropdown_id",
-                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                    options=[
+                        {"label": "A", "value": "A"},
+                        {"label": "B", "value": "B"},
+                        {"label": "C", "value": "C"},
+                    ],
                     optionHeight=32,
                     value="A",
                     multi=False,
@@ -250,14 +302,44 @@ class TestDropdownBuild:
             (["A" * 25, "B", "C"], 56),
             (["A" * 48, "B", "C"], 56),
             (["A" * 49, "B", "C"], 80),
-            ([{"label": "A" * 24, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 32),
-            ([{"label": "A" * 25, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
-            ([{"label": "A" * 48, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
-            ([{"label": "A" * 49, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
+            (
+                [
+                    {"label": "A" * 24, "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
+                32,
+            ),
+            (
+                [
+                    {"label": "A" * 25, "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
+                56,
+            ),
+            (
+                [
+                    {"label": "A" * 48, "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
+                56,
+            ),
+            (
+                [
+                    {"label": "A" * 49, "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
+                80,
+            ),
         ],
     )
     def test_dropdown_option_height(self, options, option_height):
-        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
+        dict_options, default_value = get_dict_options_and_default(
+            options=options, multi=False
+        )
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
 
         expected_dropdown = html.Div(
@@ -290,14 +372,44 @@ class TestDropdownBuild:
             (["A" * 31, "B", "C"], 80),
             (["A" * 60, "B", "C"], 104),
             (["A" * 61, "B", "C"], 128),
-            ([{"label": "A" * 30, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
-            ([{"label": "A" * 31, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
-            ([{"label": "A" * 60, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 104),
-            ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 128),
+            (
+                [
+                    {"label": "A" * 30, "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
+                56,
+            ),
+            (
+                [
+                    {"label": "A" * 31, "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
+                80,
+            ),
+            (
+                [
+                    {"label": "A" * 60, "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
+                104,
+            ),
+            (
+                [
+                    {"label": "A" * 61, "value": "A"},
+                    {"label": "B", "value": "B"},
+                    {"label": "C", "value": "C"},
+                ],
+                128,
+            ),
         ],
     )
     def test_dropdown_in_container_option_height(self, options, option_height):
-        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
+        dict_options, default_value = get_dict_options_and_default(
+            options=options, multi=False
+        )
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options)
         dropdown._in_container = True
         dropdown = dropdown.build()
@@ -337,7 +449,10 @@ class TestDropdownBuild:
         ).build()
         expected_dropdown = html.Div(
             [
-                dbc.Label([html.Span("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
+                dbc.Label(
+                    [html.Span("Title", id="dropdown_id_title"), None],
+                    html_for="dropdown_id",
+                ),
                 dcc.Dropdown(
                     id="overridden_id",
                     options=[
@@ -369,9 +484,15 @@ class TestDropdownBuild:
         ).build()
 
         expected_description = [
-            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            html.Span(
+                "info",
+                id="info-icon",
+                className="material-symbols-outlined tooltip-icon",
+            ),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                children=dcc.Markdown(
+                    "Test description", id="info-text", className="card-text"
+                ),
                 id="info",
                 target="info-icon",
                 autohide=False,

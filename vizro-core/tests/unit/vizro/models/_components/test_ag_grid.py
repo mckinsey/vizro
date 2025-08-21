@@ -26,7 +26,10 @@ def dash_ag_grid_with_id():
 
 @pytest.fixture
 def dash_ag_grid_with_arguments():
-    return dash_ag_grid(data_frame=px.data.gapminder(), defaultColDef={"resizable": False, "sortable": False})
+    return dash_ag_grid(
+        data_frame=px.data.gapminder(),
+        defaultColDef={"resizable": False, "sortable": False},
+    )
 
 
 @pytest.fixture
@@ -51,12 +54,14 @@ class TestAgGridInstantiation:
             "__default__": f"{ag_grid.id}.children",
             "figure": f"{ag_grid.id}.children",
             **{
-                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}"
+                for ag_grid_prop in DAG_AG_GRID_PROPERTIES
             },
         }
         assert ag_grid._action_inputs == {
             **{
-                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}"
+                for ag_grid_prop in DAG_AG_GRID_PROPERTIES
             },
         }
 
@@ -86,10 +91,16 @@ class TestAgGridInstantiation:
             "header": "ag-grid-id_header.children",
             "footer": "ag-grid-id_footer.children",
             "description": f"{ag_grid.description.id}-text.children",
-            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+            **{
+                ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}"
+                for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+            },
         }
         assert ag_grid._action_inputs == {
-            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+            **{
+                ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}"
+                for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+            },
         }
 
     def test_ag_grid_filter_interaction_attributes(self, ag_grid_with_id):
@@ -133,8 +144,11 @@ class TestAgGridInstantiation:
         assert my_ag_grid.actions == []
 
     def test_ag_grid_trigger(self, ag_grid_with_id, identity_action_function):
-        ag_grid = vm.AgGrid(figure=ag_grid_with_id, actions=[Action(function=identity_action_function())])
-        action = ag_grid.actions[0]
+        ag_grid = vm.AgGrid(
+            figure=ag_grid_with_id,
+            actions=[Action(function=identity_action_function())],
+        )
+        [action] = ag_grid.actions
         assert action._trigger == "underlying_ag_grid_id.cellClicked"
 
 
@@ -197,7 +211,9 @@ class TestDunderMethodsAgGrid:
 
 
 class TestProcessAgGridDataFrame:
-    def test_process_figure_data_frame_str_df(self, dash_ag_grid_with_str_dataframe, gapminder):
+    def test_process_figure_data_frame_str_df(
+        self, dash_ag_grid_with_str_dataframe, gapminder
+    ):
         data_manager["gapminder"] = gapminder
         ag_grid = vm.AgGrid(id="ag_grid", figure=dash_ag_grid_with_str_dataframe)
         assert data_manager[ag_grid["data_frame"]].load().equals(gapminder)
@@ -225,8 +241,18 @@ class TestPreBuildAgGrid:
                 vm.Page(
                     title="Test Page",
                     components=[
-                        vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
-                        vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
+                        vm.AgGrid(
+                            figure=dash_ag_grid(
+                                id="duplicate_ag_grid_id",
+                                data_frame=px.data.gapminder(),
+                            )
+                        ),
+                        vm.AgGrid(
+                            figure=dash_ag_grid(
+                                id="duplicate_ag_grid_id",
+                                data_frame=px.data.gapminder(),
+                            )
+                        ),
                     ],
                 )
             ]
@@ -243,7 +269,12 @@ class TestPreBuildAgGrid:
                 vm.Page(
                     title="Test Page",
                     components=[
-                        vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
+                        vm.AgGrid(
+                            figure=dash_ag_grid(
+                                id="duplicate_ag_grid_id",
+                                data_frame=px.data.gapminder(),
+                            )
+                        ),
                         vm.Button(id="duplicate_ag_grid_id"),
                     ],
                 )
@@ -288,7 +319,9 @@ class TestBuildAgGrid:
             ("standard_ag_grid", "__input_text_ag_grid"),
         ],
     )
-    def test_ag_grid_build_with_and_without_underlying_id(self, ag_grid, underlying_id_expected, request):
+    def test_ag_grid_build_with_and_without_underlying_id(
+        self, ag_grid, underlying_id_expected, request
+    ):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=request.getfixturevalue(ag_grid))
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
@@ -316,7 +349,10 @@ class TestBuildAgGrid:
 
     def test_aggrid_build_title_header_footer(self, standard_ag_grid):
         ag_grid = vm.AgGrid(
-            figure=standard_ag_grid, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+            figure=standard_ag_grid,
+            title="Title",
+            header="""#### Subtitle""",
+            footer="""SOURCE: **DATA**""",
         )
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
@@ -351,7 +387,11 @@ class TestBuildAgGrid:
         ag_grid = ag_grid.build()
 
         expected_description = [
-            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            html.Span(
+                "info",
+                id="info-icon",
+                className="material-symbols-outlined tooltip-icon",
+            ),
             dbc.Tooltip(
                 children=dcc.Markdown("Tooltip test", className="card-text"),
                 id="info",
@@ -362,7 +402,10 @@ class TestBuildAgGrid:
         expected_ag_grid = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3([html.Span("Title"), *expected_description], className="figure-title"),
+                    html.H3(
+                        [html.Span("Title"), *expected_description],
+                        className="figure-title",
+                    ),
                     None,
                     html.Div(
                         children=html.Div(),

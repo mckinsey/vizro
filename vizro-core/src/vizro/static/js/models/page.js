@@ -27,7 +27,7 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
     if (applyOnKeys.includes(key)) {
       const json = JSON.stringify(value);
       const encoded = btoa(
-        String.fromCharCode(...new TextEncoder().encode(json)),
+        String.fromCharCode(...new TextEncoder().encode(json))
       )
         .replace(/\+/g, "-")
         .replace(/\//g, "_")
@@ -70,7 +70,7 @@ function decodeUrlParams(encodedMap, applyOnKeys) {
         let base64 = val.slice(4).replace(/-/g, "+").replace(/_/g, "/");
         base64 += "=".repeat((4 - (base64.length % 4)) % 4);
         const binary = atob(base64);
-        const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+        const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
         const json = new TextDecoder().decode(bytes);
         decodedMap.set(key, JSON.parse(json));
       } catch (e) {
@@ -91,6 +91,14 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
   // Split selector values , control IDs and selector IDs that are in format:
   // [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
 
+  if (values_ids.length % 3 !== 0) {
+    throw new Error(
+      `Invalid number of input parameters: received ${values_ids.length}.
+Expected format: [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
+Received input: ${JSON.stringify(values_ids)}`
+    );
+  }
+
   const numberOfInputs = values_ids.length / 3;
 
   // Extract each segment
@@ -100,12 +108,12 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
 
   // Prepare output selector values, initially set to no_update.
   const outputSelectorValues = new Array(numberOfInputs).fill(
-    dash_clientside.no_update,
+    dash_clientside.no_update
   );
 
   // Map<controlId, selectorValue>
   const controlMap = new Map(
-    controlIds.map((id, i) => [id, selectorValues[i]]),
+    controlIds.map((id, i) => [id, selectorValues[i]])
   );
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -125,7 +133,7 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
     // Decoded URL parameters in format: Map<controlId, controlSelectorValue>
     const decodedParamMap = decodeUrlParams(
       urlParams,
-      controlIds, // Apply decoding only to control IDs
+      controlIds // Apply decoding only to control IDs
     );
 
     // Values from the URL take precedence if page is just opened.
@@ -143,7 +151,7 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
 
   // Encode controlMap to URL parameters.
   encodeUrlParams(controlMap, controlIds).forEach((value, id) =>
-    urlParams.set(id, value),
+    urlParams.set(id, value)
   );
 
   // Directly `replace` the URL instead of using a dcc.Location as a callback Output. Do it because the dcc.Location
@@ -152,7 +160,7 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
   history.replaceState(
     null,
     "",
-    `${window.location.pathname}?${urlParams.toString()}`,
+    `${window.location.pathname}?${urlParams.toString()}`
   );
 
   // After this clientside callback, the "guard_action_chain" callback may run.

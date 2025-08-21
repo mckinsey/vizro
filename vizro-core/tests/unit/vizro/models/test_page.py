@@ -13,7 +13,9 @@ class TestPageInstantiation:
 
     def test_create_page_mandatory_only(self):
         page = vm.Page(title="Page 1", components=[vm.Button(), vm.Button()])
-        assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
+        assert isinstance(page.components[0], vm.Button) and isinstance(
+            page.components[1], vm.Button
+        )
         assert page.layout.grid == [[0], [1]]
         assert page.controls == []
         assert page.title == "Page 1"
@@ -33,7 +35,9 @@ class TestPageInstantiation:
             path="my-path",
             description="Test",
         )
-        assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
+        assert isinstance(page.components[0], vm.Button) and isinstance(
+            page.components[1], vm.Button
+        )
         assert isinstance(page.description, vm.Tooltip)
         assert page.id == "my-id"
         assert page.layout.grid == [[0, 1]]
@@ -47,7 +51,9 @@ class TestPageInstantiation:
         }
 
     def test_create_page_mandatory_and_optional_legacy_layout(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(
+            FutureWarning, match="The `Layout` model has been renamed `Grid`"
+        ):
             page = vm.Page(
                 id="my-id",
                 title="Page 1",
@@ -55,7 +61,9 @@ class TestPageInstantiation:
                 layout=vm.Layout(grid=[[0, 1]]),
                 path="my-path",
             )
-        assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
+        assert isinstance(page.components[0], vm.Button) and isinstance(
+            page.components[1], vm.Button
+        )
         assert page.id == "my-id"
         assert page.layout.grid == [[0, 1]]
         assert page.controls == []
@@ -100,7 +108,13 @@ class TestPageInstantiation:
         assert page.path == expected
 
     @pytest.mark.parametrize(
-        "test_path", ["this needs? fixing*", " this needs fixing", "THIS NEEDS FIXING", "this-needs!@#$%^&*()+=-fixing"]
+        "test_path",
+        [
+            "this needs? fixing*",
+            " this needs fixing",
+            "THIS NEEDS FIXING",
+            "this-needs!@#$%^&*()+=-fixing",
+        ],
     )
     def test_set_path_invalid(self, test_path):
         page = vm.Page(title="Page 1", components=[vm.Button()], path=test_path)
@@ -108,16 +122,24 @@ class TestPageInstantiation:
 
     def test_check_for_valid_control_types(self):
         with pytest.raises(
-            ValidationError, match=re.escape("'type' does not match any of the expected tags: 'filter', 'parameter'")
+            ValidationError,
+            match=re.escape(
+                "'type' does not match any of the expected tags: 'filter', 'parameter'"
+            ),
         ):
-            vm.Page(title="Page Title", components=[vm.Button()], controls=[vm.Button()])
+            vm.Page(
+                title="Page Title", components=[vm.Button()], controls=[vm.Button()]
+            )
 
 
 class TestPagePreBuildMethod:
     def test_page_default_action(self, standard_px_chart):
-        page = vm.Page(title="Page 1", components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)])
+        page = vm.Page(
+            title="Page 1",
+            components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)],
+        )
         page.pre_build()
-        default_action = page.actions[0]
+        [default_action] = page.actions
 
         assert isinstance(default_action, _on_page_load)
         assert default_action.id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_Page 1"

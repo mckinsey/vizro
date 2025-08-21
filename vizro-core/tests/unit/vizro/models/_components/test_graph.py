@@ -124,12 +124,21 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize(
         "title, margin_t",
-        [(None, None), ("Graph with title", 64), ("Graph with title..<br> and subtitle", 64)],
+        [
+            (None, None),
+            ("Graph with title", 64),
+            ("Graph with title..<br> and subtitle", 64),
+        ],
     )
     def test_title_layout_adjustments(self, gapminder, title, margin_t, mocker):
         # Mock out `set_props` so we don't need to supply mock callback context for this test.
-        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
-        graph = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
+        mocker.patch(
+            "vizro.models._components.graph.set_props",
+            side_effect=MissingCallbackContextException,
+        )
+        graph = vm.Graph(
+            figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)
+        ).__call__()
 
         # These are the overwrites in graph._optimise_fig_layout_for_dashboard
         assert graph.layout.margin.t == margin_t
@@ -143,13 +152,20 @@ class TestDunderMethodsGraph:
 
     def test_update_theme_outside_callback(self, standard_px_chart, mocker):
         # Mock out set_props so we don't need to supply mock callback context for this test.
-        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+        mocker.patch(
+            "vizro.models._components.graph.set_props",
+            side_effect=MissingCallbackContextException,
+        )
         graph = vm.Graph(figure=standard_px_chart).__call__()
         assert graph == standard_px_chart
 
     def test_graph_trigger(self, standard_px_chart, identity_action_function):
-        graph = vm.Graph(id="graph-id", figure=standard_px_chart, actions=[Action(function=identity_action_function())])
-        action = graph.actions[0]
+        graph = vm.Graph(
+            id="graph-id",
+            figure=standard_px_chart,
+            actions=[Action(function=identity_action_function())],
+        )
+        [action] = graph.actions
         assert action._trigger == "graph-id.clickData"
 
 
@@ -162,7 +178,9 @@ class TestAttributesGraph:
 
 
 class TestProcessGraphDataFrame:
-    def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):
+    def test_process_figure_data_frame_str_df(
+        self, standard_px_chart_with_str_dataframe, gapminder
+    ):
         data_manager["gapminder"] = gapminder
         graph = vm.Graph(id="graph", figure=standard_px_chart_with_str_dataframe)
         assert data_manager[graph["data_frame"]].load().equals(gapminder)
@@ -221,7 +239,10 @@ class TestBuildGraph:
 
     def test_graph_build_title_header_footer(self, standard_px_chart):
         graph = vm.Graph(
-            figure=standard_px_chart, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+            figure=standard_px_chart,
+            title="Title",
+            header="""#### Subtitle""",
+            footer="""SOURCE: **DATA**""",
         ).build()
 
         expected_graph = dcc.Loading(
@@ -263,7 +284,11 @@ class TestBuildGraph:
         ).build()
 
         expected_description = [
-            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            html.Span(
+                "info",
+                id="info-icon",
+                className="material-symbols-outlined tooltip-icon",
+            ),
             dbc.Tooltip(
                 children=dcc.Markdown("Tooltip test", className="card-text"),
                 id="info",
@@ -275,7 +300,10 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
-                    html.H3([html.Span("Title"), *expected_description], className="figure-title"),
+                    html.H3(
+                        [html.Span("Title"), *expected_description],
+                        className="figure-title",
+                    ),
                     None,
                     dcc.Graph(
                         figure=go.Figure(
