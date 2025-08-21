@@ -48,10 +48,10 @@ class TestButtonInstantiation:
             "description": f"{button.description.id}-text.children",
         }
 
-    def test_set_action_via_validator(self):
-        button = vm.Button(actions=[vm.Action(function=export_data())])
-        actions_chain = button.actions[0]
-        assert actions_chain.trigger.component_property == "n_clicks"
+    def test_button_trigger(self):
+        button = vm.Button(id="button-id", actions=[vm.Action(function=export_data())])
+        [action] = button.actions
+        assert action._trigger == "button-id.n_clicks"
 
     def test_invalid_variant(self):
         with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
