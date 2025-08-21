@@ -59,9 +59,7 @@ class TestSwitchInstantiation:
         assert isinstance(switch.value, bool)
 
     def test_switch_trigger(self, identity_action_function):
-        switch = vm.Switch(
-            id="switch-id", actions=[vm.Action(function=identity_action_function())]
-        )
+        switch = vm.Switch(id="switch-id", actions=[vm.Action(function=identity_action_function())])
         [action] = switch.actions
         assert action._trigger == "switch-id.value"
 
@@ -95,9 +93,7 @@ class TestSwitchBuild:
                 className="material-symbols-outlined tooltip-icon",
             ),
             dbc.Tooltip(
-                children=dcc.Markdown(
-                    "Test description", id="info-text", className="card-text"
-                ),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

@@ -21,9 +21,7 @@ from vizro.models.types import (
     SingleValueType,
 )
 
-ValidatedNoneValueType = Union[
-    SingleValueType, MultiValueType, None, list[None], list[SingleValueType]
-]
+ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
 
 # TODO-AV2 A 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here
@@ -44,9 +42,7 @@ class CallbackTriggerDict(TypedDict):
     """
 
     id: ModelID
-    property: Literal[
-        "clickData", "value", "n_clicks", "active_cell", "derived_viewport_data"
-    ]
+    property: Literal["clickData", "value", "n_clicks", "active_cell", "derived_viewport_data"]
     value: Optional[Any]
     str_id: str
     triggered: bool
@@ -69,9 +65,7 @@ def _apply_filter_controls(
 
     for ctd in ctds_filter:
         selector_value = ctd["value"]
-        selector_value = (
-            selector_value if isinstance(selector_value, list) else [selector_value]
-        )
+        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
         selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
 
         for action in selector_actions:
@@ -89,10 +83,7 @@ def _apply_filter_controls(
 def _get_triggered_model(input_component_id: str) -> FigureType:
     # Goes directly from input_component_id to the model (like AgGrid).
     for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS)):
-        if (
-            hasattr(model, "_inner_component_id")
-            and model._inner_component_id == input_component_id
-        ):
+        if hasattr(model, "_inner_component_id") and model._inner_component_id == input_component_id:
             return model
     raise KeyError(f"No triggered Vizro model found for {input_component_id=}.")
 
@@ -120,9 +111,7 @@ def _apply_filter_interaction(
     # rewriting now.
     for ctd_filter_interaction in ctds_filter_interaction:
         triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
-        data_frame = cast(
-            FigureWithFilterInteractionType, triggered_model
-        )._filter_interaction(
+        data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
             data_frame=data_frame,
             target=target,
             ctd_filter_interaction=ctd_filter_interaction,
@@ -141,9 +130,7 @@ def _validate_selector_value_none(
     return value
 
 
-def _get_target_dot_separated_strings(
-    dot_separated_strings: list[str], target: ModelID, data_frame: bool
-) -> list[str]:
+def _get_target_dot_separated_strings(dot_separated_strings: list[str], target: ModelID, data_frame: bool) -> list[str]:
     """Filters list of dot separated strings to get just those relevant for a single target.
 
     Args:
@@ -159,9 +146,7 @@ def _get_target_dot_separated_strings(
 
     for dot_separated_string_with_target in dot_separated_strings:
         if dot_separated_string_with_target.startswith(f"{target}."):
-            dot_separated_string = dot_separated_string_with_target.removeprefix(
-                f"{target}."
-            )
+            dot_separated_string = dot_separated_string_with_target.removeprefix(f"{target}.")
             # We only want data_frame parameters when data_frame = True.
             if dot_separated_string.startswith("data_frame.") == data_frame:
                 result.append(dot_separated_string)
@@ -221,9 +206,7 @@ def _get_parametrized_config(
             if not isinstance(action, _parameter):
                 continue
 
-            for dot_separated_string in _get_target_dot_separated_strings(
-                action.targets, target, data_frame
-            ):
+            for dot_separated_string in _get_target_dot_separated_strings(action.targets, target, data_frame):
                 config = _update_nested_figure_properties(
                     figure_config=config,
                     dot_separated_string=dot_separated_string,
@@ -243,9 +226,7 @@ def _apply_filters(
     # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
     # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
     # operation (compared to data loading).
-    filtered_data = _apply_filter_controls(
-        data_frame=data, ctds_filter=ctds_filter, target=target
-    )
+    filtered_data = _apply_filter_controls(data_frame=data, ctds_filter=ctds_filter, target=target)
     filtered_data = _apply_filter_interaction(
         data_frame=filtered_data,
         ctds_filter_interaction=ctds_filter_interaction,
@@ -268,13 +249,9 @@ def _get_unfiltered_data(
             ctds_parameter=ctds_parameter, target=target, data_frame=True
         )
         data_source_name = cast(FigureType, model_manager[target])["data_frame"]
-        multi_data_source_name_load_kwargs.append(
-            (data_source_name, dynamic_data_load_params["data_frame"])
-        )
+        multi_data_source_name_load_kwargs.append((data_source_name, dynamic_data_load_params["data_frame"]))
 
-    return dict(
-        zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs))
-    )
+    return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
 
 # TODO-AV2 A 2: rename this, make sure it could become public in future but don't make public yet. Probably take in
@@ -298,39 +275,27 @@ def _get_modified_page_figures(
         else:
             figure_targets.append(target)
 
-    target_to_data_frame = _get_unfiltered_data(
-        ctds_parameter=ctds_parameter, targets=figure_targets
-    )
+    target_to_data_frame = _get_unfiltered_data(ctds_parameter=ctds_parameter, targets=figure_targets)
 
     # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
     for target, unfiltered_data in target_to_data_frame.items():
-        filtered_data = _apply_filters(
-            unfiltered_data, ctds_filter, ctds_filter_interaction, target
-        )
+        filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
         outputs[target] = cast(FigureType, model_manager[target])(
             data_frame=filtered_data,
-            **_get_parametrized_config(
-                ctds_parameter=ctds_parameter, target=target, data_frame=False
-            ),
+            **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),
         )
 
     for target in control_targets:
         target_model = cast(Filter, model_manager[target])
-        ctd_filter = [
-            item
-            for item in ctds_filter
-            if item["id"] == cast(SelectorType, target_model.selector).id
-        ]
+        ctd_filter = [item for item in ctds_filter if item["id"] == cast(SelectorType, target_model.selector).id]
 
         # This only covers the case of cross-page actions when Filter in an output, but is not an input of the action.
         current_value = ctd_filter[0]["value"] if ctd_filter else None
 
         # target_to_data_frame contains all targets, including some which might not be relevant for the filter in
         # question. We filter to use just the relevant targets in Filter.__call__.
-        outputs[target] = target_model(
-            target_to_data_frame=target_to_data_frame, current_value=current_value
-        )
+        outputs[target] = target_model(target_to_data_frame=target_to_data_frame, current_value=current_value)
 
     return outputs

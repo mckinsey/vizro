@@ -19,9 +19,7 @@ from vizro.tables import dash_data_table
 
 @pytest.fixture
 def dash_table_with_arguments():
-    return dash_data_table(
-        data_frame=px.data.gapminder(), style_header={"border": "1px solid green"}
-    )
+    return dash_data_table(data_frame=px.data.gapminder(), style_header={"border": "1px solid green"})
 
 
 @pytest.fixture
@@ -149,9 +147,7 @@ class TestDunderMethodsTable:
 
 class TestProcessTableDataFrame:
     # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
-    def test_process_figure_data_frame_str_df(
-        self, dash_table_with_str_dataframe, gapminder
-    ):
+    def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         table = vm.Table(id="table", figure=dash_table_with_str_dataframe)
         assert data_manager[table["data_frame"]].load().equals(gapminder)
@@ -168,9 +164,7 @@ class TestPreBuildTable:
 
         assert table._inner_component_id == "__input_text_table"
 
-    def test_pre_build_underlying_table_id(
-        self, dash_data_table_with_id, filter_interaction_action
-    ):
+    def test_pre_build_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
 
@@ -182,16 +176,8 @@ class TestPreBuildTable:
                 vm.Page(
                     title="Test Page",
                     components=[
-                        vm.Table(
-                            figure=dash_data_table(
-                                id="duplicate_table_id", data_frame=px.data.gapminder()
-                            )
-                        ),
-                        vm.Table(
-                            figure=dash_data_table(
-                                id="duplicate_table_id", data_frame=px.data.gapminder()
-                            )
-                        ),
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
                     ],
                 )
             ]
@@ -208,11 +194,7 @@ class TestPreBuildTable:
                 vm.Page(
                     title="Test Page",
                     components=[
-                        vm.Table(
-                            figure=dash_data_table(
-                                id="duplicate_table_id", data_frame=px.data.gapminder()
-                            )
-                        ),
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
                         vm.Button(id="duplicate_table_id"),
                     ],
                 )
@@ -257,9 +239,7 @@ class TestBuildTable:
             ("standard_dash_table", "__input_text_table"),
         ],
     )
-    def test_table_build_with_and_without_underlying_id(
-        self, table, underlying_id_expected, request
-    ):
+    def test_table_build_with_and_without_underlying_id(self, table, underlying_id_expected, request):
         table = vm.Table(id="text_table", figure=request.getfixturevalue(table))
         table.pre_build()
         table = table.build()

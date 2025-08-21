@@ -105,13 +105,9 @@ def expected_slider_extra():
 @pytest.fixture()
 def expected_slider_with_description():
     expected_description = [
-        html.Span(
-            "info", id="info-icon", className="material-symbols-outlined tooltip-icon"
-        ),
+        html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
         dbc.Tooltip(
-            children=dcc.Markdown(
-                "Test description", id="info-text", className="card-text"
-            ),
+            children=dcc.Markdown("Test description", id="info-text", className="card-text"),
             id="info",
             target="info-icon",
             autohide=False,
@@ -239,9 +235,7 @@ class TestSliderInstantiation:
         ):
             vm.Slider(min=0, max=10, value=value)
 
-    @pytest.mark.parametrize(
-        "step, expected", [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)]
-    )
+    @pytest.mark.parametrize("step, expected", [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)])
     def test_validate_step_valid(self, step, expected):
         slider = vm.Slider(min=0, max=10, step=step)
 
@@ -306,9 +300,7 @@ class TestSliderInstantiation:
         ],
     )
     def test_set_step_and_marks(self, step, marks, expected_marks, expected_class):
-        slider = vm.Slider(
-            min=0, max=10, step=step, marks=marks, id="slider-id"
-        ).build()
+        slider = vm.Slider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
         assert slider["slider-id"].marks == expected_marks
         assert slider["slider-id"].className == expected_class
 
@@ -319,18 +311,14 @@ class TestSliderInstantiation:
         assert slider.title == str(title)
 
     def test_slider_trigger(self, identity_action_function):
-        slider = vm.Slider(
-            id="slider-id", actions=[vm.Action(function=identity_action_function())]
-        )
+        slider = vm.Slider(id="slider-id", actions=[vm.Action(function=identity_action_function())])
         [action] = slider.actions
         assert action._trigger == "slider-id.value"
 
 
 class TestBuildMethod:
     def test_slider_build(self, expected_slider):
-        slider = vm.Slider(
-            id="slider_id", min=0, max=10, step=1, value=5, title="Title"
-        ).build()
+        slider = vm.Slider(id="slider_id", min=0, max=10, step=1, value=5, title="Title").build()
 
         assert_component_equal(slider, expected_slider)
 

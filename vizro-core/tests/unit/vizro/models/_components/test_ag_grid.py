@@ -54,14 +54,12 @@ class TestAgGridInstantiation:
             "__default__": f"{ag_grid.id}.children",
             "figure": f"{ag_grid.id}.children",
             **{
-                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}"
-                for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
             },
         }
         assert ag_grid._action_inputs == {
             **{
-                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}"
-                for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
             },
         }
 
@@ -91,16 +89,10 @@ class TestAgGridInstantiation:
             "header": "ag-grid-id_header.children",
             "footer": "ag-grid-id_footer.children",
             "description": f"{ag_grid.description.id}-text.children",
-            **{
-                ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}"
-                for ag_grid_prop in DAG_AG_GRID_PROPERTIES
-            },
+            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
         assert ag_grid._action_inputs == {
-            **{
-                ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}"
-                for ag_grid_prop in DAG_AG_GRID_PROPERTIES
-            },
+            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
     def test_ag_grid_filter_interaction_attributes(self, ag_grid_with_id):
@@ -211,9 +203,7 @@ class TestDunderMethodsAgGrid:
 
 
 class TestProcessAgGridDataFrame:
-    def test_process_figure_data_frame_str_df(
-        self, dash_ag_grid_with_str_dataframe, gapminder
-    ):
+    def test_process_figure_data_frame_str_df(self, dash_ag_grid_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         ag_grid = vm.AgGrid(id="ag_grid", figure=dash_ag_grid_with_str_dataframe)
         assert data_manager[ag_grid["data_frame"]].load().equals(gapminder)
@@ -319,9 +309,7 @@ class TestBuildAgGrid:
             ("standard_ag_grid", "__input_text_ag_grid"),
         ],
     )
-    def test_ag_grid_build_with_and_without_underlying_id(
-        self, ag_grid, underlying_id_expected, request
-    ):
+    def test_ag_grid_build_with_and_without_underlying_id(self, ag_grid, underlying_id_expected, request):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=request.getfixturevalue(ag_grid))
         ag_grid.pre_build()
         ag_grid = ag_grid.build()

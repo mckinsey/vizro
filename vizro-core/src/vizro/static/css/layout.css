@@ -75,8 +75,8 @@
 }
 
 #header-controls {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 10px;
 }
 
@@ -97,6 +97,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

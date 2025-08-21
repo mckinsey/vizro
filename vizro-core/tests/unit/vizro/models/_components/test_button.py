@@ -60,15 +60,11 @@ class TestButtonInstantiation:
         assert action._trigger == "button-id.n_clicks"
 
     def test_invalid_variant(self):
-        with pytest.raises(
-            ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."
-        ):
+        with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
             vm.Button(variant="test")
 
     def test_invalid_text(self):
-        with pytest.raises(
-            ValidationError, match="String should have at least 1 character"
-        ):
+        with pytest.raises(ValidationError, match="String should have at least 1 character"):
             vm.Button(text="")
 
 
@@ -106,9 +102,7 @@ class TestBuildMethod:
         )
 
     def test_button_build_with_href(self):
-        button = vm.Button(
-            id="button_id", text="My text!", href="www.google.com"
-        ).build()
+        button = vm.Button(id="button_id", text="My text!", href="www.google.com").build()
         expected = dbc.Button(
             id="button_id",
             children=html.Span(["My text!", None], className="button-text"),
@@ -150,9 +144,7 @@ class TestBuildMethod:
                 className="material-symbols-outlined tooltip-icon",
             ),
             dbc.Tooltip(
-                children=dcc.Markdown(
-                    "Test description", id="info-text", className="card-text"
-                ),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

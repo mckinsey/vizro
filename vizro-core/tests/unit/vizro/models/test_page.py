@@ -13,9 +13,7 @@ class TestPageInstantiation:
 
     def test_create_page_mandatory_only(self):
         page = vm.Page(title="Page 1", components=[vm.Button(), vm.Button()])
-        assert isinstance(page.components[0], vm.Button) and isinstance(
-            page.components[1], vm.Button
-        )
+        assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
         assert page.layout.grid == [[0], [1]]
         assert page.controls == []
         assert page.title == "Page 1"
@@ -35,9 +33,7 @@ class TestPageInstantiation:
             path="my-path",
             description="Test",
         )
-        assert isinstance(page.components[0], vm.Button) and isinstance(
-            page.components[1], vm.Button
-        )
+        assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
         assert isinstance(page.description, vm.Tooltip)
         assert page.id == "my-id"
         assert page.layout.grid == [[0, 1]]
@@ -51,9 +47,7 @@ class TestPageInstantiation:
         }
 
     def test_create_page_mandatory_and_optional_legacy_layout(self):
-        with pytest.warns(
-            FutureWarning, match="The `Layout` model has been renamed `Grid`"
-        ):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
             page = vm.Page(
                 id="my-id",
                 title="Page 1",
@@ -61,9 +55,7 @@ class TestPageInstantiation:
                 layout=vm.Layout(grid=[[0, 1]]),
                 path="my-path",
             )
-        assert isinstance(page.components[0], vm.Button) and isinstance(
-            page.components[1], vm.Button
-        )
+        assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
         assert page.id == "my-id"
         assert page.layout.grid == [[0, 1]]
         assert page.controls == []
@@ -123,13 +115,9 @@ class TestPageInstantiation:
     def test_check_for_valid_control_types(self):
         with pytest.raises(
             ValidationError,
-            match=re.escape(
-                "'type' does not match any of the expected tags: 'filter', 'parameter'"
-            ),
+            match=re.escape("'type' does not match any of the expected tags: 'filter', 'parameter'"),
         ):
-            vm.Page(
-                title="Page Title", components=[vm.Button()], controls=[vm.Button()]
-            )
+            vm.Page(title="Page Title", components=[vm.Button()], controls=[vm.Button()])
 
 
 class TestPagePreBuildMethod:

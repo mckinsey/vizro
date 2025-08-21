@@ -15,9 +15,7 @@ from vizro.managers import data_manager
 from vizro.models.types import capture
 
 df_gapminder = px.data.gapminder().query("year == 2007")
-df_gapminder["date_column"] = pd.date_range(
-    start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D"
-)
+df_gapminder["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D")
 df_gapminder["number_column"] = range(len(df_gapminder))
 df_gapminder["is_europe"] = df_gapminder["continent"] == "Europe"
 
@@ -41,9 +39,7 @@ page_1 = vm.Page(
     components=[
         vm.Graph(
             id="page_1_graph",
-            figure=px.histogram(
-                df_gapminder, x="lifeExp", color="continent", barmode="group"
-            ),
+            figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group"),
         ),
     ],
     controls=[
@@ -60,9 +56,7 @@ page_2 = vm.Page(
     components=[
         vm.Graph(
             id="page_2_graph",
-            figure=px.scatter(
-                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"
-            ),
+            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
         ),
         vm.Button(
             id="page_2_button",
@@ -141,9 +135,7 @@ page_4 = vm.Page(
             id="page_4_filter",
             column="continent",
             targets=["page_4_grid"],
-            selector=vm.Dropdown(
-                title="Filter AgGrid - [1 guard]", id="page_4_filter_selector"
-            ),
+            selector=vm.Dropdown(title="Filter AgGrid - [1 guard]", id="page_4_filter_selector"),
         ),
     ],
 )
@@ -208,9 +200,7 @@ page_7 = vm.Page(
     components=[
         vm.Graph(
             id="page_7_graph",
-            figure=px.scatter(
-                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"
-            ),
+            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
         ),
     ],
     controls=[
@@ -241,9 +231,7 @@ page_8 = vm.Page(
     components=[
         vm.Graph(
             id="page_8_graph",
-            figure=px.scatter(
-                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"
-            ),
+            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
         ),
     ],
     controls=[
@@ -313,11 +301,7 @@ page_10 = vm.Page(
             id="page_10_grid",
             figure=dash_ag_grid(data_frame="dynamic_df_gapminder_arg"),
             actions=[
-                vm.Action(
-                    function=filter_interaction(
-                        id="page_10_filter_interaction", targets=["page_10_graph"]
-                    )
-                )
+                vm.Action(function=filter_interaction(id="page_10_filter_interaction", targets=["page_10_graph"]))
             ],
         ),
         vm.Graph(
@@ -335,9 +319,7 @@ page_10 = vm.Page(
         vm.Filter(
             id="page_10_filter",
             column="continent",
-            selector=vm.Dropdown(
-                title="Filter AgGrid - [1 guard]", id="page_10_filter_selector"
-            ),
+            selector=vm.Dropdown(title="Filter AgGrid - [1 guard]", id="page_10_filter_selector"),
             show_in_url=True,
         ),
         vm.Parameter(
@@ -439,17 +421,13 @@ page_12 = vm.Page(
             id="page_12_grid_1",
             title="On click - [1 guard]",
             figure=dash_ag_grid(data_frame=df_gapminder),
-            actions=[
-                vm.Action(function=filter_interaction(targets=["page_12_grid_2"]))
-            ],
+            actions=[vm.Action(function=filter_interaction(targets=["page_12_grid_2"]))],
         ),
         vm.AgGrid(
             id="page_12_grid_2",
             title="On click - [1 guard]",
             figure=dash_ag_grid(data_frame=df_gapminder),
-            actions=[
-                vm.Action(function=filter_interaction(targets=["page_12_grid_1"]))
-            ],
+            actions=[vm.Action(function=filter_interaction(targets=["page_12_grid_1"]))],
         ),
         vm.Graph(
             id="page_12_graph_1",
@@ -462,9 +440,7 @@ page_12 = vm.Page(
                 color="continent",
                 custom_data=["continent"],
             ),
-            actions=[
-                vm.Action(function=filter_interaction(targets=["page_12_graph_2"]))
-            ],
+            actions=[vm.Action(function=filter_interaction(targets=["page_12_graph_2"]))],
         ),
         vm.Graph(
             id="page_12_graph_2",
@@ -477,9 +453,7 @@ page_12 = vm.Page(
                 color="continent",
                 custom_data=["continent"],
             ),
-            actions=[
-                vm.Action(function=filter_interaction(targets=["page_12_graph_1"]))
-            ],
+            actions=[vm.Action(function=filter_interaction(targets=["page_12_graph_1"]))],
         ),
     ],
 )
@@ -493,9 +467,7 @@ page_13 = vm.Page(
     components=[
         vm.Graph(
             id="page_13_graph",
-            figure=px.scatter(
-                df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"
-            ),
+            figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
         ),
         vm.Button(
             id="page_13_button",
@@ -536,9 +508,7 @@ page_15 = vm.Page(
             text="Change checklist value",
             actions=[
                 vm.Action(
-                    function=capture("action")(
-                        lambda x: radio_items_options[int(x) % 3]
-                    )("page_15_button.n_clicks"),
+                    function=capture("action")(lambda x: radio_items_options[int(x) % 3])("page_15_button.n_clicks"),
                     outputs="page_15_checklist.value",
                 )
             ],
@@ -591,30 +561,22 @@ page_16 = vm.Page(
                 vm.Button(
                     id="page_16_button_download",
                     text="Export data!",
-                    actions=vm.Action(
-                        function=my_custom_export(), outputs="vizro_download.data"
-                    ),
+                    actions=vm.Action(function=my_custom_export(), outputs="vizro_download.data"),
                 ),
                 vm.Button(
                     id="copy_page_16_button_download",
                     text="Copy Export data!",
-                    actions=vm.Action(
-                        function=my_custom_export(), outputs="vizro_download.data"
-                    ),
+                    actions=vm.Action(function=my_custom_export(), outputs="vizro_download.data"),
                 ),
                 vm.Button(
                     id="page_16_button_location",
                     text="Go to page 17!",
-                    actions=vm.Action(
-                        function=my_custom_location(), outputs="vizro_url.href"
-                    ),
+                    actions=vm.Action(function=my_custom_location(), outputs="vizro_url.href"),
                 ),
                 vm.Button(
                     id="copy_page_16_button_location",
                     text="Copy Go to page 17!",
-                    actions=vm.Action(
-                        function=my_custom_location(), outputs="vizro_url.href"
-                    ),
+                    actions=vm.Action(function=my_custom_location(), outputs="vizro_url.href"),
                 ),
             ],
         ),
@@ -680,9 +642,7 @@ page_17 = vm.Page(
                 vm.Button(id="page_17_button_download", text="Export data!"),
                 vm.Button(id="copy_page_17_button_download", text="Copy Export data!"),
                 vm.Button(id="page_17_button_location", text="Go to page 16!"),
-                vm.Button(
-                    id="copy_page_17_button_location", text="Copy Go to page 16!"
-                ),
+                vm.Button(id="copy_page_17_button_location", text="Copy Go to page 16!"),
             ],
         ),
     ],

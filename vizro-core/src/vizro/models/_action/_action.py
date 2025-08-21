@@ -127,9 +127,7 @@ class _BaseAction(VizroBaseModel):
         page = model_manager._get_model_page(self)
         return [
             State(*control.selector._action_inputs["__default__"].split("."))
-            for control in cast(
-                Iterable[ControlType], model_manager._get_models(control_type, page)
-            )
+            for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page))
         ]
 
     def _get_filter_interaction_states(self) -> list[dict[str, State]]:
@@ -142,16 +140,12 @@ class _BaseAction(VizroBaseModel):
         # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
         # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
-            cast(
-                FigureWithFilterInteractionType, model_manager[action._parent_model_id]
-            )._filter_interaction_input
+            cast(FigureWithFilterInteractionType, model_manager[action._parent_model_id])._filter_interaction_input
             for action in model_manager._get_models(filter_interaction, page)
         ]
 
     @staticmethod
-    def _transform_dependency(
-        dependency: _IdOrIdProperty, type: Literal["output", "input"]
-    ) -> _IdProperty:
+    def _transform_dependency(dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
         """Transform a component dependency into its mapped property value.
 
         This method handles two formats of component dependencies:
@@ -188,9 +182,7 @@ class _BaseAction(VizroBaseModel):
         if "." in dependency:
             component_id, component_property = dependency.split(".")
             try:
-                return getattr(model_manager[component_id], attribute_type)[
-                    component_property
-                ]
+                return getattr(model_manager[component_id], attribute_type)[component_property]
             except (KeyError, AttributeError):
                 # Captures these cases and returns dependency unchanged, as we want to allow the user to target
                 # Dash components, that are not registered in the model_manager (e.g. theme-selector).
@@ -202,9 +194,7 @@ class _BaseAction(VizroBaseModel):
         component_id, component_property = dependency, "__default__"
 
         try:
-            return getattr(model_manager[component_id], attribute_type)[
-                component_property
-            ]
+            return getattr(model_manager[component_id], attribute_type)[component_property]
         except (KeyError, AttributeError) as exc:
             if isinstance(exc, KeyError):
                 if component_property in str(exc):
@@ -251,9 +241,7 @@ class _BaseAction(VizroBaseModel):
 
         # Work out which built in arguments are actually required for this function.
         builtin_args = {
-            arg_name: arg_value
-            for arg_name, arg_value in builtin_args.items()
-            if arg_name in self._parameters
+            arg_name: arg_value for arg_name, arg_value in builtin_args.items() if arg_name in self._parameters
         }
 
         # Validate that the runtime arguments are in the same form as the legacy Action.inputs field (str).
@@ -265,9 +253,7 @@ class _BaseAction(VizroBaseModel):
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
         # _AbstractAction instance.
         runtime_args = {
-            arg_name: State(
-                *self._transform_dependency(arg_value, type="input").split(".")
-            )
+            arg_name: State(*self._transform_dependency(arg_value, type="input").split("."))
             for arg_name, arg_value in self._runtime_args.items()
         }
 
@@ -298,9 +284,7 @@ class _BaseAction(VizroBaseModel):
         # By this point self._validated_outputs is guaranteed to be OutputsType i.e. list[str] or dict[str, str].
         # A single str value will have been coerced to list already.
         if isinstance(self._validated_outputs, list):
-            callback_outputs = [
-                _transform_output(output) for output in self._validated_outputs
-            ]
+            callback_outputs = [_transform_output(output) for output in self._validated_outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -309,10 +293,7 @@ class _BaseAction(VizroBaseModel):
                 [callback_outputs] = callback_outputs
             return callback_outputs
 
-        return {
-            output_name: _transform_output(output)
-            for output_name, output in self._validated_outputs.items()
-        }
+        return {output_name: _transform_output(output) for output_name, output in self._validated_outputs.items()}
 
     def _action_callback_function(
         self,
@@ -338,9 +319,7 @@ class _BaseAction(VizroBaseModel):
         # return_value to reshape it in any way. All we do is do some error checking to raise clearer error messages.
         if not outputs:
             if return_value is not None:
-                raise ValueError(
-                    "Action function has returned a value but the action has no defined outputs."
-                )
+                raise ValueError("Action function has returned a value but the action has no defined outputs.")
         elif isinstance(outputs, dict):
             if not isinstance(return_value, Mapping):
                 raise ValueError(
@@ -404,9 +383,7 @@ class _BaseAction(VizroBaseModel):
             # prevent_initial_call feels cleaner since it means the dcc.Stores do not need to be split between page-
             # and dashboard- level.
             clientside_callback(
-                ClientsideFunction(
-                    namespace="action", function_name="guard_action_chain"
-                ),
+                ClientsideFunction(namespace="action", function_name="guard_action_chain"),
                 Output(f"{self.id}_guarded_trigger", "data"),
                 Input(*self._trigger.split(".")),
                 State(component_guard_id, "data", allow_optional=True),
@@ -438,23 +415,15 @@ class _BaseAction(VizroBaseModel):
             self._action_name,
         )
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(
-                "Callback inputs:\n%s", pformat(callback_inputs["external"], width=200)
-            )
+            logger.debug("Callback inputs:\n%s", pformat(callback_inputs["external"], width=200))
             logger.debug(
                 "Callback outputs:\n%s",
                 pformat(callback_outputs.get("external"), width=200),
             )
 
-        @callback(
-            output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True
-        )
-        def action_callback(
-            external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]
-        ) -> dict[str, Any]:
-            return_value = self._action_callback_function(
-                inputs=external, outputs=callback_outputs.get("external")
-            )
+        @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
+        def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
+            return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:
                 return {
                     "internal": {"action_finished": time.time()},
@@ -533,9 +502,7 @@ class Action(_BaseAction):
         )
         return legacy
 
-    _validate_function = field_validator("function", mode="before")(
-        validate_captured_callable
-    )
+    _validate_function = field_validator("function", mode="before")(validate_captured_callable)
 
     @property
     def _parameters(self) -> set[str]:
@@ -544,9 +511,7 @@ class Action(_BaseAction):
         #  this _parameters property from both Action and _AbstractAction. Possibly also the _action_name one.
         #  Try and get IDE completion to work for action arguments.
         # Note order of parameters doesn't matter since we always handle things with keyword arguments.
-        return set(
-            inspect.signature(self.function._function).parameters
-        )  # type:ignore[union-attr]
+        return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]
 
     @property
     def _runtime_args(self) -> dict[str, _IdOrIdProperty]:

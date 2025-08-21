@@ -136,9 +136,7 @@ class TestDunderMethodsGraph:
             "vizro.models._components.graph.set_props",
             side_effect=MissingCallbackContextException,
         )
-        graph = vm.Graph(
-            figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)
-        ).__call__()
+        graph = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
 
         # These are the overwrites in graph._optimise_fig_layout_for_dashboard
         assert graph.layout.margin.t == margin_t
@@ -178,9 +176,7 @@ class TestAttributesGraph:
 
 
 class TestProcessGraphDataFrame:
-    def test_process_figure_data_frame_str_df(
-        self, standard_px_chart_with_str_dataframe, gapminder
-    ):
+    def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         graph = vm.Graph(id="graph", figure=standard_px_chart_with_str_dataframe)
         assert data_manager[graph["data_frame"]].load().equals(gapminder)

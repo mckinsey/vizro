@@ -77,12 +77,8 @@ class TestDatePickerInstantiation:
     def test_valid_min_max(self, min, max):
         date_picker = vm.DatePicker(min=min, max=max)
 
-        assert date_picker.min == (
-            datetime.strptime(min, "%Y-%m-%d").date() if min else None
-        )
-        assert date_picker.max == (
-            datetime.strptime(max, "%Y-%m-%d").date() if max else None
-        )
+        assert date_picker.min == (datetime.strptime(min, "%Y-%m-%d").date() if min else None)
+        assert date_picker.max == (datetime.strptime(max, "%Y-%m-%d").date() if max else None)
 
     def test_validate_max_invalid_min_greater_than_max(self):
         with pytest.raises(
@@ -92,9 +88,7 @@ class TestDatePickerInstantiation:
             vm.DatePicker(min="2024-02-01", max="2024-01-01")
 
     def test_validate_max_invalid_date_format(self):
-        with pytest.raises(
-            ValidationError, match="Input should be a valid date or datetime"
-        ):
+        with pytest.raises(ValidationError, match="Input should be a valid date or datetime"):
             vm.DatePicker(min="50-50-50", max="50-50-50")
 
     def test_validate_range_true_datepicker_value_valid(self):
@@ -109,9 +103,7 @@ class TestDatePickerInstantiation:
         expected_value = date(2024, 1, 1)
         assert date_picker.value == expected_value
 
-    @pytest.mark.parametrize(
-        "range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])]
-    )
+    @pytest.mark.parametrize("range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])])
     def test_validate_datepicker_value_invalid(self, range, value):
         with pytest.raises(
             ValidationError,
@@ -119,13 +111,9 @@ class TestDatePickerInstantiation:
         ):
             vm.DatePicker(min="1999-01-01", max="1999-02-01", range=range, value=value)
 
-    @pytest.mark.parametrize(
-        "range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])]
-    )
+    @pytest.mark.parametrize("range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])])
     def test_validate_datepicker_range_valid(self, range, value):
-        date_picker = vm.DatePicker(
-            min="2024-01-01", max="2024-02-01", range=range, value=value
-        )
+        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=range, value=value)
         assert date_picker.range == range
 
     @pytest.mark.parametrize(
@@ -155,9 +143,7 @@ class TestDatePickerInstantiation:
 
 
 class TestBuildMethod:
-    @pytest.mark.parametrize(
-        "range, value", [(False, "2023-01-05"), (True, ["2023-01-05", "2023-01-07"])]
-    )
+    @pytest.mark.parametrize("range, value", [(False, "2023-01-05"), (True, ["2023-01-05", "2023-01-07"])])
     def test_datepicker_build(self, range, value):
         date_picker = vm.DatePicker(
             min="2023-01-01",
@@ -244,9 +230,7 @@ class TestBuildMethod:
                 className="material-symbols-outlined tooltip-icon",
             ),
             dbc.Tooltip(
-                children=dcc.Markdown(
-                    "Test description", id="info-text", className="card-text"
-                ),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

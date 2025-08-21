@@ -92,18 +92,14 @@ class TestDropdownInstantiation:
         assert dropdown.title == ""
         assert dropdown.actions == []
 
-    @pytest.mark.parametrize(
-        "test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]]
-    )
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]])
     def test_create_dropdown_invalid_options_type(self, test_options):
         with pytest.raises(ValidationError, match="Input should be a valid"):
             Dropdown(options=test_options)
 
     def test_create_dropdown_invalid_options_dict(self):
         with pytest.raises(ValidationError, match="Field required"):
-            Dropdown(
-                options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}]
-            )
+            Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
         "test_value, options, multi",
@@ -154,9 +150,7 @@ class TestDropdownInstantiation:
         ],
     )
     def test_create_dropdown_invalid_value(self, test_value, options):
-        with pytest.raises(
-            ValidationError, match="Please provide a valid value from `options`."
-        ):
+        with pytest.raises(ValidationError, match="Please provide a valid value from `options`."):
             Dropdown(value=test_value, options=options)
 
     def test_create_dropdown_invalid_multi(self):
@@ -167,9 +161,7 @@ class TestDropdownInstantiation:
             Dropdown(value=[1, 2], multi=False, options=[1, 2, 3, 4, 5])
 
     def test_dropdown_trigger(self, identity_action_function):
-        dropdown = Dropdown(
-            id="dropdown-id", actions=[Action(function=identity_action_function())]
-        )
+        dropdown = Dropdown(id="dropdown-id", actions=[Action(function=identity_action_function())])
         [action] = dropdown.actions
         assert action._trigger == "dropdown-id.value"
 
@@ -223,9 +215,7 @@ class TestDropdownBuild:
         expected_value,
         expected_options,
     ):
-        dropdown = Dropdown(
-            value=value, options=options, title="Title", id="dropdown_id"
-        ).build()
+        dropdown = Dropdown(value=value, options=options, title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
                 dbc.Label(
@@ -263,9 +253,7 @@ class TestDropdownBuild:
         assert_component_equal(dropdown, expected_dropdown)
 
     def test_dropdown_without_all_option(self):
-        dropdown = Dropdown(
-            id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title"
-        ).build()
+        dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
         expected_dropdown = html.Div(
             [
                 dbc.Label(
@@ -337,9 +325,7 @@ class TestDropdownBuild:
         ],
     )
     def test_dropdown_option_height(self, options, option_height):
-        dict_options, default_value = get_dict_options_and_default(
-            options=options, multi=False
-        )
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
 
         expected_dropdown = html.Div(
@@ -407,9 +393,7 @@ class TestDropdownBuild:
         ],
     )
     def test_dropdown_in_container_option_height(self, options, option_height):
-        dict_options, default_value = get_dict_options_and_default(
-            options=options, multi=False
-        )
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options)
         dropdown._in_container = True
         dropdown = dropdown.build()
@@ -490,9 +474,7 @@ class TestDropdownBuild:
                 className="material-symbols-outlined tooltip-icon",
             ),
             dbc.Tooltip(
-                children=dcc.Markdown(
-                    "Test description", id="info-text", className="card-text"
-                ),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

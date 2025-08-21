@@ -87,18 +87,14 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == ""
         assert radio_items.actions == []
 
-    @pytest.mark.parametrize(
-        "test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]]
-    )
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]])
     def test_create_radio_items_invalid_options_type(self, test_options):
         with pytest.raises(ValidationError, match="Input should be a valid"):
             RadioItems(options=test_options)
 
     def test_create_radio_items_invalid_options_dict(self):
         with pytest.raises(ValidationError, match="Field required"):
-            RadioItems(
-                options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}]
-            )
+            RadioItems(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
         "test_value, options",
@@ -131,9 +127,7 @@ class TestRadioItemsInstantiation:
         ],
     )
     def test_create_radio_items_invalid_value_non_existing(self, test_value, options):
-        with pytest.raises(
-            ValidationError, match="Please provide a valid value from `options`."
-        ):
+        with pytest.raises(ValidationError, match="Please provide a valid value from `options`."):
             RadioItems(value=test_value, options=options)
 
     def test_create_radio_items_invalid_value_format(self):
@@ -141,9 +135,7 @@ class TestRadioItemsInstantiation:
             RadioItems(value=[1], options=[1, 2, 3, 4, 5])
 
     def test_radio_items_trigger(self, identity_action_function):
-        radio_items = RadioItems(
-            id="radio-items-id", actions=[Action(function=identity_action_function())]
-        )
+        radio_items = RadioItems(id="radio-items-id", actions=[Action(function=identity_action_function())])
         [action] = radio_items.actions
         assert action._trigger == "radio-items-id.value"
 
@@ -152,9 +144,7 @@ class TestRadioItemsBuild:
     """Tests model build method."""
 
     def test_radio_items_build(self):
-        radio_items = RadioItems(
-            id="radio_items", options=["A", "B", "C"], title="Title"
-        ).build()
+        radio_items = RadioItems(id="radio_items", options=["A", "B", "C"], title="Title").build()
         expected_radio_items = html.Fieldset(
             [
                 html.Legend(
@@ -226,9 +216,7 @@ class TestRadioItemsBuild:
                 className="material-symbols-outlined tooltip-icon",
             ),
             dbc.Tooltip(
-                children=dcc.Markdown(
-                    "Test description", id="info-text", className="card-text"
-                ),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,
@@ -259,9 +247,7 @@ class TestRadioItemsBuild:
         assert_component_equal(radio_items, expected_radio_items)
 
     def test_radio_items_in_container_build(self):
-        radio_items = RadioItems(
-            id="radio_items_id", options=["A", "B", "C"], title="Title", value="A"
-        )
+        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title", value="A")
         radio_items._in_container = True
         radio_items = radio_items.build()
 
