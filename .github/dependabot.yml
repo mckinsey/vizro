@@ -18,6 +18,6 @@ updates:
 
 ignore:
   - dependency-name: "urllib3"
-    versions: [ ">=2.2.3" ]
+    versions: [">=2.2.3"]
   - dependency-name: "requests"
-    versions: [ ">=2.32.3" ]
+    versions: [">=2.32.3"]
