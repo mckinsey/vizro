@@ -1,12 +1,13 @@
 import inspect
 import logging
+import random
 import textwrap
+import uuid
 from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
 
 import autoflake
 import black
 from pydantic import (
-    AfterValidator,
     BaseModel,
     ConfigDict,
     Field,
@@ -19,6 +20,12 @@ from pydantic.fields import FieldInfo
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
 from vizro.models.types import ModelID
+
+# As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
+# the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
+rd = random.Random(0)
+ACTIONS_CHAIN = "ActionsChain"
+ACTION = "actions"
 
 TO_PYTHON_TEMPLATE = """
 ############ Imports ##############
@@ -199,25 +206,20 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
-def set_id(id: ModelID) -> ModelID:
-    return id or model_manager._generate_id()
-
-
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
     Args:
-        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
+        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard.
             When no ID is chosen, ID will be automatically generated.
 
     """
 
     id: Annotated[
         ModelID,
-        AfterValidator(set_id),
         Field(
-            default="",
-            description="ID to identify model. Must be unique throughout the whole dashboard."
+            default_factory=lambda: str(uuid.UUID(int=rd.getrandbits(128))),
+            description="ID to identify model. Must be unique throughout the whole dashboard. "
             "When no ID is chosen, ID will be automatically generated.",
             validate_default=True,
         ),
@@ -233,7 +235,7 @@ class VizroBaseModel(BaseModel):
     # This was like pydantic's own __exclude_fields__ but this is not possible in V2 due to the non-recursive nature of
     # the model_dump method. Now this serializer allows to add the model name to the dictionary when serializing the
     # model if called with context {"add_name": True}.
-    # Excluding specific fields is now done via overwriting this serializer (see e.g. Page model).
+    # Excluding specific fields could be done via overwriting this serializer, but we don't currently do this anywhere.
     # Useful threads that were started:
     # https://stackoverflow.com/questions/79272335/remove-field-from-all-nested-pydantic-models
     # https://github.com/pydantic/pydantic/issues/11099
