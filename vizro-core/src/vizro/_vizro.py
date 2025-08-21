@@ -75,7 +75,7 @@ class Vizro:
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
             if not use_vizro_bootstrap and path.suffix == ".css" and path.name == "vizro-bootstrap.min.css":
-                continue  # skip vizro-bootstrap.min.css if user set use_vizro_bootstrap=False
+                continue
             if path.suffix == ".css":
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
