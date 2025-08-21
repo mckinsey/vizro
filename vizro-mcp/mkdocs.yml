@@ -8,6 +8,8 @@ nav:
       - Use Cursor: pages/guides/set-up-vizro-mcp-with-cursor.md
       - Use VS Code: pages/guides/set-up-vizro-mcp-with-vscode.md
       - Use any MCP host: pages/guides/set-up-vizro-mcp-basics.md
+  - Tutorials:
+      - Claude Desktop and Vizro-MCP: pages/tutorials/claude-desktop-tutorial.md
   - How-to guides:
       - Use prompt templates: pages/guides/use-prompt-templates.md
       - Create only charts: pages/guides/create-charts-only.md
