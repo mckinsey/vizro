@@ -18,7 +18,6 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [Explore Vizro tutorial](pages/tutorials/explore-components.md)
 
-
 - :fontawesome-solid-chart-column:{ .lg .middle } __Vizro features__
 
     ---
@@ -30,15 +29,15 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
     [Visual formatting](pages/user-guides/visual-formatting.md)
 
     [Extend and customize Vizro](pages/user-guides/extensions.md)
-    
+
 - :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __Gen AI assistance__
 
     ---
 
     [:fontawesome-solid-star: Vizro-MCP :fontawesome-solid-star:](https://vizro.readthedocs.io/projects/vizro-mcp/)
-    
+
     [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
-    
+
 - :fontawesome-solid-book-open:{ .lg .middle } __Find out more__
 
     ---
@@ -46,7 +45,6 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
     [FAQs](pages/explanation/faq.md)
 
     [:sparkles:Cheatsheet:sparkles:](pages/cheatsheet/cheatsheet.html)
-       
 
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 
@@ -55,6 +53,5 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
     [Contribute code](pages/explanation/contributing.md)
 
     [Contribute to our docs](pages/explanation/documentation-style-guide.md)
-
 
 </div>
