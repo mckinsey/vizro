@@ -15,6 +15,7 @@ from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union,
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
+    BeforeValidator,
     Discriminator,
     Field,
     ImportString,
@@ -83,6 +84,20 @@ def _clean_module_string(module_string: str) -> str:
         if original in module_string:
             return new
     return ""
+
+
+def _coerce_to_list(value: Any) -> Any:
+    """Converts a single item into a list unless it's already a list or dict (relevant for action outputs).
+
+    Args:
+        value: The value to potentially coerce to a list
+
+    Returns:
+        The original value if it's a list or dict, otherwise a list containing the value
+    """
+    if isinstance(value, (list, dict)):
+        return value
+    return [value]
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -695,9 +710,6 @@ LayoutType = Annotated[
 # JSONSchema should be skipped for private actions that are not part of the public API.
 # In addition, `_filter` doesn't have a well defined schema due the Callables,
 # so if we were to include it, the JSONSchema would need to be defined.
-# TODO: Note that atm ActionType violates our (and pydantic's) convention that the type of the model ensures
-# the type AFTER validation. Since ActionType is used as annotation for the actions field,
-# this is not true as long as we convert to ActionsChain.
 ActionType = Annotated[
     Union[
         Annotated["Action", Tag("action")],
@@ -711,6 +723,20 @@ ActionType = Annotated[
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
+
+# TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
+# the BeforeValidator, but this requires pydantic >= 2.9.
+ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_to_list), Field(default=[])]
+"""List of actions that can be triggered by a component. Accepts either a single
+[`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType].
+Defaults to `[]`."""
+
+# TODO: ideally outputs would have json_schema_input_type=Union[list[str], dict[str, str], str] attached to
+# the BeforeValidator, but this requires pydantic >= 2.9.
+OutputsType = Annotated[Union[list[str], dict[str, str]], BeforeValidator(_coerce_to_list), Field(default=[])]
+"""List or dictionary of outputs modified by the action function. Accepts either a single string,
+a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
+`<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]

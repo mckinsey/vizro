@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from itertools import chain
 from typing import Annotated, Any, Optional, cast
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -18,16 +19,17 @@ from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _build_inner_layout,
     _log_call,
     check_captured_callable_model,
+    make_actions_chain,
     warn_description_without_title,
 )
-from vizro.models.types import _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
+from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType, FigureType, LayoutType
 
@@ -53,13 +55,13 @@ class Page(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Page`.
+        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
             tags. Defaults to `None`.
-        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
-
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
@@ -81,7 +83,15 @@ class Page(VizroBaseModel):
     ]
     controls: list[ControlType] = []
     path: Annotated[str, Field(default="", description="Path to navigate to page.")]
-    actions: list[ActionsChain] = []
+    actions: ActionsType = []
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
 
     # This should ideally be a field validator, but we need access to the model_fields_set
     @model_validator(mode="after")
@@ -147,22 +157,7 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            # TODO-AV2 A 3: can we simplify this to not use ActionsChain, just like we do for filters and parameters?
-            # See https://github.com/mckinsey/vizro/pull/363#discussion_r2021020062.
-            self.actions = [
-                ActionsChain(
-                    id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
-                    trigger=Trigger(
-                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
-                    ),
-                    actions=[
-                        _on_page_load(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
-                            targets=targets,
-                        )
-                    ],
-                )
-            ]
+            self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
         # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
         url_controls = [
@@ -175,11 +170,15 @@ class Page(VizroBaseModel):
         ]
 
         if url_controls:
-            selector_values_outputs = [Output(control.selector.id, "value") for control in url_controls]
             selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
             control_ids_states = [State(control.id, "id") for control in url_controls]
+            # `control_selector_ids_states` holds metadata needed for setting selector values
+            # and their selector guard component via a clientside callback (`dash_clientside.set_props`).
+            # SetProps is used to avoid sending selector values as callback outputs, which can cause unpredictable
+            # triggering of the guard-actions-chain callback.
+            control_selector_ids_states = [State(control.selector.id, "id") for control in url_controls]
 
             # The URL is updated in the clientside callback with the `history.replaceState`, instead of using a
             # dcc.Location as a callback Output. Do it because the dcc.Location uses `history.pushState` under the hood
@@ -190,9 +189,10 @@ class Page(VizroBaseModel):
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
-                *selector_values_outputs,
+                Input(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
                 *selector_values_inputs,
                 *control_ids_states,
+                *control_selector_ids_states,
             )
 
     @_log_call
@@ -205,9 +205,19 @@ class Page(VizroBaseModel):
         components_container = _build_inner_layout(self.layout, self.components)
         components_container.id = "page-components"
 
+        # These components are recreated on every page rather than going at the global dashboard level so that we do
+        # not accidentally trigger callbacks (workaround for Dash prevent_initial_call=True behavior).
+        action_components = list(
+            chain.from_iterable(
+                action._dash_components
+                for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction, root_model=self))
+            )
+        )
+
         # Keep these components in components_container, moving them outside make them not work properly.
         components_container.children.extend(
             [
+                *action_components,
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),

@@ -12,7 +12,6 @@ from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro import Vizro
-from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models._dashboard import _all_hidden
 
 
@@ -347,7 +346,6 @@ class TestDashboardBuild:
                                 "vizro_light": dashboard_vizro_light,
                             },
                         ),
-                        ActionLoop._create_app_callbacks(),
                         dash.page_container,
                     ],
                 )
