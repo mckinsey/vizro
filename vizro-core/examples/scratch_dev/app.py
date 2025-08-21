@@ -178,15 +178,6 @@ class openai_pirate(echo):
                 prevent_initial_call=True,
             )
 
-    def plug(self, app):
-        """Register streaming routes with the Dash app.
-
-        Args:
-            app: The Dash application instance.
-        """
-        if not self.stream:
-            return
-
         # Now I'm wondering whether we actually want to do this with plug(). I think it's the "right" thing to do but
         # it is extra effort for the user and I think that for most setups it will probably work like you had it before.
         # I'd suggest we actually go back to using @dash.get_app().server.route() like you did before in pre_build.
@@ -196,39 +187,37 @@ class openai_pirate(echo):
         # Question for Lingyi: if we do it the "wrong" way with @dash.get_app().server.route() in pre_build,
         # can you easily find any setups where it doesn't work? e.g. Maybe with gunicorn it doesn't?
         # Question: why do we set endpoint here?
-        @app.server.post(f"/streaming-{self.chat_id}", endpoint=f"streaming_chat_{self.chat_id}")
+        @dash.get_app().server.route(f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}")
         def streaming_chat():
-            try:
-                stuff = Stuff(**request.get_json())
+            # try:
+            stuff = Stuff(**request.get_json())
 
-                def event_stream():
-                    response_stream = self.core_function(**stuff.model_dump())
+            def event_stream():
+                response_stream = self.core_function(**stuff.model_dump())
 
-                    for event in response_stream:
-                        if event.type == "response.output_text.delta":
-                            # Question for Lingyi: is it possible to somehow use self.message_to_html here?
-                            # The data gets sent over SSE so won't come out correctly. But is there any way to break
-                            # the message into chunks to e.g. separate off code snippets to use dmc.CodeHighlight?
-                            # e.g. maybe dmc.CodeHighlight(event.delta).to_plotly_json() would translate it to json
-                            # and then maybe somehow it could be rendered correctly.
-                            # Experiment to see if each event comes out as a new html.P:
-                            # It doesn't work but I feel like something like this might be possible?
-                            # yield sse_message(html.P(event.delta))
-                            # yield sse_message(html.P(event.delta).to_plotly_json())
-                            # Encode delta to preserve special characters and newlines
-                            # Send base64 with delimiter for easy splitting
-                            # If we simply pass sse_message(event.delta) then tokens like `**\n\n` get escaped
-                            encoded_delta = base64.b64encode(event.delta.encode('utf-8')).decode('utf-8')
-                            yield sse_message(encoded_delta + "|END|")
+                for event in response_stream:
+                    if event.type == "response.output_text.delta":
+                        # Question for Lingyi: is it possible to somehow use self.message_to_html here?
+                        # The data gets sent over SSE so won't come out correctly. But is there any way to break
+                        # the message into chunks to e.g. separate off code snippets to use dmc.CodeHighlight?
+                        # e.g. maybe dmc.CodeHighlight(event.delta).to_plotly_json() would translate it to json
+                        # and then maybe somehow it could be rendered correctly.
+                        # Experiment to see if each event comes out as a new html.P:
+                        # It doesn't work but I feel like something like this might be possible?
+                        # yield sse_message(html.P(event.delta))
+                        # yield sse_message(html.P(event.delta).to_plotly_json())
+                        # Encode delta to preserve special characters and newlines
+                        # Send base64 with delimiter for easy splitting
+                        # If we simply pass sse_message(event.delta) then tokens like `**\n\n` get escaped
+                        encoded_delta = base64.b64encode(event.delta.encode('utf-8')).decode('utf-8')
+                        yield sse_message(encoded_delta + "|END|")
 
-                    # Send standard SSE completion signal
-                    # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
-                    yield sse_message()
+                # Send standard SSE completion signal
+                # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
+                yield sse_message()
 
-                return Response(event_stream(), mimetype="text/event-stream")
-            except Exception:
-                # Let's check if we need this error catching.
-                return Response("An internal error has occurred.", status=500)
+            return Response(event_stream(), mimetype="text/event-stream")
+
 
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
@@ -240,6 +229,7 @@ class openai_pirate(echo):
             store, html_messages = Patch(), Patch()
 
             placeholder_msg = {"role": "assistant", "content": ""}
+            store.append(placeholder_msg)
             html_messages.append(self.message_to_html(placeholder_msg))
 
             return [
@@ -437,5 +427,5 @@ translation of store messages to html is SS, need to be able to do this. Options
 """
 
 if __name__ == "__main__":
-    app = Vizro(plugins=[pirate_stream_action])
+    app = Vizro()
     app.build(dashboard).run(debug=False)
