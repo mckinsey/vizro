@@ -83,12 +83,10 @@ div.form-check.form-switch {
 
 
 .card-nav:hover, .card-nav.hover {
-  background: var(--bs-primary-bg-subtle);
+  background: var(--bs-secondary-bg);
   border: 1px solid var(--bs-border-color);
 }
 
-
-/* To make other bootstrap themes look nicely inside vizro app. */
 .navbar .nav-link {
   padding: 1rem;
 }

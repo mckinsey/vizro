@@ -142,9 +142,3 @@ input.dash-input:invalid {
 .slider-text-input-container input[type="number"] {
   appearance: textfield;
 }
-
-
-.rc-slider-tooltip-content > .rc-slider-tooltip-inner {
-  background: transparent;
-  box-shadow: none;
-}
