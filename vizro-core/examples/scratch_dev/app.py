@@ -1,4 +1,4 @@
-import json
+import base64
 
 import dash
 from dotenv import load_dotenv
@@ -130,77 +130,50 @@ class openai_pirate(echo):
             return [self.message_to_html(message) for message in store], dash.no_update
 
         if self.stream:
-            # Question for Lingyi: what is happening here?! WHy is it so complicated and why do we have two
-            # clientside callbacks?
             clientside_callback(
                 """
-                function(animatedText, existingChildren) {
-                    if (!animatedText) return existingChildren;
-
-                    // Check if this is the [DONE] completion signal - if so, ignore it
-                    if (animatedText === '[DONE]') {
-                        return existingChildren;
+                function(animatedText, existingChildren, storeData) {
+                    if (!animatedText || animatedText === '[DONE]') {
+                        return [existingChildren, window.dash_clientside.no_update];
                     }
 
-                    // Clone existing children
-                    const newChildren = [...(existingChildren || [])];
-
-                    // Find the last message and update it if it's from assistant
-                    if (newChildren.length > 0) {
-                        const lastIdx = newChildren.length - 1;
-                        const lastMsg = newChildren[lastIdx];
-
-                        // Check if this is an assistant message being streamed
-                        if (lastMsg && lastMsg.props && lastMsg.props.children &&
-                            lastMsg.props.children[0] && lastMsg.props.children[0].props &&
-                            lastMsg.props.children[0].props.children === "assistant") {
-                            // Update the content of the assistant message
-                            lastMsg.props.children[1].props.children = animatedText;
+                    // Decode base64 chunks separated by delimiter
+                    let fullText = '';
+                    const chunks = animatedText.split('|END|').filter(c => c);
+                    for (const chunk of chunks) {
+                        try {
+                            fullText += atob(chunk);
+                        } catch (e) {
+                            // Skip invalid chunks
                         }
                     }
 
-                    return newChildren;
-                }
-                """,
-                Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-                Input(f"{self.chat_id}-sse", "animation"),
-                State(f"{self.chat_id}-output", "children"),
-                prevent_initial_call=True,
-            )
-
-            # Persist assistant message progressively on each non-empty animated chunk
-            clientside_callback(
-                """
-                function(animatedText, sseData, storeData) {
-                    if (!animatedText || animatedText === '[DONE]') {
-                        return window.dash_clientside.no_update;
-                    }
-
+                    // Update UI and store
+                    const newChildren = [...(existingChildren || [])];
                     const newData = [...(storeData || [])];
-                    const last = newData.length > 0 ? newData[newData.length - 1] : null;
-                    if (last && last.role === 'assistant') {
-                        newData[newData.length - 1] = {role: 'assistant', content: animatedText};
-                    } else {
-                        newData.push({role: 'assistant', content: animatedText});
+
+                    if (newChildren.length > 0) {
+                        const last = newChildren[newChildren.length - 1];
+                        if (last.props?.children?.[0]?.props?.children === "assistant") {
+                            last.props.children[1].props.children = fullText;
+                        }
                     }
-                    return newData;
+
+                    if (newData.length > 0 && newData[newData.length - 1].role === 'assistant') {
+                        newData[newData.length - 1].content = fullText;
+                    }
+
+                    return [newChildren, newData];
                 }
                 """,
-                Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
+                [
+                    Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+                    Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
+                ],
                 Input(f"{self.chat_id}-sse", "animation"),
-                State(f"{self.chat_id}-sse", "data"),
-                State(f"{self.chat_id}-store", "data"),
+                [State(f"{self.chat_id}-output", "children"), State(f"{self.chat_id}-store", "data")],
                 prevent_initial_call=True,
             )
-
-    def plug(self, app):
-        """Register streaming routes with the Dash app.
-
-        Args:
-            app: The Dash application instance.
-        """
-        if not self.stream:
-            return
 
         # Now I'm wondering whether we actually want to do this with plug(). I think it's the "right" thing to do but
         # it is extra effort for the user and I think that for most setups it will probably work like you had it before.
@@ -211,35 +184,37 @@ class openai_pirate(echo):
         # Question for Lingyi: if we do it the "wrong" way with @dash.get_app().server.route() in pre_build,
         # can you easily find any setups where it doesn't work? e.g. Maybe with gunicorn it doesn't?
         # Question: why do we set endpoint here?
-        @app.server.post(f"/streaming-{self.chat_id}", endpoint=f"streaming_chat_{self.chat_id}")
+        @dash.get_app().server.route(
+            f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
+        )
         def streaming_chat():
-            try:
-                stuff = Stuff(**request.get_json())
+            stuff = Stuff(**request.get_json())
 
-                def event_stream():
-                    response_stream = self.core_function(**stuff.model_dump())
+            def event_stream():
+                response_stream = self.core_function(**stuff.model_dump())
 
-                    for event in response_stream:
-                        if event.type == "response.output_text.delta":
-                            # Question for Lingyi: is it possible to somehow use self.message_to_html here?
-                            # The data gets sent over SSE so won't come out correctly. But is there any way to break
-                            # the message into chunks to e.g. separate off code snippets to use dmc.CodeHighlight?
-                            # e.g. maybe dmc.CodeHighlight(event.delta).to_plotly_json() would translate it to json
-                            # and then maybe somehow it could be rendered correctly.
-                            # Experiment to see if each event comes out as a new html.P:
-                            # It doesn't work but I feel like something like this might be possible?
-                            # yield sse_message(html.P(event.delta))
-                            # yield sse_message(html.P(event.delta).to_plotly_json())
-                            yield sse_message(event.delta)
+                for event in response_stream:
+                    if event.type == "response.output_text.delta":
+                        # Question for Lingyi: is it possible to somehow use self.message_to_html here?
+                        # The data gets sent over SSE so won't come out correctly. But is there any way to break
+                        # the message into chunks to e.g. separate off code snippets to use dmc.CodeHighlight?
+                        # e.g. maybe dmc.CodeHighlight(event.delta).to_plotly_json() would translate it to json
+                        # and then maybe somehow it could be rendered correctly.
+                        # Experiment to see if each event comes out as a new html.P:
+                        # It doesn't work but I feel like something like this might be possible?
+                        # yield sse_message(html.P(event.delta))
+                        # yield sse_message(html.P(event.delta).to_plotly_json())
+                        # Encode delta to preserve special characters and newlines
+                        # Send base64 with delimiter for easy splitting
+                        # If we simply pass sse_message(event.delta) then tokens like `**\n\n` get escaped
+                        encoded_delta = base64.b64encode(event.delta.encode("utf-8")).decode("utf-8")
+                        yield sse_message(encoded_delta + "|END|")
 
-                    # Send standard SSE completion signal
-                    # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
-                    yield sse_message()
+                # Send standard SSE completion signal
+                # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
+                yield sse_message()
 
-                return Response(event_stream(), mimetype="text/event-stream")
-            except Exception:
-                # Let's check if we need this error catching.
-                return Response("An internal error has occurred.", status=500)
+            return Response(event_stream(), mimetype="text/event-stream")
 
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
@@ -248,14 +223,10 @@ class openai_pirate(echo):
         messages.append(latest_input)
 
         if self.stream:
-            # For streaming:
-            # 1. Add an empty assistant message as placeholder
-            # 2. Return SSE URL and options
-            # TODO: 3. Add a callback to update store when streaming is complete
-
             store, html_messages = Patch(), Patch()
 
             placeholder_msg = {"role": "assistant", "content": ""}
+            store.append(placeholder_msg)
             html_messages.append(self.message_to_html(placeholder_msg))
 
             return [
@@ -280,12 +251,12 @@ class openai_pirate(echo):
     # Note responses.create has different return types in these cases.
     def core_function(self, prompt, messages):
         return self._client.responses.create(
-            model=self.model, input=messages, instructions="Talk like a pirate.", store=False, stream=self.stream
+            model=self.model, input=messages, instructions="Be polite.", store=False, stream=self.stream
         )
 
     # User writes this function. Does it belong here or in Chat?
     def message_to_html(self, message):
-        return html.Div([html.B(message["role"]), html.P(message["content"])])
+        return html.Div([html.B(message["role"]), dcc.Markdown(message["content"], dangerously_allow_html=True)])
 
     @property
     def outputs(self):
@@ -406,7 +377,10 @@ page_nostream = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_nostream, page_2])
+dashboard = vm.Dashboard(
+    pages=[page, page_nostream, page_2],
+    theme="vizro_light",
+)
 
 """
 Notes:
@@ -447,5 +421,5 @@ translation of store messages to html is SS, need to be able to do this. Options
 """
 
 if __name__ == "__main__":
-    app = Vizro(plugins=[pirate_stream_action])
+    app = Vizro()
     app.build(dashboard).run(debug=False)
