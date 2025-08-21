@@ -22,14 +22,14 @@ class TestAccordionInstantiation:
         assert hasattr(accordion, "id")
         assert accordion.pages == {}
 
-    def test_mandatory_and_optional(self, pages_as_dict):
+    def test_mandatory_and_optional(self, pages_as_dict, page_1_id, page_2_id):
         accordion = vm.Accordion(id="accordion", pages=pages_as_dict)
         assert hasattr(accordion, "id")
-        assert accordion.pages == pages_as_dict
+        assert accordion.pages == {"Group": [page_1_id, page_2_id]}
 
-    def test_valid_pages_as_list(self, pages_as_list):
+    def test_valid_pages_as_list(self, pages_as_list, page_1_id, page_2_id):
         accordion = vm.Accordion(pages=pages_as_list)
-        assert accordion.pages == {ACCORDION_DEFAULT_TITLE: pages_as_list}
+        assert accordion.pages == {ACCORDION_DEFAULT_TITLE: [page_1_id, page_2_id]}
 
     @pytest.mark.parametrize("pages", [{"Group": []}, []])
     def test_invalid_field_pages_no_ids_provided(self, pages):
@@ -43,7 +43,8 @@ class TestAccordionInstantiation:
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
     def test_invalid_page(self, pages):
         with pytest.raises(
-            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to argument 'pages'.")
+            ValidationError,
+            match=re.escape("Unknown page ID or title ['non existent page'] provided to argument 'pages'."),
         ):
             vm.Accordion(pages=pages)
 
@@ -61,7 +62,7 @@ class TestAccordionBuild:
                     dbc.AccordionItem(
                         children=[
                             dbc.NavLink(children="Page 1", active="exact", href="/"),
-                            dbc.NavLink(children="Page 2", active="exact", href="/page-2"),
+                            dbc.NavLink(children="Page 2", active="exact", href="/page_2"),
                         ],
                         title="Group",
                         item_id="Group",
@@ -81,7 +82,7 @@ class TestAccordionBuild:
                         item_id="Group 1",
                     ),
                     dbc.AccordionItem(
-                        children=[dbc.NavLink(children="Page 2", active="exact", href="/page-2")],
+                        children=[dbc.NavLink(children="Page 2", active="exact", href="/page_2")],
                         title="Group 2",
                         item_id="Group 2",
                     ),
@@ -97,7 +98,7 @@ class TestAccordionBuild:
                     dbc.AccordionItem(
                         children=[
                             dbc.NavLink(children="Page 1", active="exact", href="/"),
-                            dbc.NavLink(children="Page 2", active="exact", href="/page-2"),
+                            dbc.NavLink(children="Page 2", active="exact", href="/page_2"),
                         ],
                         title=ACCORDION_DEFAULT_TITLE,
                         item_id="Select Page",
@@ -110,8 +111,8 @@ class TestAccordionBuild:
     ]
 
     @pytest.mark.parametrize("pages, expected", test_cases)
-    def test_accordion(self, pages, expected):
-        accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id="Page 1")
+    def test_accordion(self, pages, expected, page_1_id):
+        accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id=page_1_id)
         assert_component_equal(accordion, dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(accordion["accordion"], expected, keys_to_strip={"class_name", "className"})
 
