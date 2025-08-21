@@ -14,8 +14,8 @@ def dashboard_result(request):
 
     dashboard = vm.Dashboard(
         pages=[
-            vm.Page(title="Page 1", components=[vm.Button()]),
-            vm.Page(title="Page 2", components=[vm.Button()]),
+            vm.Page(id="page_1", title="Page 1", components=[vm.Button()]),
+            vm.Page(id="page_2", title="Page 2", components=[vm.Button()]),
         ],
         navigation=request.param(),
     )
@@ -34,26 +34,29 @@ dashboard_expected = dashboard_result
 accordion_cases = [
     (
         lambda: None,
-        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["Page 1", "Page 2"])),
+        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["page_1", "page_2"])),
     ),
     (
         lambda: vm.Navigation(),
-        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["Page 1", "Page 2"])),
+        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["page_1", "page_2"])),
     ),
     (
         lambda: vm.Navigation(nav_selector=vm.Accordion()),
-        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["Page 1", "Page 2"])),
+        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["page_1", "page_2"])),
     ),
+    (
+        lambda: vm.Navigation(pages=["page_1"]),
+        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["page_1"]))),
     (
         lambda: vm.Navigation(pages=["Page 1"]),
-        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["Page 1"]))),
+        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["page_1"]))),
     (
-        lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.Accordion(pages=["Page 2"])),
-        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["Page 2"])),
+        lambda: vm.Navigation(pages=["page_1"], nav_selector=vm.Accordion(pages=["page_2"])),
+        lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["page_2"])),
     ),
     (
-        lambda: vm.Navigation(pages={"Group 1": ["Page 1"], "Group 2": ["Page 2"]}),
-        lambda: vm.Navigation(nav_selector=vm.Accordion(pages={"Group 1": ["Page 1"], "Group 2": ["Page 2"]})),
+        lambda: vm.Navigation(pages={"Group 1": ["page_1"], "Group 2": ["Page 2"]}),
+        lambda: vm.Navigation(nav_selector=vm.Accordion(pages={"Group 1": ["page_1"], "Group 2": ["page_2"]})),
     ),
 ]
 # fmt: on
@@ -61,47 +64,45 @@ accordion_cases = [
 navbar_flat_cases = [
     (
         lambda: vm.Navigation(nav_selector=vm.NavBar()),
-        lambda: vm.Navigation(nav_selector=vm.NavBar(pages=["Page 1", "Page 2"])),
+        lambda: vm.Navigation(nav_selector=vm.NavBar(pages=["page_1", "page_2"])),
     ),
     (
         lambda: vm.Navigation(nav_selector=vm.NavBar()),
         lambda: vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
-                    vm.NavLink(label="Page 1", pages=["Page 1"], icon="Filter 1"),
-                    vm.NavLink(label="Page 2", pages=["Page 2"], icon="Filter 2"),
+                    vm.NavLink(label="Page 1", pages=["page_1"], icon="Filter 1"),
+                    vm.NavLink(label="Page 2", pages=["page_2"], icon="Filter 2"),
                 ]
             )
         ),
     ),
     (
         lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.NavBar()),
-        lambda: vm.Navigation(nav_selector=vm.NavBar(pages=["Page 1"])),
+        lambda: vm.Navigation(nav_selector=vm.NavBar(pages=["page_1"])),
+    ),
+    (
+        lambda: vm.Navigation(pages=["page_1"], nav_selector=vm.NavBar()),
+        lambda: vm.Navigation(nav_selector=vm.NavBar(pages=["page_1"])),
     ),
     (
         lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.NavBar(pages=["Page 2"])),
-        lambda: vm.Navigation(nav_selector=vm.NavBar(pages=["Page 2"])),
-    ),
-    (
-        lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.NavBar()),
-        lambda: vm.Navigation(
-            nav_selector=vm.NavBar(items=[vm.NavLink(label="Page 1", pages=["Page 1"], icon="Filter 1")])
-        ),
+        lambda: vm.Navigation(nav_selector=vm.NavBar(pages=["page_2"])),
     ),
 ]
 
 navbar_grouped_cases = [
     (
-        lambda: vm.Navigation(pages={"Group 1": ["Page 1"], "Group 2": ["Page 2"]}, nav_selector=vm.NavBar()),
-        lambda: vm.Navigation(nav_selector=vm.NavBar(pages={"Group 1": ["Page 1"], "Group 2": ["Page 2"]})),
+        lambda: vm.Navigation(pages={"Group 1": ["Page 1"], "Group 2": ["page_2"]}, nav_selector=vm.NavBar()),
+        lambda: vm.Navigation(nav_selector=vm.NavBar(pages={"Group 1": ["page_1"], "Group 2": ["page_2"]})),
     ),
     (
-        lambda: vm.Navigation(pages={"Group 1": ["Page 1"], "Group 2": ["Page 2"]}, nav_selector=vm.NavBar()),
+        lambda: vm.Navigation(pages={"Group 1": ["Page 1"], "Group 2": ["page_2"]}, nav_selector=vm.NavBar()),
         lambda: vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
-                    vm.NavLink(label="Group 1", pages=["Page 1"], icon="Filter 1"),
-                    vm.NavLink(label="Group 2", pages=["Page 2"], icon="Filter 2"),
+                    vm.NavLink(label="Group 1", pages=["page_1"], icon="Filter 1"),
+                    vm.NavLink(label="Group 2", pages=["page_2"], icon="Filter 2"),
                 ]
             )
         ),
@@ -110,7 +111,7 @@ navbar_grouped_cases = [
         lambda: vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
-                    vm.NavLink(label="Group 1", pages={"Subgroup 1": ["Page 1"]}, icon="Dashboard"),
+                    vm.NavLink(label="Group 1", pages={"Subgroup 1": ["page_1"]}, icon="Dashboard"),
                     vm.NavLink(label="Group 2", pages={"Subgroup 2": ["Page 2"]}),
                 ]
             )
@@ -118,8 +119,8 @@ navbar_grouped_cases = [
         lambda: vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
-                    vm.NavLink(label="Group 1", pages={"Subgroup 1": ["Page 1"]}, icon="Dashboard"),
-                    vm.NavLink(label="Group 2", pages={"Subgroup 2": ["Page 2"]}, icon="Filter 2"),
+                    vm.NavLink(label="Group 1", pages={"Subgroup 1": ["page_1"]}, icon="Dashboard"),
+                    vm.NavLink(label="Group 2", pages={"Subgroup 2": ["page_2"]}, icon="Filter 2"),
                 ]
             )
         ),
