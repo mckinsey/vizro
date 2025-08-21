@@ -80,6 +80,42 @@
       "title": "Action",
       "type": "object"
     },
+    "ActionsChain": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "trigger": {
+          "$ref": "#/$defs/Trigger"
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "required": ["trigger"],
+      "title": "ActionsChain",
+      "type": "object"
+    },
     "AgGrid": {
       "additionalProperties": false,
       "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `AgGrid`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
@@ -1458,18 +1494,7 @@
         "actions": {
           "default": [],
           "items": {
-            "description": "Action.",
-            "oneOf": [
-              {
-                "$ref": "#/$defs/Action"
-              },
-              {
-                "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              }
-            ]
+            "$ref": "#/$defs/ActionsChain"
           },
           "title": "Actions",
           "type": "array"
@@ -2152,6 +2177,21 @@
       "required": ["text", "icon"],
       "title": "Tooltip",
       "type": "object"
+    },
+    "Trigger": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "title": "Component Id",
+          "type": "string"
+        },
+        {
+          "title": "Component Property",
+          "type": "string"
+        }
+      ],
+      "type": "array"
     },
     "export_data": {
       "additionalProperties": false,
