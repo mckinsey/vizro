@@ -198,7 +198,7 @@ On the bottom chart, add artist to the hovertext for each point.
 
 ## Save the prompt for your dashboard
 
-When you are happy with the dashboard, you can store the code, for example, in GitHub. Copy the code from the PyCafe project, or click on the clipboard icon of the `validate_dashboard_config` section to copy the contents. You may also want to ask Claude to give you a prompt to store alongside the configuration.
+When you are happy with the dashboard, you can store the code, for example, in GitHub. Copy the code from the PyCafe project, or click on the clipboard icon of the `validate_dashboard_config` section to copy the contents. You can also ask Claude to give you a prompt to store alongside the configuration.
 
 ```text
 Can you give me the prompt that would work best
