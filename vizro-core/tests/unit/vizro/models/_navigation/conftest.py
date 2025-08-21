@@ -6,6 +6,7 @@ import vizro.models as vm
 
 
 # Refer to first page by ID, refer to second page by Title
+# This tests if both are valid inputs - under the hood we convert the titles to IDs
 @pytest.fixture()
 def pages_as_list():
     return ["page_1", "Page 2"]

@@ -24,26 +24,22 @@ class TestNavLinkInstantiation:
         assert nav_link.icon == ""
         assert nav_link.pages == []
 
-    def test_nav_link_mandatory_and_optional(self, pages_as_list, prebuilt_two_page_dashboard):
+    def test_nav_link_mandatory_and_optional(self, pages_as_list, page_1_id, page_2_id):
         nav_link = vm.NavLink(id="nav_link", icon="Home", label="Homepage", pages=pages_as_list)
 
         assert nav_link.id == "nav_link"
         assert nav_link.label == "Homepage"
         assert nav_link.icon == "home"
-        # Get IDs although we originally referred to page titles
-        transformed_pages = [page.id for page in prebuilt_two_page_dashboard.pages]
-        assert nav_link.pages == transformed_pages
+        assert nav_link.pages == [page_1_id, page_2_id]
 
     @pytest.mark.parametrize("icon", ["Bar Chart", "bar chart", "bar_chart", "Bar_Chart", " bar_chart "])
     def test_validate_icon(self, icon):
         nav_link = vm.NavLink(icon=icon, label="Label")
         assert nav_link.icon == "bar_chart"
 
-    def test_nav_link_valid_pages_as_dict(self, pages_as_dict, prebuilt_two_page_dashboard):
+    def test_nav_link_valid_pages_as_dict(self, pages_as_dict, page_1_id, page_2_id):
         nav_link = vm.NavLink(pages=pages_as_dict, label="Label")
-        # Get IDs although we originally referred to page titles
-        transformed_pages = {group: [page.id for page in prebuilt_two_page_dashboard.pages] for group in pages_as_dict}
-        assert nav_link.pages == transformed_pages
+        assert nav_link.pages == {group: [page_1_id, page_2_id] for group in pages_as_dict}
 
     def test_mandatory_label_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -68,26 +64,22 @@ class TestNavLinkInstantiation:
 
 
 class TestNavLinkPreBuildMethod:
-    def test_nav_link(self, pages_as_dict, prebuilt_two_page_dashboard):
+    def test_nav_link(self, pages_as_dict, page_1_id, page_2_id):
         nav_link = vm.NavLink(label="Label", pages=pages_as_dict)
         nav_link.pre_build()
         assert isinstance(nav_link._nav_selector, vm.Accordion)
-        # Get IDs although we originally referred to page titles
-        transformed_pages = {group: [page.id for page in prebuilt_two_page_dashboard.pages] for group in pages_as_dict}
-        assert nav_link._nav_selector.pages == transformed_pages
+        assert nav_link._nav_selector.pages == {group: [page_1_id, page_2_id] for group in pages_as_dict}
 
 
 @pytest.mark.parametrize("pages", ["pages_as_dict", "pages_as_list"])
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
-    def test_nav_link_active(self, pages, request, prebuilt_two_page_dashboard):
+    def test_nav_link_active(self, pages, request, page_1_id):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav-link", label="Label", icon="Icon", pages=pages)
         nav_link.pre_build()
-        # Get IDs although we originally referred to page titles
-        page_id = prebuilt_two_page_dashboard.pages[0].id
-        built_nav_link = nav_link.build(active_page_id=page_id)
+        built_nav_link = nav_link.build(active_page_id=page_1_id)
         expected_nav_link = dbc.NavLink(
             children=[
                 html.Span("icon", className="material-symbols-outlined", id="nav-link-tooltip-target"),

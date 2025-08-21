@@ -23,23 +23,20 @@ class TestNavBarInstantiation:
         assert nav_bar.pages == {}
         assert nav_bar.items == []
 
-    def test_nav_bar_mandatory_and_optional(self, pages_as_dict, prebuilt_two_page_dashboard):
+    def test_nav_bar_mandatory_and_optional(self, pages_as_dict, page_1_id, page_2_id):
         nav_link = vm.NavLink(label="Label")
         nav_bar = vm.NavBar(id="nav-bar", pages=pages_as_dict, items=[nav_link])
 
         assert nav_bar.id == "nav-bar"
-        # Get IDs although we originally referred to page titles
-        transformed_pages = {"Group": [page.id for page in prebuilt_two_page_dashboard.pages]}
-        assert nav_bar.pages == transformed_pages
+        assert nav_bar.pages == {"Group": [page_1_id, page_2_id]}
         assert nav_bar.items == [nav_link]
 
-    def test_valid_pages_as_list(self, pages_as_list, prebuilt_two_page_dashboard):
+    def test_valid_pages_as_list(self, pages_as_list, page_1_id, page_2_id):
         nav_bar = vm.NavBar(pages=pages_as_list)
-        # Get IDs although we originally referred to page titles
         transformed_pages = {
             # Correct as the group is taken from the defined list in the pages argument
-            "page_1": [prebuilt_two_page_dashboard.pages[0].id],
-            "Page 2": [prebuilt_two_page_dashboard.pages[1].id],
+            "page_1": [page_1_id],
+            "Page 2": [page_2_id],
         }
         assert nav_bar.pages == transformed_pages
 
@@ -83,13 +80,11 @@ class TestNavBarPreBuildMethod:
 class TestNavBarBuildMethod:
     """Tests NavBar model build method."""
 
-    def test_nav_bar_active_pages_as_dict(self, pages_as_dict, prebuilt_two_page_dashboard):
+    def test_nav_bar_active_pages_as_dict(self, pages_as_dict, page_1_id):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
         nav_bar.items[0].id = "nav-link-1"
-        # Get IDs although we originally referred to page titles
-        page_id = prebuilt_two_page_dashboard.pages[0].id
-        built_nav_bar = nav_bar.build(active_page_id=page_id)
+        built_nav_bar = nav_bar.build(active_page_id=page_1_id)
         expected_navigation = dbc.Navbar(
             [
                 dbc.NavLink(
@@ -110,14 +105,12 @@ class TestNavBarBuildMethod:
         assert_component_equal(built_nav_bar["nav-panel"], dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_nav_bar["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
-    def test_nav_bar_active_pages_as_list(self, pages_as_list, prebuilt_two_page_dashboard):
+    def test_nav_bar_active_pages_as_list(self, pages_as_list, page_1_id):
         nav_bar = vm.NavBar(pages=pages_as_list)
         nav_bar.pre_build()
         nav_bar.items[0].id = "nav-link-1"
         nav_bar.items[1].id = "nav-link-2"
-        # Get IDs although we originally referred to page titles
-        page_id = prebuilt_two_page_dashboard.pages[0].id
-        built_nav_bar = nav_bar.build(active_page_id=page_id)
+        built_nav_bar = nav_bar.build(active_page_id=page_1_id)
         expected_nav_bar = dbc.Navbar(
             [
                 dbc.NavLink(
@@ -142,7 +135,7 @@ class TestNavBarBuildMethod:
                         ),
                     ],
                     active=False,
-                    href="/page-2",
+                    href="/page_2",
                 ),
             ]
         )
@@ -203,7 +196,7 @@ class TestNavBarBuildMethod:
                         ),
                     ],
                     active=False,
-                    href="/page-2",
+                    href="/page_2",
                 ),
             ]
         )

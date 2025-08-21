@@ -87,7 +87,7 @@ class TestDashboardPreBuild:
             description=None,
             image=None,
             title="Page 2",
-            path="/page-2",
+            path="/page_2",
             order=1,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
