@@ -9,9 +9,8 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions._abstract_action import _AbstractAction
+from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
-from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 
 
@@ -500,7 +499,7 @@ class TestFilterCall:
     Boolean selectors don't have dynamic behavior like other selectors, as their options are always set to True/False.
     """
 
-    def test_filter_call_categorical_valid(self, target_to_data_frame):
+    def test_filter_call_categorical_selector_valid(self, target_to_data_frame):
         filter = vm.Filter(
             column="column_categorical",
             targets=["column_categorical_exists_1", "column_categorical_exists_2"],
@@ -517,7 +516,7 @@ class TestFilterCall:
             {"label": "d", "value": "d"},
         ]
 
-    def test_filter_call_numerical_valid(self, target_to_data_frame):
+    def test_filter_call_numerical_selector_valid(self, target_to_data_frame):
         filter = vm.Filter(
             column="column_numerical",
             targets=["column_numerical_exists_1", "column_numerical_exists_2"],
@@ -530,7 +529,7 @@ class TestFilterCall:
         assert selector_build.min == 1
         assert selector_build.max == 4
 
-    def test_filter_call_temporal_valid(self, target_to_data_frame):
+    def test_filter_call_temporal_selector_valid(self, target_to_data_frame):
         filter = vm.Filter(
             column="column_temporal",
             targets=["column_temporal_exists_1", "column_temporal_exists_2"],
@@ -544,6 +543,22 @@ class TestFilterCall:
         ]
         assert selector_build.minDate == datetime(2024, 1, 1)
         assert selector_build.maxDate == datetime(2024, 1, 4)
+
+    def test_dynamic_filter_call_guard_component_is_true(self, target_to_data_frame):
+        filter = vm.Filter(
+            column="column_categorical",
+            targets=["column_categorical_exists_1", "column_categorical_exists_2"],
+            selector=vm.Dropdown(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        filter_call_obj = filter(target_to_data_frame=target_to_data_frame, current_value=["c", "d"])
+
+        result_guard_component = filter_call_obj["test_selector_id_guard_actions_chain"]
+        expected_guard_component = dcc.Store(id="test_selector_id_guard_actions_chain", data=True)
+
+        assert_component_equal(result_guard_component, expected_guard_component)
 
     def test_filter_call_column_is_changed(self, target_to_data_frame):
         filter = vm.Filter(
@@ -890,13 +905,13 @@ class TestFilterPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
-        default_actions_chain = filter.selector.actions[0]
-        default_action = default_actions_chain.actions[0]
+        [default_action] = filter.selector.actions
 
-        assert isinstance(default_actions_chain, ActionsChain)
-        assert isinstance(default_action, _AbstractAction)
-        assert default_action.filter_function == filter_function
+        assert isinstance(default_action, _filter)
         assert default_action.id == f"__filter_action_{filter.id}"
+        assert default_action.filter_function == filter_function
+        assert default_action.column == filtered_column
+        assert default_action.targets == ["scatter_chart", "bar_chart"]
 
     # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
     #       all other tests. Also add tests for the custom selector that is an entirely new component and adjust docs.
@@ -927,13 +942,13 @@ class TestFilterPreBuildMethod:
         assert filter.selector.min == gapminder.lifeExp.min()
         assert filter.selector.max == gapminder.lifeExp.max()
 
-        default_actions_chain = filter.selector.actions[0]
-        default_action = default_actions_chain.actions[0]
+        [default_action] = filter.selector.actions
 
-        assert isinstance(default_actions_chain, ActionsChain)
-        assert isinstance(default_action, _AbstractAction)
-        assert default_action.filter_function == _filter_between
+        assert isinstance(default_action, _filter)
         assert default_action.id == f"__filter_action_{filter.id}"
+        assert default_action.column == "lifeExp"
+        assert default_action.filter_function == _filter_between
+        assert default_action.targets == ["scatter_chart", "bar_chart"]
 
     @pytest.mark.usefixtures("managers_one_page_container_controls")
     def test_container_filter_default_targets(self):
@@ -953,21 +968,18 @@ class TestFilterPreBuildMethod:
 
     def test_set_custom_action(self, managers_one_page_two_graphs, identity_action_function):
         action_function = identity_action_function()
+        custom_action = vm.Action(function=action_function)
 
         filter = vm.Filter(
             column="country",
             selector=vm.RadioItems(
-                actions=[vm.Action(function=action_function)],
+                actions=[custom_action],
             ),
         )
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
-        default_actions_chain = filter.selector.actions[0]
-        default_action = default_actions_chain.actions[0]
-
-        assert isinstance(default_actions_chain, ActionsChain)
-        assert default_action.function is action_function
+        assert filter.selector.actions == [custom_action]
 
 
 class TestFilterBuild:
@@ -995,7 +1007,7 @@ class TestFilterBuild:
 
         filter.pre_build()
         result = filter.build()
-        expected = html.Div(id="filter-id", children=test_selector.build())
+        expected = html.Div(id="filter-id", children=html.Div(children=[test_selector.build()]))
 
         assert_component_equal(result, expected)
 
@@ -1023,9 +1035,40 @@ class TestFilterBuild:
         result = filter.build()
         expected = dcc.Loading(
             id="filter_id",
-            children=test_selector.build(),
+            children=html.Div(children=[test_selector.build()]),
             color="grey",
             overlay_style={"visibility": "visible"},
         )
 
         assert_component_equal(result, expected, keys_to_strip={"className"})
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize(
+        "test_column ,test_selector",
+        [
+            ("continent", vm.Checklist()),
+            ("continent", vm.Dropdown()),
+            ("continent", vm.Dropdown(multi=False)),
+            ("continent", vm.RadioItems()),
+            ("pop", vm.Slider()),
+            ("pop", vm.RangeSlider()),
+            ("year", vm.DatePicker()),
+            ("year", vm.DatePicker(range=False)),
+            ("is_europe", vm.Switch()),
+            ("is_europe", vm.Switch(value=True)),
+        ],
+    )
+    def test_filter_show_in_url_build(self, test_column, test_selector):
+        filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector, show_in_url=True)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        result = filter.build()
+        expected = html.Div(
+            id="filter-id",
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{filter.selector.id}_guard_actions_chain", data=False)]
+            ),
+        )
+
+        assert_component_equal(result, expected)
