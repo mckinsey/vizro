@@ -1,8 +1,8 @@
 import sys
 
-import dash
 import pytest
 from asserts import assert_component_equal
+from dash import Output, dcc
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 
@@ -201,6 +201,7 @@ def config_for_testing_all_components_with_actions(request, standard_px_chart, a
                 id="export_data_button",
                 actions=[
                     vm.Action(function=export_data_action_function),
+                    vm.Action(function=export_data(id="not_first_in_chain_export_data_action")),
                 ],
             ),
         ],
@@ -212,7 +213,7 @@ def config_for_testing_all_components_with_actions(request, standard_px_chart, a
 @pytest.fixture
 def expected_transformed_outputs(request):
     return {
-        f"download_dataframe_{target}": dash.Output(
+        f"download_dataframe_{target}": Output(
             {"action_id": "export_data_action", "target_id": target, "type": "download_dataframe"}, "data"
         )
         for target in request.param
@@ -220,10 +221,31 @@ def expected_transformed_outputs(request):
 
 
 @pytest.fixture
-def expected_dash_components(request):
-    return [
-        dash.dcc.Download(id={"type": "download_dataframe", "action_id": "export_data_action", "target_id": target})
+def expected_first_in_chain_dash_components(request):
+    return [dcc.Store(id="export_data_action_finished"), dcc.Store(id="export_data_action_guarded_trigger")] + [
+        dcc.Download(id={"type": "download_dataframe", "action_id": "export_data_action", "target_id": target})
         for target in request.param
+    ]
+
+
+@pytest.fixture
+def expected_not_first_in_chain_dash_components(request):
+    return [
+        dcc.Store(id="not_first_in_chain_export_data_action_finished"),
+        dcc.Download(
+            id={
+                "type": "download_dataframe",
+                "action_id": "not_first_in_chain_export_data_action",
+                "target_id": "scatter_chart",
+            }
+        ),
+        dcc.Download(
+            id={
+                "type": "download_dataframe",
+                "action_id": "not_first_in_chain_export_data_action",
+                "target_id": "ag_grid",
+            }
+        ),
     ]
 
 
@@ -248,7 +270,7 @@ class TestExportDataInstantiation:
         assert result == expected_transformed_outputs
 
     @pytest.mark.parametrize(
-        "config_for_testing_all_components_with_actions, expected_dash_components",
+        "config_for_testing_all_components_with_actions, expected_first_in_chain_dash_components",
         [
             # targets are not defined
             (None, ["scatter_chart", "ag_grid"]),
@@ -259,11 +281,17 @@ class TestExportDataInstantiation:
         ],
         indirect=True,
     )
-    def test_export_data_dash_components(
-        self, config_for_testing_all_components_with_actions, expected_dash_components
+    def test_export_data_first_in_chain_dash_components(
+        self, config_for_testing_all_components_with_actions, expected_first_in_chain_dash_components
     ):
         result_components = model_manager["export_data_action"]._dash_components
-        assert_component_equal(result_components, expected_dash_components)
+        assert_component_equal(result_components, expected_first_in_chain_dash_components)
+
+    def test_export_data_not_first_in_chain_dash_components(
+        self, config_for_testing_all_components_with_actions, expected_not_first_in_chain_dash_components
+    ):
+        result_components = model_manager["not_first_in_chain_export_data_action"]._dash_components
+        assert_component_equal(result_components, expected_not_first_in_chain_dash_components)
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")

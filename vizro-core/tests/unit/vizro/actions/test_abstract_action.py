@@ -1,6 +1,6 @@
 import pytest
 from asserts import assert_component_equal
-from dash import Output, State, html
+from dash import Output, State, dcc
 from pydantic import ValidationError
 
 from vizro.actions._abstract_action import _AbstractAction
@@ -98,8 +98,11 @@ def action_with_mock_outputs(request):
 class TestAbstractActionInstantiation:
     """Tests _AbstractAction instantiation."""
 
-    def test_action_mandatory_only(self):
-        action = action_with_no_args()
+    def test_action_first_in_chain_mandatory_only(self):
+        action = action_with_no_args(id="action-id")
+
+        # Private attribute set by parent component's validation, not Action's.
+        action._first_in_chain = True
 
         assert hasattr(action, "id")
         assert hasattr(action, "function")
@@ -108,7 +111,27 @@ class TestAbstractActionInstantiation:
         assert not action._legacy
         assert action._transformed_inputs == {}
         assert action._transformed_outputs == []
-        assert action._dash_components == []
+        assert_component_equal(
+            action._dash_components, [dcc.Store(id="action-id_finished"), dcc.Store(id="action-id_guarded_trigger")]
+        )
+        assert action._parameters == set()
+        assert action._runtime_args == {}
+        assert action._action_name == "action_with_no_args"
+
+    def test_action_not_first_in_chain_mandatory_only(self):
+        action = action_with_no_args(id="action-id")
+
+        # Private attribute set by parent component's validation, not Action's.
+        action._first_in_chain = False
+
+        assert hasattr(action, "id")
+        assert hasattr(action, "function")
+        assert action.outputs == []
+
+        assert not action._legacy
+        assert action._transformed_inputs == {}
+        assert action._transformed_outputs == []
+        assert_component_equal(action._dash_components, [dcc.Store(id="action-id_finished")])
         assert action._parameters == set()
         assert action._runtime_args == {}
         assert action._action_name == "action_with_no_args"
@@ -247,6 +270,9 @@ class TestAbstractActionOutputs:
         "action_with_mock_outputs, expected_transformed_outputs",
         [
             ([], []),
+            ("component.property", Output("component", "property")),
+            ("known_ag_grid_id", Output("known_ag_grid_id", "children")),
+            ("known_ag_grid_id.cellClicked", Output("underlying_ag_grid_id", "cellClicked")),
             (["component.property"], Output("component", "property")),
             (
                 ["component_1.property_1", "component_2.property_2"],
@@ -283,7 +309,6 @@ class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "action_with_mock_outputs",
         [
-            "component.property",
             1,
             None,
             {1: "component.property"},
@@ -298,6 +323,7 @@ class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "action_with_mock_outputs",
         [
+            "unknown_model_id",
             ["unknown_model_id"],
             {"output_1": "unknown_model_id"},
         ],
@@ -314,6 +340,11 @@ class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "action_with_mock_outputs",
         [
+            "",
+            "component.",
+            ".property",
+            "component..property",
+            "component.property.property",
             [""],
             ["component."],
             [".property"],
@@ -347,11 +378,3 @@ class TestAbstractActionOutputs:
         ):
             action_with_mock_outputs.outputs = ["known_model_with_no_default_props"]
             action_with_mock_outputs()._transformed_outputs
-
-
-class TestAbstractActionBuild:
-    def test_abstract_action_build(self):
-        action = action_with_no_args(id="action_test")
-        assert_component_equal(
-            action.build(), html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
-        )

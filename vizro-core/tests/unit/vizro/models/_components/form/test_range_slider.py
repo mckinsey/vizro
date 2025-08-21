@@ -403,11 +403,10 @@ class TestRangeSliderInstantiation:
 
         assert slider.title == str(title)
 
-    def test_set_action_via_validator(self, identity_action_function):
-        range_slider = vm.RangeSlider(actions=[vm.Action(function=identity_action_function())])
-        actions_chain = range_slider.actions[0]
-
-        assert actions_chain.trigger.component_property == "value"
+    def test_range_slider_trigger(self, identity_action_function):
+        range_slider = vm.Slider(id="range-slider-id", actions=[vm.Action(function=identity_action_function())])
+        [action] = range_slider.actions
+        assert action._trigger == "range-slider-id.value"
 
 
 class TestRangeSliderBuild:
