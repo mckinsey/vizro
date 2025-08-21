@@ -18,6 +18,7 @@ class TestButtonInstantiation:
         assert hasattr(button, "id")
         assert button.type == "button"
         assert button.text == "Click me!"
+        assert button.icon == ""
         assert button.href == ""
         assert button.actions == []
         assert button.variant == "filled"
@@ -39,6 +40,7 @@ class TestButtonInstantiation:
         assert button.id == "button-id"
         assert button.type == "button"
         assert button.text == str(text)
+        assert button.icon == ""
         assert button.href == href
         assert button.actions == []
         assert button.variant == variant
@@ -48,17 +50,17 @@ class TestButtonInstantiation:
             "description": f"{button.description.id}-text.children",
         }
 
-    def test_set_action_via_validator(self):
-        button = vm.Button(actions=[vm.Action(function=export_data())])
-        actions_chain = button.actions[0]
-        assert actions_chain.trigger.component_property == "n_clicks"
+    def test_button_trigger(self):
+        button = vm.Button(id="button-id", actions=[vm.Action(function=export_data())])
+        [action] = button.actions
+        assert action._trigger == "button-id.n_clicks"
 
     def test_invalid_variant(self):
         with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
             vm.Button(variant="test")
 
     def test_invalid_text(self):
-        with pytest.raises(ValidationError, match="String should have at least 1 character"):
+        with pytest.raises(ValueError, match="You must provide either the `text` or `icon` argument."):
             vm.Button(text="")
 
 
@@ -68,41 +70,46 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span(["Click me!", None], className="button-text"),
+                html.Span([None, "Click me!", None], className="btn-text"),
                 id="button",
                 href="",
                 target="_top",
                 color="primary",
+                class_name="",
             ),
         )
 
     def test_button_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
-        result = vm.Button(
-            id="button", text="Click me!", extra={"color": "success", "outline": True, "href": "www.google.com"}
-        ).build()
+        result = vm.Button(id="button", extra={"color": "success", "outline": True, "href": "www.google.com"}).build()
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span(["Click me!", None], className="button-text"),
+                html.Span([None, "Click me!", None], className="btn-text"),
                 id="button",
                 color="success",
                 outline=True,
                 href="www.google.com",
                 target="_top",
+                class_name="",
             ),
         )
 
     def test_button_build_with_href(self):
         button = vm.Button(id="button_id", text="My text!", href="www.google.com").build()
-        expected = dbc.Button(
-            id="button_id",
-            children=html.Span(["My text!", None], className="button-text"),
-            href="www.google.com",
-            target="_top",
-            color="primary",
+
+        assert_component_equal(
+            button,
+            dbc.Button(
+                id="button_id",
+                children=html.Span([None, "My text!", None], className="btn-text"),
+                href="www.google.com",
+                target="_top",
+                color="primary",
+                class_name="",
+            ),
+            keys_to_strip={"id"},
         )
-        assert_component_equal(button, expected)
 
     @pytest.mark.parametrize(
         "variant, expected_color",
@@ -110,13 +117,15 @@ class TestBuildMethod:
     )
     def test_button_with_variant(self, variant, expected_color):
         result = vm.Button(variant=variant).build()
+
         assert_component_equal(
             result,
             dbc.Button(
-                children=html.Span(["Click me!", None], className="button-text"),
+                children=html.Span([None, "Click me!", None], className="btn-text"),
                 href="",
                 target="_top",
                 color=expected_color,
+                class_name="",
             ),
             keys_to_strip={"id"},
         )
@@ -142,10 +151,62 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span(["Click me", *expected_description], className="button-text"),
+                html.Span([None, "Click me", *expected_description], className="btn-text"),
                 id="button",
                 href="",
                 target="_top",
                 color="primary",
+                class_name="",
+            ),
+        )
+
+    @pytest.mark.parametrize(
+        "icon, text, class_name",
+        [("home", "Test", ""), ("home", "", "btn-circular")],
+    )
+    def test_button_build_with_icon(self, icon, text, class_name):
+        button = vm.Button(id="button_id", icon=icon, text=text).build()
+
+        expected_icon = html.Span(f"{icon}", id="button_id-icon", className="material-symbols-outlined tooltip-icon")
+        assert_component_equal(
+            button,
+            dbc.Button(
+                id="button_id",
+                children=html.Span([expected_icon, text, None], className="btn-text"),
+                target="_top",
+                href="",
+                color="primary",
+                class_name=class_name,
+            ),
+        )
+
+    def test_button_build_description_with_icon_no_text(self):
+        """Test that description argument correctly builds the tooltip and targets the button icon when text=''."""
+        button = vm.Button(
+            id="button_id",
+            icon="home",
+            text="",
+            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        expected_icon = html.Span("home", id="button_id-icon", className="material-symbols-outlined tooltip-icon")
+        expected_description = [
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                id="info",
+                target="button_id-icon",
+                autohide=False,
+            ),
+        ]
+
+        assert_component_equal(
+            button,
+            dbc.Button(
+                id="button_id",
+                children=html.Span([expected_icon, "", *expected_description], className="btn-text"),
+                target="_top",
+                href="",
+                color="primary",
+                class_name="btn-circular",
             ),
         )

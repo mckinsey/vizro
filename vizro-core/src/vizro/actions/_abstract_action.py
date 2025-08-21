@@ -4,12 +4,10 @@ import abc
 import inspect
 from typing import Union
 
-from dash import Output
-from dash.development.base_component import Component
 from pydantic import TypeAdapter
 
 from vizro.models._action._action import _BaseAction
-from vizro.models.types import _IdOrIdProperty
+from vizro.models.types import OutputsType, _IdOrIdProperty
 
 
 # TODO-AV2 D 5: make public.
@@ -54,7 +52,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> Union[list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]:  # type: ignore[override]
+    def outputs(self) -> Union[_IdOrIdProperty, list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key
@@ -69,24 +67,13 @@ class _AbstractAction(_BaseAction, abc.ABC):
         # We should probably not build in behavior here e.g. to generate outputs automatically from certain reserved
         # arguments since this would only work well for class-based actions and not @capture("action") ones. Instead
         # the code that does make_outputs_from_targets would be put into a reusable function.
-        #
-        # TODO-AV2 D 4: build in a vizro_download component. At some point after that consider changing export_data to
-        #  use it, but that's not urgent. See  https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
         pass
 
     @property
-    def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
-        # Action.outputs is already validated by pydantic as list[str] or dict[str, str], but for
-        # _AbstractAction.outputs we need to do the validation manually with TypeAdapter.
-        TypeAdapter(Union[list[str], dict[str, str]]).validate_python(self.outputs)
-        return super()._transformed_outputs
-
-    @property
-    def _dash_components(self) -> list[Component]:
-        # This can be overridden in subclasses now but will probably not exist in future. Instead we will have built in
-        # components like dcc.Download which are used by user-defined actions and (probably) built-in ones.
-        # See https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
-        return []
+    def _validated_outputs(self) -> OutputsType:
+        # Action.outputs is already validated with OutputsType, but for _AbstractAction.outputs we need to do the
+        # validation manually with TypeAdapter.
+        return TypeAdapter(OutputsType).validate_python(self.outputs)
 
     @property
     def _legacy(self) -> bool:
