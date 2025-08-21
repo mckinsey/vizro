@@ -31,7 +31,7 @@ from vizro.models.types import (
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from vizro.actions import export_data, filter_interaction, collapse_expand_containers
+    from vizro.actions import collapse_expand_containers, export_data, filter_interaction
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.

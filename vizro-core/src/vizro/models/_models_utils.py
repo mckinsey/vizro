@@ -90,7 +90,7 @@ def make_actions_chain(self):
     This runs after model_post_init so that self._inner_component_id will have already been set correctly in
     Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
     """
-    from vizro.actions import export_data, filter_interaction, collapse_expand_containers
+    from vizro.actions import collapse_expand_containers, export_data, filter_interaction
     from vizro.actions._on_page_load import _on_page_load
 
     converted_actions = []
