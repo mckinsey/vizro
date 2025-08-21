@@ -15,7 +15,7 @@ To attach an action to a component, you must enter the [`Action`][vizro.models.A
 
 ??? note "Note on `Trigger`"
 
-    Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
+    Currently each component has one trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
 
 The below sections are guides on how to use action functions.
 
@@ -290,7 +290,7 @@ Here is an example of how to configure a chart interaction when the source is an
 
 ## Custom actions
 
-If you require an action that isn't available as a pre-defined option, you can create a custom action function. Refer to our [user guide on custom actions](custom-actions.md) for more information.
+If you require an action that isn't available as a built-in option, you can create a custom action function. Refer to our [user guide on custom actions](custom-actions.md) for more information.
 
 ## Chain actions
 
