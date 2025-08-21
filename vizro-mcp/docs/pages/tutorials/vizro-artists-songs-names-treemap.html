@@ -1,0 +1,173 @@
+<html lang="en">
+  <head>
+    <title>Top 10 Artists: Songs and Name Occurrences</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Container to hold both divs */
+      .overlay-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Background layer */
+      #viewer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Overlay layer */
+      #login {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        /* make content center */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Overlay layer */
+      #loader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay-container">
+      <iframe src="https://py.cafe/view?iframe" id="viewer" style="width: 100%; height: 100%; border: none" onerror="console.error('error')"></iframe>
+      <div id="login">
+        <div>
+          <h1>Sign in to view the app</h1>
+          <button onclick="openLogin()">Sign in</button>
+        </div>
+      </div>
+      <div id="loader">
+        <h1>Loading...</h1>
+      </div>
+    </div>
+  </body>
+  <script>
+    var dataReady = false;
+
+    function getProjectData() {
+      const projectStateEl = document.getElementById("projectState"),
+        projectStateStr = projectStateEl.textContent;
+      projectStateEl.remove();
+      const projectState = JSON.parse(projectStateStr);
+      return {
+        projectState,
+        signatureJwt: null,
+      };
+    }
+    const viewer = document.getElementById("viewer");
+    const login = document.getElementById("login");
+    const loader = document.getElementById("loader");
+    const preAuth = false;
+
+    function openLogin() {
+      const w = 420;
+      const h = 800;
+      const width = window.innerWidth
+        ? window.innerWidth
+        : document.documentElement.clientWidth
+          ? document.documentElement.clientWidth
+          : screen.width;
+      const height = window.innerHeight
+        ? window.innerHeight
+        : document.documentElement.clientHeight
+          ? document.documentElement.clientHeight
+          : screen.height;
+
+      const systemZoom = width / window.screen.availWidth;
+      const left = (width - w) / 2 / systemZoom;
+      const top = (height - h) / 2 / systemZoom;
+
+      // add a random string to the URL to avoid caching
+      // as long as we use response.headers["cache-control"] = "no-cache"
+      // this is not needed, but in case we don't, this will always force a reload
+      const random = Math.random().toString(36).substring(7);
+      const url = `https://py.cafe/sign-in?p=${random}`;
+      window.open(url, "login", `width=${w},height=${h},top=${top},left=${left}`);
+    }
+
+    function sendState() {
+      viewer.contentWindow.postMessage({ type: "loadProject", projectData: getProjectData() }, "*");
+      document.body.classList.add("loaded");
+    }
+    // we let the viewer tell us when it's ready
+    window.onmessage = (event) => {
+      console.log("message received", event);
+      if (event.data?.type == "sign-in:loaded") {
+        // reload the iframe to the original iframe src
+        const url = "https://py.cafe/view?iframe";
+        // a proxy server does not forward, so url will not change, so we set it
+        // first to about:blank to force a reload
+        viewer.src = "about:blank";
+        viewer.src = url;
+        login.style.display = "none";
+      }
+      if (event.data == "ready") {
+        login.style.display = "none";
+        function sendWhenReady() {
+          if (dataReady) {
+            sendState();
+          } else {
+            setTimeout(sendWhenReady, 1000);
+          }
+        }
+        sendWhenReady();
+      }
+    };
+
+    // hide loader after a timeout, to not always show the login button
+    setTimeout(() => {
+      loader.style.display = "none";
+    }, 700);
+    if (!preAuth) {
+      // if we don't require pre-auth, we do not need to login
+      login.style.display = "none";
+    }
+  </script>
+  <script type="application/json" id="projectState">
+    {
+  "projectId": "okp9rp4pq4",
+  "creator": "7ed1b6e5-053c-4db7-82f1-2e931e1843a3",
+  "name": "vizro-artists-songs-names-treemap",
+  "requirements": "vizro==0.1.44",
+  "lockfileContent": null,
+  "type": "vizro",
+  "python": "pyodide-v0.26.1",
+  "code": "\nimport vizro.models as vm\nfrom vizro import Vizro\nfrom vizro.managers import data_manager\nimport pandas as pd\nimport plotly.graph_objects as go\nimport vizro.plotly.express as px\nimport numpy as np\nfrom vizro.models.types import capture\n\n# Load the data\ndata_manager[\"unique.csv\"] = pd.read_csv(\"https:\/\/raw.githubusercontent.com\/the-pudding\/data\/master\/names-in-songs\/unique.csv\")\n\n\n# Custom chart code\n@capture('graph')\ndef artist_names_treemap(data_frame):\n    # Preprocess the data\n    # Remove rows where person==False\n    df = data_frame[data_frame['person'] == True].copy()\n    \n    # Remove rows where name=='Baby'\n    df = df[df['name'] != 'Baby']\n    \n    # Remove null values\n    df = df.dropna()\n    \n    # Count unique names per artist\n    artist_name_counts = df.groupby('artist')['name'].nunique().sort_values(ascending=False)\n    \n    # Get top 10 artists\n    top_10_artists = artist_name_counts.head(10).index.tolist()\n    \n    # Filter data to only include top 10 artists\n    df_top_10 = df[df['artist'].isin(top_10_artists)]\n    \n    # Create flattened data for better space filling\n    treemap_data = []\n    \n    # First pass: collect all data and calculate totals\n    artist_totals = {}\n    for artist in top_10_artists:\n        artist_data = df_top_10[df_top_10['artist'] == artist]\n        artist_totals[artist] = len(artist_data)\n    \n    # Second pass: create hierarchy with normalized values\n    for artist in top_10_artists:\n        artist_data = df_top_10[df_top_10['artist'] == artist]\n        unique_names_count = artist_data['name'].nunique()\n        total_entries = len(artist_data)\n        \n        # Add artist level\n        treemap_data.append({\n            'ids': artist,\n            'labels': f'{artist} ({unique_names_count} names)',\n            'parents': '',\n            'values': total_entries * 100,\n            'level': 'artist',\n            'hover_info': f'Artist: {artist} with {unique_names_count} different names across {artist_data[\"song\"].nunique()} songs'\n        })\n        \n        # Get song distribution\n        song_groups = artist_data.groupby('song')\n        \n        for song, song_data in song_groups:\n            song_entries = len(song_data)\n            song_id = f'{artist}|{song}'\n            unique_names_in_song = song_data['name'].nunique()\n            \n            treemap_data.append({\n                'ids': song_id,\n                'labels': song,\n                'parents': artist,\n                'values': song_entries * 100,\n                'level': 'song',\n                'hover_info': f'Song: {song} contains {unique_names_in_song} different names'\n            })\n            \n            # Add each name occurrence as separate entry\n            name_groups = song_data.groupby('name')\n            for name, name_data in name_groups:\n                name_entries = len(name_data)\n                sentence = name_data.iloc[0]['sentence']\n                \n                name_id = f'{artist}|{song}|{name}'\n                treemap_data.append({\n                    'ids': name_id,\n                    'labels': name,\n                    'parents': song_id,\n                    'values': name_entries * 100,\n                    'level': 'name',\n                    'hover_info': f'Name: {name} - {sentence}'\n                })\n    \n    # Convert to DataFrame\n    treemap_df = pd.DataFrame(treemap_data)\n    \n    # Create the treemap using graph_objects with custom data\n    fig = go.Figure(go.Treemap(\n        ids=treemap_df['ids'],\n        labels=treemap_df['labels'],\n        parents=treemap_df['parents'],\n        values=treemap_df['values'],\n        text=treemap_df['hover_info'],\n        hovertemplate='<b>%{label}<\/b><br>%{text}<extra><\/extra>',\n        textinfo='label',\n        maxdepth=3,\n        branchvalues='total',\n        pathbar={'visible': False}\n    ))\n    \n    # Update layout to fit viewport properly\n    fig.update_layout(\n        title='Top 10 Artists: Songs and Names Distribution',\n        title_x=0.5,\n        title_font_size=16,\n        margin=dict(t=60, l=25, r=25, b=25),\n        # Set explicit height to fit in viewport\n        height=600,\n        # Make it responsive to container width\n        autosize=True\n    )\n    \n    return fig\n\n# Create a dashboard to display the chart\ndashboard = vm.Dashboard(\n    pages=[\n        vm.Page(\n            title=\"Treemap Chart\",\n            components=[\n                vm.Graph(\n                    id=\"treemap_graph\",\n                    figure=artist_names_treemap(\"unique.csv\"),\n                )\n            ],\n        )\n    ],\n    title=\"Treemap Dashboard\",\n)\n\n# Run the dashboard\nVizro().build(dashboard).run()\n",
+  "layout": null,
+  "files": [],
+  "previewImage": null,
+  "projectParentId": null,
+  "title": "Top 10 Artists: Songs and Name Occurrences"
+}
+  </script>
+  <script>
+    var dataReady = true;
+    if (window !== window.top) {
+      // can be used for 'opening' the project in the parent window, e.g. for editing
+      window.parent.postMessage({ type: "loadProject", projectData: getProjectData() }, "*");
+    }
+  </script>
+</html>
