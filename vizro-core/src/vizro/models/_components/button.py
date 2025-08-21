@@ -127,12 +127,12 @@ class Button(VizroBaseModel):
         if not self.description:
             return [None]
 
-        description = self.description.build().children
+        description_build_obj = self.description.build()
         if not self.text:
             # When there's no text, we don't display the tooltip icon.
             # Instead we update the tooltip target to the button's icon.
-            tooltip_component = description[1]
+            tooltip_component = description_build_obj[self.description.id]
             tooltip_component.target = f"{self.id}-icon"
             return [tooltip_component]
 
-        return description
+        return description_build_obj.children
