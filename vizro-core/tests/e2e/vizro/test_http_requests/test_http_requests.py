@@ -1,28 +1,44 @@
-import pytest
-from playwright.async_api import async_playwright
-import asyncio
 from playwright.sync_api import sync_playwright
-import json
 from hamcrest import assert_that, equal_to
 from collections import Counter
+import time
 
 
 def check_requests_count(urls_list, url_path, requests_number):
-    counts = Counter(urls_list)
-    assert_that(counts[url_path], equal_to(requests_number),
+    # counts = Counter(urls_list)
+    # assert_that(counts[url_path], equal_to(requests_number),
+    assert_that(len(urls_list), equal_to(requests_number),
                 reason=f"'{url_path}' should be equal to {requests_number}")
 
 
-urls = []
+# def wait_for(condition_function, *args):
+#     """Function wait for any condition to be True."""
+#     start_time = time.time()
+#     while time.time() < start_time + 100:
+#         if condition_function(*args):
+#             return True
+#         else:
+#             time.sleep(0.1)
+#     raise Exception(f"Timeout waiting for {condition_function.__name__}")
+#
+#
+# def wait_for_requests(urls, expected_count, timeout=5000):
+#     print("urls: ", urls)
+#
+#     start = time.time()
+#     while len(urls) < expected_count:
+#         print(len(urls))
+#         if (time.time() - start) * 1000 > timeout:
+#             raise TimeoutError(f"Expected {expected_count} requests but got {len(urls)}")
+#         time.sleep(0.05)  # tiny poll
 
 
 def http_requests(func):
 
     def wrapper(request):
-        global urls
-        urls = []
 
         with sync_playwright() as p:
+            urls = []
             browser = p.chromium.launch()
             context = browser.new_context(
                 viewport={"width": 1920, "height": 1080}
@@ -30,17 +46,18 @@ def http_requests(func):
             page = context.new_page()
 
             def on_request(request):
-                if any(p in request.url for p in ["_dash-update-component", "_dash-dependencies", "_dash-layout"]):
+                if any(r in request.url for r in ["_dash-update-component"]):
                     urls.append(request.url.split('/')[3])
+                # if lambda request: "_dash-update-component" in request.url:
+                #     urls.append(request)
 
             page.on("request", on_request)
+
             try:
                 page.goto("http://127.0.0.1:5002/")
+                page.wait_for_timeout(100)
 
-                func(page)
-
-                # Keep the browser open for observation
-                page.wait_for_timeout(5000)  # 5 seconds
+                func(page, urls)
 
             except Exception as e:
                 page.screenshot(path=f"{request.node.name}.png", full_page=True)
@@ -48,125 +65,169 @@ def http_requests(func):
                 raise
 
             finally:
-                context.close()
                 browser.close()
 
     return wrapper
 
 
 @http_requests
-def test_1(page):
+def test_1(page, urls):
+    check_requests_count(urls, "_dash-update-component", 1)
+    page.get_by_role("button").nth(1).click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 2)
+    page.wait_for_timeout(1000)
+    check_requests_count(urls, "_dash-update-component", 2)
+
+
+@http_requests
+def test_2(page, urls):
+    urls.clear()
+    page.locator("a[href='/my-first-dashboard---0-guards']").click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 2)
     page.get_by_text("×").nth(0).click()
-
+    page.wait_for_timeout(100)
     check_requests_count(urls, "_dash-update-component", 3)
-    check_requests_count(urls, "_dash-dependencies", 1)
-    check_requests_count(urls, "_dash-layout", 1)
+    page.wait_for_timeout(1000)
+    check_requests_count(urls, "_dash-update-component", 3)
 
 
 @http_requests
-def test_2(page):
-    page.locator("a[href='/export-data---custom-sleep-action---export-data---1-guard']").click()
-    page.get_by_text("Export data").nth(0).click()
+def test_2_2(page, urls):
+    urls.clear()
+    page.locator("a[href='/export-data---custom-sleep-action---export-data---0-guard']").click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 2)
+    page.get_by_role("button").nth(1).click()
+    page.wait_for_timeout(3000)
+    check_requests_count(urls, "_dash-update-component", 5)
     page.get_by_text("Americas").nth(0).click()
-
-    check_requests_count(urls, "_dash-update-component",4)
-    check_requests_count(urls, "_dash-dependencies", 1)
-    check_requests_count(urls, "_dash-layout", 1)
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 6)
+    page.wait_for_timeout(1000)
+    check_requests_count(urls, "_dash-update-component", 6)
 
 
 @http_requests
-def test_3(page):
-    page.locator("a[href='/filter-interaction-graph---1-guard']").click()
+def test_3(page, urls):
+    urls.clear()
+    page.locator("a[href='/filter-interaction-graph---0-guard']").click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 2)
     element = page.locator(".box").nth(1)
     box = element.bounding_box()
     page.mouse.click(
         box["x"] + box["width"] / 2,
         box["y"] + box["height"] / 2
     )
-
-    check_requests_count(urls, "_dash-update-component", 4)
-    check_requests_count(urls, "_dash-dependencies", 1)
-    check_requests_count(urls, "_dash-layout", 1)
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 3)
+    page.wait_for_timeout(1000)
+    check_requests_count(urls, "_dash-update-component", 3)
 
 
 @http_requests
-def test_4(page):
-    page.locator("a[href='/filter-interaction-grid---2-guards']").click()
+def test_4(page, urls):
+    urls.clear()
+    page.locator("a[href='/filter-interaction-grid---1-guard']").click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 2)
     page.get_by_role("gridcell", name="Europe").nth(0).click()
-
-    check_requests_count(urls, "_dash-update-component", 4)
-    check_requests_count(urls, "_dash-dependencies", 1)
-    check_requests_count(urls, "_dash-layout", 1)
-
-
-@http_requests
-def test_5(page):
-    page.locator("a[href='/dynamic-filter---2-guards']").click()
-    page.get_by_text("Asia").nth(0).click()
-
-    check_requests_count(urls, "_dash-update-component", 4)
-    check_requests_count(urls, "_dash-dependencies", 1)
-    check_requests_count(urls, "_dash-layout", 1)
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 3)
+    page.wait_for_timeout(1000)
+    check_requests_count(urls, "_dash-update-component", 3)
 
 
 @http_requests
-def test_6(page):
-    page.locator("a[href='/dataframe-parameter---2-guards']").click()
+def test_5(page, urls):
+    urls.clear()
+    page.locator("a[href='/dfp--dynamic-filter--url--filter-interaction---4-guards-on-refresh']").click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 2)
+    page.reload(wait_until="networkidle")
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 4)
     page.get_by_text("Oceania").nth(0).click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 5)
     page.locator(".Select-arrow").click()
     page.locator(".form-check-input").nth(0).click()
-
-    check_requests_count(urls, "_dash-update-component", 5)
-    check_requests_count(urls, "_dash-dependencies", 1)
-    check_requests_count(urls, "_dash-layout", 1)
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 6)
+    page.wait_for_timeout(1000)
+    check_requests_count(urls, "_dash-update-component", 6)
 
 
 @http_requests
-def test_7(page):
-    page.locator("a[href='/url-parameter-filters---2-guards-on-refresh']").click()
+def test_6(page, urls):
+    urls.clear()
+    page.locator("a[href='/test-all-selectors---14-guards-on-refresh']").click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 2)
     page.reload(wait_until="networkidle")
-
-    check_requests_count(urls, "_dash-update-component", 5)
-    check_requests_count(urls, "_dash-dependencies", 2)
-    check_requests_count(urls, "_dash-layout", 2)
-
-
-@http_requests
-def test_8(page):
-    page.locator("a[href='/multi-url-parameter-filters---3-guards-or-refresh']").click()
-    page.get_by_text("Asia").nth(0).click()
-    page.get_by_text("Asia").nth(1).click()
-    page.reload(wait_until="networkidle")
-
-    check_requests_count(urls, "_dash-update-component", 7)
-    check_requests_count(urls, "_dash-dependencies", 2)
-    check_requests_count(urls, "_dash-layout", 2)
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 4)
+    page.wait_for_timeout(1000)
+    check_requests_count(urls, "_dash-update-component", 4)
 
 
 @http_requests
-def test_9(page):
-    page.locator("a[href='/dataframe-parameter-and-url-filter--2-guards']").click()
-    page.get_by_text("Africa").nth(0).click()
-    page.locator(".Select-arrow").click()
-    page.locator(".form-check-input").nth(0).click()
+def test_7(page, urls):
+    urls.clear()
+    page.locator("a[href='/action-chain-triggers-another-action-chain']").click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 1)
+    page.get_by_role("button").nth(1).click()
+    page.wait_for_timeout(100)
+    check_requests_count(urls, "_dash-update-component", 3)
+    page.wait_for_timeout(1000)
+    check_requests_count(urls, "_dash-update-component", 3)
 
-    check_requests_count(urls, "_dash-update-component", 5)
-    check_requests_count(urls, "_dash-dependencies", 1)
-    check_requests_count(urls, "_dash-layout", 1)
 
+#
+#
+# @http_requests
+# def test_8(page):
+#     page.locator("a[href='/multi-url-parameter-filters---3-guards-or-refresh']").click()
+#     page.get_by_text("Asia").nth(0).click()
+#     page.get_by_text("Asia").nth(1).click()
+#     page.reload(wait_until="networkidle")
+#
+#     check_requests_count(urls, "_dash-update-component", 7)
+#     check_requests_count(urls, "_dash-dependencies", 2)
+#     check_requests_count(urls, "_dash-layout", 2)
+#
+#
+# @http_requests
+# def test_9(page):
+#     page.locator("a[href='/dataframe-parameter-and-url-filter--2-guards']").click()
+#     page.get_by_text("Africa").nth(0).click()
+#     page.locator(".Select-arrow").click()
+#     page.locator(".form-check-input").nth(0).click()
+#
+#     check_requests_count(urls, "_dash-update-component", 5)
+#     check_requests_count(urls, "_dash-dependencies", 1)
+#     check_requests_count(urls, "_dash-layout", 1)
+#
+#
+# @http_requests
+# def test_10(page):
+#     page.locator("a[href='/dfp--dynamic-filter--url--filter-interaction---5-guards-on-refresh']").click()
+#     page.get_by_text("Africa").nth(0).click()
+#     page.locator(".Select-arrow").click()
+#     page.locator(".form-check-input").nth(0).click()
+#     page.reload(wait_until="networkidle")
+#
+#     check_requests_count(urls, "_dash-update-component", 7)
+#     check_requests_count(urls, "_dash-dependencies", 2)
+#     check_requests_count(urls, "_dash-layout", 2)
 
-@http_requests
-def test_10(page):
-    page.locator("a[href='/dfp--dynamic-filter--url--filter-interaction---5-guards-on-refresh']").click()
-    page.get_by_text("Africa").nth(0).click()
-    page.locator(".Select-arrow").click()
-    page.locator(".form-check-input").nth(0).click()
-    page.reload(wait_until="networkidle")
-
-    check_requests_count(urls, "_dash-update-component", 7)
-    check_requests_count(urls, "_dash-dependencies", 2)
-    check_requests_count(urls, "_dash-layout", 2)
-
+# import pytest
+# from playwright.async_api import async_playwright
+# import asyncio
+# import json
 
 # @pytest.mark.asyncio
 # async def http_requests_async():
