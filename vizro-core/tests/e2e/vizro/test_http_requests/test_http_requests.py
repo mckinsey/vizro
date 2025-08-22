@@ -14,7 +14,7 @@ def check_requests_count(urls_list, url_path, requests_number):
 # def wait_for(condition_function, *args):
 #     """Function wait for any condition to be True."""
 #     start_time = time.time()
-#     while time.time() < start_time + 100:
+#     while time.time() < start_time + TIMEOUT_SHORT:
 #         if condition_function(*args):
 #             return True
 #         else:
@@ -28,7 +28,7 @@ def check_requests_count(urls_list, url_path, requests_number):
 #     start = time.time()
 #     while len(urls) < expected_count:
 #         print(len(urls))
-#         if (time.time() - start) * 1000 > timeout:
+#         if (time.time() - start) * TIMEOUT_LONG > timeout:
 #             raise TimeoutError(f"Expected {expected_count} requests but got {len(urls)}")
 #         time.sleep(0.05)  # tiny poll
 
@@ -55,7 +55,7 @@ def http_requests(func):
 
             try:
                 page.goto("http://127.0.0.1:5002/")
-                page.wait_for_timeout(100)
+                page.wait_for_timeout(TIMEOUT_SHORT)
 
                 func(page, urls)
 
@@ -70,13 +70,17 @@ def http_requests(func):
     return wrapper
 
 
+TIMEOUT_SHORT = 200
+TIMEOUT_LONG = TIMEOUT_LONG
+
+
 @http_requests
 def test_1(page, urls):
     check_requests_count(urls, "_dash-update-component", 1)
     page.get_by_role("button").nth(1).click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 2)
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(TIMEOUT_LONG)
     check_requests_count(urls, "_dash-update-component", 2)
 
 
@@ -84,12 +88,12 @@ def test_1(page, urls):
 def test_2(page, urls):
     urls.clear()
     page.locator("a[href='/my-first-dashboard---0-guards']").click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 2)
     page.get_by_text("×").nth(0).click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 3)
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(TIMEOUT_LONG)
     check_requests_count(urls, "_dash-update-component", 3)
 
 
@@ -97,15 +101,15 @@ def test_2(page, urls):
 def test_2_2(page, urls):
     urls.clear()
     page.locator("a[href='/export-data---custom-sleep-action---export-data---0-guard']").click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 2)
     page.get_by_role("button").nth(1).click()
     page.wait_for_timeout(3000)
     check_requests_count(urls, "_dash-update-component", 5)
     page.get_by_text("Americas").nth(0).click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 6)
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(TIMEOUT_LONG)
     check_requests_count(urls, "_dash-update-component", 6)
 
 
@@ -113,7 +117,7 @@ def test_2_2(page, urls):
 def test_3(page, urls):
     urls.clear()
     page.locator("a[href='/filter-interaction-graph---0-guard']").click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 2)
     element = page.locator(".box").nth(1)
     box = element.bounding_box()
@@ -121,9 +125,9 @@ def test_3(page, urls):
         box["x"] + box["width"] / 2,
         box["y"] + box["height"] / 2
     )
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 3)
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(TIMEOUT_LONG)
     check_requests_count(urls, "_dash-update-component", 3)
 
 
@@ -131,12 +135,12 @@ def test_3(page, urls):
 def test_4(page, urls):
     urls.clear()
     page.locator("a[href='/filter-interaction-grid---1-guard']").click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 2)
     page.get_by_role("gridcell", name="Europe").nth(0).click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 3)
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(TIMEOUT_LONG)
     check_requests_count(urls, "_dash-update-component", 3)
 
 
@@ -144,19 +148,19 @@ def test_4(page, urls):
 def test_5(page, urls):
     urls.clear()
     page.locator("a[href='/dfp--dynamic-filter--url--filter-interaction---4-guards-on-refresh']").click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 2)
     page.reload(wait_until="networkidle")
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 4)
     page.get_by_text("Oceania").nth(0).click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 5)
     page.locator(".Select-arrow").click()
     page.locator(".form-check-input").nth(0).click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 6)
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(TIMEOUT_LONG)
     check_requests_count(urls, "_dash-update-component", 6)
 
 
@@ -164,12 +168,12 @@ def test_5(page, urls):
 def test_6(page, urls):
     urls.clear()
     page.locator("a[href='/test-all-selectors---14-guards-on-refresh']").click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 2)
     page.reload(wait_until="networkidle")
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 4)
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(TIMEOUT_LONG)
     check_requests_count(urls, "_dash-update-component", 4)
 
 
@@ -177,12 +181,12 @@ def test_6(page, urls):
 def test_7(page, urls):
     urls.clear()
     page.locator("a[href='/action-chain-triggers-another-action-chain']").click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 1)
     page.get_by_role("button").nth(1).click()
-    page.wait_for_timeout(100)
+    page.wait_for_timeout(TIMEOUT_SHORT)
     check_requests_count(urls, "_dash-update-component", 3)
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(TIMEOUT_LONG)
     check_requests_count(urls, "_dash-update-component", 3)
 
 
