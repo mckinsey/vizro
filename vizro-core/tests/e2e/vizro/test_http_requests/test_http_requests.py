@@ -71,7 +71,7 @@ def http_requests(func):
 
 
 TIMEOUT_SHORT = 200
-TIMEOUT_LONG = TIMEOUT_LONG
+TIMEOUT_LONG = 1000
 
 
 @http_requests
