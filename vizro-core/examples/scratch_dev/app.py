@@ -9,7 +9,7 @@ from vizro.actions import collapse_expand_containers, export_data
 
 iris = px.data.iris()
 
-page_5 = vm.Page(
+page = vm.Page(
     title="Page with containers",
     components=[
         vm.Button(
@@ -69,7 +69,7 @@ page_5 = vm.Page(
     ),
 )
 
-dashboard = vm.Dashboard(pages=[page_5])
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(

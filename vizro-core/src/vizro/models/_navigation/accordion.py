@@ -1,6 +1,5 @@
 import itertools
-from collections.abc import Mapping
-from typing import Annotated, Literal, cast
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
@@ -14,8 +13,8 @@ from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models.types import ModelID
 
 
-def coerce_pages_type(pages):
-    if isinstance(pages, Mapping):
+def coerce_pages_type(pages: Any) -> dict[Any, Any]:
+    if isinstance(pages, dict):
         return pages
     return {ACCORDION_DEFAULT_TITLE: pages}
 
@@ -25,7 +24,8 @@ class Accordion(VizroBaseModel):
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.
-        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
+            Defaults to `{}`.
 
     """
 
@@ -37,7 +37,7 @@ class Accordion(VizroBaseModel):
         ],
         AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
-        Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
+        Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
 
     @_log_call
