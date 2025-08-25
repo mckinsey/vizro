@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add support for external Bootstrap themes. Vizro now automatically skips its built-in Bootstrap when external Bootstrap CSS is detected in `external_stylesheets`. ([#1244](https://github.com/mckinsey/vizro/pull/1244))
+- Add support for external Bootstrap themes. You can now supply a Bootstrap theme via `Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()`. When an external Bootstrap stylesheet is provided, Vizro will automatically skip loading its built-in Bootstrap theme. ([#1244](https://github.com/mckinsey/vizro/pull/1244))
 
 
 <!--
