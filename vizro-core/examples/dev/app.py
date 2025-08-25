@@ -16,21 +16,21 @@ from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 
-pio.templates["vizro_light"].layout.font.family = "McKinseySans, Arial,  sans-serif, serif"
-pio.templates["vizro_light"].layout.colorway = [
-    "#061F79",
-    "#00A9F4",
-    "#75F0E7",
-    "#2251FF",
-    "#14B8AB",
-    "#0679C3",
-    "#9C217D",
-    "#F17E7E",
-    "#108980",
-]
-
-# Set the modified template as the default template
-pio.templates.default = "vizro_light"
+pio.templates["vizro_light"].layout = pio.templates["vizro_light"].layout.update(
+    # colorscale_sequential=COLOR_SEQUENTIAL_SEQUENCE,
+    colorway=[
+        "#061F79",
+        "#00A9F4",
+        "#75F0E7",
+        "#2251FF",
+        "#14B8AB",
+        "#0679C3",
+        "#9C217D",
+        "#F17E7E",
+        "#108980",
+    ],
+    font_family="McKinseySans, Arial,  sans-serif, serif",
+)
 
 
 iris = px.data.iris()
