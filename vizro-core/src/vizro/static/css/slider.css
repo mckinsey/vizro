@@ -60,7 +60,7 @@
 }
 
 .rc-slider-mark-text {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   font-size: 0.75rem;
   line-height: 0.875rem;
   margin-top: 0.25rem;
@@ -118,7 +118,7 @@ input.dash-input:invalid {
 .slider-text-input-field {
   background-color: transparent;
   border: 0;
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   font-size: 0.875rem;
   max-width: 80px; /* required for Mozilla */
   padding: 0;
@@ -128,7 +128,7 @@ input.dash-input:invalid {
 }
 
 .slider-text-input-range-separator {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   font-size: 0.875rem;
 }
 

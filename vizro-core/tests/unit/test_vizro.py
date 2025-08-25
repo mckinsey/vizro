@@ -112,6 +112,63 @@ class TestDashResources:
         assert app.scripts.get_library_scripts("vizro") == library_scripts
 
 
+class TestBootstrapDetection:
+    """Test automatic Bootstrap CSS detection."""
+
+    @pytest.mark.parametrize(
+        "external_stylesheets, expected",
+        [
+            # Bootstrap detected
+            # String URL
+            (["https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"], True),
+            # Dict with href key
+            (
+                [{"href": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"}],
+                True,
+            ),
+            # Multiple stylesheets
+            (["https://fonts.googleapis.com/css", "https://example.com/bootstrap.css"], True),
+            # Mixed
+            (
+                [
+                    "https://codepen.io/bWffds.css",
+                    {"href": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"},
+                ],
+                True,
+            ),
+            # Case insensitive
+            (["https://example.com/BOOTSTRAP-theme.css"], True),
+            # Bootstrap NOT detected
+            ([], False),
+            (["https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"], False),
+            ([{"href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"}], False),
+            ([{"src": "https://bootstrap.css"}], False),  # Wrong key in dict
+        ],
+    )
+    def test_has_bootstrap_css(self, external_stylesheets, expected):
+        assert Vizro._has_bootstrap_css(external_stylesheets) == expected
+
+    @pytest.mark.parametrize(
+        "external_stylesheets, vizro_bootstrap_included",
+        [
+            ([], True),
+            (["https://fonts.googleapis.com/css"], True),
+            (
+                ["https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"],
+                False,
+            ),
+        ],
+    )
+    def test_include_vizro_bootstrap(self, external_stylesheets, vizro_bootstrap_included):
+        app = Vizro(external_stylesheets=external_stylesheets)
+        framework_css = app.dash.css.get_library_css("vizro")
+
+        has_vizro_bootstrap = any(
+            "vizro-bootstrap.min.css" in resource.get("relative_package_path", "") for resource in framework_css
+        )
+        assert has_vizro_bootstrap == vizro_bootstrap_included
+
+
 class TestRun:
     def test_run_block_with_undefined_captured_callables(self):
         dashboard_config = {

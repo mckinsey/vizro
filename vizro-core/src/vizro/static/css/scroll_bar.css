@@ -1,55 +1,18 @@
 ::-webkit-scrollbar {
-  height: 12px;
-  width: 12px;
+  height: 4px;
+  width: 4px;
 }
 
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb, .ag-root ::-webkit-scrollbar-thumb {
   background: var(--bs-tertiary-color);
-  border: 4px solid;
-  border-color: var(--bs-primary-bg-subtle);
+  border: none;
 }
 
-::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover, .ag-root ::-webkit-scrollbar-thumb:hover {
   background: var(--bs-secondary);
 }
 
 /* Removes the white square in the corner when an element has both vertical and horizontal scrollbars */
 ::-webkit-scrollbar-corner {
   background: transparent;
-}
-
-#nav-control-panel::-webkit-scrollbar-thumb {
-  border-color: var(--bs-tertiary-bg);
-}
-
-.card::-webkit-scrollbar-thumb,
-.card-nav::-webkit-scrollbar-thumb,
-.hljs::-webkit-scrollbar-thumb {
-  border-color: var(--bs-primary-bg-subtle);
-}
-
-#page-components::-webkit-scrollbar-thumb,
-.table-container::-webkit-scrollbar-thumb,
-.container-fluid::-webkit-scrollbar-thumb {
-  border-color: var(--bs-body-bg);
-}
-
-/* Can't control thumb color so hover is turned off */
-.ag-root ::-webkit-scrollbar {
-  width: 4px;
-}
-
-.ag-root ::-webkit-scrollbar-thumb:hover {
-  background: var(--bs-secondary);
-  border: 4px solid;
-  border-color: var(--bs-secondary);
-}
-
-.text::-webkit-scrollbar-thumb,
-.hljs::-webkit-scrollbar-thumb {
-  border-color: var(--bs-body-bg);
-}
-
-.container-fluid > .grid-layout::-webkit-scrollbar-thumb {
-  border-color: var(--bs-body-bg);
 }
