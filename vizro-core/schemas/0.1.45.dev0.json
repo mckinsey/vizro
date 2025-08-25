@@ -131,13 +131,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -190,13 +190,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -376,13 +376,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -652,13 +652,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -801,13 +801,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -1017,13 +1017,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -1467,13 +1467,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -1659,13 +1659,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -1790,13 +1790,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -1917,13 +1917,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -1982,13 +1982,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -2053,13 +2053,13 @@
                 "$ref": "#/$defs/Action"
               },
               {
+                "$ref": "#/$defs/collapse_expand_containers"
+              },
+              {
                 "$ref": "#/$defs/export_data"
               },
               {
                 "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/collapse_expand_containers"
               }
             ]
           },
@@ -2167,11 +2167,10 @@
     },
     "collapse_expand_containers": {
       "additionalProperties": false,
-      "description": "Exports visible data of target charts/components.\n\nArgs:\n    collapse (list[ModelID]): List of collapsible container ids to collapse. Defaults to `[]`.\n    expand (list[ModelID]): List of collapsible container ids to expand. Defaults to `[]`.",
+      "description": "Collapses and/or expands selected collapsible containers.\n\nArgs:\n    collapse (list[ModelID]): List of collapsible container ids to collapse. Defaults to `[]`.\n    expand (list[ModelID]): List of collapsible container ids to expand. Defaults to `[]`.",
       "properties": {
         "id": {
-          "default": "",
-          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
           "title": "Id",
           "type": "string"
         },
