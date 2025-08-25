@@ -4,6 +4,9 @@ defaults:
   run:
     working-directory: vizro-core
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:

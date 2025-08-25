@@ -1,5 +1,6 @@
 import os
 import time
+from collections import Counter
 
 import e2e.vizro.constants as cnst
 from e2e.vizro.paths import (
@@ -186,4 +187,11 @@ def check_table_ag_grid_rows_number(driver, table_id, expected_rows_num):
         len(actual_rows_num),
         equal_to(expected_rows_num),
         reason=f"Rows number is '{actual_rows_num}', but expected number is '{expected_rows_num}'",
+    )
+
+
+def check_http_requests_count(urls_list, url_path, requests_number):
+    counts = Counter(urls_list)
+    assert_that(
+        counts[url_path], equal_to(requests_number), reason=f"'{url_path}' should be equal to {requests_number}"
     )
