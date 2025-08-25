@@ -126,7 +126,7 @@ class TestRadioItemsInstantiation:
 
     def test_radio_items_trigger(self, identity_action_function):
         radio_items = RadioItems(id="radio-items-id", actions=[Action(function=identity_action_function())])
-        action = radio_items.actions[0]
+        [action] = radio_items.actions
         assert action._trigger == "radio-items-id.value"
 
 

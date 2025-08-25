@@ -149,7 +149,7 @@ class TestDropdownInstantiation:
 
     def test_dropdown_trigger(self, identity_action_function):
         dropdown = Dropdown(id="dropdown-id", actions=[Action(function=identity_action_function())])
-        action = dropdown.actions[0]
+        [action] = dropdown.actions
         assert action._trigger == "dropdown-id.value"
 
 

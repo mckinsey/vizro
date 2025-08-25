@@ -114,7 +114,7 @@ class TestTableInstantiation:
 
     def test_table_trigger(self, dash_data_table_with_id, identity_action_function):
         table = vm.Table(figure=dash_data_table_with_id, actions=[Action(function=identity_action_function())])
-        action = table.actions[0]
+        [action] = table.actions
         assert action._trigger == "underlying_table_id.active_cell"
 
 

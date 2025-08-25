@@ -134,7 +134,7 @@ class TestAgGridInstantiation:
 
     def test_ag_grid_trigger(self, ag_grid_with_id, identity_action_function):
         ag_grid = vm.AgGrid(figure=ag_grid_with_id, actions=[Action(function=identity_action_function())])
-        action = ag_grid.actions[0]
+        [action] = ag_grid.actions
         assert action._trigger == "underlying_ag_grid_id.cellClicked"
 
 

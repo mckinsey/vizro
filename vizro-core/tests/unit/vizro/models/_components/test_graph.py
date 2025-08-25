@@ -149,7 +149,7 @@ class TestDunderMethodsGraph:
 
     def test_graph_trigger(self, standard_px_chart, identity_action_function):
         graph = vm.Graph(id="graph-id", figure=standard_px_chart, actions=[Action(function=identity_action_function())])
-        action = graph.actions[0]
+        [action] = graph.actions
         assert action._trigger == "graph-id.clickData"
 
 

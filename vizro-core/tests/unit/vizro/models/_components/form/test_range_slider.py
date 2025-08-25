@@ -405,7 +405,7 @@ class TestRangeSliderInstantiation:
 
     def test_range_slider_trigger(self, identity_action_function):
         range_slider = vm.Slider(id="range-slider-id", actions=[vm.Action(function=identity_action_function())])
-        action = range_slider.actions[0]
+        [action] = range_slider.actions
         assert action._trigger == "range-slider-id.value"
 
 

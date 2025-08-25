@@ -268,7 +268,7 @@ class _BaseAction(VizroBaseModel):
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
-                callback_outputs = callback_outputs[0]
+                [callback_outputs] = callback_outputs
             return callback_outputs
 
         return {output_name: _transform_output(output) for output_name, output in self._validated_outputs.items()}
