@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enabled `collapse_expand_containers` action to control collapsible containers by specifying lists of container ids to collapse or expand. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Enabled `collapse_expand_containers` action to control collapsible containers by specifying lists of container ids to collapse or expand. ([#1347](https://github.com/mckinsey/vizro/pull/1347))
 
 <!--
 ### Changed

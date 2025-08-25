@@ -421,7 +421,7 @@ class Action(_BaseAction):
     # now specifies a user defined action in YAML (ok if not possible initially since it's not already) - could just
     # enable class-based one? Presumably import_path is no longer relevant though.
     function: Annotated[  # type: ignore[misc, assignment]
-        SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction, collapse_expand_containers]],
+        SkipJsonSchema[Union[CapturedCallable, collapse_expand_containers, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.

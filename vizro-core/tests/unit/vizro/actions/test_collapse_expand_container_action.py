@@ -5,6 +5,23 @@ from vizro.managers import model_manager
 
 
 @pytest.mark.usefixtures("managers_one_page_two_containers")
+class TestCollapseExpandContainersActionInstantiation:
+    def test_invalid_duplicate_collapse_expand(self):
+        with pytest.raises(ValueError, match="Collapse and expand lists cannot contain the same elements!"):
+            model_manager["button"].actions = [
+                collapse_expand_containers(
+                    id="test_action", collapse=["container_collapsed"], expand=["container_collapsed"]
+                )
+            ]
+
+    def test_invalid_no_collapse_expand(self):
+        with pytest.raises(
+            ValueError, match="Either the `collapse` or `expand` list must contain at least a single element."
+        ):
+            model_manager["button"].actions = [collapse_expand_containers(id="test_action")]
+
+
+@pytest.mark.usefixtures("managers_one_page_two_containers")
 class TestCollapseExpandContainersActionPreBuild:
     """Tests collapse_expand_containers pre_build method."""
 
@@ -23,25 +40,18 @@ class TestCollapseExpandContainersActionPreBuild:
         assert set(action.collapse) == {"container_expanded"}
         assert set(action.expand) == {"container_collapsed"}
 
-    def test_pre_build_invalid_no_collapse_expand(self):
-        with pytest.raises(ValueError, match="Please provide either the `collapse` or `expand` argument."):
-            model_manager["button"].actions = [collapse_expand_containers(id="test_action")]
-
     def test_pre_build_invalid_collapse_expand(self):
         # Add action to relevant component
-        model_manager["button"].actions = [collapse_expand_containers(id="test_action", collapse=["test_page"])]
+        model_manager["button"].actions = [collapse_expand_containers(id="test_action", collapse=["invalid_target_id"])]
         action = model_manager["test_action"]
 
-        with pytest.raises(ValueError, match=r"Invalid component IDs found: \['test_page'\]"):
+        with pytest.raises(
+            ValueError,
+            match=r"Invalid component IDs found: {'invalid_target_id'}."
+            " Action's collapse and expand IDs must be collapsible containers on the "
+            "same page as the action.",
+        ):
             action.pre_build()
-
-    def test_pre_build_invalid_duplicate_collapse_expand(self):
-        with pytest.raises(ValueError, match="Collapse and expand lists cannot contain the same elements!"):
-            model_manager["button"].actions = [
-                collapse_expand_containers(
-                    id="test_action", collapse=["container_collapsed"], expand=["container_collapsed"]
-                )
-            ]
 
 
 @pytest.mark.usefixtures("managers_one_page_two_containers")

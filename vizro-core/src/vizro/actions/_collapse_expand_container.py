@@ -9,7 +9,7 @@ from vizro.models.types import ModelID
 
 
 class collapse_expand_containers(_AbstractAction):
-    """Exports visible data of target charts/components.
+    """Collapses and/or expands selected collapsible containers.
 
     Args:
         collapse (list[ModelID]): List of collapsible container ids to collapse. Defaults to `[]`.
@@ -19,17 +19,14 @@ class collapse_expand_containers(_AbstractAction):
     type: Literal["collapse_expand_containers"] = "collapse_expand_containers"
     collapse: list[ModelID] = Field(default=[], description="List of collapsible container ids to collapse.")
     expand: list[ModelID] = Field(default=[], description="List of collapsible container ids to expand.")
-    #  toggle would need multiple state as input. Maybe possible in future but not now. Add new ticket for this
+    # TODO-AV2 D 5: toggle would need multiple state as input. Make that built-in actions can deal with arbitrary
+    #  number of inputs.
     # toggle: list[ModelID]
 
     @model_validator(mode="after")
-    def validate_collapse_or_expand_present(self):
+    def validate_collapse_and_expand(self):
         if not self.collapse and not self.expand:
-            raise ValueError("Please provide either the `collapse` or `expand` argument.")
-        return self
-
-    @model_validator(mode="after")
-    def validate_collapse_and_expand_overlap(self):
+            raise ValueError("Either the `collapse` or `expand` list must contain at least a single element.")
         if set(self.collapse) & set(self.expand):
             raise ValueError("Collapse and expand lists cannot contain the same elements!")
         return self
@@ -38,20 +35,19 @@ class collapse_expand_containers(_AbstractAction):
     def pre_build(self):
         from vizro.models import Container
 
-        user_container_ids = self.collapse + self.expand
-
-        collapsible_container_ids = [
+        page_collapsible_container_ids = [
             model.id
             for model in model_manager._get_models(Container, root_model=model_manager._get_model_page(self))
             if model.collapsed is not None
         ]
 
-        invalid_targets = [
-            container_id for container_id in user_container_ids if container_id not in collapsible_container_ids
-        ]
+        invalid_ids = set(self.collapse + self.expand) - set(page_collapsible_container_ids)
 
-        if invalid_targets:
-            raise ValueError(f"Invalid component IDs found: {invalid_targets}")
+        if invalid_ids:
+            raise ValueError(
+                f"Invalid component IDs found: {invalid_ids}."
+                " Action's collapse and expand IDs must be collapsible containers on the same page as the action."
+            )
 
     def function(self) -> dict[ModelID, Any]:
         """Collapse or expand containers on page."""

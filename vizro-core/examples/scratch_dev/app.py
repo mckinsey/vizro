@@ -13,12 +13,18 @@ page = vm.Page(
     title="Page with containers",
     components=[
         vm.Button(
-            text="Collapse all containers",
+            # text="Collapse all containers",
+            text="",
+            icon="expand_circle_up",
             actions=[collapse_expand_containers(collapse=["container1", "container2", "container3", "container4"])],
+            description="Collapse all containers!",
         ),
         vm.Button(
-            text="Expand all containers",
+            # text="Expand all containers",
+            text="",
+            icon="expand_circle_down",
             actions=collapse_expand_containers(expand=["container1", "container2", "container3", "container4"]),
+            description="Expand all containers!",
         ),
         vm.Container(
             title="",
@@ -72,7 +78,4 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(
-        debug=True,
-        use_reloader=False,
-    )
+    Vizro().build(dashboard).run()
