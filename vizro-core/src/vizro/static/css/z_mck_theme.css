@@ -160,9 +160,9 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .form-check {
+  display: flex;
   height: 20px;
   margin-bottom: 0.25rem;
-  display: flex;
 }
 
 .form-check-label  {
@@ -275,5 +275,5 @@ div.VirtualizedSelectFocusedOption {
 
 /* BUTTON */
 .btn {
-  font-family: "McKinseySans", Arial, sans-serif, serif;
+  font-family: McKinseySans, Arial, sans-serif, serif;
 }
