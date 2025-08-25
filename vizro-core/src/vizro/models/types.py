@@ -118,9 +118,9 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
     # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
     # vm.Action(function=export_data(...)) work.
-    from vizro.actions import export_data, filter_interaction
+    from vizro.actions import collapse_expand_containers, export_data, filter_interaction
 
-    if isinstance(value, (export_data, filter_interaction)):
+    if isinstance(value, (collapse_expand_containers, export_data, filter_interaction)):
         return value
 
     try:
@@ -394,11 +394,11 @@ class CapturedCallable:
         cls, captured_callable: CapturedCallable, json_schema_extra: JsonSchemaExtraType
     ) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
-        from vizro.actions import export_data, filter_interaction
+        from vizro.actions import collapse_expand_containers, export_data, filter_interaction
 
         # Bypass validation so that legacy {"function": {"_target_": "filter_interaction"}} and
         # {"function": {"_target_": "export_data"}} work.
-        if isinstance(captured_callable, (export_data, filter_interaction)):
+        if isinstance(captured_callable, (collapse_expand_containers, export_data, filter_interaction)):
             return captured_callable
 
         expected_mode = json_schema_extra["mode"]
@@ -713,6 +713,7 @@ LayoutType = Annotated[
 ActionType = Annotated[
     Union[
         Annotated["Action", Tag("action")],
+        Annotated["collapse_expand_containers", Tag("collapse_expand_containers")],
         Annotated["export_data", Tag("export_data")],
         Annotated["filter_interaction", Tag("filter_interaction")],
         SkipJsonSchema[Annotated["_filter", Tag("_filter")]],
@@ -721,7 +722,8 @@ ActionType = Annotated[
     ],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
-"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
+"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`collapse_expand_containers`]
+[vizro.models.collapse_expand_containers], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
 
 # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to

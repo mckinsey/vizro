@@ -90,7 +90,7 @@ def make_actions_chain(self):
     This runs after model_post_init so that self._inner_component_id will have already been set correctly in
     Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
     """
-    from vizro.actions import export_data, filter_interaction
+    from vizro.actions import collapse_expand_containers, export_data, filter_interaction
     from vizro.actions._on_page_load import _on_page_load
 
     converted_actions = []
@@ -100,7 +100,7 @@ def make_actions_chain(self):
     # We need to delete the old action models from the model manager so they don't get built. After that,
     # built in actions are always handled in the new way.
     for action in self.actions:
-        if isinstance(action.function, (export_data, filter_interaction)):
+        if isinstance(action.function, (collapse_expand_containers, export_data, filter_interaction)):
             del model_manager[action.id]
             converted_actions.append(action.function)
         else:
