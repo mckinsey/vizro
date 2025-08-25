@@ -150,7 +150,6 @@ page_dynamic_parametrisation = vm.Page(
         vm.Filter(
             column="continent",
             selector=vm.Dropdown(),
-            show_in_url=True,
         ),
         vm.Parameter(
             targets=[
@@ -161,7 +160,6 @@ page_dynamic_parametrisation = vm.Page(
                 options=list(set(df_gapminder["continent"])),
                 value="Europe",
             ),
-            show_in_url=True,
         ),
     ],
 )
@@ -178,37 +176,30 @@ page_all_selectors = vm.Page(
         vm.Filter(
             column="continent",
             selector=vm.Dropdown(),
-            show_in_url=True,
         ),
         vm.Filter(
             column="continent",
             selector=vm.RadioItems(),
-            show_in_url=True,
         ),
         vm.Filter(
             column="continent",
             selector=vm.Checklist(),
-            show_in_url=True,
         ),
         vm.Filter(
             column="number_column",
             selector=vm.Slider(),
-            show_in_url=True,
         ),
         vm.Filter(
             column="number_column",
             selector=vm.RangeSlider(),
-            show_in_url=True,
         ),
         vm.Filter(
             column="date_column",
             selector=vm.DatePicker(),
-            show_in_url=True,
         ),
         vm.Filter(
             column="is_europe",
             selector=vm.Switch(title="Is Europe?"),
-            show_in_url=True,
         ),
         vm.Parameter(
             targets=[
@@ -218,7 +209,6 @@ page_all_selectors = vm.Page(
                 options=list(set(df_gapminder["continent"])),
                 value="Europe",
             ),
-            show_in_url=True,
         ),
     ],
 )
