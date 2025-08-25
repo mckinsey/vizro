@@ -95,12 +95,12 @@ home = vm.Page(
             text="""
                 ##  Lorem ipsum dolor sit amet
 
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dignissim nibh eu velit varius sodales. 
-                Mauris augue lectus, vestibulum sed convallis sed, molestie et nunc. Class aptent taciti 
-                sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
-                
-                Duis leo mi, ullamcorper et eleifend nec, pulvinar a lectus. Nunc non turpis nibh. 
-                Nam imperdiet, arcu sit amet varius cursus, enim purus dapibus est, id hendrerit elit sapien quis mi. 
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dignissim nibh eu velit ovarius sodales.
+                Mauris augue lectus, vestibulum sed convallis sed, molestie et nunc. Class aptent taciti
+                sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+
+                Duis leo mi, ullamcorper et eleifend nec, pulvinar a lectus. Nunc non turpis nibh.
+                Name imperdiet, arcu sit amet ovarius cursus, enim purus dapibus est, id hendrerit elit sapien quis mi.
                 Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent a tellus non risus tempus tincidunt.
 
                 """,
@@ -478,6 +478,4 @@ dashboard = vm.Dashboard(
 
 
 if __name__ == "__main__":
-    Vizro(external_stylesheets=["https://cdn.mckinsey.com/libraries/Bootstrap/v1.3.0/mck-bootstrap.min.css"]).build(
-        dashboard
-    ).run()
+    Vizro().build(dashboard).run()

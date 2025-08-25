@@ -1218,9 +1218,7 @@ dashboard = vm.Dashboard(
 
 
 if __name__ == "__main__":
-    app = Vizro(
-        external_stylesheets=["https://cdn.mckinsey.com/libraries/Bootstrap/v1.3.0/mck-bootstrap.min.css"],
-    ).build(dashboard)
+    app = Vizro().build(dashboard)
     app.dash.layout.children.append(
         dbc.NavLink(
             ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
