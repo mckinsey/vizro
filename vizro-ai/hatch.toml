@@ -29,7 +29,8 @@ dependencies = [
   "langchain-anthropic",
   "langchain-aws",
   "langchain-google-genai",
-  "pre-commit"
+  "pre-commit",
+  "logfire",
 ]
 installer = "uv"
 
