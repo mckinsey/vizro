@@ -274,3 +274,17 @@ AG_GRID_LIGHT = "ag-theme-quartz ag-theme-vizro"
 DYNAMIC_FILTERS_DATA_CONFIG = "tests/e2e/vizro/dashboards/default/dynamic_filters_data.yaml"
 PIXELMATCH_THRESHOLD = "0.18"
 SELENIUM_WAITERS_TIMEOUT = 10
+
+# HTTP requests configs
+
+PAGE_WITHOUT_CHART = "page-without-chart"
+PAGE_WITH_ONE_CHART = "page-with-one-chart"
+PAGE_BUTTON_WITH_THREE_ACTIONS = "page-button-with-three-actions"
+PAGE_CHART_WITH_FILTER_INTERACTION = "page-chart-with-filter-interaction"
+PAGE_AG_GRID_WITH_FILTER_INTERACTION = "page-ag-grid-with-filter-interaction"
+PAGE_DYNAMIC_PARAMETRISATION = "page-dynamic-parametrisation"
+PAGE_ALL_SELECTORS = "page-all-selectors"
+PAGE_ACTIONS_CHAIN = "page-actions-chain"
+
+HTTP_TIMEOUT_SHORT = 200
+HTTP_TIMEOUT_LONG = 1000

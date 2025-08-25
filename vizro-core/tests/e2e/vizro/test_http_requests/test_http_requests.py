@@ -1,67 +1,35 @@
+import e2e.vizro.constants as cnst
+from e2e.vizro.checkers import check_http_requests_count
 from playwright.sync_api import sync_playwright
-from hamcrest import assert_that, equal_to
-from collections import Counter
-import time
-
-
-def check_requests_count(urls_list, url_path, requests_number):
-    # counts = Counter(urls_list)
-    # assert_that(counts[url_path], equal_to(requests_number),
-    assert_that(len(urls_list), equal_to(requests_number),
-                reason=f"'{url_path}' should be equal to {requests_number}")
-
-
-# def wait_for(condition_function, *args):
-#     """Function wait for any condition to be True."""
-#     start_time = time.time()
-#     while time.time() < start_time + TIMEOUT_SHORT:
-#         if condition_function(*args):
-#             return True
-#         else:
-#             time.sleep(0.1)
-#     raise Exception(f"Timeout waiting for {condition_function.__name__}")
-#
-#
-# def wait_for_requests(urls, expected_count, timeout=5000):
-#     print("urls: ", urls)
-#
-#     start = time.time()
-#     while len(urls) < expected_count:
-#         print(len(urls))
-#         if (time.time() - start) * TIMEOUT_LONG > timeout:
-#             raise TimeoutError(f"Expected {expected_count} requests but got {len(urls)}")
-#         time.sleep(0.05)  # tiny poll
 
 
 def http_requests(func):
+    """Decorator for setting up playwright logic and clear http requests paths list before main test."""
 
     def wrapper(request):
-
         with sync_playwright() as p:
-            urls = []
             browser = p.chromium.launch()
-            context = browser.new_context(
-                viewport={"width": 1920, "height": 1080}
-            )
+            context = browser.new_context(viewport={"width": 1920, "height": 1080})
             page = context.new_page()
+
+            http_requests_paths = []
 
             def on_request(request):
                 if any(r in request.url for r in ["_dash-update-component"]):
-                    urls.append(request.url.split('/')[3])
-                # if lambda request: "_dash-update-component" in request.url:
-                #     urls.append(request)
+                    http_requests_paths.append(request.url.split("/")[3])
 
             page.on("request", on_request)
 
             try:
                 page.goto("http://127.0.0.1:5002/")
-                page.wait_for_timeout(TIMEOUT_SHORT)
+                page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+                check_http_requests_count(http_requests_paths, "_dash-update-component", 1)
+                http_requests_paths.clear()
 
-                func(page, urls)
+                func(page, http_requests_paths)
 
-            except Exception as e:
+            except Exception:
                 page.screenshot(path=f"{request.node.name}.png", full_page=True)
-                print(f"Test failed, screenshot saved: {e}")
                 raise
 
             finally:
@@ -70,233 +38,122 @@ def http_requests(func):
     return wrapper
 
 
-TIMEOUT_SHORT = 200
-TIMEOUT_LONG = 1000
-
-
 @http_requests
-def test_1(page, urls):
-    check_requests_count(urls, "_dash-update-component", 1)
+def test_page_without_chart(page, http_requests_paths):
+    # click on the button that creates only 1 request
     page.get_by_role("button").nth(1).click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 2)
-    page.wait_for_timeout(TIMEOUT_LONG)
-    check_requests_count(urls, "_dash-update-component", 2)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    # check that only 1 request was created
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 1)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 1)
 
 
 @http_requests
-def test_2(page, urls):
-    urls.clear()
-    page.locator("a[href='/my-first-dashboard---0-guards']").click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 2)
-    page.get_by_text("×").nth(0).click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 3)
-    page.wait_for_timeout(TIMEOUT_LONG)
-    check_requests_count(urls, "_dash-update-component", 3)
+def test_page_with_one_chart(page, http_requests_paths):
+    # open the page with one chart
+    page.locator(f"a[href='/{cnst.PAGE_WITH_ONE_CHART}']").click()
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    # check that only 2 requests were created
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 2)
+    # delete one value from filter
+    page.get_by_text("×").nth(0).click()  # noqa RUF001
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    # check that only 1 request was created
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 3)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 3)
 
 
 @http_requests
-def test_2_2(page, urls):
-    urls.clear()
-    page.locator("a[href='/export-data---custom-sleep-action---export-data---0-guard']").click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 2)
+def test_button_with_three_actions(page, http_requests_paths):
+    page.locator(f"a[href='/{cnst.PAGE_BUTTON_WITH_THREE_ACTIONS}']").click()
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 2)
+    # click on the button that creates 3 requests
     page.get_by_role("button").nth(1).click()
     page.wait_for_timeout(3000)
-    check_requests_count(urls, "_dash-update-component", 5)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 5)
+    # choose value "Americas" in radio items filter
     page.get_by_text("Americas").nth(0).click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 6)
-    page.wait_for_timeout(TIMEOUT_LONG)
-    check_requests_count(urls, "_dash-update-component", 6)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 6)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 6)
 
 
 @http_requests
-def test_3(page, urls):
-    urls.clear()
-    page.locator("a[href='/filter-interaction-graph---0-guard']").click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 2)
+def test_chart_with_filter_interaction(page, http_requests_paths):
+    page.locator(f"a[href='/{cnst.PAGE_CHART_WITH_FILTER_INTERACTION}']").click()
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 2)
+    # interact with the box chart
     element = page.locator(".box").nth(1)
     box = element.bounding_box()
-    page.mouse.click(
-        box["x"] + box["width"] / 2,
-        box["y"] + box["height"] / 2
-    )
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 3)
-    page.wait_for_timeout(TIMEOUT_LONG)
-    check_requests_count(urls, "_dash-update-component", 3)
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 3)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 3)
 
 
 @http_requests
-def test_4(page, urls):
-    urls.clear()
-    page.locator("a[href='/filter-interaction-grid---1-guard']").click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 2)
+def test_ag_grid_with_filter_interaction(page, http_requests_paths):
+    page.locator(f"a[href='/{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}']").click()
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 2)
+    # click on the cell in ag_grid
     page.get_by_role("gridcell", name="Europe").nth(0).click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 3)
-    page.wait_for_timeout(TIMEOUT_LONG)
-    check_requests_count(urls, "_dash-update-component", 3)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 3)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 3)
 
 
 @http_requests
-def test_5(page, urls):
-    urls.clear()
-    page.locator("a[href='/dfp--dynamic-filter--url--filter-interaction---4-guards-on-refresh']").click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 2)
+def test_dynamic_parametrisation(page, http_requests_paths):
+    page.locator(f"a[href='/{cnst.PAGE_DYNAMIC_PARAMETRISATION}']").click()
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 2)
+    # reload the page and wait till all network processes would be finished
     page.reload(wait_until="networkidle")
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 4)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 4)
+    # choose value "Americas" in radio items filter
     page.get_by_text("Oceania").nth(0).click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 5)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 5)
+    # check that "Oceania" present in dropdown filter and click it
     page.locator(".Select-arrow").click()
-    page.locator(".form-check-input").nth(0).click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 6)
-    page.wait_for_timeout(TIMEOUT_LONG)
-    check_requests_count(urls, "_dash-update-component", 6)
+    page.locator('div[class="VirtualizedSelectOption"]').get_by_text("Oceania").click()
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 6)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 6)
 
 
 @http_requests
-def test_6(page, urls):
-    urls.clear()
-    page.locator("a[href='/test-all-selectors---14-guards-on-refresh']").click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 2)
+def test_all_selectors(page, http_requests_paths):
+    """Page with all selector present."""
+    page.locator(f"a[href='/{cnst.PAGE_ALL_SELECTORS}']").click()
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 2)
+    # reload the page and wait till all network processes would be finished
     page.reload(wait_until="networkidle")
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 4)
-    page.wait_for_timeout(TIMEOUT_LONG)
-    check_requests_count(urls, "_dash-update-component", 4)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 4)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 4)
 
 
 @http_requests
-def test_7(page, urls):
-    urls.clear()
-    page.locator("a[href='/action-chain-triggers-another-action-chain']").click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 1)
+def test_actions_chain(page, http_requests_paths):
+    page.locator(f"a[href='/{cnst.PAGE_ACTIONS_CHAIN}']").click()
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 1)
+    # click on the button that creates action chain with 2 requests
     page.get_by_role("button").nth(1).click()
-    page.wait_for_timeout(TIMEOUT_SHORT)
-    check_requests_count(urls, "_dash-update-component", 3)
-    page.wait_for_timeout(TIMEOUT_LONG)
-    check_requests_count(urls, "_dash-update-component", 3)
-
-
-#
-#
-# @http_requests
-# def test_8(page):
-#     page.locator("a[href='/multi-url-parameter-filters---3-guards-or-refresh']").click()
-#     page.get_by_text("Asia").nth(0).click()
-#     page.get_by_text("Asia").nth(1).click()
-#     page.reload(wait_until="networkidle")
-#
-#     check_requests_count(urls, "_dash-update-component", 7)
-#     check_requests_count(urls, "_dash-dependencies", 2)
-#     check_requests_count(urls, "_dash-layout", 2)
-#
-#
-# @http_requests
-# def test_9(page):
-#     page.locator("a[href='/dataframe-parameter-and-url-filter--2-guards']").click()
-#     page.get_by_text("Africa").nth(0).click()
-#     page.locator(".Select-arrow").click()
-#     page.locator(".form-check-input").nth(0).click()
-#
-#     check_requests_count(urls, "_dash-update-component", 5)
-#     check_requests_count(urls, "_dash-dependencies", 1)
-#     check_requests_count(urls, "_dash-layout", 1)
-#
-#
-# @http_requests
-# def test_10(page):
-#     page.locator("a[href='/dfp--dynamic-filter--url--filter-interaction---5-guards-on-refresh']").click()
-#     page.get_by_text("Africa").nth(0).click()
-#     page.locator(".Select-arrow").click()
-#     page.locator(".form-check-input").nth(0).click()
-#     page.reload(wait_until="networkidle")
-#
-#     check_requests_count(urls, "_dash-update-component", 7)
-#     check_requests_count(urls, "_dash-dependencies", 2)
-#     check_requests_count(urls, "_dash-layout", 2)
-
-# import pytest
-# from playwright.async_api import async_playwright
-# import asyncio
-# import json
-
-# @pytest.mark.asyncio
-# async def http_requests_async():
-#     async with async_playwright() as p:
-#         browser = await p.chromium.launch()
-#         context = await browser.new_context()
-#         page = await context.new_page()
-#
-#         async def on_request(request):
-#             # sizes() only works after request finishes → get from the response
-#             response = await request.response()
-#             if response:
-#                 sizes = await request.sizes()
-#                 print(f"URL: {request.url}")
-#                 print(sizes)
-#
-#         page.on("requestfinished", on_request)
-#
-#         await page.goto("http://127.0.0.1:5002/")
-#         await asyncio.sleep(5)
-#         await browser.close()
-#
-#
-# def log_request(request):
-#     if request.method == "POST":
-#         print(f"\n➡️ {request.method} {request.url}")
-#         print("Headers:")
-#         for key, value in request.headers.items():
-#             print(f"  {key}: {value}")
-#         try:
-#             post_data = request.post_data
-#             print(f"Body:\n{post_data}")
-#         except Exception as e:
-#             print("Could not get post data:", e)
-#
-#
-# def log_response(response):
-#     print(f"\n⬅️ {response.status} {response.url}")
-#     try:
-#         body = response.text()
-#         print("Response Body (truncated to 500 chars):")
-#         print(body[:500])
-#     except Exception as e:
-#         print("Could not read response body:", e)
-
-# def make_on_request(urls):
-#     def on_request(request):
-#         if any(p in request.url for p in ["_dash-update-component", "_dash-dependencies", "_dash-layout"]):
-#             # print(f"REQUEST: {request.method} {request.url}")
-#             urls.append(request.url.split('/')[3])
-#             # try:
-#             #     print("Body:", request.post_data)
-#             #     # If JSON, pretty print
-#             #     print("Body JSON:", json.dumps(json.loads(request.post_data), indent=2))
-#             # except Exception:
-#             #     pass
-#     return on_request
-
-
-# # Listen for their responses
-# def on_response(response):
-#     if any(p in response.url for p in ["_dash-update-component", "_dash-dependencies", "_dash-layout"]):
-#         print(f"RESPONSE: {response.url}")
-#         # try:
-#         #     body = response.body()
-#         #     print("Response JSON:", json.dumps(json.loads(body), indent=2))
-#         # except Exception:
-#         #     pass
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_SHORT)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 3)
+    page.wait_for_timeout(cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(http_requests_paths, "_dash-update-component", 3)
