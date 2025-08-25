@@ -1,43 +1,47 @@
 """This is a test app to test the dashboard layout."""
 
-from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import export_data
+from vizro import Vizro
+from vizro.tables import dash_ag_grid
 
-iris = px.data.iris()
+df = px.data.gapminder()
+
 
 page = vm.Page(
-    title="Buttons with an icon",
-    layout=vm.Flex(),
-    components=[
-        vm.Button(
-            icon="download",
-            text="",
-            description=vm.Tooltip(text="Download the data!", icon="info"),
-            variant="outlined",
-            actions=[vm.Action(function=export_data())],
-        ),
-        vm.Graph(
-            figure=px.scatter(
-                iris,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                size="petal_length",
-            ),
-        ),
-        vm.Button(
-            text="View Data Source",
-            href="https://www.kaggle.com/datasets/uciml/iris",
-            icon="link",
-            variant="outlined",
-        ),
-    ],
-    controls=[vm.Filter(column="species")],
+    id="page_1",
+    title="Page 1",
+    components=[vm.AgGrid(figure=dash_ag_grid(df))],
+    # path="page_1",
 )
 
-dashboard = vm.Dashboard(pages=[page])
+page2 = vm.Page(
+    id="page_2",
+    title="Page 2",
+    components=[vm.AgGrid(figure=dash_ag_grid(df))],
+    # path="page_2",
+)
+
+page3 = vm.Page(
+    id="page_3",
+    title="Page 3",
+    components=[vm.AgGrid(figure=dash_ag_grid(df))],
+    # path="page_3",
+)
+
+
+dashboard = vm.Dashboard(
+    pages=[page, page2, page3],
+    navigation=vm.Navigation(
+        # nav_selector=vm.NavBar(
+        # pages=["page_1", "Page 2", "page_3"],
+        # items=[
+        #     vm.NavLink(label="Section 1", pages=["page_1", "page_2"]),
+        #     vm.NavLink(label="Section 2", pages=["page_3"]),
+        # ]
+        # ),
+    ),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
