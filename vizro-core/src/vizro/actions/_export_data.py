@@ -104,7 +104,7 @@ class export_data(_AbstractAction):
 
     @property
     def _dash_components(self) -> list[dcc.Download]:
-        return [
+        return super()._dash_components + [
             dcc.Download(id={"type": "download_dataframe", "action_id": self.id, "target_id": target})
             for target in self.targets
         ]

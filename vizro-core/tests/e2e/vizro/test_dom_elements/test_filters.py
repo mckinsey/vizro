@@ -1,6 +1,7 @@
 import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import (
+    check_graph_is_empty,
     check_graph_is_loaded,
     check_selected_categorical_component,
     check_selected_dropdown,
@@ -11,6 +12,7 @@ from e2e.vizro.navigation import clear_dropdown, click_element_by_xpath_selenium
 from e2e.vizro.paths import (
     categorical_components_value_path,
     dropdown_arrow_path,
+    graph_axis_value_path,
     kpi_card_path,
     select_all_path,
     slider_value_path,
@@ -111,9 +113,14 @@ def test_dropdown_persistence_with_all_values(dash_br):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     # delete all options
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     # select all options
     dash_br.multiple_click(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}_select_all", 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
+    # Check y axis max value is '1'
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(graph_id=cnst.SCATTER_GRAPH_ID, axis_value_number="4", axis_value="1"),
+        "1",
+    )
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     dash_br.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)

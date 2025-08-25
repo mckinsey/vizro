@@ -16,12 +16,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add support for external Bootstrap themes. You can now supply a Bootstrap theme via `Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()`. When an external Bootstrap stylesheet is provided, Vizro will automatically skip loading its built-in Bootstrap theme. ([#1244](https://github.com/mckinsey/vizro/pull/1244))
 
--->
+
 <!--
 ### Changed
 
