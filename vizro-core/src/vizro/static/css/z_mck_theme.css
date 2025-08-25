@@ -1,201 +1,188 @@
+/* GLOBAL */
+:root {
+/* Mck colors need to be defined again as they don't have the prefix bs- */
+  --bs-blue: #007bff;
+  --bs-indigo: #6610f2;
+  --bs-purple: #6f42c1;
+  --bs-pink: #e83e8c;
+  --bs-red: #dc3545;
+  --bs-orange: #fd7e14;
+  --bs-yellow: #ffc107;
+  --bs-green: #28a745;
+  --bs-teal: #20c997;
+  --bs-cyan: #17a2b8;
+  --bs-white: #ffffff;
+  --bs-gray: #6c757d;
+  --bs-gray-dark: #343a40;
+  --bs-primary: #2251ff;
+  --bs-secondary: #00a9f4;
+  --bs-success: #007f26;
+  --bs-info: #17a2b8;
+  --bs-warning: #ffd048;
+  --bs-danger: #d51f31;
+  --bs-light: #ffffff;
+  --bs-dark: #051c2c;
 
+  /* Are not defined in the current mck min file */
+  --left-side-bg: #fafafa;
+  --bs-border-color: #e6e6e6;
+  --bs-body-color: #333333;
+  --bs-body-bg: #ffffff;
+  --bs-primary-bg-subtle: #ffffff;
+  --bs-secondary-bg: #f2f2f2;
+  --bs-tertiary-bg: #e6e6e6;
+  --bs-box-shadow: 0 2px 4px -1px rgba(5,28,44,.2),0 0 1px 0 rgba(5,28,44,.2);
+  --bs-box-shadow-sm: 0 2px 4px -1px rgba(5,28,44,.2),0 0 1px 0 rgba(5,28,44,.2);
+  --bs-border-radius: 0;
 
-  /* Remove toggle switch */
-  #theme-selector {
-    display: none;
-  }
-
-  :root {
-    /* Mck colors need to be defined again as they don't have the prefix bs- */
-    --bs-blue: #007bff;
-    --bs-indigo: #6610f2;
-    --bs-purple: #6f42c1;
-    --bs-pink: #e83e8c;
-    --bs-red: #dc3545;
-    --bs-orange: #fd7e14;
-    --bs-yellow: #ffc107;
-    --bs-green: #28a745;
-    --bs-teal: #20c997;
-    --bs-cyan: #17a2b8;
-    --bs-white: #ffffff;
-    --bs-gray: #6c757d;
-    --bs-gray-dark: #343a40;
-    --bs-primary: #2251ff;
-    --bs-secondary: #00a9f4;
-    --bs-success: #007f26;
-    --bs-info: #17a2b8;
-    --bs-warning: #ffd048;
-    --bs-danger: #d51f31;
-    --bs-light: #ffffff;
-    --bs-dark: #051c2c;
-
-    /* Are not defined in the current mck min file */
-    --left-side-bg: #fafafa;
-    --bs-border-color: #e6e6e6; /* #b3b3b3; */
-    --bs-body-color: #333333;
-    --bs-body-bg: #ffffff;
-    --bs-primary-bg-subtle: #ffffff;
-    --bs-secondary-bg: #f2f2f2;
-    --bs-tertiary-bg: #e6e6e6;
-    --bs-box-shadow: 0 2px 4px -1px rgba(5,28,44,.2),0 0 1px 0 rgba(5,28,44,.2);
-    --bs-box-shadow-sm: 0 2px 4px -1px rgba(5,28,44,.2),0 0 1px 0 rgba(5,28,44,.2);
-    --bs-border-radius: 0;
-
-  }
-
-  h1, h2, h3, h4, h5 {
-    margin-bottom: 0.5rem;
-  }
-
-
-
-h1 {
-    font-size: 2rem;
 }
 
-h2 {
-    font-size: 1.75rem;
+/* LAYOUT */
+#theme-selector {
+  display: none;
 }
 
-h3 {
-    font-size: 1.5rem;
-}
-
-h4 {
-    font-size: 1.25rem;
-}
-
-h5 {
-    font-size: 1rem;
-}
-
-.container-title-collapse {
-    margin: 0;
-    padding: 0;
-}
-
+/* CARD */
 .card .nav-link {
-    border: none;
+  border: none;
 }
 
+/* ACCORDION */
 .accordion-button {
-    background: none;
-    border: none;
-    font-size: 1.25rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
 }
 
-.ag-theme-quartz.ag-theme-vizro, .ag-theme-quartz-dark.ag-theme-vizro {
-    --ag-header-background-color: var(--bs-tertiary-bg);
-    --ag-border-radius: 0;
-    --ag-wrapper-border-radius: 0;
-    --ag-selected-row-background-color: var(--bs-tertiary-bg);
-    --ag-active-color: var(--bs-tertiary-bg);
-}
-
-#dashboard-container .dash-spreadsheet-inner th {
-    background: var(--bs-tertiary-bg);
-    border: 0;
-    font-weight: 600;
-}
-
+/* NAVBAR */
 .navbar .nav-link {
-    width: 60px;
-}
-
-.rc-slider-rail, .rc-slider-dot {
-    background: var(--bs-tertiary-bg);
+  width: 60px;
 }
 
 
-#dashboard-container .ag-standard-button {
-    background-color: var(--bs-primary);
-    border: 1px solid var(--bs-primary);
-    color: #ffffff;
+/* TABLE */
+#dashboard-container .dash-spreadsheet-inner th {
+  background: var(--bs-tertiary-bg);
+  border: 0;
+  font-weight: 600;
 }
 
-#dashboard-container .ag-standard-button:hover {
-    background-color: #0033f0;
-    border-color: #0033f0;
-    color: #ffffff;
+/* AG GRID */
+.ag-theme-quartz.ag-theme-vizro, .ag-theme-quartz-dark.ag-theme-vizro {
+  --ag-header-background-color: var(--bs-tertiary-bg);
+  --ag-border-radius: 0;
+  --ag-wrapper-border-radius: 0;
+  --ag-selected-row-background-color: var(--bs-tertiary-bg);
+  --ag-active-color: var(--bs-tertiary-bg);
 }
 
-
-/* Consider taking over to vizro */
 #dashboard-container .ag-header-cell {
-    border-bottom: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 
 #dashboard-container .ag-cell {
-    border: 0;
+  border: 0;
 }
 
 #dashboard-container .ag-cell:hover {
-    background: var(--bs-secondary-bg);
+  background: var(--bs-secondary-bg);
 }
 
 #dashboard-container .ag-cell:active, #dashboard-container .ag-cell:focus-within, #dashboard-container .ag-cell:focus {
-    background: var(--bs-tertiary-bg);
+  background: var(--bs-tertiary-bg);
 }
 
-div.VirtualizedSelectFocusedOption {
-    background-color: var(--bs-tertiary-bg);
-    color: var(--bs-primary);
-  }
+#dashboard-container .ag-standard-button {
+  background-color: var(--bs-primary);
+  border: 1px solid var(--bs-primary);
+  color: #ffffff;
+}
+
+#dashboard-container .ag-standard-button:hover {
+  background-color: #0033f0;
+  border-color: #0033f0;
+  color: #ffffff;
+}
 
 
-  .mantine-DatePickerInput-day[data-selected], .mantine-DatePickerInput-day:hover, .mantine-PickerControl-pickerControl:hover, .mantine-DatePickerInput-monthsListControl:hover {
-    color: #ffffff !important;
-  }
+/* TYPOGRAPHY */
+h1, h2, h3, h4, h5 {
+  margin-bottom: 0.5rem;
+}
 
-  label, legend, .form-label {
-    font-size: 0.875rem;
-  }
+h1 {
+  font-size: 2rem;
+}
 
-  .form-label {
-    font-weight: 600;
-  }
+h2 {
+  font-size: 1.75rem;
+}
 
-  .table-container {
-    font-size: 0.875rem;
-  }
+h3 {
+  font-size: 1.5rem;
+}
 
-  #dashboard-title, #page-title {
-    margin-top:0;
-    padding-top: 0;
-  }
+h4 {
+  font-size: 1.25rem;
+}
+
+h5 {
+  font-size: 1rem;
+}
+
+#dashboard-title, #page-title {
+  margin-top:0;
+  padding-top: 0;
+}
+
+label, legend, .form-label {
+  font-size: 0.875rem;
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+.table-container {
+  font-size: 0.875rem;
+}
+
+.container-title-collapse {
+  margin: 0;
+  padding: 0;
+}
 
 
-  /* FORMS */
-  input[type="checkbox"], input[type="radio"] {
-    height: 16px;
-    width: 16px;
-  }
+/* CHECKBOX AND RADIO ITEM */
+input[type="checkbox"], input[type="radio"] {
+  height: 16px;
+  width: 16px;
+}
 
-  .form-check {
-    height: 20px;
-    margin-bottom: 0.25rem;
-  }
+.form-check {
+  height: 20px;
+  margin-bottom: 0.25rem;
+}
 
-  .form-check-label  {
-    height: 20px;
-  }
+.form-check-label  {
+  height: 20px;
+}
 
-/* Custom radio buttons only */
 .form-check .form-check-input {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .form-check .form-check-input[type="radio"] + label::before {
-    background: white;
-    border: 1px solid rgb(179, 179, 179);
-    border-radius: 50%;
-    content: '';
-    height: 16px;
-    left: 0;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 16px;
+  background: white;
+  border: 1px solid rgb(179, 179, 179);
+  border-radius: 50%;
+  content: '';
+  height: 16px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
 }
 
 .form-check .form-check-input[type="checkbox"] + label::before {
@@ -210,36 +197,72 @@ div.VirtualizedSelectFocusedOption {
 }
 
 .form-check .form-check-input[type="radio"]:checked + label::before {
-    background: #ffffff;
-    border-color: var(--bs-primary);
+  background: #ffffff;
+  border-color: var(--bs-primary);
 }
 
 .form-check .form-check-input[type="radio"]:checked + label::after {
-    background: var(--bs-primary);
-    border-radius: 50%;
-    content: '';
-    height: 8px;
-    left: 4px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 8px;
+  background: var(--bs-primary);
+  border-radius: 50%;
+  content: '';
+  height: 8px;
+  left: 4px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
 }
 
 
 .form-check .form-check-input[type="checkbox"]:checked + label::before {
-    background: var(--bs-primary);
-    border-color: var(--bs-primary);
+  background: var(--bs-primary);
+  border-color: var(--bs-primary);
 }
 
 .form-check .form-check-input[type="checkbox"]:checked + label::after {
-    border: solid white;
-    border-width: 0 1px 1px 0;
-    content: '';
-    height: 10px;
-    left: 6px;
-    position: absolute;
-    top: 45%;
-    transform: translateY(-50%) rotate(45deg);
-    width: 5px;
+  border: solid white;
+  border-width: 0 1px 1px 0;
+  content: '';
+  height: 10px;
+  left: 6px;
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 5px;
+}
+
+
+
+/* DROPDOWN */
+div.Select--multi .Select-value {
+  background-color: var(--bs-secondary-bg);
+}
+
+div.VirtualizedSelectFocusedOption {
+  background-color: var(--bs-tertiary-bg);
+  color: var(--bs-primary);
+}
+
+/* DATEPICKER */
+.mantine-DatePickerInput-day[data-in-range] {
+  color: unset;
+}
+
+.mantine-DatePickerInput-day[data-selected], .mantine-DatePickerInput-day:hover, .mantine-PickerControl-pickerControl:hover, .mantine-DatePickerInput-monthsListControl:hover {
+  color: #ffffff;
+}
+
+/* INPUT */
+.form-control {
+  font-family: McKinseySans, Arial, sans-serif, serif;
+  font-size: 0.875rem;
+}
+
+/* SLIDER */
+.rc-slider-rail, .rc-slider-dot {
+  background: var(--bs-tertiary-bg);
+}
+
+.rc-slider-dot-active {
+  background-color: var(--bs-primary);
 }
