@@ -162,10 +162,11 @@ input[type="checkbox"], input[type="radio"] {
 .form-check {
   height: 20px;
   margin-bottom: 0.25rem;
+  display: flex;
 }
 
 .form-check-label  {
-  height: 20px;
+  line-height: 20px;
 }
 
 .form-check .form-check-input {
@@ -258,6 +259,10 @@ div.VirtualizedSelectFocusedOption {
   font-size: 0.875rem;
 }
 
+.form-control:focus {
+  color: unset;
+}
+
 /* SLIDER */
 .rc-slider-rail, .rc-slider-dot {
   background: var(--bs-tertiary-bg);
@@ -265,4 +270,10 @@ div.VirtualizedSelectFocusedOption {
 
 .rc-slider-dot-active {
   background-color: var(--bs-primary);
+}
+
+
+/* BUTTON */
+.btn {
+  font-family: "McKinseySans", Arial, sans-serif, serif;
 }
