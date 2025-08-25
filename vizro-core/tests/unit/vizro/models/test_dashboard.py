@@ -25,7 +25,7 @@ class TestDashboardInstantiation:
         assert dashboard.theme == "vizro_dark"
         assert dashboard.title == ""
         assert isinstance(dashboard.navigation, vm.Navigation)
-        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+        assert dashboard.navigation.pages == [page_1.id, page_2.id]
 
     def test_create_dashboard_mandatory_and_optional(self, page_1, page_2):
         dashboard = vm.Dashboard(pages=[page_1, page_2], theme="vizro_light", title="Vizro")
@@ -34,15 +34,15 @@ class TestDashboardInstantiation:
         assert dashboard.theme == "vizro_light"
         assert dashboard.title == "Vizro"
         assert isinstance(dashboard.navigation, vm.Navigation)
-        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+        assert dashboard.navigation.pages == [page_1.id, page_2.id]
 
     def test_navigation_pages_automatically_populated(self, page_1, page_2):
         dashboard = vm.Dashboard(pages=[page_1, page_2])
-        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+        assert dashboard.navigation.pages == [page_1.id, page_2.id]
 
     def test_navigation_with_pages(self, page_1, page_2):
         dashboard = vm.Dashboard(pages=[page_1, page_2], navigation=vm.Navigation(pages=["Page 1"]))
-        assert dashboard.navigation.pages == ["Page 1"]
+        assert dashboard.navigation.pages == [page_1.id]
 
     def test_mandatory_pages_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -87,7 +87,7 @@ class TestDashboardPreBuild:
             description=None,
             image=None,
             title="Page 2",
-            path="/page-2",
+            path="/page_2",
             order=1,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
@@ -126,12 +126,14 @@ class TestDashboardPreBuild:
 
     def test_page_registry_with_page_description(self, vizro_app, mocker):
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
-        vm.Dashboard(
+        dashboard = vm.Dashboard(
             pages=[vm.Page(title="Page 1", components=[vm.Button()], description="Page description")]
-        ).pre_build()
+        )
+        dashboard.pre_build()
+        page_1 = dashboard.pages[0]
 
         mock_register_page.assert_any_call(
-            module="Page 1",
+            module=page_1.id,
             name="Page 1",
             description="Page description",
             image=None,
@@ -143,14 +145,16 @@ class TestDashboardPreBuild:
 
     def test_page_registry_with_dashboard_and_page_description(self, vizro_app, mocker):
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
-        vm.Dashboard(
+        dashboard = vm.Dashboard(
             title="My dashboard",
             description="Dashboard description",
             pages=[vm.Page(title="Page 1", components=[vm.Button()], description="Page description")],
-        ).pre_build()
+        )
+        dashboard.pre_build()
+        page_1 = dashboard.pages[0]
 
         mock_register_page.assert_any_call(
-            module="Page 1",
+            module=page_1.id,
             name="Page 1",
             description="Page description",
             image=None,

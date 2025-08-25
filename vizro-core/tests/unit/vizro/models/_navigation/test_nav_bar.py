@@ -23,17 +23,22 @@ class TestNavBarInstantiation:
         assert nav_bar.pages == {}
         assert nav_bar.items == []
 
-    def test_nav_bar_mandatory_and_optional(self, pages_as_dict):
+    def test_nav_bar_mandatory_and_optional(self, pages_as_dict, page_1_id, page_2_id):
         nav_link = vm.NavLink(label="Label")
         nav_bar = vm.NavBar(id="nav-bar", pages=pages_as_dict, items=[nav_link])
 
         assert nav_bar.id == "nav-bar"
-        assert nav_bar.pages == pages_as_dict
+        assert nav_bar.pages == {"Group": [page_1_id, page_2_id]}
         assert nav_bar.items == [nav_link]
 
-    def test_valid_pages_as_list(self, pages_as_list):
+    def test_valid_pages_as_list(self, pages_as_list, page_1_id, page_2_id):
         nav_bar = vm.NavBar(pages=pages_as_list)
-        assert nav_bar.pages == {"Page 1": ["Page 1"], "Page 2": ["Page 2"]}
+        transformed_pages = {
+            # Correct as the group is taken from the defined list in the pages argument
+            "page_1": [page_1_id],
+            "Page 2": [page_2_id],
+        }
+        assert nav_bar.pages == transformed_pages
 
     @pytest.mark.parametrize("pages", [{"Group": []}, []])
     def test_invalid_field_pages_no_ids_provided(self, pages):
@@ -47,7 +52,8 @@ class TestNavBarInstantiation:
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
     def test_invalid_page(self, pages):
         with pytest.raises(
-            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to argument 'pages'.")
+            ValidationError,
+            match=re.escape("Unknown page ID or title ['non existent page'] provided to argument 'pages'."),
         ):
             vm.NavBar(pages=pages)
 
@@ -74,11 +80,11 @@ class TestNavBarPreBuildMethod:
 class TestNavBarBuildMethod:
     """Tests NavBar model build method."""
 
-    def test_nav_bar_active_pages_as_dict(self, pages_as_dict):
+    def test_nav_bar_active_pages_as_dict(self, pages_as_dict, page_1_id):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
         nav_bar.items[0].id = "nav-link-1"
-        built_nav_bar = nav_bar.build(active_page_id="Page 1")
+        built_nav_bar = nav_bar.build(active_page_id=page_1_id)
         expected_navigation = dbc.Navbar(
             [
                 dbc.NavLink(
@@ -99,12 +105,12 @@ class TestNavBarBuildMethod:
         assert_component_equal(built_nav_bar["nav-panel"], dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_nav_bar["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
-    def test_nav_bar_active_pages_as_list(self, pages_as_list):
+    def test_nav_bar_active_pages_as_list(self, pages_as_list, page_1_id):
         nav_bar = vm.NavBar(pages=pages_as_list)
         nav_bar.pre_build()
         nav_bar.items[0].id = "nav-link-1"
         nav_bar.items[1].id = "nav-link-2"
-        built_nav_bar = nav_bar.build(active_page_id="Page 1")
+        built_nav_bar = nav_bar.build(active_page_id=page_1_id)
         expected_nav_bar = dbc.Navbar(
             [
                 dbc.NavLink(
@@ -129,7 +135,7 @@ class TestNavBarBuildMethod:
                         ),
                     ],
                     active=False,
-                    href="/page-2",
+                    href="/page_2",
                 ),
             ]
         )
@@ -190,7 +196,7 @@ class TestNavBarBuildMethod:
                         ),
                     ],
                     active=False,
-                    href="/page-2",
+                    href="/page_2",
                 ),
             ]
         )
