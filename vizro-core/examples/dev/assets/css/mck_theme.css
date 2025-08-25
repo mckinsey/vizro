@@ -94,8 +94,8 @@ h5 {
 
 #dashboard-container .dash-spreadsheet-inner th {
     background: var(--bs-tertiary-bg);
-    font-weight: 600;
     border: 0;
+    font-weight: 600;
 }
 
 .navbar .nav-link {
@@ -185,62 +185,61 @@ div.VirtualizedSelectFocusedOption {
     visibility: hidden;
 }
 
-.form-check .form-check-input[type="radio"] + label:before {
+.form-check .form-check-input[type="radio"] + label::before {
+    background: white;
+    border: 1px solid rgb(179, 179, 179);
+    border-radius: 50%;
     content: '';
-    position: absolute;
+    height: 16px;
     left: 0;
+    position: absolute;
     top: 50%;
     transform: translateY(-50%);
     width: 16px;
-    height: 16px;
-    border: 1px solid rgb(179, 179, 179);
-    border-radius: 50%;
-    background: white;
 }
 
-.form-check .form-check-input[type="radio"]:checked + label:before {
-    background: #fff;
+.form-check .form-check-input[type="checkbox"] + label::before {
+  border: 1px solid #6d6f77;
+  content: '';
+  height: 16px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+}
+
+.form-check .form-check-input[type="radio"]:checked + label::before {
+    background: #ffffff;
     border-color: var(--bs-primary);
 }
 
-.form-check .form-check-input[type="radio"]:checked + label:after {
+.form-check .form-check-input[type="radio"]:checked + label::after {
+    background: var(--bs-primary);
+    border-radius: 50%;
     content: '';
-    position: absolute;
+    height: 8px;
     left: 4px;
+    position: absolute;
     top: 50%;
     transform: translateY(-50%);
     width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--bs-primary);
 }
 
 
-/* Custom checkboxes */
-.form-check .form-check-input[type="checkbox"] + label:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
-    border: 1px solid #6d6f77;
-}
-
-.form-check .form-check-input[type="checkbox"]:checked + label:before {
+.form-check .form-check-input[type="checkbox"]:checked + label::before {
     background: var(--bs-primary);
     border-color: var(--bs-primary);
 }
 
-.form-check .form-check-input[type="checkbox"]:checked + label:after {
+.form-check .form-check-input[type="checkbox"]:checked + label::after {
+    border: solid white;
+    border-width: 0 1px 1px 0;
     content: '';
-    position: absolute;
+    height: 10px;
     left: 6px;
+    position: absolute;
     top: 45%;
     transform: translateY(-50%) rotate(45deg);
     width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 1px 1px 0;
 }

@@ -1218,13 +1218,7 @@ dashboard = vm.Dashboard(
 
 
 if __name__ == "__main__":
-    # Move app definition outside of __main__ block for the HF demo to work
-    # BOOTSTRAP, MINTY, LUMEN, CYBORG, DARKLY, LITERA, SLATE, SOLAR, SUPERHERO, UNITED, YETI
-    # GOOD: BOOTSTRAP, MINTY, LITERA, UNITED
-    # OK: LUMEN, SOLAR
-    # NAJA: CYBORG, DARKLY, SLATE, SUPERHERO
     app = Vizro(
-        use_vizro_bootstrap=False,
         external_stylesheets=["https://cdn.mckinsey.com/libraries/Bootstrap/v1.3.0/mck-bootstrap.min.css"],
     ).build(dashboard)
     app.dash.layout.children.append(
