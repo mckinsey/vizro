@@ -16,22 +16,49 @@ from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 
+MCK_DISCRETE_SEQUENCE = [
+    "#061F79",
+    "#00A9F4",
+    "#75F0E7",
+    "#2251FF",
+    "#14B8AB",
+    "#0679C3",
+    "#9C217D",
+    "#F17E7E",
+    "#108980",
+    "#E479E4",
+]
+MCK_DIVERGING_BLUE_RED = [
+    "#051c2c",
+    "#061f79",
+    "#2251ff",
+    "#99c4ff",
+    "#e6e6e6",
+    "#f17e7e",
+    "#e33b3b",
+    "#b82525",
+    "#a84545",
+]
+MCK_DIVERGING_RED_GREEN = [
+    "#8e0b0b",
+    "#b82525",
+    "#e33b3b",
+    "#f17e7e",
+    "#e6d7bc",
+    "#75f0e7",
+    "#0bdacb",
+    "#13b8ab",
+    "#108980",
+]
+MCK_SEQUENTIAL_SEQUENCE = ["#051c2c", "#061f79", "#1537ba", "#2251ff", "#00A9F4", "#6ecbf7", "#99e6ff"]
+#     "#5e9dff", "#99c4ff"]
+
 pio.templates["vizro_light"].layout = pio.templates["vizro_light"].layout.update(
-    # colorscale_sequential=COLOR_SEQUENTIAL_SEQUENCE,
-    colorway=[
-        "#061F79",
-        "#00A9F4",
-        "#75F0E7",
-        "#2251FF",
-        "#14B8AB",
-        "#0679C3",
-        "#9C217D",
-        "#F17E7E",
-        "#108980",
-    ],
+    colorscale_sequential=MCK_SEQUENTIAL_SEQUENCE,
+    colorway=MCK_DISCRETE_SEQUENCE,
+    colorscale_diverging=MCK_DIVERGING_BLUE_RED,
     font_family="McKinseySans, Arial,  sans-serif, serif",
 )
-
 
 iris = px.data.iris()
 tips = px.data.tips()
