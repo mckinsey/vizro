@@ -8,7 +8,9 @@ on:
   push:
     branches:
       - main
-      - qa/remove-actions-loop-tests
+  pull_request:
+    branches:
+      - main
 
 env:
   PYTHONUNBUFFERED: 1
