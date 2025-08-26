@@ -17,7 +17,6 @@ class TestPageInstantiation:
         assert page.layout.grid == [[0], [1]]
         assert page.controls == []
         assert page.title == "Page 1"
-        assert page.id == "Page 1"
         assert page.path == "/page-1"
         assert page.actions == []
         assert page._action_outputs == {
@@ -75,15 +74,6 @@ class TestPageInstantiation:
         vm.Page(id="my-id-1", title="Page 1", components=[vm.Button()])
         vm.Page(id="my-id-2", title="Page 1", components=[vm.Button()])
 
-    def test_set_id_duplicate_title_invalid(self):
-        with pytest.raises(
-            ValueError,
-            match="Page with id=Page 1 already exists. Page id is automatically set to the same as the page title. "
-            "If you have multiple pages with the same title then you must assign a unique id.",
-        ):
-            vm.Page(title="Page 1", components=[vm.Button()])
-            vm.Page(title="Page 1", components=[vm.Button()])
-
     @pytest.mark.parametrize(
         "test_path, expected",
         [
@@ -120,9 +110,9 @@ class TestPagePreBuildMethod:
         [default_action] = page.actions
 
         assert isinstance(default_action, _on_page_load)
-        assert default_action.id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_Page 1"
+        assert default_action.id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_{page.id}"
         assert default_action.targets == ["scatter_chart"]
-        assert default_action._trigger == "__on_page_load_action_trigger_Page 1.data"
+        assert default_action._trigger == f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}.data"
         assert default_action._prevent_initial_call_of_guard is False
 
 

@@ -110,14 +110,24 @@ def chart_with_temporal_data(stocks):
     return go.Figure(data=go.Scatter(x=stocks["Date"], y=stocks["AAPL.High"], mode="markers"))
 
 
-@pytest.fixture()
-def page_1():
-    return vm.Page(title="Page 1", components=[vm.Button()])
+@pytest.fixture
+def page_1_id():
+    return "page_1"
+
+
+@pytest.fixture
+def page_2_id():
+    return "page_2"
 
 
 @pytest.fixture()
-def page_2():
-    return vm.Page(title="Page 2", components=[vm.Button()])
+def page_1(page_1_id):
+    return vm.Page(title="Page 1", id=page_1_id, components=[vm.Button()])
+
+
+@pytest.fixture()
+def page_2(page_2_id):
+    return vm.Page(title="Page 2", id=page_2_id, components=[vm.Button()])
 
 
 @pytest.fixture

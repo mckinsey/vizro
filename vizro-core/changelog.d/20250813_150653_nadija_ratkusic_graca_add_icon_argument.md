@@ -17,12 +17,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 
-<!--
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add `icon` argument to `vm.Button`, enabling any icon from the [Google Material Icons library](https://fonts.google.com/icons) to be displayed inside the `vm.Button`. This also enables circular buttons with only an icon. ([#1341](https://github.com/mckinsey/vizro/pull/1341))
 
--->
+
 <!--
 ### Changed
 
