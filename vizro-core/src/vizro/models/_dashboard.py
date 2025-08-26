@@ -280,7 +280,7 @@ class Dashboard(VizroBaseModel):
                 children="progress_activity",
                 id="global-progress-indicator",
             ),
-            children=html.Div(id="loading-spinner-output", style={"display": "none"}),
+            children=html.Div(id="loading-spinner-output"),
         )
 
         header_controls = html.Div(
