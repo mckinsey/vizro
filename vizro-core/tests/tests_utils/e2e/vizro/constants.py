@@ -284,6 +284,7 @@ PAGE_CHART_WITH_FILTER_INTERACTION = "page-chart-with-filter-interaction"
 PAGE_AG_GRID_WITH_FILTER_INTERACTION = "page-ag-grid-with-filter-interaction"
 PAGE_DYNAMIC_PARAMETRISATION = "page-dynamic-parametrisation"
 PAGE_ALL_SELECTORS = "page-all-selectors"
+PAGE_ALL_SELECTORS_IN_URL = "page-all-selectors-in-url"
 PAGE_ACTIONS_CHAIN = "page-actions-chain"
 
 HTTP_TIMEOUT_SHORT = 200

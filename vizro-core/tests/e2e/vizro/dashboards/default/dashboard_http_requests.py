@@ -64,6 +64,7 @@ page_button_with_three_actions = vm.Page(
         ),
         vm.Button(
             text="Export data",
+            id=f"{cnst.PAGE_BUTTON_WITH_THREE_ACTIONS}_button",
             actions=[
                 export_data(),
                 vm.Action(function=my_custom_action(t=2)),
@@ -214,6 +215,36 @@ page_all_selectors = vm.Page(
 )
 
 
+page_all_selectors_in_url = vm.Page(
+    title=cnst.PAGE_ALL_SELECTORS_IN_URL,
+    components=[
+        vm.Graph(
+            id=f"{cnst.PAGE_ALL_SELECTORS_IN_URL}_graph",
+            figure=px.scatter("dynamic_df_gapminder_arg", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+        ),
+    ],
+    controls=[
+        vm.Filter(column="continent", selector=vm.Dropdown(), show_in_url=True),
+        vm.Filter(column="continent", selector=vm.RadioItems(), show_in_url=True),
+        vm.Filter(column="continent", selector=vm.Checklist(), show_in_url=True),
+        vm.Filter(column="number_column", selector=vm.Slider(), show_in_url=True),
+        vm.Filter(column="number_column", selector=vm.RangeSlider(), show_in_url=True),
+        vm.Filter(column="date_column", selector=vm.DatePicker(), show_in_url=True),
+        vm.Filter(column="is_europe", selector=vm.Switch(title="Is Europe?"), show_in_url=True),
+        vm.Parameter(
+            targets=[
+                f"{cnst.PAGE_ALL_SELECTORS_IN_URL}_graph.data_frame.continent",
+            ],
+            selector=vm.RadioItems(
+                options=list(set(df_gapminder["continent"])),
+                value="Europe",
+            ),
+            show_in_url=True,
+        ),
+    ],
+)
+
+
 vm.Page.add_type("components", vm.RadioItems)
 radio_items_options = ["Option 1", "Option 2", "Option 3"]
 
@@ -261,6 +292,7 @@ dashboard = vm.Dashboard(
         page_ag_grid_with_filter_interaction,
         page_dynamic_parametrisation,
         page_all_selectors,
+        page_all_selectors_in_url,
         page_actions_chain,
     ]
 )
