@@ -2,7 +2,7 @@
 
 This guide shows you how to use themes. Themes are pre-designed collections of stylings that are applied to entire charts and dashboards. The themes provided by Vizro are infused with our design best practices that make charts and dashboards look visually consistent and professional.
 
-## Vizro themes in dashboard
+## Built-in Vizro themes (dark/light)
 
 The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argument, where you can choose between a `vizro_dark` and a `vizro_light` theme. If not specified then `theme` defaults to `vizro_dark`. The theme is applied to the entire dashboard and its charts/components when a user first loads your dashboard. Regardless of the theme applied on first load, users can always switch between light and dark themes via the toggle button in the upper-right corner of the dashboard.
 
@@ -57,7 +57,7 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argu
 
         [![Dark]][dark]
 
-## Bootstrap themes in dashboard
+## Custom Bootstrap themes
 
 If you like to change the default Vizro styling, you have two main options:
 
@@ -163,7 +163,7 @@ px.scatter_matrix(
 )
 ```
 
-## Vizro Bootstrap in a pure Dash app
+## Vizro Bootstrap for pure Dash app
 
 Vizro apps use the [Dash Bootstrap Components](https://www.dash-bootstrap-components.com/) library of Bootstrap components for Dash. If you have a pure Dash app and want to use Vizro's themes, you can apply Vizro's Bootstrap stylesheet in a [similar way to other Dash Bootstrap themes](https://www.dash-bootstrap-components.com/docs/themes/) through the `vizro.bootstrap` variable:
 
