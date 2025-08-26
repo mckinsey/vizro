@@ -1,53 +1,66 @@
 """This is a test app to test the dashboard layout."""
 
-from vizro import Vizro
 import vizro.models as vm
-
-
-import pandas as pd
-import numpy as np
+import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.tables import dash_ag_grid
 
-# Sample data
-data = {
-    "user_id": range(1, 11),
-    "name": ["Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Hannah", "Ian", "Jane"],
-    "age": np.random.randint(20, 50, size=10),
-    "signup_date": pd.date_range(start="2023-01-01", periods=10, freq="W"),
-    "active": np.random.choice([True, False], size=10),
-    "active_numeric": np.random.choice([0, 1], size=10),
-}
-
-
-df = pd.DataFrame(data)
+df = px.data.gapminder()
 
 
 page = vm.Page(
-    title="Test page",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    controls=[
-        vm.Filter(
-            column="active",
-            selector=vm.Switch(
-                value=False,
-                title="Show active accounts",
-                description="This is a description for the new switch selector",
-            ),
+    id="page_1",
+    title="Page 1",
+    components=[
+        vm.Container(
+            title="Container 1",
+            components=[vm.Graph(figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent"))],
+            controls=[vm.Filter(column="continent", selector=vm.Checklist())],
+            collapsed=False,
         ),
-        vm.Filter(column="active"),
-        vm.Filter(
-            column="active_numeric",
-            selector=vm.Switch(
-                value=False,
-                title="Show active accounts",
-                description="This is a description for the new switch selector",
-            ),
+        vm.Container(
+            title="Outer container",
+            components=[
+                vm.Container(
+                    title="Inner container",
+                    components=[vm.Graph(figure=px.bar(df, x="continent", y="lifeExp"))],
+                    controls=[vm.Filter(column="continent", selector=vm.RadioItems())],
+                    collapsed=True,
+                )
+            ],
+            variant="filled",
         ),
-        vm.Filter(column="active_numeric"),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+page_2 = vm.Page(
+    title="Controls in tabs",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Tab 1",
+                    components=[
+                        vm.Graph(figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent"))
+                    ],
+                    controls=[vm.Filter(column="continent", selector=vm.Checklist())],
+                    collapsed=False,
+                ),
+                vm.Container(
+                    title="Tab 2",
+                    components=[vm.Graph(figure=px.bar(df, x="continent", y="lifeExp"))],
+                    controls=[vm.Filter(column="continent", selector=vm.RadioItems())],
+                    collapsed=True,
+                ),
+            ]
+        )
+    ],
+)
+
+
+dashboard = vm.Dashboard(
+    pages=[page, page_2],
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

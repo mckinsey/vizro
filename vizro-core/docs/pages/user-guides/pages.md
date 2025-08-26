@@ -17,7 +17,7 @@ A [`Page`][vizro.models.Page] is split up into four main containers:
 
 To create and add a page to your dashboard, do the following steps:
 
-1. Set a `title` for your [`Page`][vizro.models.Page]
+1. Set a `title` for your [`Page`][vizro.models.Page] (does not have to be unique)
 1. Configure your `components`, see our guide on the [various options](components.md)
 1. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
 1. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
@@ -90,9 +90,15 @@ You can also navigate through the different pages by going directly to the relev
 
 ## Customize the page URL
 
-By default, the page URL is automatically generated based on the `id` of the page. For example, if `id="This is my first page"` the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
+The page URL is generated based on the following order of preference:
 
-Note that the page `id` defaults to be the same as the page `title` if not set. If you have multiple pages with the same `title` then you must assign a unique `id`.
+1. `path` argument
+1. `id` of the page (if explicitly set by the user)
+1. `title` argument
+
+For example, if `title="This is my first page"` (and neither `path` nor `id` is explicitly set) the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
+
+You cannot have duplicate `path` values, whether explicitly set or generated.
 
 The first page always has the URL prefix `/` assigned. A custom URL can, therefore, not be created for the first page.
 

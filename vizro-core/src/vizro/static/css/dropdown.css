@@ -1,6 +1,6 @@
 /* Outer layout for dash dropdown */
 div.dash-dropdown {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
   border: none;
   border-radius: 0;
   box-shadow: var(--bs-box-shadow-sm);
@@ -9,7 +9,7 @@ div.dash-dropdown {
 
 /* Dropdown menu when clicking on expand arrow */
 div.Select-menu-outer {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
   border: none;
   border-radius: 0;
   box-shadow: var(--bs-box-shadow-sm);
@@ -26,7 +26,7 @@ div.VirtualizedSelectOption {
 
 /* Dropdown menu hover effect */
 div.VirtualizedSelectFocusedOption {
-  background-color: var(--stateOverlays-hover);
+  background-color: var(--hover-bg-subtle);
 }
 
 /* Input box for existing values and user input */
@@ -38,7 +38,7 @@ div.Select-control {
 }
 
 div.Select.is-focused > .Select-control {
-  background-color: var(--field-enabled);
+  background-color: var(--bs-primary-bg-subtle);
 }
 
 /* User input */
@@ -55,7 +55,7 @@ div.Select-input > input {
 
 /* Border on focus */
 div.is-focused:not(.is-open) > .Select-control {
-  box-shadow: 0 0 0 2px var(--focus) inset;
+  box-shadow: 0 0 0 2px var(--bs-focus-ring-color) inset;
 }
 
 /* Single-select dropdown only ------------------- */
@@ -65,7 +65,7 @@ div.Select--single .Select-value {
 
 /* Tags --------------------------- */
 div.Select--multi .Select-value {
-  background-color: var(--dropdown-label-bg);
+  background-color: var(--bs-tertiary-bg);
   border: 0;
   border-radius: 0;
   box-shadow: var(--bs-box-shadow-sm);

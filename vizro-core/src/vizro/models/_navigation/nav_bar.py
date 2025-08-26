@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Annotated, Literal, Union
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field
 
+from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
@@ -14,10 +14,11 @@ from vizro.models._navigation.nav_link import NavLink
 from vizro.models.types import ModelID
 
 
-def coerce_pages_type(pages: Union[list[str], dict[str, list[str]]]) -> dict[str, list[str]]:
-    if isinstance(pages, Mapping):
+def coerce_pages_type(pages: Any) -> Any:
+    if isinstance(pages, list):
+        return {page: [page] for page in pages}
+    else:
         return pages
-    return {page: [page] for page in pages}
 
 
 class NavBar(VizroBaseModel):
@@ -25,7 +26,8 @@ class NavBar(VizroBaseModel):
 
     Args:
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
-        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
+            Defaults to `{}`.
         items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
 
     """
@@ -35,14 +37,24 @@ class NavBar(VizroBaseModel):
         dict[str, list[ModelID]],
         AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
-        Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
+        Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
     items: list[NavLink] = []
 
     @_log_call
     def pre_build(self):
+        from vizro.models import Page
+
         self.items = self.items or [
-            NavLink(label=group_title, pages=pages) for group_title, pages in self.pages.items()
+            NavLink(
+                # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
+                # then we prefer to have the title rather than id of that page be used
+                label=cast(Page, model_manager[group_title]).title
+                if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
+                else group_title,
+                pages=pages,
+            )
+            for group_title, pages in self.pages.items()
         ]
 
         for position, item in enumerate(self.items, 1):

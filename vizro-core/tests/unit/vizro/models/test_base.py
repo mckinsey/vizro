@@ -1,5 +1,6 @@
 import logging
 import textwrap
+import uuid
 from typing import Annotated, Literal, Optional, Union
 
 import pandas as pd
@@ -7,12 +8,8 @@ import plotly.graph_objects as go
 import pytest
 from pydantic import (
     Field,
-    FieldSerializationInfo,
-    SerializerFunctionWrapHandler,
     ValidationError,
     field_validator,
-    model_serializer,
-    model_validator,
 )
 
 import vizro.models as vm
@@ -122,7 +119,7 @@ class TestOptionalDiscriminatedUnion:
             ParentWithOptional(child=child)
 
     # The current error message is the non-discriminated union one.
-    def test_no_type_match_current_behaviour(self, ParentWithOptional):
+    def test_no_type_match_current_behavior(self, ParentWithOptional):
         child = ChildZ()
         with pytest.raises(
             ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
@@ -229,27 +226,25 @@ class ModelWithFieldSetting(vm.VizroBaseModel):
     def set_foo(cls, foo: Optional[str]) -> str:
         return foo or "long-random-thing"
 
-    # Set a field with a pre=True root-validator -->
-    # # this will not be caught by exclude_unset=True
-    @model_validator(mode="before")
-    @classmethod
-    def set_id(cls, values):
-        if "title" not in values:
-            return values
 
-        values.setdefault("id", values["title"])
-        return values
+class TestModelID:
+    def test_model_id_default(self):
+        model = Model()
+        assert model.id is not None
+        assert str(uuid.UUID(model.id)) == model.id
 
-    # Exclude field when id is the same as title
-    @model_serializer(mode="wrap")
-    def _serialize_id(self, nxt: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
-        result = nxt(self)
-        if info.context is not None and info.context.get("add_name", False):
-            result["__vizro_model__"] = self.__class__.__name__
-        if self.title == self.id:
-            result.pop("id", None)
-            return result
-        return result
+    def test_model_id_set(self):
+        model = Model(id="model_id")
+        assert model.id == "model_id"
+
+    def test_model_id_set_to_empty_string(self):
+        model = Model(id="")
+        assert model.id == ""
+
+    @pytest.mark.parametrize("invalid_type", [1, 1.0, True, False, [], {}])
+    def test_model_id_set_to_invalid_type(self, invalid_type):
+        with pytest.raises(ValidationError, match="Input should be a valid string"):
+            Model(id=invalid_type)
 
 
 class TestDict:
@@ -283,6 +278,7 @@ class TestDict:
             "type": "exclude_model",
             "__vizro_model__": "ModelWithFieldSetting",
             "foo": "long-random-thing",
+            "id": str(uuid.UUID(model.id)),
         }
 
 
@@ -633,7 +629,6 @@ class TestPydanticPython:
         assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
 
     def test_to_python_builtin_actions(self, page_builtin_actions):
-        # Test if built-in actions are included correctly in output, ie no ActionsChain model
         result = page_builtin_actions._to_python()
         assert result == expected_builtin_actions
 

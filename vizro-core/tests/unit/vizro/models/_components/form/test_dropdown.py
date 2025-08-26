@@ -147,10 +147,10 @@ class TestDropdownInstantiation:
         with pytest.raises(ValidationError, match="Please set multi=True if providing a list of default values."):
             Dropdown(value=[1, 2], multi=False, options=[1, 2, 3, 4, 5])
 
-    def test_set_action_via_validator(self, identity_action_function):
-        dropdown = Dropdown(actions=[Action(function=identity_action_function())])
-        actions_chain = dropdown.actions[0]
-        assert actions_chain.trigger.component_property == "value"
+    def test_dropdown_trigger(self, identity_action_function):
+        dropdown = Dropdown(id="dropdown-id", actions=[Action(function=identity_action_function())])
+        [action] = dropdown.actions
+        assert action._trigger == "dropdown-id.value"
 
 
 class TestDropdownBuild:

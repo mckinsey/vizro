@@ -5,10 +5,9 @@ from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 
 class TextArea(VizroBaseModel):
@@ -22,8 +21,7 @@ class TextArea(VizroBaseModel):
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (Optional[list[ActionType]]): Defaults to `[]`.
-
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["text_area"] = "text_area"
@@ -40,12 +38,11 @@ class TextArea(VizroBaseModel):
         ),
     ]
     placeholder: str = Field(default="", description="Default text to display in input field")
-    actions: list[ActionType] = []
 
-    # Reused validators
     # TODO: Before making public, consider how actions should be triggered and what the default property should be
     # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
-    _set_actions = _action_validator_factory("value")
+    # This would mean creating _action_triggers and using make_actions_chain.
+    actions: ActionsType = []
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

@@ -62,11 +62,10 @@ class TestDatePickerInstantiation:
 
         assert date_picker.title == str(title)
 
-    def test_set_action_via_validator(self, identity_action_function):
-        date_picker = vm.DatePicker(actions=[vm.Action(function=identity_action_function())])
-        actions_chain = date_picker.actions[0]
-
-        assert actions_chain.trigger.component_property == "value"
+    def test_date_picker_trigger(self, identity_action_function):
+        date_picker = vm.DatePicker(id="date-picker-id", actions=[vm.Action(function=identity_action_function())])
+        [action] = date_picker.actions
+        assert action._trigger == "date-picker-id.value"
 
     @pytest.mark.parametrize("min, max", [("2024-01-01", None), (None, "2024-01-01"), ("2024-01-01", "2024-02-01")])
     def test_valid_min_max(self, min, max):

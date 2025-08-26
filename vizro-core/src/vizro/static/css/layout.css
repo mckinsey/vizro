@@ -31,7 +31,7 @@
 }
 
 #right-side {
-  background: var(--right-side-bg);
+  background: var(--bs-body-bg);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -157,6 +157,7 @@
   border-radius: 50%;
   color: var(--bs-tertiary-color);
   cursor: pointer;
+  font-size: 26px;
   position: absolute;
 }
 
@@ -292,4 +293,10 @@ Current logic:
   display: flex;
   flex-direction: row;
   gap: 12px;
+}
+
+.btn-circular {
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
 }
