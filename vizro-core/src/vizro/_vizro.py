@@ -98,17 +98,16 @@ class Vizro:
         Returns:
             bool: True if Bootstrap CSS is detected, False otherwise
         """
-        if not external_stylesheets:
-            return False
-
-        for stylesheet in external_stylesheets:
+        def _get_url(stylesheet: Union[str, dict[str, str]]) -> str:
+            """Extract URL from stylesheet."""
             if isinstance(stylesheet, str):
-                if "bootstrap" in stylesheet.lower():
-                    return True
-            elif isinstance(stylesheet, dict) and "href" in stylesheet:
-                if "bootstrap" in stylesheet["href"].lower():
-                    return True
-        return False
+                return stylesheet
+            return stylesheet.get("href", "") if isinstance(stylesheet, dict) else ""
+        
+        return any(
+            "bootstrap" in _get_url(stylesheet).lower() 
+            for stylesheet in external_stylesheets
+        )
 
     def build(self, dashboard: Dashboard):
         """Builds the `dashboard`.
