@@ -79,6 +79,10 @@
   position: static !important;
 }
 
+#loading-spinner-output {
+  display: none;
+}
+
 .progress_indicator {
   animation: spin 1s linear infinite;
   opacity: 1;
