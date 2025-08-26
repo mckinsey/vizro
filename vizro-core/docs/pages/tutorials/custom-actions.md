@@ -886,6 +886,7 @@ add alert
 change page - not for now
 
 Good example ideas:
+graph that is its own source and target e.g. drilldown same figure on click
 CRUD
 table as input
 filter/parameter that updates text too - Example states input that uses filter - would need to implement vm.Filter _action_input first

@@ -121,7 +121,8 @@ class Filter(VizroBaseModel):
         # TODO-AV2 E: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.
         # This will allow direct interaction with a filter's selector via its ID, essential for the upcoming
         # 'interact' action.
-        return {"__default__": f"{self.id}.children"}
+        # TODO NOW: revert this
+        return {"__default__": f"{self.selector.id}.value"}
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
         # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,

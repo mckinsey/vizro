@@ -1,5 +1,8 @@
 import base64
 import json
+from typing import Literal
+
+import dash
 
 import vizro.models as vm
 from vizro import Vizro
@@ -8,7 +11,9 @@ from vizro.models.types import capture
 import vizro.plotly.express as px
 from vizro.tables import dash_ag_grid
 
-df = px.data.gapminder().query("year == 2007")
+df = px.data.gapminder()
+
+import plotly.graph_objs as go
 
 
 @capture("action")
@@ -33,6 +38,41 @@ def drill_through(data):
     [continent] = data["points"][0]["customdata"]
     # In future this would just be trigger["customdata"]
     return "/target_page", f"?target_filter2={encode_to_base64(continent)}"
+
+
+@capture("action")
+def hierarchical_action(data):
+    data = data["points"][0]  # This line won't be needed in future
+    # Ugly way to detect whether click was from the graph of px.scatter or px.pie. This tells us which filter to
+    # update: continent or country.
+    if "customdata" in data:
+        [continent] = data["customdata"]
+        return continent, dash.no_update
+    else:
+        country = data["label"]
+        return dash.no_update, country
+
+
+# You could definitely do something like this using Parameters (or maybe just one Parameter) instead, but would then
+# need to do the filtering operation inside hierarchical_plot itself.
+@capture("graph")
+def hierarchical_plot(data_frame):
+    if data_frame["continent"].nunique() > 1:
+        return px.scatter(
+            data_frame.query("year == 2007"),
+            x="pop",
+            y="lifeExp",
+            log_x=True,
+            color="continent",
+            custom_data="continent",
+        )
+    elif data_frame["country"].nunique() > 1:
+        return px.pie(data_frame.query("year == 2007"), values="pop", names="country")
+    elif data_frame["country"].nunique() == 1:
+        return px.line(data_frame, x="year", y="pop")
+    else:
+        # e.g. when data_frame.empty. Probably some other cases too since I wrote the above very roughly.
+        return go.Figure()
 
 
 page = vm.Page(
@@ -81,5 +121,24 @@ page_3 = vm.Page(
     controls=[vm.Filter(id="target_filter2", column="continent", show_in_url=True)],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_2, page_3])
+page_4 = vm.Page(
+    title="Self-interacting graph",
+    components=[
+        vm.Graph(
+            id="graph",
+            figure=hierarchical_plot(df),
+            actions=vm.Action(
+                function=hierarchical_action("graph.clickData"), outputs=["filter_continent", "filter_country"]
+            ),
+            # In future you won't need to label graph and do graph.clickData. You'd use special
+            # argument trigger instead.
+        ),
+    ],
+    controls=[
+        vm.Filter(id="filter_continent", column="continent"),
+        vm.Filter(id="filter_country", column="country"),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_2, page_3, page_4])
 Vizro().build(dashboard).run(debug=True)
