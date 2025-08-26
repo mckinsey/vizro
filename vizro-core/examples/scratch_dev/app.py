@@ -11,36 +11,55 @@ df = px.data.gapminder()
 page = vm.Page(
     id="page_1",
     title="Page 1",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_1",
+    components=[
+        vm.Container(
+            title="Container 1",
+            components=[vm.Graph(figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent"))],
+            controls=[vm.Filter(column="continent", selector=vm.Checklist())],
+            collapsed=False,
+        ),
+        vm.Container(
+            title="Outer container",
+            components=[
+                vm.Container(
+                    title="Inner container",
+                    components=[vm.Graph(figure=px.bar(df, x="continent", y="lifeExp"))],
+                    controls=[vm.Filter(column="continent", selector=vm.RadioItems())],
+                    collapsed=True,
+                )
+            ],
+            variant="filled",
+        ),
+    ],
 )
 
-page2 = vm.Page(
-    id="page_2",
-    title="Page 2",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_2",
-)
-
-page3 = vm.Page(
-    id="page_3",
-    title="Page 3",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_3",
+page_2 = vm.Page(
+    title="Controls in tabs",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Tab 1",
+                    components=[
+                        vm.Graph(figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent"))
+                    ],
+                    controls=[vm.Filter(column="continent", selector=vm.Checklist())],
+                    collapsed=False,
+                ),
+                vm.Container(
+                    title="Tab 2",
+                    components=[vm.Graph(figure=px.bar(df, x="continent", y="lifeExp"))],
+                    controls=[vm.Filter(column="continent", selector=vm.RadioItems())],
+                    collapsed=True,
+                ),
+            ]
+        )
+    ],
 )
 
 
 dashboard = vm.Dashboard(
-    pages=[page, page2, page3],
-    navigation=vm.Navigation(
-        # nav_selector=vm.NavBar(
-        # pages=["page_1", "Page 2", "page_3"],
-        # items=[
-        #     vm.NavLink(label="Section 1", pages=["page_1", "page_2"]),
-        #     vm.NavLink(label="Section 2", pages=["page_3"]),
-        # ]
-        # ),
-    ),
+    pages=[page, page_2],
 )
 
 if __name__ == "__main__":
