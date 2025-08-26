@@ -270,23 +270,31 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.H2(id="dashboard-title", hidden=True)
         )
-        settings = html.Div(
-            dbc.Switch(
-                id="theme-selector",
-                value=self.theme == "vizro_light",
-                persistence=True,
-                persistence_type="session",
+        progress_indicator = dcc.Loading(
+            id="global-progress-indicator-loading",
+            fullscreen=False,
+            delay_show=500,
+            delay_hide=500,
+            custom_spinner=html.Span(
+                className="material-symbols-outlined progress_indicator",
+                children="progress_activity",
+                id="global-progress-indicator",
             ),
-            id="settings",
+            children=html.Div(id="loading-spinner-output", style={"display": "none"}),
         )
 
-        progress_indicator = html.Span(
-            className="material-symbols-outlined progress_indicator",
-            children="forward_media",
-            id="global-progress-indicator",
+        header_controls = html.Div(
+            id="header-controls",
+            children=[
+                progress_indicator,
+                dbc.Switch(
+                    id="theme-selector",
+                    value=self.theme == "vizro_light",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ],
         )
-
-        header_controls = html.Div(id="header-controls", children=[progress_indicator, settings])
 
         logo, logo_dark, logo_light = self._get_logo_images()
         custom_header_content = self.custom_header()

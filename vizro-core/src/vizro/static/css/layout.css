@@ -5,12 +5,6 @@
   width: 100vw;
 }
 
-#settings {
-  align-items: center;
-  display: flex;
-  gap: 0.5rem;
-}
-
 #nav-control-panel {
   align-items: flex-start;
   border-right: 1px solid var(--bs-border-color);
@@ -41,7 +35,7 @@
 }
 
 #page-header {
-  align-items: baseline;
+  align-items: center;
   display: flex;
   flex-direction: row;
   height: 32px;
@@ -77,14 +71,15 @@
 #header-controls {
   align-items: center;
   display: flex;
-  gap: 10px;
+  gap: 0.5rem;
+  height: 100%;
+}
+
+#global-progress-indicator-loading {
+  position: static !important;
 }
 
 .progress_indicator {
-  opacity: 0;
-}
-
-.progress_indicator.active {
   animation: spin 1s linear infinite;
   opacity: 1;
 }

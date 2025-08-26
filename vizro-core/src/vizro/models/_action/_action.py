@@ -369,7 +369,10 @@ class _BaseAction(VizroBaseModel):
 
         callback_inputs = {"external": external_callback_inputs, "internal": {"trigger": trigger}}
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
-            "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
+            "internal": {
+                "action_finished": Output(f"{self.id}_finished", "data"),
+                "action_loading_indicator": Output("loading-spinner-output", "children", allow_duplicate=True),
+            },
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
@@ -393,19 +396,23 @@ class _BaseAction(VizroBaseModel):
             output=callback_outputs,
             inputs=callback_inputs,
             prevent_initial_call=True,
-            running=[
-                (
-                    Output("global-progress-indicator", "className"),
-                    "material-symbols-outlined progress_indicator active",
-                    "material-symbols-outlined progress_indicator",
-                )
-            ],
         )
         def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:
-                return {"internal": {"action_finished": time.time()}, "external": return_value}
-            return {"internal": {"action_finished": time.time()}}
+                return {
+                    "internal": {
+                        "action_finished": time.time(),
+                        "action_loading_indicator": None,
+                    },
+                    "external": return_value,
+                }
+            return {
+                "internal": {
+                    "action_finished": time.time(),
+                    "action_loading_indicator": None,
+                }
+            }
 
 
 class Action(_BaseAction):
