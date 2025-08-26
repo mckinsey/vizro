@@ -3,7 +3,6 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
 
 df = px.data.gapminder()
 
