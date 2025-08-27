@@ -1,5 +1,6 @@
 import os
 import time
+from collections import Counter
 
 import e2e.vizro.constants as cnst
 from e2e.vizro.paths import (
@@ -186,4 +187,16 @@ def check_table_ag_grid_rows_number(driver, table_id, expected_rows_num):
         len(actual_rows_num),
         equal_to(expected_rows_num),
         reason=f"Rows number is '{actual_rows_num}', but expected number is '{expected_rows_num}'",
+    )
+
+
+# Current http_requests_paths contains only "_dash-update-component", but the Counter is used to
+# simplify scaling of this code if we start observing and counting other http requests
+def check_http_requests_count(
+    page, http_requests_paths, requests_number, sleep=cnst.HTTP_TIMEOUT_SHORT, url_path="_dash-update-component"
+):
+    page.wait_for_timeout(sleep)
+    counts = Counter(http_requests_paths)
+    assert_that(
+        counts[url_path], equal_to(requests_number), reason=f"'{url_path}' should be equal to {requests_number}"
     )
