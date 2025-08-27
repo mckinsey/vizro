@@ -54,7 +54,7 @@ def hierarchical_action(data):
 
 
 # You could definitely do something like this using Parameters (or maybe just one Parameter) instead, but would then
-# need to do the filtering operation inside hierarchical_plot itself.
+# need to do the filtering operation inside hierarchical_plot itself. It wouldn't work so well with dynamic data either.
 @capture("graph")
 def hierarchical_plot(data_frame):
     if data_frame["continent"].nunique() > 1:
