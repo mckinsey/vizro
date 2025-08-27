@@ -58,6 +58,7 @@ pio.templates["vizro_light"].layout = pio.templates["vizro_light"].layout.update
     colorway=MCK_DISCRETE_SEQUENCE,
     colorscale_diverging=MCK_DIVERGING_BLUE_RED,
     font_family="McKinseySans, Arial,  sans-serif, serif",
+    title_font_family="Bower, McKinseySans, Arial, sans-serif, serif",
 )
 
 iris = px.data.iris()
