@@ -270,31 +270,6 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.H2(id="dashboard-title", hidden=True)
         )
-        progress_indicator = dcc.Loading(
-            id="global-progress-indicator-loading",
-            fullscreen=False,
-            delay_show=500,
-            delay_hide=500,
-            custom_spinner=html.Span(
-                className="material-symbols-outlined progress_indicator",
-                children="progress_activity",
-                id="global-progress-indicator",
-            ),
-            children=html.Div(id="loading-spinner-output"),
-        )
-
-        header_controls = html.Div(
-            id="header-controls",
-            children=[
-                progress_indicator,
-                dbc.Switch(
-                    id="theme-selector",
-                    value=self.theme == "vizro_light",
-                    persistence=True,
-                    persistence_type="session",
-                ),
-            ],
-        )
 
         logo, logo_dark, logo_light = self._get_logo_images()
         custom_header_content = self.custom_header()
@@ -309,6 +284,31 @@ class Dashboard(VizroBaseModel):
         # Construct required parent containers
         page_header_content = [page_title]
         page_header = html.Div(id="page-header", children=page_header_content)
+
+        # Page header controls that appear on the right side of the header.
+        header_controls = html.Div(
+            id="header-controls",
+            children=[
+                dcc.Loading(
+                    id="action-progress-indicator",
+                    delay_show=300,
+                    delay_hide=300,
+                    custom_spinner=html.Span(
+                        className="material-symbols-outlined progress-indicator",
+                        # Keep "progress_activity" children so the CSS spinner can render/display correctly.
+                        children="progress_activity",
+                    ),
+                    # Placeholder div is added as used as target from actions to show loading indicator.
+                    children=html.Div(id="action-progress-indicator-placeholder"),
+                ),
+                dbc.Switch(
+                    id="theme-selector",
+                    value=self.theme == "vizro_light",
+                    persistence=True,
+                    persistence_type="session",
+                )
+            ]
+        )
 
         # Apply different container position logic based on condition
         if _all_hidden(header_left_content + header_right_content):

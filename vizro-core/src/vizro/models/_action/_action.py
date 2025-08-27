@@ -8,7 +8,7 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc
+from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
 from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -371,7 +371,7 @@ class _BaseAction(VizroBaseModel):
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
             "internal": {
                 "action_finished": Output(f"{self.id}_finished", "data"),
-                "action_loading_indicator": Output("loading-spinner-output", "children", allow_duplicate=True),
+                "action_progress_indicator": Output("action-progress-indicator-placeholder", "children", allow_duplicate=True),
             },
         }
 
@@ -398,21 +398,17 @@ class _BaseAction(VizroBaseModel):
             prevent_initial_call=True,
         )
         def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
-            return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
-            if "external" in callback_outputs:
-                return {
-                    "internal": {
-                        "action_finished": time.time(),
-                        "action_loading_indicator": None,
-                    },
-                    "external": return_value,
-                }
-            return {
+            external_return = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
+            return_value = {
                 "internal": {
                     "action_finished": time.time(),
-                    "action_loading_indicator": None,
+                    "action_progress_indicator": no_update,
                 }
             }
+            if "external" in callback_outputs:
+                return_value["external"] = external_return
+
+            return return_value
 
 
 class Action(_BaseAction):

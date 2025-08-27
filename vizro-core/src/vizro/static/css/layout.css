@@ -75,15 +75,15 @@
   height: 100%;
 }
 
-#global-progress-indicator-loading {
+#action-progress-indicator {
   position: static !important;
 }
 
-#loading-spinner-output {
+#action-progress-indicator-placeholder {
   display: none;
 }
 
-.progress_indicator {
+.progress-indicator {
   animation: spin 1s linear infinite;
   opacity: 1;
 }
