@@ -11,7 +11,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ModelID, SelectorType
+from vizro.models.types import ModelID, SelectorType, _IdProperty
 
 
 def check_dot_notation(target):
@@ -90,6 +90,14 @@ class Parameter(VizroBaseModel):
         # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        # TODO-AV2 E: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.
+        # This will allow direct interaction with a filter's selector via its ID, essential for the upcoming
+        # 'interact' action.
+        # TODO NOW: revert this
+        return {"__default__": f"{self.selector.id}.value"}
 
     @_log_call
     def pre_build(self):
