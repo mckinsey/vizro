@@ -190,14 +190,13 @@ def check_table_ag_grid_rows_number(driver, table_id, expected_rows_num):
     )
 
 
-# Current urls_list contains only "_dash-update-component",
-# but the Counter is used to simplify scaling of this code
-# if we start observing and counting other http requests
+# Current http_requests_paths contains only "_dash-update-component", but the Counter is used to
+# simplify scaling of this code if we start observing and counting other http requests
 def check_http_requests_count(
-    page, urls_list, requests_number, sleep=cnst.HTTP_TIMEOUT_SHORT, url_path="_dash-update-component"
+    page, http_requests_paths, requests_number, sleep=cnst.HTTP_TIMEOUT_SHORT, url_path="_dash-update-component"
 ):
     page.wait_for_timeout(sleep)
-    counts = Counter(urls_list)
+    counts = Counter(http_requests_paths)
     assert_that(
         counts[url_path], equal_to(requests_number), reason=f"'{url_path}' should be equal to {requests_number}"
     )

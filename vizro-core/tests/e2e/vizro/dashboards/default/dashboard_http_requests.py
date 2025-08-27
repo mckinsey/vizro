@@ -56,15 +56,15 @@ page_with_one_chart = vm.Page(
     ],
 )
 
-page_button_with_three_actions = vm.Page(
-    title=cnst.PAGE_BUTTON_WITH_THREE_ACTIONS,
+page_explicit_actions_chain = vm.Page(
+    title=cnst.PAGE_EXPLICIT_ACIONS_CHAIN,
     components=[
         vm.Graph(
             figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
         ),
         vm.Button(
             text="Export data",
-            id=f"{cnst.PAGE_BUTTON_WITH_THREE_ACTIONS}_button",
+            id=f"{cnst.PAGE_EXPLICIT_ACIONS_CHAIN}_button",
             actions=[
                 export_data(),
                 vm.Action(function=my_custom_action(t=2)),
@@ -74,6 +74,43 @@ page_button_with_three_actions = vm.Page(
     ],
     controls=[
         vm.Filter(column="continent", selector=vm.RadioItems()),
+    ],
+)
+
+vm.Page.add_type("components", vm.RadioItems)
+radio_items_options = ["Option 1", "Option 2", "Option 3"]
+
+page_implicit_actions_chain = vm.Page(
+    title=cnst.PAGE_IMPLICIT_ACIONS_CHAIN,
+    layout=vm.Grid(grid=[[0, 1, 2]]),
+    components=[
+        vm.Button(
+            id=f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_button",
+            text="Change checklist value",
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda x: radio_items_options[int(x) % 3])(
+                        f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_button.n_clicks"
+                    ),
+                    outputs=f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_checklist.value",
+                )
+            ],
+        ),
+        vm.RadioItems(
+            id=f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_checklist",
+            options=radio_items_options,
+            value=radio_items_options[0],
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda x: x)(f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_checklist.value"),
+                    outputs=f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_card.text",
+                )
+            ],
+        ),
+        vm.Card(
+            id=f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_card",
+            text="Card text",
+        ),
     ],
 )
 
@@ -174,34 +211,6 @@ page_all_selectors = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(
-            column="continent",
-            selector=vm.Dropdown(),
-        ),
-        vm.Filter(
-            column="continent",
-            selector=vm.RadioItems(),
-        ),
-        vm.Filter(
-            column="continent",
-            selector=vm.Checklist(),
-        ),
-        vm.Filter(
-            column="number_column",
-            selector=vm.Slider(),
-        ),
-        vm.Filter(
-            column="number_column",
-            selector=vm.RangeSlider(),
-        ),
-        vm.Filter(
-            column="date_column",
-            selector=vm.DatePicker(),
-        ),
-        vm.Filter(
-            column="is_europe",
-            selector=vm.Switch(title="Is Europe?"),
-        ),
         vm.Parameter(
             targets=[
                 f"{cnst.PAGE_ALL_SELECTORS}_graph.data_frame.continent",
@@ -211,6 +220,13 @@ page_all_selectors = vm.Page(
                 value="Europe",
             ),
         ),
+        vm.Filter(column="continent", selector=vm.Dropdown()),
+        vm.Filter(column="continent", selector=vm.RadioItems()),
+        vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(column="number_column", selector=vm.Slider()),
+        vm.Filter(column="number_column", selector=vm.RangeSlider()),
+        vm.Filter(column="date_column", selector=vm.DatePicker()),
+        vm.Filter(column="is_europe", selector=vm.Switch(title="Is Europe?")),
     ],
 )
 
@@ -224,13 +240,6 @@ page_all_selectors_in_url = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="continent", selector=vm.Dropdown(), show_in_url=True),
-        vm.Filter(column="continent", selector=vm.RadioItems(), show_in_url=True),
-        vm.Filter(column="continent", selector=vm.Checklist(), show_in_url=True),
-        vm.Filter(column="number_column", selector=vm.Slider(), show_in_url=True),
-        vm.Filter(column="number_column", selector=vm.RangeSlider(), show_in_url=True),
-        vm.Filter(column="date_column", selector=vm.DatePicker(), show_in_url=True),
-        vm.Filter(column="is_europe", selector=vm.Switch(title="Is Europe?"), show_in_url=True),
         vm.Parameter(
             targets=[
                 f"{cnst.PAGE_ALL_SELECTORS_IN_URL}_graph.data_frame.continent",
@@ -241,44 +250,13 @@ page_all_selectors_in_url = vm.Page(
             ),
             show_in_url=True,
         ),
-    ],
-)
-
-
-vm.Page.add_type("components", vm.RadioItems)
-radio_items_options = ["Option 1", "Option 2", "Option 3"]
-
-page_actions_chain = vm.Page(
-    title=cnst.PAGE_ACTIONS_CHAIN,
-    layout=vm.Grid(grid=[[0, 1, 2]]),
-    components=[
-        vm.Button(
-            id=f"{cnst.PAGE_ACTIONS_CHAIN}_button",
-            text="Change checklist value",
-            actions=[
-                vm.Action(
-                    function=capture("action")(lambda x: radio_items_options[int(x) % 3])(
-                        f"{cnst.PAGE_ACTIONS_CHAIN}_button.n_clicks"
-                    ),
-                    outputs=f"{cnst.PAGE_ACTIONS_CHAIN}_checklist.value",
-                )
-            ],
-        ),
-        vm.RadioItems(
-            id=f"{cnst.PAGE_ACTIONS_CHAIN}_checklist",
-            options=radio_items_options,
-            value=radio_items_options[0],
-            actions=[
-                vm.Action(
-                    function=capture("action")(lambda x: x)(f"{cnst.PAGE_ACTIONS_CHAIN}_checklist.value"),
-                    outputs=f"{cnst.PAGE_ACTIONS_CHAIN}_card.text",
-                )
-            ],
-        ),
-        vm.Card(
-            id=f"{cnst.PAGE_ACTIONS_CHAIN}_card",
-            text="Card text",
-        ),
+        vm.Filter(column="continent", selector=vm.Dropdown(), show_in_url=True),
+        vm.Filter(column="continent", selector=vm.RadioItems(), show_in_url=True),
+        vm.Filter(column="continent", selector=vm.Checklist(), show_in_url=True),
+        vm.Filter(column="number_column", selector=vm.Slider(), show_in_url=True),
+        vm.Filter(column="number_column", selector=vm.RangeSlider(), show_in_url=True),
+        vm.Filter(column="date_column", selector=vm.DatePicker(), show_in_url=True),
+        vm.Filter(column="is_europe", selector=vm.Switch(title="Is Europe?"), show_in_url=True),
     ],
 )
 
@@ -287,13 +265,13 @@ dashboard = vm.Dashboard(
     pages=[
         page_without_chart,
         page_with_one_chart,
-        page_button_with_three_actions,
+        page_explicit_actions_chain,
+        page_implicit_actions_chain,
         page_chart_with_filter_interaction,
         page_ag_grid_with_filter_interaction,
         page_dynamic_parametrisation,
         page_all_selectors,
         page_all_selectors_in_url,
-        page_actions_chain,
     ]
 )
 

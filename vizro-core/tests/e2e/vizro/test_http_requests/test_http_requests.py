@@ -75,13 +75,13 @@ def test_page_with_one_chart(page, http_requests_paths):
 
 
 @http_requests
-def test_button_with_three_actions(page, http_requests_paths):
+def test_explicit_actions_chain(page, http_requests_paths):
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.PAGE_BUTTON_WITH_THREE_ACTIONS}']").click()
+    page.locator(f"a[href='/{cnst.PAGE_EXPLICIT_ACIONS_CHAIN}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # click on the button (3 http)
-    page.locator(f"#{cnst.PAGE_BUTTON_WITH_THREE_ACTIONS}_button").click()
+    # click on the button - explicit actions chain (3 http)
+    page.locator(f"#{cnst.PAGE_EXPLICIT_ACIONS_CHAIN}_button").click()
     check_http_requests_count(page, http_requests_paths, 5, sleep=3000)
 
     # select radio items filter value (1 http)
@@ -90,6 +90,20 @@ def test_button_with_three_actions(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_implicit_actions_chain(page, http_requests_paths):
+    # open the page without chart (1 http)
+    page.locator(f"a[href='/{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}']").click()
+    check_http_requests_count(page, http_requests_paths, 1)
+
+    # click on the button - implicit actions chain (2 http)
+    page.locator(f"#{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_button").click()
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
 
 
 @http_requests
@@ -132,7 +146,7 @@ def test_dynamic_parametrisation(page, http_requests_paths):
     page.reload(wait_until="networkidle")
     check_http_requests_count(page, http_requests_paths, 4)
 
-    # select radio items filter value (1 http)
+    # select radio items data_frame_parameter value (1 http)
     page.get_by_text("Oceania").nth(0).click()
     check_http_requests_count(page, http_requests_paths, 5)
 
@@ -156,8 +170,12 @@ def test_all_selectors(page, http_requests_paths):
     page.reload(wait_until="networkidle")
     check_http_requests_count(page, http_requests_paths, 4)
 
+    # select radio items data_frame_parameter value (1 http)
+    page.get_by_text("Oceania").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 5)
+
     # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
 
 
 @http_requests
@@ -171,19 +189,9 @@ def test_all_selectors_in_url(page, http_requests_paths):
     page.reload(wait_until="networkidle")
     check_http_requests_count(page, http_requests_paths, 4)
 
-    # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
-
-
-@http_requests
-def test_actions_chain(page, http_requests_paths):
-    # open the page without chart (1 http)
-    page.locator(f"a[href='/{cnst.PAGE_ACTIONS_CHAIN}']").click()
-    check_http_requests_count(page, http_requests_paths, 1)
-
-    # click on the button (2 http)
-    page.locator(f"#{cnst.PAGE_ACTIONS_CHAIN}_button").click()
-    check_http_requests_count(page, http_requests_paths, 3)
+    # select radio items data_frame_parameter value (1 http)
+    page.get_by_text("Oceania").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 5)
 
     # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
