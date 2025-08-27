@@ -1,4 +1,9 @@
 /* GLOBAL */
+@font-face {
+  font-family: Bower;
+  src: url("./fonts/bower-bold.woff2") format("truetype");
+}
+
 :root {
 /* Mck colors need to be defined again as they don't have the prefix bs- */
   --bs-blue: #007bff;
@@ -57,8 +62,12 @@
 /* NAVBAR */
 .navbar .nav-link {
   width: 60px;
+  height: 60px;
 }
 
+#nav-bar {
+  padding-top: 6px;
+}
 
 /* TABLE */
 #dashboard-container .dash-spreadsheet-inner th {
@@ -106,7 +115,12 @@
 
 
 /* TYPOGRAPHY */
+h1, h2, h3 {
+  font-family: Bower, Arial, sans-serif, serif;
+}
+
 h1, h2, h3, h4, h5 {
+  padding-top: 0;
   margin-bottom: 0.5rem;
 }
 
