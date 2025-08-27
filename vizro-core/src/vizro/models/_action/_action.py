@@ -371,7 +371,9 @@ class _BaseAction(VizroBaseModel):
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
             "internal": {
                 "action_finished": Output(f"{self.id}_finished", "data"),
-                "action_progress_indicator": Output("action-progress-indicator-placeholder", "children", allow_duplicate=True),
+                "action_progress_indicator": Output(
+                    "action-progress-indicator-placeholder", "children", allow_duplicate=True
+                ),
             },
         }
 

@@ -27,23 +27,17 @@ page_1 = vm.Page(
         vm.Button(
             id="fast_action_button",
             text="Trigger Fast Action",
-            actions=vm.Action(
-                function=fast_action("fast_action_button.n_clicks"),
-                outputs=["output_text"]
-            )
+            actions=vm.Action(function=fast_action("fast_action_button.n_clicks"), outputs=["output_text"]),
         ),
         vm.Button(
             id="slow_action_button",
             text="Trigger Slow Action",
-            actions=vm.Action(
-                function=slow_action("slow_action_button.n_clicks"),
-                outputs=["output_text"]
-            )
+            actions=vm.Action(function=slow_action("slow_action_button.n_clicks"), outputs=["output_text"]),
         ),
         vm.Text(
             id="output_text",
             text="Trigger an action to see the result here.",
-        )
+        ),
     ],
 )
 
@@ -52,7 +46,7 @@ page_2 = vm.Page(
     components=[
         vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
     ],
-    controls=[vm.Filter(column="species")]
+    controls=[vm.Filter(column="species")],
 )
 
 dashboard = vm.Dashboard(

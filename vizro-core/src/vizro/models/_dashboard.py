@@ -306,8 +306,8 @@ class Dashboard(VizroBaseModel):
                     value=self.theme == "vizro_light",
                     persistence=True,
                     persistence_type="session",
-                )
-            ]
+                ),
+            ],
         )
 
         # Apply different container position logic based on condition
