@@ -394,11 +394,7 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback inputs:\n%s", pformat(callback_inputs["external"], width=200))
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
-        @callback(
-            output=callback_outputs,
-            inputs=callback_inputs,
-            prevent_initial_call=True,
-        )
+        @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             external_return = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             return_value = {
