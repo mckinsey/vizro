@@ -64,7 +64,7 @@ If you like to change the default Vizro styling, you have two main options:
 - Apply custom CSS to override specific properties (see our guide on [customizing CSS](custom-css.md)).
 - Load a completely different Bootstrap theme.
 
-Since Vizro uses Bootstrap components under the hood, you can provide your own third-party Bootstrap stylesheet through the `external_stylesheets` argument. When you do this, Vizro will skip loading its default Bootstrap stylesheet and instead apply the one you supplied.
+Vizro is built on Bootstrap components, which means you can customize the appearance by providing your own Bootstrap theme via the `external_stylesheets` argument in the `Vizro()` constructor. When you specify an external Bootstrap stylesheet, Vizro will use your custom theme instead of its default styling. You can explore available Bootstrap themes in the [Dash Bootstrap Components theme gallery](https://www.dash-bootstrap-components.com/docs/themes/explorer/).
 
 !!! example "Use bootstrap theme"
 
