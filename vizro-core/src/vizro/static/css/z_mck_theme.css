@@ -61,8 +61,8 @@
 
 /* NAVBAR */
 .navbar .nav-link {
-  width: 60px;
   height: 60px;
+  width: 60px;
 }
 
 #nav-bar {
@@ -120,8 +120,8 @@ h1, h2, h3 {
 }
 
 h1, h2, h3, h4, h5 {
-  padding-top: 0;
   margin-bottom: 0.5rem;
+  padding-top: 0;
 }
 
 h1 {
@@ -292,7 +292,7 @@ div.VirtualizedSelectFocusedOption {
   font-family: McKinseySans, Arial, sans-serif, serif;
 }
 
-/* KPI Cards*/
+/* KPI Cards */
 .card-kpi {
   border-left: 4px solid #021e32;
 }
