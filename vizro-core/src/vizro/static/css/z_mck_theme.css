@@ -291,3 +291,24 @@ div.VirtualizedSelectFocusedOption {
 .btn {
   font-family: McKinseySans, Arial, sans-serif, serif;
 }
+
+/* KPI Cards*/
+.card-kpi {
+  border-left: 4px solid #021e32;
+}
+
+.card-kpi .color-pos.card-footer {
+  color: #0fd1c4;
+}
+
+.card-kpi .color-neg.card-footer {
+  color: #e74443;
+}
+
+.card-kpi:has(.color-pos) {
+  border-left: 4px solid #0fd1c4;
+}
+
+.card-kpi:has(.color-neg) {
+  border-left: 4px solid #e74443;
+}
