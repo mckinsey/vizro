@@ -48,3 +48,17 @@ def test_scatter_click_data_custom_action(dash_br):
     dash_br.click_at_coord_fractions(f"#{cnst.SCATTER_INTERACTIONS_ID} path:nth-of-type(20)", 0, 1)
     dash_br.wait_for_text_to_equal(f"#{cnst.CARD_INTERACTIONS_ID} p", "Scatter chart clicked data:")
     dash_br.wait_for_text_to_equal(f"#{cnst.CARD_INTERACTIONS_ID} h3", 'Species: "setosa"')
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+def test_actions_progress_indicator(dash_br):
+    """Test that progress indicator appears during action run."""
+    page_select(
+        dash_br,
+        page_name=cnst.FILTER_INTERACTIONS_PAGE,
+    )
+
+    # click on the dot in the scatter graph
+    dash_br.click_at_coord_fractions(f"#{cnst.SCATTER_INTERACTIONS_ID} path:nth-of-type(20)", 0, 1)
+    # check that that progress indicator appears
+    dash_br.wait_for_text_to_equal("span[class='material-symbols-outlined progress-indicator']", "progress_activity")
