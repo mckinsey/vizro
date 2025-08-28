@@ -1,43 +1,59 @@
 """This is a test app to test the dashboard layout."""
 
-from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import export_data
+from vizro import Vizro
+from vizro.models.types import capture
+import time
 
-iris = px.data.iris()
+df = px.data.iris()
 
-page = vm.Page(
-    title="Buttons with an icon",
+
+@capture("action")
+def fast_action(x):
+    return f"Fast action triggered {x} times"
+
+
+@capture("action")
+def slow_action(x):
+    time.sleep(2)
+    return f"Slow action triggered {x} times"
+
+
+page_1 = vm.Page(
+    title="Test Page",
     layout=vm.Flex(),
     components=[
         vm.Button(
-            icon="download",
-            text="",
-            description=vm.Tooltip(text="Download the data!", icon="info"),
-            variant="outlined",
-            actions=[vm.Action(function=export_data())],
-        ),
-        vm.Graph(
-            figure=px.scatter(
-                iris,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                size="petal_length",
-            ),
+            id="fast_action_button",
+            text="Trigger Fast Action",
+            actions=vm.Action(function=fast_action("fast_action_button.n_clicks"), outputs=["output_text"]),
         ),
         vm.Button(
-            text="View Data Source",
-            href="https://www.kaggle.com/datasets/uciml/iris",
-            icon="link",
-            variant="outlined",
+            id="slow_action_button",
+            text="Trigger Slow Action",
+            actions=vm.Action(function=slow_action("slow_action_button.n_clicks"), outputs=["output_text"]),
         ),
+        vm.Text(
+            id="output_text",
+            text="Trigger an action to see the result here.",
+        ),
+    ],
+)
+
+page_2 = vm.Page(
+    title="Standard Vizro Page",
+    components=[
+        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
     ],
     controls=[vm.Filter(column="species")],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(
+    # It works fine with and without a dashboard title.
+    title="Dashboard Title",
+    pages=[page_1, page_2],
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

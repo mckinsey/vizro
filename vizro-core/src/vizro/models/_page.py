@@ -2,18 +2,14 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from itertools import chain
-from typing import Annotated, Any, Optional, cast
+from typing import Annotated, Optional, cast
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import (
     AfterValidator,
     BeforeValidator,
     Field,
-    FieldSerializationInfo,
-    SerializerFunctionWrapHandler,
-    ValidationInfo,
     conlist,
-    model_serializer,
     model_validator,
 )
 from typing_extensions import TypedDict
@@ -21,7 +17,7 @@ from typing_extensions import TypedDict
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
-from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
@@ -44,18 +40,12 @@ from .types import ComponentType, ControlType, FigureType, LayoutType
 _PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
-def set_path(path: str, info: ValidationInfo) -> str:
-    # Based on how Github generates anchor links - see:
-    # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
-    def clean_path(path: str, allowed_characters: str) -> str:
-        path = path.strip().lower().replace(" ", "-")
-        path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
-        return path if path.startswith("/") else "/" + path
-
-    # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
-    if path:
-        return clean_path(path, "-_/")
-    return clean_path(info.data["id"], "-_")
+# Based on how Github generates anchor links - see:
+# https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
+def clean_path(path: str, allowed_characters: str) -> str:
+    path = path.strip().lower().replace(" ", "-")
+    path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
+    return path if path.startswith("/") else "/" + path
 
 
 class Page(VizroBaseModel):
@@ -92,9 +82,7 @@ class Page(VizroBaseModel):
         ),
     ]
     controls: list[ControlType] = []
-    path: Annotated[
-        str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
-    ]
+    path: Annotated[str, Field(default="", description="Path to navigate to page.")]
     actions: ActionsType = []
 
     @model_validator(mode="after")
@@ -105,36 +93,27 @@ class Page(VizroBaseModel):
     def _action_triggers(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
 
-    @model_validator(mode="before")
-    @classmethod
-    def set_id(cls, values):
-        if "title" not in values:
-            return values
+    # This should ideally be a field validator, but we need access to the model_fields_set
+    @model_validator(mode="after")
+    def validate_path(self):
+        if self.path:
+            new_path = clean_path(self.path, "-_/")
+        elif "id" in self.model_fields_set:
+            new_path = clean_path(self.id, "-_")
+        else:
+            new_path = clean_path(self.title, "-_")
 
-        values.setdefault("id", values["title"])
-        return values
+        # Check for duplicate path - will move to pre_build in next PR
+        for page in cast(Iterable[Page], model_manager._get_models(Page)):
+            # Need to check for id equality to avoid checking the same page against itself
+            if not self.id == page.id and new_path == page.path:
+                raise ValueError(f"Path {new_path} cannot be used by more than one page.")
 
-    def model_post_init(self, context: Any) -> None:
-        """Adds the model instance to the model manager."""
-        try:
-            super().model_post_init(context)
-        except DuplicateIDError as exc:
-            raise ValueError(
-                f"Page with id={self.id} already exists. Page id is automatically set to the same "
-                f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
-            ) from exc
+        # We should do self.path = new_path but this leads to a recursion error. The below is a workaround
+        # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
+        self.__dict__["path"] = new_path
 
-    # This is a modification of the original `model_serializer` decorator that allows for the `context` to be passed
-    # It allows skipping the `id` serialization if it is the same as the `title`
-    @model_serializer(mode="wrap")  # type: ignore[type-var]
-    def _serialize_id(self, handler: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
-        result = handler(self)
-        if info.context is not None and info.context.get("add_name", False):
-            result["__vizro_model__"] = self.__class__.__name__
-        if self.title == self.id:
-            result.pop("id", None)
-            return result
-        return result
+        return self
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

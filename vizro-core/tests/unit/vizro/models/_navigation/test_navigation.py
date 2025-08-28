@@ -20,12 +20,12 @@ class TestNavigationInstantiation:
         assert navigation.pages == []
         assert navigation.nav_selector is None
 
-    def test_navigation_mandatory_and_optional(self):
+    def test_navigation_mandatory_and_optional(self, page_1_id, page_2_id):
         accordion = vm.Accordion()
         navigation = vm.Navigation(id="navigation", pages=["Page 1", "Page 2"], nav_selector=accordion)
 
         assert navigation.id == "navigation"
-        assert navigation.pages == ["Page 1", "Page 2"]
+        assert navigation.pages == [page_1_id, page_2_id]
         assert navigation.nav_selector == accordion
 
     @pytest.mark.parametrize("pages", [{"Group": []}, []])
@@ -40,35 +40,36 @@ class TestNavigationInstantiation:
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
     def test_invalid_page(self, pages):
         with pytest.raises(
-            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to argument 'pages'.")
+            ValidationError,
+            match=re.escape("Unknown page ID or title ['non existent page'] provided to argument 'pages'."),
         ):
             vm.Navigation(pages=pages)
 
 
 class TestNavigationPreBuildMethod:
-    def test_default_nav_selector(self, pages_as_dict):
+    def test_default_nav_selector(self, pages_as_dict, page_1_id, page_2_id):
         navigation = vm.Navigation(pages=pages_as_dict)
         navigation.pre_build()
         assert isinstance(navigation.nav_selector, vm.Accordion)
-        assert navigation.nav_selector.pages == pages_as_dict
+        assert navigation.nav_selector.pages == {group: [page_1_id, page_2_id] for group in pages_as_dict}
 
-    def test_default_nav_selector_with_pages(self, pages_as_dict):
+    def test_default_nav_selector_with_pages(self, pages_as_dict, page_1_id):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.Accordion(pages={"Group": ["Page 1"]}))
         navigation.pre_build()
         assert isinstance(navigation.nav_selector, vm.Accordion)
-        assert navigation.nav_selector.pages == {"Group": ["Page 1"]}
+        assert navigation.nav_selector.pages == {"Group": [page_1_id]}
 
-    def test_non_default_nav_selector(self, pages_as_dict):
+    def test_non_default_nav_selector(self, pages_as_dict, page_1_id, page_2_id):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
         assert isinstance(navigation.nav_selector, vm.NavBar)
-        assert navigation.nav_selector.pages == pages_as_dict
+        assert navigation.nav_selector.pages == {group: [page_1_id, page_2_id] for group in pages_as_dict}
 
-    def test_non_default_nav_selector_with_pages(self, pages_as_dict):
+    def test_non_default_nav_selector_with_pages(self, pages_as_dict, page_1_id):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar(pages={"Group": ["Page 1"]}))
         navigation.pre_build()
         assert isinstance(navigation.nav_selector, vm.NavBar)
-        assert navigation.nav_selector.pages == {"Group": ["Page 1"]}
+        assert navigation.nav_selector.pages == {"Group": [page_1_id]}
 
 
 class TestNavigationBuildMethod:
@@ -84,20 +85,20 @@ class TestNavigationBuildMethod:
         assert_component_equal(built_navigation["nav-panel"], dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_navigation["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
-    def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict, built_nav_link=None):
+    def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict, page_1_id):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
-        built_navigation = navigation.build(active_page_id="Page 1")
+        built_navigation = navigation.build(active_page_id=page_1_id)
         assert_component_equal(
             built_navigation["nav-bar"], dbc.Navbar(id="nav-bar", className="flex-column"), keys_to_strip={"children"}
         )
         assert_component_equal(built_navigation["nav-panel"], dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_navigation["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
-    def test_non_default_nav_selector_pages_as_list(self, pages_as_list):
+    def test_non_default_nav_selector_pages_as_list(self, pages_as_list, page_1_id):
         navigation = vm.Navigation(pages=pages_as_list, nav_selector=vm.NavBar())
         navigation.pre_build()
-        built_navigation = navigation.build(active_page_id="Page 1")
+        built_navigation = navigation.build(active_page_id=page_1_id)
         assert_component_equal(
             built_navigation["nav-bar"], dbc.Navbar(id="nav-bar", className="flex-column"), keys_to_strip={"children"}
         )
