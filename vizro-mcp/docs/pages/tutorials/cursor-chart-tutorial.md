@@ -143,7 +143,7 @@ This is the output:
 
 ## Share your dashboard
 
-You should now be familiar with the process of iterating prompts in Cursor to generate a Vizro chart, and review it in PyCafe. Use the Share options in PyCafe to share finished charts or dashboard projects
+You should now be familiar with the process of iterating prompts in Cursor to generate a Vizro chart, and review it in PyCafe. Use the `Share` options in PyCafe to share finished charts or dashboard projects
 
 ![](../../assets/images/share-vizro-project-options.png)
 
