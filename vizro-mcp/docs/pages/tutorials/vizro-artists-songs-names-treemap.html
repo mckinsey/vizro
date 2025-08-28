@@ -126,6 +126,11 @@
     }
     // we let the viewer tell us when it's ready
     window.onmessage = (event) => {
+      // Only accept messages from the trusted origin
+      if (event.origin !== "https://py.cafe") {
+        console.warn("Untrusted postMessage origin", event.origin);
+        return;
+      }
       console.log("message received", event);
       if (event.data?.type == "sign-in:loaded") {
         // reload the iframe to the original iframe src
