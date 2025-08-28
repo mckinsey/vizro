@@ -108,7 +108,7 @@ If Vizro-MCP is not improving your chart after a few iterations of the same requ
 
 ## Create a chart with a complex prompt
 
-We'll now add another chart to the Vizro dashboard. This will show names found in songs that made it to the top 10 of the Billboard Hot 100 between 1958 and 2019. The chart will show each year, and use colors to show the song's ranking
+We'll now add another chart to the Vizro dashboard. This will show names found in songs that made it to the top 10 of the Billboard Hot 100 between 1958 and 2019. The chart will show each year, and use colors to show the song's ranking.
 
 ```text
 Use https://raw.githubusercontent.com/the-pudding/data/master/names-in-songs/unique.csv and preprocess the data to remove all rows where person==FALSE and all rows where name==Baby. Remove any null values.
