@@ -14,7 +14,7 @@ In Cursor, access the prompt templates by typing `/` into the prompt, which will
 
 ![](../../assets/images/use-cursor-prompt-template.png)
 
-The templates available currently as as follows:
+The templates available currently are as follows:
 
 - **`create_dashboard`** Creates a dashboard based on a local or remote CSV dataset.
 
