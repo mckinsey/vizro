@@ -8,6 +8,10 @@ You can ask the LLM to create specific dashboards based on local or remote data 
 
 You can find a set of sample CSVs to try out in the [Plotly repository](https://github.com/plotly/datasets/tree/master).
 
+!!! Tip "PyCafe cannot display charts that use local data"
+
+    Vizro-MCP will typically open your chart or dashboard code in PyCafe so you can visualize and interact with it. PyCafe can only work with data that can be downloaded from a public link. If your data is stored locally, you should copy the generated code into a `.py` file to run where it can access the data.
+
 You can even ask for a dashboard without providing data:
 
 > _Create a Vizro dashboard with one page, a scatter chart, and a filter._
