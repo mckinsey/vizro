@@ -33,10 +33,10 @@ describe("guard_action_chain", () => {
       expect(result).toBe(dash_clientside.no_update);
       expect(dash_clientside.set_props).toHaveBeenCalledWith(
         "test_component_guard_actions_chain",
-        { data: false }
+        { data: false },
       );
       expect(console.debug).toHaveBeenCalledWith(
-        "Not running actions chain (guard is True) -> Trigger component: test_component"
+        "Not running actions chain (guard is True) -> Trigger component: test_component",
       );
     });
   });
@@ -51,7 +51,7 @@ describe("guard_action_chain", () => {
       expect(result).toBe(value);
       expect(dash_clientside.set_props).not.toHaveBeenCalled();
       expect(console.debug).toHaveBeenCalledWith(
-        "Running actions chain (no guard exists) -> Trigger component: test_component"
+        "Running actions chain (no guard exists) -> Trigger component: test_component",
       );
     });
   });
@@ -66,7 +66,7 @@ describe("guard_action_chain", () => {
       expect(result).toBe(value);
       expect(dash_clientside.set_props).not.toHaveBeenCalled();
       expect(console.debug).toHaveBeenCalledWith(
-        "Running actions chain (guard is False) -> Trigger component: test_component"
+        "Running actions chain (guard is False) -> Trigger component: test_component",
       );
     });
   });

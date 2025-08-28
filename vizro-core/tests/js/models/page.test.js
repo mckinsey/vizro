@@ -15,9 +15,9 @@ global.URLSearchParams = jest.fn(() => ({
   set: jest.fn((key, value) => mockSearchParams.set(key, value)),
   toString: jest.fn(() => "controlId1=controlVal1&controlId2=controlVal2"),
   entries: jest.fn(() => mockSearchParams.entries()),
-  get: jest.fn(key => mockSearchParams.get(key)),
-  has: jest.fn(key => mockSearchParams.has(key)),
-  forEach: jest.fn(callback => mockSearchParams.forEach(callback)),
+  get: jest.fn((key) => mockSearchParams.get(key)),
+  has: jest.fn((key) => mockSearchParams.has(key)),
+  forEach: jest.fn((callback) => mockSearchParams.forEach(callback)),
 }));
 
 global.dash_clientside = {
@@ -46,9 +46,9 @@ describe("page.js functions", () => {
   describe("encodeUrlParams", () => {
     beforeEach(() => {
       // Mock btoa and TextEncoder for encoding tests
-      global.btoa = jest.fn(str => "encoded_" + str);
+      global.btoa = jest.fn((str) => "encoded_" + str);
       global.TextEncoder = jest.fn(() => ({
-        encode: jest.fn(str => new Uint8Array([1, 2, 3])), // Mock byte array
+        encode: jest.fn((str) => new Uint8Array([1, 2, 3])), // Mock byte array
       }));
     });
 
@@ -108,9 +108,9 @@ describe("page.js functions", () => {
       originalConsole = global.console;
 
       // Mock atob and TextDecoder for decoding tests
-      global.atob = jest.fn(str => "decoded_" + str);
+      global.atob = jest.fn((str) => "decoded_" + str);
       global.TextDecoder = jest.fn(() => ({
-        decode: jest.fn(bytes => '{"test": "value"}'),
+        decode: jest.fn((bytes) => '{"test": "value"}'),
       }));
     });
 
@@ -196,14 +196,14 @@ describe("page.js functions", () => {
           return Array.from(mockUrlParams.entries())
             .map(
               ([key, value]) =>
-                `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+                `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
             )
             .join("&");
         }),
         entries: jest.fn(() => mockUrlParams.entries()),
-        get: jest.fn(key => mockUrlParams.get(key)),
-        has: jest.fn(key => mockUrlParams.has(key)),
-        forEach: jest.fn(callback => mockUrlParams.forEach(callback)),
+        get: jest.fn((key) => mockUrlParams.get(key)),
+        has: jest.fn((key) => mockUrlParams.has(key)),
+        forEach: jest.fn((callback) => mockUrlParams.forEach(callback)),
       }));
 
       // Setup history mock
@@ -259,7 +259,7 @@ describe("page.js functions", () => {
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
             opl_triggered,
-            ...values_ids
+            ...values_ids,
           );
 
         // Should trigger OPL
@@ -268,19 +268,19 @@ describe("page.js functions", () => {
         // Should call setProps for both controls
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
           "selector-1_guard_actions_chain",
-          { data: true }
+          { data: true },
         );
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
           "selector-1",
-          { value: { value: "value1" } }
+          { value: { value: "value1" } },
         );
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
           "selector-2_guard_actions_chain",
-          { data: true }
+          { data: true },
         );
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
           "selector-2",
-          { value: { value: "value2" } }
+          { value: { value: "value2" } },
         );
       });
 
@@ -304,7 +304,7 @@ describe("page.js functions", () => {
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
             opl_triggered,
-            ...values_ids
+            ...values_ids,
           );
 
         expect(result).toBe(null);
@@ -312,21 +312,21 @@ describe("page.js functions", () => {
         // Should only call setProps for control-1
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
           "selector-1_guard_actions_chain",
-          { data: true }
+          { data: true },
         );
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
           "selector-1",
-          { value: { value: "value1" } }
+          { value: { value: "value1" } },
         );
 
         // Should NOT call setProps for control-2
         expect(global.dash_clientside.set_props).not.toHaveBeenCalledWith(
           "selector-2_guard_actions_chain",
-          { data: true }
+          { data: true },
         );
         expect(global.dash_clientside.set_props).not.toHaveBeenCalledWith(
           "selector-2",
-          { value: expect.anything() }
+          { value: expect.anything() },
         );
       });
 
@@ -344,7 +344,7 @@ describe("page.js functions", () => {
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
             opl_triggered,
-            ...values_ids
+            ...values_ids,
           );
 
         expect(result).toBe(null);
@@ -368,7 +368,7 @@ describe("page.js functions", () => {
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
             opl_triggered,
-            ...values_ids
+            ...values_ids,
           );
 
         expect(result).toBe(null);
@@ -389,7 +389,7 @@ describe("page.js functions", () => {
           encode: jest
             .fn()
             .mockReturnValue(
-              new OriginalTextEncoder().encode(JSON.stringify("new-value"))
+              new OriginalTextEncoder().encode(JSON.stringify("new-value")),
             ),
         }));
 
@@ -405,7 +405,7 @@ describe("page.js functions", () => {
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
             opl_triggered,
-            ...values_ids
+            ...values_ids,
           );
 
         expect(result).toBe(global.dash_clientside.no_update);
@@ -415,7 +415,7 @@ describe("page.js functions", () => {
         expect(replaceStateSpy).toHaveBeenCalledWith(
           null,
           "",
-          expect.stringContaining("control-1=b64_bmV3LXZhbHVl") // "new-value" encoded
+          expect.stringContaining("control-1=b64_bmV3LXZhbHVl"), // "new-value" encoded
         );
       });
 
@@ -433,12 +433,12 @@ describe("page.js functions", () => {
           encode: jest
             .fn()
             .mockReturnValueOnce(
-              new OriginalTextEncoder().encode(JSON.stringify("new-value"))
+              new OriginalTextEncoder().encode(JSON.stringify("new-value")),
             )
             .mockReturnValueOnce(
               new OriginalTextEncoder().encode(
-                JSON.stringify("unchanged-value")
-              )
+                JSON.stringify("unchanged-value"),
+              ),
             ),
         }));
 
@@ -458,7 +458,7 @@ describe("page.js functions", () => {
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
             opl_triggered,
-            ...values_ids
+            ...values_ids,
           );
 
         expect(result).toBe(global.dash_clientside.no_update);
