@@ -104,7 +104,7 @@ When you are happy with your version, it is a good idea to copy the output and s
 
 ![](../../assets/images/save-pycafe.png)
 
-If Vizro-MCP is not improving your chart after a few iterations of the same request, or appears to be struggling, it may be worth prompting it to validate the out. Do this by saying "Don't forget to validate" at the end of any prompt to remind it.
+If Vizro-MCP is not improving your chart after a few iterations of the same request, or appears to be struggling, it may be worth prompting it to validate the output. Do this by saying "Don't forget to validate" at the end of any prompt to remind it.
 
 ## Create a chart with a complex prompt
 
