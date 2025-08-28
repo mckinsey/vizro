@@ -3,44 +3,56 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
+from vizro.models.types import capture
+import time
 
-df = px.data.gapminder()
+df = px.data.iris()
 
 
-page = vm.Page(
-    id="page_1",
-    title="Page 1",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_1",
+@capture("action")
+def fast_action(x):
+    return f"Fast action triggered {x} times"
+
+
+@capture("action")
+def slow_action(x):
+    time.sleep(2)
+    return f"Slow action triggered {x} times"
+
+
+page_1 = vm.Page(
+    title="Test Page",
+    layout=vm.Flex(),
+    components=[
+        vm.Button(
+            id="fast_action_button",
+            text="Trigger Fast Action",
+            actions=vm.Action(function=fast_action("fast_action_button.n_clicks"), outputs=["output_text"]),
+        ),
+        vm.Button(
+            id="slow_action_button",
+            text="Trigger Slow Action",
+            actions=vm.Action(function=slow_action("slow_action_button.n_clicks"), outputs=["output_text"]),
+        ),
+        vm.Text(
+            id="output_text",
+            text="Trigger an action to see the result here.",
+        ),
+    ],
 )
 
-page2 = vm.Page(
-    id="page_2",
-    title="Page 2",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_2",
+page_2 = vm.Page(
+    title="Standard Vizro Page",
+    components=[
+        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[vm.Filter(column="species")],
 )
-
-page3 = vm.Page(
-    id="page_3",
-    title="Page 3",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_3",
-)
-
 
 dashboard = vm.Dashboard(
-    pages=[page, page2, page3],
-    navigation=vm.Navigation(
-        # nav_selector=vm.NavBar(
-        # pages=["page_1", "Page 2", "page_3"],
-        # items=[
-        #     vm.NavLink(label="Section 1", pages=["page_1", "page_2"]),
-        #     vm.NavLink(label="Section 2", pages=["page_3"]),
-        # ]
-        # ),
-    ),
+    # It works fine with and without a dashboard title.
+    title="Dashboard Title",
+    pages=[page_1, page_2],
 )
 
 if __name__ == "__main__":

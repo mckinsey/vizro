@@ -8,7 +8,7 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc
+from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
 from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -369,7 +369,12 @@ class _BaseAction(VizroBaseModel):
 
         callback_inputs = {"external": external_callback_inputs, "internal": {"trigger": trigger}}
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
-            "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
+            "internal": {
+                "action_finished": Output(f"{self.id}_finished", "data"),
+                "action_progress_indicator": Output(
+                    "action-progress-indicator-placeholder", "children", allow_duplicate=True
+                ),
+            },
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
@@ -391,10 +396,17 @@ class _BaseAction(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
-            return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
+            external_return = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
+            return_value = {
+                "internal": {
+                    "action_finished": time.time(),
+                    "action_progress_indicator": no_update,
+                }
+            }
             if "external" in callback_outputs:
-                return {"internal": {"action_finished": time.time()}, "external": return_value}
-            return {"internal": {"action_finished": time.time()}}
+                return_value["external"] = external_return
+
+            return return_value
 
 
 class Action(_BaseAction):
