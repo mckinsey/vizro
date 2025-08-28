@@ -25,7 +25,7 @@ dependencies = [
   "langchain_openai",  # Base dependency, ie minimum model working
   "black",
   "autoflake",
-  "pydantic-ai-slim[openai,anthropic,vertexai,groq,mistral,cohere]"
+  "pydantic-ai[openai,anthropic,vertexai,groq,mistral,cohere]"
 ]
 description = "Vizro-AI is a tool for generating data visualizations"
 dynamic = ["version"]

@@ -6,7 +6,9 @@ import pandas as pd
 import plotly.express as px
 from dotenv import load_dotenv
 from pydantic_ai import Agent, RunContext
+from pydantic_ai.models.anthropic import AnthropicModel
 from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.anthropic import AnthropicProvider
 from pydantic_ai.providers.openai import OpenAIProvider
 
 from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
@@ -28,12 +30,6 @@ def add_df(ctx: RunContext[pd.DataFrame]) -> str:
     return f"A sample of the data is {ctx.deps.sample(5)}"
 
 
-# @roulette_agent.tool
-# async def roulette_wheel(ctx: RunContext[int], square: int) -> str:
-#     """Check if the square is a winner."""
-#     return "winner" if square == ctx.deps else "loser"
-
-
 if __name__ == "__main__":
     load_dotenv()
     # configure logfire
@@ -41,9 +37,13 @@ if __name__ == "__main__":
     logfire.instrument_pydantic_ai()
 
     # User can configure model, including usage limits etc
-    model = OpenAIModel(
-        "gpt-4o-mini",
-        provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
+    # model = OpenAIModel(
+    #     "gpt-4o-mini",
+    #     provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
+    # )
+    model = AnthropicModel(
+        "claude-3-7-sonnet-latest",
+        provider=AnthropicProvider(api_key=os.getenv("ANTHROPIC_API_KEY")),
     )
 
     # Get some data
@@ -51,8 +51,8 @@ if __name__ == "__main__":
     df_stocks = px.data.stocks()
 
     # Run the agent - user can choose the data_frame
-    result = chart_agent.run_sync(model=model, user_prompt="Create a bar chart", deps=df_stocks)
-    print(result.output.chart_code)
+    # result = chart_agent.run_sync(model=model, user_prompt="Create a bar chart", deps=df_stocks)
+    # print(result.output.chart_code)
 
     # async def main():
     #     async with chart_agent.run_stream(
@@ -62,3 +62,12 @@ if __name__ == "__main__":
     #             print(text)
 
     # asyncio.run(main())
+
+    #### Test code execution
+    from pydantic_ai import CodeExecutionTool
+
+    agent = Agent(model=model, builtin_tools=[CodeExecutionTool()])
+
+    result = agent.run_sync("Calculate the factorial of 15 and show your work")
+    print(result)
+    # I am not sure the model actually uses the inbuilt tool...
