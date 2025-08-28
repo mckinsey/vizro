@@ -16,7 +16,7 @@ In Cursor, access the prompt templates by typing `/` into the prompt, which will
 
 The templates available currently are as follows:
 
-- **`create_dashboard`** Creates a dashboard based on a local or remote CSV dataset.
+- **`create_dashboard`** Creates a dashboard based on a local or remote dataset.
 
 - **`create_starter_dashboard`** Get started with Vizro dashboards.
 
