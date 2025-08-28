@@ -16,8 +16,8 @@ In Cursor, access the prompt templates by typing `/` into the prompt, which will
 
 The templates available currently are as follows:
 
-- **`create_dashboard`** Creates a dashboard based on a local or remote dataset.
+- **`create_dashboard`** Create a dashboard based on a local or remote dataset.
 
-- **`create_starter_dashboard`** Get started with Vizro dashboards.
+- **`create_starter_dashboard`** Get started with an example Vizro dashboard.
 
-- **`create_vizro_chart`** Creates a Vizro styled Plotly chart based on a local or remote CSV dataset.
+- **`create_vizro_chart`** Create a Vizro styled Plotly chart based on a local or remote dataset.
