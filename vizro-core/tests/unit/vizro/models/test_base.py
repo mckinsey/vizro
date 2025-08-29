@@ -716,3 +716,14 @@ class TestAddingDuplicateDiscriminator:
             pass
 
         Parent.add_type("child", MultipleChild)
+
+
+class TestAddingMultipleHierarchyLevels:
+    @pytest.mark.parametrize("SelectorUsingModel", [vm.Filter, vm.Parameter])
+    def test_add_selector_type(self, SelectorUsingModel):
+        class NewSelector(vm.VizroBaseModel):
+            type: Literal["new_selector"] = "new_selector"
+
+        SelectorUsingModel.add_type("selector", NewSelector)
+
+        assert "NewSelector" in str(vm.Dashboard.model_json_schema())
