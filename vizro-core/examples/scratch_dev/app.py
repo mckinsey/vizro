@@ -1,47 +1,176 @@
-"""This is a test app to test the dashboard layout."""
+"""Scratch app"""
+
+from typing import Literal
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import html
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
 
-df = px.data.gapminder()
-
-
-page = vm.Page(
-    id="page_1",
-    title="Page 1",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_1",
-)
-
-page2 = vm.Page(
-    id="page_2",
-    title="Page 2",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_2",
-)
-
-page3 = vm.Page(
-    id="page_3",
-    title="Page 3",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
-    # path="page_3",
-)
+df = px.data.iris()
 
 
-dashboard = vm.Dashboard(
-    pages=[page, page2, page3],
-    navigation=vm.Navigation(
-        # nav_selector=vm.NavBar(
-        # pages=["page_1", "Page 2", "page_3"],
-        # items=[
-        #     vm.NavLink(label="Section 1", pages=["page_1", "page_2"]),
-        #     vm.NavLink(label="Section 2", pages=["page_3"]),
-        # ]
-        # ),
-    ),
-)
+# 2. Create new custom component
+class Jumbotron(vm.VizroBaseModel):
+    """New custom component `Jumbotron`."""
+
+    type: Literal["jumbotron"] = "jumbotron"
+    title: str
+    subtitle: str
+    text: str
+
+    def build(self):
+        """Build the new component based on Dash components."""
+        return html.Div([html.H2(self.title), html.H3(self.subtitle), html.P(self.text)])
+
+
+# vm.Page.add_type("components", Jumbotron)
+# print("--------------------------------")
+
+
+class TooltipNonCrossRangeSlider(vm.RangeSlider):
+    """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
+
+    type: Literal["other_range_slider"] = "other_range_slider"
+
+    def build(self):
+        """Extend existing component by calling the super build and update properties."""
+        range_slider_build_obj = super().build()
+        range_slider_build_obj[self.id].allowCross = False
+        range_slider_build_obj[self.id].tooltip = {"always_visible": True, "placement": "bottom"}
+        return range_slider_build_obj
+
+
+vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
+print("--------------------------------")
+
+# # First page
+# page1 = vm.Page(
+#     title="My first page",
+#     components=[
+#         Jumbotron(
+#             title="Custom component based on new creation",
+#             subtitle="This is a subtitle to summarize some content.",
+#             text="This is the main body of text of the Jumbotron.",
+#         ),
+#         vm.Graph(
+#             figure=px.scatter_matrix(
+#                 df, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"], color="species"
+#             ),
+#         ),
+#     ],
+#     controls=[vm.Filter(column="sepal_length", selector=TooltipNonCrossRangeSlider())],
+# )
+
+# # page_close = vm.Page.model_validate(page1)
+
+# # Second page with two graphs
+# page2 = vm.Page(
+#     title="My second page",
+#     components=[
+#         vm.Graph(
+#             figure=px.scatter_matrix(
+#                 df, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"], color="species"
+#             ),
+#         ),
+#         vm.Graph(
+#             figure=px.scatter(df, x="sepal_length", y="sepal_width", color="species", size="petal_width"),
+#         ),
+#     ],
+# )
+# So I think the answer is that we need to rebuild also the outer model!
+# Not quite sure why this worked before!
+# Additional note: would that have solved the issue on the Vizro MCP server with CapturedCallables?
+# vm.Dashboard.model_rebuild(force=True)
+
+
+# dashboard = vm.Dashboard(pages=[page1, page2])
+
+dashboard_config = {
+    "pages": [
+        {
+            "id": "page_1",
+            "title": "My first page",
+            "components": [
+                {
+                    "type": "graph",
+                    "id": "graph_1",
+                    "figure": {
+                        "_target_": "scatter_matrix",
+                        "data_frame": "iris",
+                        "dimensions": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+                        "color": "species",
+                    },
+                }
+            ],
+        },
+        {
+            "id": "page_2",
+            "title": "My second page",
+            "components": [
+                {
+                    "type": "graph",
+                    "id": "graph_2",
+                    "figure": {
+                        "_target_": "scatter_matrix",
+                        "data_frame": "iris",
+                        "dimensions": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+                        "color": "species",
+                    },
+                },
+                {
+                    "type": "graph",
+                    "id": "graph_3",
+                    "figure": {
+                        "_target_": "scatter",
+                        "data_frame": "iris",
+                        "x": "sepal_length",
+                        "y": "sepal_width",
+                        "color": "species",
+                        "size": "petal_width",
+                    },
+                },
+            ],
+        },
+    ],
+}
+
+# Still requires a .py to add data to the data manager and parse YAML configuration
+# See yaml_version example
+
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    from vizro.managers import model_manager
+
+    # print("=== START ===")
+    # Create dashboard from config
+    # dashboard_from_config = vm.Dashboard.model_validate(dashboard_config, context={"build_tree": True})
+    # dashboard_config = vm.Dashboard(**dashboard_config)  # this line is necessary for yaml/json config of dashboard
+    # What if we want to directly add model to build? ==> instantiate first, then build? That works, see code in _vizro.py
+    # app = Vizro().build(dashboard)
+    # dashboard_from_config._tree.print(repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}: {node.data.id}")
+    # model_manager.print_dashboard_tree()
+
+    print(
+        "Container",
+        vm.Container.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+
+    print(
+        "Page     ",
+        vm.Page.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+
+    print(
+        "Tabs     ",
+        vm.Tabs.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+
+    print(
+        "Dashboard",
+        vm.Dashboard.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+    print("================================================")
+    # assert vm.Dashboard.model_json_schema()["$defs"]["Filter"] == vm.Container.model_json_schema()["$defs"]["Filter"]
+
+    print(vm.Dashboard._get_ancestor(model_name="Container"))
