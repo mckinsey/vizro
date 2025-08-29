@@ -1,3 +1,4 @@
+import base64
 import json
 
 import dash
@@ -38,6 +39,12 @@ def echo_function(prompt):
     return f"You said {prompt}"
 
 
+# Class hierarchy for chat functionality:
+# - echo: Basic chat functionality (no streaming)
+# - ChatAction: Extends echo to add full chat functionality (streaming + non-streaming)
+# - openai_pirate: Extends ChatAction to add OpenAI-specific API handling
+
+
 # Or they can write it using a class, just like with an action.
 class echo(_AbstractAction):
     type: Literal["echo"] = "echo"
@@ -63,39 +70,89 @@ class Stuff(BaseModel):
     messages: Any  # I'm being lazy but maybe it doesn't matter
 
 
-# Subclass echo just because I'm lazy, but actually maybe we should actually have some common built-in chat class that
-# gets subclassed.
-class openai_pirate(echo):
-    # With the class-based definition there's room for static parameters like model and api_key which isn't possible
-    # if you just write a function.
-    type: Literal["openai_pirate"] = "openai_pirate"
-    model: str = "gpt-4.1-nano"
-    api_key: Optional[str] = None  # takes from os.environ.get("OPENAI_API_KEY") by default so maybe even omit this
-    # and just make people set it through env variable
-    api_base: Optional[str] = None  # similarly with os.environ.get("OPENAI_BASE_URL")
+# Base class for chat functionality (streaming and non-streaming)
+class ChatAction(echo):
+    """Base class for chat functionality with streaming and non-streaming support."""
+
     stream: bool = True
-    _client: OpenAI
-    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
-    # expose instructions and other stuff as fields.
-    # But ultimately users will want to customise a lot of things like tools etc. so should be able to easily write
-    # their own.
-    # Could pass through arbitrary kwargs to create function? Should always be configurable via JSON.
-    # https://platform.openai.com/docs/api-reference/responses
-    # Good idea to make this specific to OpenAI responses API and have specific arguments we've picked out for OpenAI
-    # class, create and how to handle response.
 
     def pre_build(self):
-        self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
+        if self.stream:
+            self._setup_streaming_callbacks()
+            self._setup_streaming_endpoint()
 
-        # Should we define these callbacks in pre_build or in _define_callback with call to super()? Not sure yet.
-        # Should we use vizro_store? Only if needed for correct functioning on change page. Otherwise best to build
-        # in store here.
-        # Must be serverside to use self.message_to_html.
-        # Should be triggered in exact same way as main callback and at same time, but we assume it finishes before
-        # other one because it's faster. Could this cause difficulties? Definitely requires multithreaded server at
-        # least but that's ok. Would they ever not finish in right order? Not sure.
-        # This callback populates chat messages with latest input straight away rather than waiting to receive response.
-        # This makes it feel more responsive.
+        self._setup_chat_callbacks()
+
+    def _setup_streaming_callbacks(self):
+        """Set up clientside callback for streaming updates."""
+        clientside_callback(
+            """
+            function(animatedText, existingChildren, storeData) {
+                if (!animatedText || animatedText === '[DONE]') {
+                    return [existingChildren, window.dash_clientside.no_update];
+                }
+
+                let component = null;
+                let content = '';
+
+                const decodedData = atob(animatedText);
+                component = JSON.parse(decodedData);
+                if (component.props && component.props.children) {
+                    content = component.props.children;
+                }
+
+                const newChildren = [...(existingChildren || [])];
+                const newData = [...(storeData || [])];
+
+                if (newChildren.length > 0 && component) {
+                    const last = newChildren[newChildren.length - 1];
+                    if (last.props?.children?.[0]?.props?.children === "assistant") {
+                        last.props.children[1] = component;
+                    }
+                }
+
+                if (newData.length > 0 && newData[newData.length - 1].role === 'assistant') {
+                    newData[newData.length - 1].content = content;
+                }
+
+                return [newChildren, newData];
+            }
+            """,
+            [
+                Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+                Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
+            ],
+            Input(f"{self.chat_id}-sse", "animation"),
+            [State(f"{self.chat_id}-output", "children"), State(f"{self.chat_id}-store", "data")],
+            prevent_initial_call=True,
+        )
+
+    def _setup_streaming_endpoint(self):
+        """Set up streaming endpoint for SSE."""
+
+        @dash.get_app().server.route(
+            f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
+        )
+        def streaming_chat():
+            stuff = Stuff(**request.get_json())
+
+            def event_stream():
+                for event in self.core_function(**stuff.model_dump()):
+                    if event["type"] == "text_chunk":
+                        text_component = self.create_component("text", event["full_text"])
+                        encoded_delta = base64.b64encode(
+                            json.dumps(text_component.to_plotly_json()).encode("utf-8")
+                        ).decode("utf-8")
+                        yield sse_message(encoded_delta)
+
+                # Send standard SSE completion signal
+                yield sse_message()
+
+            return Response(event_stream(), mimetype="text/event-stream")
+
+    def _setup_chat_callbacks(self):
+        """Set up generic chat UI callbacks."""
+
         @callback(
             # outputs are self.outputs
             Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
@@ -129,118 +186,6 @@ class openai_pirate(echo):
         def on_page_load(_, store):
             return [self.message_to_html(message) for message in store], dash.no_update
 
-        if self.stream:
-            # Question for Lingyi: what is happening here?! WHy is it so complicated and why do we have two
-            # clientside callbacks?
-            clientside_callback(
-                """
-                function(animatedText, existingChildren) {
-                    if (!animatedText) return existingChildren;
-
-                    // Check if this is the [DONE] completion signal - if so, ignore it
-                    if (animatedText === '[DONE]') {
-                        return existingChildren;
-                    }
-
-                    // Clone existing children
-                    const newChildren = [...(existingChildren || [])];
-
-                    // Find the last message and update it if it's from assistant
-                    if (newChildren.length > 0) {
-                        const lastIdx = newChildren.length - 1;
-                        const lastMsg = newChildren[lastIdx];
-
-                        // Check if this is an assistant message being streamed
-                        if (lastMsg && lastMsg.props && lastMsg.props.children &&
-                            lastMsg.props.children[0] && lastMsg.props.children[0].props &&
-                            lastMsg.props.children[0].props.children === "assistant") {
-                            // Update the content of the assistant message
-                            lastMsg.props.children[1].props.children = animatedText;
-                        }
-                    }
-
-                    return newChildren;
-                }
-                """,
-                Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-                Input(f"{self.chat_id}-sse", "animation"),
-                State(f"{self.chat_id}-output", "children"),
-                prevent_initial_call=True,
-            )
-
-            # Persist assistant message progressively on each non-empty animated chunk
-            clientside_callback(
-                """
-                function(animatedText, sseData, storeData) {
-                    if (!animatedText || animatedText === '[DONE]') {
-                        return window.dash_clientside.no_update;
-                    }
-
-                    const newData = [...(storeData || [])];
-                    const last = newData.length > 0 ? newData[newData.length - 1] : null;
-                    if (last && last.role === 'assistant') {
-                        newData[newData.length - 1] = {role: 'assistant', content: animatedText};
-                    } else {
-                        newData.push({role: 'assistant', content: animatedText});
-                    }
-                    return newData;
-                }
-                """,
-                Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
-                Input(f"{self.chat_id}-sse", "animation"),
-                State(f"{self.chat_id}-sse", "data"),
-                State(f"{self.chat_id}-store", "data"),
-                prevent_initial_call=True,
-            )
-
-    def plug(self, app):
-        """Register streaming routes with the Dash app.
-
-        Args:
-            app: The Dash application instance.
-        """
-        if not self.stream:
-            return
-
-        # Now I'm wondering whether we actually want to do this with plug(). I think it's the "right" thing to do but
-        # it is extra effort for the user and I think that for most setups it will probably work like you had it before.
-        # I'd suggest we actually go back to using @dash.get_app().server.route() like you did before in pre_build.
-        # That way someone can do app = Vizro() without needing to specify plugins.
-        # Then we wait until someone finds a setup that doesn't work, complains, and we enable it with plugins as
-        # well so that those people can have it work properly.
-        # Question for Lingyi: if we do it the "wrong" way with @dash.get_app().server.route() in pre_build,
-        # can you easily find any setups where it doesn't work? e.g. Maybe with gunicorn it doesn't?
-        # Question: why do we set endpoint here?
-        @app.server.post(f"/streaming-{self.chat_id}", endpoint=f"streaming_chat_{self.chat_id}")
-        def streaming_chat():
-            try:
-                stuff = Stuff(**request.get_json())
-
-                def event_stream():
-                    response_stream = self.core_function(**stuff.model_dump())
-
-                    for event in response_stream:
-                        if event.type == "response.output_text.delta":
-                            # Question for Lingyi: is it possible to somehow use self.message_to_html here?
-                            # The data gets sent over SSE so won't come out correctly. But is there any way to break
-                            # the message into chunks to e.g. separate off code snippets to use dmc.CodeHighlight?
-                            # e.g. maybe dmc.CodeHighlight(event.delta).to_plotly_json() would translate it to json
-                            # and then maybe somehow it could be rendered correctly.
-                            # Experiment to see if each event comes out as a new html.P:
-                            # It doesn't work but I feel like something like this might be possible?
-                            # yield sse_message(html.P(event.delta))
-                            # yield sse_message(html.P(event.delta).to_plotly_json())
-                            yield sse_message(event.delta)
-
-                    # Send standard SSE completion signal
-                    # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
-                    yield sse_message()
-
-                return Response(event_stream(), mimetype="text/event-stream")
-            except Exception:
-                # Let's check if we need this error catching.
-                return Response("An internal error has occurred.", status=500)
-
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
         # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
@@ -248,14 +193,10 @@ class openai_pirate(echo):
         messages.append(latest_input)
 
         if self.stream:
-            # For streaming:
-            # 1. Add an empty assistant message as placeholder
-            # 2. Return SSE URL and options
-            # TODO: 3. Add a callback to update store when streaming is complete
-
             store, html_messages = Patch(), Patch()
 
             placeholder_msg = {"role": "assistant", "content": ""}
+            store.append(placeholder_msg)
             html_messages.append(self.message_to_html(placeholder_msg))
 
             return [
@@ -275,17 +216,16 @@ class openai_pirate(echo):
             html_messages.append(self.message_to_html(latest_output))
             return store, html_messages
 
-    # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
-    # yes. It might still be worth having two separate functions though, not sure.
-    # Note responses.create has different return types in these cases.
-    def core_function(self, prompt, messages):
-        return self._client.responses.create(
-            model=self.model, input=messages, instructions="Talk like a pirate.", store=False, stream=self.stream
-        )
+    def create_component(self, content_type, content):
+        """Create the appropriate component based on content type."""
+        if content_type == "text":
+            return dcc.Markdown(content, dangerously_allow_html=False)
+        else:
+            return html.Div(content)
 
     # User writes this function. Does it belong here or in Chat?
     def message_to_html(self, message):
-        return html.Div([html.B(message["role"]), html.P(message["content"])])
+        return html.Div([html.B(message["role"]), self.create_component("text", message["content"])])
 
     @property
     def outputs(self):
@@ -298,6 +238,102 @@ class openai_pirate(echo):
             ]
         else:
             return [f"{self.chat_id}-store.data", f"{self.chat_id}-output.children"]
+
+
+# Subclass ChatAction for OpenAI-specific functionality
+# This class now uses a generic event-based approach where:
+# - core_function handles provider-specific API calls and event processing
+# - _process_streaming_response abstracts away provider-specific event types
+# - _process_buffer_for_line_breaks handles text chunking strategy
+# - The streaming endpoint only needs to handle generic 'text_chunk' events
+class openai_pirate(ChatAction):
+    # With the class-based definition there's room for static parameters like model and api_key which isn't possible
+    # if you just write a function.
+    type: Literal["openai_pirate"] = "openai_pirate"
+    model: str = "gpt-4.1-nano"
+    api_key: Optional[str] = None  # takes from os.environ.get("OPENAI_API_KEY") by default so maybe even omit this
+    # and just make people set it through env variable
+    api_base: Optional[str] = None  # similarly with os.environ.get("OPENAI_BASE_URL")
+    stream: bool = True
+    _client: OpenAI
+    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
+    # expose instructions and other stuff as fields.
+    # But ultimately users will want to customise a lot of things like tools etc. so should be able to easily write
+    # their own.
+    # Could pass through arbitrary kwargs to create function? Should always be configurable via JSON.
+    # https://platform.openai.com/docs/api-reference/responses
+    # Good idea to make this specific to OpenAI responses API and have specific arguments we've picked out for OpenAI
+    # class, create and how to handle response.
+
+    def pre_build(self):
+        # Call parent pre_build to set up streaming callbacks and chat UI
+        super().pre_build()
+
+        # Initialize OpenAI client
+        self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
+
+    # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
+    # yes. It might still be worth having two separate functions though, not sure.
+    # Note responses.create has different return types in these cases.
+    def core_function(self, prompt, messages):
+        """Core function that handles both streaming and non-streaming responses."""
+        response = self._client.responses.create(
+            model=self.model,
+            input=messages,
+            instructions="Be polite and creative.",
+            store=False,
+            stream=self.stream,
+        )
+
+        if self.stream:
+            return self._process_streaming_response(response)
+        else:
+            return response
+
+    def _process_streaming_response(self, response_stream):
+        """Process streaming response.
+
+        This method contains vendor-specific response handling.
+
+        Args:
+            response_stream: The raw streaming response from the LLM provider
+
+        Yields:
+            dict: Generic event objects with 'type' and 'content' keys
+        """
+        buffer = ""  # Buffer to accumulate text until we hit line breaks
+        full_text = ""  # Accumulate all text received so far
+
+        for event in response_stream:
+            # Handle OpenAI-specific event types
+            if event.type == "response.output_text.delta":
+                buffer += event.delta
+                processed_chunks = self._process_buffer_for_line_breaks(buffer)
+                buffer = processed_chunks["remaining_buffer"]
+
+                for chunk in processed_chunks["complete_chunks"]:
+                    full_text += chunk
+                    yield {"type": "text_chunk", "content": chunk, "full_text": full_text}
+
+        # Send any remaining text in buffer when stream ends
+        if buffer:
+            full_text += buffer
+            yield {"type": "text_chunk", "content": buffer, "full_text": full_text}
+
+    # currently use the "\n\n" as buffer split, not sure if this is the best way to do it.
+    def _process_buffer_for_line_breaks(self, buffer, line_break="\n\n"):
+        complete_chunks = []
+        remaining_buffer = buffer
+
+        while line_break in remaining_buffer:
+            split_pos = remaining_buffer.find(line_break)
+            chunk = remaining_buffer[:split_pos] + line_break
+            remaining_buffer = remaining_buffer[split_pos + len(line_break) :]
+
+            if chunk:
+                complete_chunks.append(chunk)
+
+        return {"complete_chunks": complete_chunks, "remaining_buffer": remaining_buffer}
 
 
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
@@ -346,7 +382,9 @@ class Chat(VizroBaseModel):
                 # directly? Do models actually return HTML?
                 html.Div(id=f"{self.id}-output", children=[]),
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),  # TBD storage_type
-                SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10),
+                # Setting to a much larger value to accommodate full JSON component messages
+                # would this cause performance issues?
+                SSE(id=f"{self.id}-sse", concat=False, animate_chunk=10000, animate_delay=5),
                 html.Div(id=f"{self.id}-streaming-output", style={"display": "none"}),
             ]
         )
@@ -406,7 +444,11 @@ page_nostream = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_nostream, page_2])
+
+dashboard = vm.Dashboard(
+    pages=[page, page_nostream, page_2],
+    theme="vizro_light",
+)
 
 """
 Notes:
@@ -447,5 +489,5 @@ translation of store messages to html is SS, need to be able to do this. Options
 """
 
 if __name__ == "__main__":
-    app = Vizro(plugins=[pirate_stream_action])
+    app = Vizro()
     app.build(dashboard).run(debug=False)
