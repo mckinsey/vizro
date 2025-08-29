@@ -4,8 +4,7 @@ import random
 import textwrap
 import uuid
 from collections import deque
-from types import SimpleNamespace
-from typing import Annotated, Any, Optional, Self, Union, cast, get_args, get_origin
+from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
 
 import autoflake
 import black
