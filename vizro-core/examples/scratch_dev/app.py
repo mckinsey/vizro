@@ -1,6 +1,5 @@
 import base64
 import json
-import time
 
 import dash
 from dotenv import load_dotenv
@@ -30,6 +29,7 @@ import dash_bootstrap_components as dbc
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
 from flask import Response, request
+from utils import yield_text_component
 
 load_dotenv()
 
@@ -139,41 +139,26 @@ class openai_pirate(echo):
                         return [existingChildren, window.dash_clientside.no_update];
                     }
 
-                    // Decode base64 and parse JSON back to dash component
                     let component = null;
                     let content = '';
-                    
-                    try {
-                        const decodedData = atob(animatedText);
-                        component = JSON.parse(decodedData);
-                        
-                        // Try to extract content for data store
-                        // Text components will have children, images will have src, etc.
-                        if (component.props) {
-                            if (component.props.children) {
-                                content = component.props.children;
-                            } else if (component.props.src) {
-                                content = '[Image]';  // Placeholder text for images
-                            }
-                        }
-                    } catch (e) {
-                        console.log('Failed to parse JSON component:', e);
+
+                    const decodedData = atob(animatedText);
+                    component = JSON.parse(decodedData);
+                    if (component.props && component.props.children) {
+                        content = component.props.children;
                     }
 
-                    // Update UI and store - render component as-is
                     const newChildren = [...(existingChildren || [])];
                     const newData = [...(storeData || [])];
 
                     if (newChildren.length > 0 && component) {
                         const last = newChildren[newChildren.length - 1];
                         if (last.props?.children?.[0]?.props?.children === "assistant") {
-                            // Use the complete component directly - could be markdown, image, etc.
                             last.props.children[1] = component;
                         }
                     }
 
                     if (newData.length > 0 && newData[newData.length - 1].role === 'assistant') {
-                        // Set the content in store (text or placeholder for other types)
                         newData[newData.length - 1].content = content;
                     }
 
@@ -225,33 +210,12 @@ class openai_pirate(echo):
                             if a_chunk:
                                 full_text += a_chunk
                                 # Send the complete component for text type
-                                component = self.create_component("text", full_text)
-                                encoded_delta = base64.b64encode(json.dumps(component.to_plotly_json()).encode("utf-8")).decode("utf-8")
-                                yield sse_message(encoded_delta)
-                                
-                    elif event.type == "response.image_generation_call.partial_image":
-                        idx = event.partial_image_index
-                        image_base64 = event.partial_image_b64
-                        image_bytes = base64.b64decode(image_base64)
-                        
-                        # Save partial image
-                        filename = f"partial_{int(time.time())}_{idx}.png"
-                        with open(filename, "wb") as f:
-                            f.write(image_bytes)
-                        
-                        # Send the image component
-                        # Something like this, but it's not working yet.
-                        # Failed to parse message: SyntaxError: Unterminated string in JSON at position
-                        component = self.create_component("image", image_base64)
-                        encoded_component = base64.b64encode(json.dumps(component.to_plotly_json()).encode("utf-8")).decode("utf-8")
-                        yield sse_message(encoded_component)
+                                yield from yield_text_component(self.create_component, full_text)
 
                 # Send any remaining text in buffer when stream ends
                 if buffer:
                     full_text += buffer
-                    component = self.create_component("text", full_text)
-                    encoded_delta = base64.b64encode(json.dumps(component.to_plotly_json()).encode("utf-8")).decode("utf-8")
-                    yield sse_message(encoded_delta)
+                    yield from yield_text_component(self.create_component, full_text)
 
                 # Send standard SSE completion signal
                 # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
@@ -283,38 +247,18 @@ class openai_pirate(echo):
         else:
             response = self.core_function(prompt, messages)
             
-            # Handle both text and image outputs
+            # Handle text output
             store, html_messages = Patch(), Patch()
-            content_parts = []
-            components = []
             
-            # Check if response has text output
-            if hasattr(response, 'output_text') and response.output_text:
-                content_parts.append(response.output_text)
-                components.append(self.create_component("text", response.output_text))
+            # Get text output from response
+            content = response.output_text if hasattr(response, 'output_text') else ""
             
-            # Check if response has image outputs (for tools like image_generation)
-            if hasattr(response, 'output') and response.output:
-                for output in response.output:
-                    if output.type == "image_generation_call":
-                        # Extract base64 image data
-                        image_base64 = output.result
-                        
-                        # Save the image to a file (optional, for debugging)
-                        filename = f"generated_image_{int(time.time())}.png"
-                        with open(filename, "wb") as f:
-                            f.write(base64.b64decode(image_base64))
-                        
-                        # Add image to content and components
-                        content_parts.append(f"[Image: {filename}]")
-                        components.append(self.create_component("image", image_base64))
-            
-            # Create the assistant message with combined content
-            latest_output = {"role": "assistant", "content": "\n".join(content_parts) if content_parts else ""}
+            # Create the assistant message
+            latest_output = {"role": "assistant", "content": content}
             store.append(latest_output)
             
-            # Create HTML message using the consolidated method
-            html_message = self.message_to_html(latest_output, components if components else None)
+            # Create HTML message
+            html_message = self.message_to_html(latest_output)
             html_messages.append(html_message)
             
             return store, html_messages
@@ -329,15 +273,14 @@ class openai_pirate(echo):
             instructions="Be polite and creative.", 
             store=False, 
             stream=self.stream,
-            tools=[{"type": "image_generation"}],
         )
 
     def create_component(self, content_type, content):
         """Create the appropriate component based on content type.
         
         Args:
-            content_type: Type of content ('text', 'image', or other)
-            content: The actual content (text string or base64 image data)
+            content_type: Type of content ('text' or other)
+            content: The actual content (text string)
         
         Returns:
             Dash component suitable for the content type
@@ -345,15 +288,11 @@ class openai_pirate(echo):
         if content_type == "text":
             # Text content - wrap in Markdown component
             return dcc.Markdown(content, dangerously_allow_html=False)
-        elif content_type == "image":
-            # Image content - wrap in html.Img
-            return html.Img(
-                src=f"data:image/png;base64,{content}",
-                style={"max-width": "500px", "max-height": "500px"}
-            )
         else:
             # Default fallback - just a div with content
             return html.Div(content)
+
+
 
     def message_to_html(self, message, components=None):
         """Convert a message to HTML representation.
@@ -402,10 +341,10 @@ class openai_pirate(echo):
 # subclassing?
 # Overall this seems fine - you can manually write function or use various built in things to make it easier. Have
 # full flexibility but not too hard to write.
-@capture("action")
-def openai_pirate_function(prompt):
-    client = OpenAI()
-    return client.responses.create(model="gpt-4.1-nano", instructions="Talk like a pirate.", input=prompt).output_text
+# @capture("action")
+# def openai_pirate_function(prompt):
+#     client = OpenAI()
+#     return client.responses.create(model="gpt-4.1-nano", instructions="Talk like a pirate.", input=prompt).output_text
 
 
 # Note different return type objects work immediately - no need for different modes. You can return any Dash
@@ -438,7 +377,9 @@ class Chat(VizroBaseModel):
                 # directly? Do models actually return HTML?
                 html.Div(id=f"{self.id}-output", children=[]),
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),  # TBD storage_type
-                SSE(id=f"{self.id}-sse", concat=False, animate_chunk=20, animate_delay=5),
+                # animate_chunk was set to 20, causing truncation of base64-encoded JSON messages
+                # Setting to a much larger value to accommodate full JSON component messages
+                SSE(id=f"{self.id}-sse", concat=False, animate_chunk=10000, animate_delay=5),
                 html.Div(id=f"{self.id}-streaming-output", style={"display": "none"}),
             ]
         )
