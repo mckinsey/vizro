@@ -74,16 +74,16 @@ class Stuff(BaseModel):
 # Base class for chat functionality (streaming and non-streaming)
 class ChatAction(echo):
     """Base class for chat functionality with streaming and non-streaming support."""
+
     stream: bool = True
-    
+
     def pre_build(self):
         if self.stream:
             self._setup_streaming_callbacks()
             self._setup_streaming_endpoint()
-        
+
         self._setup_chat_callbacks()
 
-    
     def _setup_streaming_callbacks(self):
         """Set up clientside callback for streaming updates."""
         clientside_callback(
@@ -130,22 +130,26 @@ class ChatAction(echo):
 
     def _setup_streaming_endpoint(self):
         """Set up streaming endpoint for SSE."""
-        @dash.get_app().server.route(f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}")
+
+        @dash.get_app().server.route(
+            f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
+        )
         def streaming_chat():
             stuff = Stuff(**request.get_json())
 
             def event_stream():
                 for event in self.core_function(**stuff.model_dump()):
-                    if event['type'] == 'text_chunk':
-                        yield from yield_text_component(self.create_component, event['full_text'])
+                    if event["type"] == "text_chunk":
+                        yield from yield_text_component(self.create_component, event["full_text"])
 
                 # Send standard SSE completion signal
                 yield sse_message()
 
             return Response(event_stream(), mimetype="text/event-stream")
-    
+
     def _setup_chat_callbacks(self):
         """Set up generic chat UI callbacks."""
+
         # Callback for user input
         @callback(
             Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
@@ -163,6 +167,7 @@ class ChatAction(echo):
 
         # Callback to restore chat history on page load
         page = model_manager._get_model_page(self)
+
         @callback(
             Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
             Output(
@@ -176,7 +181,6 @@ class ChatAction(echo):
         def on_page_load(_, store):
             return [self.message_to_html(message) for message in store], dash.no_update
 
-    
     def function(self, prompt, messages):
         """Generic function method for handling chat interactions."""
         # Need to repeat append here since this runs at same time as store update.
@@ -207,14 +211,14 @@ class ChatAction(echo):
             store.append(latest_output)
             html_messages.append(self.message_to_html(latest_output))
             return store, html_messages
-    
+
     def create_component(self, content_type, content):
         """Create the appropriate component based on content type.
-        
+
         Args:
             content_type: Type of content ('text' or other)
             content: The actual content (text string)
-        
+
         Returns:
             Dash component suitable for the content type
         """
@@ -269,7 +273,7 @@ class openai_pirate(ChatAction):
     def pre_build(self):
         # Call parent pre_build to set up streaming callbacks and chat UI
         super().pre_build()
-        
+
         # Initialize OpenAI client
         self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
 
@@ -279,73 +283,62 @@ class openai_pirate(ChatAction):
     def core_function(self, prompt, messages):
         """Core function that handles both streaming and non-streaming responses."""
         response = self._client.responses.create(
-            model=self.model, 
-            input=messages, 
-            instructions="Be polite and creative.", 
-            store=False, 
+            model=self.model,
+            input=messages,
+            instructions="Be polite and creative.",
+            store=False,
             stream=self.stream,
         )
-        
+
         if self.stream:
             return self._process_streaming_response(response)
         else:
             return response
-    
+
     def _process_streaming_response(self, response_stream):
         """Process streaming response.
-        
+
         This method contains vendor-specific response handling.
 
         Args:
             response_stream: The raw streaming response from the LLM provider
-            
+
         Yields:
             dict: Generic event objects with 'type' and 'content' keys
         """
         buffer = ""  # Buffer to accumulate text until we hit line breaks
         full_text = ""  # Accumulate all text received so far
-        
+
         for event in response_stream:
             # Handle OpenAI-specific event types
             if event.type == "response.output_text.delta":
                 buffer += event.delta
                 processed_chunks = self._process_buffer_for_line_breaks(buffer)
-                buffer = processed_chunks['remaining_buffer']
-                
-                for chunk in processed_chunks['complete_chunks']:
+                buffer = processed_chunks["remaining_buffer"]
+
+                for chunk in processed_chunks["complete_chunks"]:
                     full_text += chunk
-                    yield {
-                        'type': 'text_chunk',
-                        'content': chunk,
-                        'full_text': full_text
-                    }
-        
+                    yield {"type": "text_chunk", "content": chunk, "full_text": full_text}
+
         # Send any remaining text in buffer when stream ends
         if buffer:
             full_text += buffer
-            yield {
-                'type': 'text_chunk',
-                'content': buffer,
-                'full_text': full_text
-            }
-    
+            yield {"type": "text_chunk", "content": buffer, "full_text": full_text}
+
     # currently use the "\n\n" as buffer split, not sure if this is the best way to do it.
     def _process_buffer_for_line_breaks(self, buffer, line_break="\n\n"):
         complete_chunks = []
         remaining_buffer = buffer
-        
+
         while line_break in remaining_buffer:
             split_pos = remaining_buffer.find(line_break)
             chunk = remaining_buffer[:split_pos] + line_break
-            remaining_buffer = remaining_buffer[split_pos + len(line_break):]
-            
+            remaining_buffer = remaining_buffer[split_pos + len(line_break) :]
+
             if chunk:
                 complete_chunks.append(chunk)
-        
-        return {
-            'complete_chunks': complete_chunks,
-            'remaining_buffer': remaining_buffer
-        }
+
+        return {"complete_chunks": complete_chunks, "remaining_buffer": remaining_buffer}
 
 
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
