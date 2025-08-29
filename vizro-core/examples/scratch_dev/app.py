@@ -29,7 +29,6 @@ import dash_bootstrap_components as dbc
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
 from flask import Response, request
-from utils import yield_text_component
 
 load_dotenv()
 
@@ -140,7 +139,11 @@ class ChatAction(echo):
             def event_stream():
                 for event in self.core_function(**stuff.model_dump()):
                     if event["type"] == "text_chunk":
-                        yield from yield_text_component(self.create_component, event["full_text"])
+                        text_component = self.create_component("text", event["full_text"])
+                        encoded_delta = base64.b64encode(
+                            json.dumps(text_component.to_plotly_json()).encode("utf-8")
+                        ).decode("utf-8")
+                        yield sse_message(encoded_delta)
 
                 # Send standard SSE completion signal
                 yield sse_message()
@@ -150,10 +153,12 @@ class ChatAction(echo):
     def _setup_chat_callbacks(self):
         """Set up generic chat UI callbacks."""
 
-        # Callback for user input
         @callback(
+            # outputs are self.outputs
             Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
             Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+            # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
+            # make sure it.
             Input(f"{self.chat_id}-submit", "n_clicks"),
             State(*self.prompt.split(".")),
             prevent_initial_call=True,
@@ -165,7 +170,7 @@ class ChatAction(echo):
             html_messages.append(self.message_to_html(latest_input))
             return store, html_messages
 
-        # Callback to restore chat history on page load
+        # Horrible hack to restore chat history when you change page and return.
         page = model_manager._get_model_page(self)
 
         @callback(
@@ -182,15 +187,14 @@ class ChatAction(echo):
             return [self.message_to_html(message) for message in store], dash.no_update
 
     def function(self, prompt, messages):
-        """Generic function method for handling chat interactions."""
         # Need to repeat append here since this runs at same time as store update.
+        # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
         latest_input = {"role": "user", "content": prompt}
         messages.append(latest_input)
 
         if self.stream:
             store, html_messages = Patch(), Patch()
 
-            # Add generic placeholder for streaming response
             placeholder_msg = {"role": "assistant", "content": ""}
             store.append(placeholder_msg)
             html_messages.append(self.message_to_html(placeholder_msg))
@@ -213,15 +217,7 @@ class ChatAction(echo):
             return store, html_messages
 
     def create_component(self, content_type, content):
-        """Create the appropriate component based on content type.
-
-        Args:
-            content_type: Type of content ('text' or other)
-            content: The actual content (text string)
-
-        Returns:
-            Dash component suitable for the content type
-        """
+        """Create the appropriate component based on content type."""
         if content_type == "text":
             return dcc.Markdown(content, dangerously_allow_html=False)
         else:
@@ -233,7 +229,6 @@ class ChatAction(echo):
 
     @property
     def outputs(self):
-        """Define outputs for the chat component."""
         if self.stream:
             return [
                 f"{self.chat_id}-store.data",
@@ -351,10 +346,10 @@ class openai_pirate(ChatAction):
 # subclassing?
 # Overall this seems fine - you can manually write function or use various built in things to make it easier. Have
 # full flexibility but not too hard to write.
-# @capture("action")
-# def openai_pirate_function(prompt):
-#     client = OpenAI()
-#     return client.responses.create(model="gpt-4.1-nano", instructions="Talk like a pirate.", input=prompt).output_text
+@capture("action")
+def openai_pirate_function(prompt):
+    client = OpenAI()
+    return client.responses.create(model="gpt-4.1-nano", instructions="Talk like a pirate.", input=prompt).output_text
 
 
 # Note different return type objects work immediately - no need for different modes. You can return any Dash
@@ -387,8 +382,8 @@ class Chat(VizroBaseModel):
                 # directly? Do models actually return HTML?
                 html.Div(id=f"{self.id}-output", children=[]),
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),  # TBD storage_type
-                # animate_chunk was set to 20, causing truncation of base64-encoded JSON messages
                 # Setting to a much larger value to accommodate full JSON component messages
+                # would this cause performance issues?
                 SSE(id=f"{self.id}-sse", concat=False, animate_chunk=10000, animate_delay=5),
                 html.Div(id=f"{self.id}-streaming-output", style={"display": "none"}),
             ]
