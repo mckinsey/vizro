@@ -163,12 +163,13 @@ body {
   cursor: pointer;
   font-family: var(--font-base);
   font-size: 9px;
+  height: fit-content;
+  margin-left: -44px;
+  margin-top: 18px;
   opacity: 0;
   padding: 2px 6px;
-  position: absolute;
-  right: 10px;
-  top: 16px;
   transition: opacity 0.2s;
+  z-index: 20;
 }
 
 .copy-btn:hover {
@@ -374,7 +375,8 @@ body {
    CODE BLOCKS
    ======================================== */
 .code-block-container {
-  position: relative;
+  display: flex;
+  flex-direction: row;
 }
 
 .code-block-container:hover .copy-btn {
@@ -389,6 +391,7 @@ body {
   line-height: 1.3;
   padding: 8px;
   user-select: text;
+  width: fit-content;
 }
 
 .code-block {
@@ -413,12 +416,14 @@ body {
    ======================================== */
 .highlight-box {
   align-items: center;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgb(245, 158, 11);
+  align-items: start;
+  background: rgba(0, 191, 165, 0.1);
+  border: 1px solid rgb(0, 191, 165);
   border-radius: 8px;
   display: flex;
+  flex-direction: column;
   font-size: 0.8rem;
-  gap: 0.5rem;
+  gap: 0;
   margin: 0.5rem 0;
   padding: 0.5rem;
 }
@@ -632,4 +637,38 @@ body {
   font-size: 14px;
   gap: 12px;
   justify-content: space-between;
+}
+
+.highlight-title {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.highlight-content {
+  padding: 4px;
+}
+
+.highlight-box-inline {
+  align-items: center;
+  align-items: start;
+  background: rgba(0, 191, 165, 0.1);
+  border: 1px solid rgb(0, 191, 165);
+  border-radius: 8px;
+  display: flex;
+  font-size: 0.8rem;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+.card-note {
+  background-color: #448aff1a;
+  border: 1px solid #448aff;
+  border-radius: 8px;
+  color: #1f2937;
+  font-size: 0.8rem;
+  padding: 8px;
 }

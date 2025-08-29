@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vizro - Cheatsheet</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="assets/css/styles.css" />
     <link
       rel="stylesheet"
@@ -33,7 +37,7 @@
       <div class="sidebar">
         <h2>Table of contents</h2>
         <ul class="nav-links">
-          <li><a href="#getting-started-section">Getting Started</a></li>
+          <li><a href="#getting-started-section">Get Started</a></li>
           <li><a href="#components-section">Components</a></li>
           <li><a href="#controls-section">Controls</a></li>
           <li><a href="#page-layout-section">Page layout & Navigation</a></li>
@@ -45,8 +49,8 @@
         </ul>
       </div>
       <div class="container">
-        <!-- beginning of first card Getting Started-->
-        <div class="card purple" id="getting-started">
+        <!-- beginning of first card Get Started-->
+        <div class="card purple" id="getting-started-section">
           <h2 class="section-title">
             <span
               class="section-icon"
@@ -56,7 +60,7 @@
               "
               >🚀</span
             >
-            Getting Started
+            Get Started
           </h2>
           <div class="card-flex">
             <div class="component-card">
@@ -65,11 +69,12 @@
                 Install the Vizro package to get started with dashboard
                 creation.
               </p>
-              <div class="highlight-box">
-                <div class="highlight-icon">💡</div>
+              <div class="highlight-box-inline">
+                <span class="mdi mdi-lightbulb-on-outline"></span>
                 <div>
                   <strong></strong> Install Vizro with
-                  <code>pip install vizro</code> for the latest features.
+                  <code>pip install --upgrade vizro</code> for the latest
+                  features.
                 </div>
               </div>
               <div class="code-block-container">
@@ -90,6 +95,13 @@ Vizro().build(dashboard).run()</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
+              <p class="card-note">
+                <strong>Note:</strong> <br />
+                This code creates a complete dashboard with pages & components,
+                and runs the application. <br />
+                All other code in this cheatsheet are snippets to illustrate the
+                feature under discussion.
+              </p>
             </div>
             <div class="component-card">
               <h3 class="card-title">📄 Basic Page</h3>
@@ -113,10 +125,12 @@ page = vm.Page(
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
               <div class="highlight-box">
-                <div class="highlight-icon">💡</div>
-                <div>
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
                   <strong>Page tips:</strong>
-                  <br />• Add tooltip with icon & meta tags by providing
+                </div>
+                <div class="highlight-content">
+                  • Add tooltip with icon & meta tags by providing
                   <code class="code-inline">description</code> argument. <br />•
                   Define custom URL path by providing
                   <code class="code-inline">path</code> argument.
@@ -227,7 +241,7 @@ ag_grid = vm.AgGrid(
                 <div class="card-title">
                   <a
                     href="https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#create-a-kpi-card"
-                    >Kpi card</a
+                    >KPI card</a
                   >
                 </div>
                 <div class="card-description">Description for KPI card</div>
@@ -330,7 +344,7 @@ button = vm.Button(
                 <div class="card-title">
                   <a
                     href="https://vizro.readthedocs.io/en/stable/pages/user-guides/containers/"
-                    >Containers</a
+                    >Container</a
                   >
                   <a
                     href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Container"
@@ -450,11 +464,13 @@ text = vm.Text(
             </div>
             <!-- end of second row of components-->
             <div class="highlight-box">
-              <div class="highlight-icon">💡</div>
-              <div>
+              <div class="highlight-title">
+                <span class="mdi mdi-lightbulb-on-outline"></span>
                 <strong>Component tips:</strong>
-                <br />• All components can be styled with custom CSS classes and
-                IDs. <br />• All arguments of underlying dash components can be
+              </div>
+              <div class="highlight-content">
+                • All components can be styled with custom CSS classes and IDs.
+                <br />• All arguments of underlying dash components can be
                 entered via <code class="code-inline">extra</code> argument.
               </div>
             </div>
@@ -480,7 +496,7 @@ text = vm.Text(
               <div class="card-title">
                 <a
                   href="https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/"
-                  >Filters</a
+                  >Filter</a
                 >
                 <a
                   href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Filter"
@@ -509,13 +525,15 @@ filter = vm.Filter(
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
               <div class="highlight-box">
-                <div class="highlight-icon">💡</div>
-                <div>
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
                   <strong>Filter tips:</strong>
-                  <br />• column argument denotes the target column to be
-                  filtered <br />• Set
-                  <code class="code-inline">targets</code> to specify which
-                  components on the page the filter should apply to.
+                </div>
+                <div class="highlight-content">
+                  • column argument denotes the target column to be filtered
+                  <br />• Set <code class="code-inline">targets</code> to
+                  specify which components on the page the filter should apply
+                  to.
                 </div>
               </div>
             </div>
@@ -555,11 +573,12 @@ parameter = vm.Parameter(
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
               <div class="highlight-box">
-                <div class="highlight-icon">💡</div>
-                <div>
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
                   <strong>Parameter tips:</strong>
-                  <br />• Specify <code class="code-inline">targets</code> in
-                  the form
+                </div>
+                <div class="highlight-content">
+                  • Specify <code class="code-inline">targets</code> in the form
                   <code class="code-inline"
                     >target_component_id.target_argument</code
                   >
@@ -831,10 +850,7 @@ range=False
           </h2>
           <div class="two-column-grid">
             <div class="component-card">
-              <div class="card-title">
-                Multi-page dashboard
-                <span class="material-icons">integration_instructions</span>
-              </div>
+              <div class="card-title">Multi-page dashboard</div>
               <div class="card-description">
                 Create dashboards with multiple pages and automatic navigation
                 between them.
@@ -872,7 +888,14 @@ dashboard = vm.Dashboard(title="My dashboard",pages=[page_1, page_2, page_3])</c
             <div class="component-card">
               <div class="card-title">
                 Navigation
-                <span class="material-icons">integration_instructions</span>
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Navigation"
+                  target="_blank"
+                  class="icon-link"
+                >
+                  <span class="material-icons">integration_instructions</span>
+                  <span class="tooltip">Click to view Navigation API</span>
+                </a>
               </div>
               <div class="card-description">
                 Configure custom navigation to group pages together and
@@ -910,7 +933,14 @@ navigation = vm.Navigation(
             <div class="component-card">
               <div class="card-title">
                 Grid layout
-                <span class="material-icons">integration_instructions</span>
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Grid"
+                  target="_blank"
+                  class="icon-link"
+                >
+                  <span class="material-icons">integration_instructions</span>
+                  <span class="tooltip">Click to view Grid API</span>
+                </a>
               </div>
               <div class="card-description">
                 Arrange components in grid patterns with precise positioning and
@@ -961,11 +991,13 @@ grid_layout = vm.Grid(
                 </div>
               </div>
               <div class="highlight-box">
-                <div class="highlight-icon">💡</div>
-                <div>
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
                   <strong>Grid layout tips:</strong>
-                  <br />• Grid numbers match component positions <br />• Add
-                  empty spaces within grid layout by specifying -1 e.g
+                </div>
+                <div class="highlight-content">
+                  • Grid numbers match component positions <br />• Add empty
+                  spaces within grid layout by specifying -1 e.g
                   <code class="code-inline">grid=[[0], [1], [-1]]</code> <br />•
                   Control the scroll behavior by specifying
                   <code class="code-inline">row_min_height</code> and
@@ -976,7 +1008,14 @@ grid_layout = vm.Grid(
             <div class="component-card">
               <div class="card-title">
                 Flex layout
-                <span class="material-icons">integration_instructions</span>
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Flex"
+                  target="_blank"
+                  class="icon-link"
+                >
+                  <span class="material-icons">integration_instructions</span>
+                  <span class="tooltip">Click to view Flex API</span>
+                </a>
               </div>
               <div class="card-description">
                 Achieve flexible layout system for dynamic component arrangement
@@ -994,10 +1033,12 @@ flex_layout = vm.Flex(
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
               <div class="highlight-box">
-                <div class="highlight-icon">💡</div>
-                <div>
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
                   <strong>Flex layout tips:</strong>
-                  <br />• To wrap components into multiple lines use
+                </div>
+                <div class="highlight-content">
+                  • To wrap components into multiple lines use
                   <code class="code-inline">wrap=True</code> <br />• Control the
                   spacing between components in the flex container by using
                   <code class="code-inline">gap</code> argument
@@ -1098,7 +1139,17 @@ vm.Graph(
           </h2>
           <div class="two-column-grid">
             <div class="component-card">
-              <div class="card-title">Export data</div>
+              <div class="card-title">
+                Export data
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/API-reference/action-callables/#vizro.actions.export_data"
+                  target="_blank"
+                  class="icon-link"
+                >
+                  <span class="material-icons">integration_instructions</span>
+                  <span class="tooltip">Click to view export_data API</span>
+                </a>
+              </div>
               <div class="card-description">
                 To enable downloading data, you can add the export_data action
                 function to the Button component.
@@ -1138,12 +1189,14 @@ actions=[vm.Action(
             </div>
           </div>
           <div class="highlight-box">
-            <div class="highlight-icon">💡</div>
-            <div>
+            <div class="highlight-title">
+              <span class="mdi mdi-lightbulb-on-outline"></span>
               <strong>Actions tips:</strong>
-              <br />• Chain multiple actions together by providing them in
-              sequence you want them to be executed. Next action in order will
-              execute only after the previous action has completed.
+            </div>
+            <div class="highlight-content">
+              • Chain multiple actions together by providing them in sequence
+              you want them to be executed. Next action in order will execute
+              only after the previous action has completed.
             </div>
           </div>
         </div>
@@ -1371,10 +1424,12 @@ vm.Action(
                   </div>
                 </div>
                 <div class="highlight-box">
-                  <div class="highlight-icon">💡</div>
-                  <div>
+                  <div class="highlight-title">
+                    <span class="mdi mdi-lightbulb-on-outline"></span>
                     <strong>Custom styling tips:</strong>
-                    <br />• Use model ID for core, and suffixed IDs like
+                  </div>
+                  <div class="highlight-content">
+                    • Use model ID for core, and suffixed IDs like
                     <code class="code-inline">{model-id}-title</code>
                     for non-core parts. Both can be targeted with the CSS #id
                     selector.
