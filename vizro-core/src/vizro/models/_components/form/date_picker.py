@@ -4,7 +4,6 @@ from typing import Annotated, Any, Literal, Optional, Union
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import html
-from dash.development.base_component import Component
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -16,7 +15,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, DashComponentClass, _IdProperty
 
 
 class DatePicker(VizroBaseModel):
@@ -88,7 +87,7 @@ class DatePicker(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component: Component = PrivateAttr(dmc.DatePickerInput())
+    _inner_component_class: DashComponentClass = PrivateAttr(dmc.DatePickerInput)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -138,7 +137,7 @@ class DatePicker(VizroBaseModel):
                 )
                 if self.title
                 else None,
-                dmc.DatePickerInput(**(defaults | self.extra)),
+                self._inner_component_class(**(defaults | self.extra)),
             ],
         )
 

@@ -2,7 +2,6 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
-from dash.development.base_component import Component
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -18,7 +17,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, MultiValueType, OptionsType, _IdProperty
+from vizro.models.types import ActionsType, DashComponentClass, MultiValueType, OptionsType, _IdProperty
 
 
 class Checklist(VizroBaseModel):
@@ -84,7 +83,7 @@ class Checklist(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
-    _inner_component: Component = PrivateAttr(dbc.Checklist())
+    _inner_component_class: DashComponentClass = PrivateAttr(dbc.Checklist)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -147,7 +146,7 @@ class Checklist(VizroBaseModel):
                 html.Div(
                     children=[
                         select_all_checkbox,
-                        dbc.Checklist(**(defaults | self.extra)),
+                        self._inner_component_class(**(defaults | self.extra)),
                     ],
                     className="checklist-inline" if self._in_container else None,
                 ),

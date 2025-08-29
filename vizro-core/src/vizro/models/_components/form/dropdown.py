@@ -4,7 +4,6 @@ from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from dash.development.base_component import Component
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -16,7 +15,14 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, MultiValueType, OptionsType, SingleValueType, _IdProperty
+from vizro.models.types import (
+    ActionsType,
+    DashComponentClass,
+    MultiValueType,
+    OptionsType,
+    SingleValueType,
+    _IdProperty,
+)
 
 
 def validate_multi(multi, info: ValidationInfo):
@@ -113,7 +119,7 @@ class Dropdown(VizroBaseModel):
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
-    _inner_component: Component = PrivateAttr(dcc.Dropdown())
+    _inner_component_class: DashComponentClass = PrivateAttr(dcc.Dropdown)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -189,7 +195,7 @@ class Dropdown(VizroBaseModel):
                 )
                 if self.title
                 else None,
-                dcc.Dropdown(**(defaults | self.extra)),
+                self._inner_component_class(**(defaults | self.extra)),
             ]
         )
 
@@ -210,7 +216,9 @@ class Dropdown(VizroBaseModel):
             # Add the clientside callback as the callback has to be defined in the page.build process.
             self._update_dropdown_select_all()
             # hidden_select_all_dropdown is needed to ensure that clientside callback doesn't raise the no output error.
-            hidden_select_all_dropdown = [dcc.Dropdown(id=f"{self.id}_select_all", style={"display": "none"})]
+            hidden_select_all_dropdown = [
+                self._inner_component_class(id=f"{self.id}_select_all", style={"display": "none"})
+            ]
             placeholder_model = dcc.Checklist
             placeholder_options = self.value
         else:

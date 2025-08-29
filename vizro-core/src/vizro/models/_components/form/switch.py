@@ -2,14 +2,13 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from dash.development.base_component import Component
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._models_utils import make_actions_chain, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, DashComponentClass, _IdProperty
 
 
 class Switch(VizroBaseModel):
@@ -67,7 +66,7 @@ class Switch(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component: Component = PrivateAttr(dbc.Switch())
+    _inner_component_class: DashComponentClass = PrivateAttr(dbc.Switch)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -100,4 +99,4 @@ class Switch(VizroBaseModel):
             "persistence_type": "session",
         }
 
-        return dbc.Switch(**(defaults | self.extra))
+        return self._inner_component_class(**(defaults | self.extra))

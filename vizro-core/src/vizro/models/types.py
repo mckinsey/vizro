@@ -14,6 +14,7 @@ from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union,
 
 import plotly.io as pio
 import pydantic_core as cs
+from dash.development.base_component import Component
 from pydantic import (
     BeforeValidator,
     Discriminator,
@@ -622,6 +623,8 @@ class capture:
             "@capture('ag_grid') and @capture('figure')."
         )
 
+
+DashComponentClass: TypeAlias = type[Component]
 
 # For "component_id.component_property", e.g. "dropdown_id.value".
 _IdProperty: TypeAlias = str

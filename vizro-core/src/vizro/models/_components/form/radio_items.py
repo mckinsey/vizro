@@ -2,7 +2,6 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from dash.development.base_component import Component
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -14,7 +13,7 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, OptionsType, SingleValueType, _IdProperty
+from vizro.models.types import ActionsType, DashComponentClass, OptionsType, SingleValueType, _IdProperty
 
 
 class RadioItems(VizroBaseModel):
@@ -73,7 +72,7 @@ class RadioItems(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
-    _inner_component: Component = PrivateAttr(dbc.RadioItems())
+    _inner_component_class: DashComponentClass = PrivateAttr(dbc.RadioItems)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -119,7 +118,7 @@ class RadioItems(VizroBaseModel):
                 )
                 if self.title
                 else None,
-                dbc.RadioItems(**(defaults | self.extra)),
+                self._inner_component_class(**(defaults | self.extra)),
             ]
         )
 
