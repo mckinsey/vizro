@@ -2,6 +2,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
+from dash.development.base_component import Component
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -83,6 +84,7 @@ class Checklist(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
+    _inner_component: Component = PrivateAttr(dbc.Checklist())
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)

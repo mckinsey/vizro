@@ -2,7 +2,7 @@ from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, model_validator
+from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
@@ -11,7 +11,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ModelID, SelectorType
+from vizro.models.types import ModelID, SelectorType, _IdProperty
 
 
 def check_dot_notation(target):
@@ -85,11 +85,42 @@ class Parameter(VizroBaseModel):
         ),
     )
 
+    _selector_properties: set[str] = PrivateAttr(set())
+
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
         # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.selector.id}.value",
+            "selector": f"{self.id}.children",
+            **({"title": f"{self.selector.id}_title.children"} if self.selector.title else {}),
+            **({"description": f"{self.selector.description.id}-text.children"} if self.selector.description else {}),
+            **(
+                {selector_prop: f"{self.selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.selector.id}.value"}
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.selector.id}.value",
+            **(
+                {selector_prop: f"{self.selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
 
     @_log_call
     def pre_build(self):
@@ -98,6 +129,14 @@ class Parameter(VizroBaseModel):
         self._check_categorical_selectors_options()
         self._set_selector_title()
         self._set_actions()
+
+        # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
+        # Creates _action_outputs and _action_inputs for accessing selector's properties via the outer vm.Parameter ID.
+        # Example: "parameter-id.options" is transformed to "checklist.options".
+        if (selector_inner_component := getattr(self.selector, "_inner_component", None)) is not None:
+            self._selector_properties = set(selector_inner_component.available_properties) - set(
+                html.Div().available_properties
+            )
 
     @_log_call
     def build(self):

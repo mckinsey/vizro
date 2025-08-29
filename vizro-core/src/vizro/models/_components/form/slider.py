@@ -2,6 +2,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from dash.development.base_component import Component
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -94,6 +95,7 @@ class Slider(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
+    _inner_component: Component = PrivateAttr(dcc.Slider())
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

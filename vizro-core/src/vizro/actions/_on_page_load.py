@@ -3,8 +3,10 @@ from typing import Any, Literal
 from dash import ctx
 from pydantic import Field
 
+import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
+from vizro.managers import model_manager
 from vizro.models.types import ModelID, _Controls
 
 
@@ -34,4 +36,7 @@ class _on_page_load(_AbstractAction):
 
     @property
     def outputs(self):  # type: ignore[override]
-        return {target: target for target in self.targets}
+        return {
+            target: target if not isinstance(model_manager[target], vm.Filter) else f"{target}.selector"
+            for target in self.targets
+        }
