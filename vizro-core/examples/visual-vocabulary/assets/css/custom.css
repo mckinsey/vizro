@@ -20,7 +20,7 @@ img[src*="#chart-icon"] {
 }
 
 .flex-item h4 {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   margin: 0;
   padding-top: 12px;
   text-align: center;
@@ -47,7 +47,7 @@ img[src*="#chart-icon"] {
 }
 
 .intro-text h4 {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   margin: 0;
 }
 

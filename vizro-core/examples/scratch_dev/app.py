@@ -3,57 +3,35 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
-import time
+import dash_bootstrap_components as dbc
 
 df = px.data.iris()
 
-
-@capture("action")
-def fast_action(x):
-    return f"Fast action triggered {x} times"
-
-
-@capture("action")
-def slow_action(x):
-    time.sleep(2)
-    return f"Slow action triggered {x} times"
-
-
-page_1 = vm.Page(
-    title="Test Page",
-    layout=vm.Flex(),
+page = vm.Page(
+    title="Bootstrap theme inside Vizro app",
+    layout=vm.Grid(grid=[[0, 1], [2, 2], [2, 2], [3, 3], [3, 3]]),
     components=[
-        vm.Button(
-            id="fast_action_button",
-            text="Trigger Fast Action",
-            actions=vm.Action(function=fast_action("fast_action_button.n_clicks"), outputs=["output_text"]),
+        vm.Card(
+            text="""
+                ### What is Vizro?
+                An open-source toolkit for creating modular data visualization applications.
+
+                Rapidly self-serve the assembly of customized dashboards in minutes - without the need for advanced coding or design experience - to create flexible and scalable, Python-enabled data visualization applications."""
         ),
-        vm.Button(
-            id="slow_action_button",
-            text="Trigger Slow Action",
-            actions=vm.Action(function=slow_action("slow_action_button.n_clicks"), outputs=["output_text"]),
+        vm.Card(
+            text="""
+                ### Github
+
+                Checkout Vizro's GitHub page for further information and release notes. Contributions are always welcome!""",
+            href="https://github.com/mckinsey/vizro",
         ),
-        vm.Text(
-            id="output_text",
-            text="Trigger an action to see the result here.",
-        ),
+        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
     ],
+    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
 )
 
-page_2 = vm.Page(
-    title="Standard Vizro Page",
-    components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
-    ],
-    controls=[vm.Filter(column="species")],
-)
-
-dashboard = vm.Dashboard(
-    # It works fine with and without a dashboard title.
-    title="Dashboard Title",
-    pages=[page_1, page_2],
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run(debug=False)
