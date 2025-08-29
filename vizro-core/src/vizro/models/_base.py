@@ -227,6 +227,21 @@ class VizroBaseModel(BaseModel):
         ),
     ]
 
+    @staticmethod
+    def _get_ancestor(model_name: str, root_model: Optional["VizroBaseModel"] = None):
+        """Get direct ancestors of a model as defined by the root model's or vm.Dashboard model's JSON schema."""
+        if root_model is None:
+            from vizro.models import Dashboard
+
+            root_model = Dashboard
+
+        schema = cast("VizroBaseModel", root_model).model_json_schema()
+        defs = schema.get("$defs", {})
+        # TODO: [MS] This is surprisingly stable, but feels hacked. Let's see if we can improve
+        return [
+            name for name, model_data in defs.items() if f"$defs/{model_name}" in str(model_data.get("properties", {}))
+        ]
+
     @_log_call
     def model_post_init(self, context: Any) -> None:
         model_manager[self.id] = self
