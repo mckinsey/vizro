@@ -37,6 +37,6 @@ class _on_page_load(_AbstractAction):
     @property
     def outputs(self):  # type: ignore[override]
         return {
-            target: target if not isinstance(model_manager[target], vm.Filter) else f"{target}.selector"
+            target: f"{target}.selector" if isinstance(model_manager[target], vm.Filter) else target
             for target in self.targets
         }
