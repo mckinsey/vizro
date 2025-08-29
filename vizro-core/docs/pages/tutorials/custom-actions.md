@@ -114,7 +114,7 @@ So far we have specified that a button should be included in the page layout but
 
 Congratulations on writing your first action! Before clicking the button, the text shows "Click the button". When you click the button, the `update_text` action is triggered. This Python function executes on the server to find the current time in the UTC timezone and return a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the component with `id="time_text"`. As explained in the [Dash documentation](https://dash.plotly.com/basic-callbacks), this is called _reactive programming_. Behind the scenes, Dash uses [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview): on the _clientside_, the user clicks the button, which sends an HTTP request to the server; on the _serverside_, the `update_text` action executes and returns an HTTP response to the client to update the text on the screen.
 
-As we cover increasingly uses for actions, it can be very helpful to understand the actions using a flowchart similar to Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). We can visualise the above example as follows:
+As we cover increasingly complex actions, it can be very helpful to understand the actions using a flowchart similar to Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). We can visualise the above example as follows:
 
 ```mermaid
 graph TD
@@ -366,7 +366,7 @@ Sometimes you need a single trigger to execute multiple actions. Vizro uses _cha
 - Explicit actions chain. When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro executes these actions in order, so that `action_2` executes only when `action_1` has completed.
 - Implicit actions chain. When one action outputs a trigger of another action then the subsequent action is triggered automatically. For example, say that `action_submit` is triggerd by `vm.Button(id="submit_button")`, in other words when the button is clicked. If another action that has `output="submit_button"` completes then `action_submit` is automatically triggered as if the button had been clicked.
 
-Looking at some examples of each of these types of actions chain will make it much clearer. All principles of actions chains applies equally to both custom and [built-in actions](../user-guides/actions.md). You can freely mix built-in and custom actions in both explicit and implicit actions chains. Built-in actions and custom actions behave identically in terms of when they are triggered and how they execute.
+Looking at some examples of each of these types of actions chain will make it much clearer. All principles of actions chains apply equally to both custom and [built-in actions](../user-guides/actions.md). You can freely mix built-in and custom actions in both explicit and implicit actions chains. Built-in actions and custom actions behave identically in terms of when they are triggered and how they execute.
 
 !!! note
 
@@ -374,7 +374,7 @@ Looking at some examples of each of these types of actions chain will make it mu
 
 ### Explicit actions chain
 
-Let's add some new functionality to our app that fetches the current weather in Berlin. To do this we use the [Open-Meteo](https://open-meteo.com/) weather API, which is free and does not require an API key. So far our actions have executed very quck and simple operations on the server. Making a request to an external API can be much slower. We perform the operation in two stages so that the user knows what is going on:
+Let's add some new functionality to our app that fetches the current weather in Berlin. To do this we use the [Open-Meteo](https://open-meteo.com/) weather API, which is free and does not require an API key. So far our actions have executed very quick and simple operations on the server. Making a request to an external API can be much slower. We perform the operation in two stages so that the user knows what is going on:
 
 1. Update text on the screen to give the time and date, as before, but also update to say that we're fetching the weather. This is done in the `update_text` action.
 1. Request the Open-Meteo API and update the text on the screen again to give the current temperature in Berlin. This is done in the `fetch_weather` action.
@@ -463,14 +463,14 @@ The full code for this explicit actions chain is shown below.
 
         1. [Requests](https://requests.readthedocs.io/) is a popular Python library for performing HTTP requests. It is a third party library but is a dependency of Dash and so should already be available without any further `pip install`s.
         1. This now return _three_ strings. "Fetching current weather..." only shows on the screen briefly while the `fetch_weather` action is executing.
-        1. We make a request to the Open-Meteo API to fetch the current temperature at the latitude and longitude of Berlin. For full details, see the [Open-Meteo documentation](https://open-meteo.com/en/docs). This request often generally completes very quickly and so "Fetching current weather..." won't appear on your screen for long! If you'd like to artifically slow down the `fetch_weather` action to see it more clearly then you can add `time.sleep(3)` to the function body to add a delay of 3 seconds.
+        1. We make a request to the Open-Meteo API to fetch the current temperature at the latitude and longitude of Berlin. For full details, see the [Open-Meteo documentation](https://open-meteo.com/en/docs). This request often generally completes very quickly and so "Fetching current weather..." won't appear on your screen for long! If you'd like to artifically slow down the `fetch_weather` action to see it more clearly then you can add `from time import sleep; sleep(3)` to the function body to add a delay of 3 seconds.
         1. We don't need to set `id="submit_button"` but have added it in anticipation of the next section.
 
     === "Result"
 
         TODO screenshot
 
-The actions flowchart now has a new output for `weather_text` and also a new action `fetch_weather`. The trigger for this is completion of the action `update_text`. Note that both these actions share the same `weather_text`; in Vizro, a model can be an input or output for any number of actions.
+The actions flowchart now has a new output for `weather_text` and also a new action `fetch_weather`. The trigger for this is completion of the action `update_text`. Note that both these actions share the same output `weather_text`; in Vizro, a model can be an input or output for any number of actions.
 
 ```mermaid
 graph TD
@@ -628,7 +628,7 @@ An implicit action chain can only be formed by triggering the _first_ action of 
 
 !!! tip
 
-When you're building more complicated chains of actions, it's often useful to _start_ by sketching an actions flowchart and then work out how to configure the actions to achieve it.
+    When you're building more complicated chains of actions, it's often useful to _start_ by sketching an actions flowchart and then work out how to configure the actions to achieve it.
 
 It is still possible to set the time and date formats and submit the form manually, as before. For example, you might like to know the weather in Berlin but prefer to use the 12-hour clock. A user can select Berlin, click the switch to use 12-hour clock and then submit the form again. However, clicking the submit button now feels quite cumbersome. We are going to implement a few final enhancements to our example to improve the user experience.
 
@@ -771,7 +771,7 @@ graph TD
 
 We still have an explicit actions chain `[update_time_date_formats, fetch_weather]`, since these are directly connected by a thick arrow. The connection between `update_time_date_formats` and the `update_time_text` and `update_date_text` actions is implicit since there is no direct connection; the line goes through intermediate models `clock_switch` and `date_radio_items`.
 
-In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_text` and `update_date_text` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its output(s) on screen as soon as it has completed. If you add `time.sleep(3)` to each of the `fetch_weather`, `update_time_text` and `update_date_text` actions to make them take 3 seconds longer to complete then the total delay will be 3 seconds rather than 9 seconds.
+In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_text` and `update_date_text` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its output(s) on screen as soon as it has completed. If you add `sleep(3)` to each of the `fetch_weather`, `update_time_text` and `update_date_text` actions to make them take 3 seconds longer to complete then the total delay will be 3 seconds rather than 9 seconds.
 
 ??? details "Parallel execution is not guaranteed"
 

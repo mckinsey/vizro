@@ -1,6 +1,6 @@
 # How to create custom actions
 
-Actions dictate how your app behaves in response to user input, for example what happens when someone clicks a button or a point on a graph. If you need to perform a function that are not available in Vizro's [built-in actions](actions.md) then you need to write your own custom action. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions.md) that teaches many of the concepts you see here in more detail.
+This guide demonstrates how to write actions that dictate how your app behaves in response to user input, for example what happens when someone clicks a button or a point on a graph. If you need to perform a function that is not available in Vizro's [built-in actions](actions.md) then you need to write your own custom action. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions.md) that teaches many of the concepts you see here in more detail.
 
 Vizro's actions system is built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md).
 
@@ -21,7 +21,7 @@ To define your own action:
     1. if your action has one or more inputs then specify them as function arguments
     1. if your action has one or more outputs then specify them as `outputs`
 
-Generally speaking, an action's `outputs` and input function arguments are strings that refer to Vizro model `id`s. For example, to write an action that updates the Plotly figure inside [a Graph component](graph.md) `vm.Graph(id="my_graph", header="Graph header")`, you would use `outputs="my_graph"`. It is also possible to [use specific model arguments](#model-arguments-as-input-and-output) or even [Dash properties](#dash-properties-as-input-and-output) as action inputs and outputs, for example with `outputs="my_graph.header"`.
+Generally speaking, an action's `outputs` and input function arguments are strings that refer to a Vizro model `id`. For example, to write an action that updates the Plotly figure inside [a Graph component](graph.md) `vm.Graph(id="my_graph", header="Graph header")`, you would use `outputs="my_graph"`. It is also possible to [use specific model arguments](#model-arguments-as-input-and-output) or even [Dash properties](#dash-properties-as-input-and-output) as action inputs and outputs, for example with `outputs="my_graph.header"`.
 
 Here's an example of the syntax for an action with two inputs and one output:
 
@@ -32,7 +32,7 @@ from vizro.models.types import capture
 @capture("action")
 def action_function(input_1, input_2):
     ...
-    return "value 1"  # (1)!
+    return "My string value"  # (1)!
 ```
 
 1. An action can return values of any Python type that can be converted to JSON. It is also valid to have an action that has no return values, in which case `outputs` should not be specified.
@@ -49,6 +49,7 @@ actions = vm.Action(
 ```
 
 1. Here we used positional arguments but, just like a normal Python function call, you could also use keyword arguments as `action_function(input_1="input_id_1", input_2="input_id_2")`.
+2. It is also possible to have multiple outputs, as shown in examples below.
 
 ### Actions chain
 
@@ -77,7 +78,7 @@ actions = [
 ```
 
 1. You can use the same action function multiple times throughout your app, even in the same actions chain. The same input `input_id_1` can also be used multiple times.
-1. This action has no inputs and two outputs. `another_action_function` would need to return multiple values, such as `return "value_1", "value_2"`.
+1. This action has no inputs and two outputs. `another_action_function` would need to return multiple values, such as `return "My string value 1", "My string value 2"`.
 1. The same output can be used multiple times throughout your app, even in the same actions chain.
 1. This is an example of a built-in action, available as `from vizro.actions import export_data`. It does not use the `vm.Action` model.
 
@@ -85,9 +86,9 @@ actions = [
 
     The returned values of an action function with multiple outputs are matched to the `outputs` in order. For actions with many return values, it can be a good idea to instead return a dictionary where returned values are labelled by string keys. In this case, `outputs` should also be a dictionary with matching keys, and the order of entries does not matter.
 
-### Security
+### Security of custom actions
 
-When writing actions, uou should never assume that the value of inputs in your action function is restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions.md#security).
+When writing actions, you should never assume that the value of inputs in your action function is restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions.md#security).
 
 ## Trigger an action with a button
 
@@ -111,13 +112,11 @@ def update_text(use_24_hour_clock):  # (1)!
 To attach the action to a button model, we use it inside the `actions` argument as follows:
 
 ```python
-(
-    vm.Button(
-        actions=vm.Action(
-            function=update_text(use_24_hour_clock="clock_switch"),  # (1)!
-            outputs="time_text",  # (2)!
-        ),
-    ),
+ vm.Button(
+     actions=vm.Action(
+         function=update_text(use_24_hour_clock="clock_switch"),  # (1)!
+         outputs="time_text",  # (2)!
+     ),
 )
 ```
 
@@ -130,7 +129,7 @@ Here is the full example code that includes the input component `vm.Switch(id="c
 
     === "app.py"
 
-        ```{.python hl_lines="8-12 22-27"}
+        ```{.python pycafe-link hl_lines="8-12 22-27"}
         from datetime import datetime
 
         import vizro.models as vm
@@ -197,7 +196,7 @@ The syntax for using a particular model argument as an action input or output is
 
     === "app.py"
 
-        ```{.python hl_lines="11 13 26-29"}
+        ```{.python pycafe-link hl_lines="11 13 26-29"}
         from datetime import datetime
 
         import vizro.models as vm
@@ -270,7 +269,7 @@ dbc.Switch(
 
 As well as the "core" [`dbc.Switch` component](https://www.dash-bootstrap-components.com/docs/components/input/), the `vm.Switch` model produces a [`html.Span` component](https://dash.plotly.com/dash-html-components/span) to contain the value of the `title` argument. Sometimes there may be Dash components that you wish to use as an action input or output that are not easily mapped onto Vizro model arguments. In this case, you should [consult the model's source code](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/models) to find the relevant Dash component and property. The `id` of Dash components are always prefixed by the model `id`. For example, `vm.Graph(id="my_graph")` would produce Dash components with `id="my_graph_title"`, `id="my_graph_header"`, `id="my_graph_footer"`, and so on.
 
-In fact, Vizro's system of `<model_id>.<argument_name>` is just shorthand for the underlying Dash `<component_id>.<property>`. For example, `"clock_switch.title"` is equivalent to `"clock_switch_title.children"`. Wherever possible, you should prefer to use the Vizro shorthands rather than referring to the underlying Dash components (for example, use `"clock_switch.title"` in preference to `"clock_switch_title.children"`). This is more intuitive and more stable. While using a pure Dash component `id` and property will indefinitely remain possible in Vizro actions, we consider the exact underlying Dash components to be implementation details, and so the Dash components available and their `id`s may change between non-breaking Vizro releases.
+In fact, Vizro's system of `<model_id>.<argument_name>` is just shorthand for the underlying Dash `<component_id>.<property>`. For example, `"clock_switch.title"` is equivalent to `"clock_switch_title.children"`. Wherever possible, you should prefer to use the Vizro shorthands rather than referring to the underlying Dash components (for example, use `"clock_switch.title"` in preference to `"clock_switch_title.children"`). This is more intuitive and more stable. While using a pure Dash component `id` and property will indefinitely remain possible in Vizro actions, we consider the exact underlying Dash components to be implementation details, and so the Dash components available may change between non-breaking Vizro releases.
 
 !!! note
 

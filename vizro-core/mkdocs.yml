@@ -120,8 +120,9 @@ markdown_extensions:
           format: !!python/object/apply:mkdocs_pycafe.formatter
             kwds:
               type: vizro
+              # TODO NOW: revert this
               requirements: |
-                vizro==0.1.44
+                https://py.cafe/gh/artifact/mckinsey/vizro/actions/runs/17272833265/pip/vizro-0.1.45.dev0-py3-none-any.whl
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
