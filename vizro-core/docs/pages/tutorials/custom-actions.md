@@ -12,7 +12,7 @@ TODO NOW:
 
 ## What is an action?
 
-Vizro models such as `vm.Dashboard`, `vm.Page`, `vm.Graph` and `vm.Filter` configure two separate parts of your app:
+Vizro models such as `vm.Graph`, `vm.Filter`, `vm.Button` and `vm.Page` configure two separate parts of your app:
 
 - Layout. This controls _what your app looks like_, for example which components you would like to see on your pages and where to place them. Under the hood, this uses [Dash layout](https://dash.plotly.com/layout).
 - Interactivity. This controls _how your app behaves in response to user input_, for example what happens when someone clicks a button in your app. This uses _actions_, which under the hood use [Dash callbacks](https://dash.plotly.com/basic-callbacks).
