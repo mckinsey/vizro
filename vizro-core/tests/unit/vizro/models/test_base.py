@@ -719,11 +719,24 @@ class TestAddingDuplicateDiscriminator:
 
 
 class TestAddingMultipleHierarchyLevels:
-    @pytest.mark.parametrize("SelectorUsingModel", [vm.Filter, vm.Parameter])
-    def test_add_selector_type(self, SelectorUsingModel):
-        class NewSelector(vm.VizroBaseModel):
-            type: Literal["new_selector"] = "new_selector"
+    @pytest.mark.parametrize(
+        "model,field",
+        [
+            (vm.Filter, "selector"),
+            (vm.Parameter, "selector"),
+            (vm.Container, "controls"),
+            (vm.Page, "controls"),
+            (vm.Page, "components"),
+            (vm.Container, "components"),
+            (vm.Navigation, "nav_selector"),
+            # (vm.Page, "layout"), # This does not work, was it ever working?
+        ],
+    )
+    def test_add_discriminated_union_type(self, model, field):
+        class NewType(vm.VizroBaseModel):
+            type: Literal["new_type"] = "new_type"
 
-        SelectorUsingModel.add_type("selector", NewSelector)
+        model.add_type(field, NewType)
 
-        assert "NewSelector" in str(vm.Dashboard.model_json_schema())
+        assert "NewType" in str(vm.Dashboard.model_json_schema())
+        assert "NewType" in str(model.model_json_schema())
