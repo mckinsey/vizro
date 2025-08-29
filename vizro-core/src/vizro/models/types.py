@@ -624,7 +624,9 @@ class capture:
         )
 
 
+# Used for type annotations in form components.
 DashComponentClass: TypeAlias = type[Component]
+"""Type alias for a Dash component class, e.g. `dcc.Dropdown` or `dbc.Switch`."""
 
 # For "component_id.component_property", e.g. "dropdown_id.value".
 _IdProperty: TypeAlias = str
