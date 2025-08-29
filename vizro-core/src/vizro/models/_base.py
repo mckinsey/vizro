@@ -305,7 +305,7 @@ class VizroBaseModel(BaseModel):
         new_type.model_rebuild(force=True)
         cls.model_rebuild(force=True)
         queue: deque[str] = deque()
-        if root_model and model_namespace:
+        if root_model and model_namespace:  # maybe OR?
             print("Starting rebuilding of ancestors")
             queue.extend(cls._get_ancestor(cls.__name__, root_model=root_model))
 
