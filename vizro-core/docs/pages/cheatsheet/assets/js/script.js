@@ -40,37 +40,3 @@ function copyCode(button) {
       }, 2000);
     });
 }
-
-// Add double-click to copy functionality for inline code
-document.addEventListener("DOMContentLoaded", function () {
-  const inlineCodes = document.querySelectorAll(".code-inline");
-  inlineCodes.forEach(function (code) {
-    code.addEventListener("dblclick", function () {
-      const text = this.textContent;
-      navigator.clipboard
-        .writeText(text)
-        .then(function () {
-          // Visual feedback for inline code
-          code.style.backgroundColor = "#e8f5e8";
-          setTimeout(function () {
-            code.style.backgroundColor = "";
-          }, 1000);
-        })
-        .catch(function () {
-          // Fallback
-          const textArea = document.createElement("textarea");
-          textArea.value = text;
-          document.body.appendChild(textArea);
-          textArea.select();
-          document.execCommand("copy");
-          document.body.removeChild(textArea);
-
-          // Visual feedback
-          code.style.backgroundColor = "#e8f5e8";
-          setTimeout(function () {
-            code.style.backgroundColor = "";
-          }, 1000);
-        });
-    });
-  });
-});
