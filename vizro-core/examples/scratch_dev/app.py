@@ -34,8 +34,9 @@ def action_return_text(button_number_of_clicks):
     time.sleep(0.5)
 
     title = f"Button clicked {button_number_of_clicks} times."
-    # TODO-NOW: Change  `-1` -> `-2` after pulling the changes from the main branch.
-    return [title] * (len(ctx.outputs_list) - 1)
+
+    # -2 is set due to internal action outputs: "_action_finished" and "_action_progress_indicatior"
+    return [title] * (len(ctx.outputs_list) - 2)
 
 
 @capture("action")
@@ -825,8 +826,6 @@ page_filters_underlying_value_property = vm.Page(
                     id="filter-checklist-2-id",
                     column="species",
                     selector=vm.Checklist(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         options=["Option 1", "Option 2", "Option 3"],
                     ),
                 ),
@@ -834,8 +833,6 @@ page_filters_underlying_value_property = vm.Page(
                     id="filter-dropdown-2-id",
                     column="species",
                     selector=vm.Dropdown(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         options=["Option 1", "Option 2", "Option 3"],
                     ),
                 ),
@@ -843,8 +840,6 @@ page_filters_underlying_value_property = vm.Page(
                     id="filter-radio-items-2-id",
                     column="species",
                     selector=vm.RadioItems(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         options=["Option 1", "Option 2", "Option 3"],
                     ),
                 ),
@@ -852,8 +847,6 @@ page_filters_underlying_value_property = vm.Page(
                     id="filter-slider-2-id",
                     column="sepal_length",
                     selector=vm.Slider(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         min=0,
                         max=100,
                         step=10,
@@ -863,8 +856,6 @@ page_filters_underlying_value_property = vm.Page(
                     id="filter-range-slider-2-id",
                     column="sepal_length",
                     selector=vm.RangeSlider(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         min=0,
                         max=100,
                         step=10,
@@ -874,8 +865,6 @@ page_filters_underlying_value_property = vm.Page(
                     id="filter-date-picker-2-id",
                     column="date_column",
                     selector=vm.DatePicker(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         min="2023-01-01",
                         max="2023-12-31",
                     ),
@@ -883,10 +872,7 @@ page_filters_underlying_value_property = vm.Page(
                 vm.Filter(
                     id="filter-switch-2-id",
                     column="is_setosa",
-                    selector=vm.Switch(
-                        title="Click button to update me",
-                        description="Click button to update me",
-                    ),
+                    selector=vm.Switch(),
                 ),
             ],
         )
@@ -1084,8 +1070,6 @@ page_parameters_underlying_value_property = vm.Page(
                     id="parameter-checklist-2-id",
                     targets=["parameter-all-selectors-graph-2-id.checklist_value"],
                     selector=vm.Checklist(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         options=["Option 1", "Option 2", "Option 3"],
                     ),
                 ),
@@ -1093,8 +1077,6 @@ page_parameters_underlying_value_property = vm.Page(
                     id="parameter-dropdown-2-id",
                     targets=["parameter-all-selectors-graph-2-id.dropdown_value"],
                     selector=vm.Dropdown(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         options=["Option 1", "Option 2", "Option 3"],
                     ),
                 ),
@@ -1102,8 +1084,6 @@ page_parameters_underlying_value_property = vm.Page(
                     id="parameter-radio-items-2-id",
                     targets=["parameter-all-selectors-graph-2-id.radio_items_value"],
                     selector=vm.RadioItems(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         options=["Option 1", "Option 2", "Option 3"],
                     ),
                 ),
@@ -1111,8 +1091,6 @@ page_parameters_underlying_value_property = vm.Page(
                     id="parameter-slider-2-id",
                     targets=["parameter-all-selectors-graph-2-id.slider_value"],
                     selector=vm.Slider(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         min=0,
                         max=100,
                         step=10,
@@ -1122,8 +1100,6 @@ page_parameters_underlying_value_property = vm.Page(
                     id="parameter-range-slider-2-id",
                     targets=["parameter-all-selectors-graph-2-id.range_slider_value"],
                     selector=vm.RangeSlider(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         min=0,
                         max=100,
                         step=10,
@@ -1133,8 +1109,6 @@ page_parameters_underlying_value_property = vm.Page(
                     id="parameter-date-picker-2-id",
                     targets=["parameter-all-selectors-graph-2-id.date_picker_value"],
                     selector=vm.DatePicker(
-                        title="Click button to update me",
-                        description="Click button to update me",
                         min="2023-01-01",
                         max="2023-12-31",
                     ),
@@ -1142,10 +1116,7 @@ page_parameters_underlying_value_property = vm.Page(
                 vm.Parameter(
                     id="parameter-switch-2-id",
                     targets=["parameter-all-selectors-graph-2-id.switch_value"],
-                    selector=vm.Switch(
-                        title="Click button to update me",
-                        description="Click button to update me",
-                    ),
+                    selector=vm.Switch(),
                 ),
             ],
         )
