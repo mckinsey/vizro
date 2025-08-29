@@ -304,7 +304,6 @@ class VizroBaseModel(BaseModel):
 
         new_type.model_rebuild(force=True)
         cls.model_rebuild(force=True)
-
         queue: deque[str] = deque()
         if root_model and model_namespace:
             print("Starting rebuilding of ancestors")
@@ -328,7 +327,7 @@ class VizroBaseModel(BaseModel):
             model.model_rebuild(force=True)
 
             # TODO[MS]: This is surprisingly stable, but maybe we can improve
-            if new_type_name in str(model.model_json_schema()):
+            if new_type_name in str(model.model_json_schema()["$defs"][cls.__name__]["properties"][field_name]):
                 print(f"New type name {new_type_name} found in schema of {current_model}")
 
                 # Add to visited only when new_type_name is in schema
@@ -344,9 +343,6 @@ class VizroBaseModel(BaseModel):
                 )
                 queue.append(current_model)
         root_model.model_rebuild(force=True)
-
-    # to ultimately test:
-    # to check: add multiple add_types to different models, what about nested add_types, or add_types on new models
 
     def _to_python(
         self, extra_imports: Optional[set[str]] = None, extra_callable_defs: Optional[set[str]] = None

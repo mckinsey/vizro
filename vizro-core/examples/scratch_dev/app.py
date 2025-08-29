@@ -41,28 +41,38 @@ class TooltipNonCrossRangeSlider(vm.RangeSlider):
         return range_slider_build_obj
 
 
+print("----Adding to Filter----")
 vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
+print("----Adding to Parameter----")
+vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 print("--------------------------------")
 
-# # First page
-# page1 = vm.Page(
-#     title="My first page",
-#     components=[
-#         Jumbotron(
-#             title="Custom component based on new creation",
-#             subtitle="This is a subtitle to summarize some content.",
-#             text="This is the main body of text of the Jumbotron.",
-#         ),
-#         vm.Graph(
-#             figure=px.scatter_matrix(
-#                 df, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"], color="species"
-#             ),
-#         ),
-#     ],
-#     controls=[vm.Filter(column="sepal_length", selector=TooltipNonCrossRangeSlider())],
-# )
+# First page
+page1 = vm.Page(
+    title="My first page",
+    components=[
+        # Jumbotron(
+        #     title="Custom component based on new creation",
+        #     subtitle="This is a subtitle to summarize some content.",
+        #     text="This is the main body of text of the Jumbotron.",
+        # ),
+        vm.Graph(
+            id="graph_1",
+            figure=px.scatter_matrix(
+                df,
+                dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+                color="species",
+                opacity=0.5,
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(column="sepal_length", selector=TooltipNonCrossRangeSlider(id="filter_1")),
+        vm.Parameter(targets=["graph_1.opacity"], selector=TooltipNonCrossRangeSlider(id="parameter_1")),
+    ],
+)
 
-# # page_close = vm.Page.model_validate(page1)
+# page_close = vm.Page.model_validate(page1)
 
 # # Second page with two graphs
 # page2 = vm.Page(
@@ -84,56 +94,56 @@ print("--------------------------------")
 # vm.Dashboard.model_rebuild(force=True)
 
 
-# dashboard = vm.Dashboard(pages=[page1, page2])
+dashboard = vm.Dashboard(pages=[page1])
 
-dashboard_config = {
-    "pages": [
-        {
-            "id": "page_1",
-            "title": "My first page",
-            "components": [
-                {
-                    "type": "graph",
-                    "id": "graph_1",
-                    "figure": {
-                        "_target_": "scatter_matrix",
-                        "data_frame": "iris",
-                        "dimensions": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
-                        "color": "species",
-                    },
-                }
-            ],
-        },
-        {
-            "id": "page_2",
-            "title": "My second page",
-            "components": [
-                {
-                    "type": "graph",
-                    "id": "graph_2",
-                    "figure": {
-                        "_target_": "scatter_matrix",
-                        "data_frame": "iris",
-                        "dimensions": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
-                        "color": "species",
-                    },
-                },
-                {
-                    "type": "graph",
-                    "id": "graph_3",
-                    "figure": {
-                        "_target_": "scatter",
-                        "data_frame": "iris",
-                        "x": "sepal_length",
-                        "y": "sepal_width",
-                        "color": "species",
-                        "size": "petal_width",
-                    },
-                },
-            ],
-        },
-    ],
-}
+# dashboard_config = {
+#     "pages": [
+#         {
+#             "id": "page_1",
+#             "title": "My first page",
+#             "components": [
+#                 {
+#                     "type": "graph",
+#                     "id": "graph_1",
+#                     "figure": {
+#                         "_target_": "scatter_matrix",
+#                         "data_frame": "iris",
+#                         "dimensions": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+#                         "color": "species",
+#                     },
+#                 }
+#             ],
+#         },
+#         {
+#             "id": "page_2",
+#             "title": "My second page",
+#             "components": [
+#                 {
+#                     "type": "graph",
+#                     "id": "graph_2",
+#                     "figure": {
+#                         "_target_": "scatter_matrix",
+#                         "data_frame": "iris",
+#                         "dimensions": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+#                         "color": "species",
+#                     },
+#                 },
+#                 {
+#                     "type": "graph",
+#                     "id": "graph_3",
+#                     "figure": {
+#                         "_target_": "scatter",
+#                         "data_frame": "iris",
+#                         "x": "sepal_length",
+#                         "y": "sepal_width",
+#                         "color": "species",
+#                         "size": "petal_width",
+#                     },
+#                 },
+#             ],
+#         },
+#     ],
+# }
 
 # Still requires a .py to add data to the data manager and parse YAML configuration
 # See yaml_version example
@@ -152,25 +162,37 @@ if __name__ == "__main__":
     # model_manager.print_dashboard_tree()
 
     print(
-        "Container",
+        "Container Filter   ",
         vm.Container.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
     )
+    print(
+        "Container Parameter",
+        vm.Container.model_json_schema()["$defs"]["Parameter"]["properties"]["selector"]["oneOf"][-2:],
+    )
 
     print(
-        "Page     ",
+        "Page Filter        ",
         vm.Page.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
     )
-
     print(
-        "Tabs     ",
+        "Page Parameter     ",
+        vm.Page.model_json_schema()["$defs"]["Parameter"]["properties"]["selector"]["oneOf"][-2:],
+    )
+    print(
+        "Tabs  Filter       ",
         vm.Tabs.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
     )
-
     print(
-        "Dashboard",
+        "Tabs  Parameter    ",
+        vm.Tabs.model_json_schema()["$defs"]["Parameter"]["properties"]["selector"]["oneOf"][-2:],
+    )
+    print(
+        "Dashboard Filter   ",
         vm.Dashboard.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+    print(
+        "Dashboard Parameter",
+        vm.Dashboard.model_json_schema()["$defs"]["Parameter"]["properties"]["selector"]["oneOf"][-2:],
     )
     print("================================================")
     # assert vm.Dashboard.model_json_schema()["$defs"]["Filter"] == vm.Container.model_json_schema()["$defs"]["Filter"]
-
-    print(vm.Dashboard._get_ancestor(model_name="Container"))
