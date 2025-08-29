@@ -1,12 +1,12 @@
 # How to create custom actions
 
-This guide demonstrates how to write actions that dictate how your app behaves in response to user input, for example what happens when someone clicks a button or a point on a graph. If you need to perform a function that is not available in Vizro's [built-in actions](actions.md) then you need to write your own custom action. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions.md) that teaches many of the concepts you see here in more detail.
+Actions control how your app responds to user input such clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you need to write your own custom action. This guide shows you how to do thisWe also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions.md) that teaches what you see here in more detail.
 
-Vizro's actions system is built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md).
+Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md).
 
 !!! note
 
-    Do you have an idea for a built-in action that you think would be useful for many Vizro users? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
+    Do you have an idea for a built-in action? Submit a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
 
 ## General principles
 

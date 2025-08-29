@@ -28,7 +28,7 @@ In Vizro, there are two types of action:
 
 !!! note
 
-    Do you have an idea for a built-in action that you think would be useful for many Vizro users? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
+    Do you have an idea for a built-in action? Submit a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
 
 This tutorial mainly concerns how to write your own custom actions, although you will also gain a better understanding of how Vizro's built-in actions work. You do not need to know anything about Dash callbacks to complete the tutorial. If you are already familiar with Dash callbacks then we recommend completing the tutorial quickly to familiarise yourself with how Vizro actions work, and you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md).
 
@@ -232,7 +232,7 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_text` actio
         ```
 
         1. We add an argument `use_24_hour_clock` to `update_text`. This will receive a boolean value `True` or `False`.
-        1. `time_format` now changes depending on the the value of `use_24_hour_clock`.
+        1. `time_format` now changes depending on the value of `use_24_hour_clock`.
         1. The argument `use_24_hour_clock` is _bound_ at runtime to the value of the `clock_switch` component. This will be `True` or `False` depending on whether the switch is toggled on or off. Here we used a keyword argument as `update_text(use_24_hour_clock="clock_switch")` but, just like a normal Python function call, we could also use a positional argument as `update_text("clock_switch")`.
 
     === "Result"
@@ -366,11 +366,11 @@ Sometimes you need a single trigger to execute multiple actions. Vizro uses _cha
 - Explicit actions chain. When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro executes these actions in order, so that `action_2` executes only when `action_1` has completed.
 - Implicit actions chain. When one action outputs a trigger of another action then the subsequent action is triggered automatically. For example, say that `action_submit` is triggered by `vm.Button(id="submit_button")`, in other words when the button is clicked. If another action that has `output="submit_button"` completes then `action_submit` is automatically triggered as if the button had been clicked.
 
-Looking at some examples of each of these types of actions chain will make it much clearer. All principles of actions chains apply equally to both custom and [built-in actions](../user-guides/actions.md). You can freely mix built-in and custom actions in both explicit and implicit actions chains. Built-in actions and custom actions behave identically in terms of when they are triggered and how they execute.
+All principles of actions chains apply equally to both custom and [built-in actions](../user-guides/actions.md). You can freely mix built-in and custom actions in both explicit and implicit actions chains. Built-in actions and custom actions behave identically in terms of when they are triggered and how they execute.
 
 !!! note
 
-    In fact, the examples you have seen so far already contain action chains — just they have been chains with only one action in them. Behind the scenes, `actions=action` gets converted into `actions=[action]`, and so all the above examples contain action chains of length one.
+    In fact, the examples you have seen so far already contain action chains, just they have been chains with only one action in them. Behind the scenes, `actions=action` gets converted into `actions=[action]`, an action chains of length one.
 
 ### Explicit actions chain
 
@@ -470,7 +470,7 @@ The full code for this explicit actions chain is shown below.
 
         TODO screenshot
 
-The actions flowchart now has a new output for `weather_text` and also a new action `fetch_weather`. The trigger for this is completion of the action `update_text`. Note that both these actions share the same output `weather_text`; in Vizro, a model can be an input or output for any number of actions.
+The actions flowchart now has a new output for `weather_text` and also a new action `fetch_weather`. The trigger for this action is completion of the action `update_text`. Note that both these actions share the same output `weather_text`. In Vizro, a model can be an input or output for any number of actions.
 
 ```mermaid
 graph TD
@@ -540,7 +540,7 @@ Hence when the location dropdown is updated, the following three actions are tri
         @capture("action")
         def update_time_date_formats(location):  # (2)!
             if location == "Berlin":
-                return True, "DD/MM/YY", 1
+                return True, "DD/MM/YY", 1  # (3)!
             return False, "MM/DD/YY", 1
 
 
@@ -562,7 +562,7 @@ Hence when the location dropdown is updated, the following three actions are tri
                             multi=False,
                             actions=vm.Action(
                                 function=update_time_date_formats("location_dropdown"),
-                                outputs=["clock_switch", "date_radio_items", "submit_button"],  # (3)!
+                                outputs=["clock_switch", "date_radio_items", "submit_button"],  # (4)!
                             ),
                             extra={"style": {"min-width": "200px"}},
                         ),
@@ -591,7 +591,8 @@ Hence when the location dropdown is updated, the following three actions are tri
         ```
 
         1. `fetch_weather` has been updated to take in `location`. This chooses between Washington, D.C. and Berlin.
-        1. When the location is Berlin, `update_time_date_formats` sets the app to use 24-hour clock and date format DD/MM/YY; otherwise, for Washington, D.C., we use 12-hour clock and date format MM/DD/YY. In both cases we return 1 to the third output, which is `vm.Button(id="submit_button")`. This effectively tells Vizro that the button has been clicked 1 time in total. The choice of 1 is arbitrary and does not matter unless you need to keep track of the actual number of times the button has been clicked.
+        1. When the location is Berlin, `update_time_date_formats` sets the app to use 24-hour clock and date format DD/MM/YY; otherwise, for Washington, D.C., we use 12-hour clock and date format MM/DD/YY.
+        1. In both cases we return 1 to the third output, which is `vm.Button(id="submit_button")`. This effectively tells Vizro that the button has been clicked 1 time in total. The choice of 1 is arbitrary and does not matter unless you need to keep track of the actual number of times the button has been clicked.
         1. `update_time_date_formats` sets the `clock_switch` and `date_radio_items` form fields and also updates `submit_button`. This update of `submit_button` triggers the actions chain associated with the submit button.
 
     === "Result"
@@ -714,7 +715,8 @@ To make the app feel more responsive, we're going to remove the submit button an
                             id="clock_switch",
                             title="24-hour clock", value=True,
                             value=True,
-                            actions=vm.Action(function=update_time_text("clock_switch", "location_dropdown"), outputs="time_text"),  # (3)!
+                            actions=vm.Action(function=update_time_text("clock_switch", "location_dropdown"), outputs="time_text"),
+
                         ),
                         vm.RadioItems(
                             id="date_radio_items",
