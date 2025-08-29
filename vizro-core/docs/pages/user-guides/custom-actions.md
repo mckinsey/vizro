@@ -49,7 +49,7 @@ actions = vm.Action(
 ```
 
 1. Here we used positional arguments but, just like a normal Python function call, you could also use keyword arguments as `action_function(input_1="input_id_1", input_2="input_id_2")`.
-2. It is also possible to have multiple outputs, as shown in examples below.
+1. It is also possible to have multiple outputs, as shown in examples below.
 
 ### Actions chain
 
