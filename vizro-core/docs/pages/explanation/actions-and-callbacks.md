@@ -4,7 +4,6 @@ Coming soon!
 
 <!--
 
-
 ## Rough notes
 Vizro vs Dash notes
 runtime input vs. state
@@ -18,6 +17,9 @@ one vs multiple triggers
 prevent_initial_call=True always
 actions loop
 pattern matching callbacks
+
+"I think using side-by-side examples when comparing would be very beneficial, for users who already know callbacks well, and especially for LLM to understand how these 2 systems differ and relate.
+I.e., to achieve the same effect, how to write an action and what's the equivalent version using callbacks. Given llm can write callbacks very well - with comparison, llm should know how to write custom action accurately"
 
 Explain how  can combine Dash callbacks and Vizro action, e.g. Vizro actions can use Dash components/properties so easy to adapt. Can have some additional clientside callbacks - give example from simple action.
 
@@ -74,6 +76,53 @@ A Vizro action always uses a specific Dash component and property for the action
 !!! note
 
     Are you addressing an underlying Dash component that you think should be addressed by Vizro more easily? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
+
+### Moved from the user guide on actions "Address specific parts of a model"
+
+In fact, whenever we refer to just a model `id` as an action's input or output, it is just shorthand for the full `<model_id>.<argument_name>`, with some appropriate default argument name chosen for the model. This default corresponds to the most common argument that you would use for an action's input and output. In the above example, the input `use_24_hour_clock="clock_switch"` is equivalent to writing `use_24_hour_clock="clock_switch.value"`, and the output `"time_text"` is equivalent to writing `"time_text.text"`. If you prefer to be explicit then you can write these full versions and the app will work exactly the same way.
+
+Some arguments, or even whole models, are available for use as an action input but not output or vice versa. For example, `vm.Text` is available as an action output but not input.
+
+...
+
+In fact, Vizro's system of `<model_id>.<argument_name>` is just shorthand for the underlying Dash `<component_id>.<property>`. For example, `"clock_switch.title"` is equivalent to `"clock_switch_title.children"`. Wherever possible, you should prefer to use the Vizro shorthands rather than referring to the underlying Dash components (for example, use `"clock_switch.title"` in preference to `"clock_switch_title.children"`). This is more intuitive and more stable. While using a pure Dash component `id` and property will indefinitely remain possible in Vizro actions, we consider the exact underlying Dash components to be implementation details, and so the Dash components available may change between non-breaking Vizro releases.
+
+...
+
+Most Vizro models produce multiple Dash components, each of which has several properties. The above examples' `vm.Switch(id="clock_switch", title="24-hour clock", value=True)` produces something like the following:
+
+```py
+import dash_bootstrap_components as dbc
+from dash import html
+
+dbc.Switch(
+    id="clock_switch",
+    value=True,
+    label=html.Span(id="clock_switch_title", children="24-hour-clock"),
+)
+```
+
+As well as the "core" [`dbc.Switch` component](https://www.dash-bootstrap-components.com/docs/components/input/), the `vm.Switch` model produces a [`html.Span` component](https://dash.plotly.com/dash-html-components/span) to contain the value of the `title` argument. Sometimes there may be Dash components or properties that you wish to use as an action input or output that are not easily mapped onto Vizro model arguments. In this case, you should [consult the model's source code](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/models) to find the relevant Dash component and property. Here, for example, we could use `outputs="clock_switch_title.style"` to change the `style`  
+
+The `id` of Dash components are always prefixed by the model `id`. For example, `vm.Graph(id="my_graph")` would produce Dash components with `id="my_graph_title"`, `id="my_graph_header"`, `id="my_graph_footer"`, and so on.
+
+### Recap
+
+To summarise the above sections on addressing specific parts of a model, we have seen the following equivalences:
+
+- `"clock_switch"` is shorthand for `"clock_switch.value"`. In this case, the Vizro `<model_id>.<argument_name>` is the same as the underlying Dash `<component_name>.<property>`.
+- `"time_text"` is shorthand for `"time_text.text"`, which itself refers to the underlying Dash property`"time_text.children"`.
+- `"clock_switch.title"` is shorthand for (and should be used in preference to) the underlying Dash property `"clock_switch_title.children"`.
+
+If you are already familiar with Dash then here are some other common equivalences that are useful to know:
+
+- `"my_button"` is shorthand for the underlying Dash property `"my_button.n_clicks"`.
+- `"my_graph` is shorthand for the underlying Dash property `"my_graph.figure"`.
+- For all [selectors](selectors.md), `"my_selector"` is shorthand for the underlying Dash property `"my_selector.value"`.
+
+
+"""Li comment: maybe put it inside a Table with Vizto shorthand / Dash equivalent"""
+
 
 
 ## Performance

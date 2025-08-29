@@ -392,3 +392,38 @@ The `actions` parameter for the different screen components accepts a `list` of 
 [exportdata]: ../../assets/user_guides/actions/actions_export.png
 [graphinteraction]: ../../assets/user_guides/actions/actions_filter_interaction.png
 [tableinteraction]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
+
+
+
+
+### Actions chain
+
+<!-- TODO NOW: write this properly somewhere: how to chain actions. And refer to it from everywhere -->
+
+If you define multiple actions in an actions chain then you can freely mix built-in and custom actions. Built-in actions and custom actions behave identically in terms of when they are triggered.
+
+Here is an example chain including the custom actions `action_function` and `another_action_function` and the built-in `export_data`:
+
+```python
+actions = [
+    vm.Action(
+        function=action_function("input_id_1", "input_id_2"),
+        outputs="output_id_1",
+    ),
+    vm.Action(
+        function=action_function("input_id_1", "input_id_3"),  # (1)!
+        outputs="output_id_2",
+    ),
+    vm.Action(
+        function=another_action_function(),  # (2)!
+        outputs=["output_id_1", "output_id_2"],  # (3)!
+    ),
+    export_data(),  # (4)!
+]
+```
+
+1. You can use the same action function multiple times throughout your app, even in the same actions chain. The same input `input_id_1` can also be used multiple times.
+1. The same output can be used multiple times throughout your app, even in the same actions chain.
+1. This is an example of a built-in action, available as `from vizro.actions import export_data`. It does not use the `vm.Action` model.
+
+
