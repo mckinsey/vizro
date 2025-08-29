@@ -251,12 +251,20 @@ class VizroBaseModel(BaseModel):
         return result
 
     @classmethod
-    def add_type(cls, field_name: str, new_type: type[Any]):
+    def add_type(
+        cls,
+        field_name: str,
+        new_type: type[Any],
+        root_model: Optional["VizroBaseModel"] = None,
+        model_namespace: Optional[dict[str, type[Any]]] = None,  # TODO[MS]: Check typing
+    ):
         """Adds a new type to an existing field based on a discriminated union.
 
         Args:
             field_name: Field that new type will be added to
             new_type: New type to add to discriminated union
+            root_model: Root model to use for finding ancestors. If not provided, uses vm.Dashboard.
+            model_namespace: Namespace to use for finding models. If not provided, uses vizro.models.
 
         """
         field = cls.model_fields[field_name]
@@ -268,13 +276,61 @@ class VizroBaseModel(BaseModel):
         )
         cls.model_fields[field_name] = FieldInfo.merge_field_infos(field, annotation=new_annotation)
 
-        # We need to resolve all ForwardRefs again e.g. in the case of Page, which requires update_forward_refs in
-        # vizro.models. The vm.__dict__.copy() is inspired by pydantic's own implementation of update_forward_refs and
-        # effectively replaces all ForwardRefs defined in vizro.models.
-        import vizro.models as vm
+        if model_namespace is None:
+            import vizro.models as vm
 
-        cls.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
-        new_type.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
+            model_namespace = vm.__dict__
+
+        if root_model is None:
+            from vizro.models import Dashboard
+
+            root_model = Dashboard
+
+        new_type.model_rebuild(force=True)
+        cls.model_rebuild(force=True)
+
+        queue: deque[str] = deque()
+        if root_model and model_namespace:
+            print("Starting rebuilding of ancestors")
+            queue.extend(cls._get_ancestor(cls.__name__, root_model=root_model))
+
+        visited: set[str] = set()
+        new_type_name = new_type.__name__
+        while queue:
+            print(f"Queue: {queue}")
+            print(f"Visited: {visited}")
+            current_model = queue.popleft()
+
+            # If already visited, skip all rest
+            if current_model in visited:
+                continue
+
+            # Build the model
+            model = model_namespace.get(current_model)
+            if model is None:
+                raise ValueError(f"When rebuilding models, model {current_model} not found in model namespace. ")
+            model.model_rebuild(force=True)
+
+            # TODO[MS]: This is surprisingly stable, but maybe we can improve
+            if new_type_name in str(model.model_json_schema()):
+                print(f"New type name {new_type_name} found in schema of {current_model}")
+
+                # Add to visited only when new_type_name is in schema
+                visited.add(current_model)
+
+                # Get parents and add them to end of queue (only if not already there)
+                parents = cls._get_ancestor(current_model, root_model=root_model)
+                queue.extend(parent for parent in parents if parent not in queue and parent not in visited)
+            elif current_model not in queue and current_model not in visited:
+                # Add current model to end of queue (only if not already there)
+                print(
+                    f"Type name {new_type_name} not found in schema of {current_model}. Adding {current_model} to queue"
+                )
+                queue.append(current_model)
+        root_model.model_rebuild(force=True)
+
+    # to ultimately test:
+    # to check: add multiple add_types to different models, what about nested add_types, or add_types on new models
 
     def _to_python(
         self, extra_imports: Optional[set[str]] = None, extra_callable_defs: Optional[set[str]] = None
@@ -343,4 +399,6 @@ class VizroBaseModel(BaseModel):
     model_config = ConfigDict(
         extra="forbid",  # Good for spotting user typos and being strict.
         validate_assignment=True,  # Run validators when a field is assigned after model instantiation.
+        revalidate_instances="always",  # Run validators when a model is instantiated.
+        # defer_build=True,  # could this be an option?
     )
