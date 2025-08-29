@@ -34,12 +34,12 @@ class ModelManager:
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
     @_state_modifier
     def __setitem__(self, model_id: ModelID, model: Model):
-        if model_id in self.__models:
-            raise DuplicateIDError(
-                f"Model with id={model_id} already exists. Models must have a unique id across the whole dashboard. "
-                f"If you are working from a Jupyter Notebook, please either restart the kernel, or "
-                f"use 'from vizro import Vizro; Vizro._reset()`."
-            )
+        # if model_id in self.__models:
+        #     raise DuplicateIDError(
+        #         f"Model with id={model_id} already exists. Models must have a unique id across the whole dashboard. "
+        #         f"If you are working from a Jupyter Notebook, please either restart the kernel, or "
+        #         f"use 'from vizro import Vizro; Vizro._reset()`."
+        #     )
         self.__models[model_id] = model
 
     @_state_modifier
