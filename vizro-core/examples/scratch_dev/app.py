@@ -1,4 +1,6 @@
 import base64
+import json
+import time
 
 import dash
 from dotenv import load_dotenv
@@ -137,30 +139,42 @@ class openai_pirate(echo):
                         return [existingChildren, window.dash_clientside.no_update];
                     }
 
-                    // Decode base64 chunks separated by delimiter
-                    let fullText = '';
-                    const chunks = animatedText.split('|END|').filter(c => c);
-                    for (const chunk of chunks) {
-                        try {
-                            fullText += atob(chunk);
-                        } catch (e) {
-                            // Skip invalid chunks
+                    // Decode base64 and parse JSON back to dash component
+                    let component = null;
+                    let content = '';
+                    
+                    try {
+                        const decodedData = atob(animatedText);
+                        component = JSON.parse(decodedData);
+                        
+                        // Try to extract content for data store
+                        // Text components will have children, images will have src, etc.
+                        if (component.props) {
+                            if (component.props.children) {
+                                content = component.props.children;
+                            } else if (component.props.src) {
+                                content = '[Image]';  // Placeholder text for images
+                            }
                         }
+                    } catch (e) {
+                        console.log('Failed to parse JSON component:', e);
                     }
 
-                    // Update UI and store
+                    // Update UI and store - render component as-is
                     const newChildren = [...(existingChildren || [])];
                     const newData = [...(storeData || [])];
 
-                    if (newChildren.length > 0) {
+                    if (newChildren.length > 0 && component) {
                         const last = newChildren[newChildren.length - 1];
                         if (last.props?.children?.[0]?.props?.children === "assistant") {
-                            last.props.children[1].props.children = fullText;
+                            // Use the complete component directly - could be markdown, image, etc.
+                            last.props.children[1] = component;
                         }
                     }
 
                     if (newData.length > 0 && newData[newData.length - 1].role === 'assistant') {
-                        newData[newData.length - 1].content = fullText;
+                        // Set the content in store (text or placeholder for other types)
+                        newData[newData.length - 1].content = content;
                     }
 
                     return [newChildren, newData];
@@ -183,30 +197,61 @@ class openai_pirate(echo):
         # well so that those people can have it work properly.
         # Question for Lingyi: if we do it the "wrong" way with @dash.get_app().server.route() in pre_build,
         # can you easily find any setups where it doesn't work? e.g. Maybe with gunicorn it doesn't?
-        # Question: why do we set endpoint here?
+        # Question: why do we set endpoint here??
         @dash.get_app().server.route(f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}")
         def streaming_chat():
             stuff = Stuff(**request.get_json())
 
             def event_stream():
                 response_stream = self.core_function(**stuff.model_dump())
+                buffer = ""  # Buffer to accumulate text until we hit "\n\n"
+                full_text = ""  # Accumulate all text received so far
 
                 for event in response_stream:
                     if event.type == "response.output_text.delta":
-                        # Question for Lingyi: is it possible to somehow use self.message_to_html here?
-                        # The data gets sent over SSE so won't come out correctly. But is there any way to break
-                        # the message into chunks to e.g. separate off code snippets to use dmc.CodeHighlight?
-                        # e.g. maybe dmc.CodeHighlight(event.delta).to_plotly_json() would translate it to json
-                        # and then maybe somehow it could be rendered correctly.
-                        # Experiment to see if each event comes out as a new html.P:
-                        # It doesn't work but I feel like something like this might be possible?
-                        # yield sse_message(html.P(event.delta))
-                        # yield sse_message(html.P(event.delta).to_plotly_json())
-                        # Encode delta to preserve special characters and newlines
-                        # Send base64 with delimiter for easy splitting
-                        # If we simply pass sse_message(event.delta) then tokens like `**\n\n` get escaped
-                        encoded_delta = base64.b64encode(event.delta.encode("utf-8")).decode("utf-8")
-                        yield sse_message(encoded_delta + "|END|")
+                        # Add delta to buffer
+                        buffer += event.delta
+                        
+                        # Check if buffer contains "\n\n"
+                        while "\n\n" in buffer:
+                            # Find the position of "\n\n"
+                            split_pos = buffer.find("\n\n")
+                            # Extract the chunk before "\n\n"
+                            a_chunk = buffer[:split_pos] + "\n\n"
+                            # Keep the remaining text after "\n\n" for next iteration
+                            buffer = buffer[split_pos + 2:]
+                            
+                            # Add chunk to full accumulated text
+                            if a_chunk:
+                                full_text += a_chunk
+                                # Send the complete component for text type
+                                component = self.create_component("text", full_text)
+                                encoded_delta = base64.b64encode(json.dumps(component.to_plotly_json()).encode("utf-8")).decode("utf-8")
+                                yield sse_message(encoded_delta)
+                                
+                    elif event.type == "response.image_generation_call.partial_image":
+                        idx = event.partial_image_index
+                        image_base64 = event.partial_image_b64
+                        image_bytes = base64.b64decode(image_base64)
+                        
+                        # Save partial image
+                        filename = f"partial_{int(time.time())}_{idx}.png"
+                        with open(filename, "wb") as f:
+                            f.write(image_bytes)
+                        
+                        # Send the image component
+                        # Something like this, but it's not working yet.
+                        # Failed to parse message: SyntaxError: Unterminated string in JSON at position
+                        component = self.create_component("image", image_base64)
+                        encoded_component = base64.b64encode(json.dumps(component.to_plotly_json()).encode("utf-8")).decode("utf-8")
+                        yield sse_message(encoded_component)
+
+                # Send any remaining text in buffer when stream ends
+                if buffer:
+                    full_text += buffer
+                    component = self.create_component("text", full_text)
+                    encoded_delta = base64.b64encode(json.dumps(component.to_plotly_json()).encode("utf-8")).decode("utf-8")
+                    yield sse_message(encoded_delta)
 
                 # Send standard SSE completion signal
                 # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
@@ -224,6 +269,7 @@ class openai_pirate(echo):
         if self.stream:
             store, html_messages = Patch(), Patch()
 
+            # Add generic placeholder for streaming response
             placeholder_msg = {"role": "assistant", "content": ""}
             store.append(placeholder_msg)
             html_messages.append(self.message_to_html(placeholder_msg))
@@ -236,13 +282,41 @@ class openai_pirate(echo):
             ]
         else:
             response = self.core_function(prompt, messages)
-            latest_output = {"role": "assistant", "content": response.output_text}
-
-            # Could do this without Patch and it would also work fine, but that would send more data across network than
-            # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
+            
+            # Handle both text and image outputs
             store, html_messages = Patch(), Patch()
+            content_parts = []
+            components = []
+            
+            # Check if response has text output
+            if hasattr(response, 'output_text') and response.output_text:
+                content_parts.append(response.output_text)
+                components.append(self.create_component("text", response.output_text))
+            
+            # Check if response has image outputs (for tools like image_generation)
+            if hasattr(response, 'output') and response.output:
+                for output in response.output:
+                    if output.type == "image_generation_call":
+                        # Extract base64 image data
+                        image_base64 = output.result
+                        
+                        # Save the image to a file (optional, for debugging)
+                        filename = f"generated_image_{int(time.time())}.png"
+                        with open(filename, "wb") as f:
+                            f.write(base64.b64decode(image_base64))
+                        
+                        # Add image to content and components
+                        content_parts.append(f"[Image: {filename}]")
+                        components.append(self.create_component("image", image_base64))
+            
+            # Create the assistant message with combined content
+            latest_output = {"role": "assistant", "content": "\n".join(content_parts) if content_parts else ""}
             store.append(latest_output)
-            html_messages.append(self.message_to_html(latest_output))
+            
+            # Create HTML message using the consolidated method
+            html_message = self.message_to_html(latest_output, components if components else None)
+            html_messages.append(html_message)
+            
             return store, html_messages
 
     # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
@@ -250,12 +324,60 @@ class openai_pirate(echo):
     # Note responses.create has different return types in these cases.
     def core_function(self, prompt, messages):
         return self._client.responses.create(
-            model=self.model, input=messages, instructions="Be polite.", store=False, stream=self.stream
+            model=self.model, 
+            input=messages, 
+            instructions="Be polite and creative.", 
+            store=False, 
+            stream=self.stream,
+            tools=[{"type": "image_generation"}],
         )
 
-    # User writes this function. Does it belong here or in Chat?
-    def message_to_html(self, message):
-        return html.Div([html.B(message["role"]), dcc.Markdown(message["content"], dangerously_allow_html=True)])
+    def create_component(self, content_type, content):
+        """Create the appropriate component based on content type.
+        
+        Args:
+            content_type: Type of content ('text', 'image', or other)
+            content: The actual content (text string or base64 image data)
+        
+        Returns:
+            Dash component suitable for the content type
+        """
+        if content_type == "text":
+            # Text content - wrap in Markdown component
+            return dcc.Markdown(content, dangerously_allow_html=False)
+        elif content_type == "image":
+            # Image content - wrap in html.Img
+            return html.Img(
+                src=f"data:image/png;base64,{content}",
+                style={"max-width": "500px", "max-height": "500px"}
+            )
+        else:
+            # Default fallback - just a div with content
+            return html.Div(content)
+
+    def message_to_html(self, message, components=None):
+        """Convert a message to HTML representation.
+        
+        Args:
+            message: Message dict with 'role' and optionally 'content'
+            components: Optional list of pre-built components to use instead of content
+        
+        Returns:
+            HTML div containing the formatted message
+        """
+        role_element = html.B(message["role"])
+        
+        if components:
+            # Use provided components (for multi-type content)
+            content_element = html.Div(components)
+        elif message.get("content"):
+            # Use content from message (text only)
+            content_element = self.create_component("text", message["content"])
+        else:
+            # Empty content (e.g., for streaming placeholder)
+            content_element = html.Div()
+        
+        return html.Div([role_element, content_element])
 
     @property
     def outputs(self):
@@ -316,7 +438,7 @@ class Chat(VizroBaseModel):
                 # directly? Do models actually return HTML?
                 html.Div(id=f"{self.id}-output", children=[]),
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),  # TBD storage_type
-                SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10),
+                SSE(id=f"{self.id}-sse", concat=False, animate_chunk=20, animate_delay=5),
                 html.Div(id=f"{self.id}-streaming-output", style={"display": "none"}),
             ]
         )
@@ -375,6 +497,7 @@ page_nostream = vm.Page(
         ),
     ],
 )
+
 
 dashboard = vm.Dashboard(
     pages=[page, page_nostream, page_2],
