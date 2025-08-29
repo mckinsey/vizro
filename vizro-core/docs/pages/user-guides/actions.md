@@ -388,14 +388,6 @@ The `actions` parameter for the different screen components accepts a `list` of 
 
         [![ActionsChain]][actionschain]
 
-[actionschain]: ../../assets/user_guides/actions/actions_chaining.png
-[exportdata]: ../../assets/user_guides/actions/actions_export.png
-[graphinteraction]: ../../assets/user_guides/actions/actions_filter_interaction.png
-[tableinteraction]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
-
-
-
-
 ### Actions chain
 
 <!-- TODO NOW: write this properly somewhere: how to chain actions. And refer to it from everywhere -->
@@ -426,4 +418,7 @@ actions = [
 1. The same output can be used multiple times throughout your app, even in the same actions chain.
 1. This is an example of a built-in action, available as `from vizro.actions import export_data`. It does not use the `vm.Action` model.
 
-
+[actionschain]: ../../assets/user_guides/actions/actions_chaining.png
+[exportdata]: ../../assets/user_guides/actions/actions_export.png
+[graphinteraction]: ../../assets/user_guides/actions/actions_filter_interaction.png
+[tableinteraction]: ../../assets/user_guides/actions/actions_table_filter_interaction.png

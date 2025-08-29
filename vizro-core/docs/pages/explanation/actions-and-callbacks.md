@@ -102,7 +102,7 @@ dbc.Switch(
 )
 ```
 
-As well as the "core" [`dbc.Switch` component](https://www.dash-bootstrap-components.com/docs/components/input/), the `vm.Switch` model produces a [`html.Span` component](https://dash.plotly.com/dash-html-components/span) to contain the value of the `title` argument. Sometimes there may be Dash components or properties that you wish to use as an action input or output that are not easily mapped onto Vizro model arguments. In this case, you should [consult the model's source code](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/models) to find the relevant Dash component and property. Here, for example, we could use `outputs="clock_switch_title.style"` to change the `style`  
+As well as the "core" [`dbc.Switch` component](https://www.dash-bootstrap-components.com/docs/components/input/), the `vm.Switch` model produces a [`html.Span` component](https://dash.plotly.com/dash-html-components/span) to contain the value of the `title` argument. Sometimes there may be Dash components or properties that you wish to use as an action input or output that are not easily mapped onto Vizro model arguments. In this case, you should [consult the model's source code](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/models) to find the relevant Dash component and property. Here, for example, we could use `outputs="clock_switch_title.style"` to change the `style`
 
 The `id` of Dash components are always prefixed by the model `id`. For example, `vm.Graph(id="my_graph")` would produce Dash components with `id="my_graph_title"`, `id="my_graph_header"`, `id="my_graph_footer"`, and so on.
 

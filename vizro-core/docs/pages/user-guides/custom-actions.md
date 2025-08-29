@@ -15,25 +15,26 @@ Many [Vizro models][vizro.models] have an `actions` argument that can contain on
 To define your own action:
 
 1. write a Python function and decorate it with `@capture("action")`
-   ```python
-   from vizro.models.types import capture
-   
-   
-   @capture("action")
-   def action_function(input_1, input_2):
-       ...
-       return "My string value"
-   ```
 
+    ```python
+    from vizro.models.types import capture
+
+
+    @capture("action")
+    def action_function(input_1, input_2):
+        ...
+        return "My string value"
+    ```
 
 1. attach it to the `actions` argument of a Vizro model using [`Action`][vizro.models.Action]:
+
     1. call it using the `function` argument
     1. if your action has one or more inputs then specify them as function arguments
     1. if your action has one or more outputs then specify them as `outputs`
 
     ```python
     import vizro.models as vm
-    
+
     actions = vm.Action(
         function=action_function(input_1="input_id_1", input_2="input_id_2"),
         outputs="output_id_1",
@@ -52,6 +53,7 @@ Here is an example action that gives the current time when a [button](button.md)
 from datetime import datetime
 from vizro.models.types import capture
 
+
 @capture("action")
 def current_time_text():  # (1)!
     time = datetime.now()
@@ -65,10 +67,10 @@ To attach the action to a button model, we use it inside the `actions` argument 
 
 ```python
 vm.Button(
-     actions=vm.Action(
-         function=current_time_text(),  # (1)!
-         outputs="time_text",  # (2)!
-     ),
+    actions=vm.Action(
+        function=current_time_text(),  # (1)!
+        outputs="time_text",  # (2)!
+    ),
 )
 ```
 
@@ -87,14 +89,14 @@ Here is the full example code that includes the output component `vm.Time(id="ti
         import vizro.models as vm
         from vizro import Vizro
         from vizro.models.types import capture
-      
-      
+
+
         @capture("action")
         def current_time_text():
             time = datetime.now()
             return f"The time is {time}"
-      
-      
+
+
         page = vm.Page(
             title="Action triggered by button",
             layout=vm.Flex(),
@@ -108,7 +110,7 @@ Here is the full example code that includes the output component `vm.Time(id="ti
                 vm.Text(id="time_text", text="Click the button"),
             ],
         )
-      
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -150,10 +152,10 @@ To attach the action to a button model, we use it inside the `actions` argument 
 
 ```python
 vm.Button(
-     actions=vm.Action(
-         function=current_time_text(use_24_hour_clock="clock_switch"),  # (1)!
-         outputs="time_text",  # (2)!
-     ),
+    actions=vm.Action(
+        function=current_time_text(use_24_hour_clock="clock_switch"),  # (1)!
+        outputs="time_text",  # (2)!
+    ),
 )
 ```
 
@@ -216,8 +218,10 @@ Before clicking the button, the text shows "Click the button". When you click th
 ## Multiple inputs and outputs
 
 An action can have any number of inputs and outputs (including zero). Here is an action with two inputs and two outputs:
+
 ```python
 from vizro.models.types import capture
+
 
 @capture("action")
 def action_function(input_1, input_2):
@@ -226,12 +230,13 @@ def action_function(input_1, input_2):
 ```
 
 This would be attached to an `actions` argument as follows:
+
 ```python
 import vizro.models as vm
 
 actions = vm.Action(
     function=action_function("input_id_1", "input_id_2"),  # (1)!
-    outputs=["output_id_1", "output_id_2"]
+    outputs=["output_id_1", "output_id_2"],
 )
 ```
 
@@ -245,13 +250,14 @@ def action_function(input_1, input_2):
     ...
     return {"key 1": "My string value 2", "key 2": "My string value 2"}
 
+
 actions = vm.Action(
     function=action_function(input_1="input_id_1", input_2="input_id_2"),
-    outputs={"key 1": "output_id_1", "key 2": "output_id_2"}  # (1)!
+    outputs={"key 1": "output_id_1", "key 2": "output_id_2"},  # (1)!
 )
 ```
 
-1. Specifying outputs in the "wrong" order as `outputs={"key 2": "output_id_2", "key 1": "output_id_1"}` would work exactly the same way. 
+1. Specifying outputs in the "wrong" order as `outputs={"key 2": "output_id_2", "key 1": "output_id_1"}` would work exactly the same way.
 
 A full real world example of using multiple inputs and outputs in a form [given in the tutorial](../tutorials/custom-actions.md#multiple-inputs-and-outputs).
 
@@ -261,7 +267,7 @@ For most actions that you write, you should only need to specify `<model_id>` fo
 
 ### Model arguments as input and output
 
-The syntax for using a particular model argument as an action input or output is `<model_id>.<argument_name>`. 
+The syntax for using a particular model argument as an action input or output is `<model_id>.<argument_name>`.
 
 For example, let's alter the [above example](#runtime-inputs) of a switch that toggles between formatting time with the 12- or 24-hour clock. [`Switch`][vizro.models.Switch] has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
 
@@ -307,9 +313,9 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
-        
+
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
-        1. In the [previous example](#runtime-inputs), the action was triggered when a button is clicked; now we change the action to be  triggered when the switch itself is clicked.
+        1. In the [previous example](#runtime-inputs), the action was triggered when a button is clicked; now we change the action to be triggered when the switch itself is clicked.
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.title"` to update the title of the switch.
 
     === "Result"
@@ -320,9 +326,10 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
 
 Sometimes you might like to use as input or output a component that is on the screen but cannot be addressed explicitly with `<model_id>.<argument_name>`. Vizro actions in fact accept as input and output _any_ Dash component in the format `<component_id>.<property>`.
 
-For example, let's alter the [above example](#runtime-inputs) of a switch that toggles between formatting time with the 12- or 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`. 
+For example, let's alter the [above example](#runtime-inputs) of a switch that toggles between formatting time with the 12- or 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
 
 !!! example "Use Dash property as input"
+
     === "app.py"
 
         ```{.python pycafe-link hl_lines="8-12 22-27"}
@@ -362,23 +369,22 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
 
         ```
 
-        1. We disable the switch by returning `True` to its `disabled` property. After this action runs, the switch can no longer the clicked. To reset it, you must refresh the page. 
+        1. We disable the switch by returning `True` to its `disabled` property. After this action runs, the switch can no longer the clicked. To reset it, you must refresh the page.
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
-        1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.disabled"` to update the `disabled`  property of the component with `id="clock_switch"`.
-        
+        1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.disabled"` to update the `disabled` property of the component with `id="clock_switch"`.
 
-    === "Result"
+```
+=== "Result"
 
-        TODO screenshot
+    TODO screenshot
+```
 
 !!! note
 
     Are you addressing an underlying Dash component that you think should be addressed by Vizro more easily? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
-
 
 <!--
 TODO NOW:
 - YAML configuration
 - Remove old screenshots
 -->
-
