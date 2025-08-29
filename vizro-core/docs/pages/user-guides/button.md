@@ -57,7 +57,7 @@ vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 
 You can use the [`Button`][vizro.models.Button] to trigger actions. These actions could be [built-in ](actions.md) or [custom](custom-actions.md#trigger-an-action-with-a-button). Use the `Button.actions` argument to configure the action that executes when the button is clicked.
 
-The example below shows how to configure a button that exports the filtered data from a target chart using the [`export_data`][vizro.actions.export_data] action. 
+The example below shows how to configure a button that exports the filtered data from a target chart using the [`export_data`][vizro.actions.export_data] action.
 
 If your app includes several action buttons, consider [adding icons](#add-an-icon). You can also use icon-only buttons without text, but keep in mind that these work best when the icon is universally recognizable (for example, a download arrow for exports). For less common actions, you should include text on your button to make it clear what it does.
 
