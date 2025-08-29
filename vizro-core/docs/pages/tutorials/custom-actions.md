@@ -254,7 +254,7 @@ graph TD
 
 Note that toggling the `clock_switch` does not by itself trigger `update_text`. The switch is used as a runtime input but the action is triggered only by clicking the button. In fact, this is a key principle governing Vizro actions: an action can have any number of inputs and outputs but only one trigger.
 
-Action inputs and outputs can be used in multiple actions; there can be any number of actions that use the same `clock_switch` and `submit_button` inputs or `time_text` output.
+Action inputs and outputs can be used in multiple actions; there can be any number of actions that use the same `clock_switch`, `submit_button` and `time_text` as inputs or outputs.
 
 ## Multiple inputs and outputs
 
