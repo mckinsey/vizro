@@ -51,7 +51,7 @@ When the LLM is ready, it opens an instance of [PyCafe](https://py.cafe/) and di
 
 !!! Tip "PyCafe cannot display charts that use local data"
 
-Vizro-MCP can only show your chart or dashboard in PyCafe if the data it consumes can be downloaded from a public link. If you use local data, you should copy the generated chart or dashboard code into a `.py` file to run locally, so it can access the data.
+    Vizro-MCP can only show your chart or dashboard in PyCafe if the data it consumes can be downloaded from a public link. If you use local data, you should copy the generated chart or dashboard code into a `.py` file to run locally, so it can access the data.
 
 ## Iterate the chart
 
