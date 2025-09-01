@@ -25,7 +25,7 @@ def action_with_two_args(arg_1, arg_2):
 
 
 @capture("action")
-def action_with_builtin_runtime_arg(arg_1, _controls):
+def action_with_builtin_runtime_args(arg_1, _trigger, _controls):
     pass
 
 
@@ -46,7 +46,7 @@ class TestLegacyActionInstantiation:
         action = Action(id="action-id", function=function, inputs=[])
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -70,8 +70,8 @@ class TestLegacyActionInstantiation:
         action = Action(id="action-id", function=function, inputs=[])
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = "x.x"
-        action._trigger = "y.y"
+        action._first_in_chain_trigger = "trigger.property"
+        action._trigger = "trigger_2.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -369,7 +369,7 @@ class TestActionInstantiation:
         action = Action(id="action-id", function=function)
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -390,8 +390,8 @@ class TestActionInstantiation:
         action = Action(id="action-id", function=function)
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = "x.x"
-        action._trigger = "y.y"
+        action._first_in_chain_trigger = "trigger.property"
+        action._trigger = "trigger_2.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -428,21 +428,22 @@ class TestActionInputs:
                 {"arg_1": State("component", "property"), "arg_2": State("component", "property")},
             ),
             (
-                action_with_builtin_runtime_arg,
+                action_with_builtin_runtime_args,
                 {},
                 {
                     "_controls": {
                         "filters": [State("known_dropdown_filter_id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
-                    }
+                    },
+                    "_trigger": State("trigger", "property"),
                 },
             ),
             (
                 # Case that a builtin runtime argument is overridden by a user supplied one.
-                action_with_builtin_runtime_arg,
+                action_with_builtin_runtime_args,
                 {"_controls": "component.property"},
-                {"_controls": State("component", "property")},
+                {"_controls": State("component", "property"), "_trigger": State("trigger", "property")},
             ),
         ],
     )
@@ -452,7 +453,7 @@ class TestActionInputs:
         action = Action(function=action_function(**inputs))
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert action._transformed_inputs == expected_transformed_inputs
 
@@ -475,7 +476,7 @@ class TestActionInputs:
         action = Action(function=action_with_one_arg(input))
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         with pytest.raises(ValidationError):
             action._transformed_inputs
@@ -489,8 +490,7 @@ class TestActionInputs:
             action = Action(function=action_with_one_arg("known_model_with_no_default_props"))
 
             # Mock private attribute set by parent component's validation, not Action's.
-            action._first_in_chain_trigger = "x.x"
-            action._trigger = "x.x"
+            action._first_in_chain_trigger = action._trigger = "trigger.property"
 
             action._transformed_inputs
 
@@ -499,12 +499,17 @@ class TestBuiltinRuntimeArgs:
     """Test the actual values of the runtime args are correct in a real scenario."""
 
     def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
-        action = Action(function=action_with_builtin_runtime_arg())
+        action = Action(function=action_with_builtin_runtime_args())
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
-        assert action._transformed_inputs == page_actions_builtin_controls
+        expected_transformed_input = {
+            **page_actions_builtin_controls,
+            "_trigger": State("trigger", "property"),
+        }
+
+        assert action._transformed_inputs == expected_transformed_input
 
 
 class TestActionOutputs:

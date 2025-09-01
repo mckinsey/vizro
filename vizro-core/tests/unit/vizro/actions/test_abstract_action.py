@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 from asserts import assert_component_equal
 from dash import Output, State, dcc
@@ -73,8 +75,8 @@ class action_with_one_runtime_and_one_static(_AbstractAction):
         return []
 
 
-class action_with_builtin_runtime_arg(_AbstractAction):
-    def function(self, _controls: dict):
+class action_with_builtin_runtime_args(_AbstractAction):
+    def function(self, _trigger: Any, _controls: dict):
         pass
 
     @property
@@ -102,7 +104,7 @@ class TestAbstractActionInstantiation:
         action = action_with_no_args(id="action-id")
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert hasattr(action, "id")
         assert hasattr(action, "function")
@@ -122,8 +124,8 @@ class TestAbstractActionInstantiation:
         action = action_with_no_args(id="action-id")
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = "x.x"
-        action._trigger = "y.y"
+        action._first_in_chain_trigger = "trigger.property"
+        action._trigger = "trigger_2.property"
 
         assert hasattr(action, "id")
         assert hasattr(action, "function")
@@ -179,14 +181,15 @@ class TestAbstractActionInputs:
                 {"runtime_arg": State("component_1", "property_1")},
             ),
             (
-                action_with_builtin_runtime_arg,
+                action_with_builtin_runtime_args,
                 {},
                 {
                     "_controls": {
                         "filters": [State("known_dropdown_filter_id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
-                    }
+                    },
+                    "_trigger": State("trigger", "property"),
                 },
             ),
         ],
@@ -197,7 +200,7 @@ class TestAbstractActionInputs:
         action = action_class(**inputs)
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert action._transformed_inputs == expected_transformed_inputs
 
@@ -224,7 +227,7 @@ class TestAbstractActionInputs:
         action = action_with_one_runtime_arg(arg_1=input)
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         with pytest.raises(
             KeyError,
@@ -246,7 +249,7 @@ class TestAbstractActionInputs:
         action = action_with_one_runtime_arg(arg_1=input)
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         with pytest.raises(
             ValueError,
@@ -258,7 +261,7 @@ class TestAbstractActionInputs:
         action = action_with_one_runtime_arg(arg_1="known_model_with_no_default_props")
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         with pytest.raises(
             AttributeError,
@@ -272,14 +275,14 @@ class TestAbstractActionInputs:
     # like in test_action.TestActionInputs works.
     @pytest.mark.xfail(reason="Private fields can't be overwritten")
     def test_builtin_runtime_arg_with_overwritten_controls(self):
-        action = action_with_builtin_runtime_arg()
+        action = action_with_builtin_runtime_args()
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert action._transformed_inputs == {
             "_controls": State("component", "property"),
-            "_trigger": State("x", "x"),
+            "_trigger": State("trigger", "property"),
         }
 
 
@@ -287,12 +290,16 @@ class TestBuiltinRuntimeArgs:
     """Test the actual values of the runtime args are correct in a real scenario."""
 
     def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
-        action = action_with_builtin_runtime_arg()
+        action = action_with_builtin_runtime_args()
 
         # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "x.x"
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+        expected_transformed_input = {
+            **page_actions_builtin_controls,
+            "_trigger": State("trigger", "property"),
+        }
 
-        assert action._transformed_inputs == page_actions_builtin_controls
+        assert action._transformed_inputs == expected_transformed_input
 
 
 class TestAbstractActionOutputs:
