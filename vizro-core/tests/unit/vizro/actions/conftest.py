@@ -103,32 +103,3 @@ def managers_one_page_one_graph_with_dict_param_input(scatter_matrix_chart):
         ],
     )
     Vizro._pre_build()
-
-
-@pytest.fixture
-def managers_one_page_two_containers():
-    """Instantiates a model_manager and data_manager with a page and a graph that requires a list input."""
-    vm.Page(
-        id="test_page",
-        title="My first dashboard",
-        components=[
-            vm.Button(id="button"),
-            vm.Container(
-                id="container_collapsed",
-                title="Collapsed container",
-                components=[
-                    vm.Card(text="Placeholder text"),
-                ],
-                collapsed=True,
-            ),
-            vm.Container(
-                id="container_expanded",
-                title="Expanded container",
-                components=[
-                    vm.Card(text="Placeholder text"),
-                ],
-                collapsed=False,
-            ),
-        ],
-    )
-    Vizro._pre_build()

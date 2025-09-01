@@ -1,13 +1,46 @@
 import pytest
 
+import vizro.models as vm
+from vizro import Vizro
 from vizro.actions import collapse_expand_containers
 from vizro.managers import model_manager
+
+
+@pytest.fixture
+def managers_one_page_two_containers():
+    """Instantiates a model_manager and data_manager with a page and a graph that requires a list input."""
+    vm.Page(
+        id="test_page",
+        title="My first dashboard",
+        components=[
+            vm.Button(id="button"),
+            vm.Container(
+                id="container_collapsed",
+                title="Collapsed container",
+                components=[
+                    vm.Card(text="Placeholder text"),
+                ],
+                collapsed=True,
+            ),
+            vm.Container(
+                id="container_expanded",
+                title="Expanded container",
+                components=[
+                    vm.Card(text="Placeholder text"),
+                ],
+                collapsed=False,
+            ),
+        ],
+    )
+    Vizro._pre_build()
 
 
 @pytest.mark.usefixtures("managers_one_page_two_containers")
 class TestCollapseExpandContainersActionInstantiation:
     def test_invalid_duplicate_collapse_expand(self):
-        with pytest.raises(ValueError, match="Collapse and expand lists cannot contain the same elements!"):
+        with pytest.raises(
+            ValueError, match="`collapse` and `expand` cannot both contain the same IDs {'container_collapsed'}."
+        ):
             model_manager["button"].actions = [
                 collapse_expand_containers(
                     id="test_action", collapse=["container_collapsed"], expand=["container_collapsed"]

@@ -27,21 +27,21 @@ class collapse_expand_containers(_AbstractAction):
     def validate_collapse_and_expand(self):
         if not self.collapse and not self.expand:
             raise ValueError("Either the `collapse` or `expand` list must contain at least a single element.")
-        if set(self.collapse) & set(self.expand):
-            raise ValueError("Collapse and expand lists cannot contain the same elements!")
+        if overlap := set(self.collapse) & set(self.expand):
+            raise ValueError(f"`collapse` and `expand` cannot both contain the same IDs {overlap}.")
         return self
 
     @_log_call
     def pre_build(self):
         from vizro.models import Container
 
-        page_collapsible_container_ids = [
+        page_collapsible_container_ids = {
             model.id
             for model in model_manager._get_models(Container, root_model=model_manager._get_model_page(self))
             if model.collapsed is not None
-        ]
+        }
 
-        invalid_ids = set(self.collapse + self.expand) - set(page_collapsible_container_ids)
+        invalid_ids = (set(self.collapse) | set(self.expand)) - page_collapsible_container_ids
 
         if invalid_ids:
             raise ValueError(
