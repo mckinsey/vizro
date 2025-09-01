@@ -134,7 +134,7 @@ In the top-right corner of the dashboard, you'll notice a toggle to switch betwe
 
 Next, you'll add a button that lets users export the data currently shown in your dashboard.
 
-Vizro provides several built-in actions you can reuse. You can explore the full list in our [guide on built-in actions](../user-guides/actions.md#built-in-actions).
+Vizro provides several built-in actions you can reuse. You can explore the full list in our [guide on built-in actions](../user-guides/actions.md).
 
 These steps add an export data button:
 

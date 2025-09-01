@@ -856,12 +856,10 @@ We've now finished working through our example code. To recap, let's summarise s
 <!--
 
 TODO NOW:
-- show a before and after version of old vs new actions - do in deprecations only
+- rewrite this tutorial
 - custom component page
+- show a before and after version of old vs new actions - do in deprecations only
 - deprecations - do now or after? Probably deprecate action inputs and old actions built-in syntax now but not other parts
-
-- check graph and aggrid pages
-
 -->
 
 <!--

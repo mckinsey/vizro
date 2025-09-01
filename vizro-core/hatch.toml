@@ -107,6 +107,7 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
+  "griffe-warnings-deprecated",
   "mkdocs-llmstxt-md",
   "mkdocs-llmstxt",
   "linkchecker",

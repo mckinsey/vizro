@@ -257,6 +257,4 @@ class Grid(VizroBaseModel):
     category=FutureWarning,
 )
 class Layout(Grid):
-    """Deprecated. This model has been renamed [`Grid`][vizro.models.Grid]."""
-
     type: Literal["legacy_layout"] = "legacy_layout"  # type: ignore[assignment]

@@ -223,6 +223,9 @@ plugins:
               - docs/griffe_extensions.py:
                   paths:
                     [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
+              - griffe_warnings_deprecated:
+                  kind: danger
+                  title: Deprecated
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
