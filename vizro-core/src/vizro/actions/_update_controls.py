@@ -104,7 +104,11 @@ class update_control(_AbstractAction):
         # ComponentType, it's easy to use the same update_control action rather than write a whole new action for it.
         # Then this would be something like parent_model._update_control_hook(root, self.lookup)
         # Should we just let self.lookup itself be a captured callable? Think of case of wanting to update a control
-        # to a particular value from a Button - should it go through this same action or not?
+        # to a particular value from a Button - should it go through this same action or not? How could you just
+        # specify a static value to send without needing to write a new method in vm.Button? Something like:
+        # lookup = lambda: 3 or Literal[3] (but how to do from yaml?). How can lookup specify a lookup inside trigger
+        # and also a static value? Actually this would work if we just ignore trigger in the update_control_hook in
+        # Button and return lookup unaltered, so no need to function for that anyway.
 
         # Need to handle case that target selector is multi=False or multi=True. Or just only handle
         # multi=False case for now if that's easier (raise error in pre-build for multi=True).
