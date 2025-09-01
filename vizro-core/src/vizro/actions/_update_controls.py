@@ -103,6 +103,8 @@ class update_control(_AbstractAction):
         # Generally I like the idea of being able to hook in so that if we (or a user) adds a new ControlType or
         # ComponentType, it's easy to use the same update_control action rather than write a whole new action for it.
         # Then this would be something like parent_model._update_control_hook(root, self.lookup)
+        # Should we just let self.lookup itself be a captured callable? Think of case of wanting to update a control
+        # to a particular value from a Button - should it go through this same action or not?
 
         # Need to handle case that target selector is multi=False or multi=True. Or just only handle
         # multi=False case for now if that's easier (raise error in pre-build for multi=True).
