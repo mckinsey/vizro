@@ -13,3 +13,11 @@ def _set_defaults_nested(supplied: Mapping[str, Any], defaults: Mapping[str, Any
         else:
             supplied.setdefault(default_key, default_value)
     return dict(supplied)
+
+
+class _experimental:
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)

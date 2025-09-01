@@ -119,6 +119,11 @@ class Graph(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
+    # To make a model compatible as a source of update_controls it must implement this.
+    def _update_controls_hook(self):
+        # Do the lookup based on _trigger somehow.
+        ...
+
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
