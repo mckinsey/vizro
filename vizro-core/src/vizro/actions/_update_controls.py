@@ -1,20 +1,14 @@
 import base64
-import importlib.util
 import json
-from collections.abc import Iterable
-from typing import Any, Literal, cast
+from typing import Literal
 
-from dash import Output, ctx, dcc, get_relative_path
+from dash import get_relative_path
 from pydantic import Field
 
 from vizro._vizro_utils import _experimental
 from vizro.actions._abstract_action import _AbstractAction
-from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
-from vizro.managers import model_manager
-from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, _Controls
-
+from vizro.models.types import ModelID
 
 # TODO NOW: decide whether to make it control or controls plural. For now I just wrote it as singular but there's
 #  inconsistency with filename and type.
@@ -24,14 +18,14 @@ I'm not sure what the right syntax would be for targeting multiple controls?
 Copied from https://github.com/McK-Internal/vizro-internal/issues/1939:
 It should be possible to target multiple controls in one click
 (think e.g. clicking on a 2D heatmap, see Max example in mckinsey/vizro#1301).
-So we need some way to do e.g. target="country_filter", lookup="country" as well as 
-target="continent_filter", lookup="continent". This could be multiple update_control calls 
+So we need some way to do e.g. target="country_filter", lookup="country" as well as
+target="continent_filter", lookup="continent". This could be multiple update_control calls
 or better a single update_controls. In this case what would API be? How do you assign the
 right values to the right targets? Maybe a dictionary like {"country_filter": "country",
 "continent_filter": "continent"}?
 
-Then in the (more common) case of targeting a single control, what would it look like? target = {"target_id": 
-"species"}? Then there would be no need for separate lookup argument which is maybe nicer overall? Not sure which of 
+Then in the (more common) case of targeting a single control, what would it look like? target = {"target_id":
+"species"}? Then there would be no need for separate lookup argument which is maybe nicer overall? Not sure which of
 these I prefer:
 1. target="filter" lookup="x"
 2. targets={"filter": "x"}
@@ -39,12 +33,12 @@ these I prefer:
 4. something else?
 
 Option 3 is effectively unzipped version of 2. I think I prefer 2 to 3 but can predict problems with it if we want to add more argument
-in future (e.g. replace vs. append mode). Could have targets be a pydantic model itself if that helps but want to 
-keep simple cases simple. How would it work with a default lookup value also? 
+in future (e.g. replace vs. append mode). Could have targets be a pydantic model itself if that helps but want to
+keep simple cases simple. How would it work with a default lookup value also?
 
-Overall I tend to preferring option 1 for now but then I have no idea how to extend it to multiple controls in 
-future. Maybe we should ask chatGPT if it has any ideas here... Possibly overall it's easier for a user to just chain multiple 
-update_control actions together, just it's not so performant. Then ideally we'd need to come up with some way of doing 
+Overall I tend to preferring option 1 for now but then I have no idea how to extend it to multiple controls in
+future. Maybe we should ask chatGPT if it has any ideas here... Possibly overall it's easier for a user to just chain multiple
+update_control actions together, just it's not so performant. Then ideally we'd need to come up with some way of doing
 parallel actions ideally. Relates to an idea I had about "batching" actions - let's discuss some time...
 """
 
@@ -65,24 +59,24 @@ class update_control(_AbstractAction):
     )
     """
     TODO NOW: work out a good argument name and syntax for this.
-    
+
     For graphs we want to start from _trigger["points"][0] and then be able to navigate to:
     1. something at root level like x or y - so lookup="x"
-    2. something inside customdata. How should user specify this? Could use glom or other lookup syntax like 
+    2. something inside customdata. How should user specify this? Could use glom or other lookup syntax like
     lookup=customdata.0. It looks a bit weird but I don't think there's any better alternative?
       - I don't think we want to look at the function call to see if customdata was provided and then lookup based on
-        that function call (we do this now). BUT maybe if it improves user experience then it's ok. 
+        that function call (we do this now). BUT maybe if it improves user experience then it's ok.
       - For filter we could lookup target column name automatically but that's not possible for parameter.
-      - We could suggest users do custom data in a dictionary like {"species": "species"} rathern than indexing by 
-      number (suggested by ChatGPT, I didn't realise it was possible before actually. It seems to work not very 
+      - We could suggest users do custom data in a dictionary like {"species": "species"} rathern than indexing by
+      number (suggested by ChatGPT, I didn't realise it was possible before actually. It seems to work not very
       officially documented) and then lookup="species" would work straight away without the "customdata."
-      - should customdata.0 be the default value for graphs? Then the user wouldn't need to provide that much - only 
+      - should customdata.0 be the default value for graphs? Then the user wouldn't need to provide that much - only
       in cases where they need customdata.1 which is much less common.
-    Overall my feeling is we should use something like glom or another lookup syntax that works for lookup="x" and 
+    Overall my feeling is we should use something like glom or another lookup syntax that works for lookup="x" and
     lookup="customdata.0" (or "customdata[0]"), which would probably be the default.
-    
+
     Don't worry about being able to navigate to anything outside _trigger["points"][0].
-    
+
     """
     lookup: str  # Joe said "The name “lookup” could indeed be improved. In VizX we used something
     # like “source_field_name” to make it explicit
