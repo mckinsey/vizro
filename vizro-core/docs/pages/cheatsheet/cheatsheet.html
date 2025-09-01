@@ -116,10 +116,19 @@ Vizro().build(dashboard).run()</code></pre>
 # Basic page with components
 page = vm.Page(
     title="My first page!",
+    # Add your components here
     components=[
-        # Add your components here
-        vm.Card(text="Welcome to Vizro!"),
+        vm.Graph(
+            figure=px.scatter(
+                df,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
+            ),
+        ),
     ],
+    # Add your controls here
+    controls=[vm.Filter(column="species")]
 )</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -244,7 +253,11 @@ ag_grid = vm.AgGrid(
                     >KPI card</a
                   >
                 </div>
-                <div class="card-description">Description for KPI card</div>
+                <div class="card-description">
+                  A KPI card displays a single value, with optional title, icon,
+                  and reference. Vizro includes two built-in KPI card functions
+                  <code>kpi_card</code> and <code>kpi_card_reference</code>.
+                </div>
                 <div class="code-block-container">
                   <div class="code-block">
                     <pre><code class="language-python">import pandas as pd
@@ -602,7 +615,12 @@ parameter = vm.Parameter(
           <!-- beginning of categorical selectors -->
           <div class="three-column-grid">
             <div class="component-card">
-              <div class="card-title">Categorical selectors</div>
+              <div class="card-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#categorical-selectors"
+                  >Categorical selectors</a
+                >
+              </div>
               <div class="card-description">
                 Interactive components for selecting from discrete categories
                 and options.
@@ -694,78 +712,29 @@ parameter = vm.Parameter(
                   />
                 </div>
               </div>
+              <div class="highlight-box">
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
+                  <strong>Categorical selectors tips:</strong>
+                </div>
+                <div class="highlight-content">
+                  • When configuring
+                  <code class="code-inline">options</code> use a dictionary with
+                  <code class="code-inline">label</code> and
+                  <code class="code-inline">value</code>
+                  for custom labels.
+                </div>
+              </div>
             </div>
             <!-- end of categorical selectors -->
-            <!-- beginning of numerical selectors -->
-            <div class="component-card">
-              <div class="card-title">Numerical selectors</div>
-              <div class="card-description">
-                Components for selecting numerical values and ranges with
-                precise control.
-              </div>
-              <div class="code-section-flex">
-                <div class="component-card-row-content">
-                  <span>Slider</span>
-                  <a
-                    href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Slider"
-                    target="_blank"
-                    class="icon-link"
-                  >
-                    <span class="material-icons">integration_instructions</span>
-                    <span class="tooltip">Click to view Slider API</span>
-                  </a>
-                </div>
-                <div class="two-column-grid">
-                  <div class="code-block-container">
-                    <div class="code-block">
-                      <pre><code class="language-python">selector=vm.Slider()</code></pre>
-                    </div>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                      Copy
-                    </button>
-                  </div>
-                  <img
-                    src="assets/images/slider.png"
-                    alt="Slider selector"
-                    class="selector-icon"
-                    title="Slider selector"
-                  />
-                </div>
-              </div>
-              <div class="code-section-flex">
-                <div class="component-card-row-content">
-                  <span>RangeSlider</span>
-                  <a
-                    href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.RangeSlider"
-                    target="_blank"
-                    class="icon-link"
-                  >
-                    <span class="material-icons">integration_instructions</span>
-                    <span class="tooltip">Click to view RangeSlider API</span>
-                  </a>
-                </div>
-                <div class="two-column-grid">
-                  <div class="code-block-container">
-                    <div class="code-block">
-                      <pre><code class="language-python">selector=vm.RangeSlider()</code></pre>
-                    </div>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                      Copy
-                    </button>
-                  </div>
-                  <img
-                    src="assets/images/rangeslider.png"
-                    alt="RangeSlider selector"
-                    class="selector-icon"
-                    title="RangeSlider selector"
-                  />
-                </div>
-              </div>
-            </div>
-            <!-- end of numerical selectors -->
             <!-- beginning of temporal selectors -->
             <div class="component-card">
-              <div class="card-title">Numerical selectors</div>
+              <div class="card-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#temporal-selectors"
+                  >Temporal selectors</a
+                >
+              </div>
               <div class="card-description">
                 Date and time selection components for temporal data filtering
                 and analysis.
@@ -830,8 +799,149 @@ range=False
                   />
                 </div>
               </div>
+              <div class="highlight-box">
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
+                  <strong>Temporal selectors tips:</strong>
+                </div>
+                <div class="highlight-content">
+                  • When configuring the DatePicker make sure to provide your
+                  dates for <code class="code-inline">min</code>,
+                  <code class="code-inline">max</code> and
+                  <code class="code-inline">value</code> arguments in
+                  <code class="code-inline">"yyyy-mm-dd"</code> format or as
+                  datetime type (for example,
+                  <code class="code-inline"
+                    >datetime.datetime(2024, 01, 01)</code
+                  >).
+                </div>
+              </div>
             </div>
             <!-- end of temporal selectors -->
+            <div class="flex-card">
+              <!-- beginning of numerical selectors -->
+              <div class="component-card">
+                <div class="card-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#numerical-selectors"
+                    >Numerical selectors</a
+                  >
+                </div>
+                <div class="card-description">
+                  Components for selecting numerical values and ranges with
+                  precise control.
+                </div>
+                <div class="code-section-flex">
+                  <div class="component-card-row-content">
+                    <span>Slider</span>
+                    <a
+                      href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Slider"
+                      target="_blank"
+                      class="icon-link"
+                    >
+                      <span class="material-icons"
+                        >integration_instructions</span
+                      >
+                      <span class="tooltip">Click to view Slider API</span>
+                    </a>
+                  </div>
+                  <div class="two-column-grid">
+                    <div class="code-block-container">
+                      <div class="code-block">
+                        <pre><code class="language-python">selector=vm.Slider()</code></pre>
+                      </div>
+                      <button class="copy-btn" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <img
+                      src="assets/images/slider.png"
+                      alt="Slider selector"
+                      class="selector-icon"
+                      title="Slider selector"
+                    />
+                  </div>
+                </div>
+                <div class="code-section-flex">
+                  <div class="component-card-row-content">
+                    <span>RangeSlider</span>
+                    <a
+                      href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.RangeSlider"
+                      target="_blank"
+                      class="icon-link"
+                    >
+                      <span class="material-icons"
+                        >integration_instructions</span
+                      >
+                      <span class="tooltip">Click to view RangeSlider API</span>
+                    </a>
+                  </div>
+                  <div class="two-column-grid">
+                    <div class="code-block-container">
+                      <div class="code-block">
+                        <pre><code class="language-python">selector=vm.RangeSlider()</code></pre>
+                      </div>
+                      <button class="copy-btn" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <img
+                      src="assets/images/rangeslider.png"
+                      alt="RangeSlider selector"
+                      class="selector-icon"
+                      title="RangeSlider selector"
+                    />
+                  </div>
+                </div>
+              </div>
+              <!-- end of numerical selectors -->
+              <!-- beginning of Boolean selectors -->
+              <div class="component-card">
+                <div class="card-title">
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#boolean-selectors"
+                    >Boolean selectors</a
+                  >
+                </div>
+                <div class="card-description">
+                  Component for selecting boolean values.
+                </div>
+                <div class="code-section-flex">
+                  <div class="component-card-row-content">
+                    <span>Switch</span>
+                    <a
+                      href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Switch"
+                      target="_blank"
+                      class="icon-link"
+                    >
+                      <span class="material-icons"
+                        >integration_instructions</span
+                      >
+                      <span class="tooltip">Click to view Switch API</span>
+                    </a>
+                  </div>
+                  <div class="two-column-grid">
+                    <div class="code-block-container">
+                      <div class="code-block">
+                        <pre><code class="language-python">selector=vm.Switch(
+title="Is True?",
+)</code></pre>
+                      </div>
+                      <button class="copy-btn" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <img
+                      src="assets/images/switch.png"
+                      alt="Switch selector"
+                      class="selector-icon"
+                      title="Switch selector"
+                    />
+                  </div>
+                </div>
+              </div>
+              <!-- end of temporal selectors -->
+            </div>
           </div>
         </div>
         <!-- end of third card Controls-->
@@ -902,9 +1012,10 @@ dashboard = vm.Dashboard(title="My dashboard",pages=[page_1, page_2, page_3])</c
                 customize how they appear in your navigation by specifying a
                 navigation model.
               </div>
-              <div class="code-block-container">
-                <div class="code-block">
-                  <pre><code class="language-python">import vizro.models as vm
+              <div class="two-column-grid">
+                <div class="code-block-container">
+                  <div class="code-block">
+                    <pre><code class="language-python">import vizro.models as vm
 
 navigation = vm.Navigation(
     pages=[page_1, page_2, page_3],
@@ -920,14 +1031,23 @@ navigation = vm.Navigation(
                 label="Features",
                 pages={
                     "Components": ["Text"],
-                    "Controls": ["Details"],
+                    "Controls": ["Details"]
                 },
-            )
+            ),
         ]
     )
 )</code></pre>
+                  </div>
+                  <button class="copy-btn" onclick="copyCode(this)">
+                    Copy
+                  </button>
                 </div>
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <img
+                  src="assets/images/navigation.png"
+                  alt="Layout example"
+                  class="navigation-img"
+                  title="Grid layout example"
+                />
               </div>
             </div>
             <div class="component-card">
@@ -1061,26 +1181,29 @@ flex_layout = vm.Flex(
             >
             Data Management
           </h2>
-          <div class="two-column-grid">
+          <div class="three-column-grid">
             <div class="component-card">
-              <div class="card-title">Data loading</div>
+              <div class="card-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#static-data"
+                  >Static data</a
+                >
+              </div>
               <div class="card-description">
-                Load and manage data from various sources using the centralized
-                data manager.
+                Apply the data_frame directly to your chart if your data will
+                not refresh while the dashboard is running.
               </div>
               <div class="code-block-container">
                 <div class="code-block">
                   <pre><code class="language-python">import pandas as pd
-from vizro.managers import data_manager
 
 # Load data
 df = pd.read_csv("data.csv")
-data_manager["my_data"] = df
 
 # Use in components
 vm.Graph(
     figure=px.scatter(
-        data_frame="my_data",
+        data_frame=df,
         x="x_col",
         y="y_col"
     )
@@ -1088,13 +1211,29 @@ vm.Graph(
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
+              <div class="highlight-box">
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
+                  <strong>Static data tips:</strong>
+                </div>
+                <div class="highlight-content">
+                  • The same can be achieved by assigning the data_frame to the
+                  data_manager key such as
+                  <code>data_manager["my_data"] = df</code>.
+                </div>
+              </div>
             </div>
             <div class="component-card">
-              <div class="card-title">Dynamic data</div>
+              <div class="card-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#dynamic-data"
+                  >Dynamic data</a
+                >
+              </div>
               <div class="card-description">
                 A dynamic data source is a Python function that returns a pandas
-                DataFrame and can be re-executed to refresh dashboard data
-                without restarting it.
+                DataFrame. Use if you need your data to be refreshed without
+                restarting the dashboard.
               </div>
               <div class="code-block-container">
                 <div class="code-block">
@@ -1119,6 +1258,70 @@ vm.Graph(
 )</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="highlight-box">
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
+                  <strong>Dynamic data tips:</strong>
+                </div>
+                <div class="highlight-content">
+                  • The same can be achieved by assigning the data_frame to the
+                  data_manager key such as
+                  <code>data_manager["my_data"] = df</code>.<br />
+                  • Enable caching to avoid performance issues with frequent
+                  reloads.
+                </div>
+              </div>
+            </div>
+            <div class="component-card">
+              <div class="card-title">
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#parametrize-data-loading"
+                  >Parametrized dynamic data</a
+                >
+              </div>
+              <div class="card-description">
+                Add arguments to your dynamic data loading function and control
+                it from the dashboard.
+              </div>
+              <div class="code-block-container">
+                <div class="code-block">
+                  <pre><code class="language-python">import pandas as pd
+from vizro.managers import data_manager
+
+# Load data
+def load_iris_data(number_of_points=10):
+    iris = pd.read_csv("iris.csv")
+    return iris.sample(number_of_points)
+
+data_manager["iris"] = load_iris_data
+
+# Use in components
+vm.Graph(
+    figure=px.box(
+        "iris",
+        x="species",
+        y="petal_width",
+        color="species",
+    )
+)</code></pre>
+                </div>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="highlight-box">
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
+                  <strong>Dynamic data tips:</strong>
+                </div>
+                <div class="highlight-content">
+                  • Always return a DataFrame with a fixed schema when using
+                  parameters.
+                  <br />
+                  • Add function arguments with default values to make data
+                  sources configurable from the dashboard. <br />
+                  • Use parameters to filter or reduce large datasets before
+                  they reach the dashboard for better performance.
+                </div>
               </div>
             </div>
           </div>
@@ -1172,7 +1375,7 @@ vm.Button(
               <div class="card-title">Cross-filtering</div>
               <div class="card-description">
                 Cross-filtering enables you to click on data in one chart or
-                table to filter other components in the dashboard.
+                table to filter another graph or table on the page.
               </div>
               <div class="code-block-container">
                 <div class="code-block">
@@ -1379,10 +1582,13 @@ def update_card_text(species):
     return f"You selected species **{species}**"
 
 # Use with Action
-vm.Action(
-    function=update_card_text(),
-    inputs=["my_selector.value"],
-    outputs=["my_card.children"],
+vm.Button(
+     text="Export Data",
+     actions=vm.Action(
+         function=update_card_text(),
+         inputs=["my_selector"],
+         outputs=["my_card"],
+     )
 )</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>

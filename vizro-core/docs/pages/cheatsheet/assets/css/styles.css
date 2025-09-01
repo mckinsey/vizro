@@ -516,7 +516,6 @@ body {
 .selector-icon,
 .selector-icon-checklist,
 .layout-example-image {
-  background-color: var(--bg-light);
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   object-fit: contain;
@@ -671,4 +670,15 @@ body {
   color: #1f2937;
   font-size: 0.8rem;
   padding: 8px;
+}
+
+.navigation-img {
+  height: 96px;
+  width: 180px;
+}
+
+.flex-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
