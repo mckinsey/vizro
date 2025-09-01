@@ -101,8 +101,8 @@ class TestAbstractActionInstantiation:
     def test_action_first_in_chain_mandatory_only(self):
         action = action_with_no_args(id="action-id")
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = True
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
 
         assert hasattr(action, "id")
         assert hasattr(action, "function")
@@ -121,8 +121,9 @@ class TestAbstractActionInstantiation:
     def test_action_not_first_in_chain_mandatory_only(self):
         action = action_with_no_args(id="action-id")
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = False
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = "x.x"
+        action._trigger = "y.y"
 
         assert hasattr(action, "id")
         assert hasattr(action, "function")
@@ -194,6 +195,10 @@ class TestAbstractActionInputs:
         self, action_class, inputs, expected_transformed_inputs, manager_for_testing_actions_output_input_prop
     ):
         action = action_class(**inputs)
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
         assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
@@ -207,7 +212,7 @@ class TestAbstractActionInputs:
     )
     def test_inputs_invalid_type(self, input):
         with pytest.raises(ValidationError):
-            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+            action_with_one_runtime_arg(arg_1=input)
 
     @pytest.mark.parametrize(
         "input",
@@ -216,11 +221,16 @@ class TestAbstractActionInputs:
         ],
     )
     def test_inputs_invalid_model_id(self, input):
+        action = action_with_one_runtime_arg(arg_1=input)
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
         with pytest.raises(
             KeyError,
             match="Model with ID .* not found. Please provide a valid component ID.",
         ):
-            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+            action._transformed_inputs
 
     @pytest.mark.parametrize(
         "input",
@@ -233,19 +243,28 @@ class TestAbstractActionInputs:
         ],
     )
     def test_inputs_invalid_dot_syntax(self, input):
+        action = action_with_one_runtime_arg(arg_1=input)
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
         with pytest.raises(
             ValueError,
             match="Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
         ):
-            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+            action._transformed_inputs
 
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
+        action = action_with_one_runtime_arg(arg_1="known_model_with_no_default_props")
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
         with pytest.raises(
             AttributeError,
             match="Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
             "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
-            action = action_with_one_runtime_arg(arg_1="known_model_with_no_default_props")._transformed_inputs
             action._transformed_inputs
 
     # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
@@ -254,7 +273,14 @@ class TestAbstractActionInputs:
     @pytest.mark.xfail(reason="Private fields can't be overwritten")
     def test_builtin_runtime_arg_with_overwritten_controls(self):
         action = action_with_builtin_runtime_arg()
-        assert action._transformed_inputs == {"_controls": State("component", "property")}
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
+        assert action._transformed_inputs == {
+            "_controls": State("component", "property"),
+            "_trigger": State("x", "x"),
+        }
 
 
 class TestBuiltinRuntimeArgs:
@@ -262,6 +288,10 @@ class TestBuiltinRuntimeArgs:
 
     def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
         action = action_with_builtin_runtime_arg()
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
         assert action._transformed_inputs == page_actions_builtin_controls
 
 

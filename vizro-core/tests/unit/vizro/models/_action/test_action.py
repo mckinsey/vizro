@@ -45,8 +45,8 @@ class TestLegacyActionInstantiation:
         # inputs=[] added to force action to be legacy
         action = Action(id="action-id", function=function, inputs=[])
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = True
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -69,8 +69,9 @@ class TestLegacyActionInstantiation:
         # inputs=[] added to force action to be legacy
         action = Action(id="action-id", function=function, inputs=[])
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = False
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = "x.x"
+        action._trigger = "y.y"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -367,8 +368,8 @@ class TestActionInstantiation:
         function = action_with_no_args()
         action = Action(id="action-id", function=function)
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = True
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -388,8 +389,9 @@ class TestActionInstantiation:
         function = action_with_no_args()
         action = Action(id="action-id", function=function)
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = False
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = "x.x"
+        action._trigger = "y.y"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -448,6 +450,10 @@ class TestActionInputs:
         self, action_function, inputs, expected_transformed_inputs, manager_for_testing_actions_output_input_prop
     ):
         action = Action(function=action_function(**inputs))
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
         assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
@@ -466,8 +472,13 @@ class TestActionInputs:
     )
     @pytest.mark.xfail(reason="Validation will only be performed once legacy actions are removed")
     def test_runtime_inputs_invalid(self, input):
+        action = Action(function=action_with_one_arg(input))
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
         with pytest.raises(ValidationError):
-            Action(function=action_with_one_arg(input))._transformed_inputs
+            action._transformed_inputs
 
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
@@ -476,6 +487,11 @@ class TestActionInputs:
             "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
             action = Action(function=action_with_one_arg("known_model_with_no_default_props"))
+
+            # Mock private attribute set by parent component's validation, not Action's.
+            action._first_in_chain_trigger = "x.x"
+            action._trigger = "x.x"
+
             action._transformed_inputs
 
 
@@ -484,6 +500,10 @@ class TestBuiltinRuntimeArgs:
 
     def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
         action = Action(function=action_with_builtin_runtime_arg())
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "x.x"
+
         assert action._transformed_inputs == page_actions_builtin_controls
 
 
