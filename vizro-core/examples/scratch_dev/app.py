@@ -1,59 +1,81 @@
-"""This is a test app to test the dashboard layout."""
+# # Vizro is an open-source toolkit for creating modular data visualization applications.
+# # check out https://github.com/mckinsey/vizro for more info about Vizro
+# # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
-import time
+from vizro.actions import collapse_expand_containers, export_data
 
-df = px.data.iris()
+iris = px.data.iris()
 
-
-@capture("action")
-def fast_action(x):
-    return f"Fast action triggered {x} times"
-
-
-@capture("action")
-def slow_action(x):
-    time.sleep(2)
-    return f"Slow action triggered {x} times"
-
-
-page_1 = vm.Page(
-    title="Test Page",
-    layout=vm.Flex(),
+page = vm.Page(
+    title="Page with containers",
     components=[
         vm.Button(
-            id="fast_action_button",
-            text="Trigger Fast Action",
-            actions=vm.Action(function=fast_action("fast_action_button.n_clicks"), outputs=["output_text"]),
+            # text="Collapse all containers",
+            text="",
+            icon="expand_circle_up",
+            actions=[collapse_expand_containers(collapse=["container1", "container2", "container3", "container4"])],
+            description="Collapse all containers!",
         ),
         vm.Button(
-            id="slow_action_button",
-            text="Trigger Slow Action",
-            actions=vm.Action(function=slow_action("slow_action_button.n_clicks"), outputs=["output_text"]),
+            # text="Expand all containers",
+            text="",
+            icon="expand_circle_down",
+            actions=collapse_expand_containers(expand=["container1", "container2", "container3", "container4"]),
+            description="Expand all containers!",
         ),
-        vm.Text(
-            id="output_text",
-            text="Trigger an action to see the result here.",
+        vm.Container(
+            title="",
+            layout=vm.Flex(),
+            components=[
+                vm.Container(
+                    id="container1",
+                    title="Container 1",
+                    components=[vm.Graph(figure=px.bar(iris, x="species", y="petal_length"))],
+                    collapsed=False,
+                ),
+                vm.Container(
+                    id="container2",
+                    title="Container 2",
+                    components=[vm.Graph(figure=px.bar(iris, x="species", y="petal_length"))],
+                    collapsed=False,
+                ),
+                vm.Container(
+                    id="container3",
+                    title="Container 3",
+                    components=[vm.Graph(figure=px.bar(iris, x="species", y="petal_length"))],
+                    collapsed=False,
+                ),
+                vm.Container(
+                    id="container4",
+                    title="Container 4",
+                    components=[vm.Graph(figure=px.bar(iris, x="species", y="petal_length"))],
+                    collapsed=False,
+                ),
+            ],
         ),
     ],
-)
-
-page_2 = vm.Page(
-    title="Standard Vizro Page",
-    components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    controls=[
+        vm.Filter(
+            column="species",
+        )
     ],
-    controls=[vm.Filter(column="species")],
+    layout=vm.Grid(
+        grid=[
+            [0, 1, -1, -1, -1],
+            [2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 2],
+        ]
+    ),
 )
 
-dashboard = vm.Dashboard(
-    # It works fine with and without a dashboard title.
-    title="Dashboard Title",
-    pages=[page_1, page_2],
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

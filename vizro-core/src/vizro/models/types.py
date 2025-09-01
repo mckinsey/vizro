@@ -713,6 +713,7 @@ LayoutType = Annotated[
 ActionType = Annotated[
     Union[
         Annotated["Action", Tag("action")],
+        Annotated["collapse_expand_containers", Tag("collapse_expand_containers")],
         Annotated["export_data", Tag("export_data")],
         Annotated["filter_interaction", Tag("filter_interaction")],
         SkipJsonSchema[Annotated["_filter", Tag("_filter")]],
@@ -721,7 +722,8 @@ ActionType = Annotated[
     ],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
-"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
+"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`collapse_expand_containers`]
+[vizro.models.collapse_expand_containers], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
 
 # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
