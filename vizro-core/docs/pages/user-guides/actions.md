@@ -6,8 +6,8 @@ Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/bas
 
 In these guides we demonstrate how to use actions to perform tasks in your dashboard:
 
-* [Interact with data](data-actions.md), for example to export data.
-* [Interact with graphs and tables](graph-table-actions), for example to cross-filter.
+- [Interact with data](data-actions.md), for example to export data.
+- [Interact with graphs and tables](graph-table-actions), for example to cross-filter.
 
 A complete list of built-in actions in given in the [API documentation][vizro.actions].
 
@@ -21,8 +21,8 @@ Many [Vizro models][vizro.models] have an `actions` argument that can contain on
 
 To use an action:
 
-1. add `import vizro.actions as va` to your imports  
-2. call the relevant action using `actions` argument of the model that triggers the action 
+1. add `import vizro.actions as va` to your imports
+1. call the relevant action using `actions` argument of the model that triggers the action
 
 You can also execute [multiple actions with a single trigger](#multiple-actions).
 
@@ -30,7 +30,7 @@ Some actions are usually triggered by certain components, for example [`export_d
 
 !!! note
 
-    Unlike [custom actions](custom-actions.md), built-in actions do not use the [`vm.Action`][vizro.models.Action] model. 
+    Unlike [custom actions](custom-actions.md), built-in actions do not use the [`vm.Action`][vizro.models.Action] model.
 
 ## Trigger an action with a button
 
@@ -45,7 +45,7 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        
+
         df = px.data.iris()
 
         page = vm.Page(
@@ -103,8 +103,6 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
 
         [![ExportData]][exportdata]
 
-[exportdata]: ../../assets/user_guides/actions/actions_export.png
-
 When you click the "Export data" button, the data for all graphs, tables and figures on the page is downloaded. In this example, this will produce a csv file for the graph's source data `px.data.iris()`.
 
 !!! tip
@@ -133,3 +131,5 @@ actions = [
     ),
 ]
 ```
+
+[exportdata]: ../../assets/user_guides/actions/actions_export.png

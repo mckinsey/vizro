@@ -1,4 +1,4 @@
-<!-- 
+<!--
 
 When I rewrite this page, make it clear what is difference between cross-filtering, parameter, drilldown, drillthrough. Refer to other BI tools. Make clear paradigm of control affecting components. Reference show_in_url controls. Make sure referred to from pages on graph/table and custom versions of those.
 
@@ -42,7 +42,7 @@ Here is an example of how to configure a chart interaction when the source is a 
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        
+
         df_gapminder = px.data.gapminder().query("year == 2007")
         page = vm.Page(
             title="Filter interaction",
