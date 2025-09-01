@@ -3,3 +3,15 @@
   height: 150px;
   width: 300px;
 }
+
+.grid-item :has(#slider-component-1) {
+  padding: 4px;
+}
+
+.grid-item :has(#slider-component-2) {
+  padding: 4px;
+}
+
+.grid-item :has(#slider-component-3) {
+  padding: 4px;
+}
