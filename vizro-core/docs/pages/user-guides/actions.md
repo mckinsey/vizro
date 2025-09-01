@@ -1,38 +1,51 @@
 # How to use actions
 
-This guide shows you how to use actions, an idea that is similar to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. Many components of a dashboard (for example, [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional `actions` argument, where you can enter the [`Action`][vizro.models.Action] model.
+Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not built into Vizro then you can [write your own custom action](custom-actions.md).
 
-By combining the [`Action`][vizro.models.Action] model with an action function, you can create complex dashboard interactions triggered by various events.
+Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md).
 
-There are already a few action functions you can reuse:
+In these guides we demonstrate how to use actions to perform tasks in your dashboard:
 
-- [`export_data`][vizro.actions.export_data]
-- [`filter_interaction`][vizro.actions.filter_interaction]
+* [Interact with data](data-actions.md), for example to export data.
+* [Interact with graphs and tables](graph-table-actions), for example to cross-filter.
 
-## Built-in actions
+A complete list of built-in actions in given in the [API documentation][vizro.actions].
 
-To attach an action to a component, you must enter the [`Action`][vizro.models.Action] model into the component's `action` argument. You can then add a desired action function into the `function` argument of the [`Action`][vizro.models.Action].
+!!! note
 
-??? note "Note on `Trigger`"
+    Do you have an idea for a built-in action? Submit a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
 
-    Currently each component has one trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
+## General principles
 
-The below sections are guides on how to use action functions.
+Many [Vizro models][vizro.models] have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ by a user interaction.
 
-### Export data
+To use an action:
 
-To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
+1. add `import vizro.actions as va` to your imports  
+2. call the relevant action using `actions` argument of the model that triggers the action 
 
-!!! example "`export_data`"
+You can also execute [multiple actions with a single trigger](#multiple-actions).
+
+Some actions are usually triggered by certain components, for example [`export_data`](data-actions.md#export-data)) is usually triggered by clicking a [button](button.md). However, many actions can be triggered by any component, for example you could also trigger `export_data` by clicking a point on a graph.
+
+!!! note
+
+    Unlike [custom actions](custom-actions.md), built-in actions do not use the [`vm.Action`][vizro.models.Action] model. 
+
+## Trigger an action with a button
+
+Here is an example action that uses the [`export_data` action](data-actions.md#export-data) when a [button](button.md) is clicked.
+
+!!! example "Export data"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="23"}
+        ```{.python pycafe-link hl_lines="21-24"}
+        import vizro.actions as va
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        from vizro.actions import export_data
-
+        
         df = px.data.iris()
 
         page = vm.Page(
@@ -50,7 +63,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[vm.Action(function=export_data())],
+                    actions=va.export_data(),
                 ),
             ]
         )
@@ -80,8 +93,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
                 text: Export data
                 id: export_data
                 actions:
-                  - function:
-                      _target_: export_data
+                  - type: export_data
             layout:
               type: flex
             title: My first page
@@ -91,334 +103,33 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
 
         [![ExportData]][exportdata]
 
-!!! note
+[exportdata]: ../../assets/user_guides/actions/actions_export.png
 
-    Note that exported data only reflects the original dataset and any native data modifications defined with [`vm.Filter`](filters.md), [`vm.Parameter`](data.md/#parametrize-data-loading) or [`filter_interaction`](actions.md/#cross-filtering) action. Filters from the chart itself, such as ag-grid filters, are not included, and neither are other chart modifications, nor any data transformations in custom charts.
+When you click the "Export data" button, the data for all graphs, tables and figures on the page is downloaded. In this example, this will produce a csv file for the graph's source data `px.data.iris()`.
 
-### Cross-filtering
+!!! tip
 
-Cross-filtering enables you to click on data in one chart or table to filter other components in the dashboard. This is enabled using the [`filter_interaction`][vizro.actions.filter_interaction] action. It can be applied to [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], and [`AgGrid`][vizro.models.AgGrid], and is currently triggered by click.
+    If you have many buttons that trigger actions then you might like to [give them icons](button.md/#add-an-icon). You can even have icon-only buttons with no text.
 
-To configure cross-filtering using `filter_interaction`, follow these steps:
+## Trigger an action with a graph
 
-1. Add the action function to the source [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid] component and a list of IDs of the target charts into `targets`.
+This is already possible, and documentation is coming soon!
 
-```py
-actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
-```
+## Multiple actions
 
-1. If the source chart is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
+When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix built-in actions and [custom actions](custom-actions.md) in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions.md).
 
-```py
-Graph(figure=px.scatter(..., custom_data=["continent"]))
-```
-
-Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
-
-!!! note
-
-    - You can reset your chart interaction filters by refreshing the page
-    - You can create a "self-interaction" by providing the source chart id as its own `target`
-
-Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
-
-!!! example "Graph `filter_interaction`"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="16 18 21"}
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import filter_interaction
-
-        df_gapminder = px.data.gapminder().query("year == 2007")
-        page = vm.Page(
-            title="Filter interaction",
-            components=[
-                vm.Graph(
-                    figure=px.box(
-                        df_gapminder,
-                        x="continent",
-                        y="lifeExp",
-                        color="continent",
-                        custom_data=["continent"],
-                    ),
-                    actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
-                ),
-                vm.Graph(
-                    id="scatter_relation_2007",
-                    figure=px.scatter(
-                        df_gapminder,
-                        x="gdpPercap",
-                        y="lifeExp",
-                        size="pop",
-                        color="continent",
-                    ),
-                ),
-            ]
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: graph
-                figure:
-                  _target_: box
-                  data_frame: gapminder
-                  color: continent
-                  x: continent
-                  y: lifeExp
-                  custom_data:
-                    - continent
-                actions:
-                  - function:
-                      _target_: filter_interaction
-                      targets:
-                        - scatter_relation_2007
-              - type: graph
-                id: scatter_relation_2007
-                figure:
-                  _target_: scatter
-                  data_frame: gapminder
-                  color: continent
-                  x: gdpPercap
-                  y: lifeExp
-                  size: pop
-            title: Filter interaction
-        ```
-
-    === "Result"
-
-        [![GraphInteraction]][graphinteraction]
-
-!!! note "`filter_interaction` with custom charts"
-
-    If `filter_interaction` is assigned to a [custom chart](custom-charts.md), ensure that `custom_data` is an argument of the custom chart function, and that this argument is then passed to the underlying plotly function. When then adding the custom chart in `vm.Graph`, ensure that `custom_data` is passed.
-
-    ```py
-    @capture("graph")
-    def my_custom_chart(data_frame, custom_data, **kwargs):
-        return px.scatter(data_grame, custom_data=custom_data, **kwargs)
-
-    ...
-
-    vm.Graph(figure=my_custom_chart(df, custom_data=['continent'], actions=[...]))
-
-    ```
-
-Here is an example of how to configure a chart interaction when the source is an [`AgGrid`][vizro.models.AgGrid] component.
-
-!!! example "AgGrid `filter_interaction`"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="14-16 19"}
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import filter_interaction
-        from vizro.tables import dash_ag_grid
-
-        df_gapminder = px.data.gapminder().query("year == 2007")
-
-        page = vm.Page(
-            title="Filter interaction",
-            components=[
-                vm.AgGrid(
-                    figure=dash_ag_grid(data_frame=df_gapminder),
-                    actions=[
-                        vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))
-                    ],
-                ),
-                vm.Graph(
-                    id="scatter_relation_2007",
-                    figure=px.scatter(
-                        df_gapminder,
-                        x="gdpPercap",
-                        y="lifeExp",
-                        size="pop",
-                        color="continent",
-                    ),
-                ),
-            ]
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: ag_grid
-                figure:
-                  _target_: dash_ag_grid
-                  data_frame: gapminder_2007
-                actions:
-                  - function:
-                      _target_: filter_interaction
-                      targets:
-                        - scatter_relation_2007
-              - type: graph
-                id: scatter_relation_2007
-                figure:
-                  _target_: scatter
-                  data_frame: gapminder_2007
-                  color: continent
-                  x: gdpPercap
-                  y: lifeExp
-                  size: pop
-            title: Filter interaction
-        ```
-
-    === "Result"
-
-        [![TableInteraction]][tableinteraction]
-
-## Custom actions
-
-If you require an action that isn't available as a built-in option, you can create a custom action function. Refer to our [user guide on custom actions](custom-actions.md) for more information.
-
-## Chain actions
-
-The `actions` parameter for the different screen components accepts a `list` of [`Action`][vizro.models.Action] models. This means that it's possible to chain together a list of actions that are executed by triggering only one component. The order of action execution is guaranteed, and the next action in the list will start executing only when the previous one is completed.
-
-!!! example "Actions chaining"
-
-    === "app.py"
-
-        ```{.python pycafe-link extra-requirements="openpyxl" hl_lines="22-32"}
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import export_data
-
-        iris = px.data.iris()
-
-        page = vm.Page(
-            title="Using actions",
-            components=[
-                vm.Graph(
-                    id="scatter",
-                    figure=px.scatter(iris, x="petal_length", y="sepal_length", color="sepal_width"),
-                ),
-                vm.Graph(
-                    id="hist",
-                    figure=px.histogram(iris, x="petal_length", color="species"),
-                ),
-                vm.Button(
-                    text="Export data",
-                    actions=[
-                        vm.Action(
-                            function=export_data(
-                                targets=["scatter"],
-                            )
-                        ),
-                        vm.Action(
-                            function=export_data(
-                                targets=["hist"],
-                                file_format="xlsx",
-                            )
-                        ),
-                    ],
-                ),
-            ],
-            controls=[
-                vm.Filter(column="species"),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        pages:
-          - components:
-              - type: graph
-                id: scatter
-                figure:
-                  _target_: scatter
-                  data_frame: iris
-                  color: sepal_width
-                  x: petal_length
-                  y: sepal_length
-              - type: graph
-                id: hist
-                figure:
-                  _target_: histogram
-                  data_frame: iris
-                  color: species
-                  x: petal_length
-              - type: button
-                text: Export data
-                id: export_data_button
-                actions:
-                  - function:
-                      _target_: export_data
-                      targets:
-                        - scatter
-                  - function:
-                      _target_: export_data
-                      targets:
-                        - hist
-                      file_format: xlsx
-            controls:
-              - type: filter
-                column: species
-            title: Exporting
-        ```
-
-    === "Result"
-
-        [![ActionsChain]][actionschain]
-
-### Actions chain
-
-<!-- TODO NOW: write this properly somewhere: how to chain actions. And refer to it from everywhere -->
-
-If you define multiple actions in an actions chain then you can freely mix built-in and custom actions. Built-in actions and custom actions behave identically in terms of when they are triggered.
-
-Here is an example chain including the custom actions `action_function` and `another_action_function` and the built-in `export_data`:
+Here is an example actions chain that uses a custom `action_function` action and the built-in `export_data` action:
 
 ```python
+import vizro.actions as va
+import vizro.models as vm
+
 actions = [
+    va.export_data(),
     vm.Action(
         function=action_function("input_id_1", "input_id_2"),
-        outputs="output_id_1",
+        outputs="output_id",
     ),
-    vm.Action(
-        function=action_function("input_id_1", "input_id_3"),  # (1)!
-        outputs="output_id_2",
-    ),
-    vm.Action(
-        function=another_action_function(),  # (2)!
-        outputs=["output_id_1", "output_id_2"],  # (3)!
-    ),
-    export_data(),  # (4)!
 ]
 ```
-
-1. You can use the same action function multiple times throughout your app, even in the same actions chain. The same input `input_id_1` can also be used multiple times.
-1. The same output can be used multiple times throughout your app, even in the same actions chain.
-1. This is an example of a built-in action, available as `from vizro.actions import export_data`. It does not use the `vm.Action` model.
-
-[actionschain]: ../../assets/user_guides/actions/actions_chaining.png
-[exportdata]: ../../assets/user_guides/actions/actions_export.png
-[graphinteraction]: ../../assets/user_guides/actions/actions_filter_interaction.png
-[tableinteraction]: ../../assets/user_guides/actions/actions_table_filter_interaction.png

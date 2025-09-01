@@ -23,6 +23,9 @@ I.e., to achieve the same effect, how to write an action and what's the equivale
 
 Explain how  can combine Dash callbacks and Vizro action, e.g. Vizro actions can use Dash components/properties so easy to adapt. Can have some additional clientside callbacks - give example from simple action.
 
+You can use the same action function multiple times throughout your app, even in the same actions chain. The same input `input_id_1` can also be used multiple times. The same output can be used multiple times throughout your app, even in the same actions chain.
+
+
 Write Dash equivalent of simple vizro app
 Show some output field and property which isn't just model name to show how can use Dash component/property
 

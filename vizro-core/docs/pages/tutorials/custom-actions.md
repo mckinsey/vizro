@@ -361,12 +361,10 @@ vm.Action(
 
 ## Actions chains
 
-Sometimes you need a single trigger to execute multiple actions. Vizro uses _chains_ of actions to achieve this. There are two different ways to form an actions chain:
+Sometimes you need a single trigger to execute multiple actions. Vizro uses [_chains_ of actions](../user-guides/actions.md#multiple-actions) to achieve this. There are two different ways to form an actions chain:
 
 - Explicit actions chain. When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro executes these actions in order, so that `action_2` executes only when `action_1` has completed.
 - Implicit actions chain. When one action outputs a trigger of another action then the subsequent action is triggered automatically. For example, say that `action_submit` is triggered by `vm.Button(id="submit_button")`, in other words when the button is clicked. If another action that has `output="submit_button"` completes then `action_submit` is automatically triggered as if the button had been clicked.
-
-All principles of actions chains apply equally to both custom and [built-in actions](../user-guides/actions.md). You can freely mix built-in and custom actions in both explicit and implicit actions chains. Built-in actions and custom actions behave identically in terms of when they are triggered and how they execute.
 
 !!! note
 
@@ -859,11 +857,10 @@ We've now finished working through our example code. To recap, let's summarise s
 
 TODO NOW:
 - show a before and after version of old vs new actions - do in deprecations only
-- tidy API reference for actions
-- check graph and aggrid pages
 - custom component page
-- user guide on actions
 - deprecations - do now or after? Probably deprecate action inputs and old actions built-in syntax now but not other parts
+
+- check graph and aggrid pages
 
 -->
 

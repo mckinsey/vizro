@@ -989,9 +989,9 @@ vm.Graph(
                 <div class="code-block-container">
                   <div class="code-block">
                     <pre><code># Export data action
-from vizro.actions import export_data
+import vizro.actions as va
 
-actions=export_data()</code></pre>
+actions=va.export_data()</code></pre>
                   </div>
                   <button class="copy-button" onclick="copyCode(this)">
                     Copy
@@ -1005,9 +1005,9 @@ actions=export_data()</code></pre>
                 <div class="code-block-container">
                   <div class="code-block">
                     <pre><code># Cross-filtering
-from vizro.actions import filter_interaction
+import vizro.actions as va
 
-actions=filter_interaction(targets=["your-target-component-id"])</code></pre>
+actions=vfilter_interaction(targets=["your-target-component-id"])</code></pre>
                   </div>
                   <button class="copy-button" onclick="copyCode(this)">
                     Copy

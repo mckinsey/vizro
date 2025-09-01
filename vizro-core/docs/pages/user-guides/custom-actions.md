@@ -1,6 +1,6 @@
 # How to create custom actions
 
-Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you need to write your own custom action.
+Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you can write your own custom action.
 
 Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md). We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions.md) that teaches what you see here in more detail.
 
@@ -40,6 +40,8 @@ To define your own action:
         outputs="output_id_1",
     )
     ```
+
+You can also execute [multiple actions with a single trigger](#multiple-actions).
 
 !!! warning
 
@@ -260,6 +262,25 @@ actions = vm.Action(
 1. Specifying outputs in the "wrong" order as `outputs={"key 2": "output_id_2", "key 1": "output_id_1"}` would work exactly the same way.
 
 A full real world example of using multiple inputs and outputs in a form [given in the tutorial](../tutorials/custom-actions.md#multiple-inputs-and-outputs).
+
+## Multiple actions
+
+When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix [built-in actions](actions.md) and custom actions in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions.md).
+
+Here is an example actions chain that uses a custom `action_function` action and the built-in `export_data` action:
+
+```python
+import vizro.actions as va
+import vizro.models as vm
+
+actions = [
+    va.export_data(),
+    vm.Action(
+        function=action_function("input_id_1", "input_id_2"),
+        outputs="output_id",
+    ),
+]
+```
 
 ## Address specific parts of a model
 

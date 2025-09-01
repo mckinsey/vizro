@@ -1,8 +1,6 @@
 # Actions
 <!-- vale off -->
 
-API reference for all built-in actions.
-
 ::: vizro.actions
     options:
      # Don't show underscore methods, function or output. AbstractAction is done separately below.
