@@ -65,7 +65,7 @@ class experimental:
         stacklevel: int = 1,
     ) -> None:
         if not isinstance(message, str):
-            raise TypeError("Expected an object of type str for 'message', not " f"{type(message).__name__!r}")
+            raise TypeError(f"Expected an object of type str for 'message', not {type(message).__name__!r}")
         self.message = message
         self.category = category
         self.stacklevel = stacklevel
@@ -145,5 +145,5 @@ class experimental:
             return wrapper
         else:
             raise TypeError(
-                "@experimental decorator with non-None category must be applied to " f"a class or callable, not {arg!r}"
+                f"@experimental decorator with non-None category must be applied to a class or callable, not {arg!r}"
             )
