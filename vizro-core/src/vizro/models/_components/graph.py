@@ -144,6 +144,26 @@ class Graph(VizroBaseModel):
         constraints on function call other than you need to specify customdata
         2. Our current horrible one - user has to put custom_data in their figure's signature but use value="species"
         3. Hacky horrible one - weird format for custom_data in plot call but use value="species"
+
+        Overall I think best solution is something like this. It's basically the same logic as we have now
+        but slightly relaxes the requirement to have custom_data in the function signature since you could use the
+        ugly customdata[0] syntax if you wanted to.
+
+        lookup would have no default value.
+
+        trigger = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
+        try:
+            # works for lookup="species"
+            index = self["custom_data"].index(action.lookup)
+            return trigger["customdata"][index]
+        except ValueError:
+            try:
+                # works for lookup="x" and lookup="customdata[0]" if user does want to do that
+                return trigger[action.lookup]
+            except KeyError: # or whatever it is
+                # As now
+                raise Error... Couldn't find lookup in trigger. If you expected it to be in custom data then it needs
+                to be in signature.
         """
 
     # Convenience wrapper/syntactic sugar.
