@@ -1163,7 +1163,6 @@ page_filter_interaction_over_control_using_trigger = vm.Page(
             title="Source graph",
             components=[
                 vm.Graph(
-                    id="source_graph_trigger_page",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
                     actions=vm.Action(
                         # TODO-REVIEWER-CHECK: Before this PR, users had to assign the trigger-id to the actions

@@ -108,8 +108,8 @@ def make_actions_chain(self):
 
     model_action_trigger = self._action_triggers["__default__"]
     for i, action in enumerate(converted_actions):
-        # First action in the chain uses the model's specified trigger. # All subsequent actions in the chain are
-        # triggered by the previous action's completion.
+        # First action in the chain uses the model's specified trigger.
+        # All subsequent actions in the chain are triggered by the previous action's completion.
         # In the future, we would allow multiple keys in the _action_triggers dictionary, and then we'd need to look up
         # the relevant entry here. For now there's just __default__ so we always use that.
         action._trigger = model_action_trigger if i == 0 else f"{converted_actions[i - 1].id}_finished.data"
