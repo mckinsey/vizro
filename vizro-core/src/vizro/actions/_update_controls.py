@@ -53,14 +53,15 @@ class _SupportsSetControl(Protocol):
 # TODO PP: let's get this working for graph first and then worry about AgGrid. When it comes to AgGrid, let's discuss
 # how we could implement using selectedData.
 @experimental(
-    "The `update_control` action is experimental and may change or be removed without warning in future Vizro releases."
-    "If you have feedback on the feature then please let us know at https://github.com/mckinsey/vizro/issues."
+    "The `update_control` action is experimental. We hope that it will be a stable part of Vizro in future, "
+    "but until then it may change or be removed without warning. If you have feedback on the feature then "
+    "[let us know](https://github.com/mckinsey/vizro/issues)."
 )
 class update_control(_AbstractAction):
-    """...
+    """blah blah
 
     Args:
-        ...
+        blah bl: asdf
     """
 
     type: Literal["update_controls"] = "update_controls"
