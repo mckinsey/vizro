@@ -122,4 +122,8 @@ class update_control(_AbstractAction):
         if self._same_page:
             return self.target  # Should target underlying selector.value.
         else:
+            # return ["vizro_url_proxy"]
+            # vizro_url_proxy is dcc.Store
+            # which takes in {"self.target": value} and does encodeUrlParams to it in a clientside callback
+            # then sends result to vizro_url
             return ["vizro_url.pathname", "vizro_url.search"]

@@ -136,6 +136,14 @@ class Graph(VizroBaseModel):
 
         Should we have a default value of "customdata[0]"? Maybe complicates things from MCP/schema/pydantic point of
         view since default is dependent on triggering model but also simplifies syntax for a common case.
+
+        What are options ow to handle lookup?
+
+        User specifies custom_data:
+        1. This horrible one - user specifies customdata[0] (or maybe nothing if that's the default) but no
+        constraints on function call other than you need to specify customdata
+        2. Our current horrible one - user has to put custom_data in their figure's signature but use value="species"
+        3. Hacky horrible one - weird format for custom_data in plot call but use value="species"
         """
 
     # Convenience wrapper/syntactic sugar.
