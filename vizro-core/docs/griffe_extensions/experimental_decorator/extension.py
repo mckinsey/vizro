@@ -56,7 +56,7 @@ class ExperimentalDecoratorExtension(Extension):
         sections = obj.docstring.parsed
         sections.insert(0, DocstringSectionAdmonition(kind=self.kind, text=message, title=title))
 
-    def on_class_instance(self, *, cls: Class, **kwargs: Any) -> None:  # noqa: ARG002
+    def on_class_instance(self, *, cls: Class, **kwargs: Any) -> None:
         """Add section to docstrings of experimental classes."""
         if message := _experimental(cls):
             cls.experimental = message
@@ -64,7 +64,7 @@ class ExperimentalDecoratorExtension(Extension):
             if self.label:
                 cls.labels.add(self.label)
 
-    def on_function_instance(self, *, func: Function, **kwargs: Any) -> None:  # noqa: ARG002
+    def on_function_instance(self, *, func: Function, **kwargs: Any) -> None:
         """Add section to docstrings of experimental functions."""
         if message := _experimental(func):
             func.experimental = message
