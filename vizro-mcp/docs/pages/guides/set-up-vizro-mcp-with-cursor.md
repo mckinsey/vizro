@@ -24,9 +24,9 @@ Once you have uv or Docker, and have installed the desktop version of Cursor, yo
 
 ### Using uv
 
-Click the "Install" button below:
+Click the button below:
 
-[![Install with uv in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)
 
 The following configuration is added to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
 
@@ -44,9 +44,9 @@ Click "Install" on the Cursor MCP configuration page:
 
 ### Using Docker
 
-Click the "Install" button below:
+Click the button below:
 
-[![Install with Docker in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoiZG9ja2VyIHJ1biAtaSAtLXJtIG1jcC92aXpybyJ9)
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoiZG9ja2VyIHJ1biAtaSAtLXJtIG1jcC92aXpybyIsImVudiI6e319)
 
 The following configuration is added to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
 
