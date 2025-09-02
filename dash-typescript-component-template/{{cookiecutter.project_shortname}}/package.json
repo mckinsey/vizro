@@ -1,0 +1,43 @@
+{
+  "name": "{{cookiecutter.project_shortname}}",
+  "version": "1.0.0",
+  "description": "{{cookiecutter.description}}",
+  "main": "index.ts",
+{% if cookiecutter.github_org -%}
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_shortname.replace('_', '-') }}.git"
+  },
+  "bugs": {
+    "url": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_shortname.replace('_', '-') }}/issues"
+  },
+  "homepage": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_shortname.replace('_', '-') }}",
+{%- endif %}
+  "scripts": {
+    "build:js::dev": "webpack --mode development",
+    "build:js": "webpack",
+    "build:backends": "dash-generate-components ./src/ts/components {{ cookiecutter.project_shortname }} -p package-info.json --r-prefix '{{ cookiecutter.r_prefix }}' --jl-prefix '{{ cookiecutter.jl_prefix }}' --ignore \\.test\\.",
+    "build": "npm run build:js && npm run build:backends",
+    "watch": "npm run build:js::dev -- --watch"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.39",
+    "css-loader": "^6.7.1",
+    "npm-run-all": "^4.1.5",
+    "ramda": "^0.28.0",
+    "react": "16.13.0",
+    "react-docgen": "^5.4.0",
+    "react-dom": "16.13.0",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
+  },
+  "author": "{{ cookiecutter.author_name }} <{{ cookiecutter.author_email }}>",
+  "license": "{% set _license_identifiers = {'MIT License': 'MIT','BSD License': 'BSD','ISC License': 'ISC','Apache Software License 2.0': 'Apache-2.0','GNU General Public License v3': 'GPL-3.0','Not open source': ''} %}{{ _license_identifiers[cookiecutter.license] }}"
+}
