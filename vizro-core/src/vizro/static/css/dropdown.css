@@ -20,13 +20,14 @@ div.Select-menu-outer {
 
 /* Dropdown menu options */
 div.VirtualizedSelectOption {
-  color: var(--bs-primary);
+  color: var(--bs-body-color);
   font-weight: 400;
 }
 
 /* Dropdown menu hover effect */
 div.VirtualizedSelectFocusedOption {
   background-color: var(--hover-bg-subtle);
+  color: var(--bs-primary);
 }
 
 /* Input box for existing values and user input */
@@ -65,11 +66,11 @@ div.Select--single .Select-value {
 
 /* Tags --------------------------- */
 div.Select--multi .Select-value {
-  background-color: var(--bs-tertiary-bg);
+  background-color: var(--bs-body-bg);
   border: 0;
   border-radius: 0;
   box-shadow: var(--bs-box-shadow-sm);
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   font-size: 0.875rem;
   height: 100%;
   letter-spacing: -0.112px;
@@ -80,7 +81,7 @@ div.Select--multi .Select-value {
 
 /* Tag: Label */
 div.Select--multi .Select-value-label {
-  color: var(--bs-primary);
+  color: var(--bs-body-color);
   line-height: 1.5rem;
   padding: 0 4px;
 }
@@ -89,7 +90,7 @@ div.Select--multi .Select-value-label {
 div.Select--multi .Select-value-icon {
   background: inherit;
   border: none;
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
   line-height: inherit;
   margin: 0;
   padding: 0;
@@ -98,7 +99,7 @@ div.Select--multi .Select-value-icon {
 /* Tag: Cross on hover */
 div.Select--multi .Select-value-icon:hover {
   background: inherit;
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 /* Tag: Arrow */
@@ -116,7 +117,7 @@ div.has-value.is-pseudo-focused.Select--single
   .Select-value
   .Select-value-label {
   color: var(
-    --text-primary
+    --bs-body-color
   ) !important; /* Required so text color don't change caused by adding table */
 }
 

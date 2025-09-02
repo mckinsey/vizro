@@ -4,13 +4,13 @@
 
 #dashboard-container .dash-spreadsheet-inner th {
   background-color: inherit;
-  color: var(--bs-primary);
+  color: var(--bs-heading-color);
   padding: 10px 12px;
 }
 
 #dashboard-container .dash-spreadsheet-inner td {
   background-color: inherit;
-  color: var(--bs-primary);
+  color: var(--bs-heading-color);
   padding: 10px 12px;
 }
 
@@ -32,13 +32,13 @@
 #dashboard-container .next-page,
 #dashboard-container .last-page {
   background: inherit;
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 #dashboard-container input.current-page,
 .table-container input.current-page::placeholder {
   background: inherit;
-  color: var(--bs-primary) !important;
+  color: var(--bs-heading-color) !important;
 }
 
 #dashboard-container button.first-page:hover,

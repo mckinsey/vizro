@@ -29,7 +29,7 @@
 }
 
 .container-title-collapse .material-symbols-outlined {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 .container-title-collapse .material-symbols-outlined:hover {
