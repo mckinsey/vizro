@@ -13,6 +13,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro._vizro_utils import _set_defaults_nested
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
+from vizro.actions._update_controls import update_control
 from vizro.managers import data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
@@ -120,9 +121,23 @@ class Graph(VizroBaseModel):
         }
 
     # To make a model compatible as a source of update_controls it must implement this.
-    def _update_controls_hook(self):
-        # Do the lookup based on _trigger somehow.
-        ...
+    # TODO AM: implement a protocol for this.
+    def _extract_value_from_trigger(self, action: update_control, trigger):
+        """
+        For graphs we want to start from _trigger["points"][0] and then be able to navigate to:
+        1. something at root level like x or y - so lookup="x"
+        2. something inside customdata. How should user specify this?
+        Don't worry about being able to navigate to anything outside _trigger["points"][0].
+
+        Let's use box as the lookup language:
+        trigger = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
+        return trigger[action.lookup]
+
+        This works for lookup="x" and lookup="customdata[0]" and lookup="something.deep[1].blah"
+
+        Should we have a default value of "customdata[0]"? Maybe complicates things from MCP/schema/pydantic point of
+        view since default is dependent on triggering model but also simplifies syntax for a common case.
+        """
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

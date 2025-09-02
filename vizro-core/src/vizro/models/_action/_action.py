@@ -60,6 +60,7 @@ class _BaseAction(VizroBaseModel):
 
     # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
     # model manager and removal of filter_interaction.
+    # TODO PP: change to _parent_model
     _parent_model_id: ModelID = PrivateAttr()
 
     @property

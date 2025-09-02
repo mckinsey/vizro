@@ -43,7 +43,8 @@ class Button(VizroBaseModel):
     actions: ActionsType = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
-        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
+        description="Predefined styles to choose from. Options are `"
+        "plain`, `filled` or `outlined`."
         "Defaults to `filled`.",
     )
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
@@ -94,6 +95,14 @@ class Button(VizroBaseModel):
             "text": f"{self.id}.children",
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
+
+    # Not urgent to implement this but just for illustration.
+    # This is how we can return a static value - just ignore the trigger.
+    # so when do vm.Button(actions=update_control(value=3) it would send the value 3.
+    # We could also implement this on selector components.
+    # Then we can relax the restriction that target is a categorical control.
+    # def _extract_value_from_trigger(self, action, trigger):
+    #     return action.value
 
     @_log_call
     def build(self):

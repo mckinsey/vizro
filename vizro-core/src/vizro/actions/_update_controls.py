@@ -10,7 +10,7 @@ from vizro.actions._abstract_action import _AbstractAction
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID
 
-# TODO NOW: decide whether to make it control or controls plural. For now I just wrote it as singular but there's
+# TODO AM+PP: decide whether to make it control or controls plural. For now I just wrote it as singular but there's
 #  inconsistency with filename and type.
 """
 I'm not sure what the right syntax would be for targeting multiple controls?
@@ -43,8 +43,11 @@ parallel actions ideally. Relates to an idea I had about "batching" actions - le
 """
 
 
-# TODO NOW: let's get this working for graph first and then worry about AgGrid.
-# When it comes to AgGrid, let's discuss how we could implement using selectedData.
+# TODO AM: write SupportsUpdateControl
+
+
+# TODO PP: let's get this working for graph first and then worry about AgGrid. When it comes to AgGrid, let's discuss
+# how we could implement using selectedData.
 @_experimental
 class update_control(_AbstractAction):
     """...
@@ -58,31 +61,16 @@ class update_control(_AbstractAction):
         description="...",  # Filter/parameter id, not selector id
     )
     """
-    TODO NOW: work out a good argument name and syntax for this.
-
-    For graphs we want to start from _trigger["points"][0] and then be able to navigate to:
-    1. something at root level like x or y - so lookup="x"
-    2. something inside customdata. How should user specify this? Could use glom or other lookup syntax like
-    lookup=customdata.0. It looks a bit weird but I don't think there's any better alternative?
-      - I don't think we want to look at the function call to see if customdata was provided and then lookup based on
-        that function call (we do this now). BUT maybe if it improves user experience then it's ok.
-      - For filter we could lookup target column name automatically but that's not possible for parameter.
-      - We could suggest users do custom data in a dictionary like {"species": "species"} rathern than indexing by
-      number (suggested by ChatGPT, I didn't realise it was possible before actually. It seems to work not very
-      officially documented) and then lookup="species" would work straight away without the "customdata."
-      - should customdata.0 be the default value for graphs? Then the user wouldn't need to provide that much - only
-      in cases where they need customdata.1 which is much less common.
-    Overall my feeling is we should use something like glom or another lookup syntax that works for lookup="x" and
-    lookup="customdata.0" (or "customdata[0]"), which would probably be the default.
-
-    Don't worry about being able to navigate to anything outside _trigger["points"][0].
-
+    TODO AM+PP: work out a good argument name for this. Syntax depends on source triggering model (like Graph etc.)
     """
-    lookup: str  # Joe said "The name “lookup” could indeed be improved. In VizX we used something
+    value: str  # Joe said "The name “lookup” could indeed be improved. In VizX we used something
     # like “source_field_name” to make it explicit
+    # I like value but maybe it's too ambiguous. It does allow for use of this action inside vm.Button etc. though
+    # where they send a static value. Maybe get_value.
 
     @_log_call
     def pre_build(self):
+        # TODO PP: write this
         # if target is on same page as trigger:
         #     self._same_page = True
         # else:
@@ -91,43 +79,33 @@ class update_control(_AbstractAction):
         #         raise ValueError
         # Also need to check if target is found in dashboard at all and raise error if not
         # Check that target control selector is categorical.
+        # Check isinstance(self._parent_model, SupportsUpdateControl)
 
         pass
 
     def function(self, _trigger):
-        root = _trigger["points"][0]
-        value = do_lookup(root, self.lookup)  # do this somehow
-        # You suggested that the logic for doing the lookup lives in the Graph model itself, which sounds very sensible.
-        # That way we can implement different logic for Graph vs. AgGrid. From memory the triggering Graph model should
-        # be available in self._parent_model or something like that (hacky but ok for now).
-        # Generally I like the idea of being able to hook in so that if we (or a user) adds a new ControlType or
-        # ComponentType, it's easy to use the same update_control action rather than write a whole new action for it.
-        # Then this would be something like parent_model._update_control_hook(root, self.lookup)
-        # Should we just let self.lookup itself be a captured callable? Think of case of wanting to update a control
-        # to a particular value from a Button - should it go through this same action or not? How could you just
-        # specify a static value to send without needing to write a new method in vm.Button? Something like:
-        # lookup = lambda: 3 or Literal[3] (but how to do from yaml?). How can lookup specify a lookup inside trigger
-        # and also a static value? Actually this would work if we just ignore trigger in the update_control_hook in
-        # Button and return lookup unaltered, so no need to function for that anyway.
+        value = self._parent_model._extract_value_from_trigger(self, _trigger)
 
+        # TODO PP:
         # Need to handle case that target selector is multi=False or multi=True. Or just only handle
         # multi=False case for now if that's easier (raise error in pre-build for multi=True).
         # value = [value] if self.target.multi else value
         if self._same_page:
             return value
         else:
-            # TODO NOW: Double check this is the right encoding scheme and matches the JS one.
+            # TODO PP: Double check this is the right encoding scheme and matches the JS one.
             # Don't make this public yet.
             def encode_to_base64(value):
                 json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
                 b64_bytes = base64.urlsafe_b64encode(json_bytes)
                 return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
+            # TODO PP:
             # lookup page path of self.target in dash registry, not model_manager, since homepage path needs to be "/"
             page_path = ...
             # ideally this shouldn't overwrite all the URL params but just append to existing ones.
             # What's the best way to do that? If it does override then that's ok - we can fix the bug later.
-            # TODO NOW: alternative approach is maybe don't send directly to vizro_url but instead to some proxy
+            #  Alternative approach is maybe don't send directly to vizro_url but instead to some proxy
             #  object and then update vizro_url with cs callback that does encoding.
             # This is nice idea so then b64 logic not needed in Python (yet anyway).
             # And same page vs. different looks more similar.
