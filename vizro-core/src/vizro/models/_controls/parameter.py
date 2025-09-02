@@ -131,6 +131,7 @@ class Parameter(VizroBaseModel):
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
         # Example: "parameter-id.options" is forwarded to "checklist.options".
+        # Note: Added in pre_build for consistency with Filter, but could move to the initialisation phase.
         if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
             self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
