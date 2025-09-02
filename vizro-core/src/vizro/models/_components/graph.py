@@ -121,7 +121,6 @@ class Graph(VizroBaseModel):
         }
 
     # To make a model compatible as a source of update_controls it must implement this.
-    # TODO AM: implement a protocol for this.
     def _get_value_from_trigger(self, action: update_control, trigger):
         """For graphs we want to start from _trigger["points"][0] and then be able to navigate to:
 

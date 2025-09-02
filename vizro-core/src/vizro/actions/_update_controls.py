@@ -7,7 +7,7 @@ from typing import Literal, Protocol, runtime_checkable
 from dash import get_relative_path
 from pydantic import Field, JsonValue
 
-from vizro._vizro_utils import _experimental
+from vizro._vizro_utils import experimental
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID
@@ -47,12 +47,15 @@ parallel actions ideally. Relates to an idea I had about "batching" actions - le
 
 @runtime_checkable
 class _SupportsSetControl(Protocol):
-    def _get_value_from_trigger(self, action: update_control, trigger: JsonValue) -> JsonValue:
+    def _get_value_from_trigger(self, action: update_control, trigger: JsonValue) -> JsonValue: ...
 
 
 # TODO PP: let's get this working for graph first and then worry about AgGrid. When it comes to AgGrid, let's discuss
 # how we could implement using selectedData.
-@_experimental
+@experimental(
+    "The `update_control` action is experimental and may change or be removed without warning in future Vizro releases."
+    "If you have feedback on the feature then please let us know at https://github.com/mckinsey/vizro/issues."
+)
 class update_control(_AbstractAction):
     """...
 
