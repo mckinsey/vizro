@@ -123,10 +123,8 @@ class Filter(VizroBaseModel):
         # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
         return {
-            "__default__": f"{selector.id}.value",
             "selector": f"{self.id}.children",
-            **({"title": f"{selector.id}_title.children"} if selector.title else {}),
-            **({"description": f"{selector.description.id}-text.children"} if selector.description else {}),
+            **selector._action_outputs,
             **(
                 {selector_prop: f"{selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
                 if self._selector_properties
@@ -139,7 +137,7 @@ class Filter(VizroBaseModel):
         # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise,
         # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
-        return {"__default__": f"{selector.id}.value"}
+        return selector._action_triggers
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
@@ -147,7 +145,7 @@ class Filter(VizroBaseModel):
         # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
         return {
-            "__default__": f"{selector.id}.value",
+            **selector._action_inputs,
             **(
                 {selector_prop: f"{selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
                 if self._selector_properties
@@ -282,12 +280,10 @@ class Filter(VizroBaseModel):
             ]
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
-        # Creates _action_outputs and _action_inputs for accessing inner selector properties via the outer vm.Filter ID.
-        # Example: "filter-id.options" is transformed to "checklist.options".
-        if selector_inner_component_class := getattr(self.selector, "_inner_component_class", None):
-            self._selector_properties = set(selector_inner_component_class().available_properties) - set(
-                html.Div().available_properties
-            )
+        # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
+        # Example: "filter-id.options" is forwarded to "checklist.options".
+        if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
+            self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
     @_log_call
     def build(self):

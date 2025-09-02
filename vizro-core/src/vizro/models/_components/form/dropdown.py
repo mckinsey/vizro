@@ -17,7 +17,6 @@ from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionsType,
-    DashComponentClass,
     MultiValueType,
     OptionsType,
     SingleValueType,
@@ -119,7 +118,7 @@ class Dropdown(VizroBaseModel):
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
-    _inner_component_class: DashComponentClass = PrivateAttr(dcc.Dropdown)
+    _inner_component_properties: list[str] = PrivateAttr(dcc.Dropdown().available_properties)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -195,7 +194,7 @@ class Dropdown(VizroBaseModel):
                 )
                 if self.title
                 else None,
-                self._inner_component_class(**(defaults | self.extra)),
+                dcc.Dropdown(**(defaults | self.extra)),
             ]
         )
 
@@ -216,9 +215,7 @@ class Dropdown(VizroBaseModel):
             # Add the clientside callback as the callback has to be defined in the page.build process.
             self._update_dropdown_select_all()
             # hidden_select_all_dropdown is needed to ensure that clientside callback doesn't raise the no output error.
-            hidden_select_all_dropdown = [
-                self._inner_component_class(id=f"{self.id}_select_all", style={"display": "none"})
-            ]
+            hidden_select_all_dropdown = [dcc.Dropdown(id=f"{self.id}_select_all", style={"display": "none"})]
             placeholder_model = dcc.Checklist
             placeholder_options = self.value
         else:

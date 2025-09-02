@@ -18,7 +18,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, DashComponentClass, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 
 class RangeSlider(VizroBaseModel):
@@ -97,7 +97,7 @@ class RangeSlider(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component_class: DashComponentClass = PrivateAttr(dcc.RangeSlider)
+    _inner_component_properties: list[str] = PrivateAttr(dcc.RangeSlider().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -197,7 +197,7 @@ class RangeSlider(VizroBaseModel):
                     ],
                     className="slider-label-input",
                 ),
-                self._inner_component_class(**(defaults | self.extra)),
+                dcc.RangeSlider(**(defaults | self.extra)),
             ]
         )
 
