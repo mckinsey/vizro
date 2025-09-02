@@ -1299,7 +1299,7 @@ dashboard = vm.Dashboard(
                 "Form Components - title/description",
                 "Tooltip - text and icon",
             ],
-            "Controls": [
+            "**NEW**: Controls": [
                 "Filter is output of the OPL and DFP",
                 "Filter all selectors - default/title/description",
                 "Filter all selectors - underlying value property",
