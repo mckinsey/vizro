@@ -72,7 +72,7 @@ class RadioItems(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
-    _inner_component_class = PrivateAttr(dbc.RadioItems)
+    _inner_component_properties: list[str] = PrivateAttr(dbc.RadioItems().available_properties)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -118,7 +118,7 @@ class RadioItems(VizroBaseModel):
                 )
                 if self.title
                 else None,
-                self._inner_component_class(**(defaults | self.extra)),
+                dbc.RadioItems(**(defaults | self.extra)),
             ]
         )
 

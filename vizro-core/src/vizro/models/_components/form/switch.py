@@ -66,7 +66,7 @@ class Switch(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component_class = PrivateAttr(dbc.Switch)
+    _inner_component_properties: list[str] = PrivateAttr(dbc.Switch().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -99,4 +99,4 @@ class Switch(VizroBaseModel):
             "persistence_type": "session",
         }
 
-        return self._inner_component_class(**(defaults | self.extra))
+        return dbc.Switch(**(defaults | self.extra))

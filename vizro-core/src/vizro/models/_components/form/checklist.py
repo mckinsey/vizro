@@ -83,7 +83,7 @@ class Checklist(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
-    _inner_component_class = PrivateAttr(dbc.Checklist)
+    _inner_component_properties: list[str] = PrivateAttr(dbc.Checklist().available_properties)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -146,7 +146,7 @@ class Checklist(VizroBaseModel):
                 html.Div(
                     children=[
                         select_all_checkbox,
-                        self._inner_component_class(**(defaults | self.extra)),
+                        dbc.Checklist(**(defaults | self.extra)),
                     ],
                     className="checklist-inline" if self._in_container else None,
                 ),

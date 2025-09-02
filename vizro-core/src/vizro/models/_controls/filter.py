@@ -282,10 +282,8 @@ class Filter(VizroBaseModel):
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
         # Example: "filter-id.options" is forwarded to "checklist.options".
-        if selector_inner_component_class := getattr(self.selector, "_inner_component_class", None):
-            self._selector_properties = set(selector_inner_component_class().available_properties) - set(
-                html.Div().available_properties
-            )
+        if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
+            self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
     @_log_call
     def build(self):

@@ -97,7 +97,7 @@ class RangeSlider(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component_class = PrivateAttr(dcc.RangeSlider)
+    _inner_component_properties: list[str] = PrivateAttr(dcc.RangeSlider().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -197,7 +197,7 @@ class RangeSlider(VizroBaseModel):
                     ],
                     className="slider-label-input",
                 ),
-                self._inner_component_class(**(defaults | self.extra)),
+                dcc.RangeSlider(**(defaults | self.extra)),
             ]
         )
 

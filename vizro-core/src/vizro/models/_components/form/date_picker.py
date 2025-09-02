@@ -87,7 +87,7 @@ class DatePicker(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component_class = PrivateAttr(dmc.DatePickerInput)
+    _inner_component_properties: list[str] = PrivateAttr(dmc.DatePickerInput().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -137,7 +137,7 @@ class DatePicker(VizroBaseModel):
                 )
                 if self.title
                 else None,
-                self._inner_component_class(**(defaults | self.extra)),
+                dmc.DatePickerInput(**(defaults | self.extra)),
             ],
         )
 

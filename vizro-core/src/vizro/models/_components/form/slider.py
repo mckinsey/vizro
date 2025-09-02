@@ -94,7 +94,7 @@ class Slider(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component_class = PrivateAttr(dcc.Slider)
+    _inner_component_properties: list[str] = PrivateAttr(dcc.Slider().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -180,7 +180,7 @@ class Slider(VizroBaseModel):
                     ],
                     className="slider-label-input",
                 ),
-                self._inner_component_class(**(defaults | self.extra)),
+                dcc.Slider(**(defaults | self.extra)),
             ]
         )
 
