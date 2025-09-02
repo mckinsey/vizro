@@ -36,6 +36,7 @@ class _on_page_load(_AbstractAction):
 
     @property
     def outputs(self):  # type: ignore[override]
+        # Add ".selector" for vm.Filter outputs as filter's __default__ action output would alter the selector value.
         return {
             target: f"{target}.selector" if isinstance(model_manager[target], vm.Filter) else target
             for target in self.targets

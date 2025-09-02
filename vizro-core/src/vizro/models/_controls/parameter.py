@@ -96,10 +96,8 @@ class Parameter(VizroBaseModel):
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
-            "__default__": f"{self.selector.id}.value",
             "selector": f"{self.id}.children",
-            **({"title": f"{self.selector.id}_title.children"} if self.selector.title else {}),
-            **({"description": f"{self.selector.description.id}-text.children"} if self.selector.description else {}),
+            **self.selector._action_outputs,
             **(
                 {selector_prop: f"{self.selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
                 if self._selector_properties
@@ -109,12 +107,12 @@ class Parameter(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.selector.id}.value"}
+        return self.selector._action_triggers
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {
-            "__default__": f"{self.selector.id}.value",
+            **self.selector._action_inputs,
             **(
                 {selector_prop: f"{self.selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
                 if self._selector_properties
@@ -131,8 +129,8 @@ class Parameter(VizroBaseModel):
         self._set_actions()
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
-        # Creates _action_outputs and _action_inputs for accessing selector's properties via the outer vm.Parameter ID.
-        # Example: "parameter-id.options" is transformed to "checklist.options".
+        # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
+        # Example: "parameter-id.options" is forwarded to "checklist.options".
         if selector_inner_component_class := getattr(self.selector, "_inner_component_class", None):
             self._selector_properties = set(selector_inner_component_class().available_properties) - set(
                 html.Div().available_properties

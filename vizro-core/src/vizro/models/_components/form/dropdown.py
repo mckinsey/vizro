@@ -17,7 +17,6 @@ from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionsType,
-    DashComponentClass,
     MultiValueType,
     OptionsType,
     SingleValueType,
@@ -119,7 +118,7 @@ class Dropdown(VizroBaseModel):
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
-    _inner_component_class: DashComponentClass = PrivateAttr(dcc.Dropdown)
+    _inner_component_class = PrivateAttr(dcc.Dropdown)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
