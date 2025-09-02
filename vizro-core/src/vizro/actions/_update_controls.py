@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import base64
 import json
-from typing import Literal
+from typing import Literal, Protocol, runtime_checkable
 
 from dash import get_relative_path
-from pydantic import Field
+from pydantic import Field, JsonValue
 
 from vizro._vizro_utils import _experimental
 from vizro.actions._abstract_action import _AbstractAction
@@ -43,7 +45,9 @@ parallel actions ideally. Relates to an idea I had about "batching" actions - le
 """
 
 
-# TODO AM: write SupportsUpdateControl
+@runtime_checkable
+class _SupportsSetControl(Protocol):
+    def _get_value_from_trigger(self, action: update_control, trigger: JsonValue) -> JsonValue:
 
 
 # TODO PP: let's get this working for graph first and then worry about AgGrid. When it comes to AgGrid, let's discuss
@@ -79,12 +83,12 @@ class update_control(_AbstractAction):
         #         raise ValueError
         # Also need to check if target is found in dashboard at all and raise error if not
         # Check that target control selector is categorical.
-        # Check isinstance(self._parent_model, SupportsUpdateControl)
+        # Check isinstance(self._parent_model, SupportsSetControl)
 
         pass
 
     def function(self, _trigger):
-        value = self._parent_model._extract_value_from_trigger(self, _trigger)
+        value = self._parent_model._get_value_from_trigger(self, _trigger)
 
         # TODO PP:
         # Need to handle case that target selector is multi=False or multi=True. Or just only handle

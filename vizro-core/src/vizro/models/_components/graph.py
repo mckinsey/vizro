@@ -122,8 +122,10 @@ class Graph(VizroBaseModel):
 
     # To make a model compatible as a source of update_controls it must implement this.
     # TODO AM: implement a protocol for this.
-    def _extract_value_from_trigger(self, action: update_control, trigger):
+    def _get_value_from_trigger(self, action: update_control, trigger):
         """For graphs we want to start from _trigger["points"][0] and then be able to navigate to:
+
+
         1. something at root level like x or y - so lookup="x"
         2. something inside customdata. How should user specify this?
         Don't worry about being able to navigate to anything outside _trigger["points"][0].

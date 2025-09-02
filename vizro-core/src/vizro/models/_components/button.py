@@ -101,7 +101,7 @@ class Button(VizroBaseModel):
     # so when do vm.Button(actions=update_control(value=3) it would send the value 3.
     # We could also implement this on selector components.
     # Then we can relax the restriction that target is a categorical control.
-    # def _extract_value_from_trigger(self, action, trigger):
+    # def _get_value_from_trigger(self, action, trigger):
     #     return action.value
 
     @_log_call

@@ -113,7 +113,7 @@ class AgGrid(VizroBaseModel):
         }
 
     # TODO PP: implement this, but lower priority than Graph and only after thinking about changing to selectedData.
-    def _extract_value_from_trigger(self, action, trigger):
+    def _get_value_from_trigger(self, action, trigger):
         """Expect action.value = "name_of_column" and look that up in trigger."""
 
     # Convenience wrapper/syntactic sugar.
