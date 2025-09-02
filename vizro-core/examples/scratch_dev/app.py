@@ -78,18 +78,6 @@ page_table_of_contents = vm.Page(
             figure=dash_ag_grid(
                 columnSize="autoSize",
                 dashGridOptions={"pagination": False},
-                getRowStyle={
-                    "styleConditions": [
-                        {
-                            "condition": "params.data.Component == 'Filter'",
-                            "style": {"backgroundColor": "rgb(40, 80, 120)"},
-                        },
-                        {
-                            "condition": "params.data.Component == 'Parameter'",
-                            "style": {"backgroundColor": "rgb(40, 80, 120)"},
-                        },
-                    ],
-                },
                 data_frame=pd.DataFrame(
                     columns=[
                         "Component",
@@ -276,7 +264,6 @@ page_figures_figures = vm.Page(
                         "table-2-id.figure",
                         "figure-2-id.figure",
                     ],
-                    # TODO-REVIEWER-CHECK: This is also a valid output
                     # outputs=[
                     #     "graph-2-id",
                     #     "aggrid-2-id",
@@ -301,8 +288,6 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
             title="Click button to update the figure",
             figure=dash_ag_grid(df_3_rows, dashGridOptions={"rowSelection": "multiple"}),
             actions=[
-                # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
-                #  and then to input it like "underlying_ag_grid_id.cellClicked"
                 vm.Action(
                     function=capture("action")(lambda x: str(x))("outer-aggrid-3-id.cellClicked"), outputs=["card-3-id"]
                 )
@@ -320,8 +305,6 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
                 vm.Action(
                     function=action_select_ag_grid_rows("trigger-aggrid-3-id-button-id.n_clicks"),
                     outputs=[
-                        # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
-                        #  and then to output it like "underlying_ag_grid_id.selectedRows"
                         "outer-aggrid-3-id.selectedRows",
                     ],
                 )
@@ -414,7 +397,6 @@ page_card_text_components = vm.Page(
                         "text-id.text",
                         "button-id.text",
                     ],
-                    # TODO-REVIEWER-CHECK: This is also a valid output
                     # outputs=[
                     #   "card-id",
                     #   "text-id",
@@ -591,7 +573,6 @@ page_tooltip_text_icon = vm.Page(
                     outputs=[
                         "tooltip-id.text",
                     ],
-                    # TODO-REVIEWER-CHECK: This is also a valid output
                     # outputs=[
                     #     "text-area-tooltip-id.description"
                     # ]
@@ -758,8 +739,6 @@ page_filters_default_title_description = vm.Page(
             id="trigger-filter-all-selectors-default-title-description-button-id",
             actions=[
                 vm.Action(
-                    # TODO-REVIEWER-CHECK: Before this PR, users had to assign the filter selector and selector's id
-                    #  and then to output it like "selector-id.title" or "selector-id.description"
                     function=action_return_text(
                         "trigger-filter-all-selectors-default-title-description-button-id.n_clicks"
                     ),
@@ -792,8 +771,6 @@ page_filters_default_title_description = vm.Page(
                         "trigger-filter-all-selectors-default-title-description-button-id.n_clicks"
                     ),
                     outputs=[
-                        # TODO-REVIEWER-CHECK: Before this PR, users had to assign the filter selector and selector's id
-                        #  and then to output it like "selector-id" or "selector-id.value"
                         "filter-checklist-id",
                         "filter-dropdown-id",
                         "filter-radio-items-id",
@@ -882,8 +859,6 @@ page_filters_underlying_value_property = vm.Page(
             id="trigger-filter-all-selectors-underlying-value-property-button-id",
             actions=[
                 vm.Action(
-                    # TODO-REVIEWER-CHECK: Before this PR, users had to assign the filter selector and selector's id
-                    #  and then to output it like "selector-id" or "selector-id.value"
                     function=update_control_values(
                         "trigger-filter-all-selectors-underlying-value-property-button-id.n_clicks",
                         "filter-checklist-2-id.value",
@@ -1002,8 +977,6 @@ page_parameters_default_title_description = vm.Page(
             id="trigger-parameter-all-selectors-default-title-description-button-id",
             actions=[
                 vm.Action(
-                    # TODO-REVIEWER-CHECK: Before this PR, users had to assign the parameter selector's id
-                    #  and then to output it like "selector-id.title" or "selector-id.description"
                     function=action_return_text(
                         "trigger-parameter-all-selectors-default-title-description-button-id.n_clicks"
                     ),
@@ -1032,8 +1005,6 @@ page_parameters_default_title_description = vm.Page(
                     ],
                 ),
                 vm.Action(
-                    # TODO-REVIEWER-CHECK: Before this PR, users had to assign the parameter selector and selector's id
-                    #  and then to output it like "selector-id" or "selector-id.value"
                     function=update_control_values(
                         "trigger-parameter-all-selectors-default-title-description-button-id.n_clicks"
                     ),
@@ -1126,8 +1097,6 @@ page_parameters_underlying_value_property = vm.Page(
             id="trigger-parameter-all-selectors-underlying-value-property-button-id",
             actions=[
                 vm.Action(
-                    # TODO-REVIEWER-CHECK: Before this PR, users had to assign the parameter selector's id
-                    #  and then to output it like "selector-id" or "selector-id.value"
                     function=update_control_values(
                         "trigger-parameter-all-selectors-underlying-value-property-button-id.n_clicks",
                         "parameter-checklist-2-id.value",
@@ -1167,8 +1136,6 @@ page_filter_interaction_over_control = vm.Page(
                 vm.Graph(
                     id="source_graph",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-                    # TODO-REVIEWER-CHECK: Before this PR, users had to assign the filter selector and selector's id
-                    #  and then to output it like "filter-selector-id" or "filter-selector-id.value"
                     actions=vm.Action(
                         function=capture("action")(lambda x: x["points"][0]["customdata"][0])("source_graph.clickData"),
                         outputs="target_filter",
@@ -1181,6 +1148,116 @@ page_filter_interaction_over_control = vm.Page(
             controls=[vm.Filter(id="target_filter", column="species")],
             components=[vm.AgGrid(figure=dash_ag_grid(df))],
         ),
+    ],
+)
+
+
+# === _trigger ===
+# ====== Page using _trigger: Filter interaction over a control ======
+
+page_filter_interaction_over_control_using_trigger = vm.Page(
+    title="Filter interaction over a control using _trigger",
+    id="Filter interaction over a control using _trigger",
+    components=[
+        vm.Container(
+            title="Source graph",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+                    actions=vm.Action(
+                        # TODO-REVIEWER-CHECK: Before this PR, users had to assign the trigger-id to the actions
+                        #  function like:"source_graph.clickData"
+                        function=capture("action")(lambda _trigger: _trigger["points"][0]["customdata"][0])(),
+                        outputs="_trigger_page_target_filter",
+                    ),
+                ),
+            ],
+        ),
+        vm.Container(
+            title="Target table",
+            controls=[vm.Filter(id="_trigger_page_target_filter", column="species")],
+            components=[vm.AgGrid(figure=dash_ag_grid(df))],
+        ),
+    ],
+)
+
+
+# ====== Page with chain of actions all using _trigger
+
+
+@capture("action")
+def propagate_trigger_to_output(_trigger):
+    return f"_trigger: {_trigger}"
+
+
+page_chain_of_actions_all_using_trigger = vm.Page(
+    title="Chain of actions all using _trigger",
+    id="Chain of actions all using _trigger",
+    components=[
+        vm.Card(id="card-1", text="Action 1 output"),
+        vm.Card(id="card-2", text="Action 2 output"),
+        vm.Card(id="card-3", text="Action 3 output"),
+    ],
+    controls=[
+        vm.Button(
+            actions=[
+                vm.Action(function=propagate_trigger_to_output(), outputs="card-1"),
+                vm.Action(function=propagate_trigger_to_output(), outputs="card-2"),
+                vm.Action(function=propagate_trigger_to_output(), outputs="card-3"),
+            ]
+        )
+    ],
+)
+
+
+# ====== Page with chain of actions all using _trigger and other inputs
+
+
+@capture("action")
+def propagate_trigger_and_other_inputs_to_output(other_input_1, _controls, other_input_2, _trigger):
+    return (
+        f"other_input_1: {other_input_1}, _controls: {_controls}, other_input_2: {other_input_2}, _trigger: {_trigger}"
+    )
+
+
+vm.Page.add_type("components", vm.RadioItems)
+vm.Page.add_type("components", vm.Slider)
+
+page_chain_of_actions_all_using_trigger_and_other_inputs = vm.Page(
+    title="Chain of actions all using _trigger and other inputs",
+    id="Chain of actions all using _trigger and other inputs",
+    components=[
+        vm.RadioItems(id="other_input_1", options=["A", "B", "C"], value="A"),
+        vm.Slider(id="other_input_2", min=0, max=10, value=0),
+        vm.Card(id="card-2-1", text="Action 1 output"),
+        vm.Card(id="card-2-2", text="Action 2 output"),
+        vm.Card(id="card-2-3", text="Action 3 output"),
+        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Button(
+            actions=[
+                vm.Action(
+                    function=propagate_trigger_and_other_inputs_to_output(
+                        "other_input_1", other_input_2="other_input_2"
+                    ),
+                    outputs="card-2-1",
+                ),
+                vm.Action(
+                    function=propagate_trigger_and_other_inputs_to_output(
+                        "other_input_1", other_input_2="other_input_2"
+                    ),
+                    outputs="card-2-2",
+                ),
+                vm.Action(
+                    function=propagate_trigger_and_other_inputs_to_output(
+                        "other_input_1", other_input_2="other_input_2"
+                    ),
+                    outputs="card-2-3",
+                ),
+            ]
+        ),
+        vm.Filter(id="_trigger_page_filter", column="species"),
     ],
 )
 
@@ -1203,6 +1280,9 @@ dashboard = vm.Dashboard(
         page_parameters_default_title_description,
         page_parameters_underlying_value_property,
         page_filter_interaction_over_control,
+        page_filter_interaction_over_control_using_trigger,
+        page_chain_of_actions_all_using_trigger,
+        page_chain_of_actions_all_using_trigger_and_other_inputs,
     ],
     navigation=vm.Navigation(
         pages={
@@ -1219,13 +1299,18 @@ dashboard = vm.Dashboard(
                 "Form Components - title/description",
                 "Tooltip - text and icon",
             ],
-            "**NEW** Controls": [
+            "Controls": [
                 "Filter is output of the OPL and DFP",
                 "Filter all selectors - default/title/description",
                 "Filter all selectors - underlying value property",
                 "Parameter all selectors - default/title/description",
                 "Parameter all selectors - underlying value property",
                 "Filter interaction over a control",
+            ],
+            "**NEW**: _trigger": [
+                "Filter interaction over a control using _trigger",
+                "Chain of actions all using _trigger",
+                "Chain of actions all using _trigger and other inputs",
             ],
         }
     ),
