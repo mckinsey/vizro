@@ -78,6 +78,18 @@ page_table_of_contents = vm.Page(
             figure=dash_ag_grid(
                 columnSize="autoSize",
                 dashGridOptions={"pagination": False},
+                getRowStyle={
+                    "styleConditions": [
+                        {
+                            "condition": "params.data.Component == 'Filter'",
+                            "style": {"backgroundColor": "rgb(40, 80, 120)"},
+                        },
+                        {
+                            "condition": "params.data.Component == 'Parameter'",
+                            "style": {"backgroundColor": "rgb(40, 80, 120)"},
+                        },
+                    ],
+                },
                 data_frame=pd.DataFrame(
                     columns=[
                         "Component",
@@ -738,6 +750,8 @@ page_filters_default_title_description = vm.Page(
         vm.Button(
             id="trigger-filter-all-selectors-default-title-description-button-id",
             actions=[
+                # TODO-REVIEWER-CHECK: Before this PR, users had to assign the filter selector and selector's id
+                #  and then to output it like "selector-id.title" or "selector-id.description"
                 vm.Action(
                     function=action_return_text(
                         "trigger-filter-all-selectors-default-title-description-button-id.n_clicks"
@@ -771,6 +785,8 @@ page_filters_default_title_description = vm.Page(
                         "trigger-filter-all-selectors-default-title-description-button-id.n_clicks"
                     ),
                     outputs=[
+                        # TODO-REVIEWER-CHECK: Before this PR, users had to assign the filter selector and selector's id
+                        #  and then to output it like "selector-id" or "selector-id.value"
                         "filter-checklist-id",
                         "filter-dropdown-id",
                         "filter-radio-items-id",
@@ -858,6 +874,8 @@ page_filters_underlying_value_property = vm.Page(
         vm.Button(
             id="trigger-filter-all-selectors-underlying-value-property-button-id",
             actions=[
+                # TODO-REVIEWER-CHECK: Before this PR, users had to assign the filter selector and selector's id
+                #  and then to output it like "selector-id" or "selector-id.value"
                 vm.Action(
                     function=update_control_values(
                         "trigger-filter-all-selectors-underlying-value-property-button-id.n_clicks",
@@ -976,6 +994,8 @@ page_parameters_default_title_description = vm.Page(
         vm.Button(
             id="trigger-parameter-all-selectors-default-title-description-button-id",
             actions=[
+                # TODO-REVIEWER-CHECK: Before this PR, users had to assign the parameter selector's id
+                #  and then to output it like "selector-id.title" or "selector-id.description"
                 vm.Action(
                     function=action_return_text(
                         "trigger-parameter-all-selectors-default-title-description-button-id.n_clicks"
@@ -1009,6 +1029,8 @@ page_parameters_default_title_description = vm.Page(
                         "trigger-parameter-all-selectors-default-title-description-button-id.n_clicks"
                     ),
                     outputs=[
+                        # TODO-REVIEWER-CHECK: Before this PR, users had to assign the parameter selector and
+                        #  selector's id and then to output it like "selector-id" or "selector-id.value"
                         "parameter-checklist-id",
                         "parameter-dropdown-id",
                         "parameter-radio-items-id",
@@ -1096,6 +1118,8 @@ page_parameters_underlying_value_property = vm.Page(
         vm.Button(
             id="trigger-parameter-all-selectors-underlying-value-property-button-id",
             actions=[
+                # TODO-REVIEWER-CHECK: Before this PR, users had to assign the parameter selector's id
+                #  and then to output it like "selector-id" or "selector-id.value"
                 vm.Action(
                     function=update_control_values(
                         "trigger-parameter-all-selectors-underlying-value-property-button-id.n_clicks",
@@ -1136,6 +1160,8 @@ page_filter_interaction_over_control = vm.Page(
                 vm.Graph(
                     id="source_graph",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+                    # TODO-REVIEWER-CHECK: Before this PR, users had to assign the filter selector and selector's id
+                    #  and then to output it like "filter-selector-id" or "filter-selector-id.value"
                     actions=vm.Action(
                         function=capture("action")(lambda x: x["points"][0]["customdata"][0])("source_graph.clickData"),
                         outputs="target_filter",
@@ -1168,14 +1194,14 @@ page_filter_interaction_over_control_using_trigger = vm.Page(
                         # TODO-REVIEWER-CHECK: Before this PR, users had to assign the trigger-id to the actions
                         #  function like:"source_graph.clickData"
                         function=capture("action")(lambda _trigger: _trigger["points"][0]["customdata"][0])(),
-                        outputs="_trigger_page_target_filter",
+                        outputs="target_filter_2",
                     ),
                 ),
             ],
         ),
         vm.Container(
             title="Target table",
-            controls=[vm.Filter(id="_trigger_page_target_filter", column="species")],
+            controls=[vm.Filter(id="target_filter_2", column="species")],
             components=[vm.AgGrid(figure=dash_ag_grid(df))],
         ),
     ],
