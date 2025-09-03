@@ -50,7 +50,7 @@ Let's start with a very simple single-page app that contains a [button](../user-
             layout=vm.Flex(),
             components=[
                 vm.Button(),
-                vm.Text(text="Click the button"),
+                vm.Card(text="Click the button"),
             ],
         )
 
@@ -81,7 +81,7 @@ So far we have specified that a button should be included in the page layout but
             time_format = "%H:%M:%S %Z"
             now = datetime.now(timezone.utc)
             time = now.strftime(time_format)
-            return f"The time is {time}"  # (3)!
+            return f"🕰️ The time is {time}"  # (3)!
 
 
         page = vm.Page(
@@ -94,7 +94,7 @@ So far we have specified that a button should be included in the page layout but
                         outputs="time_text",
                     )
                 ),
-                vm.Text(id="time_text", text="Click the button"),  # (5)!
+                vm.Card(id="time_text", text="Click the button"),  # (5)!
             ],
         )
 
@@ -106,7 +106,7 @@ So far we have specified that a button should be included in the page layout but
         1. For now, the `update_text` function has no arguments.
         1. An action doesn't need to have outputs, but this one returns a string. An action can return values of any Python type that can be converted to JSON.
         1. We attach the action to the `vm.Button` model using the `actions` argument. We call the action function with `function=update_text()` (remember the `()`) and set the output to `"time_text"`.
-        1. To use the `vm.Text` as an output, we supply `id="time_text"` that matches onto the action's `outputs`. It does not matter that this component is defined after the `vm.Action` that uses it.
+        1. To use the `vm.Card` as an output, we supply `id="time_text"` that matches onto the action's `outputs`. It does not matter that this component is defined after the `vm.Action` that uses it.
 
     === "Result"
 
@@ -144,7 +144,7 @@ Now we will see how you can add a _runtime input_ to your actions. A runtime inp
             time_format = "%H:%M:%S %Z"
             now = datetime.now(timezone.utc)
             time = now.strftime(time_format)
-            return f"The time is {time}"
+            return f"🕰️ The time is {time}"
 
 
         vm.Container.add_type("components", vm.Switch)  # (1)!
@@ -166,7 +166,7 @@ Now we will see how you can add a _runtime input_ to your actions. A runtime inp
                         ),
                     ],
                 ),
-                vm.Text(id="time_text", text="Click the button"),
+                vm.Card(id="time_text", text="Click the button"),
             ],
         )
 
@@ -201,7 +201,7 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_text` actio
              time_format = "%H:%M:%S %Z" if use_24_hour_clock else "%I:%M:%S %p %Z"   # (2)!
              now = datetime.now(timezone.utc)
              time = now.strftime(time_format)
-             return f"The time is {time}"
+             return f"🕰️ The time is {time}"
 
 
         vm.Container.add_type("components", vm.Switch)
@@ -223,7 +223,7 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_text` actio
                          ),
                      ],
                  ),
-                 vm.Text(id="time_text", text="Click the button"),
+                 vm.Card(id="time_text", text="Click the button"),
              ],
         )
 
@@ -279,7 +279,7 @@ We have just said that an action can have any number of inputs and outputs, so l
              now = datetime.now(timezone.utc)
              time = now.strftime(time_format)
              date = now.strftime(date_format)
-             return f"The time is {time}", f"The date is {date}"  # (2)!
+             return f"🕰️ The time is {time}", f"📅 The date is {date}"  # (2)!
 
 
         vm.Container.add_type("components", vm.Switch)
@@ -303,8 +303,8 @@ We have just said that an action can have any number of inputs and outputs, so l
                          ),
                      ],
                  ),
-                 vm.Text(id="time_text", text="Click the button"),
-                 vm.Text(id="date_text", text="Click the button"),
+                 vm.Card(id="time_text", text="Click the button"),
+                 vm.Card(id="date_text", text="Click the button"),
              ],
         )
 
@@ -313,7 +313,7 @@ We have just said that an action can have any number of inputs and outputs, so l
         ```
 
         1. We add an argument `date_format` to `update_text`. This will receive a string value `"DD/MM/YY"` or `"MM/DD/YY"`.
-        1. We now return _two_ strings. It would work exactly the same if we returned a list `[f"The time is {time}", f"The date is {date}"]`.
+        1. We now return _two_ strings. It would work exactly the same if we returned a list `[f"🕰️ The time is {time}", f"📅 The date is {date}"]`.
         1. The new argument `date_format` is bound to the `vm.RadioItems(date_radio_items)`.
         1. There are now two outputs: `time_text` and `date_text`.
 
@@ -347,7 +347,7 @@ The returned values are matched to the `outputs` in order. If your action has ma
 @capture("action")
 def update_text(use_24_hour_clock, date_format):
     ...
-    return {"time_output": f"The time is {time}", "date_output": f"The date is {date}"}
+    return {"time_output": f"🕰️ The time is {time}", "date_output": f"📅 The date is {date}"}
 
 ...
 
@@ -413,7 +413,7 @@ The full code for this explicit actions chain is shown below.
             now = datetime.now(timezone.utc)
             time = now.strftime(time_format)
             date = now.strftime(date_format)
-            return f"The time is {time}", f"The date is {date}", "Fetching current weather..."  # (2)!
+            return f"🕰️ The time is {time}", f"📅 The date is {date}", "Fetching current weather..."  # (2)!
 
 
         @capture("action")
@@ -449,9 +449,9 @@ The full code for this explicit actions chain is shown below.
                         ),
                     ],
                 ),
-                vm.Text(id="time_text", text="Click the button"),
-                vm.Text(id="date_text", text="Click the button"),
-                vm.Text(id="weather_text", text="Click the button"),
+                vm.Card(id="time_text", text="Click the button"),
+                vm.Card(id="date_text", text="Click the button"),
+                vm.Card(id="weather_text", text="Click the button"),
             ],
         )
 
@@ -522,7 +522,7 @@ Hence when the location dropdown is updated, the following three actions are tri
             now = datetime.now(timezone.utc)
             time = now.strftime(time_format)
             date = now.strftime(date_format)
-            return f"The time is {time}", f"The date is {date}", "Fetching current weather..."
+            return f"🕰️ The time is {time}", f"📅 The date is {date}", "Fetching current weather..."
 
 
         @capture("action")
@@ -532,7 +532,7 @@ Hence when the location dropdown is updated, the following three actions are tri
             params = berlin_params if location == "Berlin" else washington_dc_params
             r = requests.get("https://api.open-meteo.com/v1/forecast", params=params)
             temperature = r.json()["current"]["temperature_2m"]
-            return f"The current temperature in {location} is {temperature}°C"
+            return f"🌡️ The current temperature in {location} is {temperature}°C"
 
 
         @capture("action")
@@ -578,9 +578,9 @@ Hence when the location dropdown is updated, the following three actions are tri
                         ),
                     ],
                 ),
-                vm.Text(id="time_text", text="Click the button"),
-                vm.Text(id="date_text", text="Click the button"),
-                vm.Text(id="weather_text", text="Click the button"),
+                vm.Card(id="time_text", text="Click the button"),
+                vm.Card(id="date_text", text="Click the button"),
+                vm.Card(id="weather_card", text="Click the button"),
             ],
         )
 
@@ -597,7 +597,7 @@ Hence when the location dropdown is updated, the following three actions are tri
 
         TODO screenshot
 
-Our actions flowchart is starting to grow quite large now that there's three actions, but really all that's different is the new `update_time_date_formats` actions and its associated inputs, outputs and triggers. Try following the line of triggers denoted with thick arrows. The actions `[update_date, fetch_weather]` that are in an explicit chain are directly connected by a thick arrow. On the other hand, the implicit connection between `update_time_date_formats` and `update_text` is not a direct connection but instead goes through the `submit_button` model. Note also that the `location_dropdown` model is used as a trigger and a runtime input simultaneously.
+Our actions flowchart is starting to grow quite large now that there's three actions, but really all that's different is the new `update_time_date_formats` actions and its associated inputs, outputs and triggers. Try following the line of triggers denoted with thick arrows. The actions `[update_date, fetch_weather]` that are in an explicit chain are directly connected by a thick arrow. On the other hand, the implicit connection between `update_time_date_formats` and `update_card` is not a direct connection but instead goes through the `submit_button` model. Note also that the `location_dropdown` model is used as a trigger and a runtime input simultaneously.
 
 ```mermaid
 graph TD
@@ -608,22 +608,22 @@ graph TD
   end
 
   subgraph screen_2[" "]
-    time_text
-    date_text
-    weather_text
+    time_card
+    date_card
+    weather_card
   end
 
-  clock_switch & date_radio_items -. runtime input .-> update_text -- output --> time_text & date_text & weather_text
+  clock_switch & date_radio_items -. runtime input .-> update_card -- output --> time_card & date_card & weather_card
   location_dropdown -. runtime input .-> update_time_date_formats -- output --> clock_switch & date_radio_items & submit_button
 
   location_dropdown == trigger ==> update_time_date_formats([update_time_date_formats])
-  submit_button == trigger ==> update_text
-  update_text([update_text]) == trigger ==> fetch_weather([fetch_weather])
+  submit_button == trigger ==> update_card
+  update_card([update_card]) == trigger ==> fetch_weather([fetch_weather])
 
-  location_dropdown -. runtime input .-> fetch_weather -- output --> weather_text
+  location_dropdown -. runtime input .-> fetch_weather -- output --> weather_card
 ```
 
-An implicit action chain can only be formed by triggering the _first_ action of an explicit chain (or a single action, if there is only one action in the chain). Here, `update_time_date_formats` triggers the first action `update_text` in the chain `[update_text, fetch_weather]`, which then triggers the chained action `fetch_weather`. It is not possible for an action to implicitly chain on to `fetch_weather` directly: there is no way for `fetch_weather` to run other than through the completion of `update_text`.
+An implicit action chain can only be formed by triggering the _first_ action of an explicit chain (or a single action, if there is only one action in the chain). Here, `update_time_date_formats` triggers the first action `update_card` in the chain `[update_card, fetch_weather]`, which then triggers the chained action `fetch_weather`. It is not possible for an action to implicitly chain on to `fetch_weather` directly: there is no way for `fetch_weather` to run other than through the completion of `update_card`.
 
 !!! tip
 
@@ -633,7 +633,7 @@ It is still possible to set the time and date formats and submit the form manual
 
 ## Parallel actions
 
-To make the app feel more responsive, we're going to remove the submit button and instead use `clock_switch` and `date_radio_items` as triggers themselves. The `update_text` action currently uses both `clock_switch` and `date_radio_items` as inputs and returns both `time_text` and `date_text` as outputs. However, really the `clock_switch` only affects `time_text`, and `date_radio_items` only affects `date_text`. Let's split `update_text` into two independent actions to reflect this: `update_time_text`, which updates only `time_text`, and `update_date_text`, which updates only `date_text`. As an additional enhancement we add `location_dropdown` as an input to these actions so that we can use the correct timezone for Washington, D.C. and Berlin.
+To make the app feel more responsive, we're going to remove the submit button and instead use `clock_switch` and `date_radio_items` as triggers themselves. The `update_card` action currently uses both `clock_switch` and `date_radio_items` as inputs and returns both `time_card` and `date_card` as outputs. However, really the `clock_switch` only affects `time_card`, and `date_radio_items` only affects `date_card`. Let's split `update_card` into two independent actions to reflect this: `update_time_card`, which updates only `time_card`, and `update_date_card`, which updates only `date_card`. As an additional enhancement we add `location_dropdown` as an input to these actions so that we can use the correct timezone for Washington, D.C. and Berlin.
 
 !!! example "Parallel actions"
 
@@ -650,21 +650,21 @@ To make the app feel more responsive, we're going to remove the submit button an
 
 
         @capture("action")
-        def update_time_text(use_24_hour_clock, location):
+        def update_time_card(use_24_hour_clock, location):
             time_format = "%H:%M:%S %Z" if use_24_hour_clock else "%I:%M:%S %p %Z"
             timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
             now = datetime.now(ZoneInfo(timezone_name))  # (1)!
             time = now.strftime(time_format)
-            return f"The time is {time}"
+            return f"🕰️ The time is {time}"
 
 
         @capture("action")
-        def update_date_text(date_format, location):
+        def update_date_card(date_format, location):
             date_format = "%d/%m/%y" if date_format == "DD/MM/YY" else "%m/%d/%y"
             timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
             now = datetime.now(ZoneInfo(timezone_name))
             date = now.strftime(date_format)
-            return f"The date is {date}"
+            return f"📅 The date is {date}"
 
 
         @capture("action")
@@ -674,7 +674,7 @@ To make the app feel more responsive, we're going to remove the submit button an
             params = berlin_params if location == "Berlin" else washington_dc_params
             r = requests.get("https://api.open-meteo.com/v1/forecast", params=params)
             temperature = r.json()["current"]["temperature_2m"]
-            return f"The current temperature in {location} is {temperature}°C"
+            return f"🌡️ The current temperature in {location} is {temperature}°C"
 
 
         @capture("action")
@@ -703,29 +703,29 @@ To make the app feel more responsive, we're going to remove the submit button an
                             actions=[
                                 vm.Action(
                                     function=update_time_date_formats("location_dropdown"),
-                                    outputs=["clock_switch", "date_radio_items", "weather_text"],
+                                    outputs=["clock_switch", "date_radio_items", "weather_card"],
                                 ),
-                                vm.Action(function=fetch_weather("location_dropdown"), outputs="weather_text"),
+                                vm.Action(function=fetch_weather("location_dropdown"), outputs="weather_card"),
                             ],
                             extra={"style": {"min-width": "200px"}},
                         ),
                         vm.Switch(
                             id="clock_switch",
-                            title="24-hour clock", value=True,
+                            title="24-hour clock",
                             value=True,
-                            actions=vm.Action(function=update_time_text("clock_switch", "location_dropdown"), outputs="time_text"),
+                            actions=vm.Action(function=update_time_card("clock_switch", "location_dropdown"), outputs="time_card"),
 
                         ),
                         vm.RadioItems(
                             id="date_radio_items",
                             options=["DD/MM/YY", "MM/DD/YY"],
-                            actions=vm.Action(function=update_date_text("date_radio_items", "location_dropdown"), outputs="date_text"),
+                            actions=vm.Action(function=update_date_card("date_radio_items", "location_dropdown"), outputs="date_card"),
                         ),
                     ],
                 ),
-                vm.Text(id="time_text", text="Click the button"),
-                vm.Text(id="date_text", text="Click the button"),
-                vm.Text(id="weather_text", text="Click the button"),
+                vm.Card(id="time_card", text="Click the button"),
+                vm.Card(id="date_card", text="Click the button"),
+                vm.Card(id="weather_card", text="Click the button"),
             ],
         )
 
@@ -733,8 +733,8 @@ To make the app feel more responsive, we're going to remove the submit button an
         Vizro().build(dashboard).run()
         ```
 
-        1. `update_time_text` and `update_date_text` are now timezone-sensitive. We use the `location` set by the dropdown to choose the appropriate timezone.
-        1. Now that `submit_button` no longer exists, it is the responsibility of `update_time_date_formats` to update `weather_text` with the "Fetching current weather..." text. This action is otherwise unchanged.
+        1. `update_time_card` and `update_date_card` are now timezone-sensitive. We use the `location` set by the dropdown to choose the appropriate timezone.
+        1. Now that `submit_button` no longer exists, it is the responsibility of `update_time_date_formats` to update `weather_card` with the "Fetching current weather..." text. This action is otherwise unchanged.
 
     === "Result"
 
@@ -752,32 +752,32 @@ graph TD
   end
 
   subgraph screen_2[" "]
-    time_text
-    date_text
-    weather_text
+    time_card
+    date_card
+    weather_card
   end
 
-  update_time_text --> time_text
-  update_date_text --> date_text
-  update_time_date_formats --> weather_text & clock_switch & date_radio_items
-  fetch_weather --> weather_text
+  update_time_card --> time_card
+  update_date_card --> date_card
+  update_time_date_formats --> weather_card & clock_switch & date_radio_items
+  fetch_weather --> weather_card
 
   location_dropdown ==> update_time_date_formats([update_time_date_formats])
   update_time_date_formats ==> fetch_weather([fetch_weather])
-  clock_switch ==> update_time_text([update_time_text])
-  date_radio_items ==> update_date_text([update_date_text])
+  clock_switch ==> update_time_card([update_time_card])
+  date_radio_items ==> update_date_card([update_date_card])
 
 ```
 
-We still have an explicit actions chain `[update_time_date_formats, fetch_weather]`, since these are directly connected by a thick arrow. The connection between `update_time_date_formats` and the `update_time_text` and `update_date_text` actions is implicit since there is no direct connection; the line goes through intermediate models `clock_switch` and `date_radio_items`.
+We still have an explicit actions chain `[update_time_date_formats, fetch_weather]`, since these are directly connected by a thick arrow. The connection between `update_time_date_formats` and the `update_time_card` and `update_date_card` actions is implicit since there is no direct connection; the line goes through intermediate models `clock_switch` and `date_radio_items`.
 
-In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_text` and `update_date_text` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its output(s) on screen as soon as it has completed. If you add `sleep(3)` to each of the `fetch_weather`, `update_time_text` and `update_date_text` actions to make them take 3 seconds longer to complete then the total delay will be 3 seconds rather than 9 seconds.
+In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_card` and `update_date_card` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its output(s) on screen as soon as it has completed. If you add `sleep(3)` to each of the `fetch_weather`, `update_time_card` and `update_date_card` actions to make them take 3 seconds longer to complete then the total delay will be 3 seconds rather than 9 seconds.
 
 ??? details "Parallel execution is not guaranteed"
 
     The reason we say that the actions will _in general_ run in parallel is that, as [explained in the Dash documentation](https://dash.plotly.com/advanced-callbacks#as-a-direct-result-of-user-interaction), execution depends on the server environment. If you [use the Flask development server](../user-guides/run-deploy.md#develop-in-python-script), it is set to run multi-threaded and so actions can execute in parallel. In production, if you [use gunicorn](../user-guides/run-deploy.md#gunicorn) with multiple workers then multiple actions can run in parallel.
 
-    However, if you [work in PyCafe](../user-guides/run-deploy.md#develop-in-pycafe) you will find that multiple actions cannot run in parallel. This is a [known limitation of PyCafe](https://py.cafe/docs/how#limitations-of-pycafe). In this case, the three actions `fetch_weather`, `update_time_text` and `update_date_text` run serially, in an order that should not be relied upon. The same would happen if you ran the Flask development server with `threaded=False` or ran `gunicorn` with a single worker.
+    However, if you [work in PyCafe](../user-guides/run-deploy.md#develop-in-pycafe) you will find that multiple actions cannot run in parallel. This is a [known limitation of PyCafe](https://py.cafe/docs/how#limitations-of-pycafe). In this case, the three actions `fetch_weather`, `update_time_card` and `update_date_card` run serially, in an order that should not be relied upon. The same would happen if you ran the Flask development server with `threaded=False` or ran `gunicorn` with a single worker.
 
 ## Handle errors and debug
 
@@ -805,14 +805,14 @@ For example, our `vm.Dropdown(id="location_dropdown")` has `options=["Berlin", "
 
 ```py
 @capture("action")
-def update_time_text(use_24_hour_clock, location):
+def update_time_card(use_24_hour_clock, location):
     ...
     timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
 ```
 
-We might expect the value of `location` to be either "Berlin" or "Washington, D.C.", as per the dropdown's available options, but we can never guarantee that this is the case. A malicious user can trigger `update_time_text` with _any_ JSON-compatible value for `location`. The code written here has no security risk because if `location` is set to any value other than "Berlin" then the timezone is set to "America/New_York". This will be the case for both the expected trusted user input `location="Washington, D.C."` and arbitrary untrusted input such as `location="Paris"`, `location=100` and `location=None`.
+We might expect the value of `location` to be either "Berlin" or "Washington, D.C.", as per the dropdown's available options, but we can never guarantee that this is the case. A malicious user can trigger `update_time_card` with _any_ JSON-compatible value for `location`. The code written here has no security risk because if `location` is set to any value other than "Berlin" then the timezone is set to "America/New_York". This will be the case for both the expected trusted user input `location="Washington, D.C."` and arbitrary untrusted input such as `location="Paris"`, `location=100` and `location=None`.
 
-However, imagine that we had a secret database of all the world's timezones that includes some classified locations not known to the general public. The `update_time_text` action looks up the timezone of the runtime input `location` in the database:
+However, imagine that we had a secret database of all the world's timezones that includes some classified locations not known to the general public. The `update_time_card` action looks up the timezone of the runtime input `location` in the database:
 
 ```py
 SECRET_TIMEZONE_DATABASE = {
@@ -823,16 +823,16 @@ SECRET_TIMEZONE_DATABASE = {
 }
 
 @capture("action")
-def update_time_text(use_24_hour_clock, location):
+def update_time_card(use_24_hour_clock, location):
     ...
     timezone_name = SECRET_TIMEZONE_DATABASE[location]
 ```
 
-Even though we have set `options=["Berlin", "Washington, D.C."]` in our `vm.Dropdown`, a malicious user might be able to construct an HTTP request that sets `location="Top secret bunker"`. There would be nothing to stop `update_time_text` running and exposing the time at the top secret bunker! You could protect against this by validating that the `location` value is indeed one of the expected values and [raising an exception if not](#handle-errors-and-debug):
+Even though we have set `options=["Berlin", "Washington, D.C."]` in our `vm.Dropdown`, a malicious user might be able to construct an HTTP request that sets `location="Top secret bunker"`. There would be nothing to stop `update_time_card` running and exposing the time at the top secret bunker! You could protect against this by validating that the `location` value is indeed one of the expected values and [raising an exception if not](#handle-errors-and-debug):
 
 ```py
 @capture("action")
-def update_time_text(use_24_hour_clock, location):
+def update_time_card(use_24_hour_clock, location):
     if location not in ["Berlin", "Washington, D.C."]:
         raise PreventUpdate
     timezone_name = SECRET_TIMEZONE_DATABASE[location]
