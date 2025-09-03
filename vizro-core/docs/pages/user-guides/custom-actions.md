@@ -40,9 +40,9 @@ To define your own action:
         outputs="output_id_1",  # (1)!
     )
     ```
-   
-    1. When the dashboard is running, the action's `input_1` will be set to the runtime value of the Vizro model with `id="input_id_1"` and similarly for `input_2`.  
-    2. When the dashboard is running, the action's output "My string value..." will set the value of the Vizro model with `id="output_id_1"`. 
+
+    1. When the dashboard is running, the action's `input_1` will be set to the runtime value of the Vizro model with `id="input_id_1"` and similarly for `input_2`.
+    1. When the dashboard is running, the action's output "My string value..." will set the value of the Vizro model with `id="output_id_1"`.
 
 You can also execute [multiple actions with a single trigger](#multiple-actions).
 
@@ -396,7 +396,7 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.disabled"` to update the `disabled` property of the component with `id="clock_switch"`.
 
-   === "Result"
+=== "Result"
 
 !!! note
 

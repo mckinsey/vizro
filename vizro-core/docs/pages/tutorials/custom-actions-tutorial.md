@@ -4,7 +4,7 @@ Actions control how your app responds to user input such as clicking a button or
 
 Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to complete the tutorial. We also have an [explanation of how Vizro actions work](../explanation/actions-explanation.md) and their similarities and differences compared to Dash callbacks.
 
-This tutorial should take **about an hour to finish**. You will gradually build a single-page app of a simple form that uses custom actions to show the current time, date and weather in Washington, D.C. or Berlin. The tutorial is written to be followed from start to finish in order, but if you are already familiar with some aspects of actions then you might like to skip straight to the relevant section or just review the [key principles of actions](#key-principles-of-actions). 
+This tutorial should take **about an hour to finish**. You will gradually build a single-page app of a simple form that uses custom actions to show the current time, date and weather in Washington, D.C. or Berlin. The tutorial is written to be followed from start to finish in order, but if you are already familiar with some aspects of actions then you might like to skip straight to the relevant section or just review the [key principles of actions](#key-principles-of-actions).
 
 <!--
 TODO NOW: maybe post a link to the completed pycafe dashboard and/or screenshot?
@@ -159,10 +159,11 @@ Let's extend our action to depend on an _input_ from the user's screen. As befor
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selector](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. We group the form inputs into a [styled container](../user-guides/container.md#styled-containers) to achieve some visual separation of the form inputs and outputs. This is purely stylistic and does not affect the operation of actions.
 
+```
+=== "Result"
 
-    === "Result"
-
-        TODO screenshot
+    TODO screenshot
+```
 
 Now we need to connect `vm.Switch(id="clock_switch")` to our `update_card` action. We add an argument `use_24_hour_clock` to the `update_card` function and configure the function call in `vm.Action` to use the `clock_switch` component as the input value of this argument.
 
@@ -346,7 +347,7 @@ vm.Action(
 Sometimes you need a single trigger to execute multiple actions. Vizro uses [_chains_ of actions](../user-guides/actions.md#multiple-actions) to achieve this. There are two different ways to form an actions chain:
 
 - Explicit actions chain. When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro executes these actions in order, so that `action_2` executes only when `action_1` has completed.
-- Implicit actions chain. When one action outputs a trigger of another action then the subsequent action is triggered automatically. 
+- Implicit actions chain. When one action outputs a trigger of another action then the subsequent action is triggered automatically.
 
 !!! note
 
@@ -476,7 +477,7 @@ graph TD
 
 ### Implicit actions chain
 
-Now we're going to re-work the example a bit to demonstrate an implicit actions chain. Let's add a dropdown menu that allows the user to choose between seeing the weather in Washington, D.C. or in Berlin. When the user selects the city we also update the time and date shown to the format preferred by that location: for Washington, D.C., this is 12-hour clock and MM/DD/YY format; for Berlin, it is 24-hour clock and DD/MM/YY format. 
+Now we're going to re-work the example a bit to demonstrate an implicit actions chain. Let's add a dropdown menu that allows the user to choose between seeing the weather in Washington, D.C. or in Berlin. When the user selects the city we also update the time and date shown to the format preferred by that location: for Washington, D.C., this is 12-hour clock and MM/DD/YY format; for Berlin, it is 24-hour clock and DD/MM/YY format.
 
 When the city is selected in the dropdown, we want to immediately update the cards _without requiring the user to click `submit_button`_. To achieve this, we write a new action `update_time_date_formats` triggered by the dropdown that outputs to `submit_button`.
 
@@ -619,12 +620,12 @@ It is still possible to set the time and date formats and submit the form manual
 
 ## Parallel actions
 
-To make the app feel more responsive, we're going to remove the submit button and instead use `clock_switch` and `date_radio_items` as triggers themselves. 
+To make the app feel more responsive, we're going to remove the submit button and instead use `clock_switch` and `date_radio_items` as triggers themselves.
 
 The `update_cards` action currently uses both `clock_switch` and `date_radio_items` as inputs and returns both `time_card` and `date_card` as outputs. However, really `clock_switch` only affects `time_card`, and `date_radio_items` only affects `date_card`. Let's split `update_cards` into two independent actions to reflect this:
 
-* `update_time_card`, which updates only `time_card`
-* `update_date_card`, which updates only `date_card`
+- `update_time_card`, which updates only `time_card`
+- `update_date_card`, which updates only `date_card`
 
 As an additional enhancement we add `location_dropdown` as an input to these actions so that we can use the correct timezone for Washington, D.C. and Berlin.
 
@@ -735,9 +736,9 @@ As an additional enhancement we add `location_dropdown` as an input to these act
 
 Play around with the app for a while to make sure you understand its behavior:
 
-* When you click the switch, just the time card updates.
-* When you click the radio items, just the date card updates. 
-* When you use the dropdown, the switch and radio items update, which in turns updates the time and date cards, and the weather is fetched after an initial placeholder message is shown.
+- When you click the switch, just the time card updates.
+- When you click the radio items, just the date card updates.
+- When you use the dropdown, the switch and radio items update, which in turns updates the time and date cards, and the weather is fetched after an initial placeholder message is shown.
 
 Now that you're familiar with the notation of an actions flowchart we're going to make a few simplifications so that it doesn't get too large to understand. We no longer show the runtime inputs at all, and we omit the labels from the lines showing outputs and triggers (still shown with thick lines).
 
@@ -800,13 +801,13 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
         ```{.python pycafe-link hl_lines="33-37"}
         from datetime import datetime
         from zoneinfo import ZoneInfo
-        
+
         import requests
         import vizro.models as vm
         from vizro import Vizro
         from vizro.models.types import capture
-        
-        
+
+
         @capture("action")
         def update_time_card(use_24_hour_clock, location):
             time_format = "%H:%M:%S %Z" if use_24_hour_clock else "%I:%M:%S %p %Z"
@@ -814,8 +815,8 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
             now = datetime.now(ZoneInfo(timezone_name))
             time = now.strftime(time_format)
             return f"🕰️ The time is {time}"
-        
-        
+
+
         @capture("action")
         def update_date_card(date_format, location):
             date_format = "%d/%m/%y" if date_format == "DD/MM/YY" else "%m/%d/%y"
@@ -823,8 +824,8 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
             now = datetime.now(ZoneInfo(timezone_name))
             date = now.strftime(date_format)
             return f"📅 The date is {date}"
-        
-        
+
+
         @capture("action")
         def fetch_weather(location):
             berlin_params = {"latitude": 52.5, "longitude": 13.4, "current": "temperature_2m"}
@@ -836,19 +837,19 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
             except:
                 return "❗ Could not fetch weather"
             return f"🌡️ The current temperature in {location} is {temperature}°C"
-        
-        
+
+
         @capture("action")
         def update_time_date_formats(location):
             if location == "Berlin":
                 return True, "DD/MM/YY", "Fetching current weather..."
             return False, "MM/DD/YY", "Fetching current weather..."
-        
-        
+
+
         vm.Container.add_type("components", vm.Switch)
         vm.Container.add_type("components", vm.RadioItems)
         vm.Container.add_type("components", vm.Dropdown)
-        
+
         page = vm.Page(
             title="My first action",
             layout=vm.Flex(),
@@ -875,7 +876,7 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
                             title="24-hour clock",
                             value=True,
                             actions=vm.Action(function=update_time_card("clock_switch", "location_dropdown"), outputs="time_card"),
-        
+
                         ),
                         vm.RadioItems(
                             id="date_radio_items",
@@ -889,7 +890,7 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
                 vm.Card(id="weather_card", text="Click the button"),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```

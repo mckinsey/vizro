@@ -6,7 +6,7 @@ To download data from your dashboard, you can use the [`export_data` action][viz
 
 !!! example "Export data"
 
-    === "app.py" 
+    === "app.py"
 
         ```{.python pycafe-link hl_lines="23"}
         import vizro.actions as va

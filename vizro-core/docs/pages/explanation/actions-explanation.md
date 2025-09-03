@@ -1,4 +1,5 @@
-# Actions 
+# Actions
+
 <!--
 TODO NOW
 - intro
@@ -24,7 +25,6 @@ In Vizro, there are two types of action:
 !!! note
 
     Do you have an idea for a built-in action? Submit a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
-
 
 <!--
 
