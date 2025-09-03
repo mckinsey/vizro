@@ -401,9 +401,3 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
 !!! note
 
     Are you addressing an underlying Dash component that you think should be addressed by Vizro more easily? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
-
-<!--
-TODO NOW:
-- YAML configuration
-- Remove old screenshots
--->

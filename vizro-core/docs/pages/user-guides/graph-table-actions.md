@@ -195,5 +195,5 @@ Here is an example of how to configure a chart interaction when the source is an
 
         [![TableInteraction]][tableinteraction]
 
-[graphinteraction]: ../../assets/user_guides/actions/actions_filter_interaction.png
-[tableinteraction]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
+[graphinteraction]: ../../assets/user_guides/graph_tables_actions/actions_filter_interaction.png
+[tableinteraction]: ../../assets/user_guides/graph_tables_actions/actions_table_filter_interaction.png
