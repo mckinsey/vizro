@@ -5,13 +5,45 @@
 }
 
 .grid-item :has(#slider-component-1) {
-  padding: 4px;
+  padding-left: 64px;
+  padding-right: 64px;
+  padding-top: 24px;
 }
 
-.grid-item :has(#slider-component-2) {
-  padding: 4px;
+.slider-label-input {
+  display: none;
 }
 
-.grid-item :has(#slider-component-3) {
-  padding: 4px;
+.rc-slider-dot {
+  height: 8px;
+  width: 8px;
+}
+
+.rc-slider-track {
+  height: 4px;
+}
+
+.rc-slider-step {
+  height: 6px;
+}
+
+.rc-slider-mark-text {
+  font-size: 1rem;
+}
+
+.nav-tabs {
+  display: none;
+}
+
+.card-kpi .material-symbols-outlined {
+  color: white;
+  font-size: 34px;
+}
+
+.header-dropdown .dash-dropdown {
+  width: 120px;
+}
+
+.tab-content {
+  height: 100% !important;
 }

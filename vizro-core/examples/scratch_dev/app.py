@@ -1,209 +1,222 @@
 """This is a test app to test the dashboard layout."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
 from vizro.figures import kpi_card
-import time
 import pandas as pd
-from data import summary, industry_data, industry_verticals
-from charts import custom_bar
+from data import market_industry_data, map_chart_data, market_category_data, market_summary_data, aggrid_data
+from charts import (
+    custom_market_industry_bar_chart,
+    custom_map_chart,
+    custom_market_category_bar_chart,
+    custom_market_summary_bar_chart,
+)
+
+from dash import callback, Input, Output
+from vizro.actions import filter_interaction
+from vizro.tables import dash_ag_grid
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
 vm.Page.add_type("components", vm.Slider)
 vm.Container.add_type("components", vm.Slider)
 
-page_1 = vm.Page(
-    title="Page 1",
+
+page = vm.Page(
+    title="Vizro dashboard",
     components=[
-        vm.Container(
-            title="",
-            components=[
-                vm.Slider(
-                    id="slider-component-1",
-                    marks={0: "page 1", 1: "page 2", 2: "page 3"},
-                    step=1,
-                    min=0,
-                    max=2,
-                    extra={"included": True}
-                )
-            ]
+        vm.Slider(
+            id="slider-component-1",
+            marks={0: "Market Map", 1: "Leads", 2: "Summary"},
+            step=1,
+            min=0,
+            max=2,
+            extra={"included": True},
         ),
-        vm.Figure(
-            id="kpi-card-1",
-            figure=kpi_card(
-                    data_frame=df_kpi,
-                    value_column="Actual",
-                    title="Number of Leads",
-                    icon="Groups",
+        vm.Tabs(
+            id="page-tab",
+            tabs=[
+                vm.Container(
+                    title="Market Map",
+                    components=[
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=df_kpi,
+                                value_column="Actual",
+                                title="Number of Leads",
+                                icon="Groups",
+                            ),
+                        ),
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=df_kpi,
+                                value_column="Actual",
+                                title="Serviceable Available Market",
+                                icon="Finance mode",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="market-industry-bar-chart",
+                            figure=custom_market_industry_bar_chart(market_industry_data, custom_data=["Industry"]),
+                            actions=[vm.Action(function=filter_interaction(targets=["market-category-bar-chart"]))],
+                        ),
+                        vm.Graph(
+                            figure=custom_map_chart(map_chart_data),
+                        ),
+                        vm.Graph(
+                            id="market-category-bar-chart",
+                            figure=custom_market_category_bar_chart(market_category_data, custom_data=["Industry"]),
+                            actions=[vm.Action(function=filter_interaction(targets=["market-industry-bar-chart"]))],
+                        ),
+                    ],
+                    layout=vm.Grid(
+                        grid=[
+                            [0, 0, 1, 1],
+                            [2, 2, 3, 3],
+                            [2, 2, 3, 3],
+                            [2, 2, 4, 4],
+                            [2, 2, 4, 4],
+                        ],
+                        row_gap="12px",
+                        col_gap="12px",
+                    ),
                 ),
-        ),
-        vm.Figure(
-            id="kpi-card-2",
-            figure=kpi_card(
-                    data_frame=df_kpi,
-                    value_column="Actual",
-                    title="Serviceable Available Market",
-                    icon="Finance mode",
+                vm.Container(
+                    title="Leads",
+                    components=[
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=df_kpi,
+                                value_column="Actual",
+                                title="Number of Leads",
+                                icon="Groups",
+                            ),
+                        ),
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=df_kpi,
+                                value_column="Actual",
+                                title="Serviceable Available Market",
+                                icon="Finance mode",
+                            ),
+                        ),
+                        vm.Container(
+                            title="",
+                            components=[
+                                vm.AgGrid(
+                                    id="tab_2_aggrid",
+                                    figure=dash_ag_grid(
+                                        data_frame=aggrid_data,
+                                        dashGridOptions={"pagination": False},
+                                        columnSize="sizeToFit",
+                                    ),
+                                    actions=[vm.Action(function=filter_interaction(targets=["tab_2_market_category"]))],
+                                ),
+                            ],
+                        ),
+                        vm.Container(
+                            title="",
+                            components=[
+                                vm.Graph(
+                                    figure=custom_map_chart(map_chart_data),
+                                ),
+                                vm.Graph(
+                                    id="tab_2_market_category",
+                                    figure=custom_market_category_bar_chart(
+                                        market_category_data, custom_data=["Industry"]
+                                    ),
+                                    actions=[vm.Action(function=filter_interaction(targets=["tab_2_aggrid"]))],
+                                ),
+                            ],
+                        ),
+                    ],
+                    controls=[vm.Filter(column="Industry", selector=vm.Checklist())],
+                    layout=vm.Grid(
+                        grid=[
+                            [0, 0, 1, 1],
+                            [2, 2, 3, 3],
+                            [2, 2, 3, 3],
+                            [2, 2, 3, 3],
+                            [2, 2, 3, 3],
+                        ],
+                        row_gap="12px",
+                        col_gap="12px",
+                    ),
                 ),
-        ),
-        vm.Container(
-            title="",
-            components=[
-                vm.Graph(
-                    figure=custom_bar(industry_data)
-                )
-            ]
-        ),
-        vm.Container(
-            title="",
-            components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text")
-            ]
+                vm.Container(
+                    title="Summary",
+                    components=[
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=df_kpi,
+                                value_column="Actual",
+                                title="Number of Leads",
+                                icon="Groups",
+                            ),
+                        ),
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=df_kpi,
+                                value_column="Actual",
+                                title="Serviceable Available Market",
+                                icon="Finance mode",
+                            ),
+                        ),
+                        vm.Container(
+                            title="",
+                            components=[vm.Card(text="Placeholder for waterfall chart")],
+                        ),
+                        vm.Container(
+                            title="",
+                            components=[
+                                vm.Graph(figure=custom_market_summary_bar_chart(market_summary_data)),
+                            ],
+                        ),
+                    ],
+                    layout=vm.Grid(
+                        grid=[
+                            [0, 0, 1, 1],
+                            [2, 2, 3, 3],
+                            [2, 2, 3, 3],
+                            [2, 2, 3, 3],
+                            [2, 2, 3, 3],
+                        ],
+                        row_gap="12px",
+                        col_gap="12px",
+                    ),
+                ),
+            ],
         ),
     ],
     layout=vm.Grid(
         grid=[
-            [0, 0, 0, 0],
-            [1, 1, 2, 2],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
+            [0],
+            [1],
+            [1],
+            [1],
+            [1],
+            [1],
+            [1],
+            [1],
         ],
-        row_gap="8px",
-    )
+        row_gap="12px",
+    ),
 )
 
-page_2 = vm.Page(
-    title="Page 2",
-    components=[
-        vm.Container(
-            title="",
-            components=[
-                vm.Slider(
-                    id="slider-component-2",
-                    marks={0: "page 1", 1: "page 2", 2: "page 3"},
-                    step=1,
-                    min=0,
-                    max=2,
-                    extra={"included": True}
-                )
-            ]
-        ),
-        vm.Figure(
-            id="kpi-card-3",
-            figure=kpi_card(
-                    data_frame=df_kpi,
-                    value_column="Actual",
-                    title="Number of Leads",
-                    icon="Groups",
-                ),
-        ),
-        vm.Figure(
-            id="kpi-card-4",
-            figure=kpi_card(
-                    data_frame=df_kpi,
-                    value_column="Actual",
-                    title="Serviceable Available Market",
-                    icon="Finance mode",
-                ),
-        ),
-        vm.Container(
-            title="",
-            components=[
-                vm.Card(text="Placeholder text"),
-            ]
-        ),
-        vm.Container(
-            title="",
-            components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text")
-            ]
-        ),
-    ],
-    layout=vm.Grid(
-        grid=[
-            [0, 0, 0, 0],
-            [1, 1, 2, 2],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-        ],
-        row_gap="8px",
-    )
-)
 
-page_3 = vm.Page(
-    title="Page 3",
-    components=[
-        vm.Container(
-            title="",
-            components=[
-                vm.Slider(
-                    id="slider-component-3",
-                    marks={0: "page 1", 1: "page 2", 2: "page 3"},
-                    step=1,
-                    min=0,
-                    max=2,
-                    extra={"included": True}
-                )
-            ]
-        ),
-        vm.Figure(
-            id="kpi-card-5",
-            figure=kpi_card(
-                    data_frame=df_kpi,
-                    value_column="Actual",
-                    title="Number of Leads",
-                    icon="Groups",
-                ),
-        ),
-        vm.Figure(
-            id="kpi-card-6",
-            figure=kpi_card(
-                    data_frame=df_kpi,
-                    value_column="Actual",
-                    title="Serviceable Available Market",
-                    icon="Finance mode",
-                ),
-        ),
-        vm.Container(
-            title="",
-            components=[
-                vm.Card(text="Placeholder text"),
-            ]
-        ),
-        vm.Container(
-            title="",
-            components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text")
-            ]
-        ),
-    ],
-    layout=vm.Grid(
-        grid=[
-            [0, 0, 0, 0],
-            [1, 1, 2, 2],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-            [3, 3, 4, 4],
-        ],
-        row_gap="8px",
-    )
-)
+dashboard = vm.Dashboard(pages=[page])
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
+
+@callback(
+    Output("page-tab", "active_tab", allow_duplicate=True),
+    Input("slider-component-1", "value"),
+    prevent_initial_call=True,
+)
+def change_location(value):
+    if value:
+        return f"tab-{value}"
+    else:
+        return "tab-0"
 
 
 if __name__ == "__main__":
