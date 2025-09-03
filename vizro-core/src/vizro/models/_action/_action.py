@@ -410,10 +410,13 @@ class _BaseAction(VizroBaseModel):
 
 
 class Action(_BaseAction):
-    """Action to be inserted into `actions` of relevant component.
+    """Custom action to be inserted into `actions` of relevant component.
+
+    Abstract: Usage documentation
+        [How to create custom actions](../user-guides/custom-actions.md)
 
     Args:
-        function (CapturedCallable): Action function.
+        function (CapturedCallable): Custom action function.
         inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
             or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
         outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].

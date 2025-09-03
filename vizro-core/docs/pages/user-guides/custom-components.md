@@ -490,3 +490,5 @@ Note that users of this package are responsible for the content of any custom-cr
 By default, all Dash components in Vizro that persist client-side data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser.
 
 Be careful when using any custom components that persist data beyond this scope: it is your responsibility to ensure compliance with any legal requirements affecting jurisdictions in which your app operates.
+
+<!-- TODO NOW: finish rewriting this page -->

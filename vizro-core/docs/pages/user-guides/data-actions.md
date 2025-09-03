@@ -2,15 +2,11 @@
 
 ## Export data
 
-!!! abstract API documentation
-
-    [`vizro.actions.export_data`][vizro.actions.export_data]
-
-To download data from your dashboard, you can use the `export_data` action. For example, you can attach the action to a [button](button.md) as follows. When a clicks the "Export data" button, all data on the page is downloaded.
+To download data from your dashboard, you can use the [`export_data` action][vizro.actions.export_data]. For example, you can attach the action to a [button](button.md) as follows. When a clicks the "Export data" button, all data on the page is downloaded.
 
 !!! example "Export data"
 
-    === "app.py"
+    === "app.py" 
 
         ```{.python pycafe-link hl_lines="23"}
         import vizro.actions as va

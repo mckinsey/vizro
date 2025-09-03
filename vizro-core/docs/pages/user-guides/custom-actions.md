@@ -1,14 +1,14 @@
 # How to create custom actions
 
-Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you can write your own custom action.
+Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you can write your own custom action. In this guide we show how to do this.
 
-Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md). We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions.md) that teaches what you see here in more detail.
+We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md)
 
 !!! note
 
     Do you have an idea for a built-in action? Submit a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
 
-## General principles
+## Key principles
 
 Many [Vizro models][vizro.models] have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ by a user interaction. The function can optionally have any number of _inputs_ and _outputs_ that refer to a Vizro model `id`.
 
@@ -23,7 +23,7 @@ To define your own action:
     @capture("action")
     def action_function(input_1, input_2):
         ...
-        return "My string value"
+        return "My string value, potentially dependent on input_1 and input_2"
     ```
 
 1. attach it to the `actions` argument of a Vizro model using [`Action`][vizro.models.Action]:
@@ -36,16 +36,19 @@ To define your own action:
     import vizro.models as vm
 
     actions = vm.Action(
-        function=action_function(input_1="input_id_1", input_2="input_id_2"),
-        outputs="output_id_1",
+        function=action_function(input_1="input_id_1", input_2="input_id_2"),  # (1)!
+        outputs="output_id_1",  # (1)!
     )
     ```
+   
+    1. When the dashboard is running, the action's `input_1` will be set to the runtime value of the Vizro model with `id="input_id_1"` and similarly for `input_2`.  
+    2. When the dashboard is running, the action's output "My string value..." will set the value of the Vizro model with `id="output_id_1"`. 
 
 You can also execute [multiple actions with a single trigger](#multiple-actions).
 
 !!! warning
 
-    You should never assume that the value of inputs in your action function is restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions.md#security).
+    You should never assume that the value of inputs in your action function is restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions-tutorial.md#security).
 
 ## Trigger an action with a button
 
@@ -261,11 +264,11 @@ actions = vm.Action(
 
 1. Specifying outputs in the "wrong" order as `outputs={"key 2": "output_id_2", "key 1": "output_id_1"}` would work exactly the same way.
 
-A full real world example of using multiple inputs and outputs in a form [given in the tutorial](../tutorials/custom-actions.md#multiple-inputs-and-outputs).
+A full real world example of using multiple inputs and outputs in a form [given in the tutorial](../tutorials/custom-actions-tutorial.md#multiple-inputs-and-outputs).
 
 ## Multiple actions
 
-When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix [built-in actions](actions.md) and custom actions in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions.md).
+When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix [built-in actions](actions.md) and custom actions in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions-tutorial.md).
 
 Here is an example actions chain that uses a custom `action_function` action and the built-in `export_data` action:
 
@@ -387,18 +390,13 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
-
         ```
 
         1. We disable the switch by returning `True` to its `disabled` property. After this action runs, the switch can no longer the clicked. To reset it, you must refresh the page.
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.disabled"` to update the `disabled` property of the component with `id="clock_switch"`.
 
-```
-=== "Result"
-
-    TODO screenshot
-```
+   === "Result"
 
 !!! note
 

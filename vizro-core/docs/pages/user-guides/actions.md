@@ -1,15 +1,11 @@
 # How to use actions
 
-Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not built into Vizro then you can [write your own custom action](custom-actions.md).
-
-Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to use them. If you are already familiar with Dash callbacks then you might like to also read our [explanation of how Vizro actions compare to Dash callbacks](../explanation/actions-and-callbacks.md).
-
-In these guides we demonstrate how to use actions to perform tasks in your dashboard:
+Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not built into Vizro then you can [write your own custom action](custom-actions.md). In these guides we show how to use built-in actions to perform tasks in your dashboard:
 
 - [Interact with data](data-actions.md), for example to export data.
-- [Interact with graphs and tables](graph-table-actions), for example to cross-filter.
+- [Interact with graphs and tables](graph-table-actions.md), for example to cross-filter.
 
-A complete list of built-in actions in given in the [API documentation][vizro.actions].
+A complete list of built-in actions in given in the [API documentation][vizro.actions]. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md)
 
 !!! note
 
@@ -115,7 +111,7 @@ This is already possible, and documentation is coming soon!
 
 ## Multiple actions
 
-When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix built-in actions and [custom actions](custom-actions.md) in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions.md).
+When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix built-in actions and [custom actions](custom-actions.md) in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions-tutorial.md).
 
 Here is an example actions chain that uses a custom `action_function` action and the built-in `export_data` action:
 
