@@ -106,20 +106,17 @@ def make_actions_chain(self):
         else:
             converted_actions.append(action)
 
+    model_action_trigger = self._action_triggers["__default__"]
     for i, action in enumerate(converted_actions):
-        first_in_chain = i == 0
+        # First action in the chain uses the model's specified trigger.
+        # All subsequent actions in the chain are triggered by the previous action's completion.
+        # In the future, we would allow multiple keys in the _action_triggers dictionary, and then we'd need to look up
+        # the relevant entry here. For now there's just __default__ so we always use that.
+        action._trigger = model_action_trigger if i == 0 else f"{converted_actions[i - 1].id}_finished.data"
 
-        if first_in_chain:
-            # First action in the chain uses the model's specified trigger. In future we would allow multiple keys in
-            # the _action_triggers dictionary and then we'd need to look up the relevant entry here. For now there's
-            # just __default__ so we always use that.
-            trigger = self._action_triggers["__default__"]
-        else:
-            # All subsequent actions in the chain are triggered by the previous action's completion.
-            trigger = f"{converted_actions[i - 1].id}_finished.data"
+        # Every action has to know about the model action trigger to properly set the action's builtin arg "_trigger".
+        action._first_in_chain_trigger = model_action_trigger
 
-        action._trigger = trigger
-        action._first_in_chain = first_in_chain
         # The actions chain guard should be called only for on page load.
         action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
 
