@@ -108,6 +108,7 @@ class Filter(VizroBaseModel):
     )
 
     _dynamic: bool = PrivateAttr(False)
+    _selector_properties: set[str] = PrivateAttr(set())
     _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
 
     @model_validator(mode="after")
@@ -118,11 +119,39 @@ class Filter(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        # TODO-AV2 E: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.
-        # This will allow direct interaction with a filter's selector via its ID, essential for the upcoming
-        # 'interact' action.
-        # TODO NOW: revert this
-        return {"__default__": f"{self.selector.id}.value"}
+        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise,
+        # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
+        selector = cast(SelectorType, self.selector)
+        return {
+            "selector": f"{self.id}.children",
+            **selector._action_outputs,
+            **(
+                {selector_prop: f"{selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise,
+        # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
+        selector = cast(SelectorType, self.selector)
+        return selector._action_triggers
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise,
+        # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
+        selector = cast(SelectorType, self.selector)
+        return {
+            **selector._action_inputs,
+            **(
+                {selector_prop: f"{selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
         # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
@@ -249,6 +278,12 @@ class Filter(VizroBaseModel):
                     targets=self.targets,
                 ),
             ]
+
+        # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
+        # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
+        # Example: "filter-id.options" is forwarded to "checklist.options".
+        if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
+            self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
     @_log_call
     def build(self):

@@ -2,7 +2,7 @@ from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, model_validator
+from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
@@ -85,6 +85,8 @@ class Parameter(VizroBaseModel):
         ),
     )
 
+    _selector_properties: set[str] = PrivateAttr(set())
+
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
         # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
@@ -93,11 +95,30 @@ class Parameter(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        # TODO-AV2 E: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.
-        # This will allow direct interaction with a filter's selector via its ID, essential for the upcoming
-        # 'interact' action.
-        # TODO NOW: revert this
-        return {"__default__": f"{self.selector.id}.value"}
+        return {
+            "selector": f"{self.id}.children",
+            **self.selector._action_outputs,
+            **(
+                {selector_prop: f"{self.selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return self.selector._action_triggers
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {
+            **self.selector._action_inputs,
+            **(
+                {selector_prop: f"{self.selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
 
     @_log_call
     def pre_build(self):
@@ -106,6 +127,13 @@ class Parameter(VizroBaseModel):
         self._check_categorical_selectors_options()
         self._set_selector_title()
         self._set_actions()
+
+        # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
+        # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
+        # Example: "parameter-id.options" is forwarded to "checklist.options".
+        # Note: Added in pre_build for consistency with Filter, but could move to the initialization phase.
+        if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
+            self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
     @_log_call
     def build(self):

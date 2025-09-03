@@ -52,15 +52,20 @@ class _BaseAction(VizroBaseModel):
 
     # These are set in the make_actions_chain validator (same for both Action and _AbstractAction).
     # In the future a user would probably be able to specify something here that would look up a key in
-    # _action_triggers or just a full _IdProperty. The _first_in_chain and _prevent_initial_call_of_guard would remain
-    # private though. These are required for correct functioning of the actions chain guard.
+    # _action_triggers or just a full _IdProperty. The _first_in_chain_trigger and _prevent_initial_call_of_guard would
+    # remain private though. These are required for correct functioning of the actions chain guard.
     _trigger: _IdProperty = PrivateAttr()
-    _first_in_chain: bool = PrivateAttr()
+    _first_in_chain_trigger: _IdProperty = PrivateAttr()
     _prevent_initial_call_of_guard: bool = PrivateAttr()
 
     # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
     # model manager and removal of filter_interaction.
     _parent_model_id: ModelID = PrivateAttr()
+
+    @property
+    def _is_first_in_chain(self) -> bool:
+        """Whether this action is the first in the chain of actions."""
+        return self._first_in_chain_trigger == self._trigger
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -75,7 +80,8 @@ class _BaseAction(VizroBaseModel):
         generally encouraged. In the future it might not be possible.
         """
         dash_components = [dcc.Store(id=f"{self.id}_finished")]
-        if self._first_in_chain:
+        if self._is_first_in_chain:
+            # Only need the guard for the first action in the chain.
             dash_components.append(dcc.Store(id=f"{self.id}_guarded_trigger"))
 
         return dash_components
@@ -217,7 +223,8 @@ class _BaseAction(VizroBaseModel):
                 "filters": self._get_control_states(control_type=Filter),
                 "parameters": self._get_control_states(control_type=Parameter),
                 "filter_interaction": self._get_filter_interaction_states(),
-            }
+            },
+            "_trigger": State(*self._first_in_chain_trigger.split(".")),
         }
 
         # Work out which built in arguments are actually required for this function.
@@ -326,7 +333,7 @@ class _BaseAction(VizroBaseModel):
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
-        if self._first_in_chain:
+        if self._is_first_in_chain:
             # If the action is the first one in the action chain then we need to insert an additional "guard"
             # callback. This prevents the main action callback (action_callback) firing even in the case that the
             # Input component is created in the layout. This is a workaround for the behavior of
