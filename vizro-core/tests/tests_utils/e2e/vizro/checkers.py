@@ -40,7 +40,7 @@ def browser_console_warnings_checker(log_level, log_levels):
 def check_graph_is_loaded(driver, graph_id):
     """Waiting for graph to start reloading."""
     try:
-        WebDriverWait(driver.driver, 10, poll_frequency=0.1).until(
+        WebDriverWait(driver.driver, 10, poll_frequency=0.05).until(
             expected_conditions.presence_of_element_located(
                 (By.CSS_SELECTOR, f"div[id='{graph_id}'][data-dash-is-loading='true']")
             )
