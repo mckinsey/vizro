@@ -1,14 +1,14 @@
 import logging
 import warnings
-from box import Box
 from contextlib import suppress
 from typing import Annotated, Any, Literal, Optional, cast
 
 import pandas as pd
+from box import Box
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, field_validator, model_validator, JsonValue
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested

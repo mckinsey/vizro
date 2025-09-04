@@ -25,24 +25,25 @@ page_1 = vm.Page(
                     actions=[
                         set_control(target="p1_filter_1"),
                         set_control(target="p1_filter_2"),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     components=[
-                        vm.AgGrid(
-                            id="p1_ag_grid_1",
-                            figure=dash_ag_grid(df, id="p1_inner_ag_grid_1")
-                        ),
+                        vm.AgGrid(id="p1_ag_grid_1", figure=dash_ag_grid(df, id="p1_inner_ag_grid_1")),
                     ],
                     controls=[
                         # multi=True
                         vm.Filter(id="p1_filter_1", column="species", targets=["p1_ag_grid_1"]),
                         # multi=False
-                        vm.Filter(id="p1_filter_2", column="species", targets=["p1_ag_grid_1"], selector=vm.Dropdown(multi=False))
-                    ]
-                )
-
-            ]
+                        vm.Filter(
+                            id="p1_filter_2",
+                            column="species",
+                            targets=["p1_ag_grid_1"],
+                            selector=vm.Dropdown(multi=False),
+                        ),
+                    ],
+                ),
+            ],
         ),
         vm.Container(
             title="Drill-through to Page 2",
@@ -53,16 +54,16 @@ page_1 = vm.Page(
                     id="p1_graph_2",
                     title="Drill-through to multi=True Page-2",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-                    actions=set_control(target="p2_filter_1")
+                    actions=set_control(target="p2_filter_1"),
                 ),
                 vm.Graph(
                     id="p1_graph_3",
                     title="Drill-through to multi=False Page-2",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-                    actions=set_control(target="p2_filter_2")
+                    actions=set_control(target="p2_filter_2"),
                 ),
-            ]
-        )
+            ],
+        ),
     ],
 )
 
@@ -79,7 +80,7 @@ page_2 = vm.Page(
         vm.Filter(id="p2_filter_1", column="species", show_in_url=True, selector=vm.Checklist()),
         # multi=False
         vm.Filter(id="p2_filter_2", column="species", show_in_url=True, selector=vm.RadioItems()),
-    ]
+    ],
 )
 
 
