@@ -40,7 +40,11 @@ def browser_console_warnings_checker(log_level, log_levels):
 def check_graph_is_loaded(driver, graph_id):
     """Waiting for graph to start reloading."""
     try:
-        driver.wait_for_element(f"div[id='{graph_id}'][data-dash-is-loading='true']")
+        WebDriverWait(driver.driver, 10, poll_frequency=0.1).until(
+            expected_conditions.presence_of_element_located(
+                (By.CSS_SELECTOR, f"div[id='{graph_id}'][data-dash-is-loading='true']")
+            )
+        )
         graph_load_waiter(driver)
     except Exception as e:
         pytest.fail(f"Graph failed to load: {e}", pytrace=False)
