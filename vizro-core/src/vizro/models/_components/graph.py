@@ -1,5 +1,6 @@
 import logging
 import warnings
+from box import Box
 from contextlib import suppress
 from typing import Annotated, Any, Literal, Optional, cast
 
@@ -7,13 +8,13 @@ import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, field_validator, model_validator, JsonValue
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
-from vizro.actions._update_controls import update_control
+from vizro.actions._set_control import set_control
 from vizro.managers import data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
@@ -120,24 +121,24 @@ class Graph(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
-    # To make a model compatible as a source of update_controls it must implement this.
-    def _get_value_from_trigger(self, action: update_control, trigger):
+    # To make a model compatible as a source of set_control it must implement this.
+    def _get_value_from_trigger(self, action: set_control, trigger: JsonValue) -> JsonValue:
         """For graphs we want to start from _trigger["points"][0] and then be able to navigate to:
 
-        1. something at root level like x or y - so lookup="x"
+        1. something at root level like x or y - so value="x"
         2. something inside customdata. How should user specify this?
         Don't worry about being able to navigate to anything outside _trigger["points"][0].
 
-        Let's use box as the lookup language:
+        Let's use box as the value language:
         trigger = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
-        return trigger[action.lookup]
+        return trigger[action.value]
 
-        This works for lookup="x" and lookup="customdata[0]" and lookup="something.deep[1].blah"
+        This works for value="x" and value="customdata[0]" and value="something.deep[1].blah"
 
         Should we have a default value of "customdata[0]"? Maybe complicates things from MCP/schema/pydantic point of
         view since default is dependent on triggering model but also simplifies syntax for a common case.
 
-        What are options ow to handle lookup?
+        What are options ow to handle value?
 
         User specifies custom_data:
         1. This horrible one - user specifies customdata[0] (or maybe nothing if that's the default) but no
@@ -149,22 +150,25 @@ class Graph(VizroBaseModel):
         but slightly relaxes the requirement to have custom_data in the function signature since you could use the
         ugly customdata[0] syntax if you wanted to.
 
-        lookup would have no default value.
+        value would have no default value. Or...
+        """
+        action_value = action.value or "customdata[0]"
 
+        # TODO PP: Improve exc messages below
         trigger = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
         try:
-            # works for lookup="species"
-            index = self["custom_data"].index(action.lookup)
+            # works for value="species"
+            index = self["custom_data"].index(action_value)
             return trigger["customdata"][index]
         except ValueError:
             try:
-                # works for lookup="x" and lookup="customdata[0]" if user does want to do that
-                return trigger[action.lookup]
-            except KeyError: # or whatever it is
-                # As now
-                raise Error... Couldn't find lookup in trigger. If you expected it to be in custom data then it needs
-                to be in signature.
-        """
+                # works for value="x" and value="customdata[0]" if user does want to do that
+                return trigger[action_value]
+            except KeyError:
+                raise ValueError(
+                    f"Couldn't find value: `{action_value}` in trigger. "
+                    "If you expected it to be in custom data then it needs to be in signature."
+                )
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

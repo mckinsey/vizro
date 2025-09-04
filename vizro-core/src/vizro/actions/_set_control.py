@@ -2,15 +2,16 @@ from __future__ import annotations
 
 import base64
 import json
-from typing import Literal, Protocol, runtime_checkable
+from typing import Any, Literal, Protocol, runtime_checkable
 
-from dash import get_relative_path
+from dash import get_relative_path, page_registry
 from pydantic import Field, JsonValue
 
 from vizro._vizro_utils import experimental
 from vizro.actions._abstract_action import _AbstractAction
+from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ModelID
+from vizro.models.types import ModelID, ControlType
 
 # TODO AM+PP: decide whether to make it control or controls plural. For now I just wrote it as singular but there's
 #  inconsistency with filename and type.
@@ -21,8 +22,8 @@ Copied from https://github.com/McK-Internal/vizro-internal/issues/1939:
 It should be possible to target multiple controls in one click
 (think e.g. clicking on a 2D heatmap, see Max example in mckinsey/vizro#1301).
 So we need some way to do e.g. target="country_filter", lookup="country" as well as
-target="continent_filter", lookup="continent". This could be multiple update_control calls
-or better a single update_controls. In this case what would API be? How do you assign the
+target="continent_filter", lookup="continent". This could be multiple set_control calls
+or better a single set_controls. In this case what would API be? How do you assign the
 right values to the right targets? Maybe a dictionary like {"country_filter": "country",
 "continent_filter": "continent"}?
 
@@ -40,85 +41,112 @@ keep simple cases simple. How would it work with a default lookup value also?
 
 Overall I tend to preferring option 1 for now but then I have no idea how to extend it to multiple controls in
 future. Maybe we should ask chatGPT if it has any ideas here... Possibly overall it's easier for a user to just chain multiple
-update_control actions together, just it's not so performant. Then ideally we'd need to come up with some way of doing
+set_control actions together, just it's not so performant. Then ideally we'd need to come up with some way of doing
 parallel actions ideally. Relates to an idea I had about "batching" actions - let's discuss some time...
 """
 
 
 @runtime_checkable
 class _SupportsSetControl(Protocol):
-    def _get_value_from_trigger(self, action: update_control, trigger: JsonValue) -> JsonValue: ...
+    def _get_value_from_trigger(self, action: set_control, trigger: JsonValue) -> JsonValue: ...
 
 
-# TODO PP: let's get this working for graph first and then worry about AgGrid. When it comes to AgGrid, let's discuss
-# how we could implement using selectedData.
 @experimental(
-    "The `update_control` action is experimental. We hope that it will be a stable part of Vizro in future, "
+    "The `set_control` action is experimental. We hope that it will be a stable part of Vizro in future, "
     "but until then it may change or be removed without warning. If you have feedback on the feature then "
     "[let us know](https://github.com/mckinsey/vizro/issues)."
 )
-class update_control(_AbstractAction):
+class set_control(_AbstractAction):
     """blah blah
 
     Args:
         blah bl: asdf
     """
 
-    type: Literal["update_controls"] = "update_controls"
+    type: Literal["set_control"] = "set_control"
     target: ModelID = Field(
         description="...",  # Filter/parameter id, not selector id
     )
     """
     TODO AM+PP: work out a good argument name for this. Syntax depends on source triggering model (like Graph etc.)
     """
-    value: str  # Joe said "The name “lookup” could indeed be improved. In VizX we used something
+    value: Any = None  # Joe said "The name “lookup” could indeed be improved. In VizX we used something
     # like “source_field_name” to make it explicit
     # I like value but maybe it's too ambiguous. It does allow for use of this action inside vm.Button etc. though
     # where they send a static value. Maybe get_value.
 
     @_log_call
     def pre_build(self):
-        # TODO PP: write this
-        # if target is on same page as trigger:
-        #     self._same_page = True
-        # else:
-        #     self._same_page = False
-        #     if not self.target.show_in_url:
-        #         raise ValueError
-        # Also need to check if target is found in dashboard at all and raise error if not
-        # Check that target control selector is categorical.
-        # Check isinstance(self._parent_model, SupportsSetControl)
+        from vizro.models._controls.filter import CategoricalSelectorType
 
-        pass
+        # Validate that action's parent model supports `set_control` action.
+        if not isinstance(model_manager[self._parent_model], _SupportsSetControl):
+            raise TypeError(
+                f"`set_control` action was added to the model with ID `{self._parent_model}`, but this action can only "
+                f"be used with models that support it (e.g. Graph)."
+            )
+
+        # TODO AM: Should we integrate this check in model_manager? IMO: We should if we find it useful in more places.
+        #  For example: `model_manager.is_model_in_dashboard(model_id) -> bool`
+        # Validate that target control exists in the dashboard.
+        target_model = target_model_page = None
+        if self.target in model_manager:
+            target_model = model_manager[self.target]
+            target_model_page = model_manager._get_model_page(target_model)
+            # TODO AM: This validation was developed with assumption that all pages are registered in `page_registry`.
+            #  However, this is not the case as Dashboard doesn't have to be pre-built before this action. Let's discuss
+            #  should we call `dashboard.pre_build()` in `Vizro._pre_build()` before other objects.
+            # _registered_page_paths = {registered_page['path'] for registered_page in page_registry.values()}
+
+        if (
+            target_model is None
+            or target_model_page is None
+            # or target_model_page.path not in _registered_page_paths
+        ):
+            raise ValueError(
+                f"Model with ID `{self.target}` used as a `target` in `set_control` action not found in the dashboard. " 
+                f"Please provide a valid control ID that exists in the dashboard."
+            )
+
+        # Validate that target control is a categorical selector.
+        if not isinstance(getattr(target_model, "selector", None), CategoricalSelectorType):
+            raise TypeError(
+                f"Model with ID `{self.target}` used as a `target` in `set_control` action must be a control model "
+                f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, RadioItems or Checklist)."
+            )
+
+        if target_model_page == model_manager._get_model_page(self):
+            self._same_page = True
+        else:
+            # Validate that target control has `show_in_url=True`.
+            if not target_model.show_in_url:
+                raise ValueError(
+                    f"Model with ID `{self.target}` used as a `target` in `set_control` action is on a different page "
+                    f"than the trigger and must have `show_in_url=True`."
+                )
+            self._same_page = False
 
     def function(self, _trigger):
-        value = self._parent_model._get_value_from_trigger(self, _trigger)
+        value = model_manager[self._parent_model]._get_value_from_trigger(self, _trigger)
 
-        # TODO PP:
-        # Need to handle case that target selector is multi=False or multi=True. Or just only handle
-        # multi=False case for now if that's easier (raise error in pre-build for multi=True).
-        # value = [value] if self.target.multi else value
         if self._same_page:
+            # Returning a single element value works for both single and multi select selectors.
             return value
         else:
-            # TODO PP: Double check this is the right encoding scheme and matches the JS one.
-            # Don't make this public yet.
             def encode_to_base64(value):
                 json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
                 b64_bytes = base64.urlsafe_b64encode(json_bytes)
                 return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
-            # TODO PP:
-            # lookup page path of self.target in dash registry, not model_manager, since homepage path needs to be "/"
-            page_path = ...
+            page_path = model_manager._get_model_page(model_manager[self.target]).path
             # ideally this shouldn't overwrite all the URL params but just append to existing ones.
             # What's the best way to do that? If it does override then that's ok - we can fix the bug later.
             #  Alternative approach is maybe don't send directly to vizro_url but instead to some proxy
             #  object and then update vizro_url with cs callback that does encoding.
             # This is nice idea so then b64 logic not needed in Python (yet anyway).
             # And same page vs. different looks more similar.
-            # Then do change page as another action in the chain? Would be an extra callback but work with chain. Not sure
-            # if good idea.
+            # Then do change page as another action in the chain? Would be an extra callback but work with chain.
+            # Not sure if good idea.
             # Currently not sure whether this should actually change page or not in case that target is on another page.
             # Probably it should change page by default anyway.
             # Need to make url safe the target id (though not base64).

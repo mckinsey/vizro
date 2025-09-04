@@ -60,8 +60,7 @@ class _BaseAction(VizroBaseModel):
 
     # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
     # model manager and removal of filter_interaction.
-    # TODO PP: change to _parent_model
-    _parent_model_id: ModelID = PrivateAttr()
+    _parent_model: ModelID = PrivateAttr()
 
     @property
     def _is_first_in_chain(self) -> bool:
@@ -127,10 +126,10 @@ class _BaseAction(VizroBaseModel):
         page = model_manager._get_model_page(self)
 
         # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
-        # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
+        # the filter_interaction model itself, hence needing to lookup action._parent_model.
         # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
-            cast(FigureWithFilterInteractionType, model_manager[action._parent_model_id])._filter_interaction_input
+            cast(FigureWithFilterInteractionType, model_manager[action._parent_model])._filter_interaction_input
             for action in model_manager._get_models(filter_interaction, page)
         ]
 
