@@ -18,8 +18,8 @@ To define your own action:
 
     ```python
     from vizro.models.types import capture
-
-
+   
+   
     @capture("action")
     def action_function(input_1, input_2):
         ...
@@ -122,7 +122,7 @@ Here is the full example code that includes the output component `vm.Time(id="ti
 
     === "Result"
 
-        TODO screenshot
+        TODO NOW screenshot/gif
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `current_time_text` action is triggered. This finds the current time and returns a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`.
 
@@ -216,7 +216,7 @@ Here is the full example code that includes the input component `vm.Switch(id="c
 
     === "Result"
 
-        TODO screenshot
+        TODO NOW screenshot/gif
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `current_time_text` action is triggered. This finds the current time and returns a string "The time is ..." with a time format that depends on the switch's setting. The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`.
 
@@ -240,12 +240,12 @@ This would be attached to an `actions` argument as follows:
 import vizro.models as vm
 
 actions = vm.Action(
-    function=action_function("input_id_1", "input_id_2"),  # (1)!
+    function=action_function(input_1="input_id_1", input_2="input_id_2"),  # (1)!
     outputs=["output_id_1", "output_id_2"],
 )
 ```
 
-1. As with an ordinary Python function call, this could also be written using keyword arguments as `action_function(input_1="input_id_1", input_2="input_id_2")`.
+1. As with an ordinary Python function call, this could also be written using positional arguments as `action_function("input_id_1", "input_id_2")`.
 
 The returned values of an action function with multiple outputs are matched to the `outputs` in order. For actions with many return values, it can be a good idea to instead return a dictionary where returned values are labelled by string keys. In this case, `outputs` should also be a dictionary with matching keys, and the order of entries does not matter:
 
@@ -344,7 +344,7 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
 
     === "Result"
 
-        TODO screenshot
+        TODO NOW screenshot/gif
 
 ### Dash properties as input and output
 
@@ -396,7 +396,10 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.disabled"` to update the `disabled` property of the component with `id="clock_switch"`.
 
-=== "Result"
+    === "Result"
+
+        TODO NOW screenshot/gif
+
 
 !!! note
 

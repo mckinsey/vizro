@@ -1,80 +1,62 @@
-from typing import Annotated, Literal
-
-import dash_bootstrap_components as dbc
-import vizro.models as vm
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from typing import Literal
 from pydantic import model_validator
+
+import vizro.models as vm
 from vizro import Vizro
 from vizro.models._models_utils import make_actions_chain
-from vizro.models.types import ActionsType, capture
+from vizro.models.types import capture, ActionsType
+import dash_mantine_components as dmc
 
 
-class Carousel(vm.VizroBaseModel):
-    type: Literal["carousel"] = "carousel"
-    images: list[str]
-    # actions: ActionsType = []
-    #
-    # @model_validator(mode="after")
-    # def _make_actions_chain(self):
-    #     return make_actions_chain(self)
+class Rating(vm.VizroBaseModel):
+    type: Literal["rating"] = "rating"
+    actions: ActionsType
 
-    #         @property
-    # def _action_triggers(self):
-    #     return {"__default__": f"{self.id}.active_index"}
+    _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
-    # @property
-    # def _action_inputs(self):
-    #     return {"__default__": f"{self.id}.active_index"}
-    #
-    # @property
-    # def _action_triggers(self):
-    #     return {"__default__": f"{self.id}.active_index"}
-    #
-    # @property
-    # def _action_outputs(self):
-    #     return {"__default__": f"{self.id}.active_index"}
+    @property
+    def _action_triggers(self):
+        return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _action_inputs(self):
+        return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _action_outputs(self):
+        return {"__default__": f"{self.id}.value"}
 
     def build(self):
-        return dbc.Carousel(id=self.id, items=[{"src": item} for item in self.images])
+        rating = dmc.Rating(id="rating")
 
-
-vm.Page.add_type("components", Carousel)
-
-
-@capture("action")
-def slide_next_card(active_index):
-    if active_index:
-        return "Second slide"
-    return "First slide"
+        return rating
 
 
 @capture("action")
-def go_to_slide_3():
-    return 1
+def clear_rating():
+    return 0
 
+
+@capture("action")
+def update_rating(value):
+    if value:
+        return f"You gave a rating of {value} out of 5 stars"
+    return "You have not provided a rating"
+
+
+vm.Page.add_type("components", Rating)
 
 page = vm.Page(
-    title="Custom Component",
-    # layout=vm.Flex(),
-    # layout=vm.Grid(grid=[[0, 1], [2, -1]]),
+    title="Custom component",
+    layout=vm.Flex(direction="row"),
     components=[
-        Carousel(
-            id="carousel",
-            images=[
-                "assets/slide_1.png",
-                "assets/slide_2.png",
-                "assets/slide_3.png",
-            ],
-            # actions=[
-            #     vm.Action(
-            #         function=slide_next_card("carousel"),
-            #         outputs="carousel-card",
-            #     )
-            # ],
-        ),
-        vm.Card(text="First slide", id="carousel-card"),
-        vm.Button(text="Go to slide 2"),  # , actions=vm.Action(function=go_to_slide_3(), outputs="carousel")),
+        Rating(id="rating", actions=vm.Action(function=update_rating("rating"), outputs="rating_text")),
+        vm.Button(text="Clear rating", actions=vm.Action(function=clear_rating(), outputs="rating")),
+        vm.Text(id="rating_text", text="You have not provided a rating"),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run(debug=True)
+Vizro().build(dashboard).run()

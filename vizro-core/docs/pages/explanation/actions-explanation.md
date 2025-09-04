@@ -10,6 +10,7 @@ TODO NOW:
 TODO NOW:
 - show a before and after version of old vs new actions - do in deprecations only
 - deprecations - do now or after? Probably deprecate action inputs and old actions built-in syntax now but not other parts
+- type hints
 -->
 
 ## What is an action?
