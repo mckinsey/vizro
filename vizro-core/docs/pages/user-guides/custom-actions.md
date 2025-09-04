@@ -18,8 +18,8 @@ To define your own action:
 
     ```python
     from vizro.models.types import capture
-   
-   
+
+
     @capture("action")
     def action_function(input_1, input_2):
         ...
@@ -399,7 +399,6 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
     === "Result"
 
         TODO NOW screenshot/gif
-
 
 !!! note
 

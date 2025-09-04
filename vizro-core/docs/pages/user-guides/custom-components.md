@@ -162,7 +162,7 @@ You may want to use this strategy to:
 - make extensive changes to an existing component
 - combine multiple components into a single higher-level component, similar to a Dash [All-in-One component](https://dash.plotly.com/all-in-one-components)
 
-We will create a new `Rating` component based on the Dash Mantine Component [`Rating`](https://www.dash-mantine-components.com/components/rating). This produces a form component that shows a set of 5 stars for the dashboard user to give a rating. We also include `html.Legend` in our custom component to label the form component. 
+We will create a new `Rating` component based on the Dash Mantine Component [`Rating`](https://www.dash-mantine-components.com/components/rating). This produces a form component that shows a set of 5 stars for the dashboard user to give a rating. We also include `html.Legend` in our custom component to label the form component.
 
 1. Create the new component by subclassing [`VizroBaseModel`][vizro.models.VizroBaseModel]:
 ```py
@@ -177,7 +177,7 @@ class Rating(vm.VizroBaseModel):
     ```py hl_lines="6-9"
     from dash import html
     import dash_mantine_components as dmc
-    
+
     class Rating(vm.VizroBaseModel):
         ...
         def build(self):
@@ -188,8 +188,8 @@ class Rating(vm.VizroBaseModel):
                 ]
             )
     ```
-    
-    1. In this example we use a [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset) rather than `html.Div` to provide the outer container. This is suitable for grouping a form legend with a set of controls. 
+
+    1. In this example we use a [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset) rather than `html.Div` to provide the outer container. This is suitable for grouping a form legend with a set of controls.
     1. This is not the core component, and so we prefix its `id` with `self.id`.
     1. This is the core component, and so it has `id=self.id`.
 
@@ -212,13 +212,13 @@ Here is the full code for `Rating` and a simple app containing it.
     === "app.py"
         ```{.python pycafe-link hl_lines="9-20 23 29"}
         from typing import Literal
-        
+
         from dash import html
         import dash_mantine_components as dmc
         import vizro.models as vm
         from vizro import Vizro
-        
-        
+
+
         class Rating(vm.VizroBaseModel):
             type: Literal["rating"] = "rating"
             title: str # (1)!
@@ -231,10 +231,10 @@ Here is the full code for `Rating` and a simple app containing it.
                         dmc.Rating(id=self.id, color=self.color),
                     ]
                 )
-        
-        
+
+
         vm.Page.add_type("components", Rating)  # (4)!
-        
+
         page = vm.Page(
             title="New rating component",
             layout=vm.Flex(),
@@ -242,10 +242,10 @@ Here is the full code for `Rating` and a simple app containing it.
                 Rating(title="Rate the last movie you watched"),  # (5)!
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
-        
+
         ```
 
         1. You can optionally define [other Pydantic fields](https://docs.pydantic.dev/2.0/usage/types/types/) to configure our custom component. Here we define a mandatory `title` field that must be a string.
@@ -259,7 +259,7 @@ Here is the full code for `Rating` and a simple app containing it.
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-        
+
         TODO NOW: screenshot/gif
 
 ## Use custom components with actions
@@ -277,19 +277,19 @@ It is then immediately possible to [address the properties of Dash components](c
     === "app.py"
         ```{.python pycafe-link hl_lines="6 27-29 36-40"}
         from typing import Literal
-        
+
         from dash import html
         import dash_mantine_components as dmc
         import vizro.models as vm
         from vizro.models.types import capture
         from vizro import Vizro
-        
-        
+
+
         class Rating(vm.VizroBaseModel):
             type: Literal["rating"] = "rating"
             title: str
             color: str = "#00b4ff"
-        
+
             def build(self):
                 return html.Fieldset(
                     [
@@ -297,16 +297,16 @@ It is then immediately possible to [address the properties of Dash components](c
                         dmc.Rating(id=self.id, color=self.color),
                     ]
                 )
-        
-        
+
+
         vm.Page.add_type("components", Rating)
-        
-        
+
+
         @capture("action") # (1)!
         def clear_rating():
             return 0
-        
-        
+
+
         page = vm.Page(
             title="New rating component",
             layout=vm.Flex(),
@@ -318,31 +318,31 @@ It is then immediately possible to [address the properties of Dash components](c
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
         1. We write a [custom action](custom-actions.md) `clear_rating` that has no inputs and returns `0`.
-        1. To use our `Rating` component in a custom action, we must explicitly specify an `id`. 
-        1. We attach the `clear_rating` action to the button so that it is triggered when the button is clicked. The output of `clear_rating` sets the value of `"my_rating.value"`, which corresponds to the `value` property of the [`dmc.Rating`](https://www.dash-mantine-components.com/components/rating) component produced by our custom `Rating` component. 
+        1. To use our `Rating` component in a custom action, we must explicitly specify an `id`.
+        1. We attach the `clear_rating` action to the button so that it is triggered when the button is clicked. The output of `clear_rating` sets the value of `"my_rating.value"`, which corresponds to the `value` property of the [`dmc.Rating`](https://www.dash-mantine-components.com/components/rating) component produced by our custom `Rating` component.
 
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-        
+
         TODO NOW: screenshot/gif
 
 ### Model ID as input and output
 
-Generally when we use actions and built-in Vizro components, we need to refer only to the `id` (in this example `"my_rating"`) rather than a Dash component property such as `"my_rating.value"`. To enable this, we must define some extra information in the custom component using `_action_inputs` and `_action_outputs`. Here we define a mapping that tells actions to map `"my_rating"` onto `"my_rating.value"`. 
+Generally when we use actions and built-in Vizro components, we need to refer only to the `id` (in this example `"my_rating"`) rather than a Dash component property such as `"my_rating.value"`. To enable this, we must define some extra information in the custom component using `_action_inputs` and `_action_outputs`. Here we define a mapping that tells actions to map `"my_rating"` onto `"my_rating.value"`.
 
 ```python
 class Rating(vm.VizroBaseModel):
     ...
-    
+
     @property
     def _action_inputs(self):
         return {"__default__": f"{self.id}.value"} # (1)!
@@ -373,7 +373,7 @@ This enables you to replace in your dashboard configuration all action input and
             type: Literal["rating"] = "rating"
             title: str
             color: str = "#00b4ff"
-            
+
             @property
             def _action_inputs(self):
                 return {"__default__": f"{self.id}.value"}
@@ -422,7 +422,7 @@ This enables you to replace in your dashboard configuration all action input and
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-        
+
         TODO NOW: screenshot/gif
 
 ### Model fields as input and output
@@ -433,7 +433,7 @@ html.Legend(id=f"{self.id}_title", children=self.title, className="form-label"),
 ```
 
 We can already [address this Dash property](#dash-properties-as-input-and-output) by using `"my_rating_title.children"` as an action input or output. To enable us to instead address the field with `"my_rating.title"`, we must add a mapping to `_action_inputs` and/or `_action_outputs`:
-```python 
+```python
 @property
 def _action_outputs(self):
     return {"__default__": f"{self.id}.value", "title": f"{self.id}_title.children"}
@@ -446,27 +446,27 @@ This enables you to replace in your dashboard configuration all references to `o
     === "app.py"
         ```{.python pycafe-link hl_lines="21 33 41-43 50-57"}
         from typing import Literal
-        
+
         from dash import html
         import dash_mantine_components as dmc
         import vizro.models as vm
         from vizro.models.types import capture
         from vizro import Vizro
-        
-        
+
+
         class Rating(vm.VizroBaseModel):
             type: Literal["rating"] = "rating"
             title: str
             color: str = "#00b4ff"
-        
+
             @property
             def _action_inputs(self):
                 return {"__default__": f"{self.id}.value"}
-        
+
             @property
             def _action_outputs(self):
                 return {"__default__": f"{self.id}.value", "title": f"{self.id}_title.children"}
-        
+
             def build(self):
                 return html.Fieldset(
                     [
@@ -474,22 +474,22 @@ This enables you to replace in your dashboard configuration all references to `o
                         dmc.Rating(id=self.id, color=self.color),
                     ]
                 )
-        
-        
+
+
         vm.Page.add_type("components", Rating)
         vm.Page.add_type("components", vm.RadioItems) # (1)!
-        
-        
+
+
         @capture("action")
         def clear_rating():
             return 0
-        
-        
+
+
         @capture("action") # (2)!
         def set_movie_title(title):
             return f"Rate the movie {title}"
-        
-        
+
+
         page = vm.Page(
             title="New rating component",
             layout=vm.Flex(),
@@ -500,7 +500,7 @@ This enables you to replace in your dashboard configuration all references to `o
                     actions=vm.Action(
                         function=set_movie_title(title="movie_title"), # (4)!
                         outputs="my_rating.title" # (5)!
-                    ), 
+                    ),
                 ),
                 Rating(id="my_rating", title="Select a movie to rate"),
                 vm.Button(
@@ -509,22 +509,22 @@ This enables you to replace in your dashboard configuration all references to `o
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
         1. Currently [`RadioItems`][vizro.models.RadioItems] is designed to be used as a [control selector](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside the `Page`. For this to be a valid configuration we must first do `add_type` as for a custom component.
-        1. We write a [custom action](custom-actions.md) `set_movie_title` that takes in the `title` specified and returns a string "Rate the movie ...". 
+        1. We write a [custom action](custom-actions.md) `set_movie_title` that takes in the `title` specified and returns a string "Rate the movie ...".
         1. We attach the `set_movie_title` action to the radio items, so that it is triggered when an option is selected.
-        1. The input `"movie_title"` corresponds to the value selected in the radio items and sets the `title` argument of the `set_movie_title` action. 
-        1. The output of `set_movie_title` sets the value of `"my_rating.title"`, which maps onto the contents of the legend in the `Rating(id="my_rating")` component.  
+        1. The input `"movie_title"` corresponds to the value selected in the radio items and sets the `title` argument of the `set_movie_title` action.
+        1. The output of `set_movie_title` sets the value of `"my_rating.title"`, which maps onto the contents of the legend in the `Rating(id="my_rating")` component.
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-        
+
         TODO NOW: screenshot/gif
 
 ### Trigger actions
@@ -533,7 +533,7 @@ To enable your custom component to trigger one or [multiple actions](actions.md#
 
 1. Add a field `actions` of type [`ActionsType`][vizro.models.types.ActionsType].
 2. Set the action trigger through `make_actions_chain` and `_action_triggers`.
-3. Attach one or more [built-in actions](actions.md) or [custom actions](custom-actions.md) to your custom component by setting its `actions` field. 
+3. Attach one or more [built-in actions](actions.md) or [custom actions](custom-actions.md) to your custom component by setting its `actions` field.
 
 For example, let's make our `Rating` component trigger an action when the user clicks on the stars. Clicking the stars updates the `value` property, and so this must be linked to the `"__default__"` key in the `_action_triggers` mapping as follows:
 
@@ -565,7 +565,7 @@ A full example is given below.
     === "app.py"
         ```{.python pycafe-link hl_lines="5 7 8 16-22 55-59 77-80 82"}
         from typing import Literal
-        
+
         from dash import html
         import dash_mantine_components as dmc
         from pydantic import model_validator
@@ -573,28 +573,28 @@ A full example is given below.
         from vizro.models._models_utils import make_actions_chain
         from vizro.models.types import capture, ActionsType
         from vizro import Vizro
-        
-        
+
+
         class Rating(vm.VizroBaseModel):
             type: Literal["rating"] = "rating"
             title: str
             color: str = "#00b4ff"
             actions: ActionsType
-        
+
             _make_actions_chain = model_validator(mode="after")(make_actions_chain)
-        
+
             @property
             def _action_triggers(self):
                 return {"__default__": f"{self.id}.value"}
-        
+
             @property
             def _action_inputs(self):
                 return {"__default__": f"{self.id}.value"}
-        
+
             @property
             def _action_outputs(self):
                 return {"__default__": f"{self.id}.value", "title": f"{self.id}_title.children"}
-        
+
             def build(self):
                 return html.Fieldset(
                     [
@@ -602,29 +602,29 @@ A full example is given below.
                         dmc.Rating(id=self.id, color=self.color),
                     ]
                 )
-        
-        
+
+
         vm.Page.add_type("components", Rating)
         vm.Page.add_type("components", vm.RadioItems)
-        
-        
+
+
         @capture("action")
         def clear_rating():
             return 0
-        
-        
+
+
         @capture("action")
         def set_movie_title(title):
             return f"Rate the movie {title}"
-        
-        
+
+
         @capture("action")
         def update_rating_text(rating_value): # (1)!
             if value:
                 return f"You gave a rating of {rating_value} out of 5 stars"
             return "You have not provided a rating"
-        
-        
+
+
         page = vm.Page(
             title="New rating component",
             layout=vm.Flex(),
@@ -652,20 +652,20 @@ A full example is given below.
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
-        1. We write a [custom action](custom-actions.md) `update_rating_text` that takes in the `rating_value` (an integer between 1 and 5) and returns a string "Rate the movie ...". 
+        1. We write a [custom action](custom-actions.md) `update_rating_text` that takes in the `rating_value` (an integer between 1 and 5) and returns a string "Rate the movie ...".
         1. We attach the `update_rating_text` action to our custom `Rating` component, so that it is triggered when the rating stars are clicked. The input `"my_rating"` (which also maps onto `"my_rating.value"`) sets the `rating_value` argument of the `update_rating_text` action.
-        1. The output of `update_rating_text` sets the value of `"rating_text"`, which maps onto the contents of the `vm.Text(id="rating_text")` component.  
+        1. The output of `update_rating_text` sets the value of `"rating_text"`, which maps onto the contents of the `vm.Text(id="rating_text")` component.
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-        
+
         TODO NOW: screenshot/gif
 
 ## Persistence
