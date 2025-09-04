@@ -4,14 +4,14 @@ import base64
 import json
 from typing import Any, Literal, Protocol, runtime_checkable
 
-from dash import get_relative_path, page_registry
+from dash import get_relative_path
 from pydantic import Field, JsonValue
 
 from vizro._vizro_utils import experimental
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ModelID, ControlType
+from vizro.models.types import ModelID
 
 # TODO AM+PP: decide whether to make it control or controls plural. For now I just wrote it as singular but there's
 #  inconsistency with filename and type.
@@ -99,12 +99,11 @@ class set_control(_AbstractAction):
             # _registered_page_paths = {registered_page['path'] for registered_page in page_registry.values()}
 
         if (
-            target_model is None
-            or target_model_page is None
+            target_model is None or target_model_page is None
             # or target_model_page.path not in _registered_page_paths
         ):
             raise ValueError(
-                f"Model with ID `{self.target}` used as a `target` in `set_control` action not found in the dashboard. " 
+                f"Model with ID `{self.target}` used as a `target` in `set_control` action not found in the dashboard. "
                 f"Please provide a valid control ID that exists in the dashboard."
             )
 
@@ -133,6 +132,7 @@ class set_control(_AbstractAction):
             # Returning a single element value works for both single and multi select selectors.
             return value
         else:
+
             def encode_to_base64(value):
                 json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
                 b64_bytes = base64.urlsafe_b64encode(json_bytes)
