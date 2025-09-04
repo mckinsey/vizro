@@ -5,7 +5,6 @@ from e2e.vizro.checkers import (
     check_exported_file_exists,
     check_graph_color,
     check_graph_color_selenium,
-    check_graph_is_loaded,
     check_graph_is_loading_selenium,
     check_theme_color,
 )
@@ -17,7 +16,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 @pytest.mark.flaky(reruns=5)
-def test_parameters_title(chrome_driver, dash_br):
+def test_parameters_title(chrome_driver, dash_br, check_graph_is_loaded_thread):
     """Tests that graph title is changing by parameter independently for every user."""
     # select parameters page for the first user
     page_select_selenium(
@@ -45,12 +44,12 @@ def test_parameters_title(chrome_driver, dash_br):
     )
 
     # change slider value from the second user and check that bar graph title is default ('blue')
+    check_graph_is_loaded_thread(graph_id=cnst.BAR_GRAPH_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
     dash_br.wait_for_text_to_equal(".gtitle", "blue")
 
 
-def test_theme_color(chrome_driver, dash_br):
+def test_theme_color(chrome_driver, dash_br, check_graph_is_loaded_thread):
     """Tests that theme color is changing independently for every user."""
     # select parameters page for the first user
     page_select_selenium(
@@ -76,8 +75,8 @@ def test_theme_color(chrome_driver, dash_br):
     )
 
     # change slider value for the second user and check that theme is default ('light')
+    check_graph_is_loaded_thread(graph_id=cnst.BAR_GRAPH_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
     check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
     check_theme_color(dash_br, color=cnst.THEME_LIGHT)
 
