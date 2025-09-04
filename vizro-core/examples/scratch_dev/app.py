@@ -97,8 +97,10 @@ page_3 = vm.Page(
     components=[
         vm.Graph(
             id="p3_graph_1",
-            figure=graph_with_dynamic_title(data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            actions=[set_control(target="p3_filter_1"), set_control(target="p3_parameter_1")]
+            figure=graph_with_dynamic_title(
+                data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+            ),
+            actions=[set_control(target="p3_filter_1"), set_control(target="p3_parameter_1")],
         )
     ],
     controls=[
@@ -107,16 +109,19 @@ page_3 = vm.Page(
         vm.Parameter(
             id="p3_parameter_1",
             targets=["p3_graph_1.title"],
-            selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
+            selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"]),
         ),
         vm.Button(
-            text="Reset drill down", icon="Reset Focus",
+            text="Reset drill down",
+            icon="Reset Focus",
             actions=vm.Action(
-                function=capture("action")(lambda: [["setosa", "versicolor", "virginica"], ["setosa", "versicolor", "virginica"]])(),
-                outputs=["p3_filter_1", "p3_parameter_1"]
-           )
-        )
-    ]
+                function=capture("action")(
+                    lambda: [["setosa", "versicolor", "virginica"], ["setosa", "versicolor", "virginica"]]
+                )(),
+                outputs=["p3_filter_1", "p3_parameter_1"],
+            ),
+        ),
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
