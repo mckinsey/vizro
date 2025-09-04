@@ -11,7 +11,7 @@ def test_custom_dropdown(dash_br, check_graph_is_loaded_thread):
         page_name=cnst.CUSTOM_COMPONENTS_PAGE,
     )
     # choose 'versicolor' value
-    check_graph_is_loaded_thread(cnst.SCATTER_CUSTOM_COMPONENTS_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID)
     select_dropdown_value(dash_br, dropdown_id=cnst.CUSTOM_DROPDOWN_ID, value="versicolor")
     check_selected_dropdown(
         dash_br,
@@ -26,6 +26,6 @@ def test_custom_range_slider(dash_br, check_graph_is_loaded_thread):
         dash_br,
         page_name=cnst.CUSTOM_COMPONENTS_PAGE,
     )
-    check_graph_is_loaded_thread(cnst.SCATTER_CUSTOM_COMPONENTS_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, value=4), 1)
     check_slider_value(dash_br, elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, expected_start_value="4", expected_end_value="7")

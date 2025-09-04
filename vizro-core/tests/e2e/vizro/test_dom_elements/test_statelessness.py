@@ -5,7 +5,6 @@ from e2e.vizro.checkers import (
     check_exported_file_exists,
     check_graph_color,
     check_graph_color_selenium,
-    check_graph_is_loading_selenium,
     check_theme_color,
 )
 from e2e.vizro.navigation import page_select, page_select_selenium
@@ -16,7 +15,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 @pytest.mark.flaky(reruns=5)
-def test_parameters_title(chrome_driver, dash_br, check_graph_is_loaded_thread):
+def test_parameters_title(chrome_driver, dash_br, check_graph_is_loaded_thread, check_graph_is_loaded_selenium_thread):
     """Tests that graph title is changing by parameter independently for every user."""
     # select parameters page for the first user
     page_select_selenium(
@@ -33,12 +32,12 @@ def test_parameters_title(chrome_driver, dash_br, check_graph_is_loaded_thread):
     )
 
     # set bar graph title for the first user as 'red'
+    check_graph_is_loaded_selenium_thread(graph_id=cnst.BAR_GRAPH_ID)
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable(
             (By.CSS_SELECTOR, categorical_components_value_path(elem_id=cnst.RADIO_ITEMS_PARAMETERS_ONE, value=1))
         )
     ).click()
-    check_graph_is_loading_selenium(chrome_driver, graph_id=cnst.BAR_GRAPH_ID)
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.text_to_be_present_in_element((By.CSS_SELECTOR, ".gtitle"), "red")
     )
@@ -81,7 +80,7 @@ def test_theme_color(chrome_driver, dash_br, check_graph_is_loaded_thread):
     check_theme_color(dash_br, color=cnst.THEME_LIGHT)
 
 
-def test_export_action(chrome_driver, dash_br):
+def test_export_action(chrome_driver, dash_br, check_graph_is_loaded_selenium_thread):
     """Tests that export action is giving different results according to what every user filters."""
     # select filters page for the first user
     page_select_selenium(
@@ -98,12 +97,12 @@ def test_export_action(chrome_driver, dash_br):
     )
 
     # change slider values for scatter graph for the first user
+    check_graph_is_loaded_selenium_thread(graph_id=cnst.SCATTER_GRAPH_ID)
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable(
             (By.CSS_SELECTOR, slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=3))
         )
     ).click()
-    check_graph_is_loading_selenium(chrome_driver, graph_id=cnst.SCATTER_GRAPH_ID)
 
     # export scatter data for the second user without changing anything and check if data is correct
     dash_br.multiple_click(button_path(), 1)

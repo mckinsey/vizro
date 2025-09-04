@@ -18,7 +18,6 @@ from e2e.vizro.paths import (
     switch_path_using_filter_control_id,
     table_ag_grid_cell_value_path,
 )
-from e2e.vizro.waiters import graph_load_waiter
 from hamcrest import assert_that, equal_to
 
 
@@ -93,7 +92,7 @@ def test_dropdown_persistence_with_two_values(dash_br, check_graph_is_loaded_thr
     """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     # delete last option 'virginica'
-    check_graph_is_loaded_thread(cnst.SCATTER_GRAPH_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.SCATTER_GRAPH_ID)
     dash_br.clear_input(f"div[id='{cnst.DROPDOWN_FILTER_FILTERS_PAGE}']")
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
@@ -345,10 +344,8 @@ def test_range_slider(dash_br, check_graph_is_loaded_thread):
 
 def test_dropdown_multi_false_homepage(dash_br, check_graph_is_loaded_thread):
     """Checks dropdown with multi=False."""
-    graph_load_waiter(dash_br)
-
     # select 'versicolor'
-    check_graph_is_loaded_thread(cnst.AREA_GRAPH_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.AREA_GRAPH_ID)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE, value="versicolor")
 
 

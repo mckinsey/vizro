@@ -533,7 +533,7 @@ def test_checklist_filter(dash_br, check_graph_is_loaded_thread):
     )
 
     # Choose "versicolor" value and check that graph is reloaded
-    check_graph_is_loaded_thread(cnst.BOX_DYNAMIC_FILTERS_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=1), 1)
     # TODO: change value to 3 after fixing https://github.com/McK-Internal/vizro-internal/issues/1356
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1)
@@ -572,7 +572,7 @@ def test_radio_items_filter(dash_br, check_graph_is_loaded_thread):
     )
 
     # Choose "versicolor" value and check that graph is reloaded
-    check_graph_is_loaded_thread(cnst.BOX_DYNAMIC_FILTERS_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID, value=2), 1)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
@@ -700,7 +700,7 @@ def test_datepicker_range_filters(dash_br, check_graph_is_loaded_thread):
     )
 
     # open datepicker calendar and choose dates from 6 to 10 March 2024
-    check_graph_is_loaded_thread(cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)

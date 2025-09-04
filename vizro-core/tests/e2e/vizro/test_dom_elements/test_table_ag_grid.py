@@ -50,7 +50,7 @@ def test_interactions(dash_br, check_graph_is_loaded_thread):
     dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div:nth-of-type(1) div[col-id='country']")
 
     # click on Bosnia and Herzegovina country
-    check_graph_is_loaded_thread(cnst.LINE_AG_GRID_INTERACTIONS_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.LINE_AG_GRID_INTERACTIONS_ID)
     dash_br.multiple_click(
         f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div[class='ag-center-cols-container'] "
         f"div:nth-of-type(4) div[col-id='country']",

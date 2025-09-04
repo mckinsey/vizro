@@ -55,7 +55,7 @@ def test_interactions(dash_br, check_graph_is_loaded_thread):
         page_name=cnst.TABLE_INTERACTIONS_PAGE,
     )
     # click on Bosnia and Herzegovina country
-    check_graph_is_loaded_thread(cnst.LINE_INTERACTIONS_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.LINE_INTERACTIONS_ID)
     dash_br.multiple_click(
         f"div[id='{cnst.TABLE_INTERACTIONS_ID}'] tr:nth-of-type(5) div[class='unfocused selectable dash-cell-value']", 1
     )
