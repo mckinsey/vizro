@@ -11,7 +11,7 @@ df = px.data.iris()
 
 
 page_1 = vm.Page(
-    title="Page 1",
+    title="Graph filter interactions and drill-through source page",
     components=[
         vm.Container(
             title="Two filter interactions within Page 1",
@@ -67,7 +67,7 @@ page_1 = vm.Page(
 )
 
 page_2 = vm.Page(
-    title="Page 2",
+    title="Drill-through target page",
     components=[
         vm.Graph(
             id="p2_graph_1",
@@ -82,22 +82,43 @@ page_2 = vm.Page(
     ]
 )
 
+
+vm.Page.add_type("controls", vm.Button)
+
+
+@capture("graph")
+def graph_with_dynamic_title(data_frame, title="ALL", **kwargs):
+    return px.scatter(data_frame, title=f"Graph shows `{title}` species.", **kwargs)
+
+
 page_3 = vm.Page(
-    title="Page 3",
+    title="Drill-down page",
     components=[
         vm.Graph(
             id="p3_graph_1",
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
+            figure=graph_with_dynamic_title(data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+            actions=[set_control(target="p3_filter_1"), set_control(target="p3_parameter_1")]
         )
     ],
+    controls=[
+        # Hidden with the custom css
+        vm.Filter(id="p3_filter_1", column="species"),
+        vm.Parameter(
+            id="p3_parameter_1",
+            targets=["p3_graph_1.title"],
+            selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
+        ),
+        vm.Button(
+            text="Reset drill down", icon="Reset Focus",
+            actions=vm.Action(
+                function=capture("action")(lambda: [["setosa", "versicolor", "virginica"], ["setosa", "versicolor", "virginica"]])(),
+                outputs=["p3_filter_1", "p3_parameter_1"]
+           )
+        )
+    ]
 )
 
-graph_4 = vm.Graph(
-    id="p4_graph_1",
-    figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
-)
-
-dashboard = vm.Dashboard(pages=[page_1, page_2])
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
