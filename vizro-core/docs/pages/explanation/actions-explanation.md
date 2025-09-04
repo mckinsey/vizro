@@ -1,10 +1,8 @@
 # Actions
 
-<!--
-TODO NOW:
-- intro
-- cross-links
--->
+Actions control how your app responds to user input such as clicking a button or a point on a graph. Vizro provides [built-in actions](../user-guides/actions.md) and also enables you to write your own [custom actions](../user-guides/custom-actions.md).
+
+Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash to use them. This page [explains more about how Vizro actions work](../explanation/actions-explanation.md) and their similarities and differences compared to Dash callbacks.
 
 <!--
 TODO NOW:
