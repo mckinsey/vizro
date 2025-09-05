@@ -135,6 +135,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -191,6 +194,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -374,6 +380,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -647,6 +656,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -793,6 +805,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1006,6 +1021,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1453,6 +1471,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1642,6 +1663,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1770,6 +1794,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1894,6 +1921,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1956,6 +1986,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -2024,6 +2057,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -2190,6 +2226,35 @@
         }
       },
       "title": "filter_interaction",
+      "type": "object"
+    },
+    "set_control": {
+      "additionalProperties": false,
+      "description": "Sets the value of a control based on data from the trigger.\n\nArgs:\n    target (ModelID): Filter or Parameter component id to be affected by the trigger. If the target is on a\n        different page to the trigger then it must have `show_in_url=True`.\n    value (str): # TODO AM+PP: ADD DESCRIPTION",
+      "properties": {
+        "id": {
+          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "set_control",
+          "default": "set_control",
+          "title": "Type",
+          "type": "string"
+        },
+        "target": {
+          "description": "Filter or Parameter component id to be affected by the trigger.If the target is on a different page to the trigger then it must have `show_in_url=True`.",
+          "title": "Target",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": ["target", "value"],
+      "title": "set_control",
       "type": "object"
     }
   },
