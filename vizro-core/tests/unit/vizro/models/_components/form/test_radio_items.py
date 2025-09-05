@@ -24,6 +24,7 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == ""
         assert radio_items.description is None
         assert radio_items.actions == []
+        assert radio_items._action_triggers == {"__default__": f"{radio_items.id}.value"}
         assert radio_items._action_outputs == {"__default__": f"{radio_items.id}.value"}
         assert radio_items._action_inputs == {"__default__": f"{radio_items.id}.value"}
 
@@ -39,6 +40,7 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == "Title"
         assert radio_items.actions == []
         assert isinstance(radio_items.description, Tooltip)
+        assert radio_items._action_triggers == {"__default__": f"{radio_items.id}.value"}
         assert radio_items._action_outputs == {
             "__default__": f"{radio_items.id}.value",
             "title": f"{radio_items.id}_title.children",

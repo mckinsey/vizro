@@ -47,6 +47,7 @@ class TestAgGridInstantiation:
         assert ag_grid.footer == ""
         assert ag_grid.description is None
         assert hasattr(ag_grid, "_inner_component_id")
+        assert ag_grid._action_triggers == {"__default__": f"{ag_grid._inner_component_id}.selectedRows"}
         assert ag_grid._action_outputs == {
             "__default__": f"{ag_grid.id}.children",
             "figure": f"{ag_grid.id}.children",
@@ -79,6 +80,7 @@ class TestAgGridInstantiation:
         assert ag_grid.footer == "Footer"
         assert isinstance(ag_grid.description, vm.Tooltip)
         assert ag_grid._inner_component_id == "underlying_ag_grid_id"
+        assert ag_grid._action_triggers == {"__default__": "underlying_ag_grid_id.selectedRows"}
         assert ag_grid._action_outputs == {
             "__default__": "ag-grid-id.children",
             "figure": "ag-grid-id.children",

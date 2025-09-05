@@ -46,6 +46,7 @@ class TestGraphInstantiation:
         assert graph.header == ""
         assert graph.footer == ""
         assert graph.description is None
+        assert graph._action_triggers == {"__default__": f"{graph.id}.clickData"}
         assert graph._action_outputs == {"__default__": f"{graph.id}.figure"}
 
     def test_create_graph_mandatory_and_optional(self, standard_px_chart):
@@ -66,6 +67,7 @@ class TestGraphInstantiation:
         assert graph.header == "Header"
         assert graph.footer == "Footer"
         assert isinstance(graph.description, vm.Tooltip)
+        assert graph._action_triggers == {"__default__": f"{graph.id}.clickData"}
         assert graph._action_outputs == {
             "__default__": f"{graph.id}.figure",
             "title": f"{graph.id}_title.children",

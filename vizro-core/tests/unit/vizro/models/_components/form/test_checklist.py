@@ -24,6 +24,7 @@ class TestChecklistInstantiation:
         assert checklist.title == ""
         assert checklist.description is None
         assert checklist.actions == []
+        assert checklist._action_triggers == {"__default__": f"{checklist.id}.value"}
         assert checklist._action_outputs == {"__default__": f"{checklist.id}.value"}
         assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
 
@@ -39,6 +40,7 @@ class TestChecklistInstantiation:
         assert checklist.title == "Title"
         assert checklist.actions == []
         assert isinstance(checklist.description, Tooltip)
+        assert checklist._action_triggers == {"__default__": f"{checklist.id}.value"}
         assert checklist._action_outputs == {
             "__default__": f"{checklist.id}.value",
             "title": f"{checklist.id}_title.children",
