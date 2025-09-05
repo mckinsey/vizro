@@ -25,6 +25,7 @@ _T = typing.TypeVar("_T")
 #  - renamed deprecated to experimental
 #  - default category is FutureWarning rather than DeprecationWarning
 #  - updated docstring
+#  - added @typing.no_type_check to the __call__ method because it upsets mypy
 class experimental:
     """Indicate that a class, function or overload is experimental.
 
@@ -70,6 +71,7 @@ class experimental:
         self.category = category
         self.stacklevel = stacklevel
 
+    @typing.no_type_check
     def __call__(self, arg: _T, /) -> _T:
         # Make sure the inner functions created below don't
         # retain a reference to self.
