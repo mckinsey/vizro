@@ -22,6 +22,7 @@ class TestButtonInstantiation:
         assert button.href == ""
         assert button.actions == []
         assert button.variant == "filled"
+        assert button._action_triggers == {"__default__": f"{button.id}.n_clicks"}
         assert button._action_outputs == {"text": f"{button.id}.children"}
         assert button.description is None
 
@@ -45,6 +46,7 @@ class TestButtonInstantiation:
         assert button.actions == []
         assert button.variant == variant
         assert isinstance(button.description, vm.Tooltip)
+        assert button._action_triggers == {"__default__": f"{button.id}.n_clicks"}
         assert button._action_outputs == {
             "text": f"{button.id}.children",
             "description": f"{button.description.id}-text.children",

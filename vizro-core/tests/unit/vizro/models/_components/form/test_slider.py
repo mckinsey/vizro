@@ -167,6 +167,7 @@ class TestSliderInstantiation:
         assert slider.title == ""
         assert slider.description is None
         assert slider.actions == []
+        assert slider._action_triggers == {"__default__": f"{slider.id}.value"}
         assert slider._action_outputs == {"__default__": f"{slider.id}.value"}
         assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
 
@@ -191,6 +192,7 @@ class TestSliderInstantiation:
         assert slider.title == "Title"
         assert slider.actions == []
         assert isinstance(slider.description, vm.Tooltip)
+        assert slider._action_triggers == {"__default__": f"{slider.id}.value"}
         assert slider._action_outputs == {
             "__default__": f"{slider.id}.value",
             "title": f"{slider.id}_title.children",

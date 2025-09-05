@@ -39,6 +39,7 @@ class TestTableInstantiation:
         assert table.header == ""
         assert table.footer == ""
         assert hasattr(table, "_inner_component_id")
+        assert table._action_triggers == {"__default__": f"{table._inner_component_id}.active_cell"}
         assert table._action_outputs == {
             "__default__": f"{table.id}.children",
             "figure": f"{table.id}.children",
@@ -63,6 +64,7 @@ class TestTableInstantiation:
         assert table.footer == "Footer"
         assert isinstance(table.description, vm.Tooltip)
         assert table._inner_component_id == "underlying_table_id"
+        assert table._action_triggers == {"__default__": "underlying_table_id.active_cell"}
         assert table._action_outputs == {
             "__default__": f"{table.id}.children",
             "figure": f"{table.id}.children",

@@ -122,7 +122,7 @@ def make_actions_chain(self):
 
         # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
         # model manager and removal of filter_interaction.
-        action._parent_model_id = self.id
+        action._parent_model = self.id
 
     # We should do self.actions = converted_actions but this leads to a recursion error. The below is a workaround
     # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
