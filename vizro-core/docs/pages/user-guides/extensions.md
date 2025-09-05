@@ -30,7 +30,7 @@ All Vizro's components are based on `Dash` and ship with a set of defaults that 
 
 ### [Custom actions](custom-actions.md)
 
-If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [built-in action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions can also be added as an element inside the [actions chain](actions.md#chain-actions), and triggered with one of dashboard components.
+If you want to perform functions that are not available in the [built-in action functions](actions.md), you can [create your own custom actions](custom-actions.md).
 
 ### [Custom figures](custom-figures.md)
 

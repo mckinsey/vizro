@@ -13,7 +13,7 @@ As described in the flowchart detailing [when to use `Figure`](figure.md), custo
 
 ## Steps to create a custom figure
 
-1. Define a function that returns a [Dash component](https://dash.plotly.com/#open-source-component-libraries). This can, but does not need to, be based on code in our pre-defined figure functions in [`vizro.figures`](../API-reference/figure-callables.md).
+1. Define a function that returns a [Dash component](https://dash.plotly.com/#open-source-component-libraries). This can, but does not need to, be based on code in our built-in figure functions in [`vizro.figures`](../API-reference/figure-callables.md).
 1. Decorate it with `@capture("figure")`.
 1. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
 1. The figure should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments will not react to dashboard controls such as [`Filter`](filters.md).
