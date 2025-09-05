@@ -21,6 +21,36 @@ df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], 
 vm.Page.add_type("components", vm.Slider)
 vm.Container.add_type("components", vm.Slider)
 
+cellStyle = {
+    "styleConditions": [
+        {
+            "condition": "params.value == 'High'",
+            "style": {"backgroundColor": "#143771"},
+        },
+        {
+            "condition": "params.value == 'Medium'",
+            "style": {"backgroundColor": "#408CCB"},
+        },
+        {
+            "condition": "params.value == 'Low'",
+            "style": {"backgroundColor": "#BBE5F7"},
+        },
+    ]
+}
+
+columnDefs = [
+    {"field": "Business Name"},
+    {"field": "Tier"},
+    {"field": "Current Sales"},
+    {"field": "Potential Opportunity"},
+    {"field": "Likelihood Score","cellStyle": cellStyle},
+    {"field": "Industry Priority","cellStyle": cellStyle},
+    {"field": "Growth Opportunity"},
+    {"field": "Price Opportunity"},
+    {"field": "Churn Risk"},
+    {"field": "Industry"},
+]
+
 
 page = vm.Page(
     title="Vizro dashboard",
@@ -132,8 +162,8 @@ page = vm.Page(
                                     id="tab_2_aggrid",
                                     figure=dash_ag_grid(
                                         data_frame=aggrid_data,
-                                        dashGridOptions={"pagination": False},
-                                        columnSize="sizeToFit",
+                                        columnSize="autoSize",
+                                        columnDefs=columnDefs,
                                     ),
                                     actions=[vm.Action(function=filter_interaction(targets=["tab_2_market_category"]))],
                                 ),

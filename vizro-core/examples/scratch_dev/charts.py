@@ -22,7 +22,7 @@ def custom_market_industry_bar_chart(data_frame, custom_data=[]):
         orientation="h",
         text=df_long["Value"].astype(str) + "M",
         custom_data=custom_data,
-        labels={"2024_Revenue": "2024 Revenue"},
+        labels={"2024_Revenue": "2024"},
     )
 
 
