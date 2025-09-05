@@ -96,7 +96,7 @@ We have specified that a button should be included in the page layout but haven'
 
 Congratulations on writing your first action! Before clicking the button, the card's text is "Click the button". When you click the button, the `update_card` action is _triggered_. This Python function executes on the server to find the current time in the UTC timezone and return a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the component with `id="time_card"`. This is the action's _output_.
 
-As we cover increasingly complex actions, it can be very helpful to understand the actions using a flowchart similar to Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). We can visualise the above example as follows:
+As we cover increasingly complex actions, it can be very helpful to understand the actions using a flowchart similar to Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). We can visualize the above example as follows:
 
 ```mermaid
 graph TD
@@ -956,7 +956,7 @@ In many cases, untrusted user input does _not_ pose a security risk. For example
 
 ## Key principles of actions
 
-Congratulations on completing the tutorial! You should now be able to quite complex custom actions. To recap, let's summarise some of the key principles of how actions work.
+Congratulations on completing the tutorial! You should now be able to quite complex custom actions. To recap, let's summarize some of the key principles of how actions work.
 
 - An action is a Python function that executes when it is triggered by a user interacting with a component on their screen.
 - An action can have any number of inputs and outputs but only one trigger.
