@@ -113,13 +113,13 @@ class AgGrid(VizroBaseModel):
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
-    def _get_value_from_trigger(self, action: set_control, trigger: list[dict[str, str]]) -> JsonValue:
-        """Expect action.value = "name_of_column" and look that up in trigger."""
+    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
+        """value is the name of the column. There is only one point selected, so we just look at trigger[0]."""
         try:
-            return trigger[0][action.value]
+            return trigger[0][value]
         except KeyError:
             raise ValueError(
-                f"Couldn't find value column name: `{action.value}` in trigger for `set_control` action. "
+                f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
                 f"This action was added to the AgGrid model with ID `{self.id}`. "
             )
 

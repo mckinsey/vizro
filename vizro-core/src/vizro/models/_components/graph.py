@@ -121,49 +121,30 @@ class Graph(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
-    # To make a model compatible as a source of set_control it must implement this.
-    def _get_value_from_trigger(self, action: set_control, trigger: dict[str, Any]) -> JsonValue:
-        """For graphs we want to start from _trigger["points"][0] and then be able to navigate to:.
-
-        1. something at root level like x or y - so value="x"
-        2. something inside customdata. How should user specify this?
-        Don't worry about being able to navigate to anything outside _trigger["points"][0].
-
-        Let's use box as the value language:
-        trigger = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
-        return trigger[action.value]
-
-        This works for value="x" and value="customdata[0]" and value="something.deep[1].blah"
-
-        Should we have a default value of "customdata[0]"? Maybe complicates things from MCP/schema/pydantic point of
-        view since default is dependent on triggering model but also simplifies syntax for a common case.
-
-        What are options ow to handle value?
-
-        User specifies custom_data:
-        1. This horrible one - user specifies customdata[0] (or maybe nothing if that's the default) but no
-        constraints on function call other than you need to specify customdata
-        2. Our current horrible one - user has to put custom_data in their figure's signature but use value="species"
-        3. Hacky horrible one - weird format for custom_data in plot call but use value="species"
-
-        Overall I think best solution is something like this. It's basically the same logic as we have now
-        but slightly relaxes the requirement to have custom_data in the function signature since you could use the
-        ugly customdata[0] syntax if you wanted to.
-
-        value would have no default value. Or...
-        """
-        box_trigger = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
+    def _get_value_from_trigger(self, value: str, trigger: dict[str, JsonValue]) -> JsonValue:
+        # When a single point is clicked, we are only interested in looking for values inside ["points"][0]. There
+        # are no realistic examples which need values outside this. We use Box for two reasons:
+        # 1. it makes it possible to address nested values in the trigger["points"][0] dictionary using a simple
+        # string syntax, e.g. value="x" or "value=customdata[0]". This is enabled by box_dots=True.
+        # 2. it converts camelCase to snake_case. e.g. if trigger contains something called "someKey" then both
+        # value="someKey" and value="some_key" will work. This is enabled by camel_killer_box=True.
+        trigger_box = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
         try:
-            # Works for action.value="species" if "species" is in `figure.custom_data`
-            index = self["custom_data"].index(action.value)
-            return box_trigger["customdata"][index]
+            # First try to treat value as a column name. Unfortunately the customdata returned in the trigger does
+            # not contain column names (it's just a list) so we must look it up in the called function's `custom_data`
+            # to find its numerical index in this list. This only works if a custom_data was provided in the graph
+            # function call.
+            index = self["custom_data"].index(value)
+            return trigger_box["customdata"][index]
         except ValueError:
             try:
-                # Works for action.value="x" and action.value="customdata[0]" if user does want to do that
-                return box_trigger[action.value]
+                # Treat the value as a box lookup string, as in
+                # https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots. This works for e.g. value="x" and
+                # value="customdata[0]".
+                return trigger_box[value]
             except KeyError:
                 raise ValueError(
-                    f"Couldn't find value `{action.value}` in trigger for `set_control` action. "
+                    f"Couldn't find value `{value}` in trigger for `set_control` action. "
                     f"This action was added to the Graph model with ID `{self.id}`. "
                     "If you expected the value to come from custom data, add it in the figure's custom_data signature."
                 )

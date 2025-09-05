@@ -95,14 +95,6 @@ class Button(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
-    # Not urgent to implement this but just for illustration.
-    # This is how we can return a static value - just ignore the trigger.
-    # so when do vm.Button(actions=set_control(value=3) it would send the value 3.
-    # We could also implement this on selector components.
-    # Then we can relax the restriction that target is a categorical control.
-    # def _get_value_from_trigger(self, action, trigger):
-    #     return action.value
-
     @_log_call
     def build(self):
         variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
