@@ -25,7 +25,6 @@ def custom_market_industry_bar_chart(data_frame, custom_data=[]):
         labels={"2024_Revenue": "2024"},
     )
 
-
     # Add total labels as annotations
     for i, row in data_frame.iterrows():
         fig.add_annotation(
@@ -33,7 +32,6 @@ def custom_market_industry_bar_chart(data_frame, custom_data=[]):
             y=row["Industry"],
             text=f"{row['Total']}M",
             showarrow=False,
-            font=dict(color="white", size=12),
             xanchor="left",
         )
 
@@ -132,7 +130,7 @@ def custom_market_category_bar_chart(data_frame, custom_data=[]):
         xaxis_title="",
         barmode="stack",
         font=dict(color="white", size=8),
-        legend_title=None
+        legend_title=None,
     )
     fig.update_xaxes(tickfont=dict(size=9), minor_tickwidth=2, ticklen=2, tickangle=10)
 

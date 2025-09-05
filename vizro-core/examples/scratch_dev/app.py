@@ -40,11 +40,11 @@ cellStyle = {
 
 columnDefs = [
     {"field": "Business Name"},
-    {"field": "Tier"},
+    {"field": "Tier", "cellRenderer": "ColorCellRenderer"},
     {"field": "Current Sales"},
     {"field": "Potential Opportunity"},
-    {"field": "Likelihood Score","cellStyle": cellStyle},
-    {"field": "Industry Priority","cellStyle": cellStyle},
+    {"field": "Likelihood Score", "cellStyle": cellStyle},
+    {"field": "Industry Priority"},
     {"field": "Growth Opportunity"},
     {"field": "Price Opportunity"},
     {"field": "Churn Risk"},
@@ -130,10 +130,7 @@ page = vm.Page(
                             [2, 2, 3, 3],
                             [2, 2, 4, 4],
                             [2, 2, 4, 4],
-                        
                         ],
-                        row_gap="12px",
-                        col_gap="12px",
                     ),
                 ),
                 vm.Container(
@@ -156,7 +153,7 @@ page = vm.Page(
                             ),
                         ),
                         vm.Container(
-                            title="",
+                            variant="filled",
                             components=[
                                 vm.AgGrid(
                                     id="tab_2_aggrid",
@@ -170,11 +167,16 @@ page = vm.Page(
                             ],
                         ),
                         vm.Container(
-                            title="",
+                            variant="filled",
                             components=[
                                 vm.Graph(
                                     figure=custom_map_chart(map_chart_data),
                                 ),
+                            ],
+                        ),
+                        vm.Container(
+                            variant="filled",
+                            components=[
                                 vm.Graph(
                                     id="tab_2_market_category",
                                     figure=custom_market_category_bar_chart(
@@ -191,11 +193,9 @@ page = vm.Page(
                             [0, 0, 1, 1],
                             [2, 2, 3, 3],
                             [2, 2, 3, 3],
-                            [2, 2, 3, 3],
-                            [2, 2, 3, 3],
+                            [2, 2, 4, 4],
+                            [2, 2, 4, 4],
                         ],
-                        row_gap="12px",
-                        col_gap="12px",
                     ),
                 ),
                 vm.Container(
@@ -236,8 +236,6 @@ page = vm.Page(
                             [2, 2, 3, 3],
                             [2, 2, 3, 3],
                         ],
-                        row_gap="12px",
-                        col_gap="12px",
                     ),
                 ),
             ],
@@ -255,7 +253,6 @@ page = vm.Page(
             [1],
             [1],
         ],
-        row_gap="12px",
     ),
 )
 

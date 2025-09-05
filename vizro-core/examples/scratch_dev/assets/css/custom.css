@@ -57,3 +57,7 @@
 .bg-container {
   background: var(--surfaces-bg-card) !important;
 }
+
+#page-header {
+  display: none;
+}
