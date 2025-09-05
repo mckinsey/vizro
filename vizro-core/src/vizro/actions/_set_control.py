@@ -2,16 +2,17 @@ from __future__ import annotations
 
 import base64
 import json
-from typing import Any, Literal, Protocol, runtime_checkable
+from typing import Literal, Protocol, Union, cast, runtime_checkable
 
 from dash import get_relative_path
 from pydantic import Field, JsonValue
 
+import vizro.models as vm
 from vizro._vizro_utils import experimental
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ModelID
+from vizro.models.types import ControlType, ModelID
 
 # TODO AM+PP: decide whether to make it control or controls plural. For now I just wrote it as singular but there's
 #  inconsistency with filename and type.
@@ -35,14 +36,14 @@ these I prefer:
 3. targets=["continet_filter", "country_filter"] lookups=["x", "y"]
 4. something else?
 
-Option 3 is effectively unzipped version of 2. I think I prefer 2 to 3 but can predict problems with it if we want to add more argument
-in future (e.g. replace vs. append mode). Could have targets be a pydantic model itself if that helps but want to
-keep simple cases simple. How would it work with a default lookup value also?
+Option 3 is effectively unzipped version of 2. I think I prefer 2 to 3 but can predict problems with it if we want to
+add more argument in future (e.g. replace vs. append mode). Could have targets be a pydantic model itself if that helps
+but want to keep simple cases simple. How would it work with a default lookup value also?
 
 Overall I tend to preferring option 1 for now but then I have no idea how to extend it to multiple controls in
-future. Maybe we should ask chatGPT if it has any ideas here... Possibly overall it's easier for a user to just chain multiple
-set_control actions together, just it's not so performant. Then ideally we'd need to come up with some way of doing
-parallel actions ideally. Relates to an idea I had about "batching" actions - let's discuss some time...
+future. Maybe we should ask chatGPT if it has any ideas here... Possibly overall it's easier for a user to just chain
+multiple set_control actions together, just it's not so performant. Then ideally we'd need to come up with some way of
+doing parallel actions ideally. Relates to an idea I had about "batching" actions - let's discuss some time...
 """
 
 
@@ -51,73 +52,64 @@ class _SupportsSetControl(Protocol):
     def _get_value_from_trigger(self, action: set_control, trigger: JsonValue) -> JsonValue: ...
 
 
+@runtime_checkable
+class _ControlWithCategoricalSelector(Protocol):
+    selector: Union[vm.Dropdown, vm.RadioItems, vm.Checklist]
+    show_in_url: bool
+
+
 @experimental(
     "The `set_control` action is experimental. We hope that it will be a stable part of Vizro in future, "
     "but until then it may change or be removed without warning. If you have feedback on the feature then "
     "[let us know](https://github.com/mckinsey/vizro/issues)."
 )
 class set_control(_AbstractAction):
-    """blah blah
+    """Sets the value of a control based on data from the trigger.
 
     Args:
-        blah bl: asdf
+        target (ModelID): Filter or Parameter component id to be affected by the trigger. If the target is on a
+            different page to the trigger then it must have `show_in_url=True`.
+        value (str): # TODO AM+PP: ADD DESCRIPTION
     """
 
     type: Literal["set_control"] = "set_control"
     target: ModelID = Field(
-        description="...",  # Filter/parameter id, not selector id
+        description="Filter or Parameter component id to be affected by the trigger."
+        "If the target is on a different page to the trigger then it must have `show_in_url=True`."
     )
-    """
-    TODO AM+PP: work out a good argument name for this. Syntax depends on source triggering model (like Graph etc.)
-    """
-    value: Any = None  # Joe said "The name “lookup” could indeed be improved. In VizX we used something
-    # like “source_field_name” to make it explicit
-    # I like value but maybe it's too ambiguous. It does allow for use of this action inside vm.Button etc. though
-    # where they send a static value. Maybe get_value.
+    value: str
 
     @_log_call
     def pre_build(self):
-        from vizro.models._controls.filter import CategoricalSelectorType
-
         # Validate that action's parent model supports `set_control` action.
         if not isinstance(model_manager[self._parent_model], _SupportsSetControl):
             raise TypeError(
                 f"`set_control` action was added to the model with ID `{self._parent_model}`, but this action can only "
-                f"be used with models that support it (e.g. Graph)."
+                f"be used with models that support it (e.g. Graph, AgGrid)."
             )
 
-        # TODO AM: Should we integrate this check in model_manager? IMO: We should if we find it useful in more places.
-        #  For example: `model_manager.is_model_in_dashboard(model_id) -> bool`
-        # Validate that target control exists in the dashboard.
-        target_model = target_model_page = None
-        if self.target in model_manager:
-            target_model = model_manager[self.target]
-            target_model_page = model_manager._get_model_page(target_model)
-            # TODO AM: This validation was developed with assumption that all pages are registered in `page_registry`.
-            #  However, this is not the case as Dashboard doesn't have to be pre-built before this action. Let's discuss
-            #  should we call `dashboard.pre_build()` in `Vizro._pre_build()` before other objects.
-            # _registered_page_paths = {registered_page['path'] for registered_page in page_registry.values()}
-
-        if (
-            target_model is None or target_model_page is None
-            # or target_model_page.path not in _registered_page_paths
-        ):
+        # Validate that action's target control exists in the dashboard.
+        target_model = cast(ControlType, model_manager[self.target]) if self.target in model_manager else None
+        target_model_page = model_manager._get_model_page(target_model) if target_model else None
+        if target_model is None or target_model_page is None:
             raise ValueError(
                 f"Model with ID `{self.target}` used as a `target` in `set_control` action not found in the dashboard. "
                 f"Please provide a valid control ID that exists in the dashboard."
             )
 
-        # Validate that target control is a categorical selector.
-        if not isinstance(getattr(target_model, "selector", None), CategoricalSelectorType):
+        # Validate that target is control that has a categorical selector.
+        if not isinstance(target_model, (vm.Filter, vm.Parameter)) or not isinstance(
+            target_model.selector, (vm.Dropdown, vm.Checklist, vm.RadioItems)
+        ):
             raise TypeError(
                 f"Model with ID `{self.target}` used as a `target` in `set_control` action must be a control model "
-                f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, RadioItems or Checklist)."
+                f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
             )
 
         if target_model_page == model_manager._get_model_page(self):
             self._same_page = True
         else:
-            # Validate that target control has `show_in_url=True`.
+            # Validate that target control on different page has `show_in_url=True`.
             if not target_model.show_in_url:
                 raise ValueError(
                     f"Model with ID `{self.target}` used as a `target` in `set_control` action is on a different page "
@@ -126,7 +118,9 @@ class set_control(_AbstractAction):
             self._same_page = False
 
     def function(self, _trigger):
-        value = model_manager[self._parent_model]._get_value_from_trigger(self, _trigger)
+        value = model_manager[self._parent_model]._get_value_from_trigger(  # type: ignore[attr-defined]
+            self, trigger=_trigger
+        )
 
         if self._same_page:
             # Returning a single element value works for both single and multi select selectors.

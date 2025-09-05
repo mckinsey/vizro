@@ -91,6 +91,11 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
             "domLayout": "autoHeight",
             "pagination": True,
             "paginationPageSize": 20,
+            "rowSelection": {
+                "mode": "singleRow",
+                "checkboxes": False,
+                "enableClickSelection": True,
+            },
         },
         "columnSize": "responsiveSizeToFit",
     }

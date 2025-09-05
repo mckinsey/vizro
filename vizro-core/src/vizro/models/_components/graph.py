@@ -122,8 +122,8 @@ class Graph(VizroBaseModel):
         }
 
     # To make a model compatible as a source of set_control it must implement this.
-    def _get_value_from_trigger(self, action: set_control, trigger: JsonValue) -> JsonValue:
-        """For graphs we want to start from _trigger["points"][0] and then be able to navigate to:
+    def _get_value_from_trigger(self, action: set_control, trigger: dict[str, Any]) -> JsonValue:
+        """For graphs we want to start from _trigger["points"][0] and then be able to navigate to:.
 
         1. something at root level like x or y - so value="x"
         2. something inside customdata. How should user specify this?
@@ -152,22 +152,20 @@ class Graph(VizroBaseModel):
 
         value would have no default value. Or...
         """
-        action_value = action.value or "customdata[0]"
-
-        # TODO PP: Improve exc messages below
-        trigger = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
+        box_trigger = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
         try:
-            # works for value="species"
-            index = self["custom_data"].index(action_value)
-            return trigger["customdata"][index]
+            # Works for action.value="species" if "species" is in `figure.custom_data`
+            index = self["custom_data"].index(action.value)
+            return box_trigger["customdata"][index]
         except ValueError:
             try:
-                # works for value="x" and value="customdata[0]" if user does want to do that
-                return trigger[action_value]
+                # Works for action.value="x" and action.value="customdata[0]" if user does want to do that
+                return box_trigger[action.value]
             except KeyError:
                 raise ValueError(
-                    f"Couldn't find value: `{action_value}` in trigger. "
-                    "If you expected it to be in custom data then it needs to be in signature."
+                    f"Couldn't find value `{action.value}` in trigger for `set_control` action. "
+                    f"This action was added to the Graph model with ID `{self.id}`. "
+                    "If you expected the value to come from custom data, add it in the figure's custom_data signature."
                 )
 
     # Convenience wrapper/syntactic sugar.

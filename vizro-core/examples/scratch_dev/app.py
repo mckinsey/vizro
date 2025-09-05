@@ -4,8 +4,9 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
-from vizro.actions import set_control
+from vizro.actions import set_control, filter_interaction
 from vizro.tables import dash_ag_grid
+
 
 df = px.data.iris()
 
@@ -23,13 +24,13 @@ page_1 = vm.Page(
                     title="Filter interaction to AgGrid below",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
                     actions=[
-                        set_control(target="p1_filter_1"),
-                        set_control(target="p1_filter_2"),
+                        set_control(target="p1_filter_1", value="species"),
+                        set_control(target="p1_filter_2", value="species"),
                     ],
                 ),
                 vm.Container(
                     components=[
-                        vm.AgGrid(id="p1_ag_grid_1", figure=dash_ag_grid(df, id="p1_inner_ag_grid_1")),
+                        vm.AgGrid(id="p1_ag_grid_1", figure=dash_ag_grid(df)),
                     ],
                     controls=[
                         # multi=True
@@ -46,7 +47,7 @@ page_1 = vm.Page(
             ],
         ),
         vm.Container(
-            title="Drill-through to Page 2",
+            title="Graph Drill-through to Page 2",
             variant="outlined",
             layout=vm.Grid(grid=[[0, 1]]),
             components=[
@@ -54,13 +55,13 @@ page_1 = vm.Page(
                     id="p1_graph_2",
                     title="Drill-through to multi=True Page-2",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-                    actions=set_control(target="p2_filter_1"),
+                    actions=set_control(target="p2_filter_1", value="species"),
                 ),
                 vm.Graph(
                     id="p1_graph_3",
                     title="Drill-through to multi=False Page-2",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-                    actions=set_control(target="p2_filter_2"),
+                    actions=set_control(target="p2_filter_2", value="species"),
                 ),
             ],
         ),
@@ -68,7 +69,7 @@ page_1 = vm.Page(
 )
 
 page_2 = vm.Page(
-    title="Drill-through target page",
+    title="Graph Drill-through target page",
     components=[
         vm.Graph(
             id="p2_graph_1",
@@ -83,6 +84,7 @@ page_2 = vm.Page(
     ],
 )
 
+# ====== Graph drill-down ======
 
 vm.Page.add_type("controls", vm.Button)
 
@@ -93,33 +95,152 @@ def graph_with_dynamic_title(data_frame, title="ALL", **kwargs):
 
 
 page_3 = vm.Page(
-    title="Drill-down page",
+    title="Graph Drill-down page",
     components=[
         vm.Graph(
             id="p3_graph_1",
-            figure=graph_with_dynamic_title(data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            actions=[set_control(target="p3_filter_1"), set_control(target="p3_parameter_1")]
+            figure=graph_with_dynamic_title(
+                data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+            ),
+            actions=[
+                set_control(target="p3-filter-1", value="species"),
+                set_control(target="p3-parameter-1", value="species"),
+            ],
         )
     ],
     controls=[
         # Hidden with the custom css
-        vm.Filter(id="p3_filter_1", column="species"),
+        vm.Filter(id="p3-filter-1", column="species"),
         vm.Parameter(
-            id="p3_parameter_1",
+            id="p3-parameter-1",
             targets=["p3_graph_1.title"],
-            selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
+            selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"]),
         ),
         vm.Button(
-            text="Reset drill down", icon="Reset Focus",
-            actions=vm.Action(
-                function=capture("action")(lambda: [["setosa", "versicolor", "virginica"], ["setosa", "versicolor", "virginica"]])(),
-                outputs=["p3_filter_1", "p3_parameter_1"]
-           )
-        )
-    ]
+            text="Reset drill down",
+            icon="Reset Focus",
+            actions=[
+                vm.Action(
+                    function=capture("action")(
+                        lambda: [["setosa", "versicolor", "virginica"], ["setosa", "versicolor", "virginica"]]
+                    )(),
+                    outputs=["p3-filter-1", "p3-parameter-1"],
+                ),
+                # Forget the button right now!!
+                # set_control(target="p3-filter-1", value=["setosa", "versicolor", "virginica"])
+                # set_control(target="p3-parameter-1", value=["setosa", "versicolor", "virginica"])
+            ],
+        ),
+    ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
+
+# ====== AG-GRID ======
+
+page_4 = vm.Page(
+    title="AgGrid filter interactions and drill-through source page",
+    components=[
+        vm.Container(
+            title="Two filter interactions within Page 1",
+            layout=vm.Grid(grid=[[0, 1]]),
+            variant="outlined",
+            components=[
+                vm.AgGrid(
+                    id="p4_grid_1",
+                    title="Filter interaction to Graph below",
+                    figure=dash_ag_grid(df),
+                    actions=[
+                        set_control(target="p4_filter_1", value="species"),
+                        set_control(target="p4_filter_2", value="species"),
+                    ],
+                ),
+                vm.Container(
+                    components=[
+                        vm.Graph(
+                            id="p4_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")
+                        ),
+                    ],
+                    controls=[
+                        # multi=True
+                        vm.Filter(id="p4_filter_1", column="species", targets=["p4_graph_1"]),
+                        # multi=False
+                        vm.Filter(
+                            id="p4_filter_2",
+                            column="species",
+                            targets=["p4_graph_1"],
+                            selector=vm.Dropdown(multi=False),
+                        ),
+                    ],
+                ),
+            ],
+        ),
+        vm.Container(
+            title="AgGrid Drill-through to Page 5",
+            variant="outlined",
+            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.AgGrid(
+                    id="p4_grid_2",
+                    figure=dash_ag_grid(df),
+                    title="Drill-through to multi=True Page-5",
+                    actions=set_control(target="p5_filter_1", value="species"),
+                ),
+                vm.AgGrid(
+                    id="p4_grid_3",
+                    figure=dash_ag_grid(df),
+                    title="Drill-through to multi=False Page-5",
+                    actions=set_control(target="p5_filter_2", value="species"),
+                ),
+            ],
+        ),
+    ],
+)
+
+page_5 = vm.Page(
+    title="AgGrid Drill-through target page",
+    components=[
+        vm.Graph(
+            id="p5_graph_1",
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
+        )
+    ],
+    controls=[
+        # multi=True
+        vm.Filter(id="p5_filter_1", column="sepal_length", show_in_url=True, selector=vm.Slider()),
+        # multi=False
+        vm.Filter(id="p5_filter_2", column="species", show_in_url=True, selector=vm.RadioItems()),
+    ],
+)
+
+
+page_6 = vm.Page(
+    title="Old AgGrid Filter interaction",
+    components=[
+        vm.AgGrid(id="p6_grid_1", figure=dash_ag_grid(df), actions=filter_interaction(targets=["p6_grid_2"])),
+        vm.AgGrid(
+            id="p6_grid_2",
+            figure=dash_ag_grid(df),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(
+    pages=[page_1, page_2, page_3, page_4, page_5, page_6],
+    navigation=vm.Navigation(
+        pages={
+            "Graph as source": [
+                "Graph filter interactions and drill-through source page",
+                "Graph Drill-through target page",
+                "Graph Drill-down page",
+            ],
+            "AgGrid as source": [
+                "AgGrid filter interactions and drill-through source page",
+                "AgGrid Drill-through target page",
+                "Old AgGrid Filter interaction",
+            ],
+        }
+    ),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

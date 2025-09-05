@@ -4,11 +4,12 @@ from typing import Annotated, Literal, Optional
 import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
+from vizro.actions._set_control import set_control
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
@@ -92,7 +93,7 @@ class AgGrid(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self._inner_component_id}.cellClicked"}
+        return {"__default__": f"{self._inner_component_id}.selectedRows"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -112,9 +113,15 @@ class AgGrid(VizroBaseModel):
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
-    # TODO PP: implement this, but lower priority than Graph and only after thinking about changing to selectedData.
-    def _get_value_from_trigger(self, action, trigger):
+    def _get_value_from_trigger(self, action: set_control, trigger: list[dict[str, str]]) -> JsonValue:
         """Expect action.value = "name_of_column" and look that up in trigger."""
+        try:
+            return trigger[0][action.value]
+        except KeyError:
+            raise ValueError(
+                f"Couldn't find value column name: `{action.value}` in trigger for `set_control` action. "
+                f"This action was added to the AgGrid model with ID `{self.id}`. "
+            )
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

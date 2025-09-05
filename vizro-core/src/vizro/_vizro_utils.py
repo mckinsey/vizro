@@ -61,7 +61,7 @@ class experimental:
         message: str,
         /,
         *,
-        category: typing.Optional[typing.Type[Warning]] = FutureWarning,
+        category: typing.Optional[type[Warning]] = FutureWarning,
         stacklevel: int = 1,
     ) -> None:
         if not isinstance(message, str):
