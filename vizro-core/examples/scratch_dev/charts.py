@@ -125,14 +125,12 @@ def custom_market_category_bar_chart(data_frame, custom_data=[]):
         x_axis_values.append(insert_br_every_n_chars(value))
 
     fig.update_layout(
-        title="Serviceable Addressable Market by Product Category",
         yaxis_title="",
         xaxis_title="",
         barmode="stack",
-        font=dict(color="white", size=8),
         legend_title=None,
     )
-    fig.update_xaxes(tickfont=dict(size=9), minor_tickwidth=2, ticklen=2, tickangle=10)
+    fig.update_xaxes(tickfont=dict(size=13), minor_tickwidth=2, ticklen=2, tickangle=10)
 
     return fig
 
@@ -168,7 +166,6 @@ def custom_market_summary_bar_chart(data_frame):
         texttemplate="%{text}",
         textposition="inside",
         insidetextanchor="middle",
-        textfont=dict(size=16, color="white"),
         cliponaxis=False,
         hovertemplate="<b>%{fullData.name}</b><br>%{x}<br>%{y}M<extra></extra>",
     )
@@ -217,4 +214,82 @@ def custom_market_summary_bar_chart(data_frame):
         showgrid=False,
         showline=False,
     )
+    return fig
+
+
+@capture("graph")
+def custom_waterfall_chart(data_frame):
+    """Creates a waterfall chart similar to the provided image."""
+    # Prepare data for waterfall chart
+    categories = data_frame["Category"].tolist()
+    values = data_frame["Value"].tolist()
+
+    # Calculate cumulative values for positioning
+    cumulative = []
+    running_total = 0
+
+    for i, value in enumerate(values):
+        if i == 0:  # First bar starts from 0
+            cumulative.append(0)
+            running_total = value
+        elif i == len(values) - 1:  # Last bar (total) starts from 0
+            cumulative.append(0)
+        else:  # Intermediate bars start from previous cumulative
+            cumulative.append(running_total)
+            running_total += value
+
+    # Create the waterfall chart
+    fig = go.Figure()
+
+    # Define colors for different types of bars
+    colors = []
+    for i, (cat, val) in enumerate(zip(categories, values)):
+        if i == 0:  # Current (base)
+            colors.append("#1f77b4")  # Blue
+        elif i == len(categories) - 1:  # Total
+            colors.append("#d62728")  # Light gray/white for total
+        elif val > 0:  # Positive contributions
+            colors.append("#2ca02c" if "Cross" in cat or "Pricing" in cat else "#17becf")  # Green/teal for positive
+        else:  # Negative contributions (Churn)
+            colors.append("#ff7f0e")  # Orange for negative
+
+    # Add bars
+    fig.add_trace(
+        go.Waterfall(
+            name="",
+            orientation="v",
+            measure=["absolute"] + ["relative"] * (len(categories) - 2) + ["total"],
+            x=categories,
+            y=values,
+            text=[f"{val}M" for val in values],
+            textposition="outside",
+            textfont=dict(color="white", size=14),
+            connector={"line": {"color": "rgba(255,255,255,0.3)", "width": 1}},
+            increasing={"marker": {"color": "#17becf"}},
+            decreasing={"marker": {"color": "#ff7f0e"}},
+            totals={"marker": {"color": "#d62728"}},
+            base=0,
+        )
+    )
+
+    # Update layout to match the dark theme from the image
+    fig.update_layout(
+        plot_bgcolor="#2e2e2e",
+        paper_bgcolor="#2e2e2e",
+        font=dict(color="white", family="Arial", size=12),
+        xaxis=dict(title="", showgrid=False, showline=False, zeroline=False, tickfont=dict(color="white", size=12)),
+        yaxis=dict(
+            title="",
+            showgrid=True,
+            gridcolor="rgba(255,255,255,0.1)",
+            showline=False,
+            zeroline=False,
+            ticksuffix="M",
+            tickfont=dict(color="white", size=12),
+            range=[0, max(values) * 1.2],
+        ),
+        showlegend=False,
+        margin=dict(l=50, r=50, t=50, b=50),
+    )
+
     return fig

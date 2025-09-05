@@ -10,6 +10,7 @@ from charts import (
     custom_map_chart,
     custom_market_category_bar_chart,
     custom_market_summary_bar_chart,
+    custom_waterfall_chart
 )
 
 from dash import callback, Input, Output
@@ -130,6 +131,7 @@ page = vm.Page(
                             [2, 2, 3, 3],
                             [2, 2, 4, 4],
                             [2, 2, 4, 4],
+                            [2, 2, 4, 4],
                         ],
                     ),
                 ),
@@ -195,6 +197,7 @@ page = vm.Page(
                             [2, 2, 3, 3],
                             [2, 2, 4, 4],
                             [2, 2, 4, 4],
+                            [2, 2, 4, 4],
                         ],
                     ),
                 ),
@@ -219,7 +222,7 @@ page = vm.Page(
                         ),
                         vm.Container(
                             title="",
-                            components=[vm.Card(text="Placeholder for waterfall chart")],
+                            components=[vm.Graph(figure=custom_waterfall_chart(market_summary_data))],
                         ),
                         vm.Container(
                             title="",

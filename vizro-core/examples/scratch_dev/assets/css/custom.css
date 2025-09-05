@@ -61,3 +61,16 @@
 #page-header {
   display: none;
 }
+
+#dashboard-title {
+  font-weight: 600;
+}
+
+
+.rc-slider-track, .rc-slider-dot-active {
+  background-color: #00b4ff;
+}
+
+.rc-slider-handle {
+  border-color: #00b4ff;
+}

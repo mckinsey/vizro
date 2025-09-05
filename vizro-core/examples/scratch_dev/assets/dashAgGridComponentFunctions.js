@@ -1,17 +1,17 @@
 var dagcomponentfuncs = (window.dashAgGridComponentFunctions =
-    window.dashAgGridComponentFunctions || {});
+  window.dashAgGridComponentFunctions || {});
 
 dagcomponentfuncs.ColorCellRenderer = (props) => {
   const value = props.value;
-  let backgroundColor = '#ffffff';
-  
+  let backgroundColor = "#ffffff";
+
   // Map tier values to proper colors
-  if (value === 'Gold') {
-    backgroundColor = '#FFD700';
-  } else if (value === 'Silver') {
-    backgroundColor = '#C0C0C0';
-  } else if (value === 'Bronze') {
-    backgroundColor = '#CD7F32';
+  if (value === "Gold") {
+    backgroundColor = "#FFD700";
+  } else if (value === "Silver") {
+    backgroundColor = "#C0C0C0";
+  } else if (value === "Bronze") {
+    backgroundColor = "#CD7F32";
   }
 
   const circleStyles = {
@@ -32,6 +32,6 @@ dagcomponentfuncs.ColorCellRenderer = (props) => {
 
   return React.createElement("div", { style: containerStyles }, [
     React.createElement("span", { style: circleStyles, key: "circle" }),
-    React.createElement("span", { key: "text" }, value)
+    React.createElement("span", { key: "text" }, value),
   ]);
 };
