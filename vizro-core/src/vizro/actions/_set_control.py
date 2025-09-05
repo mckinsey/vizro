@@ -83,7 +83,7 @@ class set_control(_AbstractAction):
     def pre_build(self):
         # Validate that action's parent model supports `set_control` action.
         if not isinstance(model_manager[self._parent_model], _SupportsSetControl):
-            raise TypeError(
+            raise ValueError(
                 f"`set_control` action was added to the model with ID `{self._parent_model}`, but this action can only "
                 f"be used with models that support it (e.g. Graph, AgGrid)."
             )
