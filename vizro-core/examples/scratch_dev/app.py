@@ -10,7 +10,7 @@ from charts import (
     custom_map_chart,
     custom_market_category_bar_chart,
     custom_market_summary_bar_chart,
-    custom_waterfall_chart
+    custom_waterfall_chart,
 )
 
 from dash import callback, Input, Output
