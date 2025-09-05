@@ -9,7 +9,6 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
-from vizro.actions._set_control import set_control
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
@@ -114,7 +113,7 @@ class AgGrid(VizroBaseModel):
         }
 
     def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
-        """value is the name of the column. There is only one point selected, so we just look at trigger[0]."""
+        """Value is the name of the column. There is only one point selected, so we just look at trigger[0]."""
         try:
             return trigger[0][value]
         except KeyError:
