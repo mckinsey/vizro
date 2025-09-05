@@ -55,18 +55,42 @@ page = vm.Page(
                                 icon="Finance mode",
                             ),
                         ),
-                        vm.Graph(
-                            id="market-industry-bar-chart",
-                            figure=custom_market_industry_bar_chart(market_industry_data, custom_data=["Industry"]),
-                            actions=[vm.Action(function=filter_interaction(targets=["market-category-bar-chart"]))],
+                        vm.Container(
+                            components=[
+                                vm.Graph(
+                                    id="market-industry-bar-chart",
+                                    figure=custom_market_industry_bar_chart(
+                                        market_industry_data, custom_data=["Industry"]
+                                    ),
+                                    actions=[
+                                        vm.Action(function=filter_interaction(targets=["market-category-bar-chart"]))
+                                    ],
+                                    title="Serviceable Addressable Market by Industry Vertical",
+                                )
+                            ],
+                            variant="filled",
                         ),
-                        vm.Graph(
-                            figure=custom_map_chart(map_chart_data),
+                        vm.Container(
+                            components=[
+                                vm.Graph(
+                                    figure=custom_map_chart(map_chart_data),
+                                )
+                            ],
+                            variant="filled",
                         ),
-                        vm.Graph(
-                            id="market-category-bar-chart",
-                            figure=custom_market_category_bar_chart(market_category_data, custom_data=["Industry"]),
-                            actions=[vm.Action(function=filter_interaction(targets=["market-industry-bar-chart"]))],
+                        vm.Container(
+                            components=[
+                                vm.Graph(
+                                    id="market-category-bar-chart",
+                                    figure=custom_market_category_bar_chart(
+                                        market_category_data, custom_data=["Industry"]
+                                    ),
+                                    actions=[
+                                        vm.Action(function=filter_interaction(targets=["market-industry-bar-chart"]))
+                                    ],
+                                )
+                            ],
+                            variant="filled",
                         ),
                     ],
                     layout=vm.Grid(
@@ -76,6 +100,7 @@ page = vm.Page(
                             [2, 2, 3, 3],
                             [2, 2, 4, 4],
                             [2, 2, 4, 4],
+                        
                         ],
                         row_gap="12px",
                         col_gap="12px",
@@ -198,13 +223,14 @@ page = vm.Page(
             [1],
             [1],
             [1],
+            [1],
         ],
         row_gap="12px",
     ),
 )
 
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page], title="CustomerOne")
 
 
 @callback(

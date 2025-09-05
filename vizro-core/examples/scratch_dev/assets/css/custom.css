@@ -47,3 +47,13 @@
 .tab-content {
   height: 100% !important;
 }
+
+
+#logo-dark, #logo-light {
+  background-color: var(--surfaces-card-bg);
+  height: 30px;
+}
+
+.bg-container {
+  background: var(--surfaces-bg-card) !important;
+}

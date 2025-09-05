@@ -21,9 +21,10 @@ def custom_market_industry_bar_chart(data_frame, custom_data=[]):
         color="Type",
         orientation="h",
         text=df_long["Value"].astype(str) + "M",
-        title="Serviceable Addressable Market by Industry Vertical",
         custom_data=custom_data,
+        labels={"2024_Revenue": "2024 Revenue"},
     )
+
 
     # Add total labels as annotations
     for i, row in data_frame.iterrows():
@@ -43,7 +44,7 @@ def custom_market_industry_bar_chart(data_frame, custom_data=[]):
         xaxis=dict(title="", showgrid=False, zeroline=False),
         yaxis=dict(title="", categoryorder="total ascending"),
         font=dict(color="white"),
-        legend=dict(orientation="h", y=1.07, x=0.8, xanchor="center"),
+        legend_title=None,
     )
 
     return fig
@@ -127,12 +128,11 @@ def custom_market_category_bar_chart(data_frame, custom_data=[]):
 
     fig.update_layout(
         title="Serviceable Addressable Market by Product Category",
-        yaxis_title="Market Size (M)",
+        yaxis_title="",
         xaxis_title="",
         barmode="stack",
         font=dict(color="white", size=8),
-        # title_x=0.5,
-        legend=dict(orientation="h", y=1.2, x=0.9, xanchor="center"),
+        legend_title=None
     )
     fig.update_xaxes(tickfont=dict(size=9), minor_tickwidth=2, ticklen=2, tickangle=10)
 
