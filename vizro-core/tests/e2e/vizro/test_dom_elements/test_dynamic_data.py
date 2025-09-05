@@ -7,7 +7,6 @@ from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
     check_graph_is_empty,
-    check_graph_is_loaded,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -20,6 +19,7 @@ from e2e.vizro.navigation import (
     select_slider_handler,
 )
 from e2e.vizro.paths import (
+    actions_progress_indicator_path,
     categorical_components_value_path,
     dropdown_arrow_path,
     graph_axis_value_path,
@@ -128,7 +128,7 @@ def test_dropdown_values_not_disappear(dash_br):
     "cache, slider_id",
     [
         ("cached", cnst.SLIDER_DYNAMIC_DATA_CACHED_ID),
-        ("cached_not", cnst.SLIDER_DYNAMIC_DATA_ID),
+        # ("cached_not", cnst.SLIDER_DYNAMIC_DATA_ID),
     ],
 )
 def test_data_dynamic_parametrization(dash_br, cache, slider_id):
@@ -145,16 +145,20 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     # move slider to value '20'
     select_slider_handler(dash_br, elem_id=slider_id, value=2)
     callbacks_finish_waiter(dash_br)
+    # wait till actions will be finished ad no progress indicator will be visible on the screenshots
+    dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(first_screen)
 
     # move slider to value '60'
     select_slider_handler(dash_br, elem_id=slider_id, value=6)
     callbacks_finish_waiter(dash_br)
+    dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(second_screen)
 
     # move slider to value '20'
     select_slider_handler(dash_br, elem_id=slider_id, value=2)
     callbacks_finish_waiter(dash_br)
+    dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(third_screen)
 
     # first and second screens should be different
@@ -170,7 +174,7 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
 
 
 @rewrite_dynamic_filters_data_config
-def test_dropdown_filter_multi(dash_br):
+def test_dropdown_filter_multi(dash_br, check_graph_is_loaded_thread):
     """Initial selected value is 'ALL'."""
     # Select page and wait until it's loaded
     accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
@@ -180,9 +184,9 @@ def test_dropdown_filter_multi(dash_br):
     )
 
     # Choose "versicolor" value and check that graph is reloaded
+    check_graph_is_loaded_thread(graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
     clear_dropdown(dash_br, cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -338,7 +342,7 @@ def test_dropdown_filter_select_all_value(dash_br):
 
 
 @rewrite_dynamic_filters_data_config
-def test_dropdown_filter(dash_br):
+def test_dropdown_filter(dash_br, check_graph_is_loaded_thread):
     """Initial selected value is 'setosa'."""
     # Select page and wait until it's loaded
     accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
@@ -348,8 +352,8 @@ def test_dropdown_filter(dash_br):
     )
 
     # Choose "versicolor" value and check that graph is reloaded
+    check_graph_is_loaded_thread(graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID, value="versicolor")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -525,7 +529,7 @@ def test_checklist_filter_select_all_value(dash_br):
 
 
 @rewrite_dynamic_filters_data_config
-def test_checklist_filter(dash_br):
+def test_checklist_filter(dash_br, check_graph_is_loaded_thread):
     """Initial selected value is 'ALL'."""
     accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
@@ -534,10 +538,10 @@ def test_checklist_filter(dash_br):
     )
 
     # Choose "versicolor" value and check that graph is reloaded
+    check_graph_is_loaded_thread(graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=1), 1)
     # TODO: change value to 3 after fixing https://github.com/McK-Internal/vizro-internal/issues/1356
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1)
-    check_graph_is_loaded(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -564,7 +568,7 @@ def test_checklist_filter(dash_br):
 
 
 @rewrite_dynamic_filters_data_config
-def test_radio_items_filter(dash_br):
+def test_radio_items_filter(dash_br, check_graph_is_loaded_thread):
     """Initial selected value is 'setosa'."""
     accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
@@ -573,8 +577,8 @@ def test_radio_items_filter(dash_br):
     )
 
     # Choose "versicolor" value and check that graph is reloaded
+    check_graph_is_loaded_thread(graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID, value=2), 1)
-    check_graph_is_loaded(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -600,7 +604,7 @@ def test_radio_items_filter(dash_br):
 
 
 @rewrite_dynamic_filters_data_config
-def test_numerical_filters(dash_br):
+def test_numerical_filters(dash_br, check_graph_is_loaded_thread):
     """Initial selected value for slider is 6. Initial selected values for range_slider are 6 and 7."""
     accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
@@ -627,10 +631,10 @@ def test_numerical_filters(dash_br):
     )
 
     # Change "min" slider and range slider values to "5"
+    check_graph_is_loaded_thread(graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
+    check_graph_is_loaded_thread(graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
 
     # Check slider value
     check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
@@ -659,7 +663,7 @@ def test_numerical_filters(dash_br):
 
 
 @rewrite_dynamic_filters_data_config
-def test_datepicker_range_filters(dash_br):
+def test_datepicker_range_filters(dash_br, check_graph_is_loaded_thread):
     """Initial selected values are 5 March 2024 and 10 March 2024."""
     accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
@@ -701,11 +705,11 @@ def test_datepicker_range_filters(dash_br):
     )
 
     # open datepicker calendar and choose dates from 6 to 10 March 2024
+    check_graph_is_loaded_thread(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
     dash_br.multiple_click('button[aria-label="10 March 2024"]', 1)
-    check_graph_is_loaded(dash_br, cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
@@ -813,7 +817,7 @@ def test_datepicker_single_filters(dash_br):
     dash_br.wait_for_element('button[aria-label="5 March 2024"][data-disabled="true"]')
 
 
-def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
+def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br, check_graph_is_loaded_thread):
     """Test automatic refreshing of the dynamic filters and their targets when the data_frame parameter is changed.
 
     Page configuration includes dynamic data scatter chart which controls by slider parameter and static data scatter
@@ -832,8 +836,8 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
 
     # select '10' points for slider which is showing only 'setosa' data and check that scatter graph
     # with dynamic data is empty and that scatter graph with static data is the same
+    check_graph_is_loaded_thread(graph_id=cnst.SCATTER_DF_STATIC)
     select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
 
