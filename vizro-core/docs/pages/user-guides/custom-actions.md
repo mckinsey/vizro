@@ -1,8 +1,8 @@
 # How to create custom actions
 
-Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you can write your own custom action. In this guide we show how to do this.
+Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you can create a custom action. In this guide we show how to do this.
 
-We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md)
+We also have an in-depth [tutorial on creating an action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md)
 
 !!! note
 
@@ -44,7 +44,7 @@ To define your own action:
     1. When the dashboard is running, the action's `input_1` will be set to the runtime value of the Vizro model with `id="input_id_1"` and similarly for `input_2`.
     1. When the dashboard is running, the action's output "My string value..." will set the value of the Vizro model with `id="output_id_1"`.
 
-You can also execute [multiple actions with a single trigger](#multiple-actions).
+You can also execute [multiple actions with a single trigger](#chaining-multiple-actions).
 
 !!! warning
 
@@ -122,7 +122,7 @@ Here is the full example code that includes the output component `vm.Time(id="ti
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        ![](../../assets/user_guides/actions/custom-actions1.png)
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `current_time_text` action is triggered. This finds the current time and returns a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`.
 
@@ -134,7 +134,7 @@ Before clicking the button, the text shows "Click the button". When you click th
 
 This is already possible, and documentation is coming soon!
 
-## Runtime inputs
+## Trigger with a runtime input
 
 This extends the [above example](#trigger-an-action-with-a-button) of an action triggered by a button to include an input. Here is the action function:
 
@@ -216,11 +216,11 @@ Here is the full example code that includes the input component `vm.Switch(id="c
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        ![](../../assets/user_guides/actions/custom-actions2.png)
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `current_time_text` action is triggered. This finds the current time and returns a string "The time is ..." with a time format that depends on the switch's setting. The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`.
 
-## Multiple inputs and outputs
+### Multiple inputs and outputs
 
 An action can have any number of inputs and outputs (including zero). Here is an action with two inputs and two outputs:
 
@@ -266,7 +266,7 @@ actions = vm.Action(
 
 A full real world example of using multiple inputs and outputs in a form [given in the tutorial](../tutorials/custom-actions-tutorial.md#multiple-inputs-and-outputs).
 
-## Multiple actions
+## Chaining multiple actions
 
 When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix [built-in actions](actions.md) and custom actions in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions-tutorial.md).
 
@@ -293,7 +293,7 @@ For most actions that you write, you should only need to specify `<model_id>` fo
 
 The syntax for using a particular model argument as an action input or output is `<model_id>.<argument_name>`.
 
-For example, let's alter the [above example](#runtime-inputs) of a switch that toggles between formatting time with the 12- or 24-hour clock. [`Switch`][vizro.models.Switch] has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
+For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- or 24-hour clock. [`Switch`][vizro.models.Switch] has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
 
 !!! example "Use model argument as output"
 
@@ -339,18 +339,18 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
         ```
 
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
-        1. In the [previous example](#runtime-inputs), the action was triggered when a button is clicked; now we change the action to be triggered when the switch itself is clicked.
+        1. In the [previous example](#trigger-with-a-runtime-input), the action was triggered when a button is clicked; now we change the action to be triggered when the switch itself is clicked.
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.title"` to update the title of the switch.
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        ![](../../assets/user_guides/actions/custom-actions3.png)
 
 ### Dash properties as input and output
 
 Sometimes you might like to use as input or output a component that is on the screen but cannot be addressed explicitly with `<model_id>.<argument_name>`. Vizro actions in fact accept as input and output _any_ Dash component in the format `<component_id>.<property>`.
 
-For example, let's alter the [above example](#runtime-inputs) of a switch that toggles between formatting time with the 12- or 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
+For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- or 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
 
 !!! example "Use Dash property as input"
 
@@ -398,7 +398,7 @@ For example, let's alter the [above example](#runtime-inputs) of a switch that t
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        ![](../../assets/user_guides/actions/custom-actions4.png)
 
 !!! note
 
