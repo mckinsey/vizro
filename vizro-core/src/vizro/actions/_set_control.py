@@ -15,6 +15,7 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import ControlType, ModelID
 
 
+# This defines what a model needs to implement for it to be capable of acting as the trigger of set_control.
 @runtime_checkable
 class _SupportsSetControl(Protocol):
     def _get_value_from_trigger(self, value: str, trigger: JsonValue) -> JsonValue: ...
@@ -24,6 +25,12 @@ class _SupportsSetControl(Protocol):
 class _ControlWithCategoricalSelector(Protocol):
     selector: Union[vm.Dropdown, vm.RadioItems, vm.Checklist]
     show_in_url: bool
+
+
+def _encode_to_base64(value):
+    json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
+    b64_bytes = base64.urlsafe_b64encode(json_bytes)
+    return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
 
 @experimental(
@@ -37,7 +44,7 @@ class set_control(_AbstractAction):
     Args:
         target (ModelID): Filter or Parameter component id to be affected by the trigger. If the target is on a
             different page to the trigger then it must have `show_in_url=True`.
-        value (str): # TODO AM+PP: ADD DESCRIPTION
+        value (str): TODO AM: ADD DESCRIPTION
     """
 
     type: Literal["set_control"] = "set_control"
@@ -45,7 +52,7 @@ class set_control(_AbstractAction):
         description="Filter or Parameter component id to be affected by the trigger."
         "If the target is on a different page to the trigger then it must have `show_in_url=True`."
     )
-    value: str
+    value: str = Field(description="TODO AM: ADD DESCRIPTION")
 
     @_log_call
     def pre_build(self):
@@ -81,7 +88,7 @@ class set_control(_AbstractAction):
             if not target_model.show_in_url:
                 raise ValueError(
                     f"Model with ID `{self.target}` used as a `target` in `set_control` action is on a different page "
-                    f"than the trigger and must have `show_in_url=True`."
+                    f"from the trigger and so must have `show_in_url=True`."
                 )
             self._same_page = False
 
@@ -93,19 +100,13 @@ class set_control(_AbstractAction):
         if self._same_page:
             # Returning a single element value works for both single and multi select selectors.
             return value
-        else:
 
-            def encode_to_base64(value):
-                json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
-                b64_bytes = base64.urlsafe_b64encode(json_bytes)
-                return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
-
-            page_path = model_manager._get_model_page(model_manager[self.target]).path
-            url_query_params = f"?{self.target}={encode_to_base64(value)}"
-            return get_relative_path(page_path), url_query_params
+        page_path = model_manager._get_model_page(model_manager[self.target]).path
+        url_query_params = f"?{self.target}={_encode_to_base64(value)}"
+        return get_relative_path(page_path), url_query_params
 
     @property
     def outputs(self):  # type: ignore[override]
         if self._same_page:
-            return self.target  # Should target underlying selector.value.
+            return self.target
         return ["vizro_url.pathname", "vizro_url.search"]
