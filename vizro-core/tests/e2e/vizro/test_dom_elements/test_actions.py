@@ -3,7 +3,7 @@ from e2e.asserts import assert_files_equal
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_exported_file_exists
 from e2e.vizro.navigation import page_select
-from e2e.vizro.paths import button_path
+from e2e.vizro.paths import actions_progress_indicator_path, button_path
 
 
 def test_export_data_no_controls(dash_br):
@@ -61,4 +61,4 @@ def test_actions_progress_indicator(dash_br):
     # click on the dot in the scatter graph
     dash_br.click_at_coord_fractions(f"#{cnst.SCATTER_INTERACTIONS_ID} path:nth-of-type(20)", 0, 1)
     # check that that progress indicator appears
-    dash_br.wait_for_text_to_equal("span[class='material-symbols-outlined progress-indicator']", "progress_activity")
+    dash_br.wait_for_text_to_equal(actions_progress_indicator_path(), "progress_activity")
