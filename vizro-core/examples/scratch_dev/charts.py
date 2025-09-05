@@ -220,76 +220,22 @@ def custom_market_summary_bar_chart(data_frame):
 @capture("graph")
 def custom_waterfall_chart(data_frame):
     """Creates a waterfall chart similar to the provided image."""
-    # Prepare data for waterfall chart
-    categories = data_frame["Category"].tolist()
-    values = data_frame["Value"].tolist()
-
-    # Calculate cumulative values for positioning
-    cumulative = []
-    running_total = 0
-
-    for i, value in enumerate(values):
-        if i == 0:  # First bar starts from 0
-            cumulative.append(0)
-            running_total = value
-        elif i == len(values) - 1:  # Last bar (total) starts from 0
-            cumulative.append(0)
-        else:  # Intermediate bars start from previous cumulative
-            cumulative.append(running_total)
-            running_total += value
-
-    # Create the waterfall chart
-    fig = go.Figure()
-
-    # Define colors for different types of bars
-    colors = []
-    for i, (cat, val) in enumerate(zip(categories, values)):
-        if i == 0:  # Current (base)
-            colors.append("#1f77b4")  # Blue
-        elif i == len(categories) - 1:  # Total
-            colors.append("#d62728")  # Light gray/white for total
-        elif val > 0:  # Positive contributions
-            colors.append("#2ca02c" if "Cross" in cat or "Pricing" in cat else "#17becf")  # Green/teal for positive
-        else:  # Negative contributions (Churn)
-            colors.append("#ff7f0e")  # Orange for negative
-
-    # Add bars
-    fig.add_trace(
+    fig = go.Figure(
         go.Waterfall(
-            name="",
-            orientation="v",
-            measure=["absolute"] + ["relative"] * (len(categories) - 2) + ["total"],
-            x=categories,
-            y=values,
-            text=[f"{val}M" for val in values],
+            name="20",
+            orientation="h",
+            measure=["absolute", "relative", "relative", "relative", "relative", "total"],
+            y=["Current", "White space", "Cross sell", "Pricing", "Churn", "Total Value Potential"],
             textposition="outside",
-            textfont=dict(color="white", size=14),
-            connector={"line": {"color": "rgba(255,255,255,0.3)", "width": 1}},
-            increasing={"marker": {"color": "#17becf"}},
-            decreasing={"marker": {"color": "#ff7f0e"}},
-            totals={"marker": {"color": "#d62728"}},
-            base=0,
+            text=["196M", "43M", "28M", "32M", "30M", "328M"],
+            x=[196, 43, 28, 32, 30, 328],
+            connector={"line": {"color": "grey"}},
+            decreasing = {"marker":{"color":"#ff9222"}},
+            increasing = {"marker":{"color":"#00b4ff"}},
+            totals = {"marker":{"color":"grey"}}
         )
     )
 
-    # Update layout to match the dark theme from the image
-    fig.update_layout(
-        plot_bgcolor="#2e2e2e",
-        paper_bgcolor="#2e2e2e",
-        font=dict(color="white", family="Arial", size=12),
-        xaxis=dict(title="", showgrid=False, showline=False, zeroline=False, tickfont=dict(color="white", size=12)),
-        yaxis=dict(
-            title="",
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.1)",
-            showline=False,
-            zeroline=False,
-            ticksuffix="M",
-            tickfont=dict(color="white", size=12),
-            range=[0, max(values) * 1.2],
-        ),
-        showlegend=False,
-        margin=dict(l=50, r=50, t=50, b=50),
-    )
+    fig.update_layout(showlegend=False)
 
     return fig
