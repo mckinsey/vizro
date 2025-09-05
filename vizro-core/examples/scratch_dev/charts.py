@@ -230,9 +230,9 @@ def custom_waterfall_chart(data_frame):
             text=["196M", "43M", "28M", "32M", "30M", "328M"],
             x=[196, 43, 28, 32, 30, 328],
             connector={"line": {"color": "grey"}},
-            decreasing = {"marker":{"color":"#ff9222"}},
-            increasing = {"marker":{"color":"#00b4ff"}},
-            totals = {"marker":{"color":"grey"}}
+            decreasing={"marker": {"color": "#ff9222"}},
+            increasing={"marker": {"color": "#00b4ff"}},
+            totals={"marker": {"color": "grey"}},
         )
     )
 

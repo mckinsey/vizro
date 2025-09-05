@@ -276,4 +276,4 @@ def change_location(value):
 
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=False)
