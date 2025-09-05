@@ -260,7 +260,7 @@ Here is the full code for `Rating` and a simple app containing it.
         ```
     === "Result"
 
-        TODO NOW: screenshot/gif
+        ![](../../assets/user_guides/actions/custom-components1.png)
 
 ## Use custom components with actions
 
@@ -333,7 +333,7 @@ It is then immediately possible to [address the properties of Dash components](c
         ```
     === "Result"
 
-        TODO NOW: screenshot/gif
+        ![](../../assets/user_guides/actions/custom-components2.png)
 
 ### Model ID as input and output
 
@@ -423,7 +423,7 @@ This enables you to replace in your dashboard configuration all action input and
         ```
     === "Result"
 
-        TODO NOW: screenshot/gif
+        ![](../../assets/user_guides/actions/custom-components3.png)
 
 ### Model fields as input and output
 
@@ -525,7 +525,7 @@ This enables you to replace in your dashboard configuration all references to `o
         ```
     === "Result"
 
-        TODO NOW: screenshot/gif
+        ![](../../assets/user_guides/actions/custom-components4.png)
 
 ### Trigger actions
 
@@ -620,7 +620,7 @@ A full example is given below.
 
         @capture("action")
         def update_rating_text(rating_value): # (1)!
-            if value:
+            if rating_value:
                 return f"You gave a rating of {rating_value} out of 5 stars"
             return "You have not provided a rating"
 
@@ -666,7 +666,7 @@ A full example is given below.
         ```
     === "Result"
 
-        TODO NOW: screenshot/gif
+        ![](../../assets/user_guides/actions/custom-components5.png)
 
 ## Persistence
 
