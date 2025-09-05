@@ -35,7 +35,7 @@ class experimental:
             pass
 
         @overload
-        @deprecated("int support is experimental")
+        @experimental("int support is experimental")
         def g(x: int) -> int: ...
         @overload
         def g(x: str) -> int: ...
