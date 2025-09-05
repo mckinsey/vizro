@@ -168,9 +168,6 @@ Provide a valid import path for these in your dashboard configuration."""
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
         # In future may add a second pre_build loop after the first one.
 
-        # for dashboard in cast(Iterable[Dashboard], model_manager._get_models(Dashboard)):
-        #     dashboard.pre_build()
-
         for filter in cast(Iterable[Filter], model_manager._get_models(Filter)):
             # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
             # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.

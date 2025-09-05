@@ -206,7 +206,7 @@ page_5 = vm.Page(
     ],
     controls=[
         # multi=True
-        vm.Filter(id="p5_filter_1", column="sepal_length", show_in_url=True, selector=vm.Slider()),
+        vm.Filter(id="p5_filter_1", column="species", show_in_url=True, selector=vm.Checklist()),
         # multi=False
         vm.Filter(id="p5_filter_2", column="species", show_in_url=True, selector=vm.RadioItems()),
     ],

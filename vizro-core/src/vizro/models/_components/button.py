@@ -43,8 +43,7 @@ class Button(VizroBaseModel):
     actions: ActionsType = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
-        description="Predefined styles to choose from. Options are `"
-        "plain`, `filled` or `outlined`."
+        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `filled`.",
     )
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
