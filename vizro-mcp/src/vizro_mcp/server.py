@@ -70,7 +70,7 @@ class ModelJsonSchemaResults:
 
 # TODO: check on https://github.com/modelcontextprotocol/python-sdk what new things are possible to do here
 mcp = FastMCP(
-    name="MCP server to help create Vizro dashboards and charts.",
+    name="MCP server to help create Vizro dashboards and charts",
 )
 
 
