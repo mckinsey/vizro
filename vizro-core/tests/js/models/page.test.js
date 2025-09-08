@@ -183,8 +183,6 @@ describe("page.js functions", () => {
     let mockUrlParams;
 
     beforeEach(() => {
-      // Reset all mocks
-      jest.clearAllMocks();
       jest.restoreAllMocks();
       global.dash_clientside.set_props.mockClear();
 

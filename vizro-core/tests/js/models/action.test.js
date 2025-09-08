@@ -20,7 +20,7 @@ describe("guard_action_chain", () => {
     console.debug = jest.fn();
 
     // Get the function from the global object
-    guard_action_chain = window.dash_clientside.action.guard_action_chain;
+    guard_action_chain = global.dash_clientside.action.guard_action_chain;
   });
 
   describe("when created is true", () => {
