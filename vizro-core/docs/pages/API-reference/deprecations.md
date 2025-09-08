@@ -44,9 +44,9 @@ vm.Action(function=my_action(static_argument=1), ...)
 
 Does this cause you a problem? Please [let us know](https://github.com/mckinsey/vizro/issues)!
 
-## `Action` model for built-in action 
+## `Action` model for built-in action
 
-Using the [`Action` model][vizro.models.Action] for built-in actions is deprecated. 
+Using the [`Action` model][vizro.models.Action] for built-in actions is deprecated.
 Call the action directly:
 
 ```python

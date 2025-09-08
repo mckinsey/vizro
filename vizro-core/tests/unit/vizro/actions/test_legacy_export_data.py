@@ -8,7 +8,6 @@ from vizro.actions import export_data, filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 
-
 pytestmark = [
     pytest.mark.filterwarnings("ignore:Using the `Action` model for the built-in action `export_data`:FutureWarning"),
     pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning"),
