@@ -1,6 +1,7 @@
 import logging
 import warnings
 from functools import wraps
+from typing import Any
 
 from dash import html
 from pydantic import ValidationInfo
@@ -79,6 +80,27 @@ def warn_description_without_title(description, info: ValidationInfo):
             UserWarning,
         )
     return description
+
+
+# We use this as a validator to deprecate a field, in addition to setting deprecate=True. deprecate=True is useful
+# to set it to deprecated in the JSON schema, but just using deprecate isn't sufficient because:
+# - the warning isn't raised on model instantiation, just on field access
+# - the warning category can't be changed from the default DeprecationWarning to FutureWarning and so will not be
+# visible to most users
+# These are known limitations with pydantic's current implementation; see
+# https://github.com/pydantic/pydantic/issues/8922 and https://docs.pydantic.dev/latest/concepts/fields/.
+# This only runs if the field is explicitly set since validate_default=False by default.
+# This does not add anything to the API docs. You must add a note to the field docstring manually.
+def make_deprecated_field_warning(url: str, /):
+    def deprecate_field(value: Any, info: ValidationInfo):
+        warnings.warn(
+            f"The `{info.field_name}` argument is deprecated and will not exist in Vizro 0.2.0. See {url}.",
+            category=FutureWarning,
+            stacklevel=3,
+        )
+        return value
+
+    return deprecate_field
 
 
 def make_actions_chain(self):

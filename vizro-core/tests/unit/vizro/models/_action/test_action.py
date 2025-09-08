@@ -38,6 +38,7 @@ def action_with_mock_outputs(request):
     return _action_with_mock_outputs
 
 
+@pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")
 class TestLegacyActionInstantiation:
     def test_action_first_in_chain_mandatory_only(self):
         function = action_with_no_args()
@@ -86,7 +87,12 @@ class TestLegacyActionInstantiation:
         assert action._runtime_args == {}
         assert action._action_name == "action_with_no_args"
 
+    def test_inputs_deprecated(self):
+        with pytest.warns(FutureWarning, match="The `inputs` argument is deprecated"):
+            Action(function=action_with_no_args(), inputs=[])
 
+
+@pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")
 class TestLegacyActionInputs:
     @pytest.mark.parametrize(
         "action_function, runtime_inputs, expected_transformed_inputs",
@@ -164,12 +170,18 @@ class TestLegacyActionInputs:
             "component.property.property",
         ],
     )
+    @pytest.mark.filterwarnings("ignore:Passing a static argument to a custom action is deprecated:FutureWarning")
     def test_static_inputs(self, static_inputs):
         action = Action(function=action_with_one_arg(static_inputs))
 
         assert action._legacy
         assert action.inputs == []
         assert action._transformed_inputs == []
+
+    def test_static_inputs_deprecated(self):
+        action = Action(function=action_with_one_arg(""))
+        with pytest.warns(FutureWarning, match="Passing a static argument to a custom action is deprecated"):
+            action._transformed_inputs
 
     @pytest.mark.parametrize(
         "action_function, static_inputs, runtime_inputs, expected_transformed_inputs",
@@ -190,6 +202,7 @@ class TestLegacyActionInputs:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore:Passing a static argument to a custom action is deprecated:FutureWarning")
     def test_mixed_static_and_runtime_inputs(
         self,
         action_function,
@@ -204,6 +217,7 @@ class TestLegacyActionInputs:
         assert action._transformed_inputs == expected_transformed_inputs
 
 
+@pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")
 class TestLegacyActionOutputs:
     @pytest.mark.parametrize(
         "outputs, expected_outputs, expected_transformed_outputs",
@@ -322,6 +336,7 @@ class TestLegacyActionOutputs:
             action._transformed_outputs
 
 
+@pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")
 class TestIsActionLegacy:
     """Tests action._legacy property."""
 
@@ -344,6 +359,7 @@ class TestIsActionLegacy:
             (action_with_two_args, {"arg_1": "component.property", "arg_2": "component.property"}, [], False),
         ],
     )
+    @pytest.mark.filterwarnings("ignore:Passing a static argument to a custom action is deprecated:FutureWarning")
     def test_mixed_runtime_and_runtime_inputs(
         self,
         runtime_as_kwargs,
@@ -373,7 +389,6 @@ class TestActionInstantiation:
 
         assert hasattr(action, "id")
         assert action.function is function
-        assert action.inputs == []
         assert action.outputs == []
 
         assert_component_equal(
@@ -395,7 +410,6 @@ class TestActionInstantiation:
 
         assert hasattr(action, "id")
         assert action.function is function
-        assert action.inputs == []
         assert action.outputs == []
 
         assert_component_equal(action._dash_components, [dcc.Store(id="action-id_finished")])
