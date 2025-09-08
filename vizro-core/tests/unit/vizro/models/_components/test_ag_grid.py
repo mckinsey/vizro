@@ -380,3 +380,8 @@ class TestBuildAgGrid:
         )
 
         assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
+
+
+# TODO PP: Add tests
+class TestGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""

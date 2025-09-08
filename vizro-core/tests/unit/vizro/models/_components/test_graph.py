@@ -344,3 +344,8 @@ class TestBuildGraph:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
         assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
+
+
+# TODO PP: Add tests
+class TestGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""

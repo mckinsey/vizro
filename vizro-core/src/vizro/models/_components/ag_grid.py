@@ -113,7 +113,7 @@ class AgGrid(VizroBaseModel):
         }
 
     def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
-        """Value is the name of the column. There is only one point selected, so we just look at trigger[0]."""
+        """Value is the name of the column. There is only one row selected, so we just look at trigger[0]."""
         try:
             return trigger[0][value]
         except KeyError:

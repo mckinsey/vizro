@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import base64
 import json
-from typing import Literal, Protocol, Union, cast, runtime_checkable
+from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path
 from pydantic import Field, JsonValue
@@ -19,12 +19,6 @@ from vizro.models.types import ControlType, ModelID
 @runtime_checkable
 class _SupportsSetControl(Protocol):
     def _get_value_from_trigger(self, value: str, trigger: JsonValue) -> JsonValue: ...
-
-
-@runtime_checkable
-class _ControlWithCategoricalSelector(Protocol):
-    selector: Union[vm.Dropdown, vm.RadioItems, vm.Checklist]
-    show_in_url: bool
 
 
 def _encode_to_base64(value):
@@ -57,10 +51,10 @@ class set_control(_AbstractAction):
     @_log_call
     def pre_build(self):
         # Validate that action's parent model supports `set_control` action.
-        if not isinstance(model_manager[self._parent_model], _SupportsSetControl):
+        if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
-                f"`set_control` action was added to the model with ID `{self._parent_model}`, but this action can only "
-                f"be used with models that support it (e.g. Graph, AgGrid)."
+                f"`set_control` action was added to the model with ID `{self._parent_model.id}`, but this action "
+                f"can only be used with models that support it (e.g. Graph, AgGrid)."
             )
 
         # Validate that action's target control exists in the dashboard.
@@ -73,9 +67,7 @@ class set_control(_AbstractAction):
             )
 
         # Validate that target is control that has a categorical selector.
-        if not isinstance(target_model, (vm.Filter, vm.Parameter)) or not isinstance(
-            target_model.selector, (vm.Dropdown, vm.Checklist, vm.RadioItems)
-        ):
+        if not isinstance(getattr(target_model, "selector", None), (vm.Dropdown, vm.Checklist, vm.RadioItems)):
             raise TypeError(
                 f"Model with ID `{self.target}` used as a `target` in `set_control` action must be a control model "
                 f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
@@ -93,9 +85,7 @@ class set_control(_AbstractAction):
             self._same_page = False
 
     def function(self, _trigger):
-        value = model_manager[self._parent_model]._get_value_from_trigger(  # type: ignore[attr-defined]
-            self.value, _trigger
-        )
+        value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
         if self._same_page:
             # Returning a single element value works for both single and multi select selectors.
