@@ -9,9 +9,8 @@ permissions:
 
 on:
   push:
-    
+
   pull_request:
-    
 
 env:
   PYTHONUNBUFFERED: 1
