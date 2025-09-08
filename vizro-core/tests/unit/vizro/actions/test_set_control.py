@@ -2,6 +2,7 @@ import re
 
 import pytest
 
+import vizro.actions._set_control as set_control_module
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import set_control
@@ -191,28 +192,42 @@ class TestSetControlPreBuild:
 
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
-class TestSetControlOutputs:
-    """Tests set control outputs."""
-
-    def test_outputs_target_model_on_same_page(self):
-        # Add action to relevant component and set target to a control on the same page
-        action = set_control(target="filter_page_1", value="continent")
-        model_manager["scatter_chart_1"].actions = action
-
-        action.pre_build()
-
-        assert action.outputs == "filter_page_1"
-
-    def test_outputs_target_model_on_different_page(self):
-        # Add action to relevant component and set target to a control on different page with show_in_url=True
-        action = set_control(target="filter_page_2_show_in_url_true", value="continent")
-        model_manager["scatter_chart_1"].actions = action
-
-        action.pre_build()
-
-        assert action.outputs == ["vizro_url.pathname", "vizro_url.search"]
-
-
-# TODO PP: Add tests
 class TestSetControlFunction:
     """Tests set control function."""
+
+    def test_function_target_model_on_same_page(self):
+        # Add action to relevant component and set target to a control on the same page
+        action = set_control(target="filter_page_1", value="continent")
+        # Any other model that supports set_control can be used here, but the Graph used for the simplicity.
+        model_manager["scatter_chart_1"].actions = action
+        # Call pre_build to set _same_page attribute
+        action.pre_build()
+
+        # Call function method with a mock trigger value
+        result = action.function(_trigger={"points": [{"customdata": ["Europe"]}]})
+        expected = "Europe"
+
+        assert result == expected
+
+    def test_function_target_model_on_different_page(self, monkeypatch):
+        # Add action to relevant component and set target to a control on different page with show_in_url=True
+        action = set_control(target="filter_page_2_show_in_url_true", value="continent")
+        # Any other model that supports set_control can be used here, but the Graph used for the simplicity.
+        model_manager["scatter_chart_1"].actions = action
+        # Call pre_build to set _same_page attribute
+        action.pre_build()
+
+        # Mock dash.get_relative_path as it's used in set_control.function
+        monkeypatch.setattr(set_control_module, "get_relative_path", lambda path: "/mocked_path")
+
+        # Call function method with a mock trigger value
+        result_relative_path, result_url_query_params = action.function(
+            _trigger={"points": [{"customdata": ["Europe"]}]},
+        )
+        # From mocked get_relative_path
+        expected_relative_path = "/mocked_path"
+        # Value Europe" base64 encoded is b64_IkV1cm9wZSI
+        expected_url_query_params = "?filter_page_2_show_in_url_true=b64_IkV1cm9wZSI"
+
+        assert result_relative_path == expected_relative_path
+        assert result_url_query_params == expected_url_query_params
