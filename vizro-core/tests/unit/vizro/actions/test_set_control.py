@@ -231,3 +231,26 @@ class TestSetControlFunction:
 
         assert result_relative_path == expected_relative_path
         assert result_url_query_params == expected_url_query_params
+
+
+@pytest.mark.usefixtures("managers_two_pages_for_set_control")
+class TestSetControlOutputs:
+    """Tests set control outputs."""
+
+    def test_outputs_target_model_on_same_page(self):
+        # Add action to relevant component and set target to a control on the same page
+        action = set_control(target="filter_page_1", value="continent")
+        model_manager["scatter_chart_1"].actions = action
+
+        action.pre_build()
+
+        assert action.outputs == "filter_page_1"
+
+    def test_outputs_target_model_on_different_page(self):
+        # Add action to relevant component and set target to a control on different page with show_in_url=True
+        action = set_control(target="filter_page_2_show_in_url_true", value="continent")
+        model_manager["scatter_chart_1"].actions = action
+
+        action.pre_build()
+
+        assert action.outputs == ["vizro_url.pathname", "vizro_url.search"]
