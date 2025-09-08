@@ -47,6 +47,8 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
         * `_controls`: state of all the controls on the page. The format of is not yet decided and is likely to
         change in future versions.
+
+        * `_trigger`: the value of the component's property that triggered the first action in the chain.
         """
         pass
 
