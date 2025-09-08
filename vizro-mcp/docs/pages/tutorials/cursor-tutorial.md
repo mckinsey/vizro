@@ -4,26 +4,28 @@
 
 This tutorial uses a public dataset about winners of the [Booker prize](https://thebookerprizes.com/booker-prize/about-the-booker-prize), which is a literary award conferred each year for the "best sustained work of fiction written in English and published in the UK and Ireland".
 
-To work through the tutorial, you'll need to download the `.xlsx` dataset of [Booker prize winners from 1969 to 2023](https://www.kaggle.com/datasets/rowrowrowyourboat72/booker-prize-winners-1969-2023?resource=download) from Kaggle. The tutorial illustrates how to work with the data locally. It uses Cursor to generate an initial set of Python chart code to iterate with, and without, Cursor's guidance. The exact prompts and chart output is shown to illustrate the process.
+To work through the tutorial, you'll need to download the `.xlsx` dataset of [Booker prize winners from 1969 to 2023](https://www.kaggle.com/datasets/rowrowrowyourboat72/booker-prize-winners-1969-2023?resource=download) from Kaggle. The tutorial illustrates how to work with the data locally. It uses Cursor to generate an initial set of Python chart code, then modifies the code by hand, although Cursor's guidance is also available. The prompts and chart output at the time of writing are shown to illustrate the process. The nature of working with an LLM is that your output may be slightly different.
 
 
 ## Set up Vizro-MCP
 
-If you haven't already done so, follow our instructions to [set up Vizro-MCP to work with Cursor](../guides/set-up-vizro-mcp-with-cursor.md), which this tutorial assumes you will use.
+If you haven't already done so, follow our instructions to [set up Vizro-MCP to work with Cursor](../guides/set-up-vizro-mcp-with-cursor.md), which this tutorial uses.
 
 Alternatively, you can [set up Claude Desktop](../guides/set-up-vizro-mcp-with-claude.md), or [set up VS Code](../guides/set-up-vizro-mcp-with-vscode.md), or use our [basic setup configuration](../guides/set-up-vizro-mcp-basics.md) for your preferred host.
 
 To check that Cursor is correctly set up to use Vizro-MCP, pass in a prompt:
 
-> Can you access Vizro-MCP?
+```text
+Can you access Vizro-MCP?
+```
 
 You should receive a response similar to the following:
 
-Yes! I do have access to Vizro-MCP tools. I can see several Vizro MCP functions available that allow me to help you create charts and dashboards using Vizro. 
+> Yes! I do have access to Vizro-MCP tools. I can see several Vizro MCP functions available that allow me to help you create charts and dashboards using Vizro. 
 
 ## Strategy
 
-There is no single correct way to use Vizro-MCP, and the style of interaction also depends on the underlying LLM that you have chosen. Assuming you are using Cursor, select **Open Folder** from the **File** menu. Navigate to the folder you've stored the data, which is where you'll create Python code to visualize it.
+There is no single correct way to use Vizro-MCP, and the style of interaction also depends on the underlying LLM that you have chosen. Assuming you are using Cursor, select **Open Folder** from the **File** menu. Navigate to the folder you've stored the data, which is where you'll create Vizro code to visualize it.
 
 ## Prompt to generate a Vizro chart
 
@@ -35,10 +37,11 @@ Booker Prize Dataset Final.xlsx using GENDER
 (M on left hand side, F on right hand side), 
 with the count of each gender for each AGE BIN.
 ```
+Here is the prompt as it was typed, showing use of `claude-4-sonnet` in Agent mode:
 
 ![](../../assets/images/cursor-tutorial1.png)
 
-Running the prompt in Cursor 1.5.9, we saw this response. You should see something similar:
+Running this prompt in Cursor 1.5.9, we saw the following response. You should see something similar:
 
 ![](../../assets/images/cursor-tutorial2.png)
 
@@ -61,9 +64,9 @@ uv pip install openpyxl
 uv pip install vizro
 ```
 
-Next, if the final line of code (`fig.show()`) is commenteded out, uncomment it so the chart is displayed,  and save the code change.
+Next, if the final line of code (`fig.show()`) is commented out, uncomment it so the chart is displayed, and save the code change.
 
-Then in the terminal type the following to execute the code:
+In the terminal, type the following to execute the code:
 
 ```bash
 python booker_prize_butterfly_chart.py
@@ -75,13 +78,15 @@ The output we received was as follows:
 
 ## Code iteration by hand
 
-At first sight, the butterfly chart is already almost complete, but in the code we received, there was a missing line that meant that the number of women in each age bin was missing. It is possible to ask Cursor to make a fix, but equally, you can work out the necessary change and update the code manually. We added this line in the `fig.add_trace()` call (see a [later section for the complete code](#final-chart-code)).
+At first sight, the butterfly chart is already almost complete, but in the code we received, there was a missing line that meant that the number of women in each age bin was missing. It is possible to ask Cursor to make a fix, but it is a trivial change to make manually. 
+
+We added this line in the `fig.add_trace()` call (see a [later section for the complete code](#final-chart-code)).
 
 ```python
 text=[abs(val) for val in female_values]
 ```
 
-Executing the chart again:
+Executing the chart again, we received the following:
 
 ![](../../assets/images/cursor-tutorial4.png)
 
@@ -98,13 +103,13 @@ When we submitted the prompt, Cursor spent some time working through the changes
 
 ![](../../assets/images/cursor-tutorial4.5.png)
 
-Re-running the code as instructed, showed the following:
+Re-running the code showed the following:
 
 ![](../../assets/images/cursor-tutorial5.png)
 
 ## Final iteration
 
-The chart is looking great. We will make a final tweak to change the colour of the female bin to make it pink (#ff0eef). We made the change by hand by modifying the colour hex specification in line 107, and saved the code. Re-running it gave the following:
+The chart is looking great. We will make a final tweak to change the color of the female bin to make it pink (hex code #ff0eef). We manually modified the `marker_color` specification in line 107, and saved the code. Re-running it gave the following:
 
 ![](../../assets/images/cursor-tutorial6.png)
 
@@ -112,7 +117,7 @@ Our chart is complete!
 
 ## Final chart code 
 
-When you are happy with the chart you can store the code, for example, in GitHub. Here it is for reference:
+When you are happy with the chart, you can store the code, for example, in GitHub. Here it is for reference:
 
 ??? example "The final code for the completed chart."
 
@@ -354,8 +359,6 @@ This is the output we received:
 
 ## Summary
 
-Congratulations! You have seen how to work with Vizro-MCP and Cursor to build a Vizro chart. The chart is a simple example, but can be customized or added to a Vizro dashboard alongside additional charts, controls or customizations, as described in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/).
+Congratulations! You have seen how to work with Vizro-MCP and Cursor to build a Vizro chart. The chart is a simple example, but can be customized or added to a Vizro dashboard alongside additional charts, controls, or customizations, as described in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/). You can also use Vizro-MCP with Cursor to help you achieve further customizations.
 
-To learn more about the main elements of Vizro dashboard code, we recommend you work through the introductory ["Explore Vizro" tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/). The tutorial, and accompanying video, will enable you to explore the dashboard code generated by Vizro-MCP and give you ideas of how to modify it by hand rather than through a prompt, should you prefer to fine tune it.
-
-
+To learn more about the main elements of Vizro dashboard code, we recommend you work through the introductory ["Explore Vizro" tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/). The tutorial, and accompanying video, will enable you to explore the dashboard code generated by Vizro-MCP and give you ideas of how to modify it by hand rather than through a prompt, should you prefer to fine-tune it manually.
