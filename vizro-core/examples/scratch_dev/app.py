@@ -20,7 +20,6 @@ page_1 = vm.Page(
             variant="outlined",
             components=[
                 vm.Graph(
-                    id="p1_graph_1",
                     title="Filter interaction to AgGrid below",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
                     actions=[
@@ -52,13 +51,11 @@ page_1 = vm.Page(
             layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.Graph(
-                    id="p1_graph_2",
                     title="Drill-through to multi=True Page-2",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
                     actions=set_control(target="p2_filter_1", value="species"),
                 ),
                 vm.Graph(
-                    id="p1_graph_3",
                     title="Drill-through to multi=False Page-2",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
                     actions=set_control(target="p2_filter_2", value="species"),
@@ -72,7 +69,6 @@ page_2 = vm.Page(
     title="Graph Drill-through target page",
     components=[
         vm.Graph(
-            id="p2_graph_1",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
         )
     ],
@@ -146,7 +142,6 @@ page_4 = vm.Page(
             variant="outlined",
             components=[
                 vm.AgGrid(
-                    id="p4_grid_1",
                     title="Filter interaction to Graph below",
                     figure=dash_ag_grid(df),
                     actions=[
@@ -180,13 +175,11 @@ page_4 = vm.Page(
             layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.AgGrid(
-                    id="p4_grid_2",
                     figure=dash_ag_grid(df),
                     title="Drill-through to multi=True Page-5",
                     actions=set_control(target="p5_filter_1", value="species"),
                 ),
                 vm.AgGrid(
-                    id="p4_grid_3",
                     figure=dash_ag_grid(df),
                     title="Drill-through to multi=False Page-5",
                     actions=set_control(target="p5_filter_2", value="species"),
@@ -198,12 +191,7 @@ page_4 = vm.Page(
 
 page_5 = vm.Page(
     title="AgGrid Drill-through target page",
-    components=[
-        vm.Graph(
-            id="p5_graph_1",
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
-        )
-    ],
+    components=[vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))],
     controls=[
         # multi=True
         vm.Filter(id="p5_filter_1", column="species", show_in_url=True, selector=vm.Checklist()),
@@ -216,7 +204,7 @@ page_5 = vm.Page(
 page_6 = vm.Page(
     title="Old AgGrid Filter interaction",
     components=[
-        vm.AgGrid(id="p6_grid_1", figure=dash_ag_grid(df), actions=filter_interaction(targets=["p6_grid_2"])),
+        vm.AgGrid(figure=dash_ag_grid(df), actions=filter_interaction(targets=["p6_grid_2"])),
         vm.AgGrid(
             id="p6_grid_2",
             figure=dash_ag_grid(df),
