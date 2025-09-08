@@ -11,10 +11,9 @@ from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, U
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
-from pydantic import Field, PrivateAttr, TypeAdapter, field_validator, BeforeValidator
+from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import TypedDict, deprecated
-
+from typing_extensions import TypedDict
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
