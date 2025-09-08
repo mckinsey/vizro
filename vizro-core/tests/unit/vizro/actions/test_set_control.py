@@ -48,6 +48,27 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid):
     Vizro._pre_build()
 
 
+class TestSetControlInstantiation:
+    """Tests set control instantiation."""
+
+    def test_create_set_control_mandatory_only(self):
+        action = set_control(target="target_id", value="value")
+
+        assert action.type == "set_control"
+        assert action.target == "target_id"
+        assert action.value == "value"
+
+    def test_set_controls_experimental(self):
+        with pytest.warns(
+            FutureWarning,
+            match=re.escape("The `set_control` action is experimental. We hope that it will be a stable part of Vizro "
+                "in future, but until then it may change or be removed without warning. If you have feedback on the "
+                "feature then [let us know](https://github.com/mckinsey/vizro/issues)."
+            )
+        ):
+            set_control(target="target_id", value="value")
+
+
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
 class TestSetControlPreBuild:
     """Tests set control pre_build method."""
