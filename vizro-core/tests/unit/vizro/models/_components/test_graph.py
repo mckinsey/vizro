@@ -54,7 +54,7 @@ class TestGraphInstantiation:
             id="graph-id",
             figure=standard_px_chart,
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             header="Header",
             footer="Footer",
         )
@@ -67,13 +67,13 @@ class TestGraphInstantiation:
         assert graph.header == "Header"
         assert graph.footer == "Footer"
         assert isinstance(graph.description, vm.Tooltip)
-        assert graph._action_triggers == {"__default__": f"{graph.id}.clickData"}
+        assert graph._action_triggers == {"__default__": "graph-id.clickData"}
         assert graph._action_outputs == {
-            "__default__": f"{graph.id}.figure",
-            "title": f"{graph.id}_title.children",
-            "header": f"{graph.id}_header.children",
-            "footer": f"{graph.id}_footer.children",
-            "description": f"{graph.description.id}-text.children",
+            "__default__": "graph-id.figure",
+            "title": "graph-id_title.children",
+            "header": "graph-id_header.children",
+            "footer": "graph-id_footer.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_mandatory_figure_missing(self):

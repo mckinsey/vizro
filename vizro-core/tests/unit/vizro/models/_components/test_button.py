@@ -36,7 +36,13 @@ class TestButtonInstantiation:
         ],
     )
     def test_create_button_mandatory_and_optional(self, text, href, variant):
-        button = vm.Button(id="button-id", text=text, href=href, variant=variant, description="This is description")
+        button = vm.Button(
+            id="button-id",
+            text=text,
+            href=href,
+            variant=variant,
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
+        )
 
         assert button.id == "button-id"
         assert button.type == "button"
@@ -46,10 +52,10 @@ class TestButtonInstantiation:
         assert button.actions == []
         assert button.variant == variant
         assert isinstance(button.description, vm.Tooltip)
-        assert button._action_triggers == {"__default__": f"{button.id}.n_clicks"}
+        assert button._action_triggers == {"__default__": "button-id.n_clicks"}
         assert button._action_outputs == {
-            "text": f"{button.id}.children",
-            "description": f"{button.description.id}-text.children",
+            "text": "button-id.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_button_trigger(self):

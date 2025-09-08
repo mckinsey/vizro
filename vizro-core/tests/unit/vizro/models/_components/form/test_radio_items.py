@@ -30,7 +30,11 @@ class TestRadioItemsInstantiation:
 
     def test_create_radio_items_mandatory_and_optional(self):
         radio_items = RadioItems(
-            id="radio_items_id", options=["A", "B", "C"], value="A", title="Title", description="Test description"
+            id="radio_items_id",
+            options=["A", "B", "C"],
+            value="A",
+            title="Title",
+            description=Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert radio_items.id == "radio_items_id"
@@ -40,13 +44,13 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == "Title"
         assert radio_items.actions == []
         assert isinstance(radio_items.description, Tooltip)
-        assert radio_items._action_triggers == {"__default__": f"{radio_items.id}.value"}
+        assert radio_items._action_triggers == {"__default__": "radio_items_id.value"}
         assert radio_items._action_outputs == {
-            "__default__": f"{radio_items.id}.value",
-            "title": f"{radio_items.id}_title.children",
-            "description": f"{radio_items.description.id}-text.children",
+            "__default__": "radio_items_id.value",
+            "title": "radio_items_id_title.children",
+            "description": "tooltip-id-text.children",
         }
-        assert radio_items._action_inputs == {"__default__": f"{radio_items.id}.value"}
+        assert radio_items._action_inputs == {"__default__": "radio_items_id.value"}
 
     @pytest.mark.parametrize(
         "test_options, expected",
