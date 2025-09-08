@@ -66,7 +66,7 @@ class Switch(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _in_container: bool = PrivateAttr(False)
+    _inner_component_properties: list[str] = PrivateAttr(dbc.Switch().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
