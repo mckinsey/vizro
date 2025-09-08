@@ -512,6 +512,20 @@ class TestActionInputs:
 class TestBuiltinRuntimeArgs:
     """Test the actual values of the runtime args are correct in a real scenario."""
 
+    @pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning")
+    def test_builtin_runtime_arg_controls_legacy(self, page_actions_builtin_controls_legacy):
+        action = Action(function=action_with_builtin_runtime_args())
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+
+        expected_transformed_input = {
+            **page_actions_builtin_controls_legacy,
+            "_trigger": State("trigger", "property"),
+        }
+
+        assert action._transformed_inputs == expected_transformed_input
+
     def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
         action = Action(function=action_with_builtin_runtime_args())
 

@@ -9,6 +9,12 @@ from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 
 
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:Using the `Action` model for the built-in action `export_data`:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning"),
+]
+
+
 @pytest.fixture
 def target_data_filter_and_filter_interaction(request, gapminder_2007):
     pop_filter, continent_filter_interaction, country_table_filter_interaction = request.param
@@ -175,6 +181,12 @@ def ctx_export_data_filter_and_parameter(request):
 
 
 class TestExportData:
+    def test_export_data_in_action_deprecated(self):
+        actions = vm.Action(function=export_data())
+        with pytest.warns(FutureWarning, match="Using the `Action` model for the built-in action `export_data`"):
+            # make_actions_chain is what raises the warning, so it only happens when the action is used inside a model.
+            vm.Button(actions=actions)
+
     @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
     @pytest.mark.parametrize("ctx_export_data", [([[], None, None, None])], indirect=True)
     def test_no_graphs_no_targets(self, ctx_export_data):
@@ -333,9 +345,7 @@ class TestExportData:
         pop_filter.pre_build()
 
         # Add filter_interaction Action to scatter_chart component
-        model_manager["box_chart"].actions = [
-            vm.Action(function=filter_interaction(id="filter_interaction", targets=["scatter_chart"]))
-        ]
+        model_manager["box_chart"].actions = [filter_interaction(id="filter_interaction", targets=["scatter_chart"])]
 
         # Add export_data action to relevant component
         model_manager["button"].actions = [
@@ -389,12 +399,10 @@ class TestExportData:
         pop_filter.pre_build()
 
         # Add filter_interaction Action to scatter_chart component
-        model_manager["box_chart"].actions = [
-            vm.Action(function=filter_interaction(id="filter_interaction", targets=["scatter_chart"]))
-        ]
+        model_manager["box_chart"].actions = [filter_interaction(id="filter_interaction", targets=["scatter_chart"])]
 
         # Add table filter_interaction Action to scatter_chart component
-        model_manager["vizro_table"].actions = [vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
+        model_manager["vizro_table"].actions = [filter_interaction(targets=["scatter_chart"])]
         model_manager["vizro_table"].pre_build()
 
         # Add export_data action to relevant component

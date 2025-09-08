@@ -440,7 +440,7 @@ class Action(_BaseAction):
     type: Literal["action"] = "action"
     # export_data and filter_interaction are here just so that legacy vm.Action(function=filter_interaction(...)) and
     # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
-    # actions.function in _set_actions. It's done as a forward ref here to avoid circular imports and resolved with
+    # actions.function in _make_actions_chain. It's done as a forward ref here to avoid circular imports and resolved with
     # Dashboard.model_rebuild() later.
     # TODO-AV2 C 1: Need to think about which parts of validation in CapturedCallable are legacy and how user
     # now specifies a user defined action in YAML (ok if not possible initially since it's not already) - could just
@@ -468,6 +468,7 @@ class Action(_BaseAction):
         ),
         BeforeValidator(
             make_deprecated_field_warning(
+                "Pass references to runtime inputs directly as arguments of `function`. See"
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-inputs-argument."
             )
         ),

@@ -91,10 +91,10 @@ def warn_description_without_title(description, info: ValidationInfo):
 # https://github.com/pydantic/pydantic/issues/8922 and https://docs.pydantic.dev/latest/concepts/fields/.
 # This only runs if the field is explicitly set since validate_default=False by default.
 # This does not add anything to the API docs. You must add a note to the field docstring manually.
-def make_deprecated_field_warning(url: str, /):
+def make_deprecated_field_warning(message: str, /):
     def deprecate_field(value: Any, info: ValidationInfo):
         warnings.warn(
-            f"The `{info.field_name}` argument is deprecated and will not exist in Vizro 0.2.0. See {url}.",
+            f"The `{info.field_name}` argument is deprecated and will not exist in Vizro 0.2.0. {message}.",
             category=FutureWarning,
             stacklevel=3,
         )
@@ -123,6 +123,16 @@ def make_actions_chain(self):
     # built in actions are always handled in the new way.
     for action in self.actions:
         if isinstance(action.function, (export_data, filter_interaction)):
+            action_name = action.function._action_name
+            warnings.warn(
+                f"Using the `Action` model for the built-in action `{action_name}` is deprecated and will not be possible "
+                f"in Vizro 0.2.0. Call the action directly with `actions=va.{action_name}(...)`. See "
+                f"https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-for-built-in"
+                f"-action.",
+                category=FutureWarning,
+                stacklevel=4,
+            )
+
             del model_manager[action.id]
             converted_actions.append(action.function)
         else:
