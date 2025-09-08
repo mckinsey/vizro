@@ -89,6 +89,7 @@ markdown_extensions:
 plugins:
   - search
   - autorefs
+  - glightbox
   - mkdocstrings:
       handlers:
         python:
