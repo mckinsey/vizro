@@ -120,7 +120,7 @@ class Graph(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
-    def _get_value_from_trigger(self, value: str, trigger: dict[str, JsonValue]) -> JsonValue:
+    def _get_value_from_trigger(self, value: str, trigger: dict[str, list[JsonValue]]) -> JsonValue:
         # When a single point is clicked, we are only interested in looking for values inside ["points"][0]. There
         # are no realistic examples which need values outside this. We use Box for two reasons:
         # 1. it makes it possible to address nested values in the trigger["points"][0] dictionary using a simple

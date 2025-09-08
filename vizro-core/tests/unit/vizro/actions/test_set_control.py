@@ -163,7 +163,7 @@ class TestSetControlPreBuild:
             ValueError,
             match=re.escape(
                 "Model with ID `filter_page_2_show_in_url_false` used as a `target` in `set_control` action is on a "
-                "different page than the trigger and must have `show_in_url=True`."
+                "different page from the trigger and so must have `show_in_url=True`."
             ),
         ):
             action.pre_build()
