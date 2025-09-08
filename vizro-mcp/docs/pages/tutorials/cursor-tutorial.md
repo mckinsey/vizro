@@ -34,7 +34,7 @@ Yes! I do have access to Vizro-MCP tools. I can see several Vizro MCP functions 
 
 There is no single, correct way to use Vizro-MCP, and the style of interaction also depends on the underlying LLM that you have chosen. Assuming you are using Cursor, select **Open Folder** from the **File** menu, and navigate to the folder you've stored the data, which is where you'll create Python code to visualize it.
 
-## Initial prompt to generate a Vizro chart
+## Prompt to generate a Vizro chart
 
 As a first prompt, type something similar to the following:
 
@@ -47,12 +47,12 @@ with the count of each gender for each AGE BIN.
 
 ![](../../assets/images/cursor-tutorial1.png)
 
-When running this code in Cursor 1.5.9, we saw this response:
+When running the prompt in Cursor 1.5.9, we saw this response:
 
 ![](../../assets/images/cursor-tutorial2.png)
 
 ### Save the code
-You should then ask Cursor to save the code into a `.py` file (for conevenience, save it in the same directory as the data):
+You should then ask Cursor to save the code into a `.py` file (for convenience, save it in the same directory as the data):
 
 ```text
 Can you save the code into a .py file in this folder
@@ -84,7 +84,7 @@ The output we received was as follows:
 
 ## Code iteration by hand
 
-At first sight, the butterfly chart is already almost complete, but in the code we received, there was a missing line that meant that the number of women in each age bin was missing. It is possible to ask Cursor to make a fix, but equally, you can work out the necessary change and update the code manually. We added this line in the `fig.add_trace()` call (see below for the complete code).
+At first sight, the butterfly chart is already almost complete, but in the code we received, there was a missing line that meant that the number of women in each age bin was missing. It is possible to ask Cursor to make a fix, but equally, you can work out the necessary change and update the code manually. We added this line in the `fig.add_trace()` call (see a [later section for the complete code](#final-chart-code)).
 
 ```python
 text=[abs(val) for val in female_values]
@@ -111,9 +111,9 @@ Re-running the code as instructed, showed the following:
 
 ![](../../assets/images/cursor-tutorial5.png)
 
-## Code iteration by hand
+## Final iteration
 
-The chart is looking great. We decided to make a final tweak to change the colour of the female bin to make it pink (#ff0eef). We made the change by hand by modifying the colour hex specification in line 107, and saved the code. Re-running it gave the following:
+The chart is looking great. We will make a final tweak to change the colour of the female bin to make it pink (#ff0eef). We made the change by hand by modifying the colour hex specification in line 107, and saved the code. Re-running it gave the following:
 
 ![](../../assets/images/cursor-tutorial6.png)
 
@@ -121,224 +121,230 @@ Our chart is complete!
 
 ## Final chart code 
 
-The code for the Vizro chart output by Cursor and modified by hand is as follows:
+When you are happy with the chart you can store the code, for example, in GitHub. Here it is for reference:
 
-```python
-"""
-Booker Prize Gender Butterfly Chart
-===================================
+??? example "The final code for the completed chart."
 
-A butterfly chart showing Booker Prize winners by gender and age bin.
-Males are displayed on the left side, females on the right side.
-Hover over bars to see detailed information including winner names and novel titles.
+    === "booker_prize_butterfly_chart.py"
+    
+    ```python linenums="1" 
+    
+		"""
+		Booker Prize Gender Butterfly Chart
+		===================================
+		
+		A butterfly chart showing Booker Prize winners by gender and age bin.
+		Males are displayed on the left side, females on the right side.
+		Hover over bars to see detailed information including winner names and novel titles.
+		
+		Created using Vizro-MCP
+		"""
+		
+		import pandas as pd
+		import plotly.graph_objects as go
+		from vizro import Vizro
+		from vizro.models import Dashboard, Page, Card
+		from vizro.models.types import capture
+		
+		
+		@capture('graph')
+		def booker_prize_gender_butterfly(data_frame):
+		    """
+		    Creates a butterfly chart showing Booker Prize winners by gender and age bin.
+		    Hover text displays detailed information including winner names and novel titles.
+		    
+		    Args:
+		        data_frame (pd.DataFrame): DataFrame containing Booker Prize data with 
+		                                  'GENDER', 'AGE BIN', 'WINNER', and 'NOVEL' columns
+		    
+		    Returns:
+		        plotly.graph_objects.Figure: Butterfly chart figure with detailed hover information
+		    """
+		    # Filter out rows with missing gender or age bin data
+		    df_clean = data_frame.dropna(subset=['GENDER', 'AGE BIN'])
+		    
+		    # Get all unique age bins and sort them
+		    all_age_bins = sorted(df_clean['AGE BIN'].unique())
+		    
+		    # Create dictionaries to store winners and novels for each gender/age bin combination
+		    male_data = {}
+		    female_data = {}
+		    
+		    for age_bin in all_age_bins:
+		        # Get male winners for this age bin
+		        male_winners = df_clean[(df_clean['AGE BIN'] == age_bin) & (df_clean['GENDER'] == 'M')]
+		        male_data[age_bin] = {
+		            'count': len(male_winners),
+		            'winners': male_winners['WINNER'].tolist() if not male_winners.empty else [],
+		            'novels': male_winners['NOVEL'].tolist() if not male_winners.empty else []
+		        }
+		        
+		        # Get female winners for this age bin
+		        female_winners = df_clean[(df_clean['AGE BIN'] == age_bin) & (df_clean['GENDER'] == 'F')]
+		        female_data[age_bin] = {
+		            'count': len(female_winners),
+		            'winners': female_winners['WINNER'].tolist() if not female_winners.empty else [],
+		            'novels': female_winners['NOVEL'].tolist() if not female_winners.empty else []
+		        }
+		    
+		    # Prepare data for plotting
+		    male_values = [-male_data[age_bin]['count'] for age_bin in all_age_bins]  # Negative for left side
+		    female_values = [female_data[age_bin]['count'] for age_bin in all_age_bins]  # Positive for right side
+		    
+		    # Create hover text with winner names and novel titles
+		    male_hover_text = []
+		    female_hover_text = []
+		    
+		    for age_bin in all_age_bins:
+		        # Male hover text
+		        male_info = male_data[age_bin]
+		        if male_info['count'] > 0:
+		            winner_novel_pairs = [f"• {winner} - '{novel}'" for winner, novel in zip(male_info['winners'], male_info['novels'])]
+		            male_hover = f"<b>Male Winners (Age Bin {int(age_bin)})</b><br>Count: {male_info['count']}<br><br>" + "<br>".join(winner_novel_pairs)
+		        else:
+		            male_hover = f"<b>Male Winners (Age Bin {int(age_bin)})</b><br>Count: 0<br><br>No winners in this age bin"
+		        male_hover_text.append(male_hover)
+		        
+		        # Female hover text
+		        female_info = female_data[age_bin]
+		        if female_info['count'] > 0:
+		            winner_novel_pairs = [f"• {winner} - '{novel}'" for winner, novel in zip(female_info['winners'], female_info['novels'])]
+		            female_hover = f"<b>Female Winners (Age Bin {int(age_bin)})</b><br>Count: {female_info['count']}<br><br>" + "<br>".join(winner_novel_pairs)
+		        else:
+		            female_hover = f"<b>Female Winners (Age Bin {int(age_bin)})</b><br>Count: 0<br><br>No winners in this age bin"
+		        female_hover_text.append(female_hover)
+		    
+		    # Create the figure
+		    fig = go.Figure()
+		    
+		    # Add male bars (left side, negative values)
+		    fig.add_trace(go.Bar(
+		        x=male_values,
+		        y=all_age_bins,
+		        orientation='h',
+		        name='Male',
+		        marker_color='#1f77b4',
+		        hovertemplate='%{hovertext}<extra></extra>',
+		        hovertext=male_hover_text,
+		        text=[abs(val) for val in male_values]
+		    ))
+		    
+		    # Add female bars (right side, positive values)
+		    fig.add_trace(go.Bar(
+		        x=female_values,
+		        y=all_age_bins,
+		        orientation='h',
+		        name='Female',
+		        marker_color='#ff0eef',
+		        hovertemplate='%{hovertext}<extra></extra>',
+		        hovertext=female_hover_text,
+		        text=[abs(val) for val in female_values]
+		    ))
+		    
+		    # Update layout
+		    fig.update_layout(
+		        title='Booker Prize Winners by Gender and Age Bin',
+		        xaxis_title='Count',
+		        yaxis_title='Age Bin',
+		        xaxis=dict(
+		            tickvals=list(range(-max([abs(v) for v in male_values] + female_values), 
+		                                max([abs(v) for v in male_values] + female_values) + 1)),
+		            ticktext=[str(abs(val)) for val in range(-max([abs(v) for v in male_values] + female_values), 
+		                                                     max([abs(v) for v in male_values] + female_values) + 1)]
+		        ),
+		        yaxis=dict(
+		            type='category',
+		            categoryorder='array',
+		            categoryarray=all_age_bins
+		        ),
+		        barmode='overlay',
+		        bargap=0.1,
+		        legend=dict(
+		            orientation='h',
+		            yanchor='bottom',
+		            y=1.02,
+		            xanchor='center',
+		            x=0.5
+		        )
+		    )
+		    
+		    # Add a vertical line at x=0 to separate male and female sides
+		    fig.add_vline(x=0, line_width=1, line_color='black', opacity=0.5)
+		    
+		    return fig
+		
+		
+		def load_booker_prize_data():
+		    """
+		    Load the Booker Prize dataset from Excel file.
+		    
+		    Returns:
+		        pd.DataFrame: Loaded dataset
+		    """
+		    return pd.read_excel("Booker Prize Dataset Final.xlsx")
+		
+		
+		def create_dashboard():
+		    """
+		    Create a Vizro dashboard with the butterfly chart.
+		    
+		    Returns:
+		        Dashboard: Vizro dashboard object
+		    """
+		    data = load_booker_prize_data()
+		    
+		    dashboard = Dashboard(
+		        pages=[
+		            Page(
+		                title="Booker Prize Gender Analysis",
+		                components=[
+		                    Card(
+		                        text="# Booker Prize Winners by Gender and Age\n\n"
+		                             "This butterfly chart shows the distribution of Booker Prize winners "
+		                             "by gender across different age bins. Males are shown on the left (blue), "
+		                             "females on the right (magenta).",
+		                        href="/"
+		                    )
+		                ]
+		            )
+		        ]
+		    )
+		    
+		    return dashboard
+		
+		
+		if __name__ == "__main__":
+		    # Example usage
+		    print("Loading Booker Prize data...")
+		    df = load_booker_prize_data()
+		    print(f"Dataset shape: {df.shape}")
+		    print(f"Columns: {list(df.columns)}")
+		    
+		    print("\nCreating butterfly chart...")
+		    fig = booker_prize_gender_butterfly(df)
+		    
+		    print("Chart created successfully!")
+		    print("To display the chart, you can use: fig.show()")
+		    
+		    # Uncomment the line below to show the chart
+		    fig.show()
+    ```
 
-Created using Vizro-MCP
-"""
-
-import pandas as pd
-import plotly.graph_objects as go
-from vizro import Vizro
-from vizro.models import Dashboard, Page, Card
-from vizro.models.types import capture
-
-
-@capture('graph')
-def booker_prize_gender_butterfly(data_frame):
-    """
-    Creates a butterfly chart showing Booker Prize winners by gender and age bin.
-    Hover text displays detailed information including winner names and novel titles.
-    
-    Args:
-        data_frame (pd.DataFrame): DataFrame containing Booker Prize data with 
-                                  'GENDER', 'AGE BIN', 'WINNER', and 'NOVEL' columns
-    
-    Returns:
-        plotly.graph_objects.Figure: Butterfly chart figure with detailed hover information
-    """
-    # Filter out rows with missing gender or age bin data
-    df_clean = data_frame.dropna(subset=['GENDER', 'AGE BIN'])
-    
-    # Get all unique age bins and sort them
-    all_age_bins = sorted(df_clean['AGE BIN'].unique())
-    
-    # Create dictionaries to store winners and novels for each gender/age bin combination
-    male_data = {}
-    female_data = {}
-    
-    for age_bin in all_age_bins:
-        # Get male winners for this age bin
-        male_winners = df_clean[(df_clean['AGE BIN'] == age_bin) & (df_clean['GENDER'] == 'M')]
-        male_data[age_bin] = {
-            'count': len(male_winners),
-            'winners': male_winners['WINNER'].tolist() if not male_winners.empty else [],
-            'novels': male_winners['NOVEL'].tolist() if not male_winners.empty else []
-        }
-        
-        # Get female winners for this age bin
-        female_winners = df_clean[(df_clean['AGE BIN'] == age_bin) & (df_clean['GENDER'] == 'F')]
-        female_data[age_bin] = {
-            'count': len(female_winners),
-            'winners': female_winners['WINNER'].tolist() if not female_winners.empty else [],
-            'novels': female_winners['NOVEL'].tolist() if not female_winners.empty else []
-        }
-    
-    # Prepare data for plotting
-    male_values = [-male_data[age_bin]['count'] for age_bin in all_age_bins]  # Negative for left side
-    female_values = [female_data[age_bin]['count'] for age_bin in all_age_bins]  # Positive for right side
-    
-    # Create hover text with winner names and novel titles
-    male_hover_text = []
-    female_hover_text = []
-    
-    for age_bin in all_age_bins:
-        # Male hover text
-        male_info = male_data[age_bin]
-        if male_info['count'] > 0:
-            winner_novel_pairs = [f"• {winner} - '{novel}'" for winner, novel in zip(male_info['winners'], male_info['novels'])]
-            male_hover = f"<b>Male Winners (Age Bin {int(age_bin)})</b><br>Count: {male_info['count']}<br><br>" + "<br>".join(winner_novel_pairs)
-        else:
-            male_hover = f"<b>Male Winners (Age Bin {int(age_bin)})</b><br>Count: 0<br><br>No winners in this age bin"
-        male_hover_text.append(male_hover)
-        
-        # Female hover text
-        female_info = female_data[age_bin]
-        if female_info['count'] > 0:
-            winner_novel_pairs = [f"• {winner} - '{novel}'" for winner, novel in zip(female_info['winners'], female_info['novels'])]
-            female_hover = f"<b>Female Winners (Age Bin {int(age_bin)})</b><br>Count: {female_info['count']}<br><br>" + "<br>".join(winner_novel_pairs)
-        else:
-            female_hover = f"<b>Female Winners (Age Bin {int(age_bin)})</b><br>Count: 0<br><br>No winners in this age bin"
-        female_hover_text.append(female_hover)
-    
-    # Create the figure
-    fig = go.Figure()
-    
-    # Add male bars (left side, negative values)
-    fig.add_trace(go.Bar(
-        x=male_values,
-        y=all_age_bins,
-        orientation='h',
-        name='Male',
-        marker_color='#1f77b4',
-        hovertemplate='%{hovertext}<extra></extra>',
-        hovertext=male_hover_text,
-        text=[abs(val) for val in male_values]
-    ))
-    
-    # Add female bars (right side, positive values)
-    fig.add_trace(go.Bar(
-        x=female_values,
-        y=all_age_bins,
-        orientation='h',
-        name='Female',
-        marker_color='#ff0eef',
-        hovertemplate='%{hovertext}<extra></extra>',
-        hovertext=female_hover_text,
-        text=[abs(val) for val in female_values]
-    ))
-    
-    # Update layout
-    fig.update_layout(
-        title='Booker Prize Winners by Gender and Age Bin',
-        xaxis_title='Count',
-        yaxis_title='Age Bin',
-        xaxis=dict(
-            tickvals=list(range(-max([abs(v) for v in male_values] + female_values), 
-                                max([abs(v) for v in male_values] + female_values) + 1)),
-            ticktext=[str(abs(val)) for val in range(-max([abs(v) for v in male_values] + female_values), 
-                                                     max([abs(v) for v in male_values] + female_values) + 1)]
-        ),
-        yaxis=dict(
-            type='category',
-            categoryorder='array',
-            categoryarray=all_age_bins
-        ),
-        barmode='overlay',
-        bargap=0.1,
-        legend=dict(
-            orientation='h',
-            yanchor='bottom',
-            y=1.02,
-            xanchor='center',
-            x=0.5
-        )
-    )
-    
-    # Add a vertical line at x=0 to separate male and female sides
-    fig.add_vline(x=0, line_width=1, line_color='black', opacity=0.5)
-    
-    return fig
-
-
-def load_booker_prize_data():
-    """
-    Load the Booker Prize dataset from Excel file.
-    
-    Returns:
-        pd.DataFrame: Loaded dataset
-    """
-    return pd.read_excel("Booker Prize Dataset Final.xlsx")
-
-
-def create_dashboard():
-    """
-    Create a Vizro dashboard with the butterfly chart.
-    
-    Returns:
-        Dashboard: Vizro dashboard object
-    """
-    data = load_booker_prize_data()
-    
-    dashboard = Dashboard(
-        pages=[
-            Page(
-                title="Booker Prize Gender Analysis",
-                components=[
-                    Card(
-                        text="# Booker Prize Winners by Gender and Age\n\n"
-                             "This butterfly chart shows the distribution of Booker Prize winners "
-                             "by gender across different age bins. Males are shown on the left (blue), "
-                             "females on the right (magenta).",
-                        href="/"
-                    )
-                ]
-            )
-        ]
-    )
-    
-    return dashboard
-
-
-if __name__ == "__main__":
-    # Example usage
-    print("Loading Booker Prize data...")
-    df = load_booker_prize_data()
-    print(f"Dataset shape: {df.shape}")
-    print(f"Columns: {list(df.columns)}")
-    
-    print("\nCreating butterfly chart...")
-    fig = booker_prize_gender_butterfly(df)
-    
-    print("Chart created successfully!")
-    print("To display the chart, you can use: fig.show()")
-    
-    # Uncomment the line below to show the chart
-    fig.show()
 
 
 
-```
 ## Save the prompt for your dashboard
 
-When you are happy with the dashboard, you can store the code, for example, in GitHub. CYou can also ask Cursor to give you a prompt to store alongside the configuration.
+You can ask Cursor to give you a comprehensive prompt to store alongside the code for future reference.
 
 ```text
 Can you give me the text of a complete prompt that would 
 lead you to generate this chart with Vizro-MCP?
 ```
 
-This is the output:
+This is the output we received:
 
-> Use Vizro-MCP to build a butterfly chart using the Booker Prize Dataset Final.xlsx. The chart should show GENDER distribution with males (M) on the left-hand side and females (F) on the right-hand side, displaying the count of each gender for each AGE BIN. 
+> Use Vizro-MCP to build a butterfly chart using Booker Prize Dataset Final.xlsx. The chart should show GENDER distribution with males (M) on the left-hand side and females (F) on the right-hand side, displaying the count of each gender for each AGE BIN. 
 
 > Requirements:
 > 
@@ -354,12 +360,10 @@ This is the output:
 - The file should include proper documentation, imports, and example usage code
 - Make sure the chart displays immediately when the script is run (fig.show())
 
-## Share your dashboard
-
 
 ## Summary
 
-Congratulations! You have seen how to work with Vizro-MCP and Cursor to build a Vizro chart. The chart is a simple example, but can be customized or added to a dashboard alongside additional charts, controls or customizations, as described in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/).
+Congratulations! You have seen how to work with Vizro-MCP and Cursor to build a Vizro chart. The chart is a simple example, but can be customized or added to a Vizro dashboard alongside additional charts, controls or customizations, as described in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/).
 
 To learn more about the main elements of Vizro dashboard code, we recommend you work through the introductory ["Explore Vizro" tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/). The tutorial, and accompanying video, will enable you to explore the dashboard code generated by Vizro-MCP and give you ideas of how to modify it by hand rather than through a prompt, should you prefer to fine tune it.
 
