@@ -1,6 +1,5 @@
 """Example app to show all features of Vizro."""
 
-from time import sleep
 from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
@@ -10,7 +9,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import dash_table, dcc, get_asset_url, html
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
+from vizro.actions import export_data
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
