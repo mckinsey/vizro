@@ -135,13 +135,13 @@ class Graph(VizroBaseModel):
             # function call.
             index = self["custom_data"].index(value)
             return trigger_box["customdata"][index]
-        except ValueError:
+        except (KeyError, ValueError):
             try:
                 # Treat the value as a box lookup string, as in
                 # https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots. This works for e.g. value="x" and
                 # value="customdata[0]".
                 return trigger_box[value]
-            except KeyError:
+            except (KeyError, TypeError):
                 raise ValueError(
                     f"Couldn't find value `{value}` in trigger for `set_control` action. "
                     f"This action was added to the Graph model with ID `{self.id}`. "

@@ -140,6 +140,30 @@ class TestAgGridInstantiation:
         assert action._trigger == "underlying_ag_grid_id.selectedRows"
 
 
+class TestAgGridGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    def test_value_valid(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
+        value = ag_grid._get_value_from_trigger(
+            "continent", [{"country": "France", "continent": "Europe", "year": 2007}]
+        )
+
+        assert value == "Europe"
+
+    def test_value_unknown(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid)
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "Couldn't find value column name: `unknown` in trigger for `set_control` action. "
+                "This action was added to the AgGrid model with ID `ag_grid_id`. "
+            ),
+        ):
+            ag_grid._get_value_from_trigger("unknown", [{"country": "France", "continent": "Europe", "year": 2007}])
+
+
 class TestDunderMethodsAgGrid:
     def test_getitem_known_args(self, dash_ag_grid_with_arguments):
         ag_grid = vm.AgGrid(figure=dash_ag_grid_with_arguments)
@@ -380,8 +404,3 @@ class TestBuildAgGrid:
         )
 
         assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
-
-
-# TODO PP: Add tests
-class TestGetValueFromTrigger:
-    """Tests _get_value_from_trigger models method."""

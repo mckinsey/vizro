@@ -112,6 +112,75 @@ class TestGraphInstantiation:
         assert my_graph.actions == []
 
 
+class TestGraphGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize(
+        "figure_custom_data, trigger_custom_data",
+        [
+            (["continent"], ["Europe"]),
+            (["country", "continent", "year"], ["France", "Europe", 2007]),
+        ],
+    )
+    def test_value_matches_custom_data_by_key(self, gapminder, figure_custom_data, trigger_custom_data):
+        graph = vm.Graph(
+            figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp", custom_data=figure_custom_data),
+        )
+        value = graph._get_value_from_trigger("continent", {"points": [{"customdata": trigger_custom_data}]})
+
+        assert value == "Europe"
+
+    # TODO AM: It doesn't work for `nestedDict.key1[0].key2`. Should we remove `camel_killer_box=True`?
+    @pytest.mark.parametrize("action_value", ["customdata[0]", "x", "nested_dict.key1[0].key2"])
+    def test_value_nested_box_notation(self, standard_px_chart, action_value):
+        graph = vm.Graph(figure=standard_px_chart)
+        value = graph._get_value_from_trigger(
+            action_value,
+            trigger={
+                "points": [
+                    {
+                        "customdata": ["Europe"],
+                        "x": "Europe",
+                        "nestedDict": {"key1": [{"key2": "Europe"}]},
+                    }
+                ]
+            },
+        )
+
+        assert value == "Europe"
+
+    def test_no_custom_data_in_figure(self, gapminder):
+        graph = vm.Graph(id="graph_id", figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp"))
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "Couldn't find value `continent` in trigger for `set_control` action. "
+                "This action was added to the Graph model with ID `graph_id`. "
+                "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+            ),
+        ):
+            graph._get_value_from_trigger("continent", {"points": [{"customdata": ["Europe"]}]})
+
+    @pytest.mark.parametrize(
+        "action_value",
+        # The "customdata.0" differs here as it raises the TypeError in "return trigger_box[value]"
+        ["unknown", "customdata.0"],
+    )
+    def test_value_unknown(self, standard_px_chart, action_value):
+        graph = vm.Graph(id="graph_id", figure=standard_px_chart)
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                f"Couldn't find value `{action_value}` in trigger for `set_control` action. "
+                "This action was added to the Graph model with ID `graph_id`. "
+                "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+            ),
+        ):
+            graph._get_value_from_trigger(action_value, {"points": [{"customdata": ["Europe"]}]})
+
+
 class TestDunderMethodsGraph:
     def test_getitem_known_args(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart)
@@ -344,8 +413,3 @@ class TestBuildGraph:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
         assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
-
-
-# TODO PP: Add tests
-class TestGetValueFromTrigger:
-    """Tests _get_value_from_trigger models method."""

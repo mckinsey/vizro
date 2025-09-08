@@ -81,10 +81,12 @@ filterwarnings = [
   "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
   "ignore:HTTPResponse.getheader():DeprecationWarning",
-  # ignore this warning for firefox screenshot tests
+  # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
-  # ignore kedro deprecation warning
-  "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning"
+  # Ignore kedro deprecation warning
+  "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning",
+  # Ignore Vizro FutureWarning when using experimental features
+  "ignore:.*experimental.*:FutureWarning"
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"

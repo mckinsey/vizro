@@ -49,7 +49,6 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid):
 
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
-@pytest.mark.filterwarnings("ignore:.*experimental.*:FutureWarning")
 class TestSetControlPreBuild:
     """Tests set control pre_build method."""
 
@@ -170,7 +169,6 @@ class TestSetControlPreBuild:
 
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
-@pytest.mark.filterwarnings("ignore:.*experimental.*:FutureWarning")
 class TestSetControlOutputs:
     """Tests set control outputs."""
 

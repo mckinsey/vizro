@@ -24,7 +24,7 @@ page_1 = vm.Page(
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
                     actions=[
                         set_control(target="p1_filter_1", value="species"),
-                        set_control(target="p1_filter_2", value="species"),
+                        set_control(target="p1_filter_2", value="customdata[0]"),
                     ],
                 ),
                 vm.Container(
