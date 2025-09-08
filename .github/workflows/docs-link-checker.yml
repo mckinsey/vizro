@@ -5,11 +5,9 @@ permissions:
 
 on:
   push:
-    branches:
-      - main
+    
   pull_request:
-    branches:
-      - main
+    
   workflow_dispatch: # Allow for running this manually.
 
 env:

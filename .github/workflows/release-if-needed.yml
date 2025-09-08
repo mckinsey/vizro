@@ -2,8 +2,7 @@ name: Release if needed
 
 on:
   push:
-    branches:
-      - main
+    
 
 env:
   PYTHON_VERSION: "3.12"
