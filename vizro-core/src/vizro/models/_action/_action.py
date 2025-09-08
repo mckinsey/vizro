@@ -427,7 +427,7 @@ class Action(_BaseAction):
         function (CapturedCallable): Custom action function.
         inputs (list[str]): List of inputs provided to the action function. Each input can be specified as
             `<model_id>`or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
-            ❗Deprecated: The `inputs` argument is deprecated and [will not exist in Vizro 0.2.0](
+            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
             deprecations.md#action-model-inputs-argument).
         outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
     """
@@ -463,7 +463,7 @@ class Action(_BaseAction):
             default=[],
             description="""List of inputs provided to the action function. Each input can be specified as
             `<model_id>`or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
-            ❗Deprecated: The `inputs` argument is deprecated and [will not exist in Vizro 0.2.0](
+            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
             deprecations.md#action-model-inputs-argument).""",
         ),
         BeforeValidator(

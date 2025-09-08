@@ -55,7 +55,7 @@ chart_interaction = vm.Page(
                 color="continent",
                 custom_data=["continent"],
             ),
-            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+            # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
         ),
         vm.Graph(
             id="scatter_relation_2007",
