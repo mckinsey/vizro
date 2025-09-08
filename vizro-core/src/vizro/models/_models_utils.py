@@ -82,8 +82,9 @@ def warn_description_without_title(description, info: ValidationInfo):
     return description
 
 
-# We use this as a validator to deprecate a field, in addition to setting deprecate=True. deprecate=True is useful
-# to set it to deprecated in the JSON schema, but just using deprecate isn't sufficient because:
+# We use this as a validator to deprecate a field, instead of setting deprecate=True, which only affects the JSON schema
+# and raises unwanted warnings when looking through model attributes. deprecate=True wouldn't be sufficient anyway,
+# since:
 # - the warning isn't raised on model instantiation, just on field access
 # - the warning category can't be changed from the default DeprecationWarning to FutureWarning and so will not be
 # visible to most users

@@ -69,3 +69,8 @@ chart_interaction = vm.Page(
         ),
     ],
 )
+
+dashboard = vm.Dashboard(pages=[chart_interaction])
+
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()
