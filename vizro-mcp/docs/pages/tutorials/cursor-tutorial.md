@@ -4,35 +4,26 @@
 
 This tutorial uses a public dataset about winners of the [Booker prize](https://thebookerprizes.com/booker-prize/about-the-booker-prize), which is a literary award conferred each year for the "best sustained work of fiction written in English and published in the UK and Ireland".
 
-To work through the tutorial, you'll need to downloaded the `.xlsx` dataset of [Booker prize winners from 1969 to 2023](https://www.kaggle.com/datasets/rowrowrowyourboat72/booker-prize-winners-1969-2023?resource=download) from Kaggle. The tutorial illustrates how to work with the data locally. It uses Cursor to generate an initial set of Python chart code to iterate with, and without, Cursor's guidance. The exact prompts and chart output is shown to illustrate the process.
+To work through the tutorial, you'll need to download the `.xlsx` dataset of [Booker prize winners from 1969 to 2023](https://www.kaggle.com/datasets/rowrowrowyourboat72/booker-prize-winners-1969-2023?resource=download) from Kaggle. The tutorial illustrates how to work with the data locally. It uses Cursor to generate an initial set of Python chart code to iterate with, and without, Cursor's guidance. The exact prompts and chart output is shown to illustrate the process.
 
 
 ## Set up Vizro-MCP
 
-If you haven't already done so, follow our instructions to [set up Vizro-MCP to work with Cursor](../guides/set-up-vizro-mcp-with-cursor.md), which is what this tutorial assumes you will work with.
+If you haven't already done so, follow our instructions to [set up Vizro-MCP to work with Cursor](../guides/set-up-vizro-mcp-with-cursor.md), which this tutorial assumes you will use.
 
-(Alternatively, you can [set up Claude Desktop](../guides/set-up-vizro-mcp-with-claude.md), or [set up VS Code](../guides/set-up-vizro-mcp-with-vscode.md), or use our [basic setup configuration](../guides/set-up-vizro-mcp-basics.md) for your preferred host).
+Alternatively, you can [set up Claude Desktop](../guides/set-up-vizro-mcp-with-claude.md), or [set up VS Code](../guides/set-up-vizro-mcp-with-vscode.md), or use our [basic setup configuration](../guides/set-up-vizro-mcp-basics.md) for your preferred host.
 
 To check that Cursor is correctly set up to use Vizro-MCP, pass in a prompt:
 
 > Can you access Vizro-MCP?
 
-The response received should be similar to the following:
+You should receive a response similar to the following:
 
-Yes! I do have access to Vizro-MCP tools. I can see several Vizro MCP functions available that allow me to help you create charts and dashboards using Vizro. Here's what I can do with Vizro-MCP:
-
-**Available Vizro-MCP Capabilities:**
-
-1. Get chart/dashboard creation plans - Get instructions for creating Vizro charts or dashboards <br/>
-1. Access model schemas - Get JSON schemas for Vizro models (like Card, Dashboard, Page) <br/>
-1. Work with sample data - Access sample datasets (iris, tips, stocks, gapminder) <br/>
-1. Analyze your data - Load and analyze data files (CSV, JSON, Excel, Parquet, etc.) <br/>
-1. Validate configurations - Validate Vizro dashboard configurations and generate Python code <br/>
-1. Validate custom charts - Validate custom chart code with PyCafe integration <br/>
+Yes! I do have access to Vizro-MCP tools. I can see several Vizro MCP functions available that allow me to help you create charts and dashboards using Vizro. 
 
 ## Strategy
 
-There is no single, correct way to use Vizro-MCP, and the style of interaction also depends on the underlying LLM that you have chosen. Assuming you are using Cursor, select **Open Folder** from the **File** menu, and navigate to the folder you've stored the data, which is where you'll create Python code to visualize it.
+There is no single correct way to use Vizro-MCP, and the style of interaction also depends on the underlying LLM that you have chosen. Assuming you are using Cursor, select **Open Folder** from the **File** menu. Navigate to the folder you've stored the data, which is where you'll create Python code to visualize it.
 
 ## Prompt to generate a Vizro chart
 
@@ -47,12 +38,12 @@ with the count of each gender for each AGE BIN.
 
 ![](../../assets/images/cursor-tutorial1.png)
 
-When running the prompt in Cursor 1.5.9, we saw this response:
+Running the prompt in Cursor 1.5.9, we saw this response. You should see something similar:
 
 ![](../../assets/images/cursor-tutorial2.png)
 
 ### Save the code
-You should then ask Cursor to save the code into a `.py` file (for convenience, save it in the same directory as the data):
+Ask Cursor to save the code into a `.py` file. For convenience, save it in the same directory as the data:
 
 ```text
 Can you save the code into a .py file in this folder
@@ -60,17 +51,17 @@ as booker_prize_butterfly_chart.py?
 ```
 
 ### Execute the code
-Open a new terminal within Cursor from the **Terminal** menu and navigate to the code and data directory within it. Create a new virtual environment to run the Vizro code, and install the necessary dependencies:
+Open a new terminal within Cursor from the **Terminal** menu and navigate to the code and data directory within it. Create a new virtual environment to run the Vizro code, and install the necessary dependencies. In the below, we use the [uv package manager](https://docs.astral.sh/uv/):
 
 ```bash
 uv venv cursorenv
 source cursorenv/bin/activate
 uv pip install pandas
-uv pip install openpxl
+uv pip install openpyxl
 uv pip install vizro
 ```
 
-Next, edit the code to uncomment the final line `fig.show()` and save the change.
+Next, if the final line of code (`fig.show()`) is commenteded out, uncomment it so the chart is displayed,  and save the code change.
 
 Then in the terminal type the following to execute the code:
 
@@ -96,7 +87,7 @@ Executing the chart again:
 
 ## Code iteration with Cursor
 
-We will now iterate the code further using a prompt to Cursor:
+We will now modify the code again, but since this is a more complex change, we can ask Cursor to do it:
 
 ```text
 Can you change the hovertext on each bar to list 
