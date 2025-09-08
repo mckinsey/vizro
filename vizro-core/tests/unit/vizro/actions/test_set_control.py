@@ -61,10 +61,11 @@ class TestSetControlInstantiation:
     def test_set_controls_experimental(self):
         with pytest.warns(
             FutureWarning,
-            match=re.escape("The `set_control` action is experimental. We hope that it will be a stable part of Vizro "
+            match=re.escape(
+                "The `set_control` action is experimental. We hope that it will be a stable part of Vizro "
                 "in future, but until then it may change or be removed without warning. If you have feedback on the "
                 "feature then [let us know](https://github.com/mckinsey/vizro/issues)."
-            )
+            ),
         ):
             set_control(target="target_id", value="value")
 
