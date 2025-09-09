@@ -14,7 +14,7 @@ At the time of writing, we have found that Anthropic models tend to work best wi
 
 We advise you to use Claude Desktop if you want to work with public data stored remotely, and use PyCafe to view the charts or dashboards that Vizro-MCP creates. 
 
-We recommend you to use Cursor if you want to work within an IDE to adjust code yourself, and when you need to work with local data.
+We recommend you Cursor if you want to work within an IDE to adjust code yourself, and when you need to work with local data.
 
 ## Can Vizro-MCP create custom CSS?
 
