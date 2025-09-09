@@ -56,6 +56,6 @@ pip install dist/{{cookiecutter.project_shortname}}-1.0.0-py2.py3-none-any.whl
 
 The wheel includes:
 - Python component (`{{cookiecutter.component_name}}.py`)
-- JavaScript bundle with ECharts (`{{cookiecutter.project_shortname}}.js` - 816KB)
+- JavaScript bundle with ECharts (`{{cookiecutter.project_shortname}}.js`)
 - PropTypes validation (`proptypes.js`)
 - Component metadata and package info

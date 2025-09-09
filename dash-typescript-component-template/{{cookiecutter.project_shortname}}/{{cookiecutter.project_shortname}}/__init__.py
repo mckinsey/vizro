@@ -34,18 +34,10 @@ _js_dist.extend(
     [
         {
             'relative_package_path': '{{cookiecutter.project_shortname}}.js',
-    {% if cookiecutter.publish_on_npm == 'True' -%}
-            'external_url': 'https://unpkg.com/{0}@{2}/{1}/{1}.js'.format(
-                package_name, __name__, __version__),
-    {%- endif %}
             'namespace': package_name
         },
         {
             'relative_package_path': '{{cookiecutter.project_shortname}}.js.map',
-    {% if cookiecutter.publish_on_npm == 'True' -%}
-            'external_url': 'https://unpkg.com/{0}@{2}/{1}/{1}.js.map'.format(
-                package_name, __name__, __version__),
-    {%- endif %}
             'namespace': package_name,
             'dynamic': True
         }

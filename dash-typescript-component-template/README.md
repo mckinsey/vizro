@@ -35,7 +35,6 @@ To use this template:
     - `github_org`: If you plan to push this to GitHub, enter the organization or username that will own it (for URLs to the project homepage and bug report page)
     - `description`: the project description, included in package.json.
     - `license`: License type for the component library. Plotly recommends the MIT license, but you should read the generated LICENSE file carefully to make sure this is right for you.
-    - `publish_on_npm`: Set to false to only serve locally from the package data.
 4. The project will be generated in a folder named with your `project_shortname`.
 5. Follow the directions in the generated README to start developing your new Dash component.
 
