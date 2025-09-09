@@ -25,7 +25,7 @@ vm.Action(function=my_action(), inputs=["dropdown.value"], outputs=["text.childr
 # After:
 vm.Action(function=my_action("dropdown.value"), outputs=["text.children"])
 # In fact, just this would work and is preferred:
-vm.Action(function=action_function("dropdown"), outputs="text")
+vm.Action(function=my_action("dropdown"), outputs="text")
 ```
 
 See the [user guide on custom actions](../user-guides/custom-actions.md#trigger-with-a-runtime-input) for more information.
