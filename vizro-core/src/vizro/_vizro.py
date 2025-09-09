@@ -31,10 +31,7 @@ class Vizro:
     """The main class of the `vizro` package."""
 
     def __init__(self, **kwargs):
-        """Initializes Dash app, stored in `self.dash`.
-
-        Args:
-            kwargs: Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
+        """Initializes Dash app, stored in `self.dash`. **kwargs is passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
