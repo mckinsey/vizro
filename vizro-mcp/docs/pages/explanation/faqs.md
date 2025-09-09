@@ -12,7 +12,7 @@ You can use any LLM model with Vizro-MCP as long as the MCP host offers it. At t
 
 At the time of writing, we have found that Anthropic models tend to work best with Vizro-MCP. You can use them with Claude Desktop or Cursor.
 
-We advise you to use Claude Desktop if you want to work with public data stored remotely, and use PyCafe to view the charts or dashboards that Vizro-MCP creates. 
+We advise you to use Claude Desktop if you want to work with public data stored remotely, and use PyCafe to view the charts or dashboards that Vizro-MCP creates.
 
 We recommend you to use Cursor if you want to work within an IDE to adjust code yourself, and when you need to work with local data.
 
