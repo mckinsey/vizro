@@ -54,7 +54,16 @@ GENERIC_HOST_INSTRUCTIONS = """
 # It helps it to narrow down the choices when asking for a model.
 MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
     "main": [vm.Dashboard, vm.Page],
-    "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],  #'Figure', 'Table'
+    "components": [
+        vm.Card,
+        vm.Button,
+        vm.Text,
+        vm.Container,
+        vm.Tabs,
+        vm.Graph,
+        vm.AgGrid,
+        vm.Figure,
+    ],  #'Figure', 'Table'
     "layouts": [vm.Grid, vm.Flex],
     "controls": [vm.Filter, vm.Parameter],
     "selectors": [
