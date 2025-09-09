@@ -6,7 +6,7 @@ from dash import Output, State, dcc
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
-from vizro.models.types import capture, _get_action_discriminator
+from vizro.models.types import _get_action_discriminator, capture
 
 
 @capture("action")
