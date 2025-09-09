@@ -37,7 +37,7 @@ Booker Prize Dataset Final.xlsx using GENDER
 with the count of each gender for each AGE BIN.
 ```
 
-Here is the prompt as it was typed, showing use of `claude-4-sonnet` in Agent mode:
+Here is the prompt as it was typed. Before you submit it, we recommend you check that the model selected is **`claude-4-sonnet`** and the mode is **Agent**:
 
 ![](../../assets/images/cursor-tutorial1.png)
 
