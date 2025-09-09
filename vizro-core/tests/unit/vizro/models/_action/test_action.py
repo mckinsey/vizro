@@ -6,7 +6,7 @@ from dash import Output, State, dcc
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
-from vizro.models.types import capture
+from vizro.models.types import capture, _get_action_discriminator
 
 
 @capture("action")
@@ -90,6 +90,17 @@ class TestLegacyActionInstantiation:
     def test_inputs_deprecated(self):
         with pytest.warns(FutureWarning, match="The `inputs` argument is deprecated"):
             Action(function=action_with_no_args(), inputs=[])
+
+    def test_action_deprecated_yaml(self):
+        # Test dictionary configuration of an action without discriminator "type" specified. The behavior here should be equivalent to
+        # specifying vm.Action but with an extra warning. Ideally we would test this using the higher level
+        # ActionsType, analogous to test_layout_deprecated_yaml, but that means resolving lots of ForwardRefs here
+        # which is not worth the effort.
+        with pytest.warns(FutureWarning, match="Action without an explicit `type` specified"):
+            action = _get_action_discriminator({"function": {"_target_": "export_data"}})
+
+        # Use type rather than isinstance to not pass if it's a subclass.
+        assert type(action) is Action
 
 
 @pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")

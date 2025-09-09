@@ -66,9 +66,14 @@ def _get_action_discriminator(action: Any) -> Optional[str]:
         # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
         # type is not specified, in which case we want to use vm.Action, which has type="action".
         try:
-            # TODO-AV2 C 1: Put in deprecation warning.
             return action["type"]
         except KeyError:
+            warnings.warn(
+                "Action without an explicit `type` specified will not work in Vizro 0.2.0. Specify `type: action` for "
+                "a custom action or, for example, `type: export_data` for a built-in action.",
+                FutureWarning,
+                stacklevel=3,
+            )
             return "action"
 
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
