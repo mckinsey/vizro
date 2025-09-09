@@ -34,7 +34,6 @@ class Vizro:
         """Initializes Dash app, stored in `self.dash`.
 
         Args:
-        
             kwargs : Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
@@ -127,7 +126,6 @@ class Vizro:
         """Runs the dashboard.
 
         Args:
-
             args : Passed through to `dash.run`.
             kwargs : Passed through to `dash.run`.
 
