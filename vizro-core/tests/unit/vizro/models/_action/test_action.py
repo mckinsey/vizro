@@ -25,7 +25,7 @@ def action_with_two_args(arg_1, arg_2):
 
 
 @capture("action")
-def action_with_builtin_runtime_arg(arg_1, _controls):
+def action_with_builtin_runtime_args(arg_1, _trigger, _controls):
     pass
 
 
@@ -45,8 +45,8 @@ class TestLegacyActionInstantiation:
         # inputs=[] added to force action to be legacy
         action = Action(id="action-id", function=function, inputs=[])
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = True
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -69,8 +69,9 @@ class TestLegacyActionInstantiation:
         # inputs=[] added to force action to be legacy
         action = Action(id="action-id", function=function, inputs=[])
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = False
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = "trigger.property"
+        action._trigger = "trigger_2.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -367,8 +368,8 @@ class TestActionInstantiation:
         function = action_with_no_args()
         action = Action(id="action-id", function=function)
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = True
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -388,8 +389,9 @@ class TestActionInstantiation:
         function = action_with_no_args()
         action = Action(id="action-id", function=function)
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = False
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = "trigger.property"
+        action._trigger = "trigger_2.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -426,21 +428,22 @@ class TestActionInputs:
                 {"arg_1": State("component", "property"), "arg_2": State("component", "property")},
             ),
             (
-                action_with_builtin_runtime_arg,
+                action_with_builtin_runtime_args,
                 {},
                 {
                     "_controls": {
                         "filters": [State("known_dropdown_filter_id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
-                    }
+                    },
+                    "_trigger": State("trigger", "property"),
                 },
             ),
             (
                 # Case that a builtin runtime argument is overridden by a user supplied one.
-                action_with_builtin_runtime_arg,
+                action_with_builtin_runtime_args,
                 {"_controls": "component.property"},
-                {"_controls": State("component", "property")},
+                {"_controls": State("component", "property"), "_trigger": State("trigger", "property")},
             ),
         ],
     )
@@ -448,6 +451,10 @@ class TestActionInputs:
         self, action_function, inputs, expected_transformed_inputs, manager_for_testing_actions_output_input_prop
     ):
         action = Action(function=action_function(**inputs))
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+
         assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
@@ -466,8 +473,13 @@ class TestActionInputs:
     )
     @pytest.mark.xfail(reason="Validation will only be performed once legacy actions are removed")
     def test_runtime_inputs_invalid(self, input):
+        action = Action(function=action_with_one_arg(input))
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+
         with pytest.raises(ValidationError):
-            Action(function=action_with_one_arg(input))._transformed_inputs
+            action._transformed_inputs
 
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
@@ -476,6 +488,10 @@ class TestActionInputs:
             "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
             action = Action(function=action_with_one_arg("known_model_with_no_default_props"))
+
+            # Mock private attribute set by parent component's validation, not Action's.
+            action._first_in_chain_trigger = action._trigger = "trigger.property"
+
             action._transformed_inputs
 
 
@@ -483,8 +499,17 @@ class TestBuiltinRuntimeArgs:
     """Test the actual values of the runtime args are correct in a real scenario."""
 
     def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
-        action = Action(function=action_with_builtin_runtime_arg())
-        assert action._transformed_inputs == page_actions_builtin_controls
+        action = Action(function=action_with_builtin_runtime_args())
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+
+        expected_transformed_input = {
+            **page_actions_builtin_controls,
+            "_trigger": State("trigger", "property"),
+        }
+
+        assert action._transformed_inputs == expected_transformed_input
 
 
 class TestActionOutputs:
