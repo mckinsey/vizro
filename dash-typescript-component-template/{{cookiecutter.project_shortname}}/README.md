@@ -2,25 +2,19 @@
 
 {{cookiecutter.description}}
 
-## Install
-
-```shell
-pip install {{cookiecutter.project_shortname}}
-```
-
 ## Development
 ### Getting Started
 
 1. Create a new python environment:
    ```shell
-   python -m venv venv
-   . venv/bin/activate
+   uv venv
+   source .venv/bin/activate
    ```
    _Note: venv\Scripts\activate for windows_
 
 2. Install python dependencies:
    ```shell
-   pip install -r requirements.txt
+   uv pip install -r requirements.txt
    ```
 3. Install npm packages:
    1. Optional: use [nvm](https://github.com/nvm-sh/nvm) to manage node version:
@@ -28,39 +22,40 @@ pip install {{cookiecutter.project_shortname}}
       nvm install
       nvm use
       ```
-   2. Install:
+   2. Install npm dependencies:
       ```shell
       npm install
+      npm install echarts
       ```
-4. Build:
+4. Build the component:
    ```shell
    npm run build
    ```
 
-### Component Code
+### Build and Package
 
-### Publish
+#### Build Wheel Package with Hatch
 
-If publish on npm:
+To build a distributable Python wheel package:
+
+# Build wheel and source distribution
+source .venv/bin/activate && hatch build
+
+This creates:
+- `dist/{{cookiecutter.project_shortname}}-1.0.0-py2.py3-none-any.whl` - Python wheel package
+- `dist/{{cookiecutter.project_shortname}}-1.0.0.tar.gz` - Source distribution
+
+#### Install the Built Package
+
 ```shell
-npm build
-npm publish
+# Install from local wheel
+pip install dist/{{cookiecutter.project_shortname}}-1.0.0-py2.py3-none-any.whl
 ```
 
-### Justfile
+#### Package Contents
 
-Alternatively, use the provided [just](https://github.com/casey/just) commands:
-
-1. Create a Python environment from previous step 1 and install:
-   ```shell
-   just install
-   ```
-2. Build
-   ```shell
-   just build
-   ```
-3. Publish
-   ```shell
-   just publish
-   ```
-4. See all commands with `just -l`
+The wheel includes:
+- Python component (`{{cookiecutter.component_name}}.py`)
+- JavaScript bundle with ECharts (`{{cookiecutter.project_shortname}}.js` - 816KB)
+- PropTypes validation (`proptypes.js`)
+- Component metadata and package info

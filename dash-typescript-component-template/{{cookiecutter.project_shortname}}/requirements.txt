@@ -1,3 +1,2 @@
-dash[dev]>=2.5.1
-wheel
-build
+vizro>=0.1.40
+hatch
