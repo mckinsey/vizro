@@ -41,7 +41,7 @@ Here is the prompt as it was typed, showing use of `claude-4-sonnet` in Agent mo
 
 ![](../../assets/images/cursor-tutorial1.png)
 
-Running this prompt in Cursor 1.5.9, we saw the following response. You should see something similar:
+Running this prompt in Cursor, we saw the following response. You should see something similar:
 
 ![](../../assets/images/cursor-tutorial2.png)
 
