@@ -343,7 +343,7 @@ This is the output we received:
 
 > Requirements:
 
-- Use AGE BIN column for grouping (not AGE WHEN WON)
+> - Use AGE BIN column for grouping (not AGE WHEN WON)
 - Male bars should appear on the left side in blue color
 - Female bars should appear on the right side in magenta color (#ff0eef)
 - Include detailed hover text that shows the actual WINNER names and NOVEL titles for each bar
