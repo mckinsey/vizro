@@ -260,7 +260,7 @@ page = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[page], title="CustomerOne")
+dashboard = vm.Dashboard(pages=[page], title="Vizro Dashboard")
 
 
 @callback(
