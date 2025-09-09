@@ -126,8 +126,8 @@ class Vizro:
         """Runs the dashboard.
 
         Args:
-            * args : Passed through to `dash.run`.
-            ** kwargs : Passed through to `dash.run`.
+              *args : Passed through to `dash.run`.
+              **kwargs : Passed through to `dash.run`.
 
         """
         data_manager._frozen_state = True
