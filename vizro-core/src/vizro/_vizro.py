@@ -123,11 +123,7 @@ class Vizro:
         return self
 
     def run(self, *args, **kwargs):  # if type annotated, mkdocstring stops seeing the class
-        """Runs the dashboard.
-
-        Args:
-            args: Passed through to `dash.run`.
-            kwargs: Passed through to `dash.run`.
+        """Runs the dashboard and passes *args and **kwargs through to `dash.run`.
 
         """
         data_manager._frozen_state = True
