@@ -1217,9 +1217,12 @@ vm.Graph(
                   <strong>Static data tips:</strong>
                 </div>
                 <div class="highlight-content">
-                  • The same can be achieved by assigning the data_frame to the
-                  data_manager key such as
-                  <code>data_manager["my_data"] = df</code>.
+                  • The same can be achieved by assigning the
+                  <code>data_frame</code> to the data_manager key such as
+                  <code>data_manager["my_data"] = df</code>. Then, you can
+                  reference this key when specifying the
+                  <code>data_frame</code> argument in your figure, like:
+                  <code>figure(data_frame="my_data")</code>
                 </div>
               </div>
             </div>
@@ -1250,7 +1253,7 @@ data_manager["iris"] = load_iris_data
 # Use in components
 vm.Graph(
     figure=px.box(
-        "iris",
+        data_frame="iris",
         x="species",
         y="petal_width",
         color="species",
@@ -1265,9 +1268,6 @@ vm.Graph(
                   <strong>Dynamic data tips:</strong>
                 </div>
                 <div class="highlight-content">
-                  • The same can be achieved by assigning the data_frame to the
-                  data_manager key such as
-                  <code>data_manager["my_data"] = df</code>.<br />
                   • Enable caching to avoid performance issues with frequent
                   reloads.
                 </div>
@@ -1299,11 +1299,16 @@ data_manager["iris"] = load_iris_data
 # Use in components
 vm.Graph(
     figure=px.box(
-        "iris",
+        data_frame="iris",
         x="species",
         y="petal_width",
         color="species",
     )
+)
+
+parameter =  vm.Parameter(
+            targets=["graph.data_frame.number_of_points"],
+            selector=vm.Slider(step=10, value=10),
 )</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -1311,7 +1316,7 @@ vm.Graph(
               <div class="highlight-box">
                 <div class="highlight-title">
                   <span class="mdi mdi-lightbulb-on-outline"></span>
-                  <strong>Dynamic data tips:</strong>
+                  <strong>Parametrized dynamic data tips:</strong>
                 </div>
                 <div class="highlight-content">
                   • Always return a DataFrame with a fixed schema when using
