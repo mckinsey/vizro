@@ -3,7 +3,7 @@
 <!-- All enhancements and patches to vizro will be documented
 in this file.  It adheres to the structure of http://keepachangelog.com/.
 
-This project adheres to Semantic Versioning (http://semver.org/). -->
+This prooject adheres to Semantic Versioning (http://semver.org/). -->
 
 ## Unreleased
 
