@@ -114,7 +114,8 @@ class AgGrid(VizroBaseModel):
 
     def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
         """Value is the name of the column. There is only one row selected, so we just look at trigger[0]."""
-        # In case the selectedRows is empty (eg when the user unselects the row), trigger is an empty list.
+        # In case the selectedRows is empty (e.g. when the user unselects the row), trigger is an empty list.
+        # This works for both multi=True and multi=False selectors.
         if not trigger:
             return []
 

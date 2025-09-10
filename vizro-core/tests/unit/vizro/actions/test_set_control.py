@@ -209,7 +209,7 @@ class TestSetControlFunction:
 
         assert result == expected
 
-    def test_function_target_model_on_different_page(self, monkeypatch):
+    def test_function_target_model_on_different_page(self, mocker):
         # Add action to relevant component and set target to a control on different page with show_in_url=True
         action = set_control(target="filter_page_2_show_in_url_true", value="continent")
         # Any other model that supports set_control can be used here, but the Graph used for the simplicity.
@@ -218,7 +218,7 @@ class TestSetControlFunction:
         action.pre_build()
 
         # Mock dash.get_relative_path as it's used in set_control.function
-        monkeypatch.setattr(set_control_module, "get_relative_path", lambda path: "/mocked_path")
+        mocker.patch.object(set_control_module, "get_relative_path", return_value="/mocked_path")
 
         # Call function method with a mock trigger value
         result_relative_path, result_url_query_params = action.function(
@@ -226,7 +226,7 @@ class TestSetControlFunction:
         )
         # From mocked get_relative_path
         expected_relative_path = "/mocked_path"
-        # Value Europe" base64 encoded is b64_IkV1cm9wZSI
+        # Value "Europe" base64 encoded is b64_IkV1cm9wZSI
         expected_url_query_params = "?filter_page_2_show_in_url_true=b64_IkV1cm9wZSI"
 
         assert result_relative_path == expected_relative_path
