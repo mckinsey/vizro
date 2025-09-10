@@ -241,6 +241,15 @@ def vizro_app():
     return Vizro()
 
 
+# Custom Card model with empty _action_outputs and no _action_inputs.
+# Used in tests to verify exceptions for missing vs. empty action attributes.
+# Inherits from vm.Card to avoid the `model_rebuild()` issues in the `test_check_captured_callable` test.
+class MockCardWithNoActionProps(vm.Card):
+    @property
+    def _action_outputs(self):
+        return {}
+
+
 @pytest.fixture
 def manager_for_testing_actions_output_input_prop(ag_grid_with_id):
     """Instantiates the model_manager using a Dropdown (has default input and output properties)."""
@@ -250,7 +259,7 @@ def manager_for_testing_actions_output_input_prop(ag_grid_with_id):
         id="test_page",
         title="My first dashboard",
         components=[
-            vm.Button(id="known_model_with_no_default_props"),
+            MockCardWithNoActionProps(id="known_model_with_no_default_props", text="My Card"),
             vm.AgGrid(id="known_ag_grid_id", figure=ag_grid_with_id),
         ],
         controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known_dropdown_filter_id"))],
