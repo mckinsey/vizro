@@ -4,7 +4,7 @@ Actions control how your app responds to user input such as clicking a button or
 
 Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to complete the tutorial. We also have an [explanation of how Vizro actions work](../explanation/actions-explanation.md) and their similarities and differences compared to Dash callbacks.
 
-This tutorial should take **about an hour to finish**. You will gradually build a single-page app of a simple form that uses custom actions to show the current time, date and weather in Washington, D.C. or Berlin. The tutorial is written to be followed from start to finish in order, but if you are already familiar with some aspects of actions then you might like to skip straight to the relevant section or just review the [key principles of actions](#key-principles-of-actions).
+This tutorial should take **about an hour to finish**. You will gradually build a single-page app of a simple form that uses custom actions to show the current time, date and weather in Washington, D.C. or Berlin.
 
 <!--
 TODO NOW: maybe post a link to the completed pycafe dashboard and/or screenshot/gif?
@@ -220,7 +220,7 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_card` actio
 
         [![CustAction4]][custaction4]
 
-Have a go at toggling the switch and clicking the button. You should find that the format of the time shown changes between 12- and 24-hour clock. Note that toggling the `clock_switch` does not by itself trigger `update_card`. The switch is used as a runtime input but the action is triggered only by clicking the button. In fact, this is a key principle governing Vizro actions: an action can have any number of inputs and outputs but only one trigger.
+Have a go at toggling the switch and clicking the button. You should find that the format of the time shown changes between 12- and 24-hour clock. Note that toggling the `clock_switch` does not by itself trigger `update_card`. The switch is used as a runtime input but the action is triggered only by clicking the button. In fact, this is a key principle governing Vizro actions: an action can have **any number** of inputs and outputs but **only one** trigger.
 
 Let's look at what the actions flowchart looks like. We now have a new model with `id="clock_switch"` that is used as runtime input to the `update_card` action. We indicate runtime inputs using a dotted line.
 
@@ -475,7 +475,7 @@ graph TD
 
 ### Implicit actions chain
 
-Now we're going to re-work the example a bit to demonstrate an implicit actions chain. Let's add a dropdown menu that allows the user to choose between seeing the weather in Washington, D.C. or in Berlin. When the user selects the city we also update the time and date shown to the format preferred by that location: for Washington, D.C., this is 12-hour clock and MM/DD/YY format; for Berlin, it is 24-hour clock and DD/MM/YY format.
+Now we're going to re-work the example to demonstrate an implicit actions chain. Let's add a dropdown menu that allows the user to choose between seeing the weather in Washington, D.C. or in Berlin. When the user selects the city we also update the time and date shown to the format preferred by that location: for Washington, D.C., this is 12-hour clock and MM/DD/YY format; for Berlin, it is 24-hour clock and DD/MM/YY format.
 
 When the city is selected in the dropdown, we want to immediately update the cards _without requiring the user to click `submit_button`_. To achieve this, we write a new action `update_time_date_formats` triggered by the dropdown that outputs to `submit_button`.
 
@@ -954,7 +954,7 @@ In many cases, untrusted user input does _not_ pose a security risk. For example
 
 ## Key principles of actions
 
-Congratulations on completing the tutorial! You should now be able to quite complex custom actions. To recap, let's summarize some of the key principles of how actions work.
+Congratulations on completing the tutorial! You should now be able to write quite complex custom actions. To recap, let's summarize some of the key principles of how actions work.
 
 - An action is a Python function that executes when it is triggered by a user interacting with a component on their screen.
 - An action can have any number of inputs and outputs but only one trigger.
