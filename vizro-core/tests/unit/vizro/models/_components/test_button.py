@@ -66,7 +66,7 @@ class TestButtonInstantiation:
         assert button._action_inputs == {"__default__": "button-id.n_clicks"}
 
     def test_button_trigger(self):
-        button = vm.Button(id="button-id", actions=[vm.Action(function=export_data())])
+        button = vm.Button(id="button-id", actions=[export_data()])
         [action] = button.actions
         assert action._trigger == "button-id.n_clicks"
 

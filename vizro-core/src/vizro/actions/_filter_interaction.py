@@ -3,6 +3,7 @@ from typing import Any, Literal, cast
 
 from dash import ctx
 from pydantic import Field
+from typing_extensions import deprecated
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
@@ -11,12 +12,18 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, _Controls
 
 
+@deprecated(
+    "`filter_interaction` is deprecated and [will not exist in Vizro 0.2.0]("
+    "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#filter-interaction). Use the more powerful and flexible "
+    "[`set_control`][vizro.actions.set_control].",
+    category=FutureWarning,
+)
 class filter_interaction(_AbstractAction):
     """Filters targeted graph, tables and figures when a source graph or table is clicked.
 
     Args:
-    targets (list[ModelID]): Target component to be affected by filter. If none are given then target all
-        valid components on the page.
+        targets (list[ModelID]): Target component to be affected by filter. If none are given then target all
+            valid components on the page.
     """
 
     type: Literal["filter_interaction"] = "filter_interaction"

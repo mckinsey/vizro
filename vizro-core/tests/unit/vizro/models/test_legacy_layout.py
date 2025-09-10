@@ -10,7 +10,6 @@ from vizro.models.types import LayoutType
 
 pytestmark = [
     pytest.mark.filterwarnings("ignore:The `Layout` model has been renamed:FutureWarning"),
-    pytest.mark.filterwarnings("ignore:`layout` without an explicit `type`:FutureWarning"),
 ]
 
 

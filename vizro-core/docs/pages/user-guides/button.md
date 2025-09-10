@@ -118,7 +118,7 @@ If your app includes several action buttons, consider [adding icons](#add-an-ico
                 text: Export data
                 id: export_data
                 actions:
-                  _target_: export_data
+                  - type: export_data
             layout:
               type: flex
             title: My first page
