@@ -426,7 +426,7 @@ class Action(_BaseAction):
     Args:
         function (CapturedCallable): Custom action function.
         inputs (list[str]): List of inputs provided to the action function. Each input can be specified as
-            `<model_id>`or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
             ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
             deprecations.md#action-model-inputs-argument).
         outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
@@ -459,13 +459,13 @@ class Action(_BaseAction):
         Field(
             default=[],
             description="""List of inputs provided to the action function. Each input can be specified as
-            `<model_id>`or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
             ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
             deprecations.md#action-model-inputs-argument).""",
         ),
         BeforeValidator(
             make_deprecated_field_warning(
-                "Pass references to runtime inputs directly as arguments of `function`. See"
+                "Pass references to runtime inputs directly as arguments of `function`. See "
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-inputs-argument."
             )
         ),
