@@ -1219,8 +1219,8 @@ vm.Graph(
                 <div class="highlight-content">
                   • The same can be achieved by assigning the
                   <code>data_frame</code> to the data_manager key such as
-                  <code>data_manager["my_data"] = df</code>. Then, you can
-                  reference this key when specifying the
+                  <code>data_manager["my_data"] = df</code>, and then
+                  referencing it in the figure like:
                   <code>data_frame</code> argument in your figure, like:
                   <code>figure(data_frame="my_data")</code>
                 </div>
@@ -1268,8 +1268,12 @@ vm.Graph(
                   <strong>Dynamic data tips:</strong>
                 </div>
                 <div class="highlight-content">
-                  • Enable caching to avoid performance issues with frequent
-                  reloads.
+                  • Enable
+                  <a
+                    href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#configure-cache"
+                    >caching</a
+                  >
+                  to avoid performance issues with frequent reloads.
                 </div>
               </div>
             </div>
@@ -1299,6 +1303,7 @@ data_manager["iris"] = load_iris_data
 # Use in components
 vm.Graph(
     figure=px.box(
+        id="graph",
         data_frame="iris",
         x="species",
         y="petal_width",
@@ -1307,8 +1312,8 @@ vm.Graph(
 )
 
 parameter =  vm.Parameter(
-            targets=["graph.data_frame.number_of_points"],
-            selector=vm.Slider(step=10, value=10),
+    targets=["graph.data_frame.number_of_points"],
+    selector=vm.Slider(min=10, max=100, step=10, value=10),
 )</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -1583,17 +1588,16 @@ vm.Graph(figure=custom_chart(data_frame=df))</code></pre>
 from vizro.models.types import capture
 
 @capture("action")
-def update_card_text(species):
-    return f"You selected species **{species}**"
+def update_card_text(my_dropdown_value):
+    return f"You selected species **{my_dropdown_value}**"
 
 # Use with Action
 vm.Button(
      text="Export Data",
      actions=vm.Action(
-         function=update_card_text(),
-         inputs=["my_selector"],
+         function=update_card_text("my_dropdown"),
          outputs=["my_card"],
-     )
+     ),
 )</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>

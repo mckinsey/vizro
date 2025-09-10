@@ -1341,6 +1341,10 @@ dashboard = vm.Dashboard(
         }
     ),
 )
+parameter = vm.Parameter(
+    targets=["graph.data_frame.number_of_points"],
+    selector=vm.Slider(step=10, value=10),
+)
 
 
 if __name__ == "__main__":
