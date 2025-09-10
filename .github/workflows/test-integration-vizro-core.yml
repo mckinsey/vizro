@@ -8,6 +8,8 @@ on:
   push:
     branches: [main]
   pull_request:
+    branches:
+      - main
 
 env:
   PYTHONUNBUFFERED: 1
