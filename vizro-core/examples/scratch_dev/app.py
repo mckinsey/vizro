@@ -93,20 +93,20 @@ class ChatAction(echo):
 
                 const decodedStr = atob(animatedText);
                 const markdownComponent = JSON.parse(decodedStr);
-                
+
                 const newChildren = [...(existingChildren || [])];
                 const newData = [...(storeData || [])];
 
                 if (newChildren.length > 0) {
                     const last = newChildren[newChildren.length - 1];
-                    
+
                     if (!last.props?.children) {
                         last.props.children = [
                             {props: {children: 'assistant'}, type: 'B', namespace: 'dash_html_components'},
                             markdownComponent
                         ];
                     } else if (last.props.children[1]?.props) {
-                        last.props.children[1].props.children = 
+                        last.props.children[1].props.children =
                             (last.props.children[1].props.children || '') + markdownComponent.props.children;
                     }
                 }
@@ -141,9 +141,7 @@ class ChatAction(echo):
                 for chunk in self.core_function(**stuff.model_dump()):
                     markdown_component = dcc.Markdown(chunk, dangerously_allow_html=False)
                     json_str = json.dumps(markdown_component.to_plotly_json())
-                    encoded_chunk = base64.b64encode(
-                        json_str.encode("utf-8")
-                    ).decode("utf-8")
+                    encoded_chunk = base64.b64encode(json_str.encode("utf-8")).decode("utf-8")
                     yield sse_message(encoded_chunk)
 
                 # Send standard SSE completion signal
@@ -219,10 +217,7 @@ class ChatAction(echo):
 
     # User writes this function. Does it belong here or in Chat?
     def message_to_html(self, message):
-        return html.Div([
-            html.B(message["role"]), 
-            dcc.Markdown(message["content"], dangerously_allow_html=False)
-        ])
+        return html.Div([html.B(message["role"]), dcc.Markdown(message["content"], dangerously_allow_html=False)])
 
     @property
     def outputs(self):
