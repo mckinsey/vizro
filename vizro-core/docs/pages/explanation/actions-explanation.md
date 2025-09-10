@@ -25,7 +25,7 @@ Many [Vizro models][vizro.models] have an `actions` argument that can contain on
 In Vizro, there are two types of action:
 
 - [Built-in actions](../user-guides/actions.md). These cover many common dashboard operations such as downloading data and cross-filtering. These actions can be imported from `vizro.actions`.
-- [Custom actions](../user-guides/custom-actions.md). These are written by a user to achieve behaviour outside of Vizro's built-in actions and use the [`Action` model][vizro.models.Action].
+- [Custom actions](../user-guides/custom-actions.md). These are written by a user to achieve behavior outside of Vizro's built-in actions and use the [`Action` model][vizro.models.Action].
 
 !!! note
 

@@ -42,7 +42,7 @@ Let's start by making a very simple single-page app that tells us the current ti
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        [![CustAction1]][custaction1]
 
 We have specified that a button should be included in the page layout but haven't configured what should happen when it is clicked. Let's define an action for that and [attach it to the button](../user-guides/custom-actions.md#trigger-an-action-with-a-button) with the `actions` argument and the [`Action`][vizro.models.Action] model.
 
@@ -92,7 +92,7 @@ We have specified that a button should be included in the page layout but haven'
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        [![CustAction2]][custaction2]
 
 Congratulations on writing your first action! Before clicking the button, the card's text is "Click the button". When you click the button, the `update_card` action is _triggered_. This Python function executes on the server to find the current time in the UTC timezone and return a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the component with `id="time_card"`. This is the action's _output_.
 
@@ -159,11 +159,9 @@ Let's extend our action to depend on an _input_ from the user's screen. As befor
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selector](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. We group the form inputs into a [styled container](../user-guides/container.md#styled-containers) to achieve some visual separation of the form inputs and outputs. This is purely stylistic and does not affect the operation of actions.
 
-```
-=== "Result"
+    === "Result"
 
-    TODO NOW screenshot/gif
-```
+        [![CustAction3]][custaction3]
 
 Now we need to connect `vm.Switch(id="clock_switch")` to our `update_card` action. We add an argument `use_24_hour_clock` to the `update_card` function and configure the function call in `vm.Action` to use the `clock_switch` component as the input value of this argument.
 
@@ -220,7 +218,7 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_card` actio
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        [![CustAction4]][custaction4]
 
 Have a go at toggling the switch and clicking the button. You should find that the format of the time shown changes between 12- and 24-hour clock. Note that toggling the `clock_switch` does not by itself trigger `update_card`. The switch is used as a runtime input but the action is triggered only by clicking the button. In fact, this is a key principle governing Vizro actions: an action can have any number of inputs and outputs but only one trigger.
 
@@ -302,7 +300,7 @@ Let's extend our example to handle multiple inputs and outputs. We add another c
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        [![CustAction5]][custaction5]
 
 Here's the updated actions flowchart. We now have two inputs and two outputs that are updated simultaneously when the `update_cards` action is triggered:
 
@@ -324,7 +322,7 @@ graph TD
 
 ```
 
-The returned values are matched to the `outputs` in order. If your action has many outputs then it can be a good idea to instead return a dictionary where returned values are labelled by string keys. In this case, `outputs` should also be a dictionary with matching keys, and the order of entries does not matter:
+The returned values are matched to the `outputs` in order. If your action has many outputs then it can be a good idea to instead return a dictionary where returned values are labeled by string keys. In this case, `outputs` should also be a dictionary with matching keys, and the order of entries does not matter:
 
 ```py
 @capture("action")
@@ -449,7 +447,7 @@ The full code is shown below.
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        [![CustAction6]][custaction6]
 
 When you click the button, the `update_cards` action executes and sets the placeholder message "Fetching current weather...". When this action completes, the `fetch_weather` action executes to find the actual weather and update the message. The Open-Meteo API request generally completes very quickly and so "Fetching current weather..." will only flash on your screen very briefly. If you'd like to artificially slow down the `fetch_weather` action to see it more clearly then you can add `from time import sleep; sleep(3)` to the function body to add a delay of 3 seconds.
 
@@ -574,7 +572,7 @@ When the city is selected in the dropdown, we want to immediately update the car
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        [![CustAction7]][custaction7]
 
 Selecting a city in the dropdown triggers the `update_time_date_formats` action. When this action completes, Vizro automatically triggers the actions that would have been triggered by actually clicking `submit_button`. This forms an _implicit_ connection between the `update_time_date_formats` action and the actions associated with `submit_button`.
 
@@ -732,7 +730,7 @@ As an additional enhancement we add `location_dropdown` as an input to these act
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        [![CustAction8]][custaction8]
 
 Play around with the app for a while to make sure you understand its behavior:
 
@@ -899,7 +897,7 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
 
     === "Result"
 
-        TODO NOW screenshot/gif
+        [![CustAction9]][custaction9]
 
 If an action raises an uncaught exception then any actions that would be triggered by successful completion of the action, either in an explicit or implicit action chain, will also not execute. If you wish to deliberately cancel execution of an action then you can [`raise dash.exceptions.PreventUpdate`](https://dash.plotly.com/advanced-callbacks#catching-errors-with-preventupdate). This will mean that none of the action's outputs are updated and no chained actions execute. For more fine-grained control, you can instead prevent update to only _some_ of the outputs of an action by [returning `dash.no_update`](https://dash.plotly.com/advanced-callbacks#displaying-errors-with-dash.no_update). In this case, only those chained actions that are triggered by outputs that did not update will be prevented from executing.
 
@@ -966,3 +964,13 @@ Congratulations on completing the tutorial! You should now be able to quite comp
 - When multiple actions are triggered simultaneously, they usually execute in parallel.
 - You can cancel execution of an action and subsequent chained actions by raising an exception.
 - For security, you should always assume that inputs to your actions have been generated by an untrusted user.
+
+[custaction1]: ../../assets/tutorials/actions/01_action.png
+[custaction2]: ../../assets/tutorials/actions/02_action.gif
+[custaction3]: ../../assets/tutorials/actions/03_action.png
+[custaction4]: ../../assets/tutorials/actions/04_action.gif
+[custaction5]: ../../assets/tutorials/actions/05_action.gif
+[custaction6]: ../../assets/tutorials/actions/06_action.gif
+[custaction7]: ../../assets/tutorials/actions/07_action.gif
+[custaction8]: ../../assets/tutorials/actions/08_action.gif
+[custaction9]: ../../assets/tutorials/actions/09_action.gif
