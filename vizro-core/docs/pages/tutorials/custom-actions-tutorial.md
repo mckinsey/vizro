@@ -897,7 +897,7 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
 
     === "Result"
 
-         [![CustAction9]][custaction9]
+        [![CustAction9]][custaction9]
 
 If an action raises an uncaught exception then any actions that would be triggered by successful completion of the action, either in an explicit or implicit action chain, will also not execute. If you wish to deliberately cancel execution of an action then you can [`raise dash.exceptions.PreventUpdate`](https://dash.plotly.com/advanced-callbacks#catching-errors-with-preventupdate). This will mean that none of the action's outputs are updated and no chained actions execute. For more fine-grained control, you can instead prevent update to only _some_ of the outputs of an action by [returning `dash.no_update`](https://dash.plotly.com/advanced-callbacks#displaying-errors-with-dash.no_update). In this case, only those chained actions that are triggered by outputs that did not update will be prevented from executing.
 
