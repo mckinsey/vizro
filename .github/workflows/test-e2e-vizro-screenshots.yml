@@ -13,7 +13,6 @@ on:
       - main
   pull_request:
     branches:
-      - '*'
 
 env:
   PYTHONUNBUFFERED: 1
