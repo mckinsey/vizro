@@ -10,8 +10,6 @@
    uv venv
    source .venv/bin/activate
    ```
-   _Note: venv\Scripts\activate for windows_
-
 2. Install python dependencies:
    ```shell
    uv pip install -r requirements.txt
@@ -30,6 +28,14 @@
 4. Build the component:
    ```shell
    npm run build
+   ```
+5. Install component
+   ```shell
+   uv pip install {{cookiecutter.project_shortname}}
+   ```
+6. Run the demo:
+   ```shell
+   python app.py
    ```
 
 ### Build and Package

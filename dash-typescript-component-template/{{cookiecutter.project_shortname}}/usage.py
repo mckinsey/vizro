@@ -1,10 +1,19 @@
 import {{cookiecutter.project_shortname}}
-import dash
+import vizro.models as vm
+from vizro import Vizro
 
-app = dash.Dash(__name__)
+{{cookiecutter.project_shortname}}_page = vm.Page(
+    title="{{cookiecutter.project_shortname}}",
+    components="add components to create {{cookiecutter.project_name}}"
+)
 
-app.layout = {{cookiecutter.project_shortname}}.{{cookiecutter.component_name}}(id='component')
-
+# Create the dashboard
+dashboard = vm.Dashboard(
+    pages=[{{cookiecutter.project_shortname}}_page],
+    title="{{cookiecutter.project_name}} Demo"
+)
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    # Build and run the Vizro app with theme switching enabled
+    app = Vizro().build(dashboard)
+    app.run(debug=True)
