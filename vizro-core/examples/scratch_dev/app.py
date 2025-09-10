@@ -70,7 +70,6 @@ class Stuff(BaseModel):
     messages: Any  # I'm being lazy but maybe it doesn't matter
 
 
-# Base class for chat functionality (streaming and non-streaming)
 class ChatAction(echo):
     """Base class for chat functionality with streaming and non-streaming support."""
 
@@ -92,27 +91,29 @@ class ChatAction(echo):
                     return [existingChildren, window.dash_clientside.no_update];
                 }
 
-                let component = null;
-                let content = '';
-
-                const decodedData = atob(animatedText);
-                component = JSON.parse(decodedData);
-                if (component.props && component.props.children) {
-                    content = component.props.children;
-                }
-
+                const decodedStr = atob(animatedText);
+                const markdownComponent = JSON.parse(decodedStr);
+                
                 const newChildren = [...(existingChildren || [])];
                 const newData = [...(storeData || [])];
 
-                if (newChildren.length > 0 && component) {
+                if (newChildren.length > 0) {
                     const last = newChildren[newChildren.length - 1];
-                    if (last.props?.children?.[0]?.props?.children === "assistant") {
-                        last.props.children[1] = component;
+                    
+                    if (!last.props?.children) {
+                        last.props.children = [
+                            {props: {children: 'assistant'}, type: 'B', namespace: 'dash_html_components'},
+                            markdownComponent
+                        ];
+                    } else if (last.props.children[1]?.props) {
+                        last.props.children[1].props.children = 
+                            (last.props.children[1].props.children || '') + markdownComponent.props.children;
                     }
                 }
 
                 if (newData.length > 0 && newData[newData.length - 1].role === 'assistant') {
-                    newData[newData.length - 1].content = content;
+                    const chunkText = markdownComponent.props?.children || '';
+                    newData[newData.length - 1].content += chunkText;
                 }
 
                 return [newChildren, newData];
@@ -137,13 +138,13 @@ class ChatAction(echo):
             stuff = Stuff(**request.get_json())
 
             def event_stream():
-                for event in self.core_function(**stuff.model_dump()):
-                    if event["type"] == "text_chunk":
-                        text_component = self.create_component("text", event["full_text"])
-                        encoded_delta = base64.b64encode(
-                            json.dumps(text_component.to_plotly_json()).encode("utf-8")
-                        ).decode("utf-8")
-                        yield sse_message(encoded_delta)
+                for chunk in self.core_function(**stuff.model_dump()):
+                    markdown_component = dcc.Markdown(chunk, dangerously_allow_html=False)
+                    json_str = json.dumps(markdown_component.to_plotly_json())
+                    encoded_chunk = base64.b64encode(
+                        json_str.encode("utf-8")
+                    ).decode("utf-8")
+                    yield sse_message(encoded_chunk)
 
                 # Send standard SSE completion signal
                 yield sse_message()
@@ -197,7 +198,7 @@ class ChatAction(echo):
 
             placeholder_msg = {"role": "assistant", "content": ""}
             store.append(placeholder_msg)
-            html_messages.append(self.message_to_html(placeholder_msg))
+            html_messages.append(html.Div())
 
             return [
                 store,
@@ -216,16 +217,12 @@ class ChatAction(echo):
             html_messages.append(self.message_to_html(latest_output))
             return store, html_messages
 
-    def create_component(self, content_type, content):
-        """Create the appropriate component based on content type."""
-        if content_type == "text":
-            return dcc.Markdown(content, dangerously_allow_html=False)
-        else:
-            return html.Div(content)
-
     # User writes this function. Does it belong here or in Chat?
     def message_to_html(self, message):
-        return html.Div([html.B(message["role"]), self.create_component("text", message["content"])])
+        return html.Div([
+            html.B(message["role"]), 
+            dcc.Markdown(message["content"], dangerously_allow_html=False)
+        ])
 
     @property
     def outputs(self):
@@ -240,12 +237,6 @@ class ChatAction(echo):
             return [f"{self.chat_id}-store.data", f"{self.chat_id}-output.children"]
 
 
-# Subclass ChatAction for OpenAI-specific functionality
-# This class now uses a generic event-based approach where:
-# - core_function handles provider-specific API calls and event processing
-# - _process_streaming_response abstracts away provider-specific event types
-# - _process_buffer_for_line_breaks handles text chunking strategy
-# - The streaming endpoint only needs to handle generic 'text_chunk' events
 class openai_pirate(ChatAction):
     # With the class-based definition there's room for static parameters like model and api_key which isn't possible
     # if you just write a function.
@@ -266,10 +257,8 @@ class openai_pirate(ChatAction):
     # class, create and how to handle response.
 
     def pre_build(self):
-        # Call parent pre_build to set up streaming callbacks and chat UI
         super().pre_build()
 
-        # Initialize OpenAI client
         self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
 
     # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
@@ -291,18 +280,15 @@ class openai_pirate(ChatAction):
             return response
 
     def _process_streaming_response(self, response_stream):
-        """Process streaming response.
-
-        This method contains vendor-specific response handling.
+        """Process streaming response and yield text chunks.
 
         Args:
             response_stream: The raw streaming response from the LLM provider
 
         Yields:
-            dict: Generic event objects with 'type' and 'content' keys
+            str: Text chunks to be streamed
         """
         buffer = ""  # Buffer to accumulate text until we hit line breaks
-        full_text = ""  # Accumulate all text received so far
 
         for event in response_stream:
             # Handle OpenAI-specific event types
@@ -312,13 +298,11 @@ class openai_pirate(ChatAction):
                 buffer = processed_chunks["remaining_buffer"]
 
                 for chunk in processed_chunks["complete_chunks"]:
-                    full_text += chunk
-                    yield {"type": "text_chunk", "content": chunk, "full_text": full_text}
+                    yield chunk
 
         # Send any remaining text in buffer when stream ends
         if buffer:
-            full_text += buffer
-            yield {"type": "text_chunk", "content": buffer, "full_text": full_text}
+            yield buffer
 
     # currently use the "\n\n" as buffer split, not sure if this is the best way to do it.
     def _process_buffer_for_line_breaks(self, buffer, line_break="\n\n"):
