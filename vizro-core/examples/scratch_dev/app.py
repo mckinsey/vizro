@@ -143,10 +143,12 @@ page_4 = vm.Page(
             components=[
                 vm.AgGrid(
                     title="Filter interaction to Graph below",
-                    figure=dash_ag_grid(df),
+                    figure=dash_ag_grid(df, dashGridOptions={"rowSelection": {"checkboxes": True}}),
                     actions=[
                         set_control(target="p4_filter_1", value="species"),
                         set_control(target="p4_filter_2", value="species"),
+                        set_control(target="p4_filter_3", value="species"),
+                        set_control(target="p4_filter_4", value="species"),
                     ],
                 ),
                 vm.Container(
@@ -165,6 +167,10 @@ page_4 = vm.Page(
                             targets=["p4_graph_1"],
                             selector=vm.Dropdown(multi=False),
                         ),
+                        # multi=False
+                        vm.Filter(id="p4_filter_3", column="species", targets=["p4_graph_1"], selector=vm.RadioItems()),
+                        # multi=True
+                        vm.Filter(id="p4_filter_4", column="species", targets=["p4_graph_1"], selector=vm.Checklist()),
                     ],
                 ),
             ],
