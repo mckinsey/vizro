@@ -31,13 +31,9 @@ class Vizro:
     """The main class of the `vizro` package."""
 
     def __init__(self, **kwargs):
-        """Initializes Dash app, stored in `self.dash`.
-
-        Args:
-            **kwargs : Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
-                [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
-
-        """
+        """Initializes Dash app, stored in `self.dash`: `**kwargs` is passed through to `Dash.__init__`."""
+        # e.g. `assets_folder`, `url_base_pathname`
+        # See [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
         # Set suppress_callback_exceptions=True for the following reasons:
         # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
         #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
@@ -123,13 +119,7 @@ class Vizro:
         return self
 
     def run(self, *args, **kwargs):  # if type annotated, mkdocstring stops seeing the class
-        """Runs the dashboard.
-
-        Args:
-            *args : Passed through to `dash.run`.
-            **kwargs : Passed through to `dash.run`.
-
-        """
+        """Runs the dashboard and passes `args` and `kwargs` through to `Dash.run`."""
         data_manager._frozen_state = True
         model_manager._frozen_state = True
 
