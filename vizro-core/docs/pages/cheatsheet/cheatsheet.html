@@ -1370,12 +1370,12 @@ parameter =  vm.Parameter(
               <div class="code-block-container">
                 <div class="code-block">
                   <pre><code class="language-python">import vizro.models as vm
-from vizro.actions import export_data
+import vizro.actions as va
 
-#use action in a button component
+# Use action in a Button component
 vm.Button(
      text="Export Data",
-     actions=export_data()
+     actions=va.export_data()
 )</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -1390,12 +1390,14 @@ vm.Button(
               <div class="code-block-container">
                 <div class="code-block">
                   <pre><code class="language-python">import vizro.models as vm
-from vizro.actions import filter_interaction
+import vizro.plotly.express as px
+import vizro.actions as va
 
-actions=[vm.Action(
-    function=filter_interaction(targets=["your-target-component-id"]),
-    ),
-]</code></pre>
+# Use filter_interaction action in a Graph component
+vm.Graph(
+    figure=px.scatter(px.data.iris(), x="sepal_length", y="petal_width"),
+    actions=va.filter_interaction(targets=["your-target-component-id"])
+)</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
