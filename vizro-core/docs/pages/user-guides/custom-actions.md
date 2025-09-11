@@ -44,7 +44,7 @@ To define your own action:
     1. When the dashboard is running, the action's `input_1` will be set to the runtime value of the Vizro model with `id="input_id_1"` and similarly for `input_2`.
     1. When the dashboard is running, the action's output "My string value..." will set the value of the Vizro model with `id="output_id_1"`.
 
-You can also execute [multiple actions with a single trigger](#chaining-multiple-actions).
+You can also execute [multiple actions with a single trigger](#multiple-actions).
 
 !!! warning
 
