@@ -17,13 +17,13 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Simplify actions syntax for attaching built-in actions. You should now specify `actions=va.export_data()` instead of `actions=vm.Action(function=va.export_data())`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
-
-- Simplify actions syntax for attaching custom actions. You should now specify runtime inputs directly in the function call as `vm.Action(function=action_function("dropdown_id"))`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+- New actions syntax for attaching custom actions: you should now specify runtime inputs directly in the function call as `vm.Action(function=action_function("dropdown_id"))`. See the new [tutorial on custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/) for more information. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+ 
+- new actions syntax for attaching built-in actions: you should now specify `actions=va.export_data()` instead of `actions=vm.Action(function=va.export_data())`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
 
 ## Added
 
-- Custom action inputs and outputs can directly refer to models, for example `vm.Action(function=update_text("my_selector"), outputs="my_text")`. See the new [tutorial on custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/) for more information. ([#1153](https://github.com/mckinsey/vizro/pull/1153))
+- Custom action inputs and outputs can directly refer to models, for example `vm.Action(function=update_text("my_selector"), outputs="my_text")`. ([#1153](https://github.com/mckinsey/vizro/pull/1153))
 
 - Custom action inputs and outputs can directly refer to model fields, for example `outputs="my_graph.header"`. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
 
