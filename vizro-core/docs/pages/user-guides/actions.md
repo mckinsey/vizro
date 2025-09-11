@@ -2,8 +2,8 @@
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not built into Vizro then you can [write your own custom action](custom-actions.md). In these guides we show how to use built-in actions across a range of areas:
 
-- [Interact with data](data-actions.md), for example to export data.
-- [Interact with graphs and tables](graph-table-actions.md), for example to cross-filter.
+- [Handle data](data-actions.md), for example to export data.
+- [Graph and table interactions](graph-table-actions.md), for example to cross-filter.
 
 A complete list of built-in actions in given in the [API documentation][vizro.actions]. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
 

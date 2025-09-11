@@ -1,8 +1,17 @@
 # How to use parameters
 
-This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function (`figure` argument) that creates the chart/component. Parameters can also be used to [change the data loaded into the dashboard itself](data.md/#parametrize-data-loading).
+This guide shows you how to add parameters to your dashboard. A parameter sets any argument other than `data_frame` in the `figure` function of a component. For example, a user could select using a dropdown which variable is plotted on the x-axis of a graph. Parameters can also be used to set [dynamic data parameters](parameters.md#dynamic-data-parameters). The following [components](components.md) are reactive to parameters:
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. For example, if the charting function has a `title` argument, you could configure a parameter that enables the user to select the chart title with a dropdown.
+- [built-in graphs](graph.md) and [custom graphs](custom-charts.md)
+- [built-in tables](table.md) and [custom tables](custom-tables.md)
+- [built-in figures](figure.md) and [custom figures](custom-figures.md)
+
+It is possible to add parameters to a [page](pages.md) or [container](container.md#add-controls-to-container). Both the [`Page` model][vizro.models.Page] and the [`Container` model][vizro.models.Container] have an optional `controls` argument where you can give any number of controls including parameters.
+
+When the dashboard is running there are two ways for a user to set a parameter:
+
+- Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
+- [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-highlighting](graph-table-actions.md#cross-highlight).
 
 ## Basic parameters
 

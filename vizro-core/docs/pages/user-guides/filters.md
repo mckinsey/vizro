@@ -1,8 +1,17 @@
 # How to use filters
 
-This guide shows you how to add filters to your dashboard. One main way to interact with the charts/components on your page is by filtering the underlying data. A filter selects a subset of rows of a component's underlying DataFrame which alters the appearance of that component on the page.
+This guide shows you how to add filters to your dashboard. A filter selects a subset of rows of a component's data to alter the appearance of that component. The following [components](components.md) are reactive to filters:
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model. This model enables the automatic creation of [selectors](selectors.md) (for example, `Dropdown` or `RangeSlider`) that operate on the charts/components on the screen.
+- [built-in graphs](graph.md) and [custom graphs](custom-charts.md)
+- [built-in tables](table.md) and [custom tables](custom-tables.md)
+- [built-in figures](figure.md) and [custom figures](custom-figures.md)
+
+It is possible to add filters to a [page](pages.md) or [container](container.md#add-controls-to-container). Both the [`Page` model][vizro.models.Page] and the [`Container` model][vizro.models.Container] have an optional `controls` argument where you can give any number of controls including filters. A filter uses the [`Filter` model][vizro.models.Filter] to filter the `data_frame` of the `figure` function of a target component model such as [`Graph`][vizro.models.Graph].
+
+When the dashboard is running there are two ways for a user to set a filter:
+
+- Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
+- [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter).
 
 By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
 
