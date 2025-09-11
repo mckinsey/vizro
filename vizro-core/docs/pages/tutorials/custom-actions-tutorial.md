@@ -3,6 +3,7 @@
 Actions control how your app responds to user input such as clicking a button or a point on a graph. Vizro provides [built-in actions](../user-guides/actions.md) and also enables you to write your own [custom actions](../user-guides/custom-actions.md). In this tutorial you will learn how to write your own custom actions.
 
 !!! note
+
     This tutorial assumes a basic knowledge of Vizro. If you haven't already done so, you should get started with Vizro in the [quickstart tutorial](quickstart-tutorial.md) or work through a [more in-depth tutorial](explore-components.md).
 
 Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to complete the tutorial. We also have an [explanation of how Vizro actions work](../explanation/actions-explanation.md) and their similarities and differences compared to Dash callbacks.
