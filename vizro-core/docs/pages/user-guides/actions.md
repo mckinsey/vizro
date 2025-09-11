@@ -41,9 +41,9 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        
+
         df = px.data.iris()
-        
+
         page = vm.Page(
             title="Action triggered by a button",
             components=[
@@ -52,10 +52,11 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
             ],
             controls=[vm.Filter(column="species")],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
 
         ```yaml
@@ -63,7 +64,7 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
         # See yaml_version example
         pages:
           - components:
-              - type: graph 
+              - type: graph
                 figure:
                   _target_: histogram
                   x: sepal_length
@@ -72,8 +73,8 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
                 actions:
                   - type: export_data
           - controls:
-            - type: filter
-              column: species
+              - type: filter
+                column: species
             layout:
               type: flex
             title: Action triggered by a button

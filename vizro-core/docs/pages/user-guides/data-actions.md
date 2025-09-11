@@ -13,9 +13,9 @@ To download data from your dashboard, you can use the [`export_data` action][viz
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        
+
         df = px.data.iris()
-        
+
         page = vm.Page(
             title="Action triggered by a button",
             components=[
@@ -24,10 +24,11 @@ To download data from your dashboard, you can use the [`export_data` action][viz
             ],
             controls=[vm.Filter(column="species")],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
 
         ```yaml
@@ -35,7 +36,7 @@ To download data from your dashboard, you can use the [`export_data` action][viz
         # See yaml_version example
         pages:
           - components:
-              - type: graph 
+              - type: graph
                 figure:
                   _target_: histogram
                   x: sepal_length
@@ -44,8 +45,8 @@ To download data from your dashboard, you can use the [`export_data` action][viz
                 actions:
                   - type: export_data
           - controls:
-            - type: filter
-              column: species
+              - type: filter
+                column: species
             layout:
               type: flex
             title: Action triggered by a button
