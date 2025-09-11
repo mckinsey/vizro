@@ -33,7 +33,7 @@
     },
     "Action": {
       "additionalProperties": false,
-      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function.\n    inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`\n        or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.\n    outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].",
+      "description": "Custom action to be inserted into `actions` of relevant component.\n\nAbstract: Usage documentation\n    [How to create custom actions](../user-guides/custom-actions.md)\n\nArgs:\n    function (CapturedCallable): Custom action function.\n    inputs (list[str]): List of inputs provided to the action function. Each input can be specified as\n        `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.\n        \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](\n        deprecations.md#action-model-inputs-argument).\n    outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -66,7 +66,7 @@
         },
         "inputs": {
           "default": [],
-          "description": "List of inputs provided to the action function. Each input can be specified as `<model_id>` or\n        `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.",
+          "description": "List of inputs provided to the action function. Each input can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.\n            \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](\n            deprecations.md#action-model-inputs-argument).",
           "items": {
             "type": "string"
           },
@@ -1096,7 +1096,6 @@
     "Layout": {
       "additionalProperties": false,
       "deprecated": true,
-      "description": "Deprecated. This model has been renamed [`Grid`][vizro.models.Grid].",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2167,7 +2166,7 @@
     },
     "export_data": {
       "additionalProperties": false,
-      "description": "Exports visible data of target charts/components.\n\nArgs:\n    targets (list[ModelID]): List of target component ids to download data from. If none are given then download\n         from all components on the page.\n    file_format (Literal[\"csv\", \"xlsx\"]): Format of downloaded files. Defaults to `csv`.",
+      "description": "Exports data of target charts, tables and figures.\n\nAbstract: Usage documentation\n    [How to export data](../user-guides/data-actions.md#export-data)\n\nArgs:\n    targets (list[ModelID]): List of target component ids for which to download data. If none are given then\n        download data from all components on the page.\n    file_format (Literal[\"csv\", \"xlsx\"]): Format of downloaded files. Defaults to `\"csv\"`.\n\nExample:\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Export data\",\n        actions=va.export_data(targets=[\"graph_id\", \"table_id\"], file_format=\"xlsx\"),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2182,7 +2181,7 @@
         },
         "targets": {
           "default": [],
-          "description": "List of target component ids to download data from. If none are given then downloadfrom all components on the page.",
+          "description": "List of target component ids for which to download data. If none are given then download data from all components on the page.",
           "items": {
             "type": "string"
           },
@@ -2191,7 +2190,7 @@
         },
         "file_format": {
           "default": "csv",
-          "description": "Format of downloaded files. Defaults to `csv`.",
+          "description": "Format of downloaded files. Defaults to `'csv'`.",
           "enum": ["csv", "xlsx"],
           "title": "File Format",
           "type": "string"
@@ -2202,7 +2201,7 @@
     },
     "filter_interaction": {
       "additionalProperties": false,
-      "description": "Filters targeted charts/components on page by clicking on data points or table cells of the source chart.\n\nTo set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'\nparameter of the source graph e.g. `px.bar(..., custom_data=[\"species\", \"sepal_length\"])`.\nIf the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,\nthen the table doesn't need to have a 'custom_data' parameter set up.\n\nArgs:\n    targets (list[ModelID]): Target component to be affected by filter. If none are given then target all\n        valid components on the page.",
+      "description": "Filters targeted graph, tables and figures when a source graph or table is clicked.\n\nArgs:\n    targets (list[ModelID]): Target component to be affected by filter. If none are given then target all\n        valid components on the page.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",

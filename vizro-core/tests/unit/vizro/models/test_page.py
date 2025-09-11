@@ -46,7 +46,7 @@ class TestPageInstantiation:
         assert page._action_triggers == {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_my-id.data"}
 
     def test_create_page_mandatory_and_optional_legacy_layout(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             page = vm.Page(
                 id="my-id",
                 title="Page 1",

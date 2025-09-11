@@ -48,7 +48,7 @@ class TestContainerInstantiation:
         }
 
     def test_create_container_mandatory_and_optional_legacy_layout(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             container = vm.Container(
                 id="my-id",
                 title="Title",
@@ -154,7 +154,7 @@ class TestContainerBuildMethod:
         )
 
     def test_container_build_legacy_layout(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             result = vm.Container(
                 id="container", title="Title", components=[vm.Button()], layout=vm.Layout(id="layout_id", grid=[[0]])
             ).build()
