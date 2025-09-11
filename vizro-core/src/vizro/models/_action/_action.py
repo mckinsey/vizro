@@ -440,8 +440,8 @@ class Action(_BaseAction):
     type: Literal["action"] = "action"
     # export_data and filter_interaction are here just so that legacy vm.Action(function=filter_interaction(...)) and
     # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
-    # actions.function in _make_actions_chain. It's done as a forward ref here to avoid circular imports and resolved with
-    # Dashboard.model_rebuild() later.
+    # actions.function in _make_actions_chain. It's done as a forward ref here to avoid circular imports and resolved
+    # with Dashboard.model_rebuild() later.
     function: Annotated[  # type: ignore[misc, assignment]
         SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),

@@ -47,7 +47,8 @@ def _get_layout_discriminator(layout: Any) -> Optional[str]:
             return layout["type"]
         except KeyError:
             warnings.warn(
-                "`layout` without an explicit `type` specified will not work in Vizro 0.2.0. Specify `type: grid` for your `layout`.",
+                "`layout` without an explicit `type` specified will not work in Vizro 0.2.0. Specify `type: grid` for "
+                "your `layout`.",
                 FutureWarning,
                 stacklevel=3,
             )
