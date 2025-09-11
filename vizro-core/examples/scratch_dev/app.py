@@ -23,8 +23,8 @@ page_1 = vm.Page(
                     title="Filter interaction to AgGrid below",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
                     actions=[
-                        set_control(target="p1_filter_1", value="species"),
-                        set_control(target="p1_filter_2", value="customdata[0]"),
+                        set_control(control="p1_filter_1", value="species"),
+                        set_control(control="p1_filter_2", value="customdata[0]"),
                     ],
                 ),
                 vm.Container(
@@ -53,12 +53,12 @@ page_1 = vm.Page(
                 vm.Graph(
                     title="Drill-through to multi=True Page-2",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-                    actions=set_control(target="p2_filter_1", value="species"),
+                    actions=set_control(control="p2_filter_1", value="species"),
                 ),
                 vm.Graph(
                     title="Drill-through to multi=False Page-2",
                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-                    actions=set_control(target="p2_filter_2", value="species"),
+                    actions=set_control(control="p2_filter_2", value="species"),
                 ),
             ],
         ),
@@ -99,8 +99,8 @@ page_3 = vm.Page(
                 data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
             ),
             actions=[
-                set_control(target="p3-filter-1", value="species"),
-                set_control(target="p3-parameter-1", value="species"),
+                set_control(control="p3-filter-1", value="species"),
+                set_control(control="p3-parameter-1", value="species"),
             ],
         )
     ],
@@ -123,8 +123,8 @@ page_3 = vm.Page(
                     outputs=["p3-filter-1", "p3-parameter-1"],
                 ),
                 # Forget the button right now!!
-                # set_control(target="p3-filter-1", value=["setosa", "versicolor", "virginica"])
-                # set_control(target="p3-parameter-1", value=["setosa", "versicolor", "virginica"])
+                # set_control(control="p3-filter-1", value=["setosa", "versicolor", "virginica"])
+                # set_control(control="p3-parameter-1", value=["setosa", "versicolor", "virginica"])
             ],
         ),
     ],
@@ -145,10 +145,10 @@ page_4 = vm.Page(
                     title="Filter interaction to Graph below",
                     figure=dash_ag_grid(df, dashGridOptions={"rowSelection": {"checkboxes": True}}),
                     actions=[
-                        set_control(target="p4_filter_1", value="species"),
-                        set_control(target="p4_filter_2", value="species"),
-                        set_control(target="p4_filter_3", value="species"),
-                        set_control(target="p4_filter_4", value="species"),
+                        set_control(control="p4_filter_1", value="species"),
+                        set_control(control="p4_filter_2", value="species"),
+                        set_control(control="p4_filter_3", value="species"),
+                        set_control(control="p4_filter_4", value="species"),
                     ],
                 ),
                 vm.Container(
@@ -183,12 +183,12 @@ page_4 = vm.Page(
                 vm.AgGrid(
                     figure=dash_ag_grid(df),
                     title="Drill-through to multi=True Page-5",
-                    actions=set_control(target="p5_filter_1", value="species"),
+                    actions=set_control(control="p5_filter_1", value="species"),
                 ),
                 vm.AgGrid(
                     figure=dash_ag_grid(df),
                     title="Drill-through to multi=False Page-5",
-                    actions=set_control(target="p5_filter_2", value="species"),
+                    actions=set_control(control="p5_filter_2", value="species"),
                 ),
             ],
         ),

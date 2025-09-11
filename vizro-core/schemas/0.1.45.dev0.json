@@ -2230,7 +2230,7 @@
     },
     "set_control": {
       "additionalProperties": false,
-      "description": "Sets the value of a control based on data from the trigger.\n\nArgs:\n    target (ModelID): Filter or Parameter component id to be affected by the trigger. If the target is on a\n        different page to the trigger then it must have `show_in_url=True`.\n    value (str): TODO AM: ADD DESCRIPTION",
+      "description": "Sets the value of a control based on data from the trigger.\n\nArgs:\n    control (ModelID): Filter or Parameter component id to be affected by the trigger. If the control is on a\n        different page to the trigger then it must have `show_in_url=True`.\n    value (str): TODO AM: ADD DESCRIPTION",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2243,9 +2243,9 @@
           "title": "Type",
           "type": "string"
         },
-        "target": {
-          "description": "Filter or Parameter component id to be affected by the trigger.If the target is on a different page to the trigger then it must have `show_in_url=True`.",
-          "title": "Target",
+        "control": {
+          "description": "Filter or Parameter component id to be affected by the trigger.If the control is on a different page to the trigger then it must have `show_in_url=True`.",
+          "title": "Control",
           "type": "string"
         },
         "value": {
@@ -2254,7 +2254,7 @@
           "type": "string"
         }
       },
-      "required": ["target", "value"],
+      "required": ["control", "value"],
       "title": "set_control",
       "type": "object"
     }

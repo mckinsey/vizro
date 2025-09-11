@@ -36,15 +36,15 @@ class set_control(_AbstractAction):
     """Sets the value of a control based on data from the trigger.
 
     Args:
-        target (ModelID): Filter or Parameter component id to be affected by the trigger. If the target is on a
+        control (ModelID): Filter or Parameter component id to be affected by the trigger. If the control is on a
             different page to the trigger then it must have `show_in_url=True`.
         value (str): TODO AM: ADD DESCRIPTION
     """
 
     type: Literal["set_control"] = "set_control"
-    target: ModelID = Field(
+    control: ModelID = Field(
         description="Filter or Parameter component id to be affected by the trigger."
-        "If the target is on a different page to the trigger then it must have `show_in_url=True`."
+        "If the control is on a different page to the trigger then it must have `show_in_url=True`."
     )
     value: str = Field(description="TODO AM: ADD DESCRIPTION")
 
@@ -57,30 +57,30 @@ class set_control(_AbstractAction):
                 f"can only be used with models that support it (e.g. Graph, AgGrid)."
             )
 
-        # Validate that action's target control exists in the dashboard.
-        target_model = cast(ControlType, model_manager[self.target]) if self.target in model_manager else None
-        target_model_page = model_manager._get_model_page(target_model) if target_model else None
-        if target_model is None or target_model_page is None:
+        # Validate that action's control exists in the dashboard.
+        control_model = cast(ControlType, model_manager[self.control]) if self.control in model_manager else None
+        control_model_page = model_manager._get_model_page(control_model) if control_model else None
+        if control_model is None or control_model_page is None:
             raise ValueError(
-                f"Model with ID `{self.target}` used as a `target` in `set_control` action not found in the dashboard. "
-                f"Please provide a valid control ID that exists in the dashboard."
+                f"Model with ID `{self.control}` used as a `control` in `set_control` action not found in the "
+                f"dashboard. Please provide a valid control ID that exists in the dashboard."
             )
 
-        # Validate that target is control that has a categorical selector.
-        if not isinstance(getattr(target_model, "selector", None), (vm.Dropdown, vm.Checklist, vm.RadioItems)):
+        # Validate that control model has a categorical selector.
+        if not isinstance(getattr(control_model, "selector", None), (vm.Dropdown, vm.Checklist, vm.RadioItems)):
             raise TypeError(
-                f"Model with ID `{self.target}` used as a `target` in `set_control` action must be a control model "
+                f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
                 f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
             )
 
-        if target_model_page == model_manager._get_model_page(self):
+        if control_model_page == model_manager._get_model_page(self):
             self._same_page = True
         else:
-            # Validate that target control on different page has `show_in_url=True`.
-            if not target_model.show_in_url:
+            # Validate that control on different page has `show_in_url=True`.
+            if not control_model.show_in_url:
                 raise ValueError(
-                    f"Model with ID `{self.target}` used as a `target` in `set_control` action is on a different page "
-                    f"from the trigger and so must have `show_in_url=True`."
+                    f"Model with ID `{self.control}` used as a `control` in `set_control` action is on a different "
+                    f"page from the trigger and so must have `show_in_url=True`."
                 )
             self._same_page = False
 
@@ -91,12 +91,12 @@ class set_control(_AbstractAction):
             # Returning a single element value works for both single and multi select selectors.
             return value
 
-        page_path = model_manager._get_model_page(model_manager[self.target]).path
-        url_query_params = f"?{self.target}={_encode_to_base64(value)}"
+        page_path = model_manager._get_model_page(model_manager[self.control]).path
+        url_query_params = f"?{self.control}={_encode_to_base64(value)}"
         return get_relative_path(page_path), url_query_params
 
     @property
     def outputs(self):  # type: ignore[override]
         if self._same_page:
-            return self.target
+            return self.control
         return ["vizro_url.pathname", "vizro_url.search"]

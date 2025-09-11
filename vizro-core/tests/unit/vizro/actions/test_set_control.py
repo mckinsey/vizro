@@ -53,10 +53,10 @@ class TestSetControlInstantiation:
     """Tests set control instantiation."""
 
     def test_create_set_control_mandatory_only(self):
-        action = set_control(target="target_id", value="value")
+        action = set_control(control="control_id", value="value")
 
         assert action.type == "set_control"
-        assert action.target == "target_id"
+        assert action.control == "control_id"
         assert action.value == "value"
 
     def test_set_controls_experimental(self):
@@ -68,25 +68,25 @@ class TestSetControlInstantiation:
                 "feature then [let us know](https://github.com/mckinsey/vizro/issues)."
             ),
         ):
-            set_control(target="target_id", value="value")
+            set_control(control="control_id", value="value")
 
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
 class TestSetControlPreBuild:
     """Tests set control pre_build method."""
 
-    def test_pre_build_target_model_on_same_page(self):
-        # Add action to relevant component and set target to a control on the same page
-        action = set_control(target="filter_page_1", value="continent")
+    def test_pre_build_control_model_on_same_page(self):
+        # Add action to relevant component and target a control on the same page
+        action = set_control(control="filter_page_1", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         action.pre_build()
 
         assert action._same_page is True
 
-    def test_pre_build_target_model_on_different_page(self):
-        # Add action to relevant component and set target to a control on different page with show_in_url=True
-        action = set_control(target="filter_page_2_show_in_url_true", value="continent")
+    def test_pre_build_control_model_on_different_page(self):
+        # Add action to relevant component and target a control on different page with show_in_url=True
+        action = set_control(control="filter_page_2_show_in_url_true", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         action.pre_build()
@@ -94,7 +94,7 @@ class TestSetControlPreBuild:
         assert action._same_page is False
 
     def test_pre_build_parent_model_does_not_support_set_control(self):
-        action = set_control(target="filter_page_1", value="continent")
+        action = set_control(control="filter_page_1", value="continent")
 
         # Add action to the component that does not support set_control
         model_manager["button_1"].actions = action
@@ -108,46 +108,46 @@ class TestSetControlPreBuild:
         ):
             action.pre_build()
 
-    def test_pre_build_target_model_does_not_exist_in_model_manager(self):
-        # Add action to relevant component and set invalid target
-        action = set_control(target="invalid_id", value="continent")
+    def test_pre_build_control_model_does_not_exist_in_model_manager(self):
+        # Add action to relevant component and set invalid control
+        action = set_control(control="invalid_id", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Model with ID `invalid_id` used as a `target` in `set_control` action not found in the dashboard. "
+                "Model with ID `invalid_id` used as a `control` in `set_control` action not found in the dashboard. "
                 "Please provide a valid control ID that exists in the dashboard."
             ),
         ):
             action.pre_build()
 
-    def test_pre_build_target_model_exists_in_model_manager_but_not_in_any_page(self):
+    def test_pre_build_control_model_exists_in_model_manager_but_not_in_any_page(self):
         # Add a model to model_manager that is not part of any page
         vm.Filter(id="filter_not_in_page", column="continent")
 
-        # Add action to relevant component and set target to the model not in any page
-        action = set_control(target="filter_not_in_page", value="continent")
+        # Add action to relevant component and set control to the model not in any page
+        action = set_control(control="filter_not_in_page", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Model with ID `filter_not_in_page` used as a `target` in `set_control` action not found in the "
+                "Model with ID `filter_not_in_page` used as a `control` in `set_control` action not found in the "
                 "dashboard. Please provide a valid control ID that exists in the dashboard."
             ),
         ):
             action.pre_build()
 
-    def test_pre_build_target_model_is_not_control(self):
-        # Add action to relevant component and set target to a Graph (non-control) model
-        action = set_control(target="scatter_chart_2", value="continent")
+    def test_pre_build_control_model_is_not_control(self):
+        # Add action to relevant component and target a Graph (non-control) model
+        action = set_control(control="scatter_chart_2", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         with pytest.raises(
             TypeError,
             match=re.escape(
-                "Model with ID `scatter_chart_2` used as a `target` in `set_control` action must be a control model "
+                "Model with ID `scatter_chart_2` used as a `control` in `set_control` action must be a control model "
                 "(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
             ),
         ):
@@ -157,34 +157,34 @@ class TestSetControlPreBuild:
         "selector",
         [vm.Slider, vm.RangeSlider, vm.DatePicker, vm.Switch],
     )
-    def test_pre_build_target_model_is_control_but_selector_not_categorical(self, selector):
+    def test_pre_build_control_model_is_control_but_selector_not_categorical(self, selector):
         # Add control with non-categorical selector to test-page-1
         model_manager["test-page-1"].controls.append(
             vm.Filter(id="non_categorical", column="continent", selector=selector())
         )
 
-        # Add action to relevant component and set target to the non-categorical control
-        action = set_control(target="non_categorical", value="continent")
+        # Add action to relevant component and target a non-categorical control
+        action = set_control(control="non_categorical", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         with pytest.raises(
             TypeError,
             match=re.escape(
-                "Model with ID `non_categorical` used as a `target` in `set_control` action must be a control model "
+                "Model with ID `non_categorical` used as a `control` in `set_control` action must be a control model "
                 "(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
             ),
         ):
             action.pre_build()
 
-    def test_pre_build_target_model_on_different_page_show_in_url_false(self):
-        # Add action to relevant component and set target to a control on different page with show_in_url=False
-        action = set_control(target="filter_page_2_show_in_url_false", value="continent")
+    def test_pre_build_control_model_on_different_page_show_in_url_false(self):
+        # Add action to relevant component and target a control on different page with show_in_url=False
+        action = set_control(control="filter_page_2_show_in_url_false", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Model with ID `filter_page_2_show_in_url_false` used as a `target` in `set_control` action is on a "
+                "Model with ID `filter_page_2_show_in_url_false` used as a `control` in `set_control` action is on a "
                 "different page from the trigger and so must have `show_in_url=True`."
             ),
         ):
@@ -195,9 +195,9 @@ class TestSetControlPreBuild:
 class TestSetControlFunction:
     """Tests set control function."""
 
-    def test_function_target_model_on_same_page(self):
-        # Add action to relevant component and set target to a control on the same page
-        action = set_control(target="filter_page_1", value="continent")
+    def test_function_control_model_on_same_page(self):
+        # Add action to relevant component and target a control on the same page
+        action = set_control(control="filter_page_1", value="continent")
         # Any other model that supports set_control can be used here, but the Graph used for the simplicity.
         model_manager["scatter_chart_1"].actions = action
         # Call pre_build to set _same_page attribute
@@ -209,9 +209,9 @@ class TestSetControlFunction:
 
         assert result == expected
 
-    def test_function_target_model_on_different_page(self, mocker):
-        # Add action to relevant component and set target to a control on different page with show_in_url=True
-        action = set_control(target="filter_page_2_show_in_url_true", value="continent")
+    def test_function_control_model_on_different_page(self, mocker):
+        # Add action to relevant component and target a control on different page with show_in_url=True
+        action = set_control(control="filter_page_2_show_in_url_true", value="continent")
         # Any other model that supports set_control can be used here, but the Graph used for the simplicity.
         model_manager["scatter_chart_1"].actions = action
         # Call pre_build to set _same_page attribute
@@ -237,18 +237,18 @@ class TestSetControlFunction:
 class TestSetControlOutputs:
     """Tests set control outputs."""
 
-    def test_outputs_target_model_on_same_page(self):
-        # Add action to relevant component and set target to a control on the same page
-        action = set_control(target="filter_page_1", value="continent")
+    def test_outputs_control_model_on_same_page(self):
+        # Add action to relevant component and target a control on the same page
+        action = set_control(control="filter_page_1", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         action.pre_build()
 
         assert action.outputs == "filter_page_1"
 
-    def test_outputs_target_model_on_different_page(self):
-        # Add action to relevant component and set target to a control on different page with show_in_url=True
-        action = set_control(target="filter_page_2_show_in_url_true", value="continent")
+    def test_outputs_control_model_on_different_page(self):
+        # Add action to relevant component and target a control on different page with show_in_url=True
+        action = set_control(control="filter_page_2_show_in_url_true", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
         action.pre_build()
