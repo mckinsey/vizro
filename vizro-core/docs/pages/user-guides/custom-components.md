@@ -18,9 +18,9 @@ To create a custom component:
 
 1. Subclass the relevant model:
     * To extend an existing model such as [`RangeSlider`][vizro.models.RangeSlider], subclass it.
-    * To create a new component, subclass [`VizroBaseModel`][vizro.models.VizroBaseModel]. 
+    * To create a new component, subclass [`VizroBaseModel`][vizro.models.VizroBaseModel].
 1. Write the subclass:
-    * To extend an existing model you could, for example, add or change model fields or override the `build` method. 
+    * To extend an existing model you could, for example, add or change model fields or override the `build` method.
     * To create a new component, you need to define fields and the `build` method from scratch.
 1. Look at the field where your component will be used in the [API reference][vizro.models] and check whether it is described as a discriminated union. For example, in [`Filter`][vizro.models.Filter] the `selector` field of type [`SelectorType`][vizro.models.types.SelectorType] is a discriminated union but the `options` field of type [`OptionsType`][vizro.models.types.OptionsType] is not. If the field is a discriminated union, then:
     - You must ensure your model has a `type` field.
@@ -333,7 +333,7 @@ It is then immediately possible to [address the properties of Dash components](c
 
 ### Model ID as input and output
 
-!!! note 
+!!! note
     You do not need to follow these steps if any of these conditions holds:
 
     * Your custom component is an [extension of an existing component](#extend-an-existing-component), in which case your model inherits the `_action_inputs` and `_action_outputs` properties automatically.
@@ -419,7 +419,7 @@ This enables you to replace in your dashboard configuration all action input and
         ```
 
         1. We replace `outputs="my_rating.value"` with `outputs="my_rating"`. This will look up the `"__default__"` key in the `_action_outputs` mapping defined for the the model with `id="my_rating"`.
-    
+
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
@@ -430,10 +430,10 @@ This enables you to replace in your dashboard configuration all action input and
 
 ### Model fields as input and output
 
-!!! note 
+!!! note
     You do not need to follow these steps if any of these conditions holds:
 
-    * You do not wish to address anything other than your custom component's core component.  
+    * You do not wish to address anything other than your custom component's core component.
     * You are happy to [use Dash properties as input and output](#dash-properties-as-input-and-output).
 
 To [map your model's fields onto Dash component properties](../user-guides/custom-actions.md#model-arguments-as-input-and-output) you can define further entries in `_action_inputs` and `_action_outputs`. For example, let's say we wanted to add [radio items][vizro.models.RadioItems] so the user can select which movie to rate. When the movie is selected, it will trigger an action that updates the `title` of our custom `Rating` component. This corresponds to the following Dash component produced in the `Rating` model's `build` method:
@@ -531,7 +531,7 @@ This enables you to replace in your dashboard configuration all references to `o
         1. We attach the `set_movie_title` action to the radio items, so that it is triggered when an option is selected.
         1. The input `"movie_title"` corresponds to the value selected in the radio items and sets the `title` argument of the `set_movie_title` action.
         1. The output of `set_movie_title` sets the value of `"my_rating.title"`, which maps onto the contents of the legend in the `Rating(id="my_rating")` component.
-    
+
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
@@ -542,7 +542,7 @@ This enables you to replace in your dashboard configuration all references to `o
 
 ### Trigger actions
 
-!!! note 
+!!! note
     You do not need to follow these steps if your custom component is an [extension of an existing component](#extend-an-existing-component), in which case your model inherits the `_action_triggers` property automatically.
 
 To enable your custom component to trigger one or [multiple actions](actions.md#multiple-actions):
