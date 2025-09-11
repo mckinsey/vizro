@@ -54,7 +54,6 @@ nav:
       - Deprecations: pages/API-reference/deprecations.md
   - Find out more:
       - FAQs: pages/explanation/faq.md
-      - Examples gallery: https://vizro.mckinsey.com/
       - User examples: pages/explanation/your-examples.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
