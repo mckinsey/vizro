@@ -96,7 +96,7 @@ We have specified that a button should be included in the page layout but haven'
 
 Congratulations on writing your first action! Before clicking the button, the card's text is "Click the button". When you click the button, the `update_card` action is _triggered_. This Python function executes on the server to find the current time in the UTC timezone and return a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the component with `id="time_card"`. This is the action's _output_.
 
-As we cover increasingly complex actions, it can be very helpful to understand the actions using a flowchart similar to Dash dev tool's [callback graph](https://dash.plotly.com/devtools#callback-graph). We can visualize the above example as follows:
+As we cover increasingly complex actions, it can be very helpful to understand the actions using a flowchart similar to Dash dev tools' [callback graph](https://dash.plotly.com/devtools#callback-graph). We can visualize the above example as follows:
 
 ```mermaid
 graph TD
@@ -113,7 +113,7 @@ Let's extend our action to depend on an _input_ from the user's screen. As befor
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="16 22-26"}
+        ```{.python pycafe-link hl_lines="16 22-24 26"}
         from datetime import datetime, timezone
 
         import vizro.models as vm
@@ -353,7 +353,7 @@ Sometimes you need a single trigger to execute multiple actions. Vizro uses [_ch
 
 ### Explicit actions chain
 
-Let's add some new functionality to our app that fetches the current weather in Berlin using the [Open-Meteo](https://open-meteo.com/) weather API, which is free and does not require an API key. So far our actions have executed very quick and simple operations on the server. Making a request to an external API can be much slower. We perform the operation in two stages so that the user knows what is going on:
+Let's add some new functionality to our app that fetches the current weather in Berlin using the [Open-Meteo](https://open-meteo.com/) weather API, which is free and does not require an API key. So far our actions have executed quick operations on the server. Making a request to an external API can be much slower. When the button is clicked, we perform the operation in two stages so that the user knows what is happening:
 
 1. Update cards on the screen to give the time and date, as before, but also give a temporary placeholder message to say that we're fetching the weather. This is done in the `update_cards` action.
 1. Request the Open-Meteo API and update the placeholder message to give the current temperature in Berlin. This is done in the `fetch_weather` action.
@@ -451,7 +451,7 @@ The full code is shown below.
 
 When you click the button, the `update_cards` action executes and sets the placeholder message "Fetching current weather...". When this action completes, the `fetch_weather` action executes to find the actual weather and update the message. The Open-Meteo API request generally completes very quickly and so "Fetching current weather..." will only flash on your screen very briefly. If you'd like to artificially slow down the `fetch_weather` action to see it more clearly then you can add `from time import sleep; sleep(3)` to the function body to add a delay of 3 seconds.
 
-The actions flowchart now has a new for `weather_card` and a new action `fetch_weather`. The trigger for this action is completion of the action `update_cards`. Note that both these actions share the same output `weather_card`. In Vizro, a model can be an input or output for any number of actions.
+The actions flowchart now has a new output `weather_card` and a new action `fetch_weather`. The trigger for this action is completion of the `update_cards` action. Note that both these actions share the same output `weather_card`. In Vizro, a model can be an input or output for any number of actions.
 
 ```mermaid
 graph TD
@@ -614,11 +614,9 @@ An implicit action chain can only be formed by triggering the _first_ action of 
 
     When you're building more complicated chains of actions, it's often useful to _start_ by sketching an actions flowchart and then work out how to configure the actions to achieve it.
 
-It is still possible to set the time and date formats and submit the form manually, as before. For example, you might like to know the weather in Berlin but prefer to use the 12-hour clock. A user can select Berlin, click the switch to use 12-hour clock and then submit the form again. However, clicking the submit button now feels quite cumbersome. We are going to implement a few final enhancements to our example to improve the user experience.
-
 ## Parallel actions
 
-To make the app feel more responsive, we're going to remove the submit button and instead use `clock_switch` and `date_radio_items` as triggers themselves.
+We are going to implement a few final enhancements to our example to improve the user experience. To make the app feel more responsive, we're going to remove the submit button and instead use `clock_switch` and `date_radio_items` as triggers themselves.
 
 The `update_cards` action currently uses both `clock_switch` and `date_radio_items` as inputs and returns both `time_card` and `date_card` as outputs. However, really `clock_switch` only affects `time_card`, and `date_radio_items` only affects `date_card`. Let's split `update_cards` into two independent actions to reflect this:
 
@@ -765,13 +763,13 @@ graph TD
 
 ```
 
-We still have an explicit actions chain `[update_time_date_formats, fetch_weather]`, since these are directly connected by a thick arrow. The connection between `update_time_date_formats` and the `update_time_card` and `update_date_card` actions is implicit since there is no direct connection; the line goes through intermediate models `clock_switch` and `date_radio_items`.
+We still have an explicit actions chain `[update_time_date_formats, fetch_weather]`, since these are directly connected by a thick arrow. The connections between `update_time_date_formats` and the `update_time_card` and `update_date_card` actions are implicit since there is no direct connection; the lines go through intermediate models `clock_switch` and `date_radio_items` respectively.
 
-In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_card` and `update_date_card` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its output(s) on screen as soon as it has completed.
+In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_card` and `update_date_card` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its outputs on screen as soon as it has completed.
 
 ??? details "Parallel execution is not guaranteed"
 
-    The reason we say that the actions will _in general_ run in parallel is that, as [explained in the Dash documentation](https://dash.plotly.com/advanced-callbacks#as-a-direct-result-of-user-interaction), execution depends on the server environment. If you [use the Flask development server](../user-guides/run-deploy.md#develop-in-python-script), it is by default set to run multi-threaded and so actions can execute in parallel. In production, if you [use gunicorn](../user-guides/run-deploy.md#gunicorn) with multiple workers then multiple actions can run in parallel.
+    The reason we say that the actions will _in general_ run in parallel wherever possible is that, as [explained in the Dash documentation](https://dash.plotly.com/advanced-callbacks#as-a-direct-result-of-user-interaction), execution depends on the server environment. If you [use the Flask development server](../user-guides/run-deploy.md#develop-in-python-script), it is by default set to run multi-threaded and so actions can execute in parallel. In production, if you [use gunicorn](../user-guides/run-deploy.md#gunicorn) with multiple workers then multiple actions can run in parallel.
 
     However, if you [work in PyCafe](../user-guides/run-deploy.md#develop-in-pycafe) you will find that multiple actions cannot run in parallel. This is a [known limitation of PyCafe](https://py.cafe/docs/how#limitations-of-pycafe). In this case, the three actions `fetch_weather`, `update_time_card` and `update_date_card` run serially, in an order that should not be relied upon. The same would happen if you ran the Flask development server with `threaded=False` or ran `gunicorn` with a single worker.
 
@@ -779,7 +777,7 @@ In terms of execution order, we know that `fetch_weather` can only execute once 
 
 So far we have just considered the "happy path" where all actions run as planned. Let's also look at what happens if an action does not complete successfully.
 
-For example, let's say that the [HTTP request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview) to Open-Meteo in `fetch_weather` fails, for example due to a network problem or an incorrect URL. If we don't include the `http://` in the request URL then `requests` raises a Python exception `requests.exceptions.MissingSchema`:
+For example, let's say that the [HTTP request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview) to Open-Meteo in `fetch_weather` fails, for example due to a network problem or an incorrect URL. If we forget to include the `http://` in the request URL then `requests` raises a Python exception `requests.exceptions.MissingSchema`:
 
 ```python hl_lines="4"
 @capture("action")
@@ -788,7 +786,7 @@ def fetch_weather(location):
     r = requests.get("api.open-meteo.com/v1/forecast", params=params)
 ```
 
-Now when the `fetch_weather` action runs you will see an error message about `requests.exceptions.MissingSchema` in the console logs where you execute `python app.py`. Once a Python exception has been raised in a Vizro action, execution of the action ceases immediately and no outputs of that action will be updated. To the dashboard user it will not be apparent that an error has occurred; their screen will simply not show an update. In this example, `weather_card` will be stuck showing the placeholder message "Fetching current weather...".
+Now when the `fetch_weather` action runs you will see an error message about `requests.exceptions.MissingSchema` in the logs of the terminal where you run `python app.py`. Once a Python exception has been raised in a Vizro action, execution of the action ceases immediately and no outputs of that action will be updated. To the dashboard user it will not be apparent that an error has occurred; their screen will simply not show an update. In this example, `weather_card` will be stuck showing the placeholder message "Fetching current weather...".
 
 For a better user experience, we can wrap the relevant code in `try/except` so that the placeholder message updates with a clear failure message in the case that the HTTP request fails. The full code is shown below.
 
@@ -920,7 +918,7 @@ def update_time_card(use_24_hour_clock, location):
     timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
 ```
 
-We might expect the value of `location` to be either "Berlin" or "Washington, D.C.", as per the dropdown's available options, but we can never guarantee that this is the case. A malicious user can trigger `update_time_card` with _any_ JSON-compatible value for `location`. The code written here has no security risk because if `location` is set to any value other than "Berlin" then the timezone is set to "America/New_York". This will be the case for both the expected trusted user input `location="Washington, D.C."` and arbitrary untrusted input such as `location="Paris"`, `location=100` and `location=None`.
+We might expect the value of `location` to be either "Berlin" or "Washington, D.C.", as per the dropdown's available options, but we can never guarantee that this is the case. A malicious user can trigger `update_time_card` with _any_ JSON-compatible value for `location`. The code written here has no security risk because if `location` is set to any value other than "Berlin" then the timezone is set to "America/New_York". This will be the case for both the expected trusted user input `location="Washington, D.C."` and arbitrary untrusted input such as `location="Paris"` and `location=42`.
 
 However, imagine that we had a secret database of all the world's timezones that includes some classified locations not known to the general public. The `update_time_card` action looks up the timezone of the input `location` in the database:
 
@@ -950,7 +948,7 @@ def update_time_card(use_24_hour_clock, location):
     timezone_name = SECRET_TIMEZONE_DATABASE[location]
 ```
 
-In many cases, untrusted user input does _not_ pose a security risk. For example, if we looked up `SECRET_TIMEZONE_DATABASE["nonexistent key"]` then Python would raise a `KeyError` exception, which would [cancel execution of the action](#handle-errors-and-debug) and not update any information on the user's screen. However, there are [certain scenarios](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619), such as file system manipulation and SQL queries, where you should be particularly vigilant.
+In many cases, untrusted user input does _not_ pose a security risk. For example, if we looked up `SECRET_TIMEZONE_DATABASE["nonexistent key"]` then Python would raise a `KeyError` exception, which would also cancel execution of the action and not update any information on the user's screen. However, there are [certain scenarios](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619), such as file system manipulation and SQL queries, where you should be particularly vigilant.
 
 ## Key principles of actions
 
