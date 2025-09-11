@@ -61,7 +61,7 @@ See the [user guide on built-in actions](../user-guides/actions.md) for more inf
 
 ## `filter_interaction`
 
-`filter_interaction` is deprecated. Use the more powerful and flexible `set_control`.
+`filter_interaction` is deprecated. Use the more powerful and flexible [`set_control`][vizro.actions.set_control].
 
 ```python
 # Before:
