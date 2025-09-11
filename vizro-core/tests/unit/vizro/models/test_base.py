@@ -291,8 +291,8 @@ def page_builtin_actions():
             vm.Button(
                 text="Export data",
                 actions=[
-                    vm.Action(function=export_data()),
-                    vm.Action(function=export_data()),
+                    export_data(),
+                    export_data(),
                 ],
             ),
         ],
@@ -350,8 +350,8 @@ def complete_dashboard():
             vm.Button(
                 text="Export data",
                 actions=[
-                    vm.Action(function=export_data()),
-                    vm.Action(function=export_data()),
+                    export_data(),
+                    export_data(),
                 ],
             ),
         ],
