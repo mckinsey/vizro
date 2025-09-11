@@ -72,11 +72,11 @@ components = [
 
 # After:
 components = [
-    vm.AgGrid(..., actions=va.set_control(target="my_filter")),
+    vm.AgGrid(..., actions=va.set_control(control="my_filter", value="species")),
     vm.Graph(id="target_chart", ...)
 ]
 # You must now explicitly specify a Filter in controls:
-controls = [vm.Filter(id="my_filter", targets=["target_chart"])]
+controls = [vm.Filter(id="my_filter", targets=["target_chart"], column="species")]
 ```
 
 See the [user guide on how to interact with graphs and tables](../user-guides/graph-table-actions.md) for more information.

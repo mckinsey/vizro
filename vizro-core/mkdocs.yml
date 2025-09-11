@@ -43,11 +43,11 @@ nav:
           - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - Extensions:
           - Overview: pages/user-guides/extensions.md
+          - Custom actions: pages/user-guides/custom-actions.md
           - Custom charts: pages/user-guides/custom-charts.md
           - Custom tables: pages/user-guides/custom-tables.md
-          - Custom components: pages/user-guides/custom-components.md
-          - Custom actions: pages/user-guides/custom-actions.md
           - Custom figures: pages/user-guides/custom-figures.md
+          - Custom components: pages/user-guides/custom-components.md
   - API reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md

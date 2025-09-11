@@ -2,19 +2,19 @@
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you can create a custom action. In this guide we show how to do this.
 
-We also have an in-depth [tutorial on creating an action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md)
+We also have an in-depth [tutorial on creating an action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
 
 !!! note
 
     Do you have an idea for a built-in action? Submit a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!
 
-## Key principles
+## General principles
 
 Many [Vizro models][vizro.models] have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ by a user interaction. The function can optionally have any number of _inputs_ and _outputs_ that refer to a Vizro model `id`.
 
 To define your own action:
 
-1. write a Python function and decorate it with `@capture("action")`
+1. write a Python function and decorate it with `@capture("action")`:
 
     ```python
     from vizro.models.types import capture
@@ -37,7 +37,7 @@ To define your own action:
 
     actions = vm.Action(
         function=action_function(input_1="input_id_1", input_2="input_id_2"),  # (1)!
-        outputs="output_id_1",  # (1)!
+        outputs="output_id_1",  # (2)!
     )
     ```
 
@@ -48,7 +48,7 @@ You can also execute [multiple actions with a single trigger](#chaining-multiple
 
 !!! warning
 
-    You should never assume that the value of inputs in your action function is restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions-tutorial.md#security).
+    You should never assume that the values of inputs in your action function are restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions-tutorial.md#security).
 
 ## Trigger an action with a button
 
@@ -164,10 +164,8 @@ vm.Button(
 )
 ```
 
-1. The argument `use_24_hour_clock` corresponds to the value of the component with `id="clock_switch"` (not yet defined).
+1. The argument `use_24_hour_clock` corresponds to the value of the component with `id="clock_switch"` (not yet defined). Here we used a keyword argument `use_24_hour_clock="clock_switch"` but, as with normal Python function call, we could instead use a positional argument with `current_time_text("clock_switch")`.
 1. The returned value "The time is ..." will update the component `id="time_text"` (not yet defined).
-
-Here we used a keyword argument `use_24_hour_clock="clock_switch"` when calling the `current_time_text` argument. Just like a normal Python function call, we could instead use a positional argument with `current_time_text("clock_switch")`.
 
 Here is the full example code that includes the input component `vm.Switch(id="clock_switch")` and the output component `vm.Time(id="time_text")`.
 
@@ -264,9 +262,9 @@ actions = vm.Action(
 
 1. Specifying outputs in the "wrong" order as `outputs={"key 2": "output_id_2", "key 1": "output_id_1"}` would work exactly the same way.
 
-A full real world example of using multiple inputs and outputs in a form [given in the tutorial](../tutorials/custom-actions-tutorial.md#multiple-inputs-and-outputs).
+A full real world example of using multiple inputs and outputs is [given in the tutorial](../tutorials/custom-actions-tutorial.md#multiple-inputs-and-outputs).
 
-## Chaining multiple actions
+## Multiple actions
 
 When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix [built-in actions](actions.md) and custom actions in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions-tutorial.md).
 
@@ -293,7 +291,7 @@ For most actions that you write, you should only need to specify `<model_id>` fo
 
 The syntax for using a particular model argument as an action input or output is `<model_id>.<argument_name>`.
 
-For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- or 24-hour clock. [`Switch`][vizro.models.Switch] has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
+For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. [`Switch`][vizro.models.Switch] has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
 
 !!! example "Use model argument as output"
 
@@ -350,7 +348,7 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
 
 Sometimes you might like to use as input or output a component that is on the screen but cannot be addressed explicitly with `<model_id>.<argument_name>`. Vizro actions in fact accept as input and output _any_ Dash component in the format `<component_id>.<property>`.
 
-For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- or 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
+For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
 
 !!! example "Use Dash property as input"
 
@@ -399,7 +397,3 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
     === "Result"
 
         ![](../../assets/user_guides/actions/custom-actions4.png)
-
-!!! note
-
-    Are you addressing an underlying Dash component that you think should be addressed by Vizro more easily? Let us know by submitting a [feature request](https://github.com/mckinsey/vizro/issues/new?template=feature-request.yml)!

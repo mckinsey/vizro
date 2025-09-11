@@ -107,7 +107,7 @@ In this flowchart, the rectangular boxes refer to Vizro models that are used as 
 
 ## Runtime input
 
-Let's extend our action to depend on an _input_ from the user's screen. As before, let's start by adding something to the layout and then handle the action. Here we create a small form by adding a [`Switch`][vizro.models.Switch] to the layout that lets the user specify whether they would like to use a 12- or 24-hour clock.
+Let's extend our action to depend on an _input_ from the user's screen. As before, let's start by adding something to the layout and then handle the action. Here we create a small form by adding a [`Switch`][vizro.models.Switch] to the layout that lets the user specify whether they would like to use the 12- or 24-hour clock.
 
 !!! example "Add `Switch` to layout"
 
