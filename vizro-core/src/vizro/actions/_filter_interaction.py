@@ -3,7 +3,6 @@ from typing import Any, Literal, cast
 
 from dash import ctx
 from pydantic import Field
-from typing_extensions import deprecated
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
