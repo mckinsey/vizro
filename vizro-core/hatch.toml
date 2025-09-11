@@ -107,6 +107,7 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
+  "griffe-warnings-deprecated",
   "mkdocs-llmstxt-md",
   "mkdocs-llmstxt",
   "linkchecker",
@@ -127,7 +128,7 @@ link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --
 logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/install.md"
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
-serve = "mkdocs serve --open"
+serve = "mkdocs serve --open {args}"
 
 [envs.examples]
 # TODO: once the visual-vocabulary dashboard has moved out of this repo, this environment should be removed fully and
