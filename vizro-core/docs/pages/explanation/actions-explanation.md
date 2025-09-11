@@ -4,11 +4,6 @@ Actions control how your app responds to user input such as clicking a button or
 
 Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash to use them. This page [explains more about how Vizro actions work](../explanation/actions-explanation.md) and their similarities and differences compared to Dash callbacks.
 
-<!--
-TODO NOW:
-- type hints _where useful_ if it improves things overall and doesn't add much complexity. Not sure whether to add them at all...
--->
-
 ## What is an action?
 
 There are two aspects to every Vizro app:

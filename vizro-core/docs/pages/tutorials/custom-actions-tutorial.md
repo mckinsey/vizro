@@ -2,17 +2,14 @@
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. Vizro provides [built-in actions](../user-guides/actions.md) and also enables you to write your own [custom actions](../user-guides/custom-actions.md). In this tutorial you will learn how to write your own custom actions.
 
+!!! note
+    This tutorial assumes a basic knowledge of Vizro. If you haven't already done so, you should get started with Vizro in the [quickstart tutorial](quickstart-tutorial.md) or work through a [more in-depth tutorial](explore-components.md).
+
 Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/basic-callbacks), but you do not need to know anything about Dash callbacks to complete the tutorial. We also have an [explanation of how Vizro actions work](../explanation/actions-explanation.md) and their similarities and differences compared to Dash callbacks.
 
-This tutorial should take **about an hour to finish**. You will gradually build a single-page app of a simple form that uses custom actions to show the current time, date and weather in Washington, D.C. or Berlin.
+This tutorial should take **about an hour to finish**. You will gradually build a single-page app of a simple form that uses custom actions to show the current time, date and weather in Washington, D.C. or Berlin. Here's the final app in action:
 
-<!--
-TODO NOW: maybe post a link to the completed pycafe dashboard and/or screenshot/gif?
--->
-
-!!! note
-
-    This tutorial assumes a basic knowledge of Vizro. If you haven't already done so, you should get started with Vizro in the [quickstart tutorial](quickstart-tutorial.md) or work through a [more in-depth tutorial](explore-components.md).
+[![CustAction8]][custaction8]
 
 ## A simple action
 
