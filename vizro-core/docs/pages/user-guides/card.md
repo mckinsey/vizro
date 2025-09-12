@@ -352,7 +352,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
         [![CardImageStyled]][cardimagestyled]
 
-Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
+Use the following URL hashes in your image path to apply Vizro's default styling.
 
 ## Float an image inside the card
 
@@ -565,7 +565,7 @@ If you now click on the card area, you should automatically be redirected to the
 
 ## Create a KPI card
 
-To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md). Unlike the static text card `vm.Card`, a KPI card must be created using a figure function, which enables the text content of the KPI to change based on input from controls or actions.
+To create a KPI card, use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md). Unlike the static text card `vm.Card`, a KPI card must be created using a figure function, which enables the text content of the KPI to change based on input from controls.
 
 For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#key-performance-indicator-kpi-cards).
 
