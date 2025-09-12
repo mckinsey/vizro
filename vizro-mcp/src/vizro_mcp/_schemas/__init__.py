@@ -8,6 +8,6 @@ from .schemas import (
 __all__ = [
     "AgGridEnhanced",
     "ChartPlan",
-    "GraphEnhanced",
     "FigureEnhanced",
+    "GraphEnhanced",
 ]

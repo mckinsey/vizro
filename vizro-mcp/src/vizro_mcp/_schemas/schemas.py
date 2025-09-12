@@ -67,7 +67,7 @@ class FigureEnhanced(vm.Figure):
 
     figure: dict[str, Any] = Field(
         description=f"""This is the figure function to be displayed.
-                                   
+
 Only use arguments from the below mapping of _target_ to figure function documentation:
 
 {FIGURE_NAMESPACE_FUNCTION_DOCS}"""
