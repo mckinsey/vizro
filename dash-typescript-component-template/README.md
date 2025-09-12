@@ -18,12 +18,12 @@ To use this template:
 
 1. Install the requirements:
    ```shell
-   pip install cookiecutter
+   uv pip install cookiecutter
    ```
-   NodeJS is also required, install `nvm` to get the appropriate node version.
-3. Run cookiecutter on the template repo:
+2. Run cookiecutter on the template repo:
    ```shell
-   cookiecutter gh:plotly/dash-typescript-component-template
+   # version for the branch, need to change after merging to main
+   cookiecutter -c ci/dash-typescript-component-integration --directory dash-typescript-component-template gh:mckinsey/vizro
     ```
 3. Answer the questions about the project.
     - `project_name`: This is the "human-readable" name of your project. For example, "Dash Core Components".

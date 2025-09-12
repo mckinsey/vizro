@@ -15,25 +15,39 @@
    uv pip install -r requirements.txt
    ```
 3. Install npm packages:
-   1. Optional: use [nvm](https://github.com/nvm-sh/nvm) to manage node version:
+   1. Install `nvm` to get the appropriate node version:
+   
+      Latest nvm_version can be found [here](https://github.com/nvm-sh/nvm)
       ```shell
-      nvm install
-      nvm use
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/<nvm_version>/install.sh | bash
       ```
-   2. Install npm dependencies:
+   2. Install latest NodeJS using `nvm`:
+   
+      Find latest LTS NodeJS version
+      ```shell
+      nvm list-remote
+      ```
+      Install latest LTS NodeJS version
+      ```shell
+      nvm install <NodeJS_LTS_version>
+      ```
+   3. Install npm dependencies:
       ```shell
       npm install
       npm install echarts
       ```
-4. Build the component:
+4. Put TypeScrit component code to the `{{cookiecutter.project_name}}.tsx` file located under `{{cookiecutter.project_name}}/src/ts/components`
+5. Build the component:
    ```shell
    npm run build
    ```
-5. Install component
+6. Install component
    ```shell
    uv pip install {{cookiecutter.project_shortname}}
    ```
-6. Run the demo:
+7. Run the demo:
+
+   Edit `app.py` to use newly created component in `Vizro` and run it
    ```shell
    python app.py
    ```
