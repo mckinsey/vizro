@@ -7,6 +7,7 @@ import vizro.models as vm
 from vizro_mcp._schemas import (
     AgGridEnhanced,
     ChartPlan,
+    FigureEnhanced,
     GraphEnhanced,
 )
 from vizro_mcp._utils import IRIS
@@ -376,6 +377,7 @@ class TestGetModelJsonSchema:
             ("Graph", GraphEnhanced, "This is the plotly express figure to be displayed."),
             ("AgGrid", AgGridEnhanced, "This is the ag-grid figure to be displayed."),
             ("Table", AgGridEnhanced, "This is the ag-grid figure to be displayed."),
+            ("Figure", FigureEnhanced, "This is the figure function to be displayed."),
         ],
     )
     def test_enhanced_model_json_schema(
