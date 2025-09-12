@@ -52,7 +52,7 @@ class LayoutPlan(BaseModel):
         """,
     )
 
-    def create(self, component_ids: list[str]) -> Optional[vm.Grid]:
+    def create(self, component_ids: list[str]) -> Optional[vm.Layout]:
         """Create the layout."""
         if not self.layout_grid_template_areas:
             return None
@@ -61,7 +61,7 @@ class LayoutPlan(BaseModel):
             grid = _convert_to_grid(
                 layout_grid_template_areas=self.layout_grid_template_areas, component_ids=component_ids
             )
-            actual = vm.Grid(grid=grid)
+            actual = vm.Layout(grid=grid)
         except ValidationError as e:
             logger.warning(
                 f"""
