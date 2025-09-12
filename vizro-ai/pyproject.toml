@@ -70,7 +70,7 @@ filterwarnings = [
   "ignore:The `Layout` model has been renamed",
   # Ignore langgraph.warnings.LangGraphDeprecatedSinceV10: Importing Send from langgraph.constants is deprecated.
   # Please use 'from langgraph.types import Send' instead. Deprecated in LangGraph V1.0 to be removed in V2.0.
-  "ignore:Importing Send from langgraph.constants is deprecated",
+  "ignore:Importing Send from langgraph.constants is deprecated"
 ]
 pythonpath = ["../tools/tests"]
 
