@@ -14,6 +14,7 @@ from vizro import Vizro
 from vizro_mcp._schemas import (
     AgGridEnhanced,
     ChartPlan,
+    FigureEnhanced,
     GraphEnhanced,
 )
 from vizro_mcp._utils import (
@@ -116,6 +117,7 @@ def get_model_json_schema(
         "Graph": GraphEnhanced,
         "AgGrid": AgGridEnhanced,
         "Table": AgGridEnhanced,
+        "Figure": FigureEnhanced,
     }
 
     if model_name in modified_models:
