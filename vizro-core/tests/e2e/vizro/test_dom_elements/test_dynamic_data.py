@@ -20,6 +20,7 @@ from e2e.vizro.navigation import (
     select_slider_handler,
 )
 from e2e.vizro.paths import (
+    actions_progress_indicator_path,
     categorical_components_value_path,
     dropdown_arrow_path,
     graph_axis_value_path,
@@ -146,16 +147,20 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     select_slider_handler(dash_br, elem_id=slider_id, value=2)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(first_screen)
+    # wait till actions will be finished ad no progress indicator will be visible on the screenshots
+    dash_br.wait_for_no_elements(actions_progress_indicator_path())
 
     # move slider to value '60'
     select_slider_handler(dash_br, elem_id=slider_id, value=6)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(second_screen)
+    dash_br.wait_for_no_elements(actions_progress_indicator_path())
 
     # move slider to value '20'
     select_slider_handler(dash_br, elem_id=slider_id, value=2)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(third_screen)
+    dash_br.wait_for_no_elements(actions_progress_indicator_path())
 
     # first and second screens should be different
     assert_image_not_equal(first_screen, second_screen)
