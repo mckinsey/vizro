@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, Optional
 
+import vizro
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field, ValidationError
@@ -71,7 +72,7 @@ class ModelJsonSchemaResults:
 
 # TODO: check on https://github.com/modelcontextprotocol/python-sdk what new things are possible to do here
 mcp = FastMCP(
-    name="MCP server to help create Vizro dashboards and charts",
+    name=f"MCP server to help create Vizro dashboards and charts. Based on vizro=={vizro.__version__}",
 )
 
 
@@ -102,7 +103,7 @@ use `custom_charts` in the `validate_dashboard_config` tool instead.""",
         return f"{get_dashboard_instructions(advanced_mode, user_host)}"
 
 
-@mcp.tool()
+@mcp.tool(description=f"Get the JSON schema for the specified Vizro model. Based on vizro=={vizro.__version__}")
 def get_model_json_schema(
     model_name: str = Field(
         description="Name of the Vizro model to get schema for (e.g., 'Card', 'Dashboard', 'Page')"
