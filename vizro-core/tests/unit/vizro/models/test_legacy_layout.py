@@ -9,8 +9,7 @@ from vizro.models._grid import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_u
 from vizro.models.types import LayoutType
 
 pytestmark = [
-    pytest.mark.filterwarnings("ignore:The `Layout` model has been renamed `Grid`:FutureWarning"),
-    pytest.mark.filterwarnings("ignore:`layout` without an explicit `type`:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The `Layout` model has been renamed:FutureWarning"),
 ]
 
 
@@ -18,7 +17,7 @@ class TestLayoutInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
     def test_layout_deprecated(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             vm.Layout(grid=[[0]])
 
     def test_layout_deprecated_yaml(self):
@@ -31,7 +30,7 @@ class TestLayoutInstantiation:
         Layout = vm.Layout  # noqa: F841
 
         with (
-            pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"),
+            pytest.warns(FutureWarning, match="The `Layout` model has been renamed"),
             pytest.warns(FutureWarning, match="`layout` without an explicit `type`"),
         ):
             layout = TypeAdapter(LayoutType).validate_python({"grid": [[0]]})
