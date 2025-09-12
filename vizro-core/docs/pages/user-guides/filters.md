@@ -289,7 +289,7 @@ The URL query parameter uses the control’s id as its key and the selected valu
 
     === "app.py"
 
-        ```{.python hl_lines="15-16"}
+        ```{.python pycafe-link hl_lines="15-16"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm

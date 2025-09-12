@@ -10,9 +10,9 @@ This tutorial should take **about half an hour to finish**, so grab a coffee or 
 
 !!! note
 
-    If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/quickstart-tutorial.md) before diving into this one.
+    If you're looking for a quick start to get up and running with Vizro, consider reviewing the [quickstart tutorial](quickstart-tutorial.md) before diving into this one.
 
-**By the end of this tutorial, you have learned how to:**
+**By the end of this tutorial, you will have learned how to:**
 
 - Explore most of [Vizro's components](../user-guides/components.md).
 - Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to guide your chart creation.
@@ -101,7 +101,6 @@ To start, let's get an overview of the data by displaying it in a table using [`
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -135,20 +134,19 @@ In the top-right corner of the dashboard, you'll notice a toggle to switch betwe
 
 Next, you'll add a button that lets users export the data currently shown in your dashboard.
 
-Vizro provides several built-in actions you can reuse. You can explore the full list in our [guide on built-in actions](../user-guides/actions.md#built-in-actions).
+This is an example of an _action_. Vizro provides several [built-in actions](../user-guides/actions.md), and you can also write your own [custom actions](../user-guides/custom-actions.md).
 
 These steps add an export data button:
 
 1. Add a [`Button`][vizro.models.Button] to the `components` list and set `text="Export Data"`.
-1. Use the `actions` argument of the `Button` to define an [`Action`][vizro.models.Button].
-1. Inside the [`Action`][vizro.models.Action], specify the built-in [`export_data`][vizro.actions.export_data] function.
+1. Use the `actions` argument of the `Button` to specify the built-in [`export_data`](../user-guides/data-actions.md#export-data) action.
 
 !!! example "Export Data Button"
 
     === "Snippet - Button"
 
         ```py
-        vm.Button(text="Export Data", actions=[vm.Action(function=export_data())])
+        vm.Button(text="Export Data", actions=va.export_data())
         ```
 
     === "Code - Dashboard"
@@ -160,7 +158,7 @@ These steps add an export data button:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -173,7 +171,7 @@ These steps add an export data button:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -217,7 +215,7 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -231,7 +229,7 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -284,7 +282,7 @@ These steps add a histogram to the page:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -297,7 +295,7 @@ These steps add a histogram to the page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -373,7 +371,7 @@ These steps add two KPI cards to the second page:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -386,7 +384,7 @@ These steps add two KPI cards to the second page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -467,7 +465,7 @@ These steps place the two histograms in separate tabs:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -480,7 +478,7 @@ These steps place the two histograms in separate tabs:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -580,7 +578,7 @@ Run the code below to apply the layout to the dashboard page:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -593,7 +591,7 @@ Run the code below to apply the layout to the dashboard page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -675,7 +673,7 @@ These steps add a filter to the dashboard:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -688,7 +686,7 @@ These steps add a filter to the dashboard:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -812,7 +810,7 @@ These steps should feel familiar, as they add three charts to the new page.
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -825,7 +823,7 @@ These steps should feel familiar, as they add three charts to the new page.
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -938,7 +936,7 @@ Run the code below to apply the layout to the dashboard page:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -951,7 +949,7 @@ Run the code below to apply the layout to the dashboard page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -1064,7 +1062,7 @@ These steps add a parameter to the dashboard:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -1077,7 +1075,7 @@ These steps add a parameter to the dashboard:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -1198,7 +1196,7 @@ For more information on when to create a custom chart, check out [How to create 
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -1220,7 +1218,7 @@ For more information on when to create a custom chart, check out [How to create 
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -1350,7 +1348,7 @@ Your directory structure should look like this:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -1372,7 +1370,7 @@ Your directory structure should look like this:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 
@@ -1498,7 +1496,7 @@ The following steps create a navigation bar:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         tips = px.data.tips()
 
@@ -1520,7 +1518,7 @@ The following steps create a navigation bar:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+                vm.Button(text="Export Data", actions=va.export_data()),
             ],
         )
 

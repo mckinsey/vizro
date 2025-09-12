@@ -14,22 +14,35 @@ from vizro.models.types import FigureType, ModelID, _Controls
 
 
 class export_data(_AbstractAction):
-    """Exports visible data of target charts/components.
+    """Exports data of target charts, tables and figures.
+
+    Abstract: Usage documentation
+        [How to export data](../user-guides/data-actions.md#export-data)
 
     Args:
-        targets (list[ModelID]): List of target component ids to download data from. If none are given then download
-             from all components on the page.
-        file_format (Literal["csv", "xlsx"]): Format of downloaded files. Defaults to `csv`.
+        targets (list[ModelID]): List of target component ids for which to download data. If none are given then
+            download data from all components on the page.
+        file_format (Literal["csv", "xlsx"]): Format of downloaded files. Defaults to `"csv"`.
+
+    Example:
+        ```python
+        import vizro.actions as va
+
+        vm.Button(
+            text="Export data",
+            actions=va.export_data(targets=["graph_id", "table_id"], file_format="xlsx"),
+        )
+        ```
     """
 
     type: Literal["export_data"] = "export_data"
     targets: list[ModelID] = Field(
         default=[],
-        description="List of target component ids to download data from. If none are given then download"
-        "from all components on the page.",
+        description="List of target component ids for which to download data. If none are given then "
+        "download data from all components on the page.",
     )
     file_format: Literal["csv", "xlsx"] = Field(
-        default="csv", description="Format of downloaded files. Defaults to `csv`."
+        default="csv", description="Format of downloaded files. Defaults to `'csv'`."
     )
 
     @_log_call
