@@ -15,6 +15,7 @@ from pydantic import (
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.actions import export_data
+from vizro.figures import kpi_card
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
@@ -291,8 +292,8 @@ def page_builtin_actions():
             vm.Button(
                 text="Export data",
                 actions=[
-                    vm.Action(function=export_data()),
-                    vm.Action(function=export_data()),
+                    export_data(),
+                    export_data(),
                 ],
             ),
         ],
@@ -341,17 +342,26 @@ def complete_dashboard():
 
     page = vm.Page(
         title="Page 1",
-        layout=vm.Grid(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
+        layout=vm.Grid(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
         components=[
             vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
             vm.Graph(figure=chart(data_frame="iris")),
             vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+            vm.Figure(
+                figure=kpi_card(
+                    data_frame="iris",
+                    value_column="sepal_width",
+                    value_format="${value:.2f}",
+                    icon="Shopping Cart",
+                    title="Average Sepal Width",
+                )
+            ),
             vm.Button(
                 text="Export data",
                 actions=[
-                    vm.Action(function=export_data()),
-                    vm.Action(function=export_data()),
+                    export_data(),
+                    export_data(),
                 ],
             ),
         ],
@@ -484,6 +494,7 @@ import vizro.plotly.express as px
 import vizro.tables as vt
 import vizro.models as vm
 import vizro.actions as va
+import vizro.figures as vf
 from vizro.models.types import capture
 from typing import Optional
 
@@ -511,12 +522,21 @@ model = vm.Dashboard(
                 ),
                 vm.Graph(figure=chart(data_frame="iris")),
                 vm.AgGrid(figure=vt.dash_ag_grid(data_frame="iris")),
+                vm.Figure(
+                    figure=vf.kpi_card(
+                        data_frame="iris",
+                        value_column="sepal_width",
+                        value_format="${value:.2f}",
+                        title="Average Sepal Width",
+                        icon="Shopping Cart",
+                    )
+                ),
                 vm.Button(
                     text="Export data", actions=[va.export_data(), va.export_data()]
                 ),
             ],
             title="Page 1",
-            layout=vm.Grid(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
+            layout=vm.Grid(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
             controls=[
                 vm.Filter(
                     column="species",

@@ -12,12 +12,7 @@ from vizro.models.types import FigureType, ModelID, _Controls
 
 
 class filter_interaction(_AbstractAction):
-    """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
-
-    To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'
-    parameter of the source graph e.g. `px.bar(..., custom_data=["species", "sepal_length"])`.
-    If the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,
-    then the table doesn't need to have a 'custom_data' parameter set up.
+    """Filters targeted graph, tables and figures when a source graph or table is clicked.
 
     Args:
         targets (list[ModelID]): Target component to be affected by filter. If none are given then target all
