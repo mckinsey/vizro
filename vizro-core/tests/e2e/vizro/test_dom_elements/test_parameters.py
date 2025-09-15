@@ -1,6 +1,5 @@
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
-    check_graph_is_loaded,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -9,7 +8,7 @@ from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_va
 from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, select_all_path, slider_value_path
 
 
-def test_sliders_state(dash_br):
+def test_sliders_state(dash_br, check_graph_is_loaded_thread):
     """Verify that sliders values stays the same after page reload."""
     page_select(
         dash_br,
@@ -18,11 +17,11 @@ def test_sliders_state(dash_br):
     )
 
     # change slider value to '0.4'
+    check_graph_is_loaded_thread(graph_id=cnst.BAR_GRAPH_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
     # change range slider max value to '7'
+    check_graph_is_loaded_thread(graph_id=cnst.HISTOGRAM_GRAPH_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_PARAMETERS, value=4), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.HISTOGRAM_GRAPH_ID)
 
     # refresh the page
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
@@ -38,7 +37,7 @@ def test_sliders_state(dash_br):
     check_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, expected_start_value="4", expected_end_value="7")
 
 
-def test_none_parameter(dash_br):
+def test_none_parameter(dash_br, check_graph_is_loaded_thread):
     """Test if one of the parameter values is NONE."""
     page_select(
         dash_br,
@@ -52,8 +51,8 @@ def test_none_parameter(dash_br):
     )
 
     # choose NONE parameter
+    check_graph_is_loaded_thread(graph_id=cnst.BAR_GRAPH_ID)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_PARAMETERS_TWO, value="NONE")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
 
     # check that specific bar has cerulean blue color
     dash_br.wait_for_element(

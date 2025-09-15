@@ -1,8 +1,9 @@
 import os
+import threading
 
 import e2e.vizro.constants as cnst
 import pytest
-from e2e.vizro.checkers import browser_console_warnings_checker
+from e2e.vizro.checkers import browser_console_warnings_checker, check_graph_is_loaded, check_graph_is_loaded_selenium
 from e2e.vizro.waiters import callbacks_finish_waiter
 from selenium import webdriver
 from selenium.common import WebDriverException
@@ -57,3 +58,39 @@ def teardown_method(dash_br):
                 browser_console_warnings_checker(log, error_logs)
         except WebDriverException:
             pass
+
+
+@pytest.fixture()
+def check_graph_is_loaded_thread(dash_br):
+    """Fixture creates a thread which is executing 'check_graph_is_loaded' function."""
+    threads = []
+
+    def _start(graph_id):
+        waiter = threading.Thread(target=check_graph_is_loaded, args=(dash_br, graph_id), daemon=False)
+        # start() is starting the thread
+        waiter.start()
+        threads.append(waiter)
+
+    yield _start
+
+    for waiter in threads:
+        # join() is waiting till thread is finished even if the whole test already ended
+        waiter.join()
+
+
+@pytest.fixture()
+def check_graph_is_loaded_selenium_thread(chrome_driver):
+    """Fixture creates a thread which is executing 'check_graph_is_loaded' function for pure selenium."""
+    threads = []
+
+    def _start(graph_id):
+        waiter = threading.Thread(target=check_graph_is_loaded_selenium, args=(chrome_driver, graph_id), daemon=False)
+        # start() is starting the thread
+        waiter.start()
+        threads.append(waiter)
+
+    yield _start
+
+    for waiter in threads:
+        # join() is waiting till thread is finished even if the whole test already ended
+        waiter.join()

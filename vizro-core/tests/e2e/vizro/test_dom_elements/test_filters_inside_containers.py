@@ -1,11 +1,11 @@
 import e2e.vizro.constants as cnst
 import pytest
-from e2e.vizro.checkers import check_graph_is_loaded, check_slider_value
+from e2e.vizro.checkers import check_slider_value
 from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
 from e2e.vizro.paths import categorical_components_value_path, graph_axis_value_path, slider_value_path
 
 
-def test_dropdown(dash_br):
+def test_dropdown(dash_br, check_graph_is_loaded_thread):
     """Test simple dropdown filter."""
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
@@ -13,8 +13,8 @@ def test_dropdown(dash_br):
 
     # select 'setosa'
     clear_dropdown(dash_br, cnst.DROPDOWN_INSIDE_CONTAINERS)
+    check_graph_is_loaded_thread(graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS, value="setosa")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
 
 
 @pytest.mark.parametrize(
@@ -22,41 +22,41 @@ def test_dropdown(dash_br):
     [cnst.CHECK_LIST_INSIDE_CONTAINERS, cnst.RADIO_ITEMS_INSIDE_CONTAINERS],
     ids=["checklist", "radio_items"],
 )
-def test_categorical_filters(dash_br, filter_id):
+def test_categorical_filters(dash_br, filter_id, check_graph_is_loaded_thread):
     """Test simple checklist and radio_items filters."""
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
 
     # select 'setosa'
+    check_graph_is_loaded_thread(graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=2), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
 
 
-def test_slider(dash_br):
+def test_slider(dash_br, check_graph_is_loaded_thread):
     """Test simple slider filter."""
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
 
     # select value '0.6'
+    check_graph_is_loaded_thread(graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value=2), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     check_slider_value(dash_br, expected_end_value="0.6", elem_id=cnst.SLIDER_INSIDE_CONTAINERS)
 
 
 @pytest.mark.xfail(reason="Should be fixed later in vizro by Petar")
 # Right now is failing with the next error:
 # AssertionError: Element number is '4', but expected number is '4.3'
-def test_range_slider(dash_br):
+def test_range_slider(dash_br, check_graph_is_loaded_thread):
     """Test simple range slider filter."""
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
 
     # select min value '4.3'
+    check_graph_is_loaded_thread(graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value=4), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_start_value="4.3", expected_end_value="7"
     )
