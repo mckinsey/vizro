@@ -51,10 +51,10 @@ Call the action directly:
 
 ```python
 # Before:
-vm.Action(function=export_data(file_format="xlsx"))
+vm.Action(function=va.export_data(file_format="xlsx"))
 
 # After:
-export_data(file_format="xlsx")
+va.export_data(file_format="xlsx")
 ```
 
 See the [user guide on built-in actions](../user-guides/actions.md) for more information.

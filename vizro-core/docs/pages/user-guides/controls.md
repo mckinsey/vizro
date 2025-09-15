@@ -20,3 +20,7 @@ When the dashboard is running there are two ways for a user to set a control:
 
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
 - [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter) and [cross-highlighting](graph-table-actions.md#cross-highlight).
+
+!!! tip
+
+    The state of any control that has [`show_in_url=True`](run-deploy.md#shareable-url) is included when you share the URL of your app.

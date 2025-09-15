@@ -94,6 +94,8 @@ When you click the "Export data" button, the data for all graphs, tables and fig
 
 This is already possible, and documentation is coming soon!
 
+TODO NOW: write this 
+
 ## Multiple actions
 
 When you specify multiple actions as `actions=[action_1, action_2, ...]` then Vizro _chains_ these actions in order, so that `action_2` executes only when `action_1` has completed. You can freely mix built-in actions and [custom actions](custom-actions.md) in an actions chain. For more details on how actions chains execute, see our [tutorial on custom actions](../tutorials/custom-actions-tutorial.md).

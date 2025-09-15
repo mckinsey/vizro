@@ -345,3 +345,70 @@ WASM is a low-level binary instruction format that enables high-performance exec
 [Pyodide is a Python distribution compiled to WebAssembly, enabling Python execution in a browser’s JavaScript runtime](https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific-python-stack-to-the-browser/). It includes a standard Python interpreter, common scientific libraries (NumPy, Pandas, Matplotlib, etc.), and interoperability with JavaScript within the browser environment. In the context of Vizro, Pyodide enables the execution of Dash callbacks, component updates, and external Python libraries directly in the client’s browser, without a persistent backend.
 
 While potential advantages include serverless execution, reduced latency and easier "deployment", the disadvantages include limited performance compared to a native server, limited library support, and memory constraints.
+
+### Shareable URL
+
+When sharing your dashboard, it can be useful to share or bookmark a link to a page on which you have already set the controls. Any [controls](controls.md) that have `show_in_url=True` are included in the URL of the page.
+
+!!! example "Shareable URL that includes filter"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="15-16"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    id="filter-id",  # (1)!
+                    show_in_url=True,
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+         
+        1. Setting `id` is not compulsory, but it is recommended. If you do not set the `id` explicitly then a random `id` is set for you. If you later change your dashboard configuration and re-deploy then a different random `id` would be generated, and old shareable URLs would not work correctly.
+
+    === "app.yaml"
+
+        ```yaml {hl_lines="14-15"}
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color: species
+                type: graph
+            controls:
+              - column: species
+                id: filter-id
+                show_in_url: true
+                type: filter
+            title: My first page
+        ```
+
+    === "Result"
+
+        [![filterInUrl]][filterinurl]
+
+!!! note "Page state rather than dashboard state"
+    
+    Only controls on the currently opened page are reflected in the URL. It is not yet possible to share or bookmark the global state of a multi-page dashboard.
+
+[filterinurl]: ../../assets/user_guides/run_deploy/filter_in_url.png
