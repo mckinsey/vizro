@@ -198,7 +198,7 @@ If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a
 
 ## Add a dashboard logo
 
-Vizro [automatically incorporate the dashboard logo](assets.md/#add-a-logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+Vizro will [automatically display a logo](assets.md/#add-a-logo-image) in the top-left corner of each page if you place an image named `logo.<extension>` in the [assets](assets.md) folder. You can also add [theme-specific logos](assets.md/#theme-specific-logos) named `logo-dark` and `logo-light, `which switch automatically with the active theme. By default, clicking the logo redirects to the homepage.
 
 ![Dashboard with logo](../../assets/user_guides/dashboard/dashboard_with_logo.png)
 
