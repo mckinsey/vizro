@@ -137,7 +137,9 @@
   border-right: 1px solid var(--bs-border-color);
   display: flex;
   justify-content: flex-start;
-  width: 60px;
+  max-width: 60px;
+  min-width: 60px;
+  padding-top: 4px;
 }
 
 #dashboard-container div[hidden] {
