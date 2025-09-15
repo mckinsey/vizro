@@ -22,12 +22,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- NavBar is now fixed and no longer collapses with the left side panel. ([#1394](https://github.com/mckinsey/vizro/pull/1394))
 
--->
+
 <!--
 ### Deprecated
 
