@@ -107,7 +107,7 @@ plugins:
   - git-revision-date-localized:
       enable_creation_date: false
   - glightbox:
-       manual: true
+      manual: true
 
 extra_css:
   - stylesheets/extra.css
