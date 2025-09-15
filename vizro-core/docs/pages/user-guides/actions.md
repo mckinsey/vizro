@@ -94,7 +94,7 @@ When you click the "Export data" button, the data for all graphs, tables and fig
 
 This is already possible, and documentation is coming soon!
 
-TODO NOW: write this 
+TODO NOW: write this
 
 ## Multiple actions
 

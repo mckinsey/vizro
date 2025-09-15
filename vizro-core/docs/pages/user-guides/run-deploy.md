@@ -378,7 +378,7 @@ When sharing your dashboard, it can be useful to share or bookmark a link to a p
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
-         
+
         1. Setting `id` is not compulsory, but it is recommended. If you do not set the `id` explicitly then a random `id` is set for you. If you later change your dashboard configuration and re-deploy then a different random `id` would be generated, and old shareable URLs would not work correctly.
 
     === "app.yaml"
@@ -408,7 +408,7 @@ When sharing your dashboard, it can be useful to share or bookmark a link to a p
         [![filterInUrl]][filterinurl]
 
 !!! note "Page state rather than dashboard state"
-    
+
     Only controls on the currently opened page are reflected in the URL. It is not yet possible to share or bookmark the global state of a multi-page dashboard.
 
 [filterinurl]: ../../assets/user_guides/run_deploy/filter_in_url.png
