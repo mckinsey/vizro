@@ -234,8 +234,8 @@ class Dashboard(VizroBaseModel):
         path_to_logo_light = get_asset_url(logo_light_img) if logo_light_img else None
 
         logo = html.A(html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo), href="/")
-        logo_dark = html.A(html.Img(id="logo-dark",src=path_to_logo_dark, hidden=not path_to_logo_dark), href="/")
-        logo_light = html.A(html.Img(id="logo-light",src=path_to_logo_light, hidden=not path_to_logo_light), href="/")
+        logo_dark = html.A(html.Img(id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark), href="/")
+        logo_light = html.A(html.Img(id="logo-light", src=path_to_logo_light, hidden=not path_to_logo_light), href="/")
 
         return logo, logo_dark, logo_light
 
