@@ -33,6 +33,7 @@ import vizro.plotly.express as px
 import vizro.tables as vt
 import vizro.models as vm
 import vizro.actions as va
+import vizro.figures as vf
 from vizro import Vizro
 from vizro.models.types import capture
 from vizro.managers import data_manager
