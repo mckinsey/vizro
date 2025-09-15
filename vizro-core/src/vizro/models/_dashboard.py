@@ -75,6 +75,7 @@ _OuterPageContentType = TypedDict(
     "_OuterPageContentType",
     {
         "header": html.Div,
+        "nav-bar": dbc.Navbar,
         "right-side": html.Div,
         "collapse-left-side": dbc.Collapse,
         "collapse-icon-outer": html.Div,
@@ -233,9 +234,14 @@ class Dashboard(VizroBaseModel):
         path_to_logo_dark = get_asset_url(logo_dark_img) if logo_dark_img else None
         path_to_logo_light = get_asset_url(logo_light_img) if logo_light_img else None
 
-        logo = html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo)
-        logo_dark = html.Img(id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark)
-        logo_light = html.Img(id="logo-light", src=path_to_logo_light, hidden=not path_to_logo_light)
+        logo = html.A(html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo), href=get_relative_path("/"))
+        logo_dark = html.A(
+            html.Img(id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark), href=get_relative_path("/")
+        )
+        logo_light = html.A(
+            html.Img(id="logo-light", src=path_to_logo_light, hidden=not path_to_logo_light),
+            href=get_relative_path("/"),
+        )
 
         return logo, logo_dark, logo_light
 
@@ -366,7 +372,7 @@ class Dashboard(VizroBaseModel):
         right_side = html.Div(id="right-side", children=[page_header, page_components])
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
-            children=html.Div(id="left-side", children=[nav_bar, nav_control_panel]),
+            children=html.Div(id="left-side", children=[nav_control_panel]),
             is_open=True,
             dimension="width",
         )
@@ -381,11 +387,12 @@ class Dashboard(VizroBaseModel):
                 ),
             ],
             id="collapse-icon-outer",
-            hidden=_all_hidden([nav_bar, nav_control_panel]),
+            hidden=_all_hidden([nav_control_panel]),
         )
         return html.Div(
             [
                 header,
+                nav_bar,
                 right_side,
                 collapse_left_side,
                 collapse_icon_outer,
@@ -401,12 +408,13 @@ class Dashboard(VizroBaseModel):
         Returns:
             html.Div: The complete Dash layout for the page, ready to render.
         """
+        nav_bar = outer_page["nav-bar"]
         collapse_left_side = outer_page["collapse-left-side"]
         collapse_icon_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
         header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[collapse_left_side, collapse_icon_outer, right_side])
+        page_main = html.Div(id="page-main", children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side])
         page_main_outer = html.Div(
             children=[header, page_main],
             className="page-main-outer no-left" if _all_hidden(collapse_icon_outer) else "page-main-outer",

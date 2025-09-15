@@ -62,7 +62,6 @@ nav:
           - Actions: pages/explanation/actions-explanation.md
       - About Vizro:
           - FAQs: pages/explanation/faq.md
-          - Examples gallery: https://vizro.mckinsey.com/
           - User examples: pages/explanation/your-examples.md
           - Contribute to Vizro: pages/explanation/contributing.md
           - Documentation style: pages/explanation/documentation-style-guide.md
@@ -124,7 +123,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.44
+                vizro==0.1.45
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark

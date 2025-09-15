@@ -11,6 +11,46 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.45'></a>
+
+# 0.1.45 — 2025-09-12
+
+## Highlights ✨
+
+- New syntax for attaching custom actions: you should now specify runtime inputs directly in the function call as `vm.Action(function=action_function("dropdown_id"))`. See the new [tutorial on custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/) for more information. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+- New syntax for attaching built-in actions: you should now specify `actions=va.export_data()` instead of `actions=vm.Action(function=va.export_data())`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+## Added
+
+- Custom action inputs and outputs can directly refer to models, for example `vm.Action(function=update_text("my_selector"), outputs="my_text")`. ([#1153](https://github.com/mckinsey/vizro/pull/1153))
+
+- Custom action inputs and outputs can directly refer to model fields, for example `outputs="my_graph.header"`. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
+
+- Custom actions can now return a dictionary to make it easier to handle actions with many return values. ([#1143](https://github.com/mckinsey/vizro/pull/1143))
+
+- Enable passing a single action to the `actions` argument without nesting it in a list. You can now specify `actions=vm.Action(...)` instead of `actions=[vm.Action(...)]`. ([#1328](https://github.com/mckinsey/vizro/pull/1328))
+
+- Enable passing a single output to the `Action` model without nesting it in a list. You can now specify `outputs="component_id.property"` instead of `outputs=["component_id.property"]`. ([#1334](https://github.com/mckinsey/vizro/pull/1334))
+
+- Add `icon` argument to `vm.Button`, enabling any icon from the [Google Material Icons library](https://fonts.google.com/icons) to be displayed inside the `vm.Button`. This also enables circular buttons with only an icon. ([#1341](https://github.com/mckinsey/vizro/pull/1341))
+
+- Add global progress indicator next to theme switch that shows when actions are running. ([#1352](https://github.com/mckinsey/vizro/pull/1352))
+
+## Changed
+
+- All built-in actions are now Pydantic models and hence validate arguments, exist in the Vizro schema, and can be subclassed. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+- Page ID is now set independently from the page title. You can refer to a page in navigation by ID or title. ([#1339](https://github.com/mckinsey/vizro/pull/1339))
+
+## Deprecated
+
+- The `inputs` argument of the `vm.Action` model is deprecated. Pass references to runtime inputs directly as arguments of `function`. ([#1377](https://github.com/mckinsey/vizro/pull/1377))
+
+- Passing a static argument to a custom action is deprecated. All arguments must instead be runtime inputs. ([#1377](https://github.com/mckinsey/vizro/pull/1377))
+
+- Deprecate old syntax for attaching built-in actions using `vm.Action`. ([#1377](https://github.com/mckinsey/vizro/pull/1377))
+
 <a id='changelog-0.1.44'></a>
 
 # 0.1.44 — 2025-07-29
