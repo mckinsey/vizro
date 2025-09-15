@@ -63,6 +63,7 @@ nav:
       - About Vizro:
           - FAQs: pages/explanation/faq.md
           - User examples: pages/explanation/your-examples.md
+          - Cheatsheet: pages/cheatsheet/cheatsheet.html
           - Contribute to Vizro: pages/explanation/contributing.md
           - Documentation style: pages/explanation/documentation-style-guide.md
           - Authors: pages/explanation/authors.md
