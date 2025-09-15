@@ -34,9 +34,8 @@
    3. Install npm dependencies:
       ```shell
       npm install
-      npm install echarts
       ```
-4. Put TypeScrit component code to the `{{cookiecutter.project_name}}.tsx` file located under `{{cookiecutter.project_name}}/src/ts/components`
+4. Put TypeScrit component code to the `{{cookiecutter.project_shortname}}.tsx` file located under `{{cookiecutter.project_name}}/src/ts/components`
 5. Build the component:
    ```shell
    npm run build
