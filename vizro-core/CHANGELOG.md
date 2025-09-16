@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- New syntax for attaching custom actions: you should now specify runtime inputs directly in the function call as `vm.Action(function=action_function("dropdown_id"))`. See the new [tutorial on custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/) for more information. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+- New syntax for attaching custom actions: you should now specify runtime inputs directly in the function call as `vm.Action(function=action_function("dropdown_id"))`. See the new [tutorial on custom actions](https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/) for more information. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
 
 - New syntax for attaching built-in actions: you should now specify `actions=va.export_data()` instead of `actions=vm.Action(function=va.export_data())`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
 
