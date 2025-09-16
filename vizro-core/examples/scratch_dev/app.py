@@ -3,7 +3,9 @@
 import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
+import vizro.actions as va
 from vizro.figures import kpi_card
+
 from data import superstore_df
 from charts import (
     create_map_bubble,
@@ -65,22 +67,34 @@ page_1 = vm.Page(
                             )
                         ),
                         vm.Graph(figure=create_map_bubble(superstore_df, value_col="Sales")),
-                        vm.Graph(figure=bar_chart_by_segment(superstore_df, value_col="Sales")),
-                        vm.Graph(figure=bar_chart_by_product(superstore_df, value_col="Sales")),
-                        vm.Graph(figure=bar_chart_by_category(superstore_df, value_col="Sales")),
-                        vm.Graph(figure=bar_chart_by_subcategory(superstore_df, value_col="Sales")),
-                        vm.Graph(figure=bar_chart_sales_by_customer(superstore_df, value_col="Sales")),
+                        vm.Graph(
+                            figure=bar_chart_by_segment(superstore_df, value_col="Sales", custom_data=["Segment"]),
+                            actions=va.filter_interaction(),
+                        ),
+                        vm.Graph(
+                            figure=bar_chart_by_product(superstore_df, value_col="Sales", custom_data=["Product Name"]),
+                            actions=va.filter_interaction(),
+                        ),
+                        vm.Graph(
+                            figure=bar_chart_by_category(superstore_df, value_col="Sales", custom_data=["Category"]),
+                            actions=va.filter_interaction(),
+                        ),
+                        vm.Graph(
+                            figure=bar_chart_by_subcategory(
+                                superstore_df,
+                                value_col="Sales",
+                                custom_data=["Sub-Category"],
+                            ),
+                            actions=va.filter_interaction(),
+                        ),
+                        vm.Graph(
+                            figure=bar_chart_sales_by_customer(
+                                superstore_df, value_col="Sales", custom_data=["Customer Name"]
+                            ),
+                            actions=va.filter_interaction(),
+                        ),
                     ],
                     layout=vm.Grid(
-                        # grid=[
-                        #     [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3],
-                        #     [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],
-                        #     [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],
-                        #     [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],
-                        #     [7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9],
-                        #     [7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9],
-                        #     [7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9],
-                        # ],
                         grid=[
                             [0, 0, 4, 4, 4, 5, 5, 5, 6, 6, 6],
                             [1, 1, 4, 4, 4, 5, 5, 5, 6, 6, 6],
@@ -132,11 +146,34 @@ page_1 = vm.Page(
                             )
                         ),
                         vm.Graph(figure=create_map_bubble(superstore_df, value_col="Profit")),
-                        vm.Graph(figure=bar_chart_by_segment(superstore_df, value_col="Profit")),
-                        vm.Graph(figure=bar_chart_by_product(superstore_df, value_col="Profit")),
-                        vm.Graph(figure=bar_chart_by_category(superstore_df, value_col="Profit")),
-                        vm.Graph(figure=bar_chart_by_subcategory(superstore_df, value_col="Profit")),
-                        vm.Graph(figure=bar_chart_sales_by_customer(superstore_df, value_col="Profit")),
+                        vm.Graph(
+                            figure=bar_chart_by_segment(superstore_df, value_col="Profit", custom_data=["Segment"]),
+                            actions=va.filter_interaction(),
+                        ),
+                        vm.Graph(
+                            figure=bar_chart_by_product(
+                                superstore_df,
+                                value_col="Profit",
+                                custom_data=["Product Name"],
+                            ),
+                            actions=va.filter_interaction(),
+                        ),
+                        vm.Graph(
+                            figure=bar_chart_by_category(superstore_df, value_col="Profit", custom_data=["Category"]),
+                            actions=va.filter_interaction(),
+                        ),
+                        vm.Graph(
+                            figure=bar_chart_by_subcategory(
+                                superstore_df, value_col="Profit", custom_data=["Sub-Category"]
+                            ),
+                            actions=va.filter_interaction(),
+                        ),
+                        vm.Graph(
+                            figure=bar_chart_sales_by_customer(
+                                superstore_df, value_col="Profit", custom_data=["Customer Name"]
+                            ),
+                            actions=va.filter_interaction(),
+                        ),
                     ],
                     layout=vm.Grid(
                         grid=[
@@ -151,14 +188,14 @@ page_1 = vm.Page(
             ]
         ),
     ],
-    # controls=[
-    #     vm.Filter(
-    #         column="Order Date",
-    #         selector=vm.DatePicker(
-    #             range=True,
-    #         ),
-    #     ),
-    # ],
+    controls=[
+        vm.Filter(
+            column="Order Date",
+            selector=vm.DatePicker(
+                range=True,
+            ),
+        ),
+    ],
 )
 
 page_2 = vm.Page(title="Table", components=[vm.AgGrid(figure=custom_aggrid(superstore_df))])

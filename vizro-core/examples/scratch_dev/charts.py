@@ -40,14 +40,14 @@ def create_map_bubble(data_frame, value_col="Sales"):
 
 
 @capture("graph")
-def bar_chart_by_segment(data_frame, value_col="Sales"):
+def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
     fig = px.bar(
         data_frame,
         x="Segment",
         y=value_col,
         color="Segment",
         title=f"{value_col} | By Segment",
-        # custom_data=""
+        custom_data=custom_data,
     )
 
     fig.update_layout(title=dict(x=0.5, xanchor="center"), yaxis=dict(visible=False), showlegend=False)
@@ -56,7 +56,7 @@ def bar_chart_by_segment(data_frame, value_col="Sales"):
 
 
 @capture("graph")
-def bar_chart_by_product(data_frame, value_col="Sales"):
+def bar_chart_by_product(data_frame, custom_data, value_col="Sales"):
     df_grouped = data_frame.groupby("Product Name", as_index=False)[value_col].sum()
     df_top10 = df_grouped.nlargest(10, value_col).reset_index(drop=True)
     df_top10["Rank"] = df_top10[value_col].rank(method="first", ascending=False).astype(int)
@@ -70,6 +70,7 @@ def bar_chart_by_product(data_frame, value_col="Sales"):
         orientation="h",
         color="Product Name",
         color_discrete_sequence=["#4dabf7"] + ["#ff9222"] * 9,
+        custom_data=custom_data,
     )
 
     fig.update_layout(
@@ -90,7 +91,7 @@ def bar_chart_by_product(data_frame, value_col="Sales"):
 
 
 @capture("graph")
-def bar_chart_by_subcategory(data_frame, value_col="Sales"):
+def bar_chart_by_subcategory(data_frame, custom_data, value_col="Sales"):
     df_sorted = data_frame.sort_values(value_col, ascending=True)
     fig = px.bar(
         df_sorted,
@@ -98,6 +99,7 @@ def bar_chart_by_subcategory(data_frame, value_col="Sales"):
         x=value_col,
         orientation="h",
         title=f"{value_col} | By Sub-Category",
+        custom_data=custom_data,
     )
 
     fig.update_layout(
@@ -109,13 +111,14 @@ def bar_chart_by_subcategory(data_frame, value_col="Sales"):
 
 
 @capture("graph")
-def bar_chart_by_category(data_frame, value_col="Sales"):
+def bar_chart_by_category(data_frame, custom_data, value_col="Sales"):
     fig = px.bar(
         data_frame,
         x="Category",
         y=value_col,
         title=f"{value_col} | By Category",
         color="Category",
+        custom_data=custom_data,
     )
     fig.update_layout(title=dict(x=0.5, xanchor="center"), yaxis=dict(visible=False), showlegend=False)
     fig.update_layout(bargap=0.6, xaxis_title=None, yaxis_title=None)
@@ -123,7 +126,7 @@ def bar_chart_by_category(data_frame, value_col="Sales"):
 
 
 @capture("graph")
-def bar_chart_sales_by_customer(data_frame, value_col="Sales"):
+def bar_chart_sales_by_customer(data_frame, custom_data, value_col="Sales"):
     df_grouped = data_frame.groupby("Customer Name", as_index=False)[value_col].sum()
     df_top10 = df_grouped.nlargest(10, value_col).reset_index(drop=True)
     df_top10["Rank"] = df_top10[value_col].rank(method="first", ascending=False).astype(int)
@@ -137,6 +140,7 @@ def bar_chart_sales_by_customer(data_frame, value_col="Sales"):
         # text="Sales_Label",
         color="Customer Name",
         color_discrete_sequence=["#4dabf7"] + ["#ff9222"] * 9,  # Highlight top 1
+        custom_data=custom_data,
     )
 
     fig.update_layout(
@@ -194,11 +198,9 @@ def custom_aggrid(data_frame):
                     {
                         "condition": "params.value < 0.5",
                         "style": {"color": "red", "fontWeight": "bold"},
-                        # "style": {"backgroundColor": "red"},
                     },
                     {
                         "condition": "params.value >= 0.5",
-                        # "style": {"backgroundColor": "green"},
                         "style": {"color": "green", "fontWeight": "bold"},
                     },
                 ]
