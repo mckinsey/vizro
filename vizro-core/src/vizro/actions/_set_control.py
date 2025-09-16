@@ -39,9 +39,9 @@ class set_control(_AbstractAction):
     * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. The `value` argument
     can be used in two ways to specify what value to send to the `target` control:
 
-       * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
+        * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
         trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing), for example `"x"`.
-       * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
+        * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
 
     Args:
         target (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
