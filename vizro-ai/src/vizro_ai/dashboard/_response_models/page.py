@@ -79,7 +79,7 @@ class PagePlan(BaseModel):
 
     _components: list[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
     _controls: list[vm.Filter] = PrivateAttr()
-    _layout: vm.Grid = PrivateAttr()
+    _layout: vm.Layout = PrivateAttr()
     _components_code: dict = PrivateAttr()
     _components_imports: dict = PrivateAttr()
 
