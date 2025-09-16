@@ -58,8 +58,8 @@ class _BaseAction(VizroBaseModel):
     _first_in_chain_trigger: _IdProperty = PrivateAttr()
     _prevent_initial_call_of_guard: bool = PrivateAttr()
 
-    # Temporary hack to help with lookups in filter_interaction and set_control. Should not be required in future with
-    # reworking of model manager and removal of filter_interaction.
+    # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
+    # the model manager supports `parent_model` access for all Vizro models.
     _parent_model: VizroBaseModel = PrivateAttr()
 
     @property

@@ -131,6 +131,7 @@ class TestGraphGetValueFromTrigger:
         assert value == "Europe"
 
     # TODO AM: It doesn't work for `nestedDict.key1[0].key2`. Should we remove `camel_killer_box=True`?
+    # We use Box notation to access nested data in the trigger dict by using dots and brackets string syntax.
     @pytest.mark.parametrize("action_value", ["customdata[0]", "x", "nested_dict.key1[0].key2"])
     def test_value_nested_box_notation(self, standard_px_chart, action_value):
         graph = vm.Graph(figure=standard_px_chart)
