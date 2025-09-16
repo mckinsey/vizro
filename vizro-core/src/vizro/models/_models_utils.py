@@ -153,8 +153,8 @@ def make_actions_chain(self):
         # The actions chain guard should be called only for on page load.
         action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
 
-        # Temporary hack to help with lookups in filter_interaction and set_control. Should not be required in future
-        # with reworking of model manager and removal of filter_interaction.
+        # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
+        # the model manager supports `parent_model` access for all Vizro models.
         action._parent_model = self
 
     # We should do self.actions = converted_actions but this leads to a recursion error. The below is a workaround

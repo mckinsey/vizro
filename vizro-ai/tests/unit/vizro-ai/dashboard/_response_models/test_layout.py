@@ -29,7 +29,7 @@ class TestLayoutCreate:
             layout_grid_template_areas=layout_grid_template_areas,
         )
         result = layout_plan.create(component_ids=component_ids)
-        expected = vm.Grid(grid=grid)
+        expected = vm.Layout(grid=grid)
 
         assert result.model_dump(exclude={"id": True}) == expected.model_dump(exclude={"id": True})
 
