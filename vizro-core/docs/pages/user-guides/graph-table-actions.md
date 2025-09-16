@@ -42,40 +42,79 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
 !!! tip
 
-    Often the `value` of `set_control` is the same as the `column` of the filter, but this does not need to be the case. You can perform a cross-filter where the source component's column name given by `value` is different from the target component's colum name, which is given by the filter's `column`.
+    Often the `value` of `set_control` is the same as the `column` of the filter, but this does not need to be the case. You can perform a cross-filter where the source component's column name given by `value` is different from the target component's column name, which is given by the filter's `column`.
 
 ### Cross-filter from table
 
 The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row in the table or pressing ++space++ while focused on a row. The `value` argument in `va.set_control` specifies the column of the value that is sent to the specified `control`.
 
-```{.python pycafe-link hl_lines="15"}
-import vizro.actions as va
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_ag_grid
+!!! example "Cross-filter from table to graph"
 
-tips = px.data.tips()
+    === "app.py"
 
-page = vm.Page(
-    title="Cross-filter from table to graph",
-    components=[
-        vm.AgGrid(
-            title="Click on a row to use that row's sex to filter graph",
-            figure=dash_ag_grid(tips),
-            actions=va.set_control(control="sex_filter", value="sex"),
-        ),
-        vm.Graph(id="tips_graph", figure=px.histogram(tips, x="tip")),  # (1)!
-    ],
-    controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_graph"])],  # (2)!
-)
+        ```{.python pycafe-link hl_lines="15"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
 
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
-```
+        tips = px.data.tips()
 
-1. We give the `vm.Graph` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        page = vm.Page(
+            title="Cross-filter from table to graph",
+            components=[
+                vm.AgGrid(
+                    title="Click on a row to use that row's sex to filter graph",
+                    figure=dash_ag_grid(tips),
+                    actions=va.set_control(control="sex_filter", value="sex"),
+                ),
+                vm.Graph(id="tips_graph", figure=px.histogram(tips, x="tip")),  # (1)!
+            ],
+            controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_graph"])],  # (2)!
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. We give the `vm.Graph` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: sex_filter
+                    type: set_control
+                    value: sex
+                figure:
+                  _target_: dash_ag_grid
+                  data_frame: tips
+                title: Click on a row to use that row's sex to filter graph
+                type: ag_grid
+              - figure:
+                  _target_: histogram
+                  data_frame: tips
+                  x: tip
+                id: tips_graph
+                type: graph
+            controls:
+              - column: sex
+                id: sex_filter
+                targets:
+                  - tips_graph
+                type: filter
+            title: Cross-filter from table to graph
+        ```
+
+    === "Result"
+
+        TODO NOW: screenshot
 
 When you click or press ++space++ on a row in the table, the graph is cross-filtered to show data only for one sex.
 
@@ -90,7 +129,7 @@ When you click or press ++space++ on a row in the table, the graph is cross-filt
 
 !!! tip
 
-    You can emphasise that a row is selectable by including checkboxes in your AG Grid with `figure=dash_ag_grid(..., dashGridOptions={"rowSelection": {"checkboxes": True}})`. The Dash AG Grid offers many [options to configure row selection](https://dash.plotly.com/dash-ag-grid/single-row-selection). These can be [passed directly](table.md#basic-usage) into `dash_ag_grid` as keyword arguments or set for multiple tables by creating a [custom table function](custom-tables.md).
+    You can emphasize that a row is selectable by including checkboxes in your AG Grid with `figure=dash_ag_grid(..., dashGridOptions={"rowSelection": {"checkboxes": True}})`. The Dash AG Grid offers many [options to configure row selection](https://dash.plotly.com/dash-ag-grid/single-row-selection). These can be [passed directly](table.md#basic-usage) into `dash_ag_grid` as keyword arguments or set for multiple tables by creating a [custom table function](custom-tables.md).
 
 ### Cross-filter from graph
 
@@ -101,34 +140,74 @@ The trigger for a cross-filter from a [graph](graph.md) is clicking on data in t
 
 Here is an example where we use `value="y"`.
 
-```{.python pycafe-link hl_lines="15"}
-import vizro.actions as va
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_ag_grid
+!!! example "Cross-filter from graph to table with `y`"
 
-tips = px.data.tips()
+    === "app.py"
 
-page = vm.Page(
-    title="Cross-filter from graph to table",
-    components=[
-        vm.Graph(
-            title="Click on a box to use that box's sex to filter table",
-            figure=px.box(tips, x="tip", y="sex"),
-            actions=va.set_control(control="sex_filter", value="y"),
-        ),
-        vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
-    ],
-    controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (2)!
-)
+        ```{.python pycafe-link hl_lines="15"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
 
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
-```
+        tips = px.data.tips()
 
-1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        page = vm.Page(
+            title="Cross-filter from graph to table",
+            components=[
+                vm.Graph(
+                    title="Click on a box to use that box's sex to filter table",
+                    figure=px.box(tips, x="tip", y="sex"),
+                    actions=va.set_control(control="sex_filter", value="y"),
+                ),
+                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
+            ],
+            controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (2)!
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: sex_filter
+                    type: set_control
+                    value: y
+                figure:
+                  _target_: box
+                  data_frame: tips
+                  x: tip
+                  y: sex
+                title: Click on a box to use that box's sex to filter table
+                type: graph
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: tips
+                id: tips_table
+                type: ag_grid
+            controls:
+              - column: sex
+                id: sex_filter
+                targets:
+                  - tips_table
+                type: filter
+            title: Cross-filter from graph to table
+        ```
+
+    === "Result"
+
+        TODO NOW: screenshot
 
 When you click on a box in the graph, the table is cross-filtered to show data for only one sex, which is the `y` variable for the plot. This works because `"y"` exists in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing) for this chart.
 
@@ -143,35 +222,77 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
 Here is an example where we use `value="sex"` and `custom_data`.
 
-```{.python pycafe-link hl_lines="15"}
-import vizro.actions as va
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_ag_grid
+!!! example "Cross-filter from graph to table with `custom_data`"
 
-tips = px.data.tips()
+    === "app.py"
 
-page = vm.Page(
-    title="Cross-filter from graph to table",
-    components=[
-        vm.Graph(
-            title="Click on a box to use that box's sex to filter table",
-            figure=px.box(tips, x="tip", y="time", color="sex", custom_data="sex"),  # (1)!
-            actions=va.set_control(control="sex_filter", value="sex"),
-        ),
-        vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (2)!
-    ],
-    controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (3)!
-)
+        ```{.python pycafe-link hl_lines="15"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
 
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
-```
+        tips = px.data.tips()
 
-1. We encode the sex as `color` in the plot, but this is not by default available in `clickData`. Hence we must add it by including `custom_data="sex"`.
-1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        page = vm.Page(
+            title="Cross-filter from graph to table",
+            components=[
+                vm.Graph(
+                    title="Click on a box to use that box's sex to filter table",
+                    figure=px.box(tips, x="tip", y="time", color="sex", custom_data="sex"),  # (1)!
+                    actions=va.set_control(control="sex_filter", value="sex"),
+                ),
+                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (2)!
+            ],
+            controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (3)!
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. We encode the sex as `color` in the plot, but this is not by default available in `clickData`. Hence we must add it by including `custom_data="sex"`.
+        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: sex_filter
+                    type: set_control
+                    value: sex
+                figure:
+                  _target_: box
+                  color: sex
+                  custom_data: sex
+                  data_frame: tips
+                  x: tip
+                  y: time
+                title: Click on a box to use that box's sex to filter table
+                type: graph
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: tips
+                id: tips_table
+                type: ag_grid
+            controls:
+              - column: sex
+                id: sex_filter
+                targets:
+                  - tips_table
+                type: filter
+            title: Cross-filter from graph to table
+        ```
+
+    === "Result"
+
+        TODO NOW: screenshot
 
 When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
 
@@ -207,43 +328,85 @@ A cross-filter often work best when used [inside a container](container.md#add-c
 
 For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) into containers. The rearrangement here is purely visual to give a better user experience; the `va.set_control` is configured exactly the same way and behaves identically while the dashboard is running.
 
-```{.python pycafe-link hl_lines="17"}
-import vizro.actions as va
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_ag_grid
+!!! example "Cross-filter between containers"
 
-tips = px.data.tips()
+    === "app.py"
 
-page = vm.Page(
-    title="Cross-filter from table to graph",
-    components=[
-        vm.Container(
+        ```{.python pycafe-link hl_lines="17"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        tips = px.data.tips()
+
+        page = vm.Page(
+            title="Cross-filter between containers",
             components=[
-                vm.AgGrid(
-                    title="Click on a row to use that row's sex to filter graph",
-                    figure=dash_ag_grid(tips),
-                    actions=va.set_control(control="sex_filter", value="sex"),
-                )
+                vm.Container(
+                    components=[
+                        vm.AgGrid(
+                            title="Click on a row to use that row's sex to filter graph",
+                            figure=dash_ag_grid(tips),
+                            actions=va.set_control(control="sex_filter", value="sex"),
+                        )
+                    ],
+                    variant="filled",  # (1)!
+                ),
+                vm.Container(
+                    components=[vm.Graph(figure=px.histogram(tips, x="tip"))],  # (2)!
+                    controls=[vm.Filter(id="sex_filter", column="sex")],  # (3)!
+                    variant="filled",
+                ),
             ],
-            variant="filled",  # (1)!
-        ),
-        vm.Container(
-            components=[vm.Graph(figure=px.histogram(tips, x="tip"))],  # (2)!
-            controls=[vm.Filter(id="sex_filter", column="sex")],  # (3)!
-            variant="filled",
-        ),
-    ],
-)
+        )
 
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
-```
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
 
-1. We use [styled containers](container.md#styled-containers) to make it clear which components and controls are in each container.
-1. The `vm.Graph` no longer needs an `id` assigned to it, since the `vm.Filter` does not need to explicitly target it any more.
-1. The `vm.Filter` no longer needs to specify `targets`. By default, the `vm.Filter` targets all components in its container whose data source includes `column="sex"`.
+        1. We use [styled containers](container.md#styled-containers) to make it clear which components and controls are in each container.
+        1. The `vm.Graph` no longer needs an `id` assigned to it, since the `vm.Filter` does not need to explicitly target it any more.
+        1. The `vm.Filter` no longer needs to specify `targets`. By default, the `vm.Filter` targets all components in its container whose data source includes `column="sex"`.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - components:
+                  - actions:
+                      - control: sex_filter
+                        type: set_control
+                        value: sex
+                    figure:
+                      _target_: dash_ag_grid
+                      data_frame: tips
+                    title: Click on a row to use that row's sex to filter graph
+                    type: ag_grid
+                type: container
+                variant: filled
+              - components:
+                  - figure:
+                      _target_: histogram
+                      data_frame: tips
+                      x: tip
+                    type: graph
+                controls:
+                  - column: sex
+                    id: sex_filter
+                    type: filter
+                type: container
+                variant: filled
+            title: Cross-filter between containers
+        ```
+
+    === "Result"
+
+        TODO NOW: screenshot
 
 ### Cross-filter between pages
 
@@ -251,87 +414,180 @@ You can perform a cross-filter where the target components are on a different pa
 
 For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
 
-```{.python pycafe-link hl_lines="15"}
-import vizro.actions as va
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_ag_grid
+!!! example "Cross filter between pages"
 
-tips = px.data.tips()
+    === "app.py"
 
-page_1 = vm.Page(
-    title="Cross-filter source table",
-    components=[
-        vm.AgGrid(
-            title="Click on a row to use that row's sex to filter graph",
-            figure=dash_ag_grid(tips),
-            actions=va.set_control(control="sex_filter", value="sex"),
+        ```{.python pycafe-link hl_lines="15"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        tips = px.data.tips()
+
+        page_1 = vm.Page(
+            title="Cross-filter source table",
+            components=[
+                vm.AgGrid(
+                    title="Click on a row to use that row's sex to filter graph",
+                    figure=dash_ag_grid(tips),
+                    actions=va.set_control(control="sex_filter", value="sex"),
+                )
+            ],
         )
-    ],
-)
 
-page_2 = vm.Page(
-    title="Cross-filter target graph",
-    components=[vm.Graph(figure=px.histogram(tips, x="tip"))],   # (1)!
-    controls=[vm.Filter(id="sex_filter", column="sex", show_in_url=True)],  # (2)!
-)
+        page_2 = vm.Page(
+            title="Cross-filter target graph",
+            components=[vm.Graph(figure=px.histogram(tips, x="tip"))],   # (1)!
+            controls=[vm.Filter(id="sex_filter", column="sex", show_in_url=True)],  # (2)!
+        )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2])
-Vizro().build(dashboard).run()
-```
+        dashboard = vm.Dashboard(pages=[page_1, page_2])
+        Vizro().build(dashboard).run()
+        ```
 
-1. The `vm.Graph` no longer needs an `id` assigned to it, since the `vm.Filter` does not need to explicitly target it any more.
-1. The `vm.Filter` no longer needs to specify `targets`. By default, the `vm.Filter` targets all components on its page whose data source includes `column="sex"`. We must set `show_in_url=True` for this filter to be set by `va.set_control`.
+        1. The `vm.Graph` no longer needs an `id` assigned to it, since the `vm.Filter` does not need to explicitly target it any more.
+        1. The `vm.Filter` no longer needs to specify `targets`. By default, the `vm.Filter` targets all components on its page whose data source includes `column="sex"`. We must set `show_in_url=True` for this filter to be set by `va.set_control`.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: sex_filter
+                    type: set_control
+                    value: sex
+                figure:
+                  _target_: dash_ag_grid
+                  data_frame: tips
+                title: Click on a row to use that row's sex to filter graph
+                type: ag_grid
+            title: Cross-filter source table
+          - components:
+              - figure:
+                  _target_: histogram
+                  data_frame: tips
+                  x: tip
+                type: graph
+            controls:
+              - column: sex
+                id: sex_filter
+                show_in_url: true
+                type: filter
+            title: Cross-filter target graph
+        ```
+
+    === "Result"
+
+        TODO NOW: screenshot
 
 ### Cross-filter from pivoted or multi-dimensional data
 
-A single source component can trigger _multiple_ cross-filters. For example, [pivoted data](https://en.wikipedia.org/wiki/Pivot_table) can be visualised using a table or a [2-dimensional heatmap](https://plotly.com/python/heatmaps/).
+A single source component can trigger _multiple_ cross-filters. For example, [pivoted data](https://en.wikipedia.org/wiki/Pivot_table) can be visualized using a table or a [2-dimensional heatmap](https://plotly.com/python/heatmaps/).
 
 To perform multiple cross-filters, each dimension that is filtered must have its own `vm.Filter` that is set by `va.set_control` in the `actions` of the source component in an [actions chain](actions.md#multiple-actions). Here is a 2-dimensional example using a heatmap:
 
-```{.python pycafe-link hl_lines="20-23"}
-import vizro.actions as va
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_ag_grid
+!!! example "Cross-filter over 2 dimensions"
 
-tips = px.data.tips()
+    === "app.py"
 
-page = vm.Page(
-    title="Cross-filter from graph to table",
-    components=[
-        vm.Graph(
-            title="Click on a cell to use that cell's sex and day to filter table",
-            figure=px.density_heatmap(  # (1)!
-                tips,
-                x="day",
-                y="sex",
-                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
-            ),
-            actions=[
-                va.set_control(control="day_filter", value="x"),  # (2)!
-                va.set_control(control="sex_filter", value="y"),
+        ```{.python pycafe-link hl_lines="20-23"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        tips = px.data.tips()
+
+        page = vm.Page(
+            title="Cross-filter over 2 dimensions",
+            components=[
+                vm.Graph(
+                    title="Click on a cell to use that cell's sex and day to filter table",
+                    figure=px.density_heatmap(  # (1)!
+                        tips,
+                        x="day",
+                        y="sex",
+                        category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
+                    ),
+                    actions=[
+                        va.set_control(control="day_filter", value="x"),  # (2)!
+                        va.set_control(control="sex_filter", value="y"),
+                    ],
+                ),
+                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
             ],
-        ),
-        vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
-    ],
-    controls=[
-        vm.Filter(id="day_filter", column="day", targets=["tips_table"]),  # (3)!
-        vm.Filter(id="sex_filter", column="sex", targets=["tips_table"]),
-    ],
-)
+            controls=[
+                vm.Filter(id="day_filter", column="day", targets=["tips_table"]),  # (3)!
+                vm.Filter(id="sex_filter", column="sex", targets=["tips_table"]),
+            ],
+        )
 
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
-```
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
 
-1. We make a [2-dimensional histogram](https://plotly.com/python/2D-Histogram/) to show the number of rows in the `tips` data for each day and sex.
-1. Each dimension has its own `va.set_control` to set the relevant `vm.Filter`.
-1. Each has its own `vm.Filter` to filter by the relevant `column`.
+        1. We make a [2-dimensional histogram](https://plotly.com/python/2D-Histogram/) to show the number of rows in the `tips` data for each day and sex.
+        1. Each dimension has its own `va.set_control` to set the relevant `vm.Filter`.
+        1. Each has its own `vm.Filter` to filter by the relevant `column`.
 
-When you click on a coloured cell in the heatmap, the table is cross-filtered to show data for only one sex and day. The "count" shown when you click on a heatmap cell corresponds to the number of rows shown in the filtered table.
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: day_filter
+                    type: set_control
+                    value: x
+                  - control: sex_filter
+                    type: set_control
+                    value: y
+                figure:
+                  _target_: density_heatmap
+                  category_orders:
+                    day:
+                      - Thur
+                      - Fri
+                      - Sat
+                      - Sun
+                  data_frame: tips
+                  x: day
+                  y: sex
+                title: Click on a cell to use that cell's sex and day to filter table
+                type: graph
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: tips
+                id: tips_table
+                type: ag_grid
+            controls:
+              - column: day
+                id: day_filter
+                targets:
+                  - tips_table
+                type: filter
+              - column: sex
+                id: sex_filter
+                targets:
+                  - tips_table
+                type: filter
+            title: Cross-filter over 2 dimensions
+        ```
+
+    === "Result"
+
+        TODO NOW: screenshot
+
+When you click on a colored cell in the heatmap, the table is cross-filtered to show data for only one sex and day. The "count" shown when you click on a heatmap cell corresponds to the number of rows shown in the filtered table.
 
 ??? details "Behind the scenes mechanism"
 

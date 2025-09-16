@@ -92,9 +92,9 @@ When you click the "Export data" button, the data for all graphs, tables and fig
 
 ## Trigger an action with a graph
 
-This is already possible, and documentation is coming soon!
+Here is an example that [performs a cross-filter](graph-table-actions.md#cross-filter-from-graph) between a graph and a table. When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
 
-TODO NOW: write this
+TODO NOW: copy and paste example in here
 
 ## Multiple actions
 

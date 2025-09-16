@@ -123,7 +123,8 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.45
+                # TODO NOW: revert this
+                https://py.cafe/gh/artifact/mckinsey/vizro/actions/runs/17739737174/pip/vizro-0.1.46.dev0-py3-none-any.whl
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
