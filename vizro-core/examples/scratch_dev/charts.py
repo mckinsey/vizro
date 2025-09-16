@@ -1,42 +1,34 @@
 """Collection of custom charts."""
 
-import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
+import vizro.plotly.express as px
+from dash_ag_grid import AgGrid
 from vizro.models.types import capture
 
 
 @capture("graph")
-def custom_scatter(data_frame: pd.DataFrame, x: str, y: str):
-    """Custom scatter plot."""
-    return go.Figure(data=[go.Scatter(x=data_frame[x], y=data_frame[y])])
-
-
-@capture("graph")
-def create_bubble(data_frame):
+def create_map_bubble(data_frame, value_col="Sales"):
+    data_frame[value_col] = data_frame[value_col].abs()
     fig = px.scatter_geo(
         data_frame,
         locations="State_Code",
         locationmode="USA-states",
-        size="Sales",
+        size=value_col,
         hover_name="State",
-        hover_data={"Sales": ":$,.0f", "State_Code": False},
+        hover_data={value_col: ":$,.0f", "State_Code": False},
         size_max=40,
-        title="Sales | By State",
+        title=f"{value_col} | By State",
         scope="usa",
     )
 
     fig.update_layout(
         title={
-            "text": "Sales | By State",
+            "text": f"{value_col} | By State",
             "x": 0.5,
             "xanchor": "center",
         },
         geo=dict(
-            showland=True,
-            landcolor="#e8ecf0",
             showlakes=True,
-            lakecolor="#ffffff",
             projection_type="albers usa",
             showframe=True,
             showcoastlines=True,
@@ -45,3 +37,179 @@ def create_bubble(data_frame):
     )
 
     return fig
+
+
+@capture("graph")
+def bar_chart_by_segment(data_frame, value_col="Sales"):
+    fig = px.bar(
+        data_frame,
+        x="Segment",
+        y=value_col,
+        color="Segment",
+        title=f"{value_col} | By Segment",
+        # custom_data=""
+    )
+
+    fig.update_layout(title=dict(x=0.5, xanchor="center"), yaxis=dict(visible=False), showlegend=False)
+    fig.update_layout(bargap=0.6, xaxis_title=None, yaxis_title=None)
+    return fig
+
+
+@capture("graph")
+def bar_chart_by_product(data_frame, value_col="Sales"):
+    df_grouped = data_frame.groupby("Product Name", as_index=False)[value_col].sum()
+    df_top10 = df_grouped.nlargest(10, value_col).reset_index(drop=True)
+    df_top10["Rank"] = df_top10[value_col].rank(method="first", ascending=False).astype(int)
+    df_top10 = df_top10.sort_values("Rank")
+    df_top10["Sales_Label"] = df_top10[value_col].apply(lambda x: f"${x / 1000:.1f}K")
+
+    fig = px.bar(
+        df_top10,
+        x=value_col,
+        y="Rank",
+        orientation="h",
+        color="Product Name",
+        color_discrete_sequence=["#4dabf7"] + ["#ff9222"] * 9,
+    )
+
+    fig.update_layout(
+        title="<b>Sales</b> | By Product",
+        xaxis_title=None,
+        yaxis_title=None,
+        yaxis=dict(
+            tickmode="array",
+            tickvals=df_top10["Rank"],
+            autorange="reversed",  # Rank 1 on top
+        ),
+        showlegend=False,
+    )
+
+    fig.update_traces(textposition="outside")
+
+    return fig
+
+
+@capture("graph")
+def bar_chart_by_subcategory(data_frame, value_col="Sales"):
+    df_sorted = data_frame.sort_values(value_col, ascending=True)
+    fig = px.bar(
+        df_sorted,
+        y="Sub-Category",
+        x=value_col,
+        orientation="h",
+        title=f"{value_col} | By Sub-Category",
+    )
+
+    fig.update_layout(
+        title=dict(x=0.5, xanchor="center"),
+        yaxis=dict(visible=True, categoryorder="total ascending"),  # order bars by Sales
+        showlegend=False,
+    )
+    return fig
+
+
+@capture("graph")
+def bar_chart_by_category(data_frame, value_col="Sales"):
+    fig = px.bar(
+        data_frame,
+        x="Category",
+        y=value_col,
+        title=f"{value_col} | By Category",
+        color="Category",
+    )
+    fig.update_layout(title=dict(x=0.5, xanchor="center"), yaxis=dict(visible=False), showlegend=False)
+    fig.update_layout(bargap=0.6, xaxis_title=None, yaxis_title=None)
+    return fig
+
+
+@capture("graph")
+def bar_chart_sales_by_customer(data_frame, value_col="Sales"):
+    df_grouped = data_frame.groupby("Customer Name", as_index=False)[value_col].sum()
+    df_top10 = df_grouped.nlargest(10, value_col).reset_index(drop=True)
+    df_top10["Rank"] = df_top10[value_col].rank(method="first", ascending=False).astype(int)
+    df_top10["Sales_Label"] = df_top10[value_col].apply(lambda x: f"${x / 1000:.1f}K")
+
+    fig = px.bar(
+        df_top10,
+        x=value_col,
+        y="Rank",
+        orientation="h",
+        # text="Sales_Label",
+        color="Customer Name",
+        color_discrete_sequence=["#4dabf7"] + ["#ff9222"] * 9,  # Highlight top 1
+    )
+
+    fig.update_layout(
+        title=f"<b>{value_col}</b> | By Top 10 Customers",
+        xaxis_title=None,
+        yaxis_title=None,
+        yaxis=dict(
+            tickmode="array",
+            tickvals=df_top10["Rank"],
+            ticktext=[f"{r} | {c}" for r, c in zip(df_top10["Rank"], df_top10["Customer Name"])],
+            autorange="reversed",
+        ),
+        showlegend=False,
+    )
+
+    fig.update_traces(textposition="outside")
+
+    return fig
+
+
+@capture("ag_grid")
+def custom_aggrid(data_frame):
+    data_frame["Profit Ratio"] = (data_frame["Profit"] / data_frame["Sales"]).round(3)
+
+    column_defs = [
+        {"headerName": "Customer Name", "field": "Customer Name"},
+        {"headerName": "Segment", "field": "Segment"},
+        {"headerName": "Category", "field": "Category"},
+        {"headerName": "Sub-Category", "field": "Sub-Category"},
+        {"headerName": "Product Name", "field": "Product Name"},
+        {"headerName": "Sales", "field": "Sales", "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"}},
+        {"headerName": "Quantity", "field": "Quantity", "cellStyle": {"textAlign": "center"}},
+        {
+            "headerName": "Profit",
+            "field": "Profit",
+            "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"},
+            "cellStyle": {
+                "function": """
+                function(params) {
+                    if (params.value < 0) {
+                        return {color: 'red', fontWeight: 'bold'};
+                    } else {
+                        return {color: 'green', fontWeight: 'bold'};
+                    }
+                }
+                """
+            },
+        },
+        {
+            "headerName": "Profit Ratio",
+            "field": "Profit Ratio",
+            "valueFormatter": {"function": "d3.format('.1%')(params.value)"},
+            "cellStyle": {
+                "styleConditions": [
+                    {
+                        "condition": "params.value < 0.5",
+                        "style": {"color": "red", "fontWeight": "bold"},
+                        # "style": {"backgroundColor": "red"},
+                    },
+                    {
+                        "condition": "params.value >= 0.5",
+                        # "style": {"backgroundColor": "green"},
+                        "style": {"color": "green", "fontWeight": "bold"},
+                    },
+                ]
+            },
+        },
+    ]
+    aggrid = AgGrid(
+        columnDefs=column_defs,
+        defaultColDef={"resizable": True, "sortable": True, "filter": True, "minWidth": 30, "flex": 1},
+        style={"height": "750px", "width": "100%"},
+        rowData=data_frame.to_dict("records"),
+        dashGridOptions={"pagination": True, "paginationPageSize": 20},
+    )
+    return aggrid
