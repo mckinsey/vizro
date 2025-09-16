@@ -12,6 +12,10 @@ from vizro.actions import export_data, filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 
+# TODO: Remove dependence on filter_interaction from these tests. Probably should rewrite export_data tests
+# in general now we can test pure function more easily.
+pytestmark = [pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning")]
+
 
 @pytest.fixture
 def target_data_filter_and_filter_interaction(request, gapminder_2007):
@@ -200,8 +204,8 @@ def config_for_testing_all_components_with_actions(request, standard_px_chart, a
             vm.Button(
                 id="export_data_button",
                 actions=[
-                    vm.Action(function=export_data_action_function),
-                    vm.Action(function=export_data(id="not_first_in_chain_export_data_action")),
+                    export_data_action_function,
+                    export_data(id="not_first_in_chain_export_data_action"),
                 ],
                 icon="download",
             ),

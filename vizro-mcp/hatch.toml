@@ -45,7 +45,8 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "mkdocs-glightbox"
 ]
 detached = true
 installer = "uv"

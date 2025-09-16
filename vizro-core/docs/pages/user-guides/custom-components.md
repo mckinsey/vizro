@@ -1,85 +1,83 @@
 # How to create custom components
 
-Vizro's public API is kept small to enable quick and easy configuration of a dashboard. However,
-at the same time, Vizro is extensible, so that you can tweak any component to your liking or even create entirely new ones.
+The number of [built-in Vizro models][vizro.models] is deliberately kept quite small to enable quick and easy configuration of a dashboard. However, Vizro is also extensible, so that you can modify any model or create an entirely new one. This guide shows you how to do so.
 
-If you can't find a component that you would like to have in the code basis, or if you would like to alter/enhance an existing component, then you are in the right place.
-This guide shows you how to create custom components that are completely new, or enhancements of existing ones.
+In general, you can create a custom component based on a Dash component from [any Dash component library](https://dash.plotly.com/#open-source-component-libraries), for example:
+
+* [Dash Core Components](https://dash.plotly.com/dash-core-components)
+* [Dash HTML Components](https://github.com/plotly/dash/tree/dev/components/dash-html-components)
+* [Dash Bootstrap Components](https://www.dash-bootstrap-components.com/)
+* [Dash Mantine Components](https://www.dash-mantine-components.com/)
+
+## General principles
 
 !!! note "Can you use `extra` instead of creating a custom component?"
-    If you want to alter/enhance an existing component, you may not even need to create a custom component. Many of our models have an `extra` argument, that let's you pass arguments to the underlying Dash component directly. You can check the [API reference](../API-reference/models.md) of the model in question. An example of this would be to make the [`RadioItem`][vizro.models.RadioItems] [inline instead of stacked](./selectors.md#the-extra-argument).
+    If you want to modify an existing component, you may not even need to create a custom component. Many of our models have an `extra` argument that lets you pass arguments to the underlying Dash component directly, for example to make the [`RadioItem`][vizro.models.RadioItems] [inline instead of stacked](selectors.md#the-extra-argument).
 
-In general, you can create a custom component based on any dash-compatible component (for example, [dash-core-components](https://dash.plotly.com/dash-core-components),
-[dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components)).
+To create a custom component:
 
+1. Subclass the relevant model:
+    * To extend an existing model such as [`RangeSlider`][vizro.models.RangeSlider], subclass it.
+    * To create a new component, subclass [`VizroBaseModel`][vizro.models.VizroBaseModel].
+1. Write the subclass:
+    * To extend an existing model you could, for example, add or change model fields or override the `build` method.
+    * To create a new component, you need to define fields and the `build` method from scratch.
+1. Look at the field where your component will be used in the [API reference][vizro.models] and check whether it is described as a discriminated union. For example, in [`Filter`][vizro.models.Filter] the `selector` field of type [`SelectorType`][vizro.models.types.SelectorType] is a discriminated union but the `options` field of type [`OptionsType`][vizro.models.types.OptionsType] is not. If the field is a discriminated union, then:
+    - You must ensure your model has a `type` field.
+    - You must register the new type with its parent model with [`add_type`][vizro.models.VizroBaseModel.add_type].
 
-All our components are based on `Dash`, and they are shipped with a set of sensible defaults that can be modified. If you would like to overwrite one of those defaults,
-or if you would like to use extra `args` or `kwargs` of those components, then this is the correct way to include those. You can use any existing attribute of any underlying [Dash component](https://dash.plotly.com/#open-source-component-libraries) with this method.
-
-!!!note
-
-    There are always **four general steps** to consider to create a custom component:
-
-    0. **Check** if you can achieve your goal with a potential `extra` argument
-    1. **Sub-class to create** your component
-    2. **Enhance or build** the component (for example, to add/change model fields, overwrite pre-build/build method) to your desire
-    3. **Check** if your component will be part of a discriminated union[^1]. If yes, then
-        - you must ensure your component has a `type` field
-        - you must register the new type with its parent model's relevant field (where the new component is entered into) with [`add_type`][vizro.models.VizroBaseModel.add_type]
-
-    We will refer back to these three steps in the two examples below.
-
-[^1]: You can check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (for example, `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
-
+We will refer back to these steps in the examples below.
 
 ## Extend an existing component
 
-
 You may want to use this strategy to:
 
-- extend an existing component (for example, to add a button to [`Card`][vizro.models.Card])
-- change configurations we have set by default (for example, to set `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider])
-- change any fields of any models (for example, to change the title field from `Optional` to have a default)
+- Extend an existing component, for example to add a button to [`Card`][vizro.models.Card].
+- Change default configuration of a Dash component set by a Vizro model, for example to set `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider].
+- Change the fields of a models, for example to change the `title` field from `Optional` to have a default.
 
+You can extend an existing component by subclassing the component you want to modify. Remember that when subclassing a component you have access to all fields of its parent model, but you can choose to overwrite any field or method or define entirely new ones.
 
-You can extend an existing component by sub-classing the component you want to alter. Remember that when sub-classing a component
-you have access to all fields of all parent models, but you can choose to overwrite any field or method, or define new ones.
-
-The aim for this example is to enhance the [`RangeSlider`][vizro.models.RangeSlider] model so that
-one slider handle cannot cross the other, and to have a permanent tooltip showing the current value. You will note that it is often easier to call `super()` when overriding a complex method
-such as the `build` method in the below example instead of attempting to write it from scratch.
+In this example, we modify the [`RangeSlider`][vizro.models.RangeSlider] model so that
+one slider handle cannot cross the other, and to have a permanent tooltip showing the current value. It is often easier to call `super()` and modify the result when overriding a complex method
+such as the `build` method instead of writing it from scratch.
 
 In this case, the general three steps translate into:
 
-1. Sub-class existing [`RangeSlider`][vizro.models.RangeSlider]:
+1. Subclass [`RangeSlider`][vizro.models.RangeSlider]:
 ```py
+import vizro.models as vm
+
 class TooltipNonCrossRangeSlider(vm.RangeSlider):
 ```
 
-2. Enhance the component by changing the underlying parent `dcc.RangeSlider`:
+2. Modify the component by changing the underlying parent's `dcc.RangeSlider` Dash component in the `build` method:
 ```py
-allowCross=False,
-tooltip={"placement": "bottom", "always_visible": True}
+class TooltipNonCrossRangeSlider(vm.RangeSlider):
+    def build(self):
+        ...
+        allowCross=False,
+        tooltip={"placement": "bottom", "always_visible": True}
 ```
 These lines are highlighted in the example below. They are the only material change to the original `build` method.
 
 3. Since the new model will be inserted into the `selectors` argument of the [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`SelectorType`][vizro.models.types.SelectorType]. Hence we must:
     - define a new type:
 ```py
-type: Literal["other_range_slider"] = "other_range_slider"
+class TooltipNonCrossRangeSlider(vm.RangeSlider):
+    type: Literal["other_range_slider"] = "other_range_slider"
+    ...
 ```
-    - register the type with the parent model(s):
+    - register the type with the parent models:
 ```py
 vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
 vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 ```
 
-
-
 ??? example "Example based on existing component"
 
     === "app.py"
-        ```{.python pycafe-link linenums="1" hl_lines="17-18 22-23 37 41"}
+        ```{.python pycafe-link hl_lines="17-18 22-23 37 41"}
         from typing_extensions import Literal
 
         import vizro.models as vm
@@ -146,317 +144,530 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
     === "Result"
         [![CustomComponent1]][CustomComponent1]
 
-    [CustomComponent1]: ../../assets/user_guides/custom_components/customcomponent_1.png
+    [CustomComponent1]: ../../assets/user_guides/custom_components/custom-components0.png
 
 
 ## Create a new component
 
 You may want to use this strategy to:
 
-- create a new component that does not exist in our library yet
-- make extensive changes to an existing component
+- Create a new component that does not exist as a [built-ninVizro model][vizro.models].
+- Make extensive changes to an existing component.
+- Combine multiple components into a single higher-level component, similar to a Dash [All-in-One component](https://dash.plotly.com/all-in-one-components).
 
-You can create an entirely new component by sub-classing our [VizroBaseModel][vizro.models.VizroBaseModel]. Note that
-using `VizroBaseModel` is mandatory if you want the new component to work in the Vizro framework.
+We will create a new `Rating` component based on the Dash Mantine Component [`Rating`](https://www.dash-mantine-components.com/components/rating). This produces a form component that shows a set of 5 stars for the dashboard user to give a rating. We also include `html.Legend` in our custom component to label the form component.
 
-The aim of the example is to create a [`Jumbotron`](https://www.dash-bootstrap-components.com/docs/components/jumbotron/), a component that currently does not exist in Vizro's existing component range. It is a lightweight container to call attention to featured content or information.
-
-### The `build` and `pre_build` methods
-
-When creating new components, you will need to define a `build` method like in the below example if it is a visual component that is rendered on the page. Examples of components with a `build` method are:
-
-- `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems].
-- `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card].
-
-For components that only create other components, you do not need to define a `build` method, for example, for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
-
-If you would like to have access to other components, you may want to define a `pre_build` method. This method is automatically run for all models and makes them internally consistent. Notable existing models with `pre_build` methods are [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
-
-### General steps
-
-1. Create new component, by sub-classing [VizroBaseModel][vizro.models.VizroBaseModel]:
+1. Create the new component by subclassing [`VizroBaseModel`][vizro.models.VizroBaseModel]:
 ```py
-class Jumbotron(vm.VizroBaseModel):
+import vizro.models as vm
+
+class Rating(vm.VizroBaseModel):
 ```
 
-2. Build the component using existing `dash` components.
-```py
-def build(self):
-    return html.Div(...)
-```
-3. Since the new model will be inserted into the `components` argument of the [`Page`][vizro.models.Page], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`ComponentType`][vizro.models.types.ComponentType]. Hence we must:
+2. Build the component in the `build` method:
+    - This can return any Dash component but is often a "container" component such as `html.Div` that includes multiple Dash components.
+    - Typically you use `id=self.id` for the "core" component, in this case `dmc.Rating`.
+    - Typically you prefix with `self.id` the `id` for a component that is not the core one.
+
+    ```py hl_lines="6-12"
+    from dash import html
+    import dash_mantine_components as dmc
+
+    class Rating(vm.VizroBaseModel):
+        ...
+        def build(self):
+            return html.Div( # (1)!
+                [
+                    html.Legend(id=f"{self.id}_title", ...), # (2)!
+                    dmc.Rating(id=self.id, ...) # (3)!
+                ]
+            )
+    ```
+
+    1. In this example, for simplicity we use [`html.Div`](https://dash.plotly.com/dash-html-components/Div) to provide the outer container. You could also use [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset), which is specifically designed for grouping a form legend with a set of controls.
+    1. This is not the core component but we will later [address it with an action](#model-fields-as-input-and-output), so it must have an `id` set. We prefix its `id` with `self.id`.
+    1. This is the core component, and so it has `id=self.id`.
+
+1. Since the new model will be inserted into the `components` argument of the [`Page`][vizro.models.Page], it will be part of the discriminated union [`ComponentType`][vizro.models.types.ComponentType]. Hence we must:
     - define a new type:
 ```py
-type: Literal["jumbotron"] = "jumbotron"
+class Rating(vm.VizroBaseModel):
+    type: Literal["rating"] = "rating"
+    ...
 ```
-    - register the type with the parent model(s):
+    - register the type with the parent model:
 ```py
-vm.Page.add_type("components", Jumbotron)
+vm.Page.add_type("components", Rating)
 ```
 
+Here is the full code for `Rating` and a simple app containing it.
 
-??? example "Example of new component creation"
+!!! example "New component creation"
 
     === "app.py"
-        ```{.python pycafe-link hl_lines="9-22 25 30"}
+        ```{.python pycafe-link hl_lines="9-20 23 29"}
         from typing import Literal
 
         from dash import html
-
+        import dash_mantine_components as dmc
         import vizro.models as vm
         from vizro import Vizro
 
 
-        class Jumbotron(vm.VizroBaseModel):  # (1)!
-            type: Literal["jumbotron"] = "jumbotron"  # (2)!
-            title: str  # (3)!
-            subtitle: str
-            text: str
+        class Rating(vm.VizroBaseModel):
+            type: Literal["rating"] = "rating"
+            title: str # (1)!
+            color: str = "#00b4ff" # (2)!
 
-            def build(self):  # (4)!
-                return html.Div(
+            def build(self):
+                return html.Div( # (3)!
                     [
-                        html.H2(self.title),
-                        html.H3(self.subtitle),
-                        html.P(self.text),
+                        html.Legend(id=f"{self.id}_title", children=self.title, className="form-label"),
+                        dmc.Rating(id=self.id, color=self.color),
                     ]
                 )
 
 
-        vm.Page.add_type("components", Jumbotron)  # (5)!
+        vm.Page.add_type("components", Rating)  # (4)!
 
         page = vm.Page(
-            title="Custom Component",
+            title="New rating component",
+            layout=vm.Flex(),
             components=[
-                Jumbotron(  # (6)!
-                    title="Jumbotron",
-                    subtitle="This is a subtitle to summarize some content.",
-                    text="This is the main body of text of the Jumbotron.",
-                )
+                Rating(title="Rate the last movie you watched"),  # (5)!
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
 
         ```
 
-        1.  Here we subclass the [VizroBaseModel][vizro.models.VizroBaseModel] because we are creating a new component from scratch.
-        2.  Here we provide a new type for the new component, so it can be distinguished in the discriminated union.
-        3.  Here we provide other fields we think are useful for our components. These fields are the main way the new component can be configured. A lot of different functionality is possible here; see the [Pydantic documentation](https://docs.pydantic.dev/1.10/) for more details.
-        4.  As we are creating a new visual component, we have to define a `build` method.
-        5.  **Don't forget!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `Jumbotron` will be inserted into the `components` argument of the `Page` model, and thus must be added as an allowed type.
-        6.  The new component can now be inserted into a regular dashboard.
+        1. You can optionally define [other Pydantic fields](https://docs.pydantic.dev/2.0/usage/types/types/) to configure our custom component. Here we define a mandatory `title` field that must be a string.
+        1. This field `color` is optional and has a default value. Here we specify the field to be a string, but there also exists a special [`Color` type](https://docs.pydantic.dev/2.0/usage/types/extra_types/color_types/) in the `pydantic-extra-types` package that would perform stricter validation and additional functionality.
+        1. We use the values of the Pydantic fields `id` (inherited from `vm.VizroBaseModel`), `title` and `color` in the Dash components.
+        1. **Don't forget!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `Rating` will be inserted into the `components` argument of the `Page` model, and thus must be added as an allowed type.
+        1. The `title` field is mandatory; `id` and `color` are optional and not specified here.
+
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-        [![CustomComponent2]][CustomComponent2]
 
-    [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
+        ![](../../assets/user_guides/custom_components/custom-components1.png)
 
+## Use custom components with actions
 
-## Using custom components with custom actions
+Custom components can be used with both [built-in actions](actions.md) and [custom actions](custom-actions.md). Here we demonstrate how the [above `Rating` component](#create-a-new-component) can be used with actions.
 
-Custom components can be used as `inputs` to, `outputs` of, or as a `trigger` of custom actions. In the examples below we will explore both options.
+### Dash properties as input and output
 
-### Custom components as inputs/outputs of custom actions
+To use your custom component as an input or output for an action, you must explicitly specify an `id` when using the component, for example `Rating(id="my_rating")`.
 
-Following the instructions above to create a custom component, results in this `OffCanvas` component:
+It is then immediately possible to [address the properties of Dash components](custom-actions.md#dash-properties-as-input-and-output) built by the custom component. For example, we could use `"my_rating.value"` as the input or output of an action to target the `value` property of the [`dmc.Rating`](https://www.dash-mantine-components.com/components/rating) component. Here is an example [button that triggers a custom action](../user-guides/custom-actions.md#trigger-an-action-with-a-button) to set this Dash property by including `outputs="my_rating.value"`.
 
-```py
-class OffCanvas(vm.VizroBaseModel):
-    type: Literal["offcanvas"] = "offcanvas"
-    title: str
-    content: str
-
-    def build(self):
-        return html.Div(
-            [
-                dbc.Offcanvas(
-                    children=html.P(self.content),
-                    id=self.id,
-                    title=self.title,
-                    is_open=False,
-                ),
-            ]
-        )
-```
-
-After you have completed the steps above, it is time to write your [custom action](../user-guides/custom-actions.md).
-
-   ```py
-    @capture("action")
-    def open_offcanvas(n_clicks, is_open):
-        if n_clicks:
-            return not is_open
-        return is_open
-   ```
-
-Add the custom action `open_offcanvas` as a `function` argument inside the [`Action`][vizro.models.Action] model.
-
-
-??? example "Example of the use of custom component with actions"
+!!! example "Use custom component Dash properties as an action output"
 
     === "app.py"
-        ```{.python pycafe-link hl_lines="12-27 30 32-36 46-48 52"}
+
+        ```{.python pycafe-link hl_lines="6 27-29 36-40"}
         from typing import Literal
 
-        import dash_bootstrap_components as dbc
-        import vizro.models as vm
-        import vizro.plotly.express as px
         from dash import html
-        from vizro import Vizro
-
+        import dash_mantine_components as dmc
+        import vizro.models as vm
         from vizro.models.types import capture
+        from vizro import Vizro
 
 
-        class OffCanvas(vm.VizroBaseModel):  # (1)!
-            type: Literal["offcanvas"] = "offcanvas"  # (2)!
+        class Rating(vm.VizroBaseModel):
+            type: Literal["rating"] = "rating"
             title: str
-            content: str
+            color: str = "#00b4ff"
 
-            def build(self):  # (3)!
+            def build(self):
                 return html.Div(
                     [
-                        dbc.Offcanvas(
-                            children=html.P(self.content),
-                            id=self.id,
-                            title=self.title,
-                            is_open=False,
-                        ),
+                        html.Legend(id=f"{self.id}_title", children=self.title, className="form-label"),
+                        dmc.Rating(id=self.id, color=self.color),
                     ]
                 )
 
 
-        vm.Page.add_type("components", OffCanvas)  # (4)!
+        vm.Page.add_type("components", Rating)
 
-        @capture("action")  # (5)!
-        def open_offcanvas(n_clicks, is_open):
-            if n_clicks:
-                return not is_open
-            return is_open
+
+        @capture("action") # (1)!
+        def clear_rating():
+            return 0
+
 
         page = vm.Page(
-            title="Custom Component",
+            title="New rating component",
+            layout=vm.Flex(),
             components=[
+                Rating(id="my_rating", title="Rate the last movie you watched"), # (2)!
                 vm.Button(
-                    text="Open Offcanvas",
-                    id="open_button",
-                    actions=[
-                        vm.Action(  # (6)!
-                            function=open_offcanvas(),
-                            inputs=["open_button.n_clicks", "offcanvas.is_open"],
-                            outputs=["offcanvas.is_open"],
-                        )
-                    ],
-                ),
-                OffCanvas(  # (7)!
-                    id="offcanvas",
-                    content="OffCanvas content",
-                    title="Offcanvas Title",
+                    text="Clear rating",
+                    actions=vm.Action(function=clear_rating(), outputs="my_rating.value"), # (3)!
                 ),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
-
         ```
 
-        1. Here we sub-class `VizroBaseModel` to create a new `OffCanvas` component.
-        1. We define a new type for the component, so it can be distinguished in the discriminated union.
-        1. We define the `build` method, which will be called to render the component on the page. This uses `dbc.Offcanvas` from `dash-bootstrap-components`.
-        1. **Remember!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `OffCanvas` component will be inserted into the `components` argument of the `Page` model, and thus must be added as an allowed type.
-        1. We define a custom action `open_offcanvas` using the `@capture("action")` decorator. This action will toggle the `is_open` state of the `OffCanvas` component.
-        1. We add the `open_offcanvas` action to a `Button`. The action takes `n_clicks` from the button and the current `is_open` state of the `OffCanvas` as inputs, and outputs the new `is_open` state to the `OffCanvas`.
-        1. We add the `OffCanvas` component to the page.
+        1. We write a [custom action](custom-actions.md) `clear_rating` that has no inputs and returns `0`.
+        1. To use our `Rating` component in a custom action, we must explicitly specify an `id`.
+        1. We attach the `clear_rating` action to the button so that it is triggered when the button is clicked. The output of `clear_rating` sets the value of `"my_rating.value"`, which corresponds to the `value` property of the [`dmc.Rating`](https://www.dash-mantine-components.com/components/rating) component produced by our custom `Rating` component.
+
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-        [![CustomComponent3]][CustomComponent3]
 
-    [CustomComponent3]: ../../assets/user_guides/custom_components/customcomponent_3.gif
+        ![](../../assets/user_guides/custom_components/custom-components2.png)
+
+### Model ID as input and output
+
+!!! note
+    You do not need to follow these steps if any of these conditions holds:
+
+    * Your custom component is an [extension of an existing component](#extend-an-existing-component), in which case your model inherits the `_action_inputs` and `_action_outputs` properties automatically.
+    * You are happy to [use Dash properties as input and output](#dash-properties-as-input-and-output).
+
+Generally when we use actions and built-in Vizro components, we refer only to the `id` (in this example `"my_rating"`) rather than a Dash component property such as `"my_rating.value"`. To enable this, we must define some extra information in the custom component using `_action_inputs` and `_action_outputs`. Here we define a mapping that tells actions to map `"my_rating"` onto `"my_rating.value"`.
+
+```python
+class Rating(vm.VizroBaseModel):
+    ...
+
+    @property
+    def _action_inputs(self):
+        return {"__default__": f"{self.id}.value"}  # (1)!
+
+    @property
+    def _action_outputs(self):
+        return {"__default__": f"{self.id}.value"}
+```
+
+1. The `"__default__"` key corresponds to the Dash component property used when an action input or output specifies only the `id` of `"my_rating"`. Typically this maps onto the most commonly used property of the core component produced by your custom component, which has `id=self.id`.
+
+This enables you to replace in your dashboard configuration all action input and output references to `"my_rating.value"` with just `"my_rating"`. The full code is given below.
+
+??? example "Use custom component model ID as an action output"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="15-21 47"}
+        from typing import Literal
+
+        from dash import html
+        import dash_mantine_components as dmc
+        import vizro.models as vm
+        from vizro.models.types import capture
+        from vizro import Vizro
 
 
-### Trigger actions with a custom component
+        class Rating(vm.VizroBaseModel):
+            type: Literal["rating"] = "rating"
+            title: str
+            color: str = "#00b4ff"
 
-As mentioned above, custom components can trigger actions. To enable the custom component to trigger the action, add the `actions` field and specify which property triggers the actions:
+            @property
+            def _action_inputs(self):
+                return {"__default__": f"{self.id}.value"}
 
-1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is [`ActionsType`][vizro.models.types.ActionsType].
-2. **Set the action trigger through `make_actions_chain` and `_action_triggers`**. In the below example, any change in the `active_index` property of the custom component triggers the actions chain.
+            @property
+            def _action_outputs(self):
+                return {"__default__": f"{self.id}.value"}
 
-    ```py
-    actions: ActionsType = []
+            def build(self):
+                return html.Div(
+                    [
+                        html.Legend(id=f"{self.id}_title", children=self.title, className="form-label"),
+                        dmc.Rating(id=self.id, color=self.color),
+                    ]
+                )
+
+
+        vm.Page.add_type("components", Rating)
+
+
+        @capture("action")
+        def clear_rating():
+            return 0
+
+
+        page = vm.Page(
+            title="New rating component",
+            layout=vm.Flex(),
+            components=[
+                Rating(id="my_rating", title="Rate the last movie you watched"),
+                vm.Button(
+                    text="Clear rating",
+                    actions=vm.Action(function=clear_rating(), outputs="my_rating"),  # (1)!
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. We replace `outputs="my_rating.value"` with `outputs="my_rating"`. This will look up the `"__default__"` key in the `_action_outputs` mapping defined for the the model with `id="my_rating"`.
+
+    === "yaml"
+        ```yaml
+        # Custom components are currently only possible via Python configuration
+        ```
+    === "Result"
+
+        ![](../../assets/user_guides/custom_components/custom-components2.png)
+
+### Model fields as input and output
+
+!!! note
+    You do not need to follow these steps if any of these conditions holds:
+
+    * You do not wish to address anything other than your custom component's core component.
+    * You are happy to [use Dash properties as input and output](#dash-properties-as-input-and-output).
+
+To [map your model's fields onto Dash component properties](../user-guides/custom-actions.md#model-arguments-as-input-and-output) you can define further entries in `_action_inputs` and `_action_outputs`. For example, let's say we wanted to add [radio items][vizro.models.RadioItems] so the user can select which movie to rate. When the movie is selected, it will trigger an action that updates the `title` of our custom `Rating` component. This corresponds to the following Dash component produced in the `Rating` model's `build` method:
+
+```python
+html.Legend(id=f"{self.id}_title", children=self.title, className="form-label")
+```
+
+We can already [address this Dash property](#dash-properties-as-input-and-output) by using `"my_rating_title.children"` as an action input or output. To enable us to instead address the field with `"my_rating.title"`, we must add an additional mapping to `_action_inputs` and/or `_action_outputs`:
+
+```python
+@property
+def _action_outputs(self):
+    return {"__default__": f"{self.id}.value", "title": f"{self.id}_title.children"}
+```
+
+This enables you to replace in your dashboard configuration all references to `output="my_rating_title.children"` with `output="my_rating.title"`. The full code is given below.
+
+??? example "Use custom component model field as an action output"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="21 33 41-43 50-57"}
+        from typing import Literal
+
+        from dash import html
+        import dash_mantine_components as dmc
+        import vizro.models as vm
+        from vizro.models.types import capture
+        from vizro import Vizro
+
+
+        class Rating(vm.VizroBaseModel):
+            type: Literal["rating"] = "rating"
+            title: str
+            color: str = "#00b4ff"
+
+            @property
+            def _action_inputs(self):
+                return {"__default__": f"{self.id}.value"}
+
+            @property
+            def _action_outputs(self):
+                return {"__default__": f"{self.id}.value", "title": f"{self.id}_title.children"}
+
+            def build(self):
+                return html.Div(
+                    [
+                        html.Legend(id=f"{self.id}_title", children=self.title, className="form-label"),
+                        dmc.Rating(id=self.id, color=self.color),
+                    ]
+                )
+
+
+        vm.Page.add_type("components", Rating)
+        vm.Page.add_type("components", vm.RadioItems) # (1)!
+
+
+        @capture("action")
+        def clear_rating():
+            return 0
+
+
+        @capture("action") # (2)!
+        def set_movie_title(title):
+            return f"Rate the movie {title}"
+
+
+        page = vm.Page(
+            title="New rating component",
+            layout=vm.Flex(),
+            components=[
+                vm.RadioItems( # (3)!
+                    id="movie_title",
+                    options=["Casablanca", "Citizen Kane", "Gone with the Wind"],
+                    actions=vm.Action(
+                        function=set_movie_title(title="movie_title"), # (4)!
+                        outputs="my_rating.title" # (5)!
+                    ),
+                ),
+                Rating(id="my_rating", title="Select a movie to rate"),
+                vm.Button(
+                    text="Clear rating",
+                    actions=vm.Action(function=clear_rating(), outputs="my_rating"),
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. Currently [`RadioItems`][vizro.models.RadioItems] is designed to be used as a [control selector](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add form components directly as `components` inside the `Page`. For this to be a valid configuration we must first do `add_type` as for a custom component.
+        1. We write a [custom action](custom-actions.md) `set_movie_title` that takes in the `title` specified and returns a string "Rate the movie ...".
+        1. We attach the `set_movie_title` action to the radio items, so that it is triggered when an option is selected.
+        1. The input `"movie_title"` corresponds to the value selected in the radio items and sets the `title` argument of the `set_movie_title` action.
+        1. The output of `set_movie_title` sets the value of `"my_rating.title"`, which maps onto the contents of the legend in the `Rating(id="my_rating")` component.
+
+    === "yaml"
+        ```yaml
+        # Custom components are currently only possible via Python configuration
+        ```
+    === "Result"
+
+        ![](../../assets/user_guides/custom_components/custom-components3.png)
+
+### Trigger actions
+
+!!! note
+    You do not need to follow these steps if your custom component is an [extension of an existing component](#extend-an-existing-component), in which case your model inherits the `_action_triggers` property automatically.
+
+To enable your custom component to trigger one or [multiple actions](actions.md#multiple-actions):
+
+1. Add a field `actions` of type [`ActionsType`][vizro.models.types.ActionsType].
+1. Set the action trigger using `make_actions_chain` and `_action_triggers`.
+1. When the custom component is used, attach one or more [built-in actions](actions.md) or [custom actions](custom-actions.md) to it by setting the `actions` field.
+
+For example, let's make our `Rating` component trigger an action when the user clicks on the stars. Clicking the stars updates the `value` property, and so this must be linked to the `"__default__"` key in the `_action_triggers` mapping as follows:
+
+```python
+from pydantic import model_validator
+from vizro.models._models_utils import make_actions_chain
+from vizro.models.types import ActionsType
+
+
+class Rating(vm.VizroBaseModel):
+    ...
+    actions: ActionsType
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
     @property
     def _action_triggers(self):
-        return {"__default__": f"{self.id}.active_index"}
-    ```
+        return {"__default__": f"{self.id}.value"}
+```
 
+In our dashboard configuration we would then attach the actions to trigger when we configure the `Rating` component:
 
-??? example "Example of triggering action with custom component"
+```python
+Rating(..., actions=...)
+```
+
+A full example is given below.
+
+??? example "Trigger actions with a custom component"
 
     === "app.py"
-        ```py hl_lines="30-34 48-52"
-        from typing import Annotated, Literal
 
-        import dash_bootstrap_components as dbc
-        import vizro.models as vm
+        ```{.python pycafe-link hl_lines="5 7 8 16-22 55-59 77-80 82"}
+        from typing import Literal
+
+        from dash import html
+        import dash_mantine_components as dmc
         from pydantic import model_validator
-        from vizro import Vizro
+        import vizro.models as vm
         from vizro.models._models_utils import make_actions_chain
-        from vizro.models.types import ActionsType, capture
+        from vizro.models.types import capture, ActionsType
+        from vizro import Vizro
 
 
-        class Carousel(vm.VizroBaseModel):  # (1)!
-            type: Literal["carousel"] = "carousel"
-            items: list
-            actions: ActionsType = []
+        class Rating(vm.VizroBaseModel):
+            type: Literal["rating"] = "rating"
+            title: str
+            color: str = "#00b4ff"
+            actions: ActionsType
 
             _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
             @property
             def _action_triggers(self):
-                return {"__default__": f"{self.id}.active_index"}  # (2)!
+                return {"__default__": f"{self.id}.value"}
+
+            @property
+            def _action_inputs(self):
+                return {"__default__": f"{self.id}.value"}
+
+            @property
+            def _action_outputs(self):
+                return {"__default__": f"{self.id}.value", "title": f"{self.id}_title.children"}
 
             def build(self):
-                return dbc.Carousel(id=self.id, items=self.items)
+                return html.Div(
+                    [
+                        html.Legend(id=f"{self.id}_title", children=self.title, className="form-label"),
+                        dmc.Rating(id=self.id, color=self.color),
+                    ]
+                )
 
 
-        vm.Page.add_type("components", Carousel)  # (3)!
+        vm.Page.add_type("components", Rating)
+        vm.Page.add_type("components", vm.RadioItems)
 
 
-        @capture("action")  # (4)!
-        def slide_next_card(active_index):
-            if active_index:
-                return "Second slide"
-            return "First slide"
+        @capture("action")
+        def clear_rating():
+            return 0
+
+
+        @capture("action")
+        def set_movie_title(title):
+            return f"Rate the movie {title}"
+
+
+        @capture("action")
+        def update_rating_text(rating_value): # (1)!
+            if rating_value:
+                return f"You gave a rating of {rating_value} out of 5 stars"
+            return "You have not provided a rating"
 
 
         page = vm.Page(
-            title="Custom Component",
+            title="New rating component",
+            layout=vm.Flex(),
             components=[
-                vm.Card(text="First slide", id="carousel-card"),
-                Carousel(  # (5)!
-                    id="carousel",
-                    items=[
-                        {"key": "1", "src": "assets/slide_1.jpg"},
-                        {"key": "2", "src": "assets/slide_2.jpg"},
-                    ],
-                    actions=[
-                        vm.Action(  # (6)!
-                            function=slide_next_card(),
-                            inputs=["carousel.active_index"],
-                            outputs=["carousel-card.children"],
-                        )
-                    ],
+                vm.RadioItems(
+                    id="movie_title",
+                    options=["Casablanca", "Citizen Kane", "Gone with the Wind"],
+                    actions=vm.Action(
+                        function=set_movie_title("movie_title"),
+                        outputs="my_rating.title"
+                    ),
+                ),
+                Rating(
+                    id="my_rating",
+                    title="Select a movie to rate",
+                    actions=vm.Action(
+                        function=update_rating_text("my_rating"), # (2)!
+                        outputs="rating_text" # (3)!
+                    ),
+                ),
+                vm.Text(id="rating_text", text="You have not provided a rating"),
+                vm.Button(
+                    text="Clear rating",
+                    actions=vm.Action(function=clear_rating(), outputs="my_rating"),
                 ),
             ],
         )
@@ -465,28 +676,19 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         Vizro().build(dashboard).run()
         ```
 
-        1. Here we subclass `VizroBaseModel` to create a new `Carousel` component.
-        1. We set `_action_triggers` so that a change in the `active_index` property of the `dbc.Carousel`  component triggers the action.
-        1. **Remember!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `Carousel` will be inserted into the `components` argument of the `Page` model, and thus must be added as an allowed type.
-        1. We define a custom action `slide_next_card` using the `@capture("action")` decorator. This action will change the text of a `Card` component based on the active slide in the `Carousel`.
-        1. We add the `Carousel` component to the page, providing items for the carousel.
-        1. We link the `slide_next_card` action to the `Carousel`. The action is triggered by changes in `carousel.active_index` and updates the `children` property of `carousel-card`.
-
-        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>
-
+        1. We write a [custom action](custom-actions.md) `update_rating_text` that takes in the `rating_value` (an integer between 1 and 5) and returns a string "You gave a rating of ...".
+        1. We attach the `update_rating_text` action to our custom `Rating` component, so that it is triggered when the rating stars are clicked. The input `"my_rating"` (which also maps onto `"my_rating.value"`) sets the `rating_value` argument of the `update_rating_text` action.
+        1. The output of `update_rating_text` sets the value of `"rating_text"`, which maps onto the contents of the `vm.Text(id="rating_text")` component.
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-        [![CustomComponent4]][CustomComponent4]
 
-    [CustomComponent4]: ../../assets/user_guides/custom_components/customcomponent_4.gif
+        ![](../../assets/user_guides/custom_components/custom-components4.png)
 
-### Security warning
+## Persistence
 
-Note that users of this package are responsible for the content of any custom-created component, function or integration they write. You should be cautious about leaking any sensitive information and potential security threats.
-
-By default, all Dash components in Vizro that persist client-side data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser.
+By default, all Dash components in Vizro that persist clientside data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser.
 
 Be careful when using any custom components that persist data beyond this scope: it is your responsibility to ensure compliance with any legal requirements affecting jurisdictions in which your app operates.

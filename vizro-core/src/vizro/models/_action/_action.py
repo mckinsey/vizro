@@ -4,19 +4,20 @@ import inspect
 import logging
 import re
 import time
+import warnings
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
-from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
+from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, make_deprecated_field_warning
 from vizro.models.types import (
     CapturedCallable,
     ControlType,
@@ -235,7 +236,7 @@ class _BaseAction(VizroBaseModel):
         # Validate that the runtime arguments are in the same form as the legacy Action.inputs field (str).
         # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a
         # vm.Action that does not pass this check will have already been classified as legacy in Action._legacy.
-        # In future when vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
+        # In future when vm.Action.inputs is removed then this will be used for vm.Action instances also.
         TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
@@ -417,12 +418,17 @@ class _BaseAction(VizroBaseModel):
 
 
 class Action(_BaseAction):
-    """Action to be inserted into `actions` of relevant component.
+    """Custom action to be inserted into `actions` of relevant component.
+
+    Abstract: Usage documentation
+        [How to create custom actions](../user-guides/custom-actions.md)
 
     Args:
-        function (CapturedCallable): Action function.
-        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
-            or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+        function (CapturedCallable): Custom action function.
+        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
+            deprecations.md#action-model-inputs-argument).
         outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
     """
 
@@ -434,34 +440,43 @@ class Action(_BaseAction):
     type: Literal["action"] = "action"
     # export_data and filter_interaction are here just so that legacy vm.Action(function=filter_interaction(...)) and
     # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
-    # actions.function in _set_actions. It's done as a forward ref here to avoid circular imports and resolved with
-    # Dashboard.model_rebuild() later.
-    # TODO-AV2 C 1: Need to think about which parts of validation in CapturedCallable are legacy and how user
-    # now specifies a user defined action in YAML (ok if not possible initially since it's not already) - could just
-    # enable class-based one? Presumably import_path is no longer relevant though.
+    # actions.function in _make_actions_chain. It's done as a forward ref here to avoid circular imports and resolved
+    # with Dashboard.model_rebuild() later.
     function: Annotated[  # type: ignore[misc, assignment]
         SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
-    # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
-    # TODO-AV2 C 1: Put in deprecation warning.
+    # inputs is deprecated and must only be used when _legacy = True. We don't use deprecated=True here because it only
+    # affects the JSON schema and raises unwanted warnings when looking through model attributes. We use our own
+    # make_deprecated_field_warning validator instead.
     # The type hint str here really means _IdOrIdProperty. We might change it in future for clearer API docs, but the
     # validation to check string format (presence of 0 or 1 . characters) does not need to be included in the
     # annotation. Options for good public API might be:
     # Union[ModelID, str] - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
     # Union[ModelID, IdProperty] - means making IdProperty public, which is ok but maybe overkill
-    inputs: list[str] = Field(
-        default=[],
-        description="""List of inputs provided to the action function. Each input can be specified as `<model_id>` or
-        `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
-    )
+    inputs: Annotated[
+        list[str],
+        Field(
+            default=[],
+            description="""List of inputs provided to the action function. Each input can be specified as
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
+            deprecations.md#action-model-inputs-argument).""",
+        ),
+        BeforeValidator(
+            make_deprecated_field_warning(
+                "Pass references to runtime inputs directly as arguments of `function`. See "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-inputs-argument."
+            )
+        ),
+    ]
+
     outputs: OutputsType  # type: ignore[misc]
 
     @property
     def _legacy(self) -> bool:
-        # TODO-AV2 C 1: add deprecation warnings
-
         if "inputs" in self.model_fields_set:
+            # Deprecation warning has already been raised by make_deprecated_field_warning.
             legacy = True
         else:
             # If all supplied arguments look like states `<component_id>.<property>` or are model IDs then assume it's
@@ -474,6 +489,14 @@ class Action(_BaseAction):
             except TypeError:
                 # arg_val isn't a string so it must be treated as a legacy action.
                 legacy = True
+
+            if legacy:
+                warnings.warn(
+                    "Passing a static argument to a custom action is deprecated and will not be possible in "
+                    "Vizro 0.2.0. See https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/static"
+                    "-argument-for-custom-action.",
+                    category=FutureWarning,
+                )
 
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy

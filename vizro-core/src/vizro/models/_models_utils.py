@@ -1,6 +1,7 @@
 import logging
 import warnings
 from functools import wraps
+from typing import Any
 
 from dash import html
 from pydantic import ValidationInfo
@@ -81,6 +82,28 @@ def warn_description_without_title(description, info: ValidationInfo):
     return description
 
 
+# We use this as a validator to deprecate a field, instead of setting deprecate=True, which only affects the JSON schema
+# and raises unwanted warnings when looking through model attributes. deprecate=True wouldn't be sufficient anyway,
+# since:
+# - the warning isn't raised on model instantiation, just on field access
+# - the warning category can't be changed from the default DeprecationWarning to FutureWarning and so will not be
+# visible to most users
+# These are known limitations with pydantic's current implementation; see
+# https://github.com/pydantic/pydantic/issues/8922 and https://docs.pydantic.dev/latest/concepts/fields/.
+# This only runs if the field is explicitly set since validate_default=False by default.
+# This does not add anything to the API docs. You must add a note to the field docstring manually.
+def make_deprecated_field_warning(message: str, /):
+    def deprecate_field(value: Any, info: ValidationInfo):
+        warnings.warn(
+            f"The `{info.field_name}` argument is deprecated and will not exist in Vizro 0.2.0. {message}.",
+            category=FutureWarning,
+            stacklevel=3,
+        )
+        return value
+
+    return deprecate_field
+
+
 def make_actions_chain(self):
     """Creates actions chain from a list of actions.
 
@@ -101,6 +124,16 @@ def make_actions_chain(self):
     # built in actions are always handled in the new way.
     for action in self.actions:
         if isinstance(action.function, (export_data, filter_interaction)):
+            action_name = action.function._action_name
+            warnings.warn(
+                f"Using the `Action` model for the built-in action `{action_name}` is deprecated and will not be"
+                f" possible in Vizro 0.2.0. Call the action directly with `actions=va.{action_name}(...)`. See "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-for-built-in"
+                "-action.",
+                category=FutureWarning,
+                stacklevel=4,
+            )
+
             del model_manager[action.id]
             converted_actions.append(action.function)
         else:
