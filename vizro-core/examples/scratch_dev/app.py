@@ -250,21 +250,13 @@ page_7 = vm.Page(
             #     set_control(control="p7_filter_1", value=ORIGINAL_CHECKLIST_VALUE),
             #     set_control(control="p7_filter_2", value=ORIGINAL_DROPDOWN_VALUE),
             # ],
-            actions=vm.Action(function=reset_filters(), outputs=["p7_filter_1", "p7_filter_2"])
-        )
+            actions=vm.Action(function=reset_filters(), outputs=["p7_filter_1", "p7_filter_2"]),
+        ),
     ],
     controls=[
-        vm.Filter(
-            id="p7_filter_1",
-            column="continent",
-            selector=vm.Checklist(value=ORIGINAL_CHECKLIST_VALUE)
-        ),
-        vm.Filter(
-            id="p7_filter_2",
-            column="country",
-            selector=vm.Dropdown(value=ORIGINAL_DROPDOWN_VALUE)
-        )
-    ]
+        vm.Filter(id="p7_filter_1", column="continent", selector=vm.Checklist(value=ORIGINAL_CHECKLIST_VALUE)),
+        vm.Filter(id="p7_filter_2", column="country", selector=vm.Dropdown(value=ORIGINAL_DROPDOWN_VALUE)),
+    ],
 )
 
 
@@ -276,6 +268,7 @@ page_7 = vm.Page(
 #      We should improve "select_all" here. Ben suggested the same.
 #  4. Think about dynamic data here.
 #  5. Think about persistence per cascading filter value. Investigate dash docs about this.
+
 
 @capture("action")
 def update_country_options_value(_trigger):
@@ -308,18 +301,16 @@ page_8 = vm.Page(
             selector=vm.RadioItems(
                 # set_control currently can't be added to the form component
                 # actions=set_control(control="country_filter", value="value")
-                actions=[vm.Action(
-                    function=update_country_options_value(),
-                    outputs=["country_filter.options", "country_filter.value"]
-                )]
+                actions=[
+                    vm.Action(
+                        function=update_country_options_value(),
+                        outputs=["country_filter.options", "country_filter.value"],
+                    )
+                ]
             ),
         ),
-        vm.Filter(
-            id="country_filter",
-            column="country",
-            selector=vm.Checklist()
-        ),
-    ]
+        vm.Filter(id="country_filter", column="country", selector=vm.Checklist()),
+    ],
 )
 
 # ====== Synced control values ======
@@ -358,7 +349,7 @@ page_9 = vm.Page(
         vm.Container(
             controls=[vm.Filter(id="p9_filter_2", column="species")],
             components=[vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))],
-        )
+        ),
     ],
 )
 
@@ -380,7 +371,7 @@ dashboard = vm.Dashboard(
                 "Reset Controls",
                 "Cascading Controls",
                 "Synced filter values",
-            ]
+            ],
         }
     ),
 )

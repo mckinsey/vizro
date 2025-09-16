@@ -59,17 +59,6 @@ class TestSetControlInstantiation:
         assert action.control == "control_id"
         assert action.value == "value"
 
-    def test_set_controls_experimental(self):
-        with pytest.warns(
-            FutureWarning,
-            match=re.escape(
-                "The `set_control` action is experimental. We hope that it will be a stable part of Vizro "
-                "in future, but until then it may change or be removed without warning. If you have feedback on the "
-                "feature then [let us know](https://github.com/mckinsey/vizro/issues)."
-            ),
-        ):
-            set_control(control="control_id", value="value")
-
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
 class TestSetControlPreBuild:

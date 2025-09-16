@@ -8,7 +8,6 @@ from dash import get_relative_path
 from pydantic import Field, JsonValue
 
 import vizro.models as vm
-from vizro._vizro_utils import experimental
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
@@ -27,11 +26,6 @@ def _encode_to_base64(value):
     return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
 
-@experimental(
-    "The `set_control` action is experimental. We hope that it will be a stable part of Vizro in future, "
-    "but until then it may change or be removed without warning. If you have feedback on the feature then "
-    "[let us know](https://github.com/mckinsey/vizro/issues)."
-)
 class set_control(_AbstractAction):
     """Sets the value of a control based on data from the trigger.
 
