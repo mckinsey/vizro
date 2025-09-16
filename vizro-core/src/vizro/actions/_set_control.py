@@ -38,8 +38,6 @@ class set_control(_AbstractAction):
     Abstract: Usage documentation
         [Graph and table interactions](../user-guides/graph-table-actions.md)
 
-    TODO NOW: mention limitations like categorical.
-
     The following Vizro models support `set_control`:
 
     * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. The `value`
@@ -53,7 +51,7 @@ class set_control(_AbstractAction):
 
     Args:
         target (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
-            `show_in_url=True`.
+            `show_in_url=True`. The control's selector must be categorical (e.g. Dropdown, RadioItems, Checklist).
         value (str): Value to take from trigger and send to the `target`. Format depends on the model that triggers
             `set_control`.
 
