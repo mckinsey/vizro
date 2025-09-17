@@ -115,7 +115,6 @@ def get_model_json_schema(
     Returns:
         JSON schema of the requested Vizro model
     """
-
     if not hasattr(vm, model_name):
         return ModelJsonSchemaResults(
             model_name=model_name,
