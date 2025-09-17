@@ -40,11 +40,26 @@
    ```shell
    npm run build
    ```
-6. Install component
+6. Code Formatting
+
+   This project uses:
+
+   - [Black](https://black.readthedocs.io/) for code formatting
+   - [isort](https://pycqa.github.io/isort/) for import sorting
+   - [Ruff](https://docs.astral.sh/ruff/) for linting
+
+   Run:
+
+   ```bash
+   black .
+   isort .
+   ruff check . --fix
+   ````
+7. Install component
    ```shell
    uv pip install {{cookiecutter.project_shortname}}
    ```
-7. Run the demo:
+8. Run the demo:
 
    Edit `app.py` to use newly created component in `Vizro` and run it
    ```shell

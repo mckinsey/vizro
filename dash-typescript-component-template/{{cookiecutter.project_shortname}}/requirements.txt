@@ -1,2 +1,6 @@
 vizro>=0.1.40
 hatch
+black
+isort
+ruff
+pre-commit
