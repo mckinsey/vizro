@@ -10,7 +10,7 @@ page = vm.Page(
     layout=vm.Flex(),  # (1)!
     components=[
         vm.Graph(figure=px.histogram(df, x="sepal_length")),
-        vm.Button(text="Export data", actions=va.export_data()),
+        vm.Button(text="Export data", actions=[va.export_data(), va.export_data()]),
     ],
     controls=[vm.Filter(column="species")],
 )
