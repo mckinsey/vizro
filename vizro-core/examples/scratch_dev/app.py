@@ -263,11 +263,9 @@ page_7 = vm.Page(
 # ====== Cascading controls ======
 # TODO: Does not work as:
 #  1. Form component does not support the `set_control` action yet.
-#  2. Can't be used as and "value" and "options" have to be updated too.
-#  3. TODO PP (CT): Can't be used with custom action/dash callback as "select_all" option will be overwritten.
-#      We should improve "select_all" here. Ben suggested the same.
-#  4. Think about dynamic data here.
-#  5. Think about persistence per cascading filter value. Investigate dash docs about this.
+#  2. Can't be used as and "value" and "options" have to be updated too. Should we recreate the selector?
+#  3. Think about dynamic data here.
+#  4. Think about persistence per cascading filter value. See first example here: https://dash.plotly.com/persistence
 
 
 @capture("action")
