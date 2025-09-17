@@ -72,7 +72,7 @@ class ModelJsonSchemaResults:
 
 # TODO: check on https://github.com/modelcontextprotocol/python-sdk what new things are possible to do here
 mcp = FastMCP(
-    name=f"MCP server to help create Vizro dashboards and charts. Based on vizro=={vizro.__version__}",
+    name=f"MCP server to help create Vizro dashboards and charts. Server Vizro version: {vizro.__version__}",
 )
 
 
@@ -103,7 +103,7 @@ use `custom_charts` in the `validate_dashboard_config` tool instead.""",
         return f"{get_dashboard_instructions(advanced_mode, user_host)}"
 
 
-@mcp.tool(description=f"Get the JSON schema for the specified Vizro model. Based on vizro=={vizro.__version__}")
+@mcp.tool(description=f"Get the JSON schema for the specified Vizro model. Server Vizro version: {vizro.__version__}")
 def get_model_json_schema(
     model_name: str = Field(
         description="Name of the Vizro model to get schema for (e.g., 'Card', 'Dashboard', 'Page')"
