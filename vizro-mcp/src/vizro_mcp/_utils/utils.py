@@ -152,7 +152,9 @@ def get_python_code_and_preview_link(
         "from vizro import Vizro",
         "import pandas as pd",
         "from vizro.managers import data_manager",
-        "import vizro.figures as vf",  # TODO: Temporary workaround for Figure model support; required until vizro>=0.1.46, which will provide native Figure model support and make this import unnecessary. Remove this import once minimum supported vizro version is >=0.1.46.
+        "import vizro.figures as vf",
+        # TODO: Temporary workaround for Figure model support; required until vizro>=0.1.46
+        # Remove this import once minimum supported vizro version is >=0.1.46.
     ]
     custom_imports = [
         imp for custom_chart in custom_charts for imp in custom_chart.get_imports(vizro=True).split("\n") if imp.strip()
