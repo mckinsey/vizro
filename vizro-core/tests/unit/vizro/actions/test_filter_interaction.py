@@ -7,6 +7,10 @@ from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning"),
+]
+
 
 @pytest.fixture
 def ctx_filter_interaction(request):

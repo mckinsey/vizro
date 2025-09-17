@@ -216,8 +216,7 @@ pages:
         text: Export data
         id: export_data
         actions:
-          - function:
-              _target_: export_data
+          - type: export_data
     controls:
       - column: species
         selector:
@@ -309,37 +308,11 @@ pages:
       - type: button
         text: Export data
         actions:
-          - function:
-              _target_: export_data
+          - type: export_data
     controls:
       - type: filter
         column: species
     title: Export data
-  - components:
-      - type: graph
-        figure:
-          _target_: box
-          data_frame: gapminder_2007
-          color: continent
-          x: continent
-          y: lifeExp
-          custom_data:
-            - continent
-        actions:
-          - function:
-              _target_: filter_interaction
-              targets:
-                - scatter_relation_2007
-      - type: graph
-        id: scatter_relation_2007
-        figure:
-          _target_: scatter
-          data_frame: gapminder_2007
-          color: continent
-          x: gdpPercap
-          y: lifeExp
-          size: pop
-    title: Chart interaction
   - components:
       - text: |
           ## Custom charts are currently only possible via python configuration
@@ -548,8 +521,7 @@ pages:
         id: export_data_1
         description: Use this button to export the filtered data from the Iris dataset.
         actions:
-          - function:
-              _target_: export_data
+          - type: export_data
     controls:
       - column: species
         selector:
@@ -876,7 +848,6 @@ navigation:
             - Flex layout
           Actions:
             - Export data
-            - Chart interaction
           Extensions:
             - Custom Charts
             - Custom Tables

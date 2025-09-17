@@ -11,7 +11,6 @@ on:
       - "vizro-core/**"
   pull_request:
     branches:
-      - "main"
     paths:
       - "vizro-core/**"
 
