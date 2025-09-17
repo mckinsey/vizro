@@ -28,7 +28,8 @@ IMPORTANT:
 - ALWAYS CHECK SCHEMA: to start with, or when stuck, try enquiring the schema of the component in question with the `get_model_json_schema` tool (available models see below)
 
 - IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt, OTHERWISE:
-- make a plan of what components you would like to use, then request all necessary schemas using the `get_model_json_schema` tool (start with `Dashboard`, and don't forget `Graph`)
+- make a plan of what components you would like to use, then request all necessary schemas using the `get_model_json_schema` tool
+  - start with `Dashboard`, don't forget `Graph`, MUST check `Flex` if >3 components are needed
 - assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code to the user until you have validated the solution
 - ALWAYS validate the dashboard configuration using the `validate_dashboard_config` tool
 - using `custom_chart` is encouraged for advanced visualizations, no need to call the planner tool in advanced mode
@@ -69,6 +70,32 @@ MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
     "additional_info": [vm.Tooltip],
 }
+
+LAYOUT_INSTRUCTIONS = """Some extra information about Layout in Vizro:
+Overall:
+- Use Flex for most dashboards, use Grid only for strict row x column alignment or complex layouts
+- Often good strategy: group elements in a `Container` with `Flex` layout and place containers
+inside a `Grid` layout for overall page organization.
+
+Flex (Recommended in almost all cases):
+- Wrap: wrap=True → components flow on smaller screens (IMPORTANT for direction="row" to avoid horizontal scroll)
+- When asked for simple "arrangements": often several containers with `Flex` better than `Grid`!!
+- Cards: Horizontal row, wrap naturally. Maintain consistent spacing (gap)
+- Charts/AgGrids:
+  - Pair horizontally (max 2 per row) for readability
+  - Large single charts/AgGrids → full-width standalone
+- Sizing: Let content determine size (auto). Avoid fixed heights
+- Optional: Use min/max widths only to prevent items from shrinking too small
+  - Graph example: vm.Graph(figure=px.violin(..., width=900)).
+  - AgGrid example: vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 900})).
+
+Grid (Use only if needed):
+- Use when you need precise alignment across both rows and columns.
+- Useful for asymmetrical layouts or dashboards where every component must line up exactly
+- IMPORTANT: you must use integers to refer to the elements, starting from 0, every element must be referenced,
+elements can't overlap and must be rectangular, and you must use the same number of columns and rows for each row
+
+Do NOT forget to call `validate_dashboard_config` after each iteration."""
 
 
 def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
