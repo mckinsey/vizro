@@ -115,7 +115,6 @@ def get_model_json_schema(
     Returns:
         JSON schema of the requested Vizro model
     """
-
     if not hasattr(vm, model_name):
         return ModelJsonSchemaResults(
             model_name=model_name,
@@ -139,7 +138,7 @@ that model if necessary. Do NOT forget to call `validate_dashboard_config` after
         )
 
     model_class = getattr(vm, model_name)
-    if model_name == "Grid" or model_name == "Flex":
+    if model_name in {"Grid", "Flex"}:
         return ModelJsonSchemaResults(
             model_name=model_name,
             json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
