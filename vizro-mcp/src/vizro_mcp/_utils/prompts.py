@@ -1,9 +1,10 @@
 """Prompts for the Vizro MCP."""
 # ruff: noqa: E501 #Ignore line length only in prompts
 
-from typing import Literal, Optional
+from typing import Literal, Optional, Protocol
 
 import vizro
+import vizro.figures as vf
 import vizro.models as vm
 
 from vizro_mcp._utils.configs import SAMPLE_DASHBOARD_CONFIG
@@ -50,9 +51,19 @@ GENERIC_HOST_INSTRUCTIONS = """
     instead and explain how to run it
 """
 
+
+# Protocol class does not seem to matter for static type checkers - implemented nonetheless for correctness
+# TODO: Check why type errors in MODEL_GROUPS would not be picked up by mypy
+class HasNameAndDoc(Protocol):
+    """Protocol for objects that have a name and a docstring."""
+
+    __name__: str
+    __doc__: Optional[str]
+
+
 # This dict is used to give the model and overview of what is available in the vizro.models namespace.
 # It helps it to narrow down the choices when asking for a model.
-MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
+MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
     "main": [vm.Dashboard, vm.Page],
     "static components": [
         vm.Card,
@@ -61,7 +72,7 @@ MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
         vm.Container,
         vm.Tabs,
     ],
-    "dynamic components (Graphs, Tables, or Figure for dynamic KPI cards)": [vm.Figure, vm.Graph, vm.AgGrid],
+    "dynamic components": [vm.Figure, vm.Graph, vm.AgGrid],
     "layouts": [vm.Grid, vm.Flex],
     "controls": [vm.Filter, vm.Parameter],
     "selectors": [
@@ -71,10 +82,10 @@ MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
         vm.DatePicker,
         vm.Slider,
         vm.RangeSlider,
-        vm.DatePicker,
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
     "additional_info": [vm.Tooltip],
+    "functions available for vm.Figure(...,figure=...) model": [vf.__dict__[func] for func in vf.__all__],
 }
 
 
