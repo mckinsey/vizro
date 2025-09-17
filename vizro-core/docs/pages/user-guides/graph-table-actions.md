@@ -9,7 +9,7 @@ All these interactions use the [`set_control`][vizro.actions.set_control] action
 
 - The target components can be anything that reacts to a control: [built-in graphs](graph.md), [custom graphs](custom-charts.md), [built-in tables](table.md), [custom tables](custom-tables.md), [built-in figures](figure.md) and [custom figures](custom-figures.md).
 - A single control can update any number of these target components, and a single source component can set any number of controls. Hence a single source component can interact with any number of target components.
-- A target component can be on the same page as the source or on a different page (so long as the control has [`show_in_url=True`](run-deploy.md#shareable-url)).
+- A target component can be on the same page as the source or on a different page (so long as the intermediate control has [`show_in_url=True`](run-deploy.md#shareable-url)).
 - A target component can also be the source component to enable a "self-interaction".
 - Interactions are explicitly shown on the screen by the value of the control. Just like a normal control, the value can be changed manually and is persisted when you change page.
 
