@@ -25,6 +25,7 @@ from vizro.models._models_utils import make_actions_chain
 from vizro.models.types import capture, ActionType
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
@@ -61,13 +62,14 @@ class echo(_AbstractAction):
 
     @property
     def outputs(self):
-        return [f"{self.chat_id}-output.children"]
+        return [f"{self.chat_id}-hidden-messages.children"]
 
 
-# Pydantic model that will be dumped to json automatically by sse_options. Define this somewhere sensible.
-class Stuff(BaseModel):
+# Pydantic model for streaming endpoint request payload
+class StreamingRequest(BaseModel):
+    """Request payload for streaming chat endpoint."""
     prompt: str
-    messages: Any  # I'm being lazy but maybe it doesn't matter
+    messages: Any  # List of message dicts with 'role' and 'content' keys
 
 
 class ChatAction(echo):
@@ -82,82 +84,218 @@ class ChatAction(echo):
 
         self._setup_chat_callbacks()
 
+    # Now there are two data flows:
+    #     1. SSE chunks → decoded and accumulated in hidden-messages div
+    #     2. hidden-messages → parsed for markdown/code blocks → rendered-messages div
+        
+    # This separation allows the markdown parser to work nicely for:
+    #     - Streaming messages (accumulated chunk by chunk)
+    #     - Non-streaming messages (complete response)
+    #     - Restored messages from history (on page load)
     def _setup_streaming_callbacks(self):
-        """Set up clientside callback for streaming updates."""
         clientside_callback(
             """
             function(animatedText, existingChildren, storeData) {
-                if (!animatedText || animatedText === '[DONE]') {
+                const CHUNK_DELIMITER = '|END|';
+                const STREAM_DONE_SIGNAL = '[DONE]';
+                
+                // Helper: Decode base64 chunk to UTF-8 text
+                function decodeChunk(chunk) {
+                    try {
+                        const binaryString = atob(chunk);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        return new TextDecoder('utf-8').decode(bytes);
+                    } 
+                    catch (e) { 
+                        console.warn('Failed to decode chunk:', e);
+                        return ''; 
+                    }
+                }
+                
+                // Helper: Get message content from structure
+                function getMessageContent(msg) {
+                    return msg?.props?.children?.[1]?.props?.children || '';
+                }
+                
+                // Helper: Set message content in structure  
+                function setMessageContent(msg, content) {
+                    if (msg?.props?.children?.[1]?.props) {
+                        msg.props.children[1].props.children = content;
+                    }
+                }
+                
+                // Handle stream completion
+                if (!animatedText || animatedText === STREAM_DONE_SIGNAL) {
+                    window.lastProcessedChunkCount = 0;
                     return [existingChildren, window.dash_clientside.no_update];
                 }
 
-                const decodedStr = atob(animatedText);
-                const markdownComponent = JSON.parse(decodedStr);
-                
                 const newChildren = [...(existingChildren || [])];
                 const newData = [...(storeData || [])];
-
-                if (newChildren.length > 0) {
-                    const last = newChildren[newChildren.length - 1];
-                    
-                    if (!last.props?.children) {
-                        last.props.children = [
-                            {props: {children: 'assistant'}, type: 'B', namespace: 'dash_html_components'},
-                            markdownComponent
-                        ];
-                    } else if (last.props.children[1]?.props) {
-                        last.props.children[1].props.children = 
-                            (last.props.children[1].props.children || '') + markdownComponent.props.children;
-                    }
+                const lastMsg = newChildren[newChildren.length - 1];
+                const currentContent = getMessageContent(lastMsg);
+                
+                // Reset counter for new messages
+                if (!window.lastProcessedChunkCount || currentContent === '') {
+                    window.lastProcessedChunkCount = 0;
                 }
 
-                if (newData.length > 0 && newData[newData.length - 1].role === 'assistant') {
-                    const chunkText = markdownComponent.props?.children || '';
-                    newData[newData.length - 1].content += chunkText;
+                // Process new chunks only
+                const chunks = animatedText.split(CHUNK_DELIMITER).slice(0, -1);
+                const newText = chunks.slice(window.lastProcessedChunkCount)
+                    .filter(Boolean)
+                    .map(decodeChunk)
+                    .join('');
+                
+                window.lastProcessedChunkCount = chunks.length;
+                
+                // Update message content if new text received
+                if (newText) {
+                    setMessageContent(lastMsg, currentContent + newText);
+                    
+                    // Update store data for assistant messages
+                    const lastStoreMsg = newData[newData.length - 1];
+                    if (lastStoreMsg?.role === 'assistant') {
+                        lastStoreMsg.content += newText;
+                    }
                 }
 
                 return [newChildren, newData];
             }
             """,
             [
-                Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+                Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
                 Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
             ],
             Input(f"{self.chat_id}-sse", "animation"),
-            [State(f"{self.chat_id}-output", "children"), State(f"{self.chat_id}-store", "data")],
+            [State(f"{self.chat_id}-hidden-messages", "children"), State(f"{self.chat_id}-store", "data")],
             prevent_initial_call=True,
         )
 
     def _setup_streaming_endpoint(self):
         """Set up streaming endpoint for SSE."""
+        CHUNK_DELIMITER = "|END|"
 
         @dash.get_app().server.route(
             f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
         )
         def streaming_chat():
-            stuff = Stuff(**request.get_json())
+            req = StreamingRequest(**request.get_json())
 
             def event_stream():
-                for chunk in self.core_function(**stuff.model_dump()):
-                    markdown_component = dcc.Markdown(chunk, dangerously_allow_html=False)
-                    json_str = json.dumps(markdown_component.to_plotly_json())
-                    encoded_chunk = base64.b64encode(
-                        json_str.encode("utf-8")
-                    ).decode("utf-8")
-                    yield sse_message(encoded_chunk)
+                for chunk in self.core_function(**req.model_dump()):
+                    # Encode chunk as base64 to handle any special characters
+                    encoded_chunk = base64.b64encode(chunk.encode("utf-8")).decode("utf-8")
+                    # Need a robust delimiter for clientside parsing
+                    yield sse_message(encoded_chunk + CHUNK_DELIMITER)
 
-                # Send standard SSE completion signal
+                # Send SSE completion signal
                 yield sse_message()
 
             return Response(event_stream(), mimetype="text/event-stream")
 
     def _setup_chat_callbacks(self):
         """Set up generic chat UI callbacks."""
+        
+        # Clientside callback to parse markdown and render code blocks with syntax highlighting
+        clientside_callback(
+            """
+            function(children) {
+                const CODE_BLOCK_REGEX = /```(\\w+)?\\n([\\s\\S]*?)```/g;
+                
+                // Component factory helpers
+                const createComponent = (type, namespace, props) => ({
+                    type, namespace, props
+                });
+                
+                const createMarkdown = (text) => createComponent(
+                    "Markdown", 
+                    "dash_core_components",
+                    { children: text, dangerously_allow_html: false }
+                );
+                
+                const createCodeHighlight = (code, language) => createComponent(
+                    "CodeHighlight",
+                    "dash_mantine_components", 
+                    { 
+                        code: code.trim(), 
+                        language: language || 'text',
+                        withLineNumbers: false
+                    }
+                );
+                
+                const createDiv = (children) => createComponent(
+                    "Div",
+                    "dash_html_components",
+                    { children }
+                );
+                
+                // Parse content into markdown and code blocks
+                function parseContent(content) {
+                    const parts = [];
+                    let lastIndex = 0;
+                    let match;
+                    
+                    CODE_BLOCK_REGEX.lastIndex = 0; // Reset regex state
+                    
+                    while ((match = CODE_BLOCK_REGEX.exec(content)) !== null) {
+                        const [_, language, code] = match;
+                        
+                        // Add preceding text as markdown
+                        if (match.index > lastIndex) {
+                            const text = content.slice(lastIndex, match.index).trim();
+                            if (text) parts.push(createMarkdown(text));
+                        }
+                        
+                        // Add code block
+                        parts.push(createCodeHighlight(code, language));
+                        lastIndex = CODE_BLOCK_REGEX.lastIndex;
+                    }
+                    
+                    // Add trailing text
+                    const trailing = content.slice(lastIndex).trim();
+                    if (trailing) parts.push(createMarkdown(trailing));
+                    
+                    return parts;
+                }
+                
+                // Main processing
+                if (!children?.length) return [];
+                
+                return children.map(msg => {
+                    // Validate message structure
+                    if (!msg?.props?.children || msg.props.children.length < 2) {
+                        return msg;
+                    }
+                    
+                    const [role, contentWrapper] = msg.props.children;
+                    const content = contentWrapper?.props?.children;
+                    
+                    // Only process string content
+                    if (typeof content !== 'string') return msg;
+                    
+                    const parts = parseContent(content);
+                    
+                    // Return original if no code blocks found
+                    if (parts.length === 0) return msg;
+                    
+                    // Reconstruct message with parsed content
+                    return createDiv([role, createDiv(parts)]);
+                });
+            }
+            """,
+            Output(f"{self.chat_id}-rendered-messages", "children"),
+            Input(f"{self.chat_id}-hidden-messages", "children"),
+            prevent_initial_call=True,
+        )
 
         @callback(
             # outputs are self.outputs
             Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
-            Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+            Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
             # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
             # make sure it.
             Input(f"{self.chat_id}-submit", "n_clicks"),
@@ -175,7 +313,7 @@ class ChatAction(echo):
         page = model_manager._get_model_page(self)
 
         @callback(
-            Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
+            Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
             Output(
                 "vizro_version", "children", allow_duplicate=True
             ),  # Extremely horrible hack we should change, just done here to make
@@ -198,13 +336,13 @@ class ChatAction(echo):
 
             placeholder_msg = {"role": "assistant", "content": ""}
             store.append(placeholder_msg)
-            html_messages.append(html.Div())
+            html_messages.append(self.message_to_html(placeholder_msg))
 
             return [
                 store,
                 html_messages,
                 f"/streaming-{self.chat_id}",
-                sse_options(Stuff(prompt=prompt, messages=messages)),
+                sse_options(StreamingRequest(prompt=prompt, messages=messages)),
             ]
         else:
             response = self.core_function(prompt, messages)
@@ -217,11 +355,10 @@ class ChatAction(echo):
             html_messages.append(self.message_to_html(latest_output))
             return store, html_messages
 
-    # User writes this function. Does it belong here or in Chat?
     def message_to_html(self, message):
         return html.Div([
             html.B(message["role"]), 
-            dcc.Markdown(message["content"], dangerously_allow_html=False)
+            html.Div(message["content"])
         ])
 
     @property
@@ -229,12 +366,12 @@ class ChatAction(echo):
         if self.stream:
             return [
                 f"{self.chat_id}-store.data",
-                f"{self.chat_id}-output.children",
+                f"{self.chat_id}-hidden-messages.children",
                 f"{self.chat_id}-sse.url",
                 f"{self.chat_id}-sse.options",
             ]
         else:
-            return [f"{self.chat_id}-store.data", f"{self.chat_id}-output.children"]
+            return [f"{self.chat_id}-store.data", f"{self.chat_id}-hidden-messages.children"]
 
 
 class openai_pirate(ChatAction):
@@ -261,63 +398,41 @@ class openai_pirate(ChatAction):
 
         self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
 
-    # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
-    # yes. It might still be worth having two separate functions though, not sure.
-    # Note responses.create has different return types in these cases.
-    def core_function(self, prompt, messages):
-        """Core function that handles both streaming and non-streaming responses."""
+    def _stream_response(self, messages):
+        """Handle streaming response from OpenAI."""
         response = self._client.responses.create(
             model=self.model,
             input=messages,
             instructions="Be polite and creative.",
             store=False,
-            stream=self.stream,
+            stream=True,
         )
-
-        if self.stream:
-            return self._process_streaming_response(response)
-        else:
-            return response
-
-    def _process_streaming_response(self, response_stream):
-        """Process streaming response and yield text chunks.
-
-        Args:
-            response_stream: The raw streaming response from the LLM provider
-
-        Yields:
-            str: Text chunks to be streamed
-        """
-        buffer = ""  # Buffer to accumulate text until we hit line breaks
-
-        for event in response_stream:
+        
+        for event in response:
             # Handle OpenAI-specific event types
             if event.type == "response.output_text.delta":
-                buffer += event.delta
-                processed_chunks = self._process_buffer_for_line_breaks(buffer)
-                buffer = processed_chunks["remaining_buffer"]
-
-                for chunk in processed_chunks["complete_chunks"]:
-                    yield chunk
-
-        # Send any remaining text in buffer when stream ends
-        if buffer:
-            yield buffer
-
-    # currently use the "\n\n" as buffer split, not sure if this is the best way to do it.
-    def _process_buffer_for_line_breaks(self, buffer, line_break="\n\n"):
-        complete_chunks = []
-        remaining_buffer = buffer
-
-        while line_break in remaining_buffer:
-            split_pos = remaining_buffer.find(line_break)
-            chunk = remaining_buffer[:split_pos] + line_break
-            remaining_buffer = remaining_buffer[split_pos + len(line_break) :]
-
-            if chunk:
-                complete_chunks.append(chunk)
-
-        return {"complete_chunks": complete_chunks, "remaining_buffer": remaining_buffer}
+                yield event.delta
+    
+    def _non_stream_response(self, messages):
+        """Handle non-streaming response from OpenAI."""
+        response = self._client.responses.create(
+            model=self.model,
+            input=messages,
+            instructions="Be polite and creative.",
+            store=False,
+            stream=False,
+        )
+        return response
+    
+    # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
+    # yes. It might still be worth having two separate functions though, not sure.
+    # Note responses.create has different return types in these cases.
+    def core_function(self, prompt, messages):
+        """Core function that handles both streaming and non-streaming responses."""
+        if self.stream:
+            return self._stream_response(messages)
+        else:
+            return self._non_stream_response(messages)
 
 
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
@@ -360,16 +475,14 @@ class Chat(VizroBaseModel):
             [
                 dbc.Input(id=f"{self.id}-input", placeholder="Type something...", type="text", debounce=True),
                 dbc.Button(id=f"{self.id}-submit", children="Submit"),
-                # Note the SSE example uses
-                # dcc.Markdown(id="response", dangerously_allow_html=True, dedent=False),
-                # Question for Lingyi: Should we do the same? Will it mean that we can stream mixed content messages
-                # directly? Do models actually return HTML?
-                html.Div(id=f"{self.id}-output", children=[]),
+                # Hidden div to store raw messages
+                html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
+                # Visible div to display parsed messages with code highlighting
+                html.Div(id=f"{self.id}-rendered-messages", children=[]),
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),  # TBD storage_type
                 # Setting to a much larger value to accommodate full JSON component messages
                 # would this cause performance issues?
-                SSE(id=f"{self.id}-sse", concat=False, animate_chunk=10000, animate_delay=5),
-                html.Div(id=f"{self.id}-streaming-output", style={"display": "none"}),
+                SSE(id=f"{self.id}-sse", concat=True, animate_chunk=10, animate_delay=5),
             ]
         )
 
@@ -390,10 +503,10 @@ page = vm.Page(
             # actions=[
             #     echo(chat_id="chat"),
             # ],
-            # actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-output.children"])],
+            # actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-hidden-messages.children"])],
             # actions=[graph(chat_id="chat")],
             # actions=[
-            #     vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-output.children"])
+            #     vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-hidden-messages.children"])
             # ],
             actions=[pirate_stream_action],
         ),
