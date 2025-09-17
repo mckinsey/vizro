@@ -66,6 +66,7 @@ MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
         vm.Slider,
         vm.RangeSlider,
         vm.DatePicker,
+        vm.Switch,
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
     "additional_info": [vm.Tooltip],
