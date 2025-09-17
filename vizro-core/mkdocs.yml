@@ -219,10 +219,9 @@ plugins:
               warn_unknown_params: false
               returns_named_value: false
             extensions:
-              - docs/griffe_extensions/dynamically_inspect.py:
+              - docs/griffe_extensions.py:
                   paths:
                     [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
-              - docs/griffe_extensions/experimental_decorator/extension.py
               - griffe_warnings_deprecated:
                   kind: danger
                   title: Deprecated
