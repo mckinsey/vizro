@@ -28,7 +28,11 @@ describe("guard_action_chain", () => {
       const trigger_value = "test_value";
       const trigger_component_id = "test_component";
 
-      const result = guard_action_chain(trigger_value, true, trigger_component_id);
+      const result = guard_action_chain(
+        trigger_value,
+        true,
+        trigger_component_id,
+      );
 
       expect(result).toBe(dash_clientside.no_update);
       expect(dash_clientside.set_props).toHaveBeenCalledWith(
@@ -43,7 +47,11 @@ describe("guard_action_chain", () => {
       const trigger_value = "test_value";
       const trigger_component_id = "test_component";
 
-      const result = guard_action_chain(trigger_value, null, trigger_component_id);
+      const result = guard_action_chain(
+        trigger_value,
+        null,
+        trigger_component_id,
+      );
 
       expect(result).toBe(trigger_value);
       expect(dash_clientside.set_props).not.toHaveBeenCalled();
@@ -55,7 +63,11 @@ describe("guard_action_chain", () => {
       const trigger_value = "test_value";
       const trigger_component_id = "test_component";
 
-      const result = guard_action_chain(trigger_value, false, trigger_component_id);
+      const result = guard_action_chain(
+        trigger_value,
+        false,
+        trigger_component_id,
+      );
 
       expect(result).toBe(trigger_value);
       expect(dash_clientside.set_props).not.toHaveBeenCalled();

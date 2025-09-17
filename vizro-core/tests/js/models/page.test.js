@@ -1,43 +1,4 @@
-const mockSearchParams = new Map([
-  ["vizro_1", "b64_encodedValue"],
-  ["foo", "raw_value"],
-  ["vizro_2", "b64_anotherEncoded"],
-]);
-
-global.TextEncoder = jest.fn(() => ({
-  encode: jest.fn(),
-}));
-global.TextDecoder = jest.fn(() => ({
-  decode: jest.fn(),
-}));
-
-global.URLSearchParams = jest.fn(() => ({
-  set: jest.fn((key, value) => mockSearchParams.set(key, value)),
-  toString: jest.fn(() => "controlId1=controlVal1&controlId2=controlVal2"),
-  entries: jest.fn(() => mockSearchParams.entries()),
-  get: jest.fn((key) => mockSearchParams.get(key)),
-  has: jest.fn((key) => mockSearchParams.has(key)),
-  forEach: jest.fn((callback) => mockSearchParams.forEach(callback)),
-}));
-
-global.dash_clientside = {
-  set_props: jest.fn(),
-  no_update: "no_update",
-  PreventUpdate: "PreventUpdate",
-  callback_context: {
-    triggered_id: undefined,
-  },
-};
-
-// Mock window.dash_clientside
-global.window = {
-  location: {
-    search:
-      "?vizro_1=b64_encodedValue&foo=raw_value&vizro_2=b64_anotherEncoded",
-    pathname: "/",
-  },
-  dash_clientside: global.dash_clientside,
-};
+global.dash_clientside = { set_props: jest.fn() };
 
 // Import the page module
 require("../../../src/vizro/static/js/models/page.js");
@@ -199,9 +160,6 @@ describe("page.js functions", () => {
             .join("&");
         }),
         entries: jest.fn(() => mockUrlParams.entries()),
-        get: jest.fn((key) => mockUrlParams.get(key)),
-        has: jest.fn((key) => mockUrlParams.has(key)),
-        forEach: jest.fn((callback) => mockUrlParams.forEach(callback)),
       }));
 
       // Setup history mock
@@ -219,14 +177,17 @@ describe("page.js functions", () => {
       global.history.replaceState = global.window.history.replaceState;
     });
 
-    afterEach(() => {
-      if (replaceStateSpy) {
-        replaceStateSpy.mockRestore();
-      }
-    });
-
     describe("Page opened scenarios (opl_triggered = undefined)", () => {
       const opl_triggered = undefined;
+
+      const values_ids = [
+        "selector-value-1", // selector values
+        "selector-value-2",
+        "control-id-1", // control IDs
+        "control-id-2",
+        "selector-id-1", // selector IDs
+        "selector-id-2",
+      ];
 
       test("should decode URL params and call setProps for matching control IDs", () => {
         // Mock the decoding to return specific values
@@ -242,17 +203,8 @@ describe("page.js functions", () => {
           .mockReturnValueOnce({ value: "value2" }); // for control-2
 
         // Setup encoded URL params that match control IDs
-        mockUrlParams.set("control-1", "b64_InZhbHVlMSI"); // "value1" encoded
-        mockUrlParams.set("control-2", "b64_InZhbHVlMiI"); // "value2" encoded
-
-        const values_ids = [
-          "initial-1",
-          "initial-2", // selector values
-          "control-1",
-          "control-2", // control IDs
-          "selector-1",
-          "selector-2", // selector IDs
-        ];
+        mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // "value1" encoded
+        mockUrlParams.set("control-id-2", "b64_InZhbHVlMiI"); // "value2" encoded
 
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
@@ -260,26 +212,28 @@ describe("page.js functions", () => {
             ...values_ids,
           );
 
-        // Should trigger OPL
-        expect(result).toBe(null);
-
         // Should call setProps for both controls
+        // selector-id-1
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-          "selector-1_guard_actions_chain",
-          { data: true },
-        );
-        expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-          "selector-1",
+          "selector-id-1",
           { value: { value: "value1" } },
         );
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-          "selector-2_guard_actions_chain",
+          "selector-id-1_guard_actions_chain",
           { data: true },
         );
+        // selector-id-2
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-          "selector-2",
+          "selector-id-2",
           { value: { value: "value2" } },
         );
+        expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
+          "selector-id-2_guard_actions_chain",
+          { data: true },
+        );
+
+        // Should trigger OPL
+        expect(result).toBe(null);
       });
 
       test("should handle partially defined URL params", () => {
@@ -288,16 +242,7 @@ describe("page.js functions", () => {
         jest.spyOn(JSON, "parse").mockReturnValueOnce({ value: "value1" });
 
         // Only one control is defined in URL
-        mockUrlParams.set("control-1", "b64_InZhbHVlMSI"); // "value1" encoded
-
-        const values_ids = [
-          "initial-1",
-          "initial-2", // selector values
-          "control-1",
-          "control-2", // control IDs
-          "selector-1",
-          "selector-2", // selector IDs
-        ];
+        mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // "value1" encoded
 
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
@@ -305,48 +250,45 @@ describe("page.js functions", () => {
             ...values_ids,
           );
 
-        expect(result).toBe(null);
-
         // Should only call setProps for control-1
+        // selector-id-1
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-          "selector-1_guard_actions_chain",
-          { data: true },
+          "selector-id-1",
+          { value: { value: "value1" } },
         );
         expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-          "selector-1",
-          { value: { value: "value1" } },
+          "selector-id-1_guard_actions_chain",
+          { data: true },
         );
 
         // Should NOT call setProps for control-2
+        // selector-id-2
         expect(global.dash_clientside.set_props).not.toHaveBeenCalledWith(
-          "selector-2_guard_actions_chain",
-          { data: true },
-        );
-        expect(global.dash_clientside.set_props).not.toHaveBeenCalledWith(
-          "selector-2",
+          "selector-id-2",
           { value: expect.anything() },
         );
+        expect(global.dash_clientside.set_props).not.toHaveBeenCalledWith(
+          "selector-id-2_guard_actions_chain",
+          { data: true },
+        );
+
+        // Should trigger OPL
+        expect(result).toBe(null);
       });
 
       test("should not call setProps when URL params are empty", () => {
         // No URL params - mockUrlParams is already cleared in beforeEach
-        const values_ids = [
-          "initial-1",
-          "initial-2",
-          "control-1",
-          "control-2",
-          "selector-1",
-          "selector-2",
-        ];
-
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
             opl_triggered,
             ...values_ids,
           );
 
-        expect(result).toBe(null);
+        // Should NOT call setProps since no control IDs match
         expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
+
+        // Should trigger OPL
+        expect(result).toBe(null);
       });
 
       test("should not call setProps when URL param IDs don't match control IDs", () => {
@@ -354,23 +296,17 @@ describe("page.js functions", () => {
         mockUrlParams.set("different-control", "b64_InZhbHVlMSI");
         mockUrlParams.set("another-control", "b64_InZhbHVlMiI");
 
-        const values_ids = [
-          "initial-1",
-          "initial-2",
-          "control-1",
-          "control-2",
-          "selector-1",
-          "selector-2",
-        ];
-
         const result =
           global.dash_clientside.page.sync_url_query_params_and_controls(
             opl_triggered,
             ...values_ids,
           );
 
-        expect(result).toBe(null);
+        // Should NOT call setProps since no control IDs match
         expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
+
+        // Should trigger OPL
+        expect(result).toBe(null);
       });
     });
 
@@ -392,12 +328,12 @@ describe("page.js functions", () => {
         }));
 
         // URL initially contains one encoded control
-        mockUrlParams.set("control-1", "b64_SW5pdGlhbFZhbHVl"); // old value
+        mockUrlParams.set("control-1", "b64_InZhbHVlMSI"); // old value "value1"
 
         const values_ids = [
           "new-value", // new selector value
-          "control-1", // control ID
-          "selector-1", // selector ID
+          "control-id-1", // control ID
+          "selector-id-1", // selector ID
         ];
 
         const result =
@@ -406,15 +342,18 @@ describe("page.js functions", () => {
             ...values_ids,
           );
 
-        expect(result).toBe(global.dash_clientside.no_update);
-        expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
-
         // Should update URL with new encoded value
         expect(replaceStateSpy).toHaveBeenCalledWith(
           null,
           "",
-          expect.stringContaining("control-1=b64_bmV3LXZhbHVl"), // "new-value" encoded
+          expect.stringContaining("control-id-1=b64_bmV3LXZhbHVl"), // "new-value" encoded
         );
+
+        // Should not call setProps when control changes
+        expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
+
+        // Should not trigger OPL
+        expect(result).toBe(global.dash_clientside.no_update);
       });
 
       test("should update URL with multiple controls, changing only one", () => {
@@ -441,16 +380,16 @@ describe("page.js functions", () => {
         }));
 
         // URL initially contains two encoded controls
-        mockUrlParams.set("control-1", "b64_SW5pdGlhbFZhbHVlMQ"); // old value1
-        mockUrlParams.set("control-2", "b64_SW5pdGlhbFZhbHVlMg"); // old value2
+        mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // old value1
+        mockUrlParams.set("control-id-2", "b64_InZhbHVlMiI"); // old value2
 
         const values_ids = [
-          "new-value",
-          "unchanged-value", // selector values - only first one changed
-          "control-1",
-          "control-2", // control IDs
-          "selector-1",
-          "selector-2", // selector IDs
+          "new-value", // selector values - only first one changed
+          "unchanged-value",
+          "control-id-1", // control IDs
+          "control-id-2",
+          "selector-id-1", // selector IDs
+          "selector-id-2",
         ];
 
         const result =
@@ -459,13 +398,16 @@ describe("page.js functions", () => {
             ...values_ids,
           );
 
-        expect(result).toBe(global.dash_clientside.no_update);
-        expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
-
         // Should update URL with new values for both controls
         const finalUrl = replaceStateSpy.mock.calls[0][2];
-        expect(finalUrl).toContain("control-1=b64_bmV3LXZhbHVl"); // "new-value" encoded
-        expect(finalUrl).toContain("control-2=b64_dW5jaGFuZ2VkLXZhbHVl"); // "unchanged-value" encoded
+        expect(finalUrl).toContain("control-id-1=b64_bmV3LXZhbHVl"); // "new-value" encoded
+        expect(finalUrl).toContain("control-id-2=b64_dW5jaGFuZ2VkLXZhbHVl"); // "unchanged-value" encoded
+
+        // Should not call setProps when control changes
+        expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
+
+        // Should not trigger OPL
+        expect(result).toBe(global.dash_clientside.no_update);
       });
     });
   });
