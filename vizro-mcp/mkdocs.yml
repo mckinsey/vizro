@@ -76,7 +76,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.30
+                vizro==0.1.45
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -89,7 +89,6 @@ markdown_extensions:
 plugins:
   - search
   - autorefs
-  - glightbox
   - mkdocstrings:
       handlers:
         python:
@@ -107,6 +106,8 @@ plugins:
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
+  - glightbox:
+      manual: true
 
 extra_css:
   - stylesheets/extra.css

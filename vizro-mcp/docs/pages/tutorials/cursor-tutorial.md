@@ -1,3 +1,7 @@
+---
+glightbox: true
+---
+
 # Cursor and Vizro-MCP tutorial
 
 ## About this tutorial
