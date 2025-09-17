@@ -1,3 +1,4 @@
+import base64
 import json
 
 import dash
@@ -24,6 +25,7 @@ from vizro.models._models_utils import make_actions_chain
 from vizro.models.types import capture, ActionType
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
@@ -36,6 +38,12 @@ load_dotenv()
 @capture("action")
 def echo_function(prompt):
     return f"You said {prompt}"
+
+
+# Class hierarchy for chat functionality:
+# - echo: Basic chat functionality (no streaming)
+# - ChatAction: Extends echo to add full chat functionality (streaming + non-streaming)
+# - openai_pirate: Extends ChatAction to add OpenAI-specific API handling
 
 
 # Or they can write it using a class, just like with an action.
@@ -54,18 +62,317 @@ class echo(_AbstractAction):
 
     @property
     def outputs(self):
-        return [f"{self.chat_id}-output.children"]
+        return [f"{self.chat_id}-hidden-messages.children"]
 
 
-# Pydantic model that will be dumped to json automatically by sse_options. Define this somewhere sensible.
-class Stuff(BaseModel):
+# Pydantic model for streaming endpoint request payload
+class StreamingRequest(BaseModel):
+    """Request payload for streaming chat endpoint."""
+
     prompt: str
-    messages: Any  # I'm being lazy but maybe it doesn't matter
+    messages: Any  # List of message dicts with 'role' and 'content' keys
 
 
-# Subclass echo just because I'm lazy, but actually maybe we should actually have some common built-in chat class that
-# gets subclassed.
-class openai_pirate(echo):
+class ChatAction(echo):
+    """Base class for chat functionality with streaming and non-streaming support."""
+
+    stream: bool = True
+
+    def pre_build(self):
+        if self.stream:
+            self._setup_streaming_callbacks()
+            self._setup_streaming_endpoint()
+
+        self._setup_chat_callbacks()
+
+    # Now there are two data flows:
+    #     1. SSE chunks → decoded and accumulated in hidden-messages div
+    #     2. hidden-messages → parsed for markdown/code blocks → rendered-messages div
+
+    # This separation allows the markdown parser to work nicely for:
+    #     - Streaming messages (accumulated chunk by chunk)
+    #     - Non-streaming messages (complete response)
+    #     - Restored messages from history (on page load)
+    def _setup_streaming_callbacks(self):
+        clientside_callback(
+            """
+            function(animatedText, existingChildren, storeData) {
+                const CHUNK_DELIMITER = '|END|';
+                const STREAM_DONE_SIGNAL = '[DONE]';
+
+                // Helper: Decode base64 chunk to UTF-8 text
+                function decodeChunk(chunk) {
+                    try {
+                        const binaryString = atob(chunk);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        return new TextDecoder('utf-8').decode(bytes);
+                    }
+                    catch (e) {
+                        console.warn('Failed to decode chunk:', e);
+                        return '';
+                    }
+                }
+
+                // Helper: Get message content from structure
+                function getMessageContent(msg) {
+                    return msg?.props?.children?.[1]?.props?.children || '';
+                }
+
+                // Helper: Set message content in structure
+                function setMessageContent(msg, content) {
+                    if (msg?.props?.children?.[1]?.props) {
+                        msg.props.children[1].props.children = content;
+                    }
+                }
+
+                // Handle stream completion
+                if (!animatedText || animatedText === STREAM_DONE_SIGNAL) {
+                    window.lastProcessedChunkCount = 0;
+                    return [existingChildren, window.dash_clientside.no_update];
+                }
+
+                const newChildren = [...(existingChildren || [])];
+                const newData = [...(storeData || [])];
+                const lastMsg = newChildren[newChildren.length - 1];
+                const currentContent = getMessageContent(lastMsg);
+
+                // Reset counter for new messages
+                if (!window.lastProcessedChunkCount || currentContent === '') {
+                    window.lastProcessedChunkCount = 0;
+                }
+
+                // Process new chunks only
+                const chunks = animatedText.split(CHUNK_DELIMITER).slice(0, -1);
+                const newText = chunks.slice(window.lastProcessedChunkCount)
+                    .filter(Boolean)
+                    .map(decodeChunk)
+                    .join('');
+
+                window.lastProcessedChunkCount = chunks.length;
+
+                // Update message content if new text received
+                if (newText) {
+                    setMessageContent(lastMsg, currentContent + newText);
+
+                    // Update store data for assistant messages
+                    const lastStoreMsg = newData[newData.length - 1];
+                    if (lastStoreMsg?.role === 'assistant') {
+                        lastStoreMsg.content += newText;
+                    }
+                }
+
+                return [newChildren, newData];
+            }
+            """,
+            [
+                Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
+                Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
+            ],
+            Input(f"{self.chat_id}-sse", "animation"),
+            [State(f"{self.chat_id}-hidden-messages", "children"), State(f"{self.chat_id}-store", "data")],
+            prevent_initial_call=True,
+        )
+
+    def _setup_streaming_endpoint(self):
+        """Set up streaming endpoint for SSE."""
+        CHUNK_DELIMITER = "|END|"
+
+        @dash.get_app().server.route(
+            f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
+        )
+        def streaming_chat():
+            req = StreamingRequest(**request.get_json())
+
+            def event_stream():
+                for chunk in self.core_function(**req.model_dump()):
+                    # Encode chunk as base64 to handle any special characters
+                    encoded_chunk = base64.b64encode(chunk.encode("utf-8")).decode("utf-8")
+                    # Need a robust delimiter for clientside parsing
+                    yield sse_message(encoded_chunk + CHUNK_DELIMITER)
+
+                # Send SSE completion signal
+                yield sse_message()
+
+            return Response(event_stream(), mimetype="text/event-stream")
+
+    def _setup_chat_callbacks(self):
+        """Set up generic chat UI callbacks."""
+
+        # Clientside callback to parse markdown and render code blocks with syntax highlighting
+        clientside_callback(
+            """
+            function(children) {
+                const CODE_BLOCK_REGEX = /```(\\w+)?\\n([\\s\\S]*?)```/g;
+
+                // Component factory helpers
+                const createComponent = (type, namespace, props) => ({
+                    type, namespace, props
+                });
+
+                const createMarkdown = (text) => createComponent(
+                    "Markdown",
+                    "dash_core_components",
+                    { children: text, dangerously_allow_html: false }
+                );
+
+                const createCodeHighlight = (code, language) => createComponent(
+                    "CodeHighlight",
+                    "dash_mantine_components",
+                    {
+                        code: code.trim(),
+                        language: language || 'text',
+                        withLineNumbers: false
+                    }
+                );
+
+                const createDiv = (children) => createComponent(
+                    "Div",
+                    "dash_html_components",
+                    { children }
+                );
+
+                // Parse content into markdown and code blocks
+                function parseContent(content) {
+                    const parts = [];
+                    let lastIndex = 0;
+                    let match;
+
+                    CODE_BLOCK_REGEX.lastIndex = 0; // Reset regex state
+
+                    while ((match = CODE_BLOCK_REGEX.exec(content)) !== null) {
+                        const [_, language, code] = match;
+
+                        // Add preceding text as markdown
+                        if (match.index > lastIndex) {
+                            const text = content.slice(lastIndex, match.index).trim();
+                            if (text) parts.push(createMarkdown(text));
+                        }
+
+                        // Add code block
+                        parts.push(createCodeHighlight(code, language));
+                        lastIndex = CODE_BLOCK_REGEX.lastIndex;
+                    }
+
+                    // Add trailing text
+                    const trailing = content.slice(lastIndex).trim();
+                    if (trailing) parts.push(createMarkdown(trailing));
+
+                    return parts;
+                }
+
+                // Main processing
+                if (!children?.length) return [];
+
+                return children.map(msg => {
+                    // Validate message structure
+                    if (!msg?.props?.children || msg.props.children.length < 2) {
+                        return msg;
+                    }
+
+                    const [role, contentWrapper] = msg.props.children;
+                    const content = contentWrapper?.props?.children;
+
+                    // Only process string content
+                    if (typeof content !== 'string') return msg;
+
+                    const parts = parseContent(content);
+
+                    // Return original if no code blocks found
+                    if (parts.length === 0) return msg;
+
+                    // Reconstruct message with parsed content
+                    return createDiv([role, createDiv(parts)]);
+                });
+            }
+            """,
+            Output(f"{self.chat_id}-rendered-messages", "children"),
+            Input(f"{self.chat_id}-hidden-messages", "children"),
+            prevent_initial_call=True,
+        )
+
+        @callback(
+            # outputs are self.outputs
+            Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
+            Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
+            # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
+            # make sure it.
+            Input(f"{self.chat_id}-submit", "n_clicks"),
+            State(*self.prompt.split(".")),
+            prevent_initial_call=True,
+        )
+        def update_with_user_input(_, prompt):
+            store, html_messages = Patch(), Patch()
+            latest_input = {"role": "user", "content": prompt}
+            store.append(latest_input)
+            html_messages.append(self.message_to_html(latest_input))
+            return store, html_messages
+
+        # Horrible hack to restore chat history when you change page and return.
+        page = model_manager._get_model_page(self)
+
+        @callback(
+            Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
+            Output(
+                "vizro_version", "children", allow_duplicate=True
+            ),  # Extremely horrible hack we should change, just done here to make
+            # sure callback triggers (must have prevent_initial_call=True).
+            Input(*page._action_triggers["__default__"].split(".")),
+            State(f"{self.chat_id}-store", "data"),
+            prevent_initial_call=True,
+        )
+        def on_page_load(_, store):
+            return [self.message_to_html(message) for message in store], dash.no_update
+
+    def function(self, prompt, messages):
+        # Need to repeat append here since this runs at same time as store update.
+        # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
+        latest_input = {"role": "user", "content": prompt}
+        messages.append(latest_input)
+
+        if self.stream:
+            store, html_messages = Patch(), Patch()
+
+            placeholder_msg = {"role": "assistant", "content": ""}
+            store.append(placeholder_msg)
+            html_messages.append(self.message_to_html(placeholder_msg))
+
+            return [
+                store,
+                html_messages,
+                f"/streaming-{self.chat_id}",
+                sse_options(StreamingRequest(prompt=prompt, messages=messages)),
+            ]
+        else:
+            response = self.core_function(prompt, messages)
+            latest_output = {"role": "assistant", "content": response.output_text}
+
+            # Could do this without Patch and it would also work fine, but that would send more data across network than
+            # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
+            store, html_messages = Patch(), Patch()
+            store.append(latest_output)
+            html_messages.append(self.message_to_html(latest_output))
+            return store, html_messages
+
+    def message_to_html(self, message):
+        return html.Div([html.B(message["role"]), html.Div(message["content"])])
+
+    @property
+    def outputs(self):
+        if self.stream:
+            return [
+                f"{self.chat_id}-store.data",
+                f"{self.chat_id}-hidden-messages.children",
+                f"{self.chat_id}-sse.url",
+                f"{self.chat_id}-sse.options",
+            ]
+        else:
+            return [f"{self.chat_id}-store.data", f"{self.chat_id}-hidden-messages.children"]
+
+
+class openai_pirate(ChatAction):
     # With the class-based definition there's room for static parameters like model and api_key which isn't possible
     # if you just write a function.
     type: Literal["openai_pirate"] = "openai_pirate"
@@ -85,219 +392,45 @@ class openai_pirate(echo):
     # class, create and how to handle response.
 
     def pre_build(self):
+        super().pre_build()
+
         self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
 
-        # Should we define these callbacks in pre_build or in _define_callback with call to super()? Not sure yet.
-        # Should we use vizro_store? Only if needed for correct functioning on change page. Otherwise best to build
-        # in store here.
-        # Must be serverside to use self.message_to_html.
-        # Should be triggered in exact same way as main callback and at same time, but we assume it finishes before
-        # other one because it's faster. Could this cause difficulties? Definitely requires multithreaded server at
-        # least but that's ok. Would they ever not finish in right order? Not sure.
-        # This callback populates chat messages with latest input straight away rather than waiting to receive response.
-        # This makes it feel more responsive.
-        @callback(
-            # outputs are self.outputs
-            Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
-            Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-            # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
-            # make sure it.
-            Input(f"{self.chat_id}-submit", "n_clicks"),
-            State(*self.prompt.split(".")),
-            prevent_initial_call=True,
+    def _stream_response(self, messages):
+        """Handle streaming response from OpenAI."""
+        response = self._client.responses.create(
+            model=self.model,
+            input=messages,
+            instructions="Be polite and creative.",
+            store=False,
+            stream=True,
         )
-        def update_with_user_input(_, prompt):
-            store, html_messages = Patch(), Patch()
-            latest_input = {"role": "user", "content": prompt}
-            store.append(latest_input)
-            html_messages.append(self.message_to_html(latest_input))
-            return store, html_messages
 
-        # Horrible hack to restore chat history when you change page and return.
-        page = model_manager._get_model_page(self)
+        for event in response:
+            # Handle OpenAI-specific event types
+            if event.type == "response.output_text.delta":
+                yield event.delta
 
-        @callback(
-            Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-            Output(
-                "vizro_version", "children", allow_duplicate=True
-            ),  # Extremely horrible hack we should change, just done here to make
-            # sure callback triggers (must have prevent_initial_call=True).
-            Input(*page._action_triggers["__default__"].split(".")),
-            State(f"{self.chat_id}-store", "data"),
-            prevent_initial_call=True,
+    def _non_stream_response(self, messages):
+        """Handle non-streaming response from OpenAI."""
+        response = self._client.responses.create(
+            model=self.model,
+            input=messages,
+            instructions="Be polite and creative.",
+            store=False,
+            stream=False,
         )
-        def on_page_load(_, store):
-            return [self.message_to_html(message) for message in store], dash.no_update
-
-        if self.stream:
-            # Question for Lingyi: what is happening here?! WHy is it so complicated and why do we have two
-            # clientside callbacks?
-            clientside_callback(
-                """
-                function(animatedText, existingChildren) {
-                    if (!animatedText) return existingChildren;
-
-                    // Check if this is the [DONE] completion signal - if so, ignore it
-                    if (animatedText === '[DONE]') {
-                        return existingChildren;
-                    }
-
-                    // Clone existing children
-                    const newChildren = [...(existingChildren || [])];
-
-                    // Find the last message and update it if it's from assistant
-                    if (newChildren.length > 0) {
-                        const lastIdx = newChildren.length - 1;
-                        const lastMsg = newChildren[lastIdx];
-
-                        // Check if this is an assistant message being streamed
-                        if (lastMsg && lastMsg.props && lastMsg.props.children &&
-                            lastMsg.props.children[0] && lastMsg.props.children[0].props &&
-                            lastMsg.props.children[0].props.children === "assistant") {
-                            // Update the content of the assistant message
-                            lastMsg.props.children[1].props.children = animatedText;
-                        }
-                    }
-
-                    return newChildren;
-                }
-                """,
-                Output(f"{self.chat_id}-output", "children", allow_duplicate=True),
-                Input(f"{self.chat_id}-sse", "animation"),
-                State(f"{self.chat_id}-output", "children"),
-                prevent_initial_call=True,
-            )
-
-            # Persist assistant message progressively on each non-empty animated chunk
-            clientside_callback(
-                """
-                function(animatedText, sseData, storeData) {
-                    if (!animatedText || animatedText === '[DONE]') {
-                        return window.dash_clientside.no_update;
-                    }
-
-                    const newData = [...(storeData || [])];
-                    const last = newData.length > 0 ? newData[newData.length - 1] : null;
-                    if (last && last.role === 'assistant') {
-                        newData[newData.length - 1] = {role: 'assistant', content: animatedText};
-                    } else {
-                        newData.push({role: 'assistant', content: animatedText});
-                    }
-                    return newData;
-                }
-                """,
-                Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
-                Input(f"{self.chat_id}-sse", "animation"),
-                State(f"{self.chat_id}-sse", "data"),
-                State(f"{self.chat_id}-store", "data"),
-                prevent_initial_call=True,
-            )
-
-    def plug(self, app):
-        """Register streaming routes with the Dash app.
-
-        Args:
-            app: The Dash application instance.
-        """
-        if not self.stream:
-            return
-
-        # Now I'm wondering whether we actually want to do this with plug(). I think it's the "right" thing to do but
-        # it is extra effort for the user and I think that for most setups it will probably work like you had it before.
-        # I'd suggest we actually go back to using @dash.get_app().server.route() like you did before in pre_build.
-        # That way someone can do app = Vizro() without needing to specify plugins.
-        # Then we wait until someone finds a setup that doesn't work, complains, and we enable it with plugins as
-        # well so that those people can have it work properly.
-        # Question for Lingyi: if we do it the "wrong" way with @dash.get_app().server.route() in pre_build,
-        # can you easily find any setups where it doesn't work? e.g. Maybe with gunicorn it doesn't?
-        # Question: why do we set endpoint here?
-        @app.server.post(f"/streaming-{self.chat_id}", endpoint=f"streaming_chat_{self.chat_id}")
-        def streaming_chat():
-            try:
-                stuff = Stuff(**request.get_json())
-
-                def event_stream():
-                    response_stream = self.core_function(**stuff.model_dump())
-
-                    for event in response_stream:
-                        if event.type == "response.output_text.delta":
-                            # Question for Lingyi: is it possible to somehow use self.message_to_html here?
-                            # The data gets sent over SSE so won't come out correctly. But is there any way to break
-                            # the message into chunks to e.g. separate off code snippets to use dmc.CodeHighlight?
-                            # e.g. maybe dmc.CodeHighlight(event.delta).to_plotly_json() would translate it to json
-                            # and then maybe somehow it could be rendered correctly.
-                            # Experiment to see if each event comes out as a new html.P:
-                            # It doesn't work but I feel like something like this might be possible?
-                            # yield sse_message(html.P(event.delta))
-                            # yield sse_message(html.P(event.delta).to_plotly_json())
-                            yield sse_message(event.delta)
-
-                    # Send standard SSE completion signal
-                    # https://github.com/emilhe/dash-extensions/blob/78d1de50d32f888e5f287cfedfa536fe314ab0b4/dash_extensions/streaming.py#L6
-                    yield sse_message()
-
-                return Response(event_stream(), mimetype="text/event-stream")
-            except Exception:
-                # Let's check if we need this error catching.
-                return Response("An internal error has occurred.", status=500)
-
-    def function(self, prompt, messages):
-        # Need to repeat append here since this runs at same time as store update.
-        # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
-        latest_input = {"role": "user", "content": prompt}
-        messages.append(latest_input)
-
-        if self.stream:
-            # For streaming:
-            # 1. Add an empty assistant message as placeholder
-            # 2. Return SSE URL and options
-            # TODO: 3. Add a callback to update store when streaming is complete
-
-            store, html_messages = Patch(), Patch()
-
-            placeholder_msg = {"role": "assistant", "content": ""}
-            html_messages.append(self.message_to_html(placeholder_msg))
-
-            return [
-                store,
-                html_messages,
-                f"/streaming-{self.chat_id}",
-                sse_options(Stuff(prompt=prompt, messages=messages)),
-            ]
-        else:
-            response = self.core_function(prompt, messages)
-            latest_output = {"role": "assistant", "content": response.output_text}
-
-            # Could do this without Patch and it would also work fine, but that would send more data across network than
-            # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
-            store, html_messages = Patch(), Patch()
-            store.append(latest_output)
-            html_messages.append(self.message_to_html(latest_output))
-            return store, html_messages
+        return response
 
     # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
     # yes. It might still be worth having two separate functions though, not sure.
     # Note responses.create has different return types in these cases.
     def core_function(self, prompt, messages):
-        return self._client.responses.create(
-            model=self.model, input=messages, instructions="Talk like a pirate.", store=False, stream=self.stream
-        )
-
-    # User writes this function. Does it belong here or in Chat?
-    def message_to_html(self, message):
-        return html.Div([html.B(message["role"]), html.P(message["content"])])
-
-    @property
-    def outputs(self):
+        """Core function that handles both streaming and non-streaming responses."""
         if self.stream:
-            return [
-                f"{self.chat_id}-store.data",
-                f"{self.chat_id}-output.children",
-                f"{self.chat_id}-sse.url",
-                f"{self.chat_id}-sse.options",
-            ]
+            return self._stream_response(messages)
         else:
-            return [f"{self.chat_id}-store.data", f"{self.chat_id}-output.children"]
+            return self._non_stream_response(messages)
 
 
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
@@ -340,14 +473,14 @@ class Chat(VizroBaseModel):
             [
                 dbc.Input(id=f"{self.id}-input", placeholder="Type something...", type="text", debounce=True),
                 dbc.Button(id=f"{self.id}-submit", children="Submit"),
-                # Note the SSE example uses
-                # dcc.Markdown(id="response", dangerously_allow_html=True, dedent=False),
-                # Question for Lingyi: Should we do the same? Will it mean that we can stream mixed content messages
-                # directly? Do models actually return HTML?
-                html.Div(id=f"{self.id}-output", children=[]),
+                # Hidden div to store raw messages
+                html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
+                # Visible div to display parsed messages with code highlighting
+                html.Div(id=f"{self.id}-rendered-messages", children=[]),
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),  # TBD storage_type
-                SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10),
-                html.Div(id=f"{self.id}-streaming-output", style={"display": "none"}),
+                # Setting to a much larger value to accommodate full JSON component messages
+                # would this cause performance issues?
+                SSE(id=f"{self.id}-sse", concat=True, animate_chunk=10, animate_delay=5),
             ]
         )
 
@@ -368,10 +501,10 @@ page = vm.Page(
             # actions=[
             #     echo(chat_id="chat"),
             # ],
-            # actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-output.children"])],
+            # actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-hidden-messages.children"])],
             # actions=[graph(chat_id="chat")],
             # actions=[
-            #     vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-output.children"])
+            #     vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-hidden-messages.children"])
             # ],
             actions=[pirate_stream_action],
         ),
@@ -406,7 +539,11 @@ page_nostream = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_nostream, page_2])
+
+dashboard = vm.Dashboard(
+    pages=[page, page_nostream, page_2],
+    theme="vizro_light",
+)
 
 """
 Notes:
@@ -447,5 +584,5 @@ translation of store messages to html is SS, need to be able to do this. Options
 """
 
 if __name__ == "__main__":
-    app = Vizro(plugins=[pirate_stream_action])
+    app = Vizro()
     app.build(dashboard).run(debug=False)
