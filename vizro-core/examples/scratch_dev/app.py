@@ -68,6 +68,7 @@ class echo(_AbstractAction):
 # Pydantic model for streaming endpoint request payload
 class StreamingRequest(BaseModel):
     """Request payload for streaming chat endpoint."""
+
     prompt: str
     messages: Any  # List of message dicts with 'role' and 'content' keys
 
@@ -87,7 +88,7 @@ class ChatAction(echo):
     # Now there are two data flows:
     #     1. SSE chunks → decoded and accumulated in hidden-messages div
     #     2. hidden-messages → parsed for markdown/code blocks → rendered-messages div
-        
+
     # This separation allows the markdown parser to work nicely for:
     #     - Streaming messages (accumulated chunk by chunk)
     #     - Non-streaming messages (complete response)
@@ -98,7 +99,7 @@ class ChatAction(echo):
             function(animatedText, existingChildren, storeData) {
                 const CHUNK_DELIMITER = '|END|';
                 const STREAM_DONE_SIGNAL = '[DONE]';
-                
+
                 // Helper: Decode base64 chunk to UTF-8 text
                 function decodeChunk(chunk) {
                     try {
@@ -108,25 +109,25 @@ class ChatAction(echo):
                             bytes[i] = binaryString.charCodeAt(i);
                         }
                         return new TextDecoder('utf-8').decode(bytes);
-                    } 
-                    catch (e) { 
+                    }
+                    catch (e) {
                         console.warn('Failed to decode chunk:', e);
-                        return ''; 
+                        return '';
                     }
                 }
-                
+
                 // Helper: Get message content from structure
                 function getMessageContent(msg) {
                     return msg?.props?.children?.[1]?.props?.children || '';
                 }
-                
-                // Helper: Set message content in structure  
+
+                // Helper: Set message content in structure
                 function setMessageContent(msg, content) {
                     if (msg?.props?.children?.[1]?.props) {
                         msg.props.children[1].props.children = content;
                     }
                 }
-                
+
                 // Handle stream completion
                 if (!animatedText || animatedText === STREAM_DONE_SIGNAL) {
                     window.lastProcessedChunkCount = 0;
@@ -137,7 +138,7 @@ class ChatAction(echo):
                 const newData = [...(storeData || [])];
                 const lastMsg = newChildren[newChildren.length - 1];
                 const currentContent = getMessageContent(lastMsg);
-                
+
                 // Reset counter for new messages
                 if (!window.lastProcessedChunkCount || currentContent === '') {
                     window.lastProcessedChunkCount = 0;
@@ -149,13 +150,13 @@ class ChatAction(echo):
                     .filter(Boolean)
                     .map(decodeChunk)
                     .join('');
-                
+
                 window.lastProcessedChunkCount = chunks.length;
-                
+
                 // Update message content if new text received
                 if (newText) {
                     setMessageContent(lastMsg, currentContent + newText);
-                    
+
                     // Update store data for assistant messages
                     const lastStoreMsg = newData[newData.length - 1];
                     if (lastStoreMsg?.role === 'assistant') {
@@ -199,89 +200,89 @@ class ChatAction(echo):
 
     def _setup_chat_callbacks(self):
         """Set up generic chat UI callbacks."""
-        
+
         # Clientside callback to parse markdown and render code blocks with syntax highlighting
         clientside_callback(
             """
             function(children) {
                 const CODE_BLOCK_REGEX = /```(\\w+)?\\n([\\s\\S]*?)```/g;
-                
+
                 // Component factory helpers
                 const createComponent = (type, namespace, props) => ({
                     type, namespace, props
                 });
-                
+
                 const createMarkdown = (text) => createComponent(
-                    "Markdown", 
+                    "Markdown",
                     "dash_core_components",
                     { children: text, dangerously_allow_html: false }
                 );
-                
+
                 const createCodeHighlight = (code, language) => createComponent(
                     "CodeHighlight",
-                    "dash_mantine_components", 
-                    { 
-                        code: code.trim(), 
+                    "dash_mantine_components",
+                    {
+                        code: code.trim(),
                         language: language || 'text',
                         withLineNumbers: false
                     }
                 );
-                
+
                 const createDiv = (children) => createComponent(
                     "Div",
                     "dash_html_components",
                     { children }
                 );
-                
+
                 // Parse content into markdown and code blocks
                 function parseContent(content) {
                     const parts = [];
                     let lastIndex = 0;
                     let match;
-                    
+
                     CODE_BLOCK_REGEX.lastIndex = 0; // Reset regex state
-                    
+
                     while ((match = CODE_BLOCK_REGEX.exec(content)) !== null) {
                         const [_, language, code] = match;
-                        
+
                         // Add preceding text as markdown
                         if (match.index > lastIndex) {
                             const text = content.slice(lastIndex, match.index).trim();
                             if (text) parts.push(createMarkdown(text));
                         }
-                        
+
                         // Add code block
                         parts.push(createCodeHighlight(code, language));
                         lastIndex = CODE_BLOCK_REGEX.lastIndex;
                     }
-                    
+
                     // Add trailing text
                     const trailing = content.slice(lastIndex).trim();
                     if (trailing) parts.push(createMarkdown(trailing));
-                    
+
                     return parts;
                 }
-                
+
                 // Main processing
                 if (!children?.length) return [];
-                
+
                 return children.map(msg => {
                     // Validate message structure
                     if (!msg?.props?.children || msg.props.children.length < 2) {
                         return msg;
                     }
-                    
+
                     const [role, contentWrapper] = msg.props.children;
                     const content = contentWrapper?.props?.children;
-                    
+
                     // Only process string content
                     if (typeof content !== 'string') return msg;
-                    
+
                     const parts = parseContent(content);
-                    
+
                     // Return original if no code blocks found
                     if (parts.length === 0) return msg;
-                    
+
                     // Reconstruct message with parsed content
                     return createDiv([role, createDiv(parts)]);
                 });
@@ -356,10 +357,7 @@ class ChatAction(echo):
             return store, html_messages
 
     def message_to_html(self, message):
-        return html.Div([
-            html.B(message["role"]), 
-            html.Div(message["content"])
-        ])
+        return html.Div([html.B(message["role"]), html.Div(message["content"])])
 
     @property
     def outputs(self):
@@ -407,12 +405,12 @@ class openai_pirate(ChatAction):
             store=False,
             stream=True,
         )
-        
+
         for event in response:
             # Handle OpenAI-specific event types
             if event.type == "response.output_text.delta":
                 yield event.delta
-    
+
     def _non_stream_response(self, messages):
         """Handle non-streaming response from OpenAI."""
         response = self._client.responses.create(
@@ -423,7 +421,7 @@ class openai_pirate(ChatAction):
             stream=False,
         )
         return response
-    
+
     # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
     # yes. It might still be worth having two separate functions though, not sure.
     # Note responses.create has different return types in these cases.
