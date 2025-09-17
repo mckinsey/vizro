@@ -2,6 +2,7 @@
 
 from typing import Annotated, Any, Optional
 
+import vizro.figures as vf
 import vizro.models as vm
 from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationInfo
 
@@ -55,6 +56,21 @@ The only difference to the dash version is that:
     - you must use the key: "_target_: "dash_ag_grid"
     - you must refer to data via "data_frame": <data_frame_name> and NOT via columnDefs and rowData (do NOT set)
         """
+    )
+
+
+FIGURE_NAMESPACE_FUNCTION_DOCS = {func: vf.__dict__[func].__doc__ for func in vf.__all__}
+
+
+class FigureEnhanced(vm.Figure):
+    """Figure model that allows to use dynamic figure functions."""
+
+    figure: dict[str, Any] = Field(
+        description=f"""This is the figure function to be displayed.
+
+Only use arguments from the below mapping of _target_ to figure function documentation:
+
+{FIGURE_NAMESPACE_FUNCTION_DOCS}"""
     )
 
 
