@@ -1,3 +1,7 @@
+---
+glightbox: true
+---
+
 # Claude Desktop and Vizro-MCP tutorial
 
 ## About this tutorial
