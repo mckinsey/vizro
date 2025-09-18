@@ -15,7 +15,7 @@ This guide shows you how to use tabs to organize your `Containers` into subsecti
 
 By using [`Tabs`][vizro.models.Tabs], the following applies:
 
-- [`Filters`][vizro.models.Filter] affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
+- [`Filters`](../user-guides/filters.md) affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
 - The `title` of the [`Container`][vizro.models.Container] inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
 
 ## Add tabs

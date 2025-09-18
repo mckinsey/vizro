@@ -22,7 +22,7 @@ To create a custom component:
 1. Write the subclass:
     * To extend an existing model you could, for example, add or change model fields or override the `build` method.
     * To create a new component, you need to define fields and the `build` method from scratch.
-1. Look at the field where your component will be used in the [API reference][vizro.models] and check whether it is described as a discriminated union. For example, in [`Filter`][vizro.models.Filter] the `selector` field of type [`SelectorType`][vizro.models.types.SelectorType] is a discriminated union but the `options` field of type [`OptionsType`][vizro.models.types.OptionsType] is not. If the field is a discriminated union, then:
+1. Look at the field where your component will be used in the [API reference][vizro.models] and check whether it is described as a discriminated union. For example, in the [`Filter`][vizro.models.Filter] model the `selector` field of type [`SelectorType`][vizro.models.types.SelectorType] is a discriminated union but the `options` field of type [`OptionsType`][vizro.models.types.OptionsType] is not. If the field is a discriminated union, then:
     - You must ensure your model has a `type` field.
     - You must register the new type with its parent model with [`add_type`][vizro.models.VizroBaseModel.add_type].
 
@@ -61,7 +61,7 @@ class TooltipNonCrossRangeSlider(vm.RangeSlider):
 ```
 These lines are highlighted in the example below. They are the only material change to the original `build` method.
 
-3. Since the new model will be inserted into the `selectors` argument of the [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`SelectorType`][vizro.models.types.SelectorType]. Hence we must:
+3. Since the new model will be inserted into the `selectors` argument of the [`Filter`][vizro.models.Filter] model or [`Parameter`][vizro.models.Parameter], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`SelectorType`][vizro.models.types.SelectorType]. Hence we must:
     - define a new type:
 ```py
 class TooltipNonCrossRangeSlider(vm.RangeSlider):

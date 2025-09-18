@@ -327,7 +327,7 @@ You can combine and arrange various types of `components` on a dashboard page. R
 
 These steps add two KPI cards to the second page:
 
-1. Add a [`Figure`][vizro.models.Figure] to the list of `components`.
+1. Add a [`Figure`][vizro.models.Figure] model to the list of `components`.
 1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
 1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out our [guide to KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
 1. Repeat the above steps to add another KPI card to the page.
@@ -648,12 +648,12 @@ Run the code below to apply the layout to the dashboard page:
 
 ### 4.5. Add a filter
 
-You can use a [`Filter`][vizro.models.Filter] to interact with the dashboard by selecting specific data points to display.
+You can use a [`Filter`](../user-guides/filters.md) to interact with the dashboard by selecting specific data points to display.
 
 These steps add a filter to the dashboard:
 
-1. Add a [`Filter`][vizro.models.Filter] to the `controls` list of the `Page`.
-1. Specify the column to be filtered using the `column` argument of the [Filter][vizro.models.Filter].
+1. Add a [`Filter`][vizro.models.Filter] model to the `controls` list of the `Page`.
+1. Specify the column to be filtered using the `column` argument of the [Filter][vizro.models.Filter] model.
 1. Change the `selector` in one of the `Filters` to a [`Checklist`][vizro.models.Checklist]. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
 !!! example "Add a filter"

@@ -201,7 +201,7 @@ You can explore and test all available selectors interactively on our [feature d
 
 ## Further customization
 
-For further customizations, you can always refer to the [`Filter` model][vizro.models.Filter] reference and the [guide to selectors](selectors.md). Some popular choices are:
+For further customizations, you can always refer to the [`Filter`][vizro.models.Filter] model reference and the [guide to selectors](selectors.md). Some popular choices are:
 
 - select which component the filter will apply to by using `targets`
 - specify configuration of the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter
