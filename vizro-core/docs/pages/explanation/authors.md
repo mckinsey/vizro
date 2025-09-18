@@ -19,6 +19,7 @@ Thanks also to these contributors:
 Many thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance, and special appreciation to [Wesley Leong](https://github.com/wesleyleong), [Jonas Kemper](https://github.com/jonasrk) and team for origination and support (plus everyone else who helped to test, guide, support and encourage development).
 
 We stand on the shoulders of giants. Thanks to the following projects for foundation and inspiration:
+
 - [Plotly](https://dash.plotly.com/)
 - [Pydantic](https://docs.pydantic.dev/)
 
