@@ -27,7 +27,7 @@ class TestUserInputInstantiation:
             id="user-input-id",
             title="Title",
             placeholder="Placeholder",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert user_input.id == "user-input-id"
@@ -35,10 +35,11 @@ class TestUserInputInstantiation:
         assert user_input.title == "Title"
         assert user_input.placeholder == "Placeholder"
         assert user_input.actions == []
+        assert isinstance(user_input.description, vm.Tooltip)
         assert user_input._action_outputs == {
-            "__default__": f"{user_input.id}.value",
-            "title": f"{user_input.id}_title.children",
-            "description": f"{user_input.description.id}-text.children",
+            "__default__": "user-input-id.value",
+            "title": "user-input-id_title.children",
+            "description": "tooltip-id-text.children",
         }
         assert user_input._action_inputs == {"__default__": f"{user_input.id}.value"}
 

@@ -167,6 +167,7 @@ class TestSliderInstantiation:
         assert slider.title == ""
         assert slider.description is None
         assert slider.actions == []
+        assert slider._action_triggers == {"__default__": f"{slider.id}.value"}
         assert slider._action_outputs == {"__default__": f"{slider.id}.value"}
         assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
 
@@ -179,7 +180,7 @@ class TestSliderInstantiation:
             marks={1: "1", 5: "5", 10: "10"},
             value=1,
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
         assert slider.id == "slider_id"
         assert slider.type == "slider"
@@ -191,12 +192,13 @@ class TestSliderInstantiation:
         assert slider.title == "Title"
         assert slider.actions == []
         assert isinstance(slider.description, vm.Tooltip)
+        assert slider._action_triggers == {"__default__": "slider_id.value"}
         assert slider._action_outputs == {
-            "__default__": f"{slider.id}.value",
-            "title": f"{slider.id}_title.children",
-            "description": f"{slider.description.id}-text.children",
+            "__default__": "slider_id.value",
+            "title": "slider_id_title.children",
+            "description": "tooltip-id-text.children",
         }
-        assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
+        assert slider._action_inputs == {"__default__": "slider_id.value"}
 
     @pytest.mark.parametrize("min, max", [(0, None), (None, 10), (0, 10)])
     def test_valid_min_max(self, min, max):

@@ -474,7 +474,7 @@ class TestFilterInstantiation:
             selector=vm.RadioItems(
                 id="selector_id",
                 title="Test Title",
-                description=vm.Tooltip(id="selector_tooltip_id", text="Test", icon="info"),
+                description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             ),
             show_in_url=True,
         )
@@ -485,13 +485,13 @@ class TestFilterInstantiation:
         assert filter.targets == ["scatter_chart", "bar_chart"]
         assert isinstance(filter.selector, vm.RadioItems)
         assert filter.show_in_url is True
-
+        assert isinstance(filter.selector.description, vm.Tooltip)
         assert filter._action_triggers == {"__default__": "selector_id.value"}
         assert filter._action_outputs == {
             "__default__": "selector_id.value",
             "selector": "filter_id.children",
             "title": "selector_id_title.children",
-            "description": "selector_tooltip_id-text.children",
+            "description": "tooltip-id-text.children",
         }
         assert filter._action_inputs == {"__default__": "selector_id.value"}
 

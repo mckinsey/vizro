@@ -124,5 +124,5 @@ class TestMakeActionsChain:
         assert action_1._prevent_initial_call_of_guard is True
         assert action_2._prevent_initial_call_of_guard is True
 
-        assert action_1._parent_model_id == "model-id"
-        assert action_2._parent_model_id == "model-id"
+        assert action_1._parent_model.id == "model-id"
+        assert action_2._parent_model.id == "model-id"

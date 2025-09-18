@@ -26,6 +26,7 @@ class TestDropdownInstantiation:
         assert dropdown.title == ""
         assert dropdown.description is None
         assert dropdown.actions == []
+        assert dropdown._action_triggers == {"__default__": f"{dropdown.id}.value"}
         assert dropdown._action_outputs == {"__default__": f"{dropdown.id}.value"}
         assert dropdown._action_inputs == {"__default__": f"{dropdown.id}.value"}
 
@@ -36,7 +37,7 @@ class TestDropdownInstantiation:
             value="A",
             multi=False,
             title="Title",
-            description="Test description",
+            description=Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert dropdown.id == "dropdown-id"
@@ -47,12 +48,13 @@ class TestDropdownInstantiation:
         assert dropdown.title == "Title"
         assert dropdown.actions == []
         assert isinstance(dropdown.description, Tooltip)
+        assert dropdown._action_triggers == {"__default__": "dropdown-id.value"}
         assert dropdown._action_outputs == {
-            "__default__": f"{dropdown.id}.value",
-            "title": f"{dropdown.id}_title.children",
-            "description": f"{dropdown.description.id}-text.children",
+            "__default__": "dropdown-id.value",
+            "title": "dropdown-id_title.children",
+            "description": "tooltip-id-text.children",
         }
-        assert dropdown._action_inputs == {"__default__": f"{dropdown.id}.value"}
+        assert dropdown._action_inputs == {"__default__": "dropdown-id.value"}
 
     @pytest.mark.parametrize(
         "test_options, expected",

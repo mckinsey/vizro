@@ -25,25 +25,26 @@ class TestContainerInstantiation:
     @pytest.mark.parametrize("variant", ["plain", "filled", "outlined"])
     def test_create_container_mandatory_and_optional(self, variant):
         container = vm.Container(
-            id="my-id",
+            id="container-id",
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             components=[vm.Button(), vm.Button()],
             layout=vm.Grid(grid=[[0, 1]]),
             variant=variant,
             collapsed=True,
             controls=[vm.Filter(column="test")],
         )
-        assert container.id == "my-id"
+        assert container.id == "container-id"
         assert isinstance(container.components[0], vm.Button) and isinstance(container.components[1], vm.Button)
         assert container.layout.grid == [[0, 1]]
         assert container.title == "Title"
         assert container.variant == variant
         assert container.collapsed is True
         assert isinstance(container.controls[0], vm.Filter)
+        assert isinstance(container.description, vm.Tooltip)
         assert container._action_outputs == {
-            "title": f"{container.id}_title.children",
-            "description": f"{container.description.id}-text.children",
+            "title": "container-id_title.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_create_container_mandatory_and_optional_legacy_layout(self):

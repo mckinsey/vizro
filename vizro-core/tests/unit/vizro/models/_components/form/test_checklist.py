@@ -24,12 +24,17 @@ class TestChecklistInstantiation:
         assert checklist.title == ""
         assert checklist.description is None
         assert checklist.actions == []
+        assert checklist._action_triggers == {"__default__": f"{checklist.id}.value"}
         assert checklist._action_outputs == {"__default__": f"{checklist.id}.value"}
         assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
 
     def test_create_checklist_mandatory_and_optional(self):
         checklist = Checklist(
-            id="checklist-id", options=["A", "B", "C"], value=["A"], title="Title", description="Test description"
+            id="checklist-id",
+            options=["A", "B", "C"],
+            value=["A"],
+            title="Title",
+            description=Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert checklist.id == "checklist-id"
@@ -39,12 +44,13 @@ class TestChecklistInstantiation:
         assert checklist.title == "Title"
         assert checklist.actions == []
         assert isinstance(checklist.description, Tooltip)
+        assert checklist._action_triggers == {"__default__": "checklist-id.value"}
         assert checklist._action_outputs == {
-            "__default__": f"{checklist.id}.value",
-            "title": f"{checklist.id}_title.children",
-            "description": f"{checklist.description.id}-text.children",
+            "__default__": "checklist-id.value",
+            "title": "checklist-id_title.children",
+            "description": "tooltip-id-text.children",
         }
-        assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
+        assert checklist._action_inputs == {"__default__": "checklist-id.value"}
         assert checklist.show_select_all is True
 
     @pytest.mark.parametrize(

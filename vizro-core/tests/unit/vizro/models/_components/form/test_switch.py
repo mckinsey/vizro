@@ -19,6 +19,7 @@ class TestSwitchInstantiation:
         assert switch.value is False
         assert switch.title == ""
         assert switch.actions == []
+        assert switch._action_triggers == {"__default__": f"{switch.id}.value"}
         assert switch._action_outputs == {"__default__": f"{switch.id}.value"}
         assert switch._action_inputs == {"__default__": f"{switch.id}.value"}
 
@@ -27,7 +28,7 @@ class TestSwitchInstantiation:
             id="switch-id",
             value=True,
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert switch.id == "switch-id"
@@ -35,12 +36,14 @@ class TestSwitchInstantiation:
         assert switch.value is True
         assert switch.title == "Title"
         assert switch.actions == []
+        assert isinstance(switch.description, vm.Tooltip)
+        assert switch._action_triggers == {"__default__": "switch-id.value"}
         assert switch._action_outputs == {
-            "__default__": f"{switch.id}.value",
-            "title": f"{switch.id}_title.children",
-            "description": f"{switch.description.id}-text.children",
+            "__default__": "switch-id.value",
+            "title": "switch-id_title.children",
+            "description": "tooltip-id-text.children",
         }
-        assert switch._action_inputs == {"__default__": f"{switch.id}.value"}
+        assert switch._action_inputs == {"__default__": "switch-id.value"}
 
     @pytest.mark.parametrize(
         "input_value, expected_value",

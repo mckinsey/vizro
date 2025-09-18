@@ -720,6 +720,7 @@ ActionType = Annotated[
         Annotated["Action", Tag("action")],
         Annotated["export_data", Tag("export_data")],
         Annotated["filter_interaction", Tag("filter_interaction")],
+        Annotated["set_control", Tag("set_control")],
         SkipJsonSchema[Annotated["_filter", Tag("_filter")]],
         SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]],
         SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
