@@ -424,7 +424,7 @@ These steps add two KPI cards to the second page:
 
 ### 4.3. Add tabs to switch views
 
-You may not want to display both histograms simultaneously and instead prefer to switch between views. You can achieve this by using the [`Tabs`][vizro.models.Tabs] component. For more details, refer to Vizro's [tabs user guide](../user-guides/tabs.md).
+You may not want to display both histograms simultaneously and instead prefer to switch between views. You can achieve this by using the [`Tabs`][vizro.models.Tabs] model. For more details, refer to Vizro's [tabs user guide](../user-guides/tabs.md).
 
 These steps place the two histograms in separate tabs:
 

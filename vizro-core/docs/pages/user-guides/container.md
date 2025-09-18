@@ -13,7 +13,7 @@ Unlike `Page`, the `Container` model offers additional visual customization opti
 
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
 
-    [`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views. They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
+    [Tabs](tabs.md) organize and separate groups of related content in a dashboard, letting users switch between different sections or views. They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
 
     ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 
