@@ -24,6 +24,16 @@ def coerce_str_to_tooltip(text: Any) -> Any:
 class Tooltip(VizroBaseModel):
     """A tooltip that displays text when hovering over an icon.
 
+    Abstract: Usage documentation
+        Read more about usage in the guides on [dashboards](../user-guides/dashboard.md#add-a-dashboard-tooltip),
+        [pages](../user-guides/pages.md#add-a-tooltip),
+        [containers](../user-guides/container.md#add-a-tooltip),
+        [graphs](../user-guides/graph.md#add-a-tooltip),
+        [tables](../user-guides/table.md#add-a-tooltip), [tabs](../user-guides/tabs.md#add-a-tooltip),
+        [selectors](../user-guides/selectors.md#add-a-tooltip) and
+        [buttons](../user-guides/button.md#add-a-tooltip).
+
+
     Args:
         text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
@@ -32,6 +42,16 @@ class Tooltip(VizroBaseModel):
             [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/tooltip/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
+
+    Example: `vm.Tooltip` on a `Button`
+        ```python
+        import vizro.models as vm
+
+        vm.Button(
+            text="Click me!",
+            description=vm.Tooltip(text="This is a tooltip", icon="download"),
+        )
+        ```
 
     """
 
