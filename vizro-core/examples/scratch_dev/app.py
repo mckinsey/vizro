@@ -1,11 +1,10 @@
-"""This is a test app to test the dashboard layout."""
-
+import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
-from vizro.actions import set_control, filter_interaction
 from vizro.tables import dash_ag_grid
+
+tips = px.data.tips()
 
 
 df = px.data.iris()
@@ -68,55 +67,8 @@ page_1 = vm.Page(
 
 page_2 = vm.Page(
     title="Graph Drill-through target page",
-    components=[
-        vm.Graph(
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
-        )
-    ],
-    controls=[
-        # multi=True
-        vm.Filter(id="p2_filter_1", column="species", show_in_url=True, selector=vm.Checklist()),
-        # multi=False
-        vm.Filter(id="p2_filter_2", column="species", show_in_url=True, selector=vm.RadioItems()),
-    ],
-)
-
-# ====== Graph drill-down ======
-
-vm.Page.add_type("controls", vm.Button)
-
-
-@capture("graph")
-def graph_with_dynamic_title(data_frame, title="ALL", **kwargs):
-    return px.scatter(data_frame, title=f"Graph shows `{title}` species.", **kwargs)
-
-
-page_3 = vm.Page(
-    title="Graph Drill-down page",
-    components=[
-        vm.Graph(
-            id="p3_graph_1",
-            figure=graph_with_dynamic_title(
-                data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
-            ),
-            actions=[
-                set_control(control="p3-filter-1", value="species"),
-                set_control(control="p3-parameter-1", value="species"),
-            ],
-        )
-    ],
-    controls=[
-        # Hidden with the custom css
-        vm.Filter(id="p3-filter-1", column="species"),
-        vm.Parameter(
-            id="p3-parameter-1",
-            targets=["p3_graph_1.title"],
-            selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"]),
-        ),
-        vm.Button(
-            text="Reset drill down",
-            icon="Reset Focus",
-            actions=[
+                va.set_control(control="total_bill_filter", value="x"),
+                va.set_control(control="tip_filter", value="y"),
                 vm.Action(
                     function=capture("action")(
                         lambda: [["setosa", "versicolor", "virginica"], ["setosa", "versicolor", "virginica"]]
@@ -199,30 +151,12 @@ page_4 = vm.Page(
                 ),
             ],
         ),
+        vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
     ],
-)
-
-page_5 = vm.Page(
-    title="AgGrid Drill-through target page",
-    components=[vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))],
     controls=[
-        # multi=True
-        vm.Filter(id="p5_filter_1", column="species", show_in_url=True, selector=vm.Checklist()),
-        # multi=False
-        vm.Filter(id="p5_filter_2", column="species", show_in_url=True, selector=vm.RadioItems()),
-    ],
-)
-
-
-page_6 = vm.Page(
-    title="Old AgGrid Filter interaction",
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(df), actions=filter_interaction(targets=["p6_grid_2"])),
-        vm.AgGrid(
-            id="p6_grid_2",
-            figure=dash_ag_grid(df),
-        ),
-    ],
+        vm.Filter(id="total_bill_filter", column="total_bill", targets=["tips_table"]),
+        vm.Filter(id="tip_filter", column="tip", targets=["tips_table"]),
+    ],  # (2)!
 )
 
 # ====== Reset controls ======
@@ -374,5 +308,5 @@ dashboard = vm.Dashboard(
     ),
 )
 
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+print(dashboard.model_dump())
+# Vizro().build(dashboard).run()

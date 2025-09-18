@@ -1,26 +1,39 @@
-# Still requires a .py to add data to the data manager and parse YAML configuration
-# See yaml_version example
 pages:
   - components:
+      - actions:
+          - control: day_filter
+            type: set_control
+            value: x
+          - control: sex_filter
+            type: set_control
+            value: y
+        figure:
+          _target_: density_heatmap
+          category_orders:
+            day:
+              - Thur
+              - Fri
+              - Sat
+              - Sun
+          data_frame: tips
+          x: day
+          y: sex
+        title: Click on a cell to use that cell's sex and day to filter table
+        type: graph
       - figure:
           _target_: dash_ag_grid
-          data_frame: gapminder
-          columnSize: responsiveSizeToFit
-        id: ag-grid
+          data_frame: tips
+        id: tips_table
         type: ag_grid
     controls:
-      - selector:
-          options:
-            [
-              { value: autoSize, label: autoSize },
-              { value: responsiveSizeToFit, label: responsiveSizeToFit },
-              { value: sizeToFit, label: sizeToFit },
-              { value: NONE, label: None },
-            ]
-          value: responsiveSizeToFit
-          title: Select ColumnSize
-          type: radio_items
+      - column: day
+        id: day_filter
         targets:
-          - ag-grid.columnSize
-        type: parameter
-    title: AG Grid with Column Sizing
+          - tips_table
+        type: filter
+      - column: sex
+        id: sex_filter
+        targets:
+          - tips_table
+        type: filter
+    title: Cross-filter over 2 dimensions

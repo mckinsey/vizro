@@ -70,6 +70,10 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
         [![AGGrid]][aggrid]
 
+## Interact with other graphs and tables
+
+An AG Grid can act as a source for [interactions with other components](graph-table-actions.md), for example to cross-filter another graph or table when the user clicks on a point.
+
 ### Disable pagination
 
 By default, pagination is enabled in AG Grid to improve performance and usability with large datasets. If you prefer to show all rows in a single scrollable table (for example, to allow users to scroll vertically through all data), you can disable pagination by setting `dashGridOptions={"pagination": False}`.

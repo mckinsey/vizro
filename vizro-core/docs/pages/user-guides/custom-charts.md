@@ -37,6 +37,10 @@ To alter the data in the `data_frame` argument, consider using a [Filter](filter
 
     Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any extra configuration. We will showcase both possibilities in the following examples.
 
+## Interact with other graphs and tables
+
+A custom graph can act as a source for [interactions with other components](graph-table-actions.md), for example to cross-filter another graph or table when the user clicks on a point.
+
 ## Enhanced `plotly.express` chart with reference line
 
 The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then add a `Parameter` that enables the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
