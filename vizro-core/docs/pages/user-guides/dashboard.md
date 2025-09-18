@@ -1,6 +1,6 @@
 # How to create a dashboard
 
-This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] using either pydantic models, Python dictionaries, YAML, or JSON.
+This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] model using either pydantic models, Python dictionaries, YAML, or JSON.
 
 To create a dashboard:
 
@@ -194,7 +194,7 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 ## Add a dashboard title
 
-If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
+If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] model displays a heading at the top of every page.
 
 ## Add a dashboard logo
 
@@ -212,11 +212,11 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
 ## Customize the header
 
-You can now append custom content to the dashboard header using the [`custom_header`][vizro.models.Dashboard.custom_header] static method of the [Dashboard][vizro.models.Dashboard]. This enables you to inject any Dash component(s) into a dedicated area of the header - common examples include text, badges, or buttons.
+You can now append custom content to the dashboard header using the [`custom_header`][vizro.models.Dashboard.custom_header] static method of the [Dashboard][vizro.models.Dashboard] model. This enables you to inject any Dash component(s) into a dedicated area of the header - common examples include text, badges, or buttons.
 
 ![Custom header area](../../assets/user_guides/dashboard/custom_header_area.png)
 
-To append items to the custom header area, subclass the [Dashboard][vizro.models.Dashboard] and override the [`custom_header`][vizro.models.Dashboard.custom_header] static method to return your desired Dash component(s):
+To append items to the custom header area, subclass the [Dashboard][vizro.models.Dashboard] model and override the [`custom_header`][vizro.models.Dashboard.custom_header] static method to return your desired Dash component(s):
 
 - The returned value can be a single Dash component or a list of components.
 - The custom header area is styled as a flex row with an 8px gap.

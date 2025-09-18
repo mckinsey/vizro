@@ -60,7 +60,7 @@ For more information about working with Vizro on PyCafe, check out the [PyCafe d
 
 Before we dive in, let's quickly cover some basics:
 
-At the top level, you'll be creating a [`Dashboard`][vizro.models.Dashboard]. Here's what you can configure at the dashboard-level:
+At the top level, you'll be creating a [`Dashboard`](../user-guides/dashboard.md). Here's what you can configure at the dashboard-level:
 
 - **Pages**: You can add multiple pages; they are the building blocks of your dashboard.
 - **Navigation**: You can customize navigation between those different pages.
@@ -88,7 +88,7 @@ To start, let's get an overview of the data by displaying it in a table using [`
 1. Add an [`AgGrid`][vizro.models.AgGrid] component to the `components` list.
 1. Use the [`dash_ag_grid`][vizro.tables.dash_ag_grid] function inside the `figure` argument of `AgGrid`.
 1. Provide details about the data source in the `footer` argument of `AgGrid`.
-1. Add the newly created page to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
+1. Add the newly created page to the list of `pages` in the [Dashboard][vizro.models.Dashboard] model.
 
 !!! example "First Page"
 
@@ -256,7 +256,7 @@ These steps add a histogram to the page:
 1. Create a second [`Page`][vizro.models.Page] and store it in a variable called `second_page`. Set its `title` to `"Summary"`.
 1. Add a [`Graph`][vizro.models.Graph] to the `components` list.
 1. Inside the `figure` argument of the `Graph`, use the code for the [px.histogram from the visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
-1. Add the new page to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] by calling `vm.Dashboard(pages=[first_page, second_page])`.
+1. Add the new page to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model by calling `vm.Dashboard(pages=[first_page, second_page])`.
 
 !!! example "Second Page"
 
@@ -773,7 +773,7 @@ These steps should feel familiar, as they add three charts to the new page.
     - [px.bar](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column) (copy the code directly)
     - [px.density_heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap) (update the `data`, `x`, and `y` arguments to match the dataset)
 1. Provide a `title` for each `Graph`.
-1. Add the new `Page` to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard].
+1. Add the new `Page` to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model.
 
 !!! example "Third page"
 
@@ -1319,7 +1319,7 @@ Now that you've created all the dashboard pages, let's add a title and logo, and
 
 The following steps add a title and logo to the dashboard:
 
-1. Set the `title` attribute of the [Dashboard][vizro.models.Dashboard] to "Tips Analysis Dashboard".
+1. Set the `title` attribute of the [Dashboard][vizro.models.Dashboard] model to "Tips Analysis Dashboard".
 1. Download the `logo` from [this link](https://raw.githubusercontent.com/mckinsey/vizro/refs/heads/main/vizro-core/examples/dev/assets/logo.svg) and save it in a folder named `assets`.
 1. Place the `assets` folder in the same directory as your `app.py/app.ipynb` file.
 
@@ -1464,7 +1464,7 @@ The navigation bar will have two icons: one for the "Data" page and another for 
 
 The following steps create a navigation bar:
 
-1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] to a [Navigation][vizro.models.Navigation] object.
+1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] model to a [Navigation][vizro.models.Navigation] object.
 1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
 1. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
 1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
