@@ -116,47 +116,33 @@ class TestBootstrapDetection:
     """Test automatic Bootstrap CSS detection."""
 
     @pytest.mark.parametrize(
-        "external_stylesheets, expected",
+        "external_stylesheets, vizro_bootstrap_included",
         [
-            # Bootstrap detected
+            # Bootstrap detected - vizro bootstrap should NOT be included
             # String URL
-            (["https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"], True),
+            (["https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"], False),
             # Dict with href key
             (
                 [{"href": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"}],
-                True,
+                False,
             ),
             # Multiple stylesheets
-            (["https://fonts.googleapis.com/css", "https://example.com/bootstrap.css"], True),
+            (["https://fonts.googleapis.com/css", "https://example.com/bootstrap.css"], False),
             # Mixed
             (
                 [
                     "https://codepen.io/bWffds.css",
                     {"href": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"},
                 ],
-                True,
-            ),
-            # Case insensitive
-            (["https://example.com/BOOTSTRAP-theme.css"], True),
-            # Bootstrap NOT detected
-            ([], False),
-            (["https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"], False),
-            ([{"href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"}], False),
-            ([{"src": "https://bootstrap.css"}], False),  # Wrong key in dict
-        ],
-    )
-    def test_has_bootstrap_css(self, external_stylesheets, expected):
-        assert Vizro._has_bootstrap_css(external_stylesheets) == expected
-
-    @pytest.mark.parametrize(
-        "external_stylesheets, vizro_bootstrap_included",
-        [
-            ([], True),
-            (["https://fonts.googleapis.com/css"], True),
-            (
-                ["https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"],
                 False,
             ),
+            # Case insensitive
+            (["https://example.com/BOOTSTRAP-theme.css"], False),
+            # Bootstrap NOT detected - vizro bootstrap should be included
+            ([], True),
+            (["https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"], True),
+            ([{"href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"}], True),
+            ([{"src": "https://bootstrap.css"}], True),  # Wrong key in dict
         ],
     )
     def test_include_vizro_bootstrap(self, external_stylesheets, vizro_bootstrap_included):
@@ -166,7 +152,7 @@ class TestBootstrapDetection:
         has_vizro_bootstrap = any(
             "vizro-bootstrap.min.css" in resource.get("relative_package_path", "") for resource in framework_css
         )
-        assert has_vizro_bootstrap == vizro_bootstrap_included
+        assert has_vizro_bootstrap is vizro_bootstrap_included
 
 
 class TestRun:

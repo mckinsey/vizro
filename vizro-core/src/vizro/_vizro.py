@@ -70,9 +70,7 @@ class Vizro:
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
-            if not use_vizro_bootstrap and path.suffix == ".css" and path.name == "vizro-bootstrap.min.css":
-                continue
-            if path.suffix == ".css":
+            if path.suffix == ".css" and (path.name != "vizro-bootstrap.min.css" or use_vizro_bootstrap):
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
                 self.dash.scripts.append_script(_make_resource_spec(path))
@@ -89,7 +87,7 @@ class Vizro:
         """Detect if Bootstrap CSS is present in external stylesheets.
 
         Args:
-            external_stylesheets: List of external stylesheet URLs or objects
+            external_stylesheets: List of external stylesheets. Each entry can be a string (the URL).
 
         Returns:
             bool: True if Bootstrap CSS is detected, False otherwise
