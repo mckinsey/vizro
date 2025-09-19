@@ -53,6 +53,10 @@
 }
 
 /* ACCORDION */
+.accordion-header {
+  margin-bottom: 1rem;
+}
+
 .accordion-button {
   background: none;
   border: none;
