@@ -11,13 +11,21 @@ page = vm.Page(
     title="Bootstrap theme inside Vizro app",
     layout=vm.Flex(),
     components=[
-
-        vm.Container(components=[vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", height=600))],
-        variant="filled"),
-         vm.Container(components=[vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species", height=600))],
-        variant="filled")
-        
-        ,
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="scatter_chart",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", height=600),
+                )
+            ],
+            variant="filled",
+        ),
+        vm.Container(
+            components=[
+                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species", height=600))
+            ],
+            variant="filled",
+        ),
     ],
     controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
 )
