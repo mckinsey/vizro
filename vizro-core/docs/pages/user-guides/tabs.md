@@ -1,8 +1,8 @@
 # How to use tabs
 
-This guide shows you how to use [`Tabs`][vizro.models.Tabs], which organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
+This guide shows you how to use the [`Tabs`][vizro.models.Tabs] model, which organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
 
-They are essentially a way of putting multiple [`Containers`][vizro.models.Container] in the same screen space, and letting the user switch between them. `Containers` enable the grouping of page components into sections and subsections. See our [user guide on `Containers`](container.md) for more information. The [`Tabs`][vizro.models.Tabs] are based on the underlying Dash component [`dbc.Tabs`](https://www.dash-bootstrap-components.com/docs/components/tabs/).
+They are essentially a way of putting multiple [`Container`][vizro.models.Container] models in the same screen space, and letting the user switch between them. `Containers` enable the grouping of page components into sections and subsections. See our [user guide on `Containers`](container.md) for more information. The [`Tabs`][vizro.models.Tabs] model is based on the underlying Dash component [`dbc.Tabs`](https://www.dash-bootstrap-components.com/docs/components/tabs/).
 
 <figure markdown>
   ![tabs](../../assets/user_guides/components/tabs-info.png){ width="400"}
@@ -13,19 +13,19 @@ Both `Tabs` and `Containers` are a more advanced technique for customizing your 
 
 This guide shows you how to use tabs to organize your `Containers` into subsections inside the dashboard.
 
-By using [`Tabs`][vizro.models.Tabs], the following applies:
+By using the [`Tabs`][vizro.models.Tabs] model, the following applies:
 
 - [Filters](../user-guides/filters.md) affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
 - The `title` of the [`Container`][vizro.models.Container] inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
 
 ## Add tabs
 
-To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
+To add a [`Tabs`][vizro.models.Tabs] model to your page, do the following:
 
-1. Insert the [`Tabs`][vizro.models.Tabs] into the `components` argument of the [`Page`][vizro.models.Page]
-1. Insert your [`Containers`][vizro.models.Container] into the `tabs` argument of the [`Tabs`][vizro.models.Tabs]
+1. Insert the [`Tabs`][vizro.models.Tabs] model into the `components` argument of the [`Page`][vizro.models.Page] model
+1. Insert your [`Container`][vizro.models.Container] models into the `tabs` argument of the `Tabs` model
 1. Add a `title` to the `Container`, which will be used as the `label` for the corresponding `Tab`.
-1. (optional) Add a `title` to the `Tabs` to display a heading above your `Tabs` component.
+1. (optional) Add a `title` to the `Tabs` model to display a heading above your `Tabs`.
 
 !!! example "Tabs"
 

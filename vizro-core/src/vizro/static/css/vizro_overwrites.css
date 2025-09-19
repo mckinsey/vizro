@@ -25,6 +25,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 .navbar {
   background: var(--left-side-bg) !important;
   border: none;
+  flex-wrap: nowrap;
 }
 
 .nav-link {
@@ -89,7 +90,9 @@ div.form-check.form-switch {
 
 .navbar .nav-link {
   border: none;
+  height: 60px;
   padding: 1rem;
+  width: 60px;
 }
 
 .accordion {
