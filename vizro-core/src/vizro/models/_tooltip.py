@@ -52,6 +52,7 @@ class Tooltip(VizroBaseModel):
         )
         ```
 
+
     """
 
     text: str = Field(
