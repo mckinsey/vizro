@@ -9,24 +9,23 @@ df = px.data.iris()
 
 page = vm.Page(
     title="Bootstrap theme inside Vizro app",
-    layout=vm.Grid(grid=[[0, 1], [2, 2], [2, 2], [3, 3], [3, 3]]),
+    layout=vm.Flex(),
     components=[
-        vm.Card(
-            text="""
-                ### What is Vizro?
-                An open-source toolkit for creating modular data visualization applications.
-
-                Rapidly self-serve the assembly of customized dashboards in minutes - without the need for advanced coding or design experience - to create flexible and scalable, Python-enabled data visualization applications."""
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="scatter_chart",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", height=600),
+                )
+            ],
+            variant="filled",
         ),
-        vm.Card(
-            text="""
-                ### Github
-
-                Checkout Vizro's GitHub page for further information and release notes. Contributions are always welcome!""",
-            href="https://github.com/mckinsey/vizro",
+        vm.Container(
+            components=[
+                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species", height=600))
+            ],
+            variant="filled",
         ),
-        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
     ],
     controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
 )
@@ -34,4 +33,4 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run(debug=False)
+    Vizro().build(dashboard).run()
