@@ -61,7 +61,7 @@ class TooltipNonCrossRangeSlider(vm.RangeSlider):
 ```
 These lines are highlighted in the example below. They are the only material change to the original `build` method.
 
-3. Since the new model will be inserted into the `selectors` argument of the [`Filter`][vizro.models.Filter] model or [`Parameter`][vizro.models.Parameter], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`SelectorType`][vizro.models.types.SelectorType]. Hence we must:
+3. Since the new model will be inserted into the `selectors` argument of the [`Filter`][vizro.models.Filter] model or [`Parameter`][vizro.models.Parameter] model, it will be part of the discriminated union describing the allowed types for that argument, in this case the [`SelectorType`][vizro.models.types.SelectorType]. Hence we must:
     - define a new type:
 ```py
 class TooltipNonCrossRangeSlider(vm.RangeSlider):

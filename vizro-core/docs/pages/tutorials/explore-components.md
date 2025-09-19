@@ -189,7 +189,7 @@ These steps add an export data button:
 
 Notice there is extra blank space below the button. In this step, you’ll learn how to improve the layout by arranging components more efficiently.
 
-Vizro supports two layout: [`Grid`][vizro.models.Grid] and [`Flex`](../user-guides/layouts.md#flex-layout). To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
+Vizro supports two layouts: [`Grid`][vizro.models.Grid] and [`Flex`](../user-guides/layouts.md#flex-layout). To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
 
 By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `AgGrid` to only take up the space they need — not equal space.
 
@@ -648,7 +648,7 @@ Run the code below to apply the layout to the dashboard page:
 
 ### 4.5. Add a filter
 
-You can use a [`Filter`](../user-guides/filters.md) to interact with the dashboard by selecting specific data points to display.
+You can use [filters](../user-guides/filters.md) to interact with the dashboard by selecting specific data points to display.
 
 These steps add a filter to the dashboard:
 
