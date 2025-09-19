@@ -42,13 +42,13 @@ class Tooltip(VizroBaseModel):
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
 
-    Example: `vm.Tooltip` on a `Button`
+    Example: `Tooltip` on a [`Checklist`][vizro.models.Checklist] selector
         ```python
         import vizro.models as vm
 
-        vm.Button(
-            text="Click me!",
-            description=vm.Tooltip(text="This is a tooltip", icon="download"),
+        vm.Checklist(
+            title="Select Species",
+            description=vm.Tooltip(text="Select something", icon="start"),
         )
         ```
 
