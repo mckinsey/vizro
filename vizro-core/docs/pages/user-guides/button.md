@@ -2,7 +2,7 @@
 
 This guide shows you how to use buttons to interact with your data in the dashboard.
 
-The Button component is commonly used for interactive dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/).
+The Button component is commonly used for dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/).
 
 To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page].
 
@@ -53,11 +53,13 @@ import vizro.models as vm
 vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 ```
 
-## Attach an action
+## Trigger an action
 
-You can use the [`Button`][vizro.models.Button] to trigger an action function, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
+You can use the [`Button`][vizro.models.Button] to trigger actions. These actions could be [built-in](actions.md#trigger-an-action-with-a-button) or [custom](custom-actions.md#trigger-an-action-with-a-button). Use the `Button.actions` argument to configure the action that executes when the button is clicked.
 
-The example below demonstrates how to configure a button to export the filtered data of a target chart using the [export_data][vizro.actions.export_data] action function.
+The example below shows how to configure a button that exports the filtered data from a target chart using the [`export_data`](data-actions.md#export-data) action.
+
+If your app includes several action buttons, consider [adding icons](#add-an-icon). You can also use icon-only buttons without text, but keep in mind that these work best when the icon is universally recognizable (for example, a download arrow for exports). For less common actions, you should include text on your button to make it clear what it does.
 
 !!! example "Button with action"
 
@@ -67,7 +69,7 @@ The example below demonstrates how to configure a button to export the filtered 
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        from vizro.actions import export_data
+        import vizro.actions as va
 
         df = px.data.iris()
 
@@ -86,7 +88,7 @@ The example below demonstrates how to configure a button to export the filtered 
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[vm.Action(function=export_data())],
+                    actions=va.export_data(),
                 ),
             ]
         )
@@ -95,7 +97,7 @@ The example below demonstrates how to configure a button to export the filtered 
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
 
     === "app.yaml"
 
@@ -116,8 +118,7 @@ The example below demonstrates how to configure a button to export the filtered 
                 text: Export data
                 id: export_data
                 actions:
-                  - function:
-                      _target_: export_data
+                  - type: export_data
             layout:
               type: flex
             title: My first page
@@ -169,7 +170,7 @@ There are three predefined button styles that can be customized using the `varia
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout with `direction="row"` to ensure the `Button` components are placed side by side and only take up as much space as needed.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout with `direction="row"` to ensure the `Button` components are placed side by side and only take up as much space as needed.
 
     === "app.yaml"
 
@@ -295,8 +296,7 @@ You can use it alongside the `text` argument, or on its own to create a circular
                 icon: Download
                 description: Download the data!
                 actions:
-                  - function:
-                      _target_: export_data
+                  - type: export_data
               - figure:
                   _target_: scatter
                   x: sepal_width

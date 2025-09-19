@@ -4,7 +4,7 @@ Please note that this folder contains only example dashboards that are still **i
 
 ### Vizro examples gallery
 
-To view a comprehensive list of available demos, please visit our [examples gallery](http://vizro.mckinsey.com/). There, you can explore a wide range of dashboards and applications created with Vizro.
+To view a comprehensive list of available demos, please visit the [Vizro HuggingFace collection](https://huggingface.co/vizro). There, you can explore a wide range of dashboards and applications created with Vizro.
 
 <a href="http://vizro.mckinsey.com/">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="600"/>

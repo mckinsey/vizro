@@ -31,13 +31,9 @@ class Vizro:
     """The main class of the `vizro` package."""
 
     def __init__(self, **kwargs):
-        """Initializes Dash app, stored in `self.dash`.
-
-        Args:
-            **kwargs : Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
-                [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
-
-        """
+        """Initializes Dash app, stored in `self.dash`: `**kwargs` is passed through to `Dash.__init__`."""
+        # e.g. `assets_folder`, `url_base_pathname`
+        # See [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
         # Set suppress_callback_exceptions=True for the following reasons:
         # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
         #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
@@ -74,9 +70,7 @@ class Vizro:
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
-            if not use_vizro_bootstrap and path.suffix == ".css" and path.name == "vizro-bootstrap.min.css":
-                continue
-            if path.suffix == ".css":
+            if path.suffix == ".css" and (path.name != "vizro-bootstrap.min.css" or use_vizro_bootstrap):
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
                 self.dash.scripts.append_script(_make_resource_spec(path))
@@ -93,7 +87,7 @@ class Vizro:
         """Detect if Bootstrap CSS is present in external stylesheets.
 
         Args:
-            external_stylesheets: List of external stylesheet URLs or objects
+            external_stylesheets: List of external stylesheets. Each entry can be a string (the URL).
 
         Returns:
             bool: True if Bootstrap CSS is detected, False otherwise
@@ -147,13 +141,7 @@ class Vizro:
         return self
 
     def run(self, *args, **kwargs):  # if type annotated, mkdocstring stops seeing the class
-        """Runs the dashboard.
-
-        Args:
-            *args : Passed through to `dash.run`.
-            **kwargs : Passed through to `dash.run`.
-
-        """
+        """Runs the dashboard and passes `args` and `kwargs` through to `Dash.run`."""
         data_manager._frozen_state = True
         model_manager._frozen_state = True
 

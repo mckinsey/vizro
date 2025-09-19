@@ -59,12 +59,12 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argu
 
 ## Custom Bootstrap themes
 
-If you like to change the default Vizro styling, you have two main options:
+If you would like to change the default Vizro styling, you have two options:
 
-- Apply custom CSS to override specific properties (see our guide on [customizing CSS](custom-css.md)).
+- Apply custom CSS to override specific properties. See our guide on [customizing CSS](custom-css.md) for full details.
 - Load a completely different Bootstrap theme.
 
-Vizro is built on Bootstrap components, which means you can customize the appearance by providing your own Bootstrap theme via the `external_stylesheets` argument in the `Vizro()` constructor. When you specify an external Bootstrap stylesheet, Vizro will use your custom theme instead of its default styling. You can explore available Bootstrap themes in the [Dash Bootstrap Components theme gallery](https://www.dash-bootstrap-components.com/docs/themes/explorer/).
+Vizro is primarily built out of [Dash Bootstrap components](https://www.dash-bootstrap-components.com), which means you can customize the appearance by providing your own Bootstrap theme via the `Vizro(external_stylesheets=...)`. When you specify an external Bootstrap stylesheet, Vizro will use your custom theme instead of its default styling. You can explore available Bootstrap themes in the [Dash Bootstrap Components theme gallery](https://www.dash-bootstrap-components.com/docs/themes/explorer/).
 
 !!! example "Use bootstrap theme"
 
