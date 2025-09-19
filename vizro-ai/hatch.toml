@@ -65,6 +65,9 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
+  # Remove the `click` installation constraint once the
+  # https://github.com/pypa/hatch/issues/2050 is resolved.
+  "click<8.3.0",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
