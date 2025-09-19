@@ -89,6 +89,7 @@ div.form-check.form-switch {
 
 .navbar .nav-link {
   padding: 1rem;
+  border: none;
 }
 
 .accordion {
