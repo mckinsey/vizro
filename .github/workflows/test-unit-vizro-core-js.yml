@@ -37,9 +37,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-
+      # Remove the `click` installation constraint once the
+      # https://github.com/pypa/hatch/issues/2050 is resolved.
       - name: Install Hatch
-        run: pip install hatch click<8.3.0
+        run: pip install hatch "click<8.3.0"
 
       - name: Run JavaScript tests
         run: hatch run test-js
