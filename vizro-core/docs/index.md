@@ -18,6 +18,8 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [Explore Vizro tutorial](pages/tutorials/explore-components.md)
 
+    [Write your own actions tutorial](pages/tutorials/custom-actions-tutorial.md)
+
 - :fontawesome-solid-chart-column:{ .lg .middle } __Vizro features__
 
     ---

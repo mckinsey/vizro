@@ -161,7 +161,7 @@ class TestPreBuildTable:
 
         assert table._inner_component_id == "__input_text_table"
 
-    def test_pre_build_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
+    def test_pre_build_underlying_table_id(self, dash_data_table_with_id):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
 

@@ -1,6 +1,5 @@
 """Example app to show all features of Vizro."""
 
-from time import sleep
 from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
@@ -10,7 +9,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import dash_table, dcc, get_asset_url, html
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
+from vizro.actions import export_data
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
@@ -278,7 +277,7 @@ button = vm.Page(
         ),
         vm.Button(
             text="Export data",
-            actions=[vm.Action(function=export_data())],
+            actions=export_data(),
         ),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
@@ -505,7 +504,7 @@ tooltip = vm.Page(
         ),
         vm.Button(
             text="Export data",
-            actions=[vm.Action(function=export_data())],
+            actions=export_data(),
             description="""
                 Use this button to export the filtered data from the Iris dataset.
             """,
@@ -879,36 +878,9 @@ export_data_action = vm.Page(
     components=[
         vm.Graph(figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species")),
         vm.Graph(figure=px.histogram(iris, x="petal_length", color="species")),
-        vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
+        vm.Button(text="Export data", actions=export_data()),
     ],
     controls=[vm.Filter(column="species")],
-)
-
-
-chart_interaction = vm.Page(
-    title="Chart interaction",
-    components=[
-        vm.Graph(
-            figure=px.box(
-                gapminder_2007,
-                x="continent",
-                y="lifeExp",
-                color="continent",
-                custom_data=["continent"],
-            ),
-            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
-        ),
-        vm.Graph(
-            id="scatter_relation_2007",
-            figure=px.scatter(
-                gapminder_2007,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
-    ],
 )
 
 
@@ -1081,37 +1053,6 @@ custom_components = vm.Page(
 )
 
 
-# CUSTOM ACTIONS ---------------------------------------------------------------
-@capture("action")
-def my_custom_action(t: int):
-    """Custom action."""
-    sleep(t)
-
-
-custom_actions = vm.Page(
-    title="Custom Actions",
-    components=[
-        vm.Graph(
-            figure=px.scatter(
-                iris,
-                x="sepal_length",
-                y="petal_width",
-                color="species",
-            )
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=export_data()),
-                vm.Action(function=my_custom_action(t=2)),
-                vm.Action(function=export_data(file_format="xlsx")),
-            ],
-        ),
-    ],
-    controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
-)
-
-
 # CUSTOM FIGURE ----------------------------------------------------------------
 @capture("figure")  # (1)!
 def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div:
@@ -1154,9 +1095,9 @@ kpi_indicators = vm.Page(
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip]
 controls = [filters, parameters, selectors, controls_in_containers]
-actions = [export_data_action, chart_interaction]
+actions = [export_data_action]
 layout = [grid_layout, flex_layout]
-extensions = [custom_charts, custom_tables, custom_actions, custom_figures, custom_components]
+extensions = [custom_charts, custom_tables, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
@@ -1181,12 +1122,11 @@ dashboard = vm.Dashboard(
                         ],
                         "Controls": ["Filters", "Parameters", "Selectors", "Controls in containers"],
                         "Layout": ["Grid layout", "flex-layout"],
-                        "Actions": ["Export data", "Chart interaction"],
+                        "Actions": ["Export data"],
                         "Extensions": [
                             "Custom Charts",
                             "Custom Tables",
                             "Custom Components",
-                            "Custom Actions",
                             "Custom Figures",
                         ],
                     },

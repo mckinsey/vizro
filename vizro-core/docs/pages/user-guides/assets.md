@@ -6,15 +6,15 @@ To add images, custom CSS or JS files, create a folder named `assets` in the roo
 
 ```text title="Example folder structure"
 ├── app.py
-├── assets
-│   ├── css
-│       ├── **/*.css
-│   ├── images
-│       ├── icons
-│           ├── collections.svg
-│       ├── app.svg
-│       ├── logo.svg
-│   ├── favicon.ico
+└── assets
+    ├── css
+    │   └── **/*.css
+    ├── images
+    │   ├── icons
+    │   │   └── collections.svg
+    │   ├── app.svg
+    │   └── logo.svg
+    └── favicon.ico
 ```
 
 ## Change the favicon
@@ -25,7 +25,7 @@ To change the default favicon (website icon appearing in the browser tab), add a
 
 ### Single logo
 
-If an image named `logo.<extension>` is present in the assets folder, Vizro automatically incorporates the logo in the top-left corner of the dashboard.
+If an image named `logo.<extension>` is present in the assets folder, Vizro automatically incorporates the logo in the top-left corner of the dashboard. By default, clicking the logo redirects to the homepage.
 
 **Supported image extensions:** `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp`
 
