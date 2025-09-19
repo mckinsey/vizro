@@ -1,18 +1,33 @@
-import vizro.actions as va
+"""This is a test app to test the dashboard layout."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+import dash_bootstrap_components as dbc
 
 df = px.data.iris()
 
 page = vm.Page(
-    title="My first page",
-    layout=vm.Flex(),  # (1)!
+    title="Bootstrap theme inside Vizro app",
+    layout=vm.Flex(),
     components=[
-        vm.Graph(figure=px.histogram(df, x="sepal_length")),
-        vm.Button(text="Export data", actions=va.export_data()),
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="scatter_chart",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", height=600),
+                )
+            ],
+            variant="filled",
+        ),
+        vm.Container(
+            components=[
+                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species", height=600))
+            ],
+            variant="filled",
+        ),
     ],
-    controls=[vm.Filter(column="species")],
+    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
 )
 
 dashboard = vm.Dashboard(pages=[page])

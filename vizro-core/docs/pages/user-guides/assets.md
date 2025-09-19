@@ -17,10 +17,6 @@ To add images, custom CSS or JS files, create a folder named `assets` in the roo
     └── favicon.ico
 ```
 
-!!! note "Dash Bootstrap Themes"
-
-    Vizro is not compatible with other [Dash Bootstrap themes](https://www.dash-bootstrap-components.com/docs/themes/), as it uses its own Bootstrap theme. If you like, you can [use the Vizro Bootstrap theme in a pure Dash app](themes.md#vizro-bootstrap-in-a-pure-dash-app).
-
 ## Change the favicon
 
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder. For more information, see the [Dash documentation](https://dash.plotly.com/external-resources#changing-the-favicon).
@@ -68,3 +64,9 @@ CSS properties will be applied with the last served file taking precedence. The 
 1. User assets folder stylesheets
 
 Within each of these categories, individual files are served in alphanumeric order.
+
+## Alternative styling approaches
+
+While the `assets` folder is perfect for adding your own files and [overriding specific styles via custom CSS](custom-css.md), you may also want to completely replace Vizro's default Bootstrap theme with a different one. For comprehensive theme changes, you can use the `external_stylesheets` argument to load third-party Bootstrap themes that will replace Vizro's default styling entirely.
+
+For detailed instructions on how to implement Bootstrap themes, see our guide on [themes](themes.md#custom-bootstrap-themes).

@@ -13,6 +13,9 @@ from vizro.models.types import capture
 def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataTable:
     """Standard `dash.dash_table.DataTable` with sensible defaults to be used in [`Table`][vizro.models.Table].
 
+    Abstract: Usage documentation
+        [How to use tables](../user-guides/table.md)
+
     Args:
         data_frame: DataFrame containing the data to be displayed.
         kwargs: Additional keyword arguments to be passed to the `dash_table.DataTable` component.

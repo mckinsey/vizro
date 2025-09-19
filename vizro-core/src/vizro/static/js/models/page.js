@@ -88,7 +88,7 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
   // The solution relies on the fact that the order of control IDs matches the order of the
   // control selector value inputs and their corresponding outputs.
 
-  // Split selector values , control IDs and selector IDs that are in format:
+  // Split selector values, control IDs and selector IDs that are in format:
   // [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
 
   if (values_ids.length % 3 !== 0) {
