@@ -14,6 +14,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
+  "click==8.2.1",
   "pandas",
   "tabulate",
   "openai>=1.0.0",
