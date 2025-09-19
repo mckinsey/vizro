@@ -57,6 +57,9 @@ class Dropdown(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
+
     Args:
         type (Literal["dropdown"]): Defaults to `"dropdown"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.

@@ -301,7 +301,7 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Container` only occupy as much space as they need, regardless of their collapsed state.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to make sure the `Container` only occupy as much space as they need, regardless of their collapsed state.
 
     === "app.yaml"
 

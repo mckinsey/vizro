@@ -145,7 +145,7 @@ The following example demonstrates these default selector types.
 
 ## Change selector
 
-If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch].
+If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] model a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch].
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 
@@ -201,7 +201,7 @@ You can explore and test all available selectors interactively on our [feature d
 
 ## Further customization
 
-For further customizations, you can always refer to the [`Filter` model][vizro.models.Filter] reference and the [guide to selectors](selectors.md). Some popular choices are:
+For further customizations, you can always refer to the [`Filter`][vizro.models.Filter] model reference and the [guide to selectors](selectors.md). Some popular choices are:
 
 - select which component the filter will apply to by using `targets`
 - specify configuration of the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter
