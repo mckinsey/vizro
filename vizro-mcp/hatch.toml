@@ -11,6 +11,7 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 
 [envs.default]
 dependencies = [
+  "click==8.2.1",
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
