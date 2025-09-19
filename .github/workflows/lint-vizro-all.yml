@@ -28,8 +28,8 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
-      # Remove the `click` installation constraint once the
-      # https://github.com/pypa/hatch/issues/2050 is resolved.
+        # Remove the `click` installation constraint once the
+        # https://github.com/pypa/hatch/issues/2050 is resolved.
         run: pip install hatch "click<8.3.0"
 
       - name: Lint
