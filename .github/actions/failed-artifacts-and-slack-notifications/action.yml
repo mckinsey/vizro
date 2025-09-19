@@ -30,4 +30,4 @@ runs:
           }
       env:
         SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        SLACK_WEBHOOK_TYPE: incoming-webhook
