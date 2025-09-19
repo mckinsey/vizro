@@ -17,8 +17,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      # Remove the `click` installation constraint once the
+      # https://github.com/pypa/hatch/issues/2050 is resolved.
       - name: Install dependencies
-        run: pip install hatch requests click<8.3.0
+        run: pip install hatch requests "click<8.3.0"
 
       - name: Check which 📦 needs to be released
         run: python tools/check_package_release.py
@@ -45,8 +47,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      # Remove the `click` installation constraint once the
+      # https://github.com/pypa/hatch/issues/2050 is resolved.
       - name: Install dependencies
-        run: pip install hatch requests werkzeug>=3.0.1 click<8.3.0
+        run: pip install hatch requests werkzeug>=3.0.1 "click<8.3.0"
       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
         id: extract
         run: |
