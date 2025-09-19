@@ -34,4 +34,4 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run(debug=False)
+    Vizro().build(dashboard).run(debug=False)
