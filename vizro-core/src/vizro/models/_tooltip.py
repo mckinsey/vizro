@@ -51,8 +51,6 @@ class Tooltip(VizroBaseModel):
             description=vm.Tooltip(text="Select something", icon="start"),
         )
         ```
-
-
     """
 
     text: str = Field(
