@@ -815,7 +815,7 @@ In general, any arbitrarily granular layout can already be achieved using either
 
 !!! note "Alternative layout approaches: `Tabs` and `Containers`"
 
-    [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide alternative methods for customizing your page layout. For instance, if you need more granular control, want to break the overall page grid into subgrids, or wish to visually distinguish your subgrid, refer to our [user guide on Containers](container.md).
+    [Tabs](tabs.md) and [Containers](container.md) provide alternative methods for customizing your page layout. For instance, if you need more granular control, want to break the overall page grid into subgrids, or wish to visually distinguish your subgrid, you may want to use one of these components.
 
 ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 

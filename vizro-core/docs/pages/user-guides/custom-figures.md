@@ -8,7 +8,7 @@ The [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where y
 
 As described in the flowchart detailing [when to use `Figure`](figure.md), custom figures should be used if **both** of the following conditions are met:
 
-- You need a figure that doesn't fit into the existing built-in components ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
+- You need a figure that doesn't fit into the existing built-in models ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
 - You need a figure that isn't available in our built-in figure functions [`vizro.figures`](../API-reference/figure-callables.md).
 
 ## Steps to create a custom figure
