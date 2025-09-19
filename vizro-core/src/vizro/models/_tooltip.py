@@ -33,7 +33,6 @@ class Tooltip(VizroBaseModel):
         [selectors](../user-guides/selectors.md#add-a-tooltip) and
         [buttons](../user-guides/button.md#add-a-tooltip).
 
-
     Args:
         text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
