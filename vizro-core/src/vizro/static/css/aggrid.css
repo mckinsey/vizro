@@ -4,8 +4,7 @@
   --ag-active-color: var(--bs-border-color-translucent);
   --ag-background-color: transparent;
   --ag-odd-row-background-color: transparent;
-  --ag-header-foreground-color: var(--bs-secondary);
-  --ag-data-color: var(--bs-primary);
+  --ag-data-color: var(--bs-heading-color);
   --ag-header-background-color: transparent;
   --ag-icon-font-family: aggridquartz;
   --ag-icon-size: 0.875rem;
@@ -117,7 +116,7 @@
 }
 
 #dashboard-container .ag-text-field-input::placeholder {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 #dashboard-container .ag-filter-apply-panel {
