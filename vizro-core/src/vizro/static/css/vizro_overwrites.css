@@ -23,9 +23,9 @@ All the HEX values starting with --text-code are taken from the Github code high
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
 .navbar {
-  flex-wrap: nowrap;
   background: var(--left-side-bg) !important;
   border: none;
+  flex-wrap: nowrap;
 }
 
 .nav-link {
@@ -89,10 +89,10 @@ div.form-check.form-switch {
 }
 
 .navbar .nav-link {
-  padding: 1rem;
-  height: 60px;
-  width: 60px;
   border: none;
+  height: 60px;
+  padding: 1rem;
+  width: 60px;
 }
 
 .accordion {
