@@ -23,7 +23,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
-        run: pip install hatch
+        run: pip install hatch click<8.3.0
 
       - name: Check PyCafe docs links in vizro-core
         working-directory: ./vizro-core
