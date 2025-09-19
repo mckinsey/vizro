@@ -63,6 +63,7 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
+  "click==8.2.1",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",

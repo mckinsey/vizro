@@ -104,6 +104,7 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
+  "click==8.2.1",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
@@ -136,6 +137,7 @@ serve = "mkdocs serve --open {args}"
 # examples should just run in the default environment like they used to so that there's only one Python interpreter
 # used while debugging. Remember to update devcontainer hatch run command to not use examples environment then.
 dependencies = [
+  "click==8.2.1",
   "pyyaml",
   "openpyxl",
   # black, autoflake and isort required to run the example visual-vocabulary. This is completely independent of the
@@ -156,6 +158,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
 extra-dependencies = [
+  "click==8.2.1",
   "dash==3.1.1",
   "dash-bootstrap-components==2.0.0",
   "dash-ag-grid==31.3.1",
