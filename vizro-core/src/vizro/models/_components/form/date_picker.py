@@ -23,6 +23,9 @@ class DatePicker(VizroBaseModel):
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
+
     Args:
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
