@@ -28,6 +28,5 @@ runs:
           {
             "text": "${{ env.TESTS_NAME }} build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }
-      env:
-        SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: incoming-webhook
+        webhook: ${{ env.SLACK_WEBHOOK_URL }}
+        webhook-type: incoming-webhook
