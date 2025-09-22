@@ -189,7 +189,7 @@ These steps add an export data button:
 
 Notice there is extra blank space below the button. In this step, you’ll learn how to improve the layout by arranging components more efficiently.
 
-Vizro supports two layouts: [`Grid`][vizro.models.Grid] and [`Flex`](../user-guides/layouts.md#flex-layout). To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
+Vizro supports two layouts: [`Grid`](../user-guides/layouts.md#grid-layout) and [`Flex`](../user-guides/layouts.md#flex-layout). To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
 
 By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `AgGrid` to only take up the space they need — not equal space.
 
@@ -254,8 +254,8 @@ Vizro uses [`Graph`][vizro.models.Graph] models and [Plotly Express functions](h
 These steps add a histogram to the page:
 
 1. Create a second [`Page`][vizro.models.Page] and store it in a variable called `second_page`. Set its `title` to `"Summary"`.
-1. Add a [`Graph`][vizro.models.Graph] to the `components` list.
-1. Inside the `figure` argument of the `Graph`, use the code for the [px.histogram from the visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
+1. Add a [`Graph`][vizro.models.Graph] model to the `components` list.
+1. Inside the `figure` argument of the [`Graph`][vizro.models.Graph] model, use the code for the [px.histogram from the visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
 1. Add the new page to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model by calling `vm.Dashboard(pages=[first_page, second_page])`.
 
 !!! example "Second Page"
@@ -428,7 +428,7 @@ You may not want to display both histograms simultaneously and instead prefer to
 
 These steps place the two histograms in separate tabs:
 
-1. Add each `Graph` to the `components` of a [`Container`][vizro.models.Container].
+1. Add each [`Graph`][vizro.models.Graph] to the `components` of a [`Container`][vizro.models.Container].
 1. Set the `title` argument inside each `Container` to the desired tab name.
 1. Add the containers to the `tabs` list of the `Tabs` component.
 1. Add the `Tabs` component to the `components` of the `Page`.
@@ -536,7 +536,7 @@ As you explore the dashboard, you might notice that the current layout could use
 
 ### 4.4. Configure the layout
 
-In this section, you'll customize the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page.
+In this section, you'll customize the [`Grid`](../user-guides/layouts.md#grid-layout) layout to control the placement and size of components on the page.
 
 The following layout configuration is divided into **four columns** and **four rows**. The numbers in the grid correspond to the index of the components in the `components` list.
 
@@ -1458,7 +1458,7 @@ You should see the logo in the top-left corner of your dashboard header, with th
 
 ### 6.2. Customize the navigation
 
-By default, a navigation panel on the left side enables users to switch between the pages. In this section, you'll learn how to customize it by using a navigation bar with icons instead.
+By default, a navigation panel on the left side enables users to switch between the pages. In this section, you'll learn how to customize it by using a [navigation bar](../user-guides/navigation.md) with icons instead.
 
 The navigation bar will have two icons: one for the "Data" page and another for the "Summary" and "Analysis" pages.
 
@@ -1613,7 +1613,7 @@ The following steps create a navigation bar:
 
         [![DashboardFinal]][dashboardfinal]
 
-Take a moment to explore the navigation bar! Hover over the icons to view the tooltip text, and click on them to navigate between the pages.
+Take a moment to explore the [navigation bar](../user-guides/navigation.md)! Hover over the icons to view the tooltip text, and click on them to navigate between the pages.
 
 **Congratulations on completing this tutorial!**
 
