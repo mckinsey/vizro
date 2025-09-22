@@ -18,7 +18,7 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
 
 !!! note "The default layout"
 
-    The `layout` argument of a [`Page`](./pages.md) model is optional. If no layout is specified, it will default to a grid layout - all charts/components are then automatically [**stacked vertically**](layouts.md#understand-stacking-direction) on the page in one column.
+    The `layout` argument of a [`Page`][vizro.models.Page] model is optional. If no layout is specified, it will default to a grid layout - all charts/components are then automatically [**stacked vertically**](layouts.md#understand-stacking-direction) on the page in one column.
 
     === "app.py"
 
