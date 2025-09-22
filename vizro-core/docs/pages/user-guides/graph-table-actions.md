@@ -31,7 +31,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
-Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] model.
+Here is an example of how to configure a chart interaction when the source figure is a [`Graph`][vizro.models.Graph] model.
 
 !!! example "Graph `filter_interaction`"
 
