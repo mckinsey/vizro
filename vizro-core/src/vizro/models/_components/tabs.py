@@ -24,6 +24,9 @@ def validate_tab_has_title(tab: Container) -> Container:
 class Tabs(VizroBaseModel):
     """Tabs to group together a set of containers on a page.
 
+    Abstract: Usage documentation
+        [How to use tabs](../user-guides/tabs.md)
+
     Args:
         type (Literal["tabs"]): Defaults to `"tabs"`.
         tabs (list[Container]): See [`Container`][vizro.models.Container].

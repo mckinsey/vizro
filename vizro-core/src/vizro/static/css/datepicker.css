@@ -3,7 +3,7 @@
   background-color: var(--bs-primary-bg-subtle);
   border: none;
   box-shadow: var(--bs-box-shadow-sm);
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 .mantine-DatePickerInput-input:hover {
@@ -21,7 +21,7 @@
 
 .mantine-DatePickerInput-day {
   background: var(--bs-primary-bg-subtle);
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 .mantine-DatePickerInput-day[data-in-range] {
@@ -37,7 +37,7 @@
 /* Single month or year selection */
 .mantine-PickerControl-pickerControl,
 .mantine-DatePickerInput-monthsListControl {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 /* Important tags are required as otherwise mantine media queries will have higher specificity */
@@ -50,7 +50,7 @@
 
 /* Header inside calendar view */
 .mantine-DatePickerInput-calendarHeader {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 .mantine-DatePickerInput-calendarHeaderControlIcon:hover,

@@ -37,7 +37,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
     === "app.yaml"
 
@@ -322,7 +322,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-styling-images">Run and edit this code in PyCafe</a></b>
 
@@ -409,7 +409,7 @@ To float an image for example to the right of the text, use the `src` attribute 
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-floating-images-explorer">Run and edit this code in PyCafe</a></b>
 

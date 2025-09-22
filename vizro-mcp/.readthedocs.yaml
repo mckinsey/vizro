@@ -10,7 +10,9 @@ build:
   tools:
     python: "3.12"
   commands:
-    - pip install hatch
+    # Remove the `click` installation constraint once the
+    # https://github.com/pypa/hatch/issues/2050 is resolved.
+    - pip install hatch "click<8.3.0"
     - cd vizro-mcp/ && hatch run docs:pip tree
     - cd vizro-mcp/ && hatch run docs:build
     - mkdir --parents $READTHEDOCS_OUTPUT
