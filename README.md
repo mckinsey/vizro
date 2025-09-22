@@ -122,7 +122,7 @@ Vizro-MCP works alongside an LLM to help you create Vizro dashboards and charts.
 
 Compatible with MCP-enabled LLM clients such as Cursor or Claude Desktop.
 
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/vizro-mcp/assets/vizro-mcp.gif" alt="Vizro MCP Demo" width="600">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro-mcp.gif" alt="Vizro MCP Demo" width="600">
 
 ## [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 

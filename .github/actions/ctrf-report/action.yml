@@ -10,8 +10,6 @@ runs:
       with:
         report-path: "./.ctrf/ctrf-report.json"
         failed-folded-report: true
-        flaky-rate-report: true
-        previous-results-max: 100
         artifact-name: ctrf-report-${{ env.ARTIFACT_NAME_POSTFIX }}
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
