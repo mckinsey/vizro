@@ -81,7 +81,7 @@ grid = [[0, 1], [0, 2]]
 
 ### Understand stacking direction
 
-As described above, when no `layout` is specified, components are presented **vertically** as a single-column stack using [`Grid`][vizro.models.Grid]. If you have three components, the default `Grid.grid` will be as follows, with three equally sized rows, each containing a component spanning the entire width:
+As described above, when no `layout` is specified, components are presented **vertically** as a single-column stack using the [`Grid`][vizro.models.Grid] model. If you have three components, the default `grid` will be as follows, with three equally sized rows, each containing a component spanning the entire width:
 
 ```python title="Vertical stacking"
 grid = [[0], [1], [2]]

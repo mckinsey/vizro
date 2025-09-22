@@ -17,7 +17,7 @@ class Navigation(VizroBaseModel):
     """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
 
     Abstract: Usage documentation
-        [How to customize the navigation bar](../user-guides/navigation.md)
+        [How to customize the navigation](../user-guides/navigation.md)
 
     Args:
         pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.

@@ -190,7 +190,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
 
 ## Use a navigation bar with icons
 
-Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] model with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation] model:
+Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] model with icons. The simplest way to use this is to change the `nav_selector` specified in the [`Navigation`][vizro.models.Navigation] model:
 
 !!! example "Using `NavBar`"
 
