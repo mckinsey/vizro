@@ -1,5 +1,5 @@
 .card-kpi {
-  border-left: 4px solid var(--bs-secondary);
+  border-left: 4px solid var(--bs-body-color);
   height: 100%;
   padding: 0.75rem;
 }
@@ -61,7 +61,6 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 
 .card-kpi .card-body {
   align-items: center;
-  color: var(--bs-secondary);
   display: flex;
   flex-grow: 1;
   font-size: 1.5rem;
@@ -69,7 +68,6 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi .card-footer {
-  color: var(--bs-secondary);
   display: flex;
   font-weight: 600;
   gap: 0.25rem;
