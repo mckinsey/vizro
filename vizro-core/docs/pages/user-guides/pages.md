@@ -20,7 +20,7 @@ A [`Page`][vizro.models.Page] splits into four main containers:
 
 To create and add a page to your dashboard, do the following steps:
 
-1. Set a `title` for your [`Page`][vizro.models.Page] (which does not have to be unique)
+1. Set a `title` for your [`Page`][vizro.models.Page] model (which does not have to be unique)
 1. Configure your `components`, see our guide on the [various options](components.md)
 1. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
 1. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
