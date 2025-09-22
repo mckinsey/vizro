@@ -30,7 +30,7 @@ page = vm.Page(
     controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page, vm.Page(title="Page 2", components=[vm.Button()])])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

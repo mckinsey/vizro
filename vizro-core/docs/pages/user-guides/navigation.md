@@ -6,7 +6,7 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument,
 
 ## Use the default navigation
 
-By default, if the `navigation` argument is not specified, Vizro creates a navigation panel which lists all the pages in your dashboard into a collapsible accordion menu with title `SELECT PAGE`.
+By default, if the `navigation` argument is not specified, Vizro creates a navigation panel which lists all the pages in your dashboard into a collapsible accordion menu with title `Select Page`.
 
 !!! example "Default navigation"
 
@@ -190,7 +190,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
 
 ## Use a navigation bar with icons
 
-Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation]:
+Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] model with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation] model:
 
 !!! example "Using `NavBar`"
 
@@ -261,7 +261,7 @@ Here, the first level of the navigation hierarchy ("Group A" and "Group B") is r
 
 ## Customize the navigation bar
 
-Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink` models yourself.
+Under the hood, the [`NavBar`][vizro.models.NavBar] model uses a [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink` models yourself.
 
 ### Customize NavLinks
 

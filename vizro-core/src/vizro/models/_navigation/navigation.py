@@ -16,6 +16,9 @@ from vizro.models.types import NavPagesType, NavSelectorType
 class Navigation(VizroBaseModel):
     """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
 
+    Abstract: Usage documentation
+        [How to customize the navigation bar](../user-guides/navigation.md)
+
     Args:
         pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
         nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].

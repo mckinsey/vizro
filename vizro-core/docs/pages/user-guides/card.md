@@ -141,7 +141,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
         Vizro().build(dashboard).run()
         ```
 
-        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] layout. This layout automatically arranges all components to fit on a single page, giving each one equal space. As a result, all `Card` components are evenly sized and fill the entire screen.
+        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] model. This layout automatically arranges all components to fit on a single page, giving each one equal space. As a result, all `Card` components are evenly sized and fill the entire screen.
 
     === "app.yaml"
 
