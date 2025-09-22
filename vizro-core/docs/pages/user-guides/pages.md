@@ -1,6 +1,6 @@
 # How to make dashboard pages
 
-This guide shows you how to add pages to your dashboard and customize the URL paths if needed. A [`Page`][vizro.models.Page] model enables you to:
+This guide shows you how to add pages to your dashboard and customize the URL paths if needed. A [`Page`](./pages.md) model enables you to:
 
 - place and arrange your dashboard content (for example, chart/components, tables, and text), and
 - configure your dashboard interactions (such as filters and parameters).
