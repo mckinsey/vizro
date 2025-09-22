@@ -1136,7 +1136,7 @@
     },
     "NavBar": {
       "additionalProperties": false,
-      "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nAbstract: Usage documentation\n    [How to use the navigation bar with icons](../user-guides/navigation.md#use-a-navigation-bar-with-icons)\n\nArgs:\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.\n        Defaults to `{}`.\n    items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
+      "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nAbstract: Usage documentation\n    [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)\n\nArgs:\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.\n        Defaults to `{}`.\n    items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1175,7 +1175,7 @@
     },
     "NavLink": {
       "additionalProperties": false,
-      "description": "Icon that serves as a navigation link to be used in navigation bar of Dashboard.\n\nAbstract: Usage documentation\n    [How to customize the navigation bar icons and page groups](../user-guides/navigation.md#change-icons)\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
+      "description": "Icon that serves as a navigation link to be used in navigation bar of Dashboard.\n\nAbstract: Usage documentation\n    [How to customize the NavBar icons](../user-guides/navigation.md#change-icons)\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1221,7 +1221,7 @@
     },
     "Navigation": {
       "additionalProperties": false,
-      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to customize the navigation bar](../user-guides/navigation.md)\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to customize the navigation](../user-guides/navigation.md)\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
