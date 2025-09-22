@@ -25,7 +25,7 @@ class NavBar(VizroBaseModel):
     """Navigation bar to be used as a nav_selector for `Navigation`.
 
     Abstract: Usage documentation
-        [How to use the navigation bar with icons](../user-guides/navigation.md#use-a-navigation-bar-with-icons)
+        [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)
 
     Args:
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.

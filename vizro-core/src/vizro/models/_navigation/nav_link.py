@@ -19,7 +19,7 @@ class NavLink(VizroBaseModel):
     """Icon that serves as a navigation link to be used in navigation bar of Dashboard.
 
     Abstract: Usage documentation
-        [How to customize the navigation bar icons and page groups](../user-guides/navigation.md#change-icons)
+        [How to customize the NavBar icons](../user-guides/navigation.md#change-icons)
 
     Args:
         pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
