@@ -1026,7 +1026,7 @@ Run the code below to apply the layout to the dashboard page:
 
 ### 5.3. Add a parameter
 
-This section explains how to add a [`Parameter`][vizro.models.Parameter] to your dashboard, which enables you to dynamically change a component's argument, making the dashboard more interactive. For more information about configuration, refer to the [guide to parameters](../user-guides/parameters.md).
+This section explains how you make the dashboard more interactive for the user by adding a [parameter to dynamically change a component's argument](../user-guides/parameters.md).
 
 In this section, you learn how to switch the `x` and `color` arguments across all charts, enabling data analysis from different perspectives.
 
