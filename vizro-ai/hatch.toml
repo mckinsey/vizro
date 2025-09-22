@@ -91,7 +91,7 @@ pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "mkdocs serve --open"
 
 [envs.lower-bounds]
-extra-dependencies = ["pydantic==2.7.4"]  # required by langchain>=0.3.0
+extra-dependencies = ["pydantic==2.11.9"]  # required by langchain>=0.3.0 and openai>=1.108.0
 python = "3.9"
 
 [version]
