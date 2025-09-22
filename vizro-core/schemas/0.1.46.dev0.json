@@ -950,7 +950,7 @@
     },
     "Graph": {
       "additionalProperties": false,
-      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph. Either use\n        [`vizro.plotly.express`](../user-guides/graph.md) or see\n        [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    title (str): Title of the `Graph`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nAbstract: Usage documentation\n    [How to use graphs](../user-guides/graph.md)\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph. Either use\n        [`vizro.plotly.express`](../user-guides/graph.md) or see\n        [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    title (str): Title of the `Graph`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1018,7 +1018,7 @@
     },
     "Grid": {
       "additionalProperties": false,
-      "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    type (Literal[\"grid\"]): Defaults to `\"grid\"`.\n    grid (list[list[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.\n    col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+      "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to use the Grid layout](../user-guides/layouts.md#grid-layout)\n\nArgs:\n    type (Literal[\"grid\"]): Defaults to `\"grid\"`.\n    grid (list[list[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.\n    col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1136,7 +1136,7 @@
     },
     "NavBar": {
       "additionalProperties": false,
-      "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nArgs:\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.\n        Defaults to `{}`.\n    items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
+      "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nAbstract: Usage documentation\n    [How to use the navigation bar with icons](../user-guides/navigation.md#use-a-navigation-bar-with-icons)\n\nArgs:\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.\n        Defaults to `{}`.\n    items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1175,7 +1175,7 @@
     },
     "NavLink": {
       "additionalProperties": false,
-      "description": "Icon that serves as a navigation link to be used in navigation bar of Dashboard.\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
+      "description": "Icon that serves as a navigation link to be used in navigation bar of Dashboard.\n\nAbstract: Usage documentation\n    [How to customize the navigation bar icons and page groups](../user-guides/navigation.md#change-icons)\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1221,7 +1221,7 @@
     },
     "Navigation": {
       "additionalProperties": false,
-      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to customize the navigation bar](../user-guides/navigation.md)\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
