@@ -2,7 +2,7 @@
 
 This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function (`figure` argument) that creates the chart/component. Parameters can also be used to [change the data loaded into the dashboard itself](data.md/#parametrize-data-loading).
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. For example, if the charting function has a `title` argument, you could configure a parameter that enables the user to select the chart title with a dropdown.
+The [`Page`](./pages.md) model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. For example, if the charting function has a `title` argument, you could configure a parameter that enables the user to select the chart title with a dropdown.
 
 ## Basic parameters
 

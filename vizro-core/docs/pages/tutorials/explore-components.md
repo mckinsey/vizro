@@ -66,7 +66,7 @@ At the top level, you'll be creating a [`Dashboard`](../user-guides/dashboard.md
 - **Navigation**: You can customize navigation between those different pages.
 - **Title/Logo**: You can add your own titles and logos.
 
-For each [`Page`][vizro.models.Page], you can also configure the following:
+For each [`Page`](../user-guides/pages.md), you can also configure the following:
 
 - **Components**: Add charts, tables, input/output interfaces, and more.
 - **Controls**: Include filters and parameters.
@@ -75,7 +75,7 @@ For each [`Page`][vizro.models.Page], you can also configure the following:
 
 ## 3. Create a first page
 
-In this section, you learn how to create a new [`Page`][vizro.models.Page] and store it in a variable called `first_page`.
+In this section, you learn how to create a new [`Page`](../user-guides/pages.md) and store it in a variable called `first_page`.
 
 A [`Page`][vizro.models.Page] model is the foundation of any Vizro dashboard. It uses a set of components to display content. For a comprehensive list of all Vizro components, refer to the [components overview page](../user-guides/components.md).
 

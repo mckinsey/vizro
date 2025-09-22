@@ -2,7 +2,7 @@
 
 This guide shows you how to add filters to your dashboard. One main way to interact with the charts/components on your page is by filtering the underlying data. A filter selects a subset of rows of a component's underlying DataFrame which alters the appearance of that component on the page.
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model. This model enables the automatic creation of [selectors](selectors.md) (for example, `Dropdown` or `RangeSlider`) that operate on the charts/components on the screen.
+The [`Page`](./pages.md) model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model. This model enables the automatic creation of [selectors](selectors.md) (for example, `Dropdown` or `RangeSlider`) that operate on the charts/components on the screen.
 
 By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
 

@@ -188,7 +188,7 @@ class Rating(vm.VizroBaseModel):
     1. This is not the core component but we will later [address it with an action](#model-fields-as-input-and-output), so it must have an `id` set. We prefix its `id` with `self.id`.
     1. This is the core component, and so it has `id=self.id`.
 
-1. Since the new model will be inserted into the `components` argument of the [`Page`][vizro.models.Page], it will be part of the discriminated union [`ComponentType`][vizro.models.types.ComponentType]. Hence we must:
+1. Since the new model will be inserted into the `components` argument of the [`Page`][vizro.models.Page] model, it will be part of the discriminated union [`ComponentType`][vizro.models.types.ComponentType]. Hence we must:
     - define a new type:
 ```py
 class Rating(vm.VizroBaseModel):

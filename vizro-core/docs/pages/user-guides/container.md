@@ -2,7 +2,7 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
+A [Container][vizro.models.Container] complements a [Page][vizro.models.Page]: both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
 
 Unlike `Page`, the `Container` model offers additional visual customization options:
 
@@ -39,7 +39,7 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
-1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
+1. Insert the `Container` into the `components` argument of the [`Page`](./pages.md)
 1. Configure your `components`, [read the overview page for various options](components.md)
 1. (optional) Set a `title` for your `Container`
 1. (optional) Configure your `layout`, see [the guide on layouts](layouts.md)
