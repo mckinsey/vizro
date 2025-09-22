@@ -441,7 +441,7 @@ This enables you to replace in your dashboard configuration all action input and
     * You do not wish to address anything other than your custom component's core component.
     * You are happy to [use Dash properties as input and output](#dash-properties-as-input-and-output).
 
-To [map your model's fields onto Dash component properties](../user-guides/custom-actions.md#model-arguments-as-input-and-output) you can define further entries in `_action_inputs` and `_action_outputs`. For example, let's say we wanted to add [radio items](./selectors.md#categorical-selectors) so the user can select which movie to rate. When the movie is selected, it will trigger an action that updates the `title` of our custom `Rating` component. This corresponds to the following Dash component produced in the `Rating` model's `build` method:
+To [map your model's fields onto Dash component properties](../user-guides/custom-actions.md#model-arguments-as-input-and-output) you can define further entries in `_action_inputs` and `_action_outputs`. For example, let's say we wanted to add a [radio items][vizro.models.RadioItems] model so the user can select which movie to rate. When the movie is selected, it will trigger an action that updates the `title` of our custom `Rating` component. This corresponds to the following Dash component produced in the `Rating` model's `build` method:
 
 ```python
 html.Legend(id=f"{self.id}_title", children=self.title, className="form-label")
