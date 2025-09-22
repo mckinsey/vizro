@@ -18,7 +18,7 @@ To configure cross-filtering using `filter_interaction`, follow these steps:
 actions=va.filter_interaction(targets=["scatter_relation_2007"])
 ```
 
-1. If the source chart is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
+1. If the source figure is a [`Graph`][vizro.models.Graph] model, enter the filter columns in the `custom_data` argument of the underlying source figure `function`.
 
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
@@ -31,7 +31,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
-Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
+Here is an example of how to configure a chart interaction when the source figure is a [`Graph`][vizro.models.Graph] model.
 
 !!! example "Graph `filter_interaction`"
 
