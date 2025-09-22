@@ -18,7 +18,7 @@ To configure cross-filtering using `filter_interaction`, follow these steps:
 actions=va.filter_interaction(targets=["scatter_relation_2007"])
 ```
 
-1. If the source chart is [`Graph`](../user-guides/graph.md), enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
+1. If the source figure is a [`Graph`][vizro.models.Graph] model, enter the filter columns in the `custom_data` argument of the underlying source figure `function`.
 
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
