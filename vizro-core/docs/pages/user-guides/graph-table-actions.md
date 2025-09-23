@@ -611,11 +611,11 @@ Multiple cross-filters are similarly possible [from a table](#cross-filter-from-
 
 ```python
 vm.AgGrid(
-    ..., 
-   actions=[
-      va.set_control(control="day_filter", value="day"), 
-      va.set_control(control="sex_filter", value="sex"),
-   ]
+    ...,
+    actions=[
+        va.set_control(control="day_filter", value="day"),
+        va.set_control(control="sex_filter", value="sex"),
+    ],
 )
 ```
 
