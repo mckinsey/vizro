@@ -51,6 +51,9 @@ def clean_path(path: str, allowed_characters: str) -> str:
 class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
 
+    Abstract: Usage documentation
+        [How to make dashboard pages](../user-guides/pages.md)
+
     Args:
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
