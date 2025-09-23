@@ -11,6 +11,34 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.46'></a>
+
+# 0.1.46 — 2025-09-23
+
+## Highlights ✨
+
+- Introduce `set_control` action to enable much more powerful and flexible graph and table interactions such as cross-filtering and cross-highlighting. See the [user guide on graph and table interactions](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/) for more information. ([#1373](https://github.com/mckinsey/vizro/pull/1373))
+
+## Added
+
+- Add support for any Bootstrap theme via, for example, `Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP])`. ([#1244](https://github.com/mckinsey/vizro/pull/1244))
+
+- A control's `selector` can be used as an action input or output by referring to the parent control's `id`. ([#1366](https://github.com/mckinsey/vizro/pull/1366))
+
+## Changed
+
+- Make the logo clickable so it redirects to the homepage. ([#1393](https://github.com/mckinsey/vizro/pull/1393))
+
+- NavBar no longer collapses with the left side panel. ([#1394](https://github.com/mckinsey/vizro/pull/1394))
+
+## Deprecated
+
+- Deprecate `va.filter_interaction` in favor of new `va.set_control` action. ([#1379](https://github.com/mckinsey/vizro/pull/1379))
+
+## Fixed
+
+- Fix `VizroBaseModel._to_python()` to include `vizro.figures` in the imports. ([#1391](https://github.com/mckinsey/vizro/pull/1391))
+
 <a id='changelog-0.1.45'></a>
 
 # 0.1.45 — 2025-09-12
