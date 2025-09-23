@@ -30,7 +30,8 @@ IMPORTANT:
 
 - IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt, OTHERWISE:
 - make a plan of what components you would like to use, then request all necessary schemas using the `get_model_json_schema` tool
-  - start with `Dashboard`, don't forget `Graph`, MUST use `Flex` even as default unless asked otherwise
+  - start with `Dashboard`, don't forget `Graph`,
+  - MUST explicitly use `Flex` (layout setting is NOT optional, contrary to what schema says); use `Grid` only if asked for precise placement or no scroll
 - assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code to the user until you have validated the solution
 - ALWAYS validate the dashboard configuration using the `validate_dashboard_config` tool
 - using `custom_chart` is encouraged for advanced visualizations, no need to call the planner tool in advanced mode
@@ -106,6 +107,7 @@ Grid (Use only if asked):
 - Use when:
   - you need precise alignment across both rows and columns
   - you want a component (often charts) to fill a concrete part of the page, e.g. when asked to fill one row, or a column
+- ALWAYS opt for `Grid` to make components fill space instead of playing with `width` and `height`
 - NEVER use collapsible containers inside `Grid`
 - IMPORTANT: you must use integers to refer to the elements, starting from 0, every element must be referenced,
   elements can't overlap and must be rectangular, and you must use the same number of columns and rows for each row
