@@ -219,7 +219,6 @@ dashboard = vm.Dashboard(
             "AgGrid as source": [
                 "AgGrid filter interactions and drill-through source page",
                 "AgGrid Drill-through target page",
-                "Old AgGrid Filter interaction",
             ],
         }
     ),
