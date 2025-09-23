@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
-from vizro.actions import set_control, filter_interaction
+from vizro.actions import set_control
 from vizro.tables import dash_ag_grid
 
 
@@ -207,19 +207,9 @@ page_5 = vm.Page(
 )
 
 
-page_6 = vm.Page(
-    title="Old AgGrid Filter interaction",
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(df), actions=filter_interaction(targets=["p6_grid_2"])),
-        vm.AgGrid(
-            id="p6_grid_2",
-            figure=dash_ag_grid(df),
-        ),
-    ],
-)
 
 dashboard = vm.Dashboard(
-    pages=[page_1, page_2, page_3, page_4, page_5, page_6],
+    pages=[page_1, page_2, page_3, page_4, page_5],
     navigation=vm.Navigation(
         pages={
             "Graph as source": [
