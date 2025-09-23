@@ -1,9 +1,9 @@
 # Graph and table interactions
 
-In this guide we show how to configure interactions between graphs and tables, as is commonly done in business intelligence (BI) tools. In Vizro, all such interactions are enabled by an intermediate [control](controls.md) that you must explicitly define. For example:
+In this guide we show you how to configure interactions between graphs and tables, as is commonly done in business intelligence (BI) tools. In Vizro, all such interactions are enabled by an intermediate [control](controls.md) that you must explicitly define. For example:
 
 - [Cross-filter](#cross-filter): a _source_ graph or table filters the `data_frame` of a _target_ graph or table. The source component sets a [filter](filters.md), which in turn updates the target component.
-- [Cross-parameter](#cross-parameter): a _source_ graph or table updates any argument other than `data_frame` in the `figure` function of a _target_ graph or table. The source components sets a [parameter](parameters.md), which in turn updates the target component.
+- [Cross-parameter](#cross-parameter): a _source_ graph or table updates any argument other than `data_frame` of a _target_ graph or table. The source components sets a [parameter](parameters.md), which in turn updates the target component.
 - [Cross-highlight](#cross-highlight): a _source_ graph or table highlights data in a _target_ graph or table. This is an example of a [cross-parameter](#cross-parameter).
 
 All these interactions use the [`set_control`][vizro.actions.set_control] action. This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
@@ -12,13 +12,13 @@ All these interactions use the [`set_control`][vizro.actions.set_control] action
 - A single control can update any number of these target components, and a single source component can set any number of controls. Hence a single source component can interact with any number of target components.
 - A target component can be on the same page as the source or on a different page (so long as the intermediate control has [`show_in_url=True`](run-deploy.md#shareable-url)).
 - A target component can also be the source component to enable a "self-interaction".
-- Interactions are explicitly shown on the screen by the value of the control. Just like a normal control, the value can be changed manually and is persisted when you change page.
+- Interactions are not "invisible"; they are explicitly shown on the screen by the value of the control. Just like a normal control, the value can be changed manually and is persisted when you change page.
 
 ## Cross-filter
 
 A cross-filter is when the user clicks on one _source_ graph or table to filter one or more _target_ components. In Vizro, a cross-filter operates through an intermediate [filter](filters.md). To configure a cross-filter:
 
-1. Create a filter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to filter. The filter must be a [categorical selector](selectors.md#categorical-selectors) (both multi- and single-option are allowed).
+1. Create a filter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to filter. The filter must have a [categorical selector](selectors.md#categorical-selectors) (both multi- and single-option are allowed).
 
     ```python
     import vizro.models as vm
@@ -47,7 +47,7 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
 ### Cross-filter from table
 
-The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row in the table. The `value` argument in `va.set_control` specifies the column of the value that sets `control`.
+The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row in the table. The `value` argument of the [`set_control` action][vizro.actions.set_control] specifies the column of the value that sets `control`.
 
 !!! example "Cross-filter from table to graph"
 
@@ -115,9 +115,9 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
 
     === "Result"
 
-        ![][../../assets/user_guides/graph_table_actions/cross_filter_from_table.gif]
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_from_table.gif)
 
-When you click on a row in the table, the graph is cross-filtered to show data only for one sex.
+When you click on a row in the table, the graph is cross-filtered to show data only for one sex. The column of the clicked cell does not matter: the value is always taken from the `sex` column of the clicked row.
 
 ??? details "Behind the scenes mechanism"
 
@@ -136,12 +136,12 @@ When you click on a row in the table, the graph is cross-filtered to show data o
 
 ### Cross-filter from graph
 
-The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. The `value` argument in `va.set_control` can be used in two ways to specify the value that sets `control`:
+The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. The `value` argument of the [`set_control` action][vizro.actions.set_control] can be used in two ways to specify the value that sets `control`:
 
 - Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
-- Value to extract from [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing), for example `"x"`.
+- Value to extract from [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing), for example `"x"`. This does not use `custom_data`.
 
-We show an example of each of these in turn. Here is an example where we use `custom_data` and `value="sex"` to use a value from the `sex` column.
+We show an example of each of these in turn. Here is an example where we use `custom_data` and `value="sex"` to use a value from the `sex` column. We need to specify `custom_data` because the `sex` column is otherwise not available in `clickData`.
 
 !!! example "Cross-filter from graph to table with `custom_data`"
 
@@ -213,7 +213,7 @@ We show an example of each of these in turn. Here is an example where we use `cu
 
     === "Result"
 
-        ![][../../assets/user_guides/graph_table_actions/cross_filter_from_graph_1.gif.gif]
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_1.gif)
 
 When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
 
@@ -221,14 +221,14 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
     In full, what happens is as follows:
 
-    1. Clicking on the box triggers the `va.set_control` action. This uses the value of `sex` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
+    1. Clicking on the box triggers the `va.set_control` action. This uses the value of `sex` taken from the graph's `custom_data` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 !!! note "Cross-filter from custom chart"
 
-    If you cross-filter from a [custom chart](custom-charts.md) and wish to use `custom_data` for the `value` argument of `va.set_control` then you must explicitly include `custom_chart` in the function signature:
+    If you cross-filter from a [custom chart](custom-charts.md) and wish to use a column supplied through `custom_data` for the `value` argument of `va.set_control` then you must explicitly include `custom_chart` in the function signature:
 
     ```py
     @capture("graph")
@@ -236,7 +236,7 @@ When you click on a box in the graph, the table is cross-filtered to show data f
         return px.scatter(data_grame, custom_data=custom_data, **kwargs)
     ```
 
-Here is an example where we do not use `custom_data`.
+Here is an example where we do not need to use `custom_data` because the data is already available in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing). For example, this happens when the `value` you use in `va.set_control` corresponds to the `x` or `y` axis of the graph.
 
 !!! example "Cross-filter from graph without `custom_data` to table"
 
@@ -305,9 +305,9 @@ Here is an example where we do not use `custom_data`.
 
     === "Result"
 
-        ![][../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif]
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
 
-When you click on a box in the graph, the table is cross-filtered to show data for only one sex, which is the `y` variable for the plot. This works because `"y"` exists in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing) for this chart.
+When you click on a box in the graph, the table is cross-filtered to show data for only one sex, which is the `y` variable for the plot. This works because `"y"` exists in `clickData` for this chart.
 
 ??? details "Behind the scenes mechanism"
 
@@ -331,7 +331,7 @@ Based on the source graph and its available `clickData`, you can therefore confi
 
 A cross-filter often works best when used [inside a container](container.md#add-controls-to-container). This typically makes it clearer which components the filter applies to, especially when the [container is styled](container.md#styled-containers).
 
-For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) into containers. The rearrangement here is purely visual to give a better user experience; the `va.set_control` is configured exactly the same way and behaves identically while the dashboard is running.
+For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) into containers. Now the control appears directly above the table that it targets rather than on the left hand side of the page. The rearrangement here is purely visual to give a better user experience; `va.set_control` itself is configured exactly the same way and behaves identically while the dashboard is running.
 
 !!! example "Cross-filter between containers"
 
@@ -411,11 +411,11 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
     === "Result"
 
-        ![][../../assets/user_guides/graph_table_actions/cross_filter_between_containers.gif]
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_between_containers.gif)
 
 ### Cross-filter between pages
 
-You can perform a cross-filter where the target components are on a different page from the source. The use of `va.set_control` is identical, but the intermediate filter must have [`show_in_url=True`](run-deploy.md#shareable-url).
+You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_control`][vizro.actions.set_control] is identical, but the intermediate filter must have [`show_in_url=True`](run-deploy.md#shareable-url).
 
 For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
 
@@ -489,13 +489,13 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
     === "Result"
 
-        ![][../../assets/user_guides/graph_table_actions/cross_filter_between_pages.gif.gif]        
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_between_pages.gif)        
 
 ### Cross-filter from pivoted or multi-dimensional data
 
 A single source component can trigger _multiple_ cross-filters. For example, [pivoted data](https://en.wikipedia.org/wiki/Pivot_table) can be visualized using a table or a [2-dimensional heatmap](https://plotly.com/python/heatmaps/).
 
-To perform multiple cross-filters, each dimension that is filtered must have its own `vm.Filter` that is set by `va.set_control` in the `actions` of the source component in an [actions chain](actions.md#multiple-actions). Here is a 2-dimensional example using a heatmap:
+To perform multiple cross-filters, each dimension that is filtered must have its own `vm.Filter` that is set by `va.set_control` in the `actions` of the source component in an [actions chain](actions.md#multiple-actions). Here is a 2-dimensional example that [cross-filters from a graph](#cross-filter-from-graph):
 
 !!! example "Cross-filter over 2 dimensions"
 
@@ -590,9 +590,9 @@ To perform multiple cross-filters, each dimension that is filtered must have its
 
     === "Result"
 
-        ![][../../assets/user_guides/graph_table_actions/cross_filter_pivoted.gif.gif]
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_pivoted.gif)
 
-When you click on a colored cell in the heatmap, the table is cross-filtered to show data for only one sex and day. The "count" shown when you click on a heatmap cell corresponds to the number of rows shown in the filtered table.
+When you click on a colored cell in the heatmap, the table is cross-filtered to show data for only one sex and one day. The "count" shown for each heatmap cell corresponds to the number of rows shown in the filtered table when that cell is clicked.
 
 ??? details "Behind the scenes mechanism"
 
@@ -600,8 +600,8 @@ When you click on a colored cell in the heatmap, the table is cross-filtered to 
 
     1. Clicking on a cell triggers the first `va.set_control` action. This uses the value of `day` (in other words, "Thur", "Fri", "Sat" or "Sun") to set the selector underlying `vm.Filter(id="day_filter")`.
     1. When the `day_filter` has been set, the second `va.set_control` action runs. This uses the value of `sex` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
-    1. The change in value of `vm.Filter(id="day_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
-    1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
+    1. The change in value of `vm.Filter(id="day_filter")` triggers the filter on its `targets=["tips_table"]` so that a filtered table is shown.
+    1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter on its `targets=["tips_table"]` so that a filtered table is shown.
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain), while the sequence of applying the two `va.set_control` is an [explicit actions chain](../tutorials/custom-actions-tutorial.md#explicit-actions-chain). In general, steps 2 and 3 above will execute in [parallel](../tutorials/custom-actions-tutorial.md#parallel-actions).
 
@@ -611,7 +611,11 @@ Multiple cross-filters are similarly possible [from a table](#cross-filter-from-
 
 ```python
 vm.AgGrid(
-    ..., actions=[va.set_control(control="day_filter", value="day"), va.set_control(control="sex_filter", value="sex")]
+    ..., 
+   actions=[
+      va.set_control(control="day_filter", value="day"), 
+      va.set_control(control="sex_filter", value="sex")
+   ]
 )
 ```
 

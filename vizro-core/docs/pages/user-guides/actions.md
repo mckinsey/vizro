@@ -159,7 +159,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
 
     === "Result"
 
-        ![][../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif]
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
 
 ## Multiple actions
 
