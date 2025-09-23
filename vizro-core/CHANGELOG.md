@@ -18,7 +18,6 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ## Highlights ✨
 
 - Introduce `set_control` action to enable much more powerful and flexible graph and table interactions such as cross-filtering and cross-highlighting. See the [user guide on graph and table interactions](https://vizro.readthedocs.io/en/stable/stable/pages/user-guides/graph-table-actions/) for more information. ([#1373](https://github.com/mckinsey/vizro/pull/1373))
--
 
 ## Added
 
