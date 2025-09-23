@@ -22,7 +22,6 @@ from vizro.models.types import (
     CapturedCallable,
     ControlType,
     FigureWithFilterInteractionType,
-    ModelID,
     OutputsType,
     _IdOrIdProperty,
     _IdProperty,
@@ -59,9 +58,9 @@ class _BaseAction(VizroBaseModel):
     _first_in_chain_trigger: _IdProperty = PrivateAttr()
     _prevent_initial_call_of_guard: bool = PrivateAttr()
 
-    # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
-    # model manager and removal of filter_interaction.
-    _parent_model_id: ModelID = PrivateAttr()
+    # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
+    # the model manager supports `parent_model` access for all Vizro models.
+    _parent_model: VizroBaseModel = PrivateAttr()
 
     @property
     def _is_first_in_chain(self) -> bool:
@@ -127,10 +126,13 @@ class _BaseAction(VizroBaseModel):
         page = model_manager._get_model_page(self)
 
         # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
-        # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
+        # the filter_interaction model itself, hence needing to lookup action._parent_model.
+        # This is also needed to trigger the parent model's `_get_value_from_trigger` method in set_control.
+        # After work on the model_manager we should be able to tidy this to directly get the parent model
+        # from inside the action.
         # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
-            cast(FigureWithFilterInteractionType, model_manager[action._parent_model_id])._filter_interaction_input
+            cast(FigureWithFilterInteractionType, action._parent_model)._filter_interaction_input
             for action in model_manager._get_models(filter_interaction, page)
         ]
 

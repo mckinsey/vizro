@@ -500,7 +500,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
 ## Add controls to container
 
-The `Container` has a `controls` argument, where you can define container-specific controls to group related components for better interaction. Controls can only target components inside their own container.
+The `Container` has a `controls` argument where you can define container-specific [controls](controls.md) such as [filters](filters.md) and [parameters](parameters.md). This groups together controls with their target components for better interaction. Controls can only target components inside their own container.
 
 Here are a few cases where you might want to use `controls` within a `Container`:
 

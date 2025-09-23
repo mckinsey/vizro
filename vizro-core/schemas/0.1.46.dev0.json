@@ -135,6 +135,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -191,6 +194,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -374,6 +380,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -647,6 +656,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -793,6 +805,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1006,6 +1021,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1452,6 +1470,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1641,6 +1662,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1769,6 +1793,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1893,6 +1920,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -1955,6 +1985,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -2023,6 +2056,9 @@
               },
               {
                 "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
               }
             ]
           },
@@ -2165,6 +2201,7 @@
     },
     "filter_interaction": {
       "additionalProperties": false,
+      "deprecated": true,
       "description": "Filters targeted graph, tables and figures when a source graph or table is clicked.\n\nArgs:\n    targets (list[ModelID]): Target component to be affected by filter. If none are given then target all\n        valid components on the page.",
       "properties": {
         "id": {
@@ -2189,6 +2226,36 @@
         }
       },
       "title": "filter_interaction",
+      "type": "object"
+    },
+    "set_control": {
+      "additionalProperties": false,
+      "description": "Sets the value of a control, which then updates its targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](../user-guides/graph-table-actions.md)\n\nThe following Vizro models can be a source of `set_control`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. `value` specifies\nwhich column in the clicked row is used to set `control`.\n* [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` can be used\nin two ways to specify how to set `control`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing), for example `\"x\"`.\n\nArgs:\n    control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have\n        `show_in_url=True`. The control's selector must be categorical (e.g. Dropdown, RadioItems, Checklist).\n    value (str): Value taken from trigger to set `control`. Format depends on the source model that triggers\n        `set_control`.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_control(control=\"target_control\", value=\"x\"),\n    )\n    ```",
+      "properties": {
+        "id": {
+          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "set_control",
+          "default": "set_control",
+          "title": "Type",
+          "type": "string"
+        },
+        "control": {
+          "description": "Filter or Parameter component id to be affected by the trigger.If the control is on a different page to the trigger then it must have `show_in_url=True`.",
+          "title": "Control",
+          "type": "string"
+        },
+        "value": {
+          "description": "Value to take from trigger and send to the `target`. Format depends on the model that triggers `set_control`.",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": ["control", "value"],
+      "title": "set_control",
       "type": "object"
     }
   },

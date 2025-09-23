@@ -92,10 +92,6 @@ class Page(VizroBaseModel):
     def _make_actions_chain(self):
         return make_actions_chain(self)
 
-    @property
-    def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
-
     # This should ideally be a field validator, but we need access to the model_fields_set
     @model_validator(mode="after")
     def validate_path(self):
@@ -117,6 +113,10 @@ class Page(VizroBaseModel):
         self.__dict__["path"] = new_path
 
         return self
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

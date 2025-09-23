@@ -46,6 +46,7 @@ class TestGraphInstantiation:
         assert graph.header == ""
         assert graph.footer == ""
         assert graph.description is None
+        assert graph._action_triggers == {"__default__": f"{graph.id}.clickData"}
         assert graph._action_outputs == {"__default__": f"{graph.id}.figure"}
 
     def test_create_graph_mandatory_and_optional(self, standard_px_chart):
@@ -53,7 +54,7 @@ class TestGraphInstantiation:
             id="graph-id",
             figure=standard_px_chart,
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             header="Header",
             footer="Footer",
         )
@@ -66,12 +67,13 @@ class TestGraphInstantiation:
         assert graph.header == "Header"
         assert graph.footer == "Footer"
         assert isinstance(graph.description, vm.Tooltip)
+        assert graph._action_triggers == {"__default__": "graph-id.clickData"}
         assert graph._action_outputs == {
-            "__default__": f"{graph.id}.figure",
-            "title": f"{graph.id}_title.children",
-            "header": f"{graph.id}_header.children",
-            "footer": f"{graph.id}_footer.children",
-            "description": f"{graph.description.id}-text.children",
+            "__default__": "graph-id.figure",
+            "title": "graph-id_title.children",
+            "header": "graph-id_header.children",
+            "footer": "graph-id_footer.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_mandatory_figure_missing(self):
@@ -108,6 +110,76 @@ class TestGraphInstantiation:
         assert my_graph.type == "graph"
         assert my_graph.figure == standard_px_chart._captured_callable
         assert my_graph.actions == []
+
+
+class TestGraphGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize(
+        "figure_custom_data, trigger_custom_data",
+        [
+            (["continent"], ["Europe"]),
+            (["country", "continent", "year"], ["France", "Europe", 2007]),
+        ],
+    )
+    def test_value_matches_custom_data_by_key(self, gapminder, figure_custom_data, trigger_custom_data):
+        graph = vm.Graph(
+            figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp", custom_data=figure_custom_data),
+        )
+        value = graph._get_value_from_trigger("continent", {"points": [{"customdata": trigger_custom_data}]})
+
+        assert value == "Europe"
+
+    # TODO AM: It doesn't work for `nestedDict.key1[0].key2`. Should we remove `camel_killer_box=True`?
+    # We use Box notation to access nested data in the trigger dict by using dots and brackets string syntax.
+    @pytest.mark.parametrize("action_value", ["customdata[0]", "x", "nested_dict.key1[0].key2"])
+    def test_value_nested_box_notation(self, standard_px_chart, action_value):
+        graph = vm.Graph(figure=standard_px_chart)
+        value = graph._get_value_from_trigger(
+            action_value,
+            trigger={
+                "points": [
+                    {
+                        "customdata": ["Europe"],
+                        "x": "Europe",
+                        "nestedDict": {"key1": [{"key2": "Europe"}]},
+                    }
+                ]
+            },
+        )
+
+        assert value == "Europe"
+
+    def test_no_custom_data_in_figure(self, gapminder):
+        graph = vm.Graph(id="graph_id", figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp"))
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "Couldn't find value `continent` in trigger for `set_control` action. "
+                "This action was added to the Graph model with ID `graph_id`. "
+                "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+            ),
+        ):
+            graph._get_value_from_trigger("continent", {"points": [{"customdata": ["Europe"]}]})
+
+    @pytest.mark.parametrize(
+        "action_value",
+        # The "customdata.0" differs here as it raises the TypeError in "return trigger_box[value]"
+        ["unknown", "customdata.0"],
+    )
+    def test_value_unknown(self, standard_px_chart, action_value):
+        graph = vm.Graph(id="graph_id", figure=standard_px_chart)
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                f"Couldn't find value `{action_value}` in trigger for `set_control` action. "
+                "This action was added to the Graph model with ID `graph_id`. "
+                "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+            ),
+        ):
+            graph._get_value_from_trigger(action_value, {"points": [{"customdata": ["Europe"]}]})
 
 
 class TestDunderMethodsGraph:

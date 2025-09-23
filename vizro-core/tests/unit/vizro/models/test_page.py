@@ -19,9 +19,8 @@ class TestPageInstantiation:
         assert page.title == "Page 1"
         assert page.path == "/page-1"
         assert page.actions == []
-        assert page._action_outputs == {
-            "title": f"{page.id}_title.children",
-        }
+        assert page._action_outputs == {"title": f"{page.id}_title.children"}
+        assert page._action_triggers == {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}.data"}
 
     def test_create_page_mandatory_and_optional(self):
         page = vm.Page(
@@ -30,7 +29,7 @@ class TestPageInstantiation:
             components=[vm.Button(), vm.Button()],
             layout=vm.Grid(grid=[[0, 1]]),
             path="my-path",
-            description="Test",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
         assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
         assert isinstance(page.description, vm.Tooltip)
@@ -41,9 +40,10 @@ class TestPageInstantiation:
         assert page.path == "/my-path"
         assert page.actions == []
         assert page._action_outputs == {
-            "title": f"{page.id}_title.children",
-            "description": f"{page.description.id}-text.children",
+            "title": "my-id_title.children",
+            "description": "tooltip-id-text.children",
         }
+        assert page._action_triggers == {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_my-id.data"}
 
     def test_create_page_mandatory_and_optional_legacy_layout(self):
         with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
