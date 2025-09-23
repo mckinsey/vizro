@@ -13,8 +13,8 @@ The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models
 
 The `layout` argument enables you to choose between two layout models: [`Grid`][vizro.models.Grid] (default) and [`Flex`][vizro.models.Flex]. These models provide different ways to arrange components on the page.
 
-- **Grid layout**: The [`Grid`][vizro.models.Grid] layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
-- **Flex layout**: The [`Flex`][vizro.models.Flex] layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
+- **Grid layout**: The [`Grid`](#grid-layout) layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
+- **Flex layout**: The [`Flex`](#flex-layout) layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
 
 !!! note "The default layout"
 
@@ -81,7 +81,7 @@ grid = [[0, 1], [0, 2]]
 
 ### Understand stacking direction
 
-As described above, when no `layout` is specified, components are presented **vertically** as a single-column stack using `Grid`. If you have three components, the default `Grid.grid` will be as follows, with three equally sized rows, each containing a component spanning the entire width:
+As described above, when no `layout` is specified, components are presented **vertically** as a single-column stack using the [`Grid`][vizro.models.Grid] model. If you have three components, the default `grid` will be as follows, with three equally sized rows, each containing a component spanning the entire width:
 
 ```python title="Vertical stacking"
 grid = [[0], [1], [2]]
@@ -457,9 +457,9 @@ If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide 
 
 ### Flex - basic example
 
-To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument of the [Page][vizro.models.Page]. This replaces the default `Grid` layout with a `Flex` layout, where components (flex items) are arranged vertically (`direction="column"`), remain on a single line (`wrap=False`), and have a default spacing (`gap=24px`) between them.
+To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument of the [Page][vizro.models.Page] model. This replaces the default `Grid` layout with a `Flex` layout, where components (flex items) are arranged vertically (`direction="column"`), remain on a single line (`wrap=False`), and have a default spacing (`gap=24px`) between them.
 
-Open the PyCafe link below to see how the `Flex` layout behaves. Unlike the `Grid` layout, the charts retain their original height and width and won’t be squeezed to fit on one page—a scrollbar appears instead. You can clearly see the difference by removing `layout=vm.Flex()` in your example or toggling between the two result screenshots below.
+Open the PyCafe link below to see how the `Flex` layout behaves. Unlike the [`Grid`](#grid-layout) layout, the charts retain their original height and width and won’t be squeezed to fit on one page—a scrollbar appears instead. You can clearly see the difference by removing `layout=vm.Flex()` in your example or toggling between the two result screenshots below.
 
 !!! example "Flex - basic example"
 
@@ -762,7 +762,7 @@ Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, wh
 
 You can also combine the `Flex` and `Grid` layout to benefit from both. The `Grid` layout is ideal for defining the overall page structure, while the `Flex` layout enables flexibility within individual sections.
 
-For example, in the layout below, we use the `Grid` layout to arrange two charts at the top and a [`Container`][vizro.models.Container] at the bottom with multiple cards. Within the [`Container`][vizro.models.Container], we apply the `Flex` layout so that the cards automatically adjust their positioning based on the available space. If you have not worked with a `Container` before, refer to our user guide on [how to use `Container`](container.md).
+For example, in the layout below, we use the [`Grid`](#grid-layout) layout to arrange two charts at the top and a [`Container`][vizro.models.Container] at the bottom with multiple cards. Within the [`Container`][vizro.models.Container], we apply the `Flex` layout so that the cards automatically adjust their positioning based on the available space. If you have not worked with a `Container` before, refer to our user guide on [how to use `Container`](container.md).
 
 !!! example "Grid with Flex container"
 
@@ -815,7 +815,7 @@ In general, any arbitrarily granular layout can already be achieved using either
 
 !!! note "Alternative layout approaches: `Tabs` and `Containers`"
 
-    [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide alternative methods for customizing your page layout. For instance, if you need more granular control, want to break the overall page grid into subgrids, or wish to visually distinguish your subgrid, refer to our [user guide on Containers](container.md).
+    [Tabs](tabs.md) and [Containers](container.md) provide alternative methods for customizing your page layout. For instance, if you need more granular control, want to break the overall page grid into subgrids, or wish to visually distinguish your subgrid, you may want to use one of these components.
 
 ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 

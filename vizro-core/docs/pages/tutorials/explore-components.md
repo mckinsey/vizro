@@ -60,7 +60,7 @@ For more information about working with Vizro on PyCafe, check out the [PyCafe d
 
 Before we dive in, let's quickly cover some basics:
 
-At the top level, you'll be creating a [`Dashboard`][vizro.models.Dashboard]. Here's what you can configure at the dashboard-level:
+At the top level, you'll be creating a [`Dashboard`](../user-guides/dashboard.md). Here's what you can configure at the dashboard-level:
 
 - **Pages**: You can add multiple pages; they are the building blocks of your dashboard.
 - **Navigation**: You can customize navigation between those different pages.
@@ -88,7 +88,7 @@ To start, let's get an overview of the data by displaying it in a table using [`
 1. Add an [`AgGrid`][vizro.models.AgGrid] component to the `components` list.
 1. Use the [`dash_ag_grid`][vizro.tables.dash_ag_grid] function inside the `figure` argument of `AgGrid`.
 1. Provide details about the data source in the `footer` argument of `AgGrid`.
-1. Add the newly created page to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
+1. Add the newly created page to the list of `pages` in the [Dashboard][vizro.models.Dashboard] model.
 
 !!! example "First Page"
 
@@ -189,7 +189,7 @@ These steps add an export data button:
 
 Notice there is extra blank space below the button. In this step, you’ll learn how to improve the layout by arranging components more efficiently.
 
-Vizro supports two layout models: [`Grid`][vizro.models.Grid] and [`Flex`][vizro.models.Flex]. To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
+Vizro supports two layouts: [`Grid`](../user-guides/layouts.md#grid-layout) and [`Flex`](../user-guides/layouts.md#flex-layout). To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
 
 By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `AgGrid` to only take up the space they need — not equal space.
 
@@ -254,9 +254,9 @@ Vizro uses [`Graph`][vizro.models.Graph] models and [Plotly Express functions](h
 These steps add a histogram to the page:
 
 1. Create a second [`Page`][vizro.models.Page] and store it in a variable called `second_page`. Set its `title` to `"Summary"`.
-1. Add a [`Graph`][vizro.models.Graph] to the `components` list.
-1. Inside the `figure` argument of the `Graph`, use the code for the [px.histogram from the visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
-1. Add the new page to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] by calling `vm.Dashboard(pages=[first_page, second_page])`.
+1. Add a [`Graph`][vizro.models.Graph] model to the `components` list.
+1. Inside the `figure` argument of the [`Graph`][vizro.models.Graph] model, use the code for the [px.histogram from the visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
+1. Add the new page to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model by calling `vm.Dashboard(pages=[first_page, second_page])`.
 
 !!! example "Second Page"
 
@@ -327,7 +327,7 @@ You can combine and arrange various types of `components` on a dashboard page. R
 
 These steps add two KPI cards to the second page:
 
-1. Add a [`Figure`][vizro.models.Figure] to the list of `components`.
+1. Add a [`Figure`][vizro.models.Figure] model to the list of `components`.
 1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
 1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out our [guide to KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
 1. Repeat the above steps to add another KPI card to the page.
@@ -424,11 +424,11 @@ These steps add two KPI cards to the second page:
 
 ### 4.3. Add tabs to switch views
 
-You may not want to display both histograms simultaneously and instead prefer to switch between views. You can achieve this by using the [`Tabs`][vizro.models.Tabs] component. For more details, refer to Vizro's [tabs user guide](../user-guides/tabs.md).
+You may not want to display both histograms simultaneously and instead prefer to switch between views. You can achieve this by using the [`Tabs`][vizro.models.Tabs] model. For more details, refer to Vizro's [tabs user guide](../user-guides/tabs.md).
 
 These steps place the two histograms in separate tabs:
 
-1. Add each `Graph` to the `components` of a [`Container`][vizro.models.Container].
+1. Add each [`Graph`][vizro.models.Graph] to the `components` of a [`Container`][vizro.models.Container].
 1. Set the `title` argument inside each `Container` to the desired tab name.
 1. Add the containers to the `tabs` list of the `Tabs` component.
 1. Add the `Tabs` component to the `components` of the `Page`.
@@ -536,7 +536,7 @@ As you explore the dashboard, you might notice that the current layout could use
 
 ### 4.4. Configure the layout
 
-In this section, you'll customize the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page.
+In this section, you'll customize the [`Grid`](../user-guides/layouts.md#grid-layout) layout to control the placement and size of components on the page.
 
 The following layout configuration is divided into **four columns** and **four rows**. The numbers in the grid correspond to the index of the components in the `components` list.
 
@@ -648,12 +648,12 @@ Run the code below to apply the layout to the dashboard page:
 
 ### 4.5. Add a filter
 
-You can use a [`Filter`][vizro.models.Filter] to interact with the dashboard by selecting specific data points to display.
+You can use [filters](../user-guides/filters.md) to interact with the dashboard by selecting specific data points to display.
 
 These steps add a filter to the dashboard:
 
-1. Add a [`Filter`][vizro.models.Filter] to the `controls` list of the `Page`.
-1. Specify the column to be filtered using the `column` argument of the [Filter][vizro.models.Filter].
+1. Add a [`Filter`][vizro.models.Filter] model to the `controls` list of the `Page`.
+1. Specify the column to be filtered using the `column` argument of the [Filter][vizro.models.Filter] model.
 1. Change the `selector` in one of the `Filters` to a [`Checklist`][vizro.models.Checklist]. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
 !!! example "Add a filter"
@@ -773,7 +773,7 @@ These steps should feel familiar, as they add three charts to the new page.
     - [px.bar](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column) (copy the code directly)
     - [px.density_heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap) (update the `data`, `x`, and `y` arguments to match the dataset)
 1. Provide a `title` for each `Graph`.
-1. Add the new `Page` to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard].
+1. Add the new `Page` to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model.
 
 !!! example "Third page"
 
@@ -1319,7 +1319,7 @@ Now that you've created all the dashboard pages, let's add a title and logo, and
 
 The following steps add a title and logo to the dashboard:
 
-1. Set the `title` attribute of the [Dashboard][vizro.models.Dashboard] to "Tips Analysis Dashboard".
+1. Set the `title` attribute of the [Dashboard][vizro.models.Dashboard] model to "Tips Analysis Dashboard".
 1. Download the `logo` from [this link](https://raw.githubusercontent.com/mckinsey/vizro/refs/heads/main/vizro-core/examples/dev/assets/logo.svg) and save it in a folder named `assets`.
 1. Place the `assets` folder in the same directory as your `app.py/app.ipynb` file.
 
@@ -1458,13 +1458,13 @@ You should see the logo in the top-left corner of your dashboard header, with th
 
 ### 6.2. Customize the navigation
 
-By default, a navigation panel on the left side enables users to switch between the pages. In this section, you'll learn how to customize it by using a navigation bar with icons instead.
+By default, a navigation panel on the left side enables users to switch between the pages. In this section, you'll learn how to customize it by using a [navigation bar](../user-guides/navigation.md) with icons instead.
 
 The navigation bar will have two icons: one for the "Data" page and another for the "Summary" and "Analysis" pages.
 
 The following steps create a navigation bar:
 
-1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] to a [Navigation][vizro.models.Navigation] object.
+1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] model to a [Navigation][vizro.models.Navigation] object.
 1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
 1. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
 1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
@@ -1613,7 +1613,7 @@ The following steps create a navigation bar:
 
         [![DashboardFinal]][dashboardfinal]
 
-Take a moment to explore the navigation bar! Hover over the icons to view the tooltip text, and click on them to navigate between the pages.
+Take a moment to explore the [navigation bar](../user-guides/navigation.md)! Hover over the icons to view the tooltip text, and click on them to navigate between the pages.
 
 **Congratulations on completing this tutorial!**
 

@@ -31,6 +31,9 @@ logger = logging.getLogger(__name__)
 class Graph(VizroBaseModel):
     """Wrapper for `dcc.Graph` to visualize charts in dashboard.
 
+    Abstract: Usage documentation
+        [How to use graphs](../user-guides/graph.md)
+
     Args:
         type (Literal["graph"]): Defaults to `"graph"`.
         figure (CapturedCallable): Function that returns a graph. Either use

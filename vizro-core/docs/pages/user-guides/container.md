@@ -13,7 +13,7 @@ Unlike `Page`, the `Container` model offers additional visual customization opti
 
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
 
-    [`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views. They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
+    [Tabs](tabs.md) organize and separate groups of related content in a dashboard, letting users switch between different sections or views. They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
 
     ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 
@@ -301,7 +301,7 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Container` only occupy as much space as they need, regardless of their collapsed state.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to make sure the `Container` only occupy as much space as they need, regardless of their collapsed state.
 
     === "app.yaml"
 
