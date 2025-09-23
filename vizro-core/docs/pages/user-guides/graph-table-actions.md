@@ -2,8 +2,9 @@
 
 In this guide we show how to configure interactions between graphs and tables, as is commonly done in business intelligence (BI) tools. In Vizro, all such interactions are enabled by an intermediate [control](controls.md) that you must explicitly define. For example:
 
-- [Cross-filter](#cross-filter) is used to filter a _target_ graph or table from another _source_ graph or table. It is achieved by the source component setting a [filter](filters.md), which in turn updates the target component.
-- [Cross-highlight](#cross-highlight) is used to highlight data in a _target_ graph or table from another _source_ graph or table. It is achieved by the source component setting a [parameter](parameters.md), which in turn updates the target component.
+- [Cross-filter](#cross-filter): a _source_ graph or table filters the `data_frame` of a _target_ graph or table. The source component sets a [filter](filters.md), which in turn updates the target component.
+- [Cross-parameter](#cross-parameter): a _source_ graph or table updates any argument other than `data_frame` in the `figure` function of a _target_ graph or table. The source components sets a [parameter](parameters.md), which in turn updates the target component.
+- [Cross-highlight](#cross-highlight): a _source_ graph or table highlights data in a _target_ graph or table. This is an example of a [cross-parameter](#cross-parameter).
 
 All these interactions use the [`set_control`][vizro.actions.set_control] action. This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
 
@@ -114,7 +115,7 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
 
     === "Result"
 
-        TODO NOW: screenshot
+        ![][../../assets/user_guides/graph_table_actions/cross_filter_from_table.gif]
 
 When you click on a row in the table, the graph is cross-filtered to show data only for one sex.
 
@@ -212,7 +213,7 @@ We show an example of each of these in turn. Here is an example where we use `cu
 
     === "Result"
 
-        TODO NOW: screenshot
+        ![][../../assets/user_guides/graph_table_actions/cross_filter_from_graph_1.gif.gif]
 
 When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
 
@@ -304,7 +305,7 @@ Here is an example where we do not use `custom_data`.
 
     === "Result"
 
-        TODO NOW: screenshot
+        ![][../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif]
 
 When you click on a box in the graph, the table is cross-filtered to show data for only one sex, which is the `y` variable for the plot. This works because `"y"` exists in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing) for this chart.
 
@@ -410,7 +411,7 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
     === "Result"
 
-        TODO NOW: screenshot
+        ![][../../assets/user_guides/graph_table_actions/cross_filter_between_containers.gif]
 
 ### Cross-filter between pages
 
@@ -488,7 +489,7 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
     === "Result"
 
-        TODO NOW: screenshot
+        ![][../../assets/user_guides/graph_table_actions/cross_filter_between_pages.gif.gif]        
 
 ### Cross-filter from pivoted or multi-dimensional data
 
@@ -589,7 +590,7 @@ To perform multiple cross-filters, each dimension that is filtered must have its
 
     === "Result"
 
-        TODO NOW: screenshot
+        ![][../../assets/user_guides/graph_table_actions/cross_filter_pivoted.gif.gif]
 
 When you click on a colored cell in the heatmap, the table is cross-filtered to show data for only one sex and day. The "count" shown when you click on a heatmap cell corresponds to the number of rows shown in the filtered table.
 
@@ -616,6 +617,10 @@ vm.AgGrid(
 
 However, it is not yet possible to cross-filter from a pivot table according to the row and column of the clicked cell.
 
-## Cross-highlight
+## Cross-parameter
+
+This is already possible, and documentation is coming soon!
+
+### Cross-highlight
 
 This is already possible, and documentation is coming soon!
