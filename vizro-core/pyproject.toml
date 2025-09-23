@@ -84,7 +84,7 @@ filterwarnings = [
   # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
   # Ignore kedro deprecation warning
-  "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning",
+  "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning"
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"
