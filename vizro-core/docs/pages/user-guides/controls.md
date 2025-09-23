@@ -1,6 +1,6 @@
 # Controls
 
-Vizro supports _controls_ to perform common business intelligence (BI) operations. This guide gives an overview of the different ways you can configure controls. 
+Vizro supports _controls_ to perform common business intelligence (BI) operations. This guide gives an overview of the different ways you can configure controls.
 
 The following [components](components.md) are reactive to controls:
 

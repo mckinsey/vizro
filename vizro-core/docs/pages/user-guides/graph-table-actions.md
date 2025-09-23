@@ -489,7 +489,7 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
     === "Result"
 
-        ![](../../assets/user_guides/graph_table_actions/cross_filter_between_pages.gif)        
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_between_pages.gif)
 
 ### Cross-filter from pivoted or multi-dimensional data
 
@@ -611,11 +611,7 @@ Multiple cross-filters are similarly possible [from a table](#cross-filter-from-
 
 ```python
 vm.AgGrid(
-    ..., 
-   actions=[
-      va.set_control(control="day_filter", value="day"), 
-      va.set_control(control="sex_filter", value="sex")
-   ]
+    ..., actions=[va.set_control(control="day_filter", value="day"), va.set_control(control="sex_filter", value="sex")]
 )
 ```
 
