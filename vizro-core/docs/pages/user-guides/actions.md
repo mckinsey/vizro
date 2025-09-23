@@ -94,74 +94,74 @@ When you click the "Export data" button, the data for all graphs, tables and fig
 
 Here is an example that [performs a cross-filter](graph-table-actions.md#cross-filter-from-graph) between a graph and a table. When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
 
-````
-=== "app.py"
+!!! example "Cross-filter from graph to table"
 
-    ```{.python pycafe-link hl_lines="15"}
-    import vizro.actions as va
-    import vizro.models as vm
-    import vizro.plotly.express as px
-    from vizro import Vizro
-    from vizro.tables import dash_ag_grid
+    === "app.py"
 
-    tips = px.data.tips()
+        ```{.python pycafe-link hl_lines="15"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
 
-    page = vm.Page(
-        title="Cross-filter from graph to table",
-        components=[
-            vm.Graph(
-                title="Click on a box to use that box's sex to filter table",
-                figure=px.box(tips, x="tip", y="sex"),
-                actions=va.set_control(control="sex_filter", value="y"),
-            ),
-            vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
-        ],
-        controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (2)!
-    )
+        tips = px.data.tips()
 
-    dashboard = vm.Dashboard(pages=[page])
-    Vizro().build(dashboard).run()
-    ```
+        page = vm.Page(
+            title="Cross-filter from graph to table",
+            components=[
+                vm.Graph(
+                    title="Click on a box to use that box's sex to filter table",
+                    figure=px.box(tips, x="tip", y="sex"),
+                    actions=va.set_control(control="sex_filter", value="y"),
+                ),
+                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
+            ],
+            controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (2)!
+        )
 
-    1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-    1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
 
-=== "app.yaml"
+        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
 
-    ```yaml
-    # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See yaml_version example
-    pages:
-      - components:
-          - actions:
-              - control: sex_filter
-                type: set_control
-                value: y
-            figure:
-              _target_: box
-              data_frame: tips
-              x: tip
-              y: sex
-            title: Click on a box to use that box's sex to filter table
-            type: graph
-          - figure:
-              _target_: dash_ag_grid
-              data_frame: tips
-            id: tips_table
-            type: ag_grid
-        controls:
-          - column: sex
-            id: sex_filter
-            targets:
-              - tips_table
-            type: filter
-        title: Cross-filter from graph to table
-    ```
+    === "app.yaml"
 
-=== "Result"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: sex_filter
+                    type: set_control
+                    value: y
+                figure:
+                  _target_: box
+                  data_frame: tips
+                  x: tip
+                  y: sex
+                title: Click on a box to use that box's sex to filter table
+                type: graph
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: tips
+                id: tips_table
+                type: ag_grid
+            controls:
+              - column: sex
+                id: sex_filter
+                targets:
+                  - tips_table
+                type: filter
+            title: Cross-filter from graph to table
+        ```
 
-    ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
-````
+    === "Result"
+
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
 
 ## Multiple actions
 

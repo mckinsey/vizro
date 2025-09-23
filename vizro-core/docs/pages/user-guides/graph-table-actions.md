@@ -6,7 +6,7 @@ In this guide we show you how to configure interactions between graphs and table
 - [Cross-parameter](#cross-parameter): a _source_ graph or table updates any argument other than `data_frame` of a _target_ graph or table. The source components sets a [parameter](parameters.md), which in turn updates the target component.
 - [Cross-highlight](#cross-highlight): a _source_ graph or table highlights data in a _target_ graph or table. This is an example of a [cross-parameter](#cross-parameter).
 
-All these interactions use the [`set_control`][vizro.actions.set_control] action. This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
+All these interactions use the [`set_control` action][vizro.actions.set_control]. This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
 
 - The target components can be anything that reacts to a control: [built-in graphs](graph.md), [custom graphs](custom-charts.md), [built-in tables](table.md), [custom tables](custom-tables.md), [built-in figures](figure.md) and [custom figures](custom-figures.md).
 - A single control can update any number of these target components, and a single source component can set any number of controls. Hence a single source component can interact with any number of target components.
@@ -31,7 +31,7 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-filter.
 
     1. Set `control` to the ID of the filter.
-    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control], but it is often `column` of the filter.
+    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control], but it is often `column` of the filter. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
 
     ```python
     import vizro.actions as va

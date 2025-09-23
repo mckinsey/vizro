@@ -34,7 +34,7 @@ class set_control(_AbstractAction):
 
     The following Vizro models can be a source of `set_control`:
 
-    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table.`value` specifies
+    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. `value` specifies
     which column in the clicked row is used to set `control`.
     * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` can be used
     in two ways to specify how to set `control`:
@@ -64,7 +64,7 @@ class set_control(_AbstractAction):
         import vizro.actions as va
 
         vm.Graph(
-            figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data=["species"]),
+            figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data="species"),
             actions=va.set_control(control="target_control", value="species"),
         )
         ```
