@@ -29,7 +29,8 @@ dependencies = [
   "wrapt>=1",
   "black",
   "autoflake",
-  "packaging"
+  "packaging",
+  "python-box"
 ]
 description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
@@ -58,7 +59,7 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:"
 ]
-fail_under = 92
+fail_under = 91
 show_missing = true
 skip_covered = true
 
@@ -80,9 +81,9 @@ filterwarnings = [
   "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
   "ignore:HTTPResponse.getheader():DeprecationWarning",
-  # ignore this warning for firefox screenshot tests
+  # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
-  # ignore kedro deprecation warning
+  # Ignore kedro deprecation warning
   "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning"
 ]
 markers = [

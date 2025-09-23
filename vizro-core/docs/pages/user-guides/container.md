@@ -2,7 +2,7 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
+A [Container][vizro.models.Container] complements a [Page][vizro.models.Page]: both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
 
 Unlike `Page`, the `Container` model offers additional visual customization options:
 
@@ -500,7 +500,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
 ## Add controls to container
 
-The `Container` has a `controls` argument, where you can define container-specific controls to group related components for better interaction. Controls can only target components inside their own container.
+The `Container` has a `controls` argument where you can define container-specific [controls](controls.md) such as [filters](filters.md) and [parameters](parameters.md). This groups together controls with their target components for better interaction. Controls can only target components inside their own container.
 
 Here are a few cases where you might want to use `controls` within a `Container`:
 

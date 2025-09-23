@@ -51,6 +51,9 @@ def check_duplicate_parameter_target(targets):
 class Parameter(VizroBaseModel):
     """Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].
 
+    Abstract: Usage documentation
+        [How to use parameters](../user-guides/parameters.md)
+
     Examples:
         >>> Parameter(targets=["scatter.x"], selector=Slider(min=0, max=1, default=0.8, title="Bubble opacity"))
 

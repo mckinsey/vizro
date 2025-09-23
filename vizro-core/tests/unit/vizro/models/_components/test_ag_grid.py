@@ -47,6 +47,7 @@ class TestAgGridInstantiation:
         assert ag_grid.footer == ""
         assert ag_grid.description is None
         assert hasattr(ag_grid, "_inner_component_id")
+        assert ag_grid._action_triggers == {"__default__": f"{ag_grid._inner_component_id}.selectedRows"}
         assert ag_grid._action_outputs == {
             "__default__": f"{ag_grid.id}.children",
             "figure": f"{ag_grid.id}.children",
@@ -65,7 +66,7 @@ class TestAgGridInstantiation:
             id="ag-grid-id",
             figure=ag_grid_with_id,
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             header="Header",
             footer="Footer",
         )
@@ -79,13 +80,14 @@ class TestAgGridInstantiation:
         assert ag_grid.footer == "Footer"
         assert isinstance(ag_grid.description, vm.Tooltip)
         assert ag_grid._inner_component_id == "underlying_ag_grid_id"
+        assert ag_grid._action_triggers == {"__default__": "underlying_ag_grid_id.selectedRows"}
         assert ag_grid._action_outputs == {
             "__default__": "ag-grid-id.children",
             "figure": "ag-grid-id.children",
             "title": "ag-grid-id_title.children",
             "header": "ag-grid-id_header.children",
             "footer": "ag-grid-id_footer.children",
-            "description": f"{ag_grid.description.id}-text.children",
+            "description": "tooltip-id-text.children",
             **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
         assert ag_grid._action_inputs == {
@@ -135,7 +137,37 @@ class TestAgGridInstantiation:
     def test_ag_grid_trigger(self, ag_grid_with_id, identity_action_function):
         ag_grid = vm.AgGrid(figure=ag_grid_with_id, actions=[Action(function=identity_action_function())])
         [action] = ag_grid.actions
-        assert action._trigger == "underlying_ag_grid_id.cellClicked"
+        assert action._trigger == "underlying_ag_grid_id.selectedRows"
+
+
+class TestAgGridGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    def test_value_valid(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
+        value = ag_grid._get_value_from_trigger(
+            "continent", [{"country": "France", "continent": "Europe", "year": 2007}]
+        )
+
+        assert value == "Europe"
+
+    def test_trigger_empty_list(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
+        value = ag_grid._get_value_from_trigger("continent", [])
+
+        assert value == []
+
+    def test_value_unknown(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid)
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "Couldn't find value column name: `unknown` in trigger for `set_control` action. "
+                "This action was added to the AgGrid model with ID `ag_grid_id`. "
+            ),
+        ):
+            ag_grid._get_value_from_trigger("unknown", [{"country": "France", "continent": "Europe", "year": 2007}])
 
 
 class TestDunderMethodsAgGrid:

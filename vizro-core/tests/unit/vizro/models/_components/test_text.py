@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.Text."""
 
-import pytest
 from asserts import assert_component_equal
 from dash import dcc
 
@@ -21,13 +20,16 @@ class TestTextInstantiation:
             "text": f"{text.id}.children",
         }
 
-    @pytest.mark.parametrize("id, text_content", [("id_1", "Text to test"), ("id_2", "Test")])
-    def test_create_card_mandatory_and_optional(self, id, text_content):
-        text = vm.Text(id=id, text=text_content)
+    def test_create_text_mandatory_and_optional(self):
+        text = vm.Text(id="text-id", text="Text to test")
 
-        assert text.id == id
+        assert text.id == "text-id"
         assert text.type == "text"
-        assert text.text == text_content
+        assert text.text == "Text to test"
+        assert text._action_outputs == {
+            "__default__": "text-id.children",
+            "text": "text-id.children",
+        }
 
 
 class TestBuildMethod:

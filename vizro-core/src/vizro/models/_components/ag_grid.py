@@ -4,7 +4,7 @@ from typing import Annotated, Literal, Optional
 import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
@@ -92,7 +92,7 @@ class AgGrid(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self._inner_component_id}.cellClicked"}
+        return {"__default__": f"{self._inner_component_id}.selectedRows"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -111,6 +111,21 @@ class AgGrid(VizroBaseModel):
         return {
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
+
+    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
+        """Value is the name of the column. There is only one row selected, so we just look at trigger[0]."""
+        # In case the selectedRows is empty (e.g. when the user unselects the row), trigger is an empty list.
+        # This works for both multi=True and multi=False selectors.
+        if not trigger:
+            return []
+
+        try:
+            return trigger[0][value]
+        except KeyError:
+            raise ValueError(
+                f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
+                f"This action was added to the AgGrid model with ID `{self.id}`. "
+            )
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
