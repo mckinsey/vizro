@@ -1,6 +1,6 @@
 # How to use figures
 
-This guide shows you how to add any [Dash component](https://dash.plotly.com/#open-source-component-libraries) that needs to be reactive to [filter](filters.md) and [parameter](parameters.md) controls. If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
+This guide shows you how to add any [Dash component](https://dash.plotly.com/#open-source-component-libraries) that needs to be reactive to [controls](controls.md) such as [filters](filters.md) and [parameters](parameters.md). If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
 
 [`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro. The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] models are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific to their purposes.
 
@@ -48,7 +48,7 @@ To add a `Figure` to your page:
         from vizro import Vizro
         from vizro.figures import kpi_card  # (1)!
 
-        tips = px.data.tips
+        tips = px.data.tips()
 
         page = vm.Page(
             title="KPI card",

@@ -27,12 +27,57 @@ def _encode_to_base64(value):
 
 
 class set_control(_AbstractAction):
-    """Sets the value of a control based on data from the trigger.
+    """Sets the value of a control, which then updates its targets.
+
+    Abstract: Usage documentation
+        [Graph and table interactions](../user-guides/graph-table-actions.md)
+
+    The following Vizro models can be a source of `set_control`:
+
+    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. `value` specifies
+    which column in the clicked row is used to set `control`.
+    * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` can be used
+    in two ways to specify how to set `control`:
+
+        * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
+        * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
+        trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing), for example `"x"`.
 
     Args:
-        control (ModelID): Filter or Parameter component id to be affected by the trigger. If the control is on a
-            different page to the trigger then it must have `show_in_url=True`.
-        value (str): TODO AM: ADD DESCRIPTION
+        control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
+            `show_in_url=True`. The control's selector must be categorical (e.g. Dropdown, RadioItems, Checklist).
+        value (str): Value taken from trigger to set `control`. Format depends on the source model that triggers
+            `set_control`.
+
+    Example: `AgGrid` as trigger
+        ```python
+        import vizro.actions as va
+
+        vm.AgGrid(
+            figure=dash_ag_grid(iris),
+            actions=va.set_control(control="target_control", value="species"),
+        )
+        ```
+
+    Example: `Graph` as trigger with `custom_data`
+        ```python
+        import vizro.actions as va
+
+        vm.Graph(
+            figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data="species"),
+            actions=va.set_control(control="target_control", value="species"),
+        )
+        ```
+
+    Example: `Graph` as trigger without `custom_data`
+        ```python
+        import vizro.actions as va
+
+        vm.Graph(
+            figure=px.box(iris, x="species", y="sepal_length"),
+            actions=va.set_control(control="target_control", value="x"),
+        )
+        ```
     """
 
     type: Literal["set_control"] = "set_control"
@@ -40,7 +85,10 @@ class set_control(_AbstractAction):
         description="Filter or Parameter component id to be affected by the trigger."
         "If the control is on a different page to the trigger then it must have `show_in_url=True`."
     )
-    value: str = Field(description="TODO AM: ADD DESCRIPTION")
+    value: str = Field(
+        description="Value to take from trigger and send to the `target`. Format depends on the model "
+        "that triggers `set_control`."
+    )
 
     @_log_call
     def pre_build(self):

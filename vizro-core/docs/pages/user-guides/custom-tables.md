@@ -148,5 +148,9 @@ The following examples show a possible version of a custom table. In this case t
 
         [![GridCustom]][gridcustom]
 
+## Interact with other graphs and tables
+
+A custom AG Grid can act as a source for [interactions with other components](graph-table-actions.md), for example to cross-filter another graph or table when the user clicks on a point.
+
 [gridcustom]: ../../assets/user_guides/table/custom_grid.png
 [table3]: ../../assets/user_guides/table/custom_table.png

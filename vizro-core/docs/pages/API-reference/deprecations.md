@@ -51,10 +51,32 @@ Call the action directly:
 
 ```python
 # Before:
-vm.Action(function=export_data(file_format="xlsx"))
+vm.Action(function=va.export_data(file_format="xlsx"))
 
 # After:
-export_data(file_format="xlsx")
+va.export_data(file_format="xlsx")
 ```
 
 See the [user guide on built-in actions](../user-guides/actions.md) for more information.
+
+## `filter_interaction`
+
+`filter_interaction` is deprecated. Use the more powerful and flexible [`set_control`][vizro.actions.set_control].
+
+```python
+# Before:
+components = [
+    vm.AgGrid(..., actions=va.filter_interaction(targets=["target_chart"]),
+    vm.Graph(id="target_chart", ...)
+]
+
+# After:
+components = [
+    vm.AgGrid(..., actions=va.set_control(control="my_filter", value="species")),
+    vm.Graph(id="target_chart", ...)
+]
+# You must now explicitly specify a Filter in controls:
+controls = [vm.Filter(id="my_filter", targets=["target_chart"], column="species")]
+```
+
+See the [user guide on how to interact with graphs and tables](../user-guides/graph-table-actions.md) for more information.
