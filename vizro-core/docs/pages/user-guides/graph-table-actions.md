@@ -46,7 +46,7 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
 ### Cross-filter from table
 
-The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row in the table or pressing ++space++ while focused on a row. The `value` argument in `va.set_control` specifies the column of the value that is sent to the specified `control`.
+The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row in the table. The `value` argument in `va.set_control` specifies the column of the value that sets `control`.
 
 !!! example "Cross-filter from table to graph"
 
@@ -116,13 +116,13 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
 
         TODO NOW: screenshot
 
-When you click or press ++space++ on a row in the table, the graph is cross-filtered to show data only for one sex.
+When you click on a row in the table, the graph is cross-filtered to show data only for one sex.
 
 ??? details "Behind the scenes mechanism"
 
     In full, what happens is as follows:
 
-    1. Clicking or pressing ++space++ on a row triggers the `va.set_control` action. This uses the value of the `sex` column for the selected row (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
+    1. Clicking on a row triggers the `va.set_control` action. This uses the value of the `sex` column for the selected row (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_graph"]` so that a filtered graph is shown.
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
@@ -131,16 +131,113 @@ When you click or press ++space++ on a row in the table, the graph is cross-filt
 
     You can emphasize that a row is selectable by including checkboxes in your AG Grid with `figure=dash_ag_grid(..., dashGridOptions={"rowSelection": {"checkboxes": True}})`. The Dash AG Grid offers many [options to configure row selection](https://dash.plotly.com/dash-ag-grid/single-row-selection). These can be [passed directly](table.md#basic-usage) into `dash_ag_grid` as keyword arguments or set for multiple tables by creating a [custom table function](custom-tables.md).
 
+    As well as being triggered on mouse click, `set_control` is also triggered by pressing ++space++ while focused on a row.
+
 ### Cross-filter from graph
 
-The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. The `value` argument in `va.set_control` can be used in two ways to specify what value is sent to the specified `control`:
+The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. The `value` argument in `va.set_control` can be used in two ways to specify the value that sets `control`:
 
-- Value to extract from [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing), for example `"x"`.
 - Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
+- Value to extract from [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing), for example `"x"`.
 
-Here is an example where we use `value="y"`.
+We show an example of each of these in turn. Here is an example where we use `custom_data` and `value="sex"` to use a value from the `sex` column.
 
-!!! example "Cross-filter from graph to table with `y`"
+!!! example "Cross-filter from graph to table with `custom_data`"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="15"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        tips = px.data.tips()
+
+        page = vm.Page(
+            title="Cross-filter from graph to table",
+            components=[
+                vm.Graph(
+                    title="Click on a box to use that box's sex to filter table",
+                    figure=px.box(tips, x="tip", y="time", color="sex", custom_data="sex"),  # (1)!
+                    actions=va.set_control(control="sex_filter", value="sex"),
+                ),
+                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (2)!
+            ],
+            controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (3)!
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. We encode the `sex` column as `color` in the plot and include it in `custom_data="sex"`.
+        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: sex_filter
+                    type: set_control
+                    value: sex
+                figure:
+                  _target_: box
+                  color: sex
+                  custom_data: sex
+                  data_frame: tips
+                  x: tip
+                  y: time
+                title: Click on a box to use that box's sex to filter table
+                type: graph
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: tips
+                id: tips_table
+                type: ag_grid
+            controls:
+              - column: sex
+                id: sex_filter
+                targets:
+                  - tips_table
+                type: filter
+            title: Cross-filter from graph to table
+        ```
+
+    === "Result"
+
+        TODO NOW: screenshot
+
+When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
+
+??? details "Behind the scenes mechanism"
+
+    In full, what happens is as follows:
+
+    1. Clicking on the box triggers the `va.set_control` action. This uses the value of `sex` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
+    1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
+
+    The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+
+!!! note "Cross-filter from custom chart"
+
+    If you cross-filter from a [custom chart](custom-charts.md) and wish to use `custom_data` for the `value` argument of `va.set_control` then you must explicitly include `custom_chart` in the function signature:
+
+    ```py
+    @capture("graph")
+    def my_custom_chart(data_frame, custom_data, **kwargs):
+        return px.scatter(data_grame, custom_data=custom_data, **kwargs)
+    ```
+
+Here is an example where we do not use `custom_data`.
+
+!!! example "Cross-filter from graph without `custom_data` to table"
 
     === "app.py"
 
@@ -220,107 +317,14 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
-Here is an example where we use `value="sex"` and `custom_data`.
-
-!!! example "Cross-filter from graph to table with `custom_data`"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="15"}
-        import vizro.actions as va
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.tables import dash_ag_grid
-
-        tips = px.data.tips()
-
-        page = vm.Page(
-            title="Cross-filter from graph to table",
-            components=[
-                vm.Graph(
-                    title="Click on a box to use that box's sex to filter table",
-                    figure=px.box(tips, x="tip", y="time", color="sex", custom_data="sex"),  # (1)!
-                    actions=va.set_control(control="sex_filter", value="sex"),
-                ),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (2)!
-            ],
-            controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (3)!
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-        1. We encode the sex as `color` in the plot, but this is not by default available in `clickData`. Hence we must add it by including `custom_data="sex"`.
-        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - actions:
-                  - control: sex_filter
-                    type: set_control
-                    value: sex
-                figure:
-                  _target_: box
-                  color: sex
-                  custom_data: sex
-                  data_frame: tips
-                  x: tip
-                  y: time
-                title: Click on a box to use that box's sex to filter table
-                type: graph
-              - figure:
-                  _target_: dash_ag_grid
-                  data_frame: tips
-                id: tips_table
-                type: ag_grid
-            controls:
-              - column: sex
-                id: sex_filter
-                targets:
-                  - tips_table
-                type: filter
-            title: Cross-filter from graph to table
-        ```
-
-    === "Result"
-
-        TODO NOW: screenshot
-
-When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
-
-??? details "Behind the scenes mechanism"
-
-    In full, what happens is as follows:
-
-    1. Clicking on the box triggers the `va.set_control` action. This uses the value of `sex` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
-    1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
-
-    The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
-
-!!! note "Cross-filter from custom chart"
-
-    If you cross-filter from a [custom chart](custom-charts.md) and wish to use `custom_data` for the `value` argument of `va.set_control` then you must explicitly include `custom_chart` in the function signature:
-
-    ```py
-    @capture("graph")
-    def my_custom_chart(data_frame, custom_data, **kwargs):
-        return px.scatter(data_grame, custom_data=custom_data, **kwargs)
-    ```
-
 In general, the data contained in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing) depends on the type of chart used. The rules for how `value` is interpreted by `set_action` are:
 
-1. If the graph includes `custom_data` then interpret the `value` as a column name and attempt to find it in `custom_data`.
-1. If the graph does not include `value` as a column in `custom_data` then Vizro [traverses a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) formed from the data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). For example:
+1. If the graph has `custom_data` then interpret the `value` as a column name and attempt to find it in `custom_data`.
+1. If the graph does not have `custom_data` or does not include `value` as a column in `custom_data` then perform a lookup inside the data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). For example:
     - `value="x"` is equivalent to looking at `clickData["points"][0]["x"]`.
     - `value="key.subkey[1]"` is equivalent to looking at `clickData["points"][0]["key"]["subkey"][1]`.
+
+Based on the source graph and its available `clickData`, you can therefore configure precisely which property to set as `value`.
 
 ### Cross-filter between containers
 

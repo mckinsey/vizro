@@ -6,7 +6,7 @@ This guide shows you how to add filters to your dashboard. A filter selects a su
 - [built-in tables](table.md) and [custom tables](custom-tables.md)
 - [built-in figures](figure.md) and [custom figures](custom-figures.md)
 
-It is possible to add filters to a [page](pages.md) or [container](container.md#add-controls-to-container). Both the [`Page` model][vizro.models.Page] and the [`Container` model][vizro.models.Container] have an optional `controls` argument where you can give any number of controls including filters. A filter uses the [`Filter` model][vizro.models.Filter] to filter the `data_frame` of the `figure` function of a target component model such as [`Graph`][vizro.models.Graph].
+It is possible to add filters to a [page](pages.md) or [container](container.md#add-controls-to-container). Both the [`Page` model][vizro.models.Page] and the [`Container` model][vizro.models.Container] have an optional `controls` argument where you can give any number of controls, including filters. A filter uses the [`Filter` model][vizro.models.Filter] to filter the `data_frame` of the `figure` function of a target component model such as [`Graph`][vizro.models.Graph].
 
 When the dashboard is running there are two ways for a user to set a filter:
 

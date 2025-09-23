@@ -27,26 +27,26 @@ def _encode_to_base64(value):
 
 
 class set_control(_AbstractAction):
-    """Sets the value of a control.
+    """Sets the value of a control, which then updates its targets.
 
     Abstract: Usage documentation
         [Graph and table interactions](../user-guides/graph-table-actions.md)
 
-    The following Vizro models support `set_control`:
+    The following Vizro models can be a source of `set_control`:
 
-    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. The `value`
-    argument specifies the column of the value that is sent to the `target` control.
-    * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. The `value` argument
-    can be used in two ways to specify what value to send to the `target` control:
+    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table.`value` specifies
+    which column in the clicked row is used to set `control`.
+    * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` can be used
+    in two ways to specify how to set `control`:
 
+        * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
         * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
         trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing), for example `"x"`.
-        * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
 
     Args:
-        target (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
+        control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
             `show_in_url=True`. The control's selector must be categorical (e.g. Dropdown, RadioItems, Checklist).
-        value (str): Value to take from trigger and send to the `target`. Format depends on the model that triggers
+        value (str): Value taken from trigger to set `control`. Format depends on the source model that triggers
             `set_control`.
 
     Example: `AgGrid` as trigger
@@ -59,23 +59,23 @@ class set_control(_AbstractAction):
         )
         ```
 
-    Example: `Graph` as trigger
-        ```python
-        import vizro.actions as va
-
-        vm.Graph(
-            figure=px.box(iris, x="species", y="sepal_length"),
-            actions=va.set_control(control="target_control", value="x"),
-        )
-        ```
-
-    Example: `Graph` as trigger using `custom_data`
+    Example: `Graph` as trigger with `custom_data`
         ```python
         import vizro.actions as va
 
         vm.Graph(
             figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data=["species"]),
             actions=va.set_control(control="target_control", value="species"),
+        )
+        ```
+
+    Example: `Graph` as trigger without `custom_data`
+        ```python
+        import vizro.actions as va
+
+        vm.Graph(
+            figure=px.box(iris, x="species", y="sepal_length"),
+            actions=va.set_control(control="target_control", value="x"),
         )
         ```
     """
