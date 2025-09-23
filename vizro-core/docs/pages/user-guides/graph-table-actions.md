@@ -318,7 +318,7 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 In general, the data contained in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing) depends on the type of chart used. The rules for how `value` is interpreted by `set_action` are:
 
 1. If the graph includes `custom_data` then interpret the `value` as a column name and attempt to find it in `custom_data`.
-1. If the graph does not include `custom_data` or the `value` is not specified in `custom_data` then Vizro [traverses a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) formed from the data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). For example:
+1. If the graph does not include `value` as a column in `custom_data` then Vizro [traverses a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) formed from the data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). For example:
     - `value="x"` is equivalent to looking at `clickData["points"][0]["x"]`.
     - `value="key.subkey[1]"` is equivalent to looking at `clickData["points"][0]["key"]["subkey"][1]`.
 
