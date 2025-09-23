@@ -95,6 +95,9 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
 class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
+    Abstract: Usage documentation
+        [How to create a dashboard](../user-guides/dashboard.md)
+
     Args:
         pages (list[Page]): See [`Page`][vizro.models.Page].
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.

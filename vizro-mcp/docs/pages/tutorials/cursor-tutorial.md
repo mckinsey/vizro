@@ -8,15 +8,17 @@ glightbox: true
 
 This tutorial uses a public dataset about winners of the [Booker prize](https://thebookerprizes.com/booker-prize/about-the-booker-prize), which is a literary award conferred each year for the "best sustained work of fiction written in English and published in the UK and Ireland".
 
-To work through the tutorial, you'll need to download the `.xlsx` dataset of [Booker prize winners from 1969 to 2023](https://www.kaggle.com/datasets/rowrowrowyourboat72/booker-prize-winners-1969-2023?resource=download) from Kaggle. The tutorial illustrates how to work with the data locally. It uses Cursor to generate an initial set of Python chart code, then modifies the code by hand, although Cursor's guidance is also available. The prompts and chart output at the time of writing are shown to illustrate the process. The nature of working with an LLM is that your output may be slightly different.
+To work through the tutorial, you'll need to download the `.xlsx` dataset of [Booker prize winners from 1969 to 2023](https://www.kaggle.com/datasets/rowrowrowyourboat72/booker-prize-winners-1969-2023?resource=download) from Kaggle. The tutorial illustrates how to work with the data locally.
+
+The tutorial uses Cursor as the MCP host, but if you prefer to use Microsoft VS Code, you can also follow the instructions since the environments are very similar.
+
+The tutorial uses the host to generate an initial set of Python chart code, runs it to inspect the chart, then modifies the code by hand. The prompts and chart output at the time of writing are shown to illustrate the process. The nature of working with an LLM is that your output may be slightly different.
 
 ## Set up Vizro-MCP
 
-If you haven't already done so, follow our instructions to [set up Vizro-MCP to work with Cursor](../guides/set-up-vizro-mcp-with-cursor.md), which this tutorial uses.
+If you haven't already done so, follow our instructions to [set up Vizro-MCP to work with Cursor](../guides/set-up-vizro-mcp-with-cursor.md), which this tutorial uses. Follow the instructions to [set up Vizro-MCP with Microsoft VS Code](../guides/set-up-vizro-mcp-with-vscode.md) if you prefer to use that host, or use our [basic setup configuration](../guides/set-up-vizro-mcp-basics.md) for your preferred host.
 
-Alternatively, you can [set up Claude Desktop](../guides/set-up-vizro-mcp-with-claude.md), or [set up VS Code](../guides/set-up-vizro-mcp-with-vscode.md), or use our [basic setup configuration](../guides/set-up-vizro-mcp-basics.md) for your preferred host.
-
-To check that Cursor is correctly set up to use Vizro-MCP, pass in a prompt:
+To check that your host is correctly set up to use Vizro-MCP, pass in a prompt:
 
 ```text
 Can you access Vizro-MCP?
@@ -96,9 +98,9 @@ Executing the chart again, we received the following:
 
 ![](../../assets/images/cursor-tutorial4.png)
 
-## Code iteration with Cursor
+## Code iteration by prompt
 
-We will now modify the code again, but since this is a more complex change, we can ask Cursor to do it:
+We can now modify the code again, but since this is a more complex change, we can ask Cursor to do it:
 
 ```text
 Can you change the hovertext on each bar to list
@@ -115,11 +117,11 @@ Re-running the code showed the following:
 
 ## Final iteration
 
-The chart is looking great. We will make a final tweak to change the color of the female bin to make it pink (hex code #ff0eef). We manually modified the `marker_color` specification in line 107, and saved the code. Re-running it gave the following:
+The chart is looking great. We can make a final tweak to change the color of the female bin to make it pink (hex code #ff0eef). Change the `marker_color` specification (for us, in line 107), and save the code, then re-run it. Our result was as follows:
 
 ![](../../assets/images/cursor-tutorial6.png)
 
-Our chart is complete!
+The chart is complete!
 
 ## Final chart code
 
@@ -334,7 +336,7 @@ When you are happy with the chart, you can store the code, for example, in GitHu
 
 ## Save the prompt for your dashboard
 
-You can ask Cursor to give you a comprehensive prompt to store alongside the code for future reference.
+You can ask Cursor, or your preferred host, to give you a comprehensive prompt to store alongside the code for future reference.
 
 ```text
 Can you give me the text of a complete prompt that would
@@ -349,19 +351,21 @@ This is the output we received:
 
 > - Use AGE BIN column for grouping (not AGE WHEN WON)
 
-- Male bars should appear on the left side in blue color
-- Female bars should appear on the right side in magenta color (#ff0eef)
-- Include detailed hover text that shows the actual WINNER names and NOVEL titles for each bar
-- The hover text should list each winner and their novel that falls into that specific age bin and gender combination
-- Chart title should be "Booker Prize Winners by Gender and Age Bin"
-- Y-axis should show "Age Bin" and X-axis should show "Count"
-- Use categorical y-axis ordering for age bins
-- Save the complete code as a .py file in the current folder
-- The file should include proper documentation, imports, and example usage code
-- Make sure the chart displays immediately when the script is run (fig.show())
+> - Male bars should appear on the left side in blue color
+> - Female bars should appear on the right side in magenta color (#ff0eef)
+> - Include detailed hover text that shows the actual WINNER names and NOVEL titles for each bar
+> - The hover text should list each winner and their novel that falls into that specific age bin and gender combination
+> - Chart title should be "Booker Prize Winners by Gender and Age Bin"
+> - Y-axis should show "Age Bin" and X-axis should show "Count"
+> - Use categorical y-axis ordering for age bins
+> - Save the complete code as a .py file in the current folder
+> - The file should include proper documentation, imports, and example usage code
+> - Make sure the chart displays immediately when the script is run (fig.show())
 
 ## Summary
 
-Congratulations! You have seen how to work with Vizro-MCP and Cursor to build a Vizro chart. The chart is a simple example, but can be customized or added to a Vizro dashboard alongside additional charts, controls, or customizations, as described in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/). You can also use Vizro-MCP with Cursor to help you achieve further customizations or create a dashboard with this chart.
+Congratulations! You have seen how to work with Vizro-MCP and Cursor to build a Vizro chart. If you used Microsoft VS Code, you would have seen a similar result, although the exact results depend on the underlying LLM you selected.
 
-To learn more about the main elements of Vizro dashboard code, we recommend you work through the introductory ["Explore Vizro" tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/). The tutorial, and accompanying video, will enable you to explore the dashboard code generated by Vizro-MCP and give you ideas of how to modify it by hand rather than through a prompt, should you prefer to fine-tune it manually.
+In this tutorial, the chart is a very simple example, but it can be further customized or added to a Vizro dashboard alongside additional charts and controls, as described in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/). You can use Vizro-MCP with Cursor to help you achieve these further customizations.
+
+To learn more about the main elements of Vizro dashboard code, we recommend you work through the introductory ["Explore Vizro" tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/). The tutorial, and accompanying video, enable you to explore the dashboard code generated by Vizro-MCP and give you ideas of how to modify it by hand rather than through a prompt, should you prefer to fine-tune it manually.

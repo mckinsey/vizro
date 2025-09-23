@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict, Union, cast
 
 import dash
 import plotly.io as pio
@@ -62,12 +62,15 @@ class Vizro:
         with suppress(ValueError):
             ComponentRegistry.registry.discard("vizro")
 
+        # Automatically detect if Bootstrap CSS is provided in external_stylesheets
+        use_vizro_bootstrap = not self._has_bootstrap_css(kwargs.get("external_stylesheets", []))
+
         # vizro-bootstrap.min.css must be first so that it can be overridden, e.g. by bootstrap_overrides.css.
         # After that, all other items are sorted alphabetically.
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
-            if path.suffix == ".css":
+            if path.suffix == ".css" and (path.name != "vizro-bootstrap.min.css" or use_vizro_bootstrap):
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
                 self.dash.scripts.append_script(_make_resource_spec(path))
@@ -78,6 +81,25 @@ class Vizro:
                 self.dash.scripts.append_script(_make_resource_spec(path))
 
         data_manager.cache.init_app(self.dash.server)
+
+    @staticmethod
+    def _has_bootstrap_css(external_stylesheets: list[Union[str, dict[str, str]]]) -> bool:
+        """Detect if Bootstrap CSS is present in external stylesheets.
+
+        Args:
+            external_stylesheets: List of external stylesheets. Each entry can be a string (the URL).
+
+        Returns:
+            bool: True if Bootstrap CSS is detected, False otherwise
+        """
+
+        def _get_url(stylesheet: Union[str, dict[str, str]]) -> str:
+            """Extract URL from stylesheet."""
+            if isinstance(stylesheet, str):
+                return stylesheet
+            return stylesheet.get("href", "") if isinstance(stylesheet, dict) else ""
+
+        return any("bootstrap" in _get_url(stylesheet).lower() for stylesheet in external_stylesheets)
 
     def build(self, dashboard: Dashboard):
         """Builds the `dashboard`.

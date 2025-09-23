@@ -14,6 +14,9 @@ from vizro.models.types import CapturedCallable, _IdProperty, validate_captured_
 class Figure(VizroBaseModel):
     """Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.
 
+    Abstract: Usage documentation
+        [How to use figures](../user-guides/figure.md)
+
     Args:
         type (Literal["figure"]): Defaults to `"figure"`.
         figure (CapturedCallable): Function that returns a figure-like object. See [`vizro.figures`][vizro.figures].

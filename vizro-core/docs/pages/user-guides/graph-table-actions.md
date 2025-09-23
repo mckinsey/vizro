@@ -8,17 +8,17 @@ When I rewrite this page, make it clear what is difference between cross-filteri
 
 ## Cross-filtering
 
-Cross-filtering enables you to click on data in one chart or table to filter other components in the dashboard. This is enabled using the [`filter_interaction`][vizro.actions.filter_interaction] action. It can be applied to [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], and [`AgGrid`][vizro.models.AgGrid], and is currently triggered by click.
+Cross-filtering enables you to click on data in one chart or table to filter other components in the dashboard. This is enabled using the [`filter_interaction`][vizro.actions.filter_interaction] action. It can be applied to [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], and [`AgGrid`][vizro.models.AgGrid] models, and is currently triggered by click.
 
 To configure cross-filtering using `filter_interaction`, follow these steps:
 
-1. Add the action function to the source [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid] component and a list of IDs of the target charts into `targets`.
+1. Add the action function to the source [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid] model and a list of IDs of the target charts into `targets`.
 
 ```py
 actions=va.filter_interaction(targets=["scatter_relation_2007"])
 ```
 
-1. If the source chart is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
+1. If the source figure is a [`Graph`][vizro.models.Graph] model, enter the filter columns in the `custom_data` argument of the underlying source figure `function`.
 
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
@@ -31,7 +31,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
-Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
+Here is an example of how to configure a chart interaction when the source figure is a [`Graph`][vizro.models.Graph] model.
 
 !!! example "Graph `filter_interaction`"
 

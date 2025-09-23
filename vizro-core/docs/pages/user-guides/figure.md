@@ -2,7 +2,7 @@
 
 This guide shows you how to add any [Dash component](https://dash.plotly.com/#open-source-component-libraries) that needs to be reactive to [filter](filters.md) and [parameter](parameters.md) controls. If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
 
-[`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro. The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] components are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific to their purposes.
+[`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro. The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] models are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific to their purposes.
 
 If these more specific models already achieve what you need then they should be used in preference to the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph` and [custom tables](custom-tables.md) to `Table`.
 
@@ -72,7 +72,7 @@ To add a `Figure` to your page:
         ```
 
         1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card].
-        1. We switch to a [`Flex`][vizro.models.Flex] layout so that the KPI card only takes up as much space as it needs.
+        1. We switch to a [`Flex`](../user-guides/layouts.md#flex-layout) layout so that the KPI card only takes up as much space as it needs.
 
     === "app.yaml"
 
@@ -202,7 +202,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
         ```
 
         1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card] and [`kpi_card_reference`][vizro.figures.kpi_card_reference].
-        1. We use a [`Flex`][vizro.models.Flex] layout with `direction=row` and `wrap=True` to allow KPI cards to wrap to the next line when needed.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout with `direction=row` and `wrap=True` to allow KPI cards to wrap to the next line when needed.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-kpi-cards">Run and edit this code in PyCafe</a></b>
 

@@ -10,7 +10,7 @@ This guide shows you how to use cards in your dashboard.
 
     You should use `Card` to display Markdown text that needs attention drawn to it. Generally, this would be relatively short portions of text. Unlike `Text`, a `Card` can also be [used for navigation](#create-a-navigation-card).
 
-You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page] or the [`Container`][vizro.models.Container] model.
+You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page] or [`Container`][vizro.models.Container] models.
 
 !!! example "Card"
 
@@ -37,7 +37,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
     === "app.yaml"
 
@@ -141,7 +141,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
         Vizro().build(dashboard).run()
         ```
 
-        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] layout. This layout automatically arranges all components to fit on a single page, giving each one equal space. As a result, all `Card` components are evenly sized and fill the entire screen.
+        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] model. This layout automatically arranges all components to fit on a single page, giving each one equal space. As a result, all `Card` components are evenly sized and fill the entire screen.
 
     === "app.yaml"
 
@@ -322,7 +322,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-styling-images">Run and edit this code in PyCafe</a></b>
 
@@ -409,7 +409,7 @@ To float an image for example to the right of the text, use the `src` attribute 
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-floating-images-explorer">Run and edit this code in PyCafe</a></b>
 
