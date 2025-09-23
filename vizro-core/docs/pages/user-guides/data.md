@@ -304,7 +304,7 @@ To add a parameter to control a dynamic data source, do the following:
 1. give an `id` to all components that have the data source you wish to alter through a parameter.
 1. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
-For example, let us extend the [dynamic data example](#dynamic-data) above into an example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`](./selectors.md#numerical-selectors).
+For example, let us extend the [dynamic data example](#dynamic-data) above into an example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`](vizro.models.Slider).
 
 !!! example "Parametrized dynamic data"
 
