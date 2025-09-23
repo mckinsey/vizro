@@ -324,7 +324,7 @@ In general, the data contained in [Plotly's `clickData`](https://dash.plotly.com
 
 ### Cross-filter between containers
 
-A cross-filter often work best when used [inside a container](container.md#add-controls-to-container). This typically makes it clearer which components the filter applies to, especially when the [container is styled](container.md#styled-containers).
+A cross-filter often works best when used [inside a container](container.md#add-controls-to-container). This typically makes it clearer which components the filter applies to, especially when the [container is styled](container.md#styled-containers).
 
 For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) into containers. The rearrangement here is purely visual to give a better user experience; the `va.set_control` is configured exactly the same way and behaves identically while the dashboard is running.
 
