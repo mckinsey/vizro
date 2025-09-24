@@ -1,8 +1,17 @@
 # How to use filters
 
-This guide shows you how to add filters to your dashboard. One main way to interact with the charts/components on your page is by filtering the underlying data. A filter selects a subset of rows of a component's underlying DataFrame which alters the appearance of that component on the page.
+This guide shows you how to add filters to your dashboard. A filter selects a subset of rows of a component's data to alter the appearance of that component. The following [components](components.md) are reactive to filters:
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model. This model enables the automatic creation of [selectors](selectors.md) (for example, `Dropdown` or `RangeSlider`) that operate on the charts/components on the screen.
+- [built-in graphs](graph.md) and [custom graphs](custom-charts.md)
+- [built-in tables](table.md) and [custom tables](custom-tables.md)
+- [built-in figures](figure.md) and [custom figures](custom-figures.md)
+
+It is possible to add filters to a [page](pages.md) or [container](container.md#add-controls-to-container). Both the [`Page` model][vizro.models.Page] and the [`Container` model][vizro.models.Container] have an optional `controls` argument where you can give any number of controls, including filters. A filter uses the [`Filter` model][vizro.models.Filter] to filter the `data_frame` of the `figure` function of a target component model such as [`Graph`][vizro.models.Graph].
+
+When the dashboard is running there are two ways for a user to set a filter:
+
+- Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
+- [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter).
 
 By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
 
@@ -145,7 +154,7 @@ The following example demonstrates these default selector types.
 
 ## Change selector
 
-If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch].
+If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] model a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch].
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 
@@ -201,7 +210,7 @@ You can explore and test all available selectors interactively on our [feature d
 
 ## Further customization
 
-For further customizations, you can always refer to the [`Filter` model][vizro.models.Filter] reference and the [guide to selectors](selectors.md). Some popular choices are:
+For further customizations, you can always refer to the [`Filter`][vizro.models.Filter] model reference and the [guide to selectors](selectors.md). Some popular choices are:
 
 - select which component the filter will apply to by using `targets`
 - specify configuration of the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter
@@ -273,75 +282,7 @@ Below is an advanced example where we only target one page component, and where 
 
 To further customize selectors, see our [how-to-guide on creating custom components](custom-components.md).
 
-## Show in URL
-
-The `Filter` model accepts an optional argument `show_in_url`. When `show_in_url=True`, the filter’s value is synchronized with the page URL as a query parameter, allowing the current control's state to be captured in the link. This makes it easy to share or bookmark specific `Page` filter settings.
-
-The URL query parameter uses the control’s id as its key and the selected value, encoded in base64, as the URL query parameter value.
-
-!!! warning
-
-    - [PyCafe](https://vizro.readthedocs.io/en/stable/pages/user-guides/run-deploy/#develop-in-pycafe) incompatibility: Vizro does not currently support external URL query parameters and they could be stripped or lost using the app. As a result, dashboards using this feature should not be embedded or deployed in PyCafe environments.
-
-    - Page-specific only: Only filters on the currently opened page are reflected in the URL. It is not yet possible to share or bookmark the global state of a multi-page dashboard.
-
-!!! example "Filter in URL"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="15-16"}
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
-
-        iris = px.data.iris()
-
-        page = vm.Page(
-            title="My first page",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-            ],
-            controls=[
-                vm.Filter(
-                    column="species",
-                    id="filter-id",
-                    show_in_url=True,
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml {hl_lines="14-15"}
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - figure:
-                  _target_: scatter
-                  data_frame: iris
-                  x: sepal_length
-                  y: petal_width
-                  color: species
-                type: graph
-            controls:
-              - column: species
-                id: filter-id
-                show_in_url: true
-                type: filter
-            title: My first page
-        ```
-
-    === "Result"
-
-        [![filterInUrl]][filterinurl]
-
 [advanced]: ../../assets/user_guides/control/control3.png
 [filter]: ../../assets/user_guides/control/control1.png
 [filterdefault]: ../../assets/user_guides/control/controls_defaults.png
-[filterinurl]: ../../assets/user_guides/control/filter_in_url.png
 [selector]: ../../assets/user_guides/control/control2.png

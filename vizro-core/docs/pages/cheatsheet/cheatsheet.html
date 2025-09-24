@@ -29,9 +29,7 @@
           <p class="header-subtitle">Essential commands & syntax reference</p>
         </div>
       </div>
-      <a href="https://vizro.readthedocs.io/en/stable/" class="cta-button">
-        Go to Vizro docs <span>→</span>
-      </a>
+      <a href="../../" class="cta-button"> Go to Vizro docs <span>→</span> </a>
     </header>
     <div class="main-container">
       <div class="sidebar">
@@ -111,7 +109,10 @@ Vizro().build(dashboard).run()</code></pre>
               </p>
               <div class="code-block-container">
                 <div class="code-block">
-                  <pre><code class="language-python">import vizro.models as vm
+                  <pre><code class="language-python">import vizro.plotly.express as px
+import vizro.models as vm
+
+df = px.data.iris()
 
 # Basic page with components
 page = vm.Page(
@@ -266,7 +267,7 @@ import vizro.models as vm
 
 df_kpi = pd.DataFrame(
     {"Actual": [100, 200, 700], "Reference": [100, 300, 500]}
-    )
+)
 
 kpi_card_reference = kpi_card_reference(
         data_frame=df_kpi,
@@ -1381,25 +1382,67 @@ vm.Button(
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
             </div>
+
             <div class="component-card">
-              <div class="card-title">Cross-filtering</div>
+              <div class="card-title">
+                Cross-filter from Table
+                <a
+                  href="https://vizro.readthedocs.io/en/stable/pages/API-reference/action-callables/#vizro.actions.set_control"
+                  target="_blank"
+                  class="icon-link"
+                >
+                  <span class="material-icons">integration_instructions</span>
+                  <span class="tooltip">Click to view set_control API</span>
+                </a>
+              </div>
               <div class="card-description">
-                Cross-filtering enables you to click on data in one chart or
-                table to filter another graph or table on the page.
+                Click on a table row to filter a graph by that row’s value.
               </div>
               <div class="code-block-container">
                 <div class="code-block">
                   <pre><code class="language-python">import vizro.models as vm
 import vizro.plotly.express as px
 import vizro.actions as va
+from vizro.tables import dash_ag_grid
 
-# Use filter_interaction action in a Graph component
-vm.Graph(
-    figure=px.scatter(px.data.iris(), x="sepal_length", y="petal_width"),
-    actions=va.filter_interaction(targets=["your-target-component-id"])
+df = px.data.iris()
+
+page = vm.Page(
+    components=[
+        vm.AgGrid(
+            figure=dash_ag_grid(df),
+            actions=va.set_control(control="filter_id", value="species"),
+        ),
+        vm.Graph(id="graph_id", figure=px.histogram(df, x="sepal_length")),
+    ],
+    controls=[
+        vm.Filter(id="filter_id", column="species", targets=["graph_id"])
+    ],
 )</code></pre>
                 </div>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="highlight-box">
+                <div class="highlight-title">
+                  <span class="mdi mdi-lightbulb-on-outline"></span>
+                  <strong>Tip:</strong>
+                </div>
+                <div class="highlight-content">
+                  • The same can be achieved if the <strong>graph</strong> is
+                  the source of the <strong>set_control</strong> action. In that
+                  case, include <code class="code-inline">custom_data</code> in
+                  the graph’s figure so the clicked value can be passed to the
+                  filter. For example:
+                  <br />
+                  <div class="code-block-container">
+                    <div class="code-block">
+                      <pre><code class="language-python">vm.Graph(df,
+    figure=(..., custom_data=["species"]),
+    actions=va.set_control(... value="species"),
+)</code></pre>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

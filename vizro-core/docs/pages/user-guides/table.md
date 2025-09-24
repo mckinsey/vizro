@@ -70,6 +70,10 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
         [![AGGrid]][aggrid]
 
+## Interact with other graphs and tables
+
+An AG Grid can act as a source for [interactions with other components](graph-table-actions.md), for example to cross-filter another graph or table when the user clicks on a point.
+
 ### Disable pagination
 
 By default, pagination is enabled in AG Grid to improve performance and usability with large datasets. If you prefer to show all rows in a single scrollable table (for example, to allow users to scroll vertically through all data), you can disable pagination by setting `dashGridOptions={"pagination": False}`.
@@ -430,7 +434,7 @@ The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](h
 
 ### Basic usage
 
-To add a [`Table`][vizro.models.Table] to your page, do the following:
+To add a [`Table`][vizro.models.Table] model to your page, do the following:
 
 1. Insert the [`Table`][vizro.models.Table] model into the `components` argument of the [`Page`][vizro.models.Page] model.
 1. Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).

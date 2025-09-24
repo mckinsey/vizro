@@ -202,7 +202,7 @@ wheels = [
 
 [[package]]
 name = "dash"
-version = "3.0.4"
+version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flask" },
@@ -215,9 +215,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "werkzeug" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/88/6d/90f113317d41266e20190185cf1b5121efbab79ff79b2ecdf8316a91be40/dash-3.0.4.tar.gz", hash = "sha256:4f9e62e9d8c5cd1b42dc6d6dcf211fe9498195f73ef0edb62a26e2a1b952a368", size = 7592060, upload-time = "2025-04-24T19:06:49.287Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/37/8b5621e0a0b3c6e81a8b6cd3f033aa4b750f53e288dd1a494a887a8a06e9/dash-3.2.0.tar.gz", hash = "sha256:93300b9b99498f8b8ed267e61c455b4ee1282c7e4d4b518600eec87ce6ddea55", size = 7558708, upload-time = "2025-07-31T19:18:59.014Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/20/2e7ab37ea2ef1f8b2592a2615c8b3fb041ad51f32101061d8bc6465b8b40/dash-3.0.4-py3-none-any.whl", hash = "sha256:177f8c3d1fa45555b18f2f670808eba7803c72a6b1cd6fd172fd538aca18eb1d", size = 7935680, upload-time = "2025-04-24T19:06:41.751Z" },
+    { url = "https://files.pythonhosted.org/packages/d3/36/e0010483ca49b9bf6f389631ccea07b3ff6b678d14d8c7a0a4357860c36a/dash-3.2.0-py3-none-any.whl", hash = "sha256:4c1819588d83bed2cbcf5807daa5c2380c8c85789a6935a733f018f04ad8a6a2", size = 7900661, upload-time = "2025-07-31T19:18:50.679Z" },
 ]
 
 [[package]]
@@ -1331,7 +1331,7 @@ wheels = [
 
 [[package]]
 name = "vizro"
-version = "0.1.42"
+version = "0.1.45"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "autoflake" },
@@ -1347,9 +1347,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ea/98/5abae0fe61a437342127e948b561f3a0a5620c1ee11bb8a34ff28356787c/vizro-0.1.42.tar.gz", hash = "sha256:6e687e13d72686663a3646540a5e377d4c9ec1fe82e61d4365b75bf8cee0ac6c", size = 72632171, upload-time = "2025-06-27T11:53:45.414Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/6d/0d3c2ee5566938aff410019fce72d5cef5d185edf608390b309b96b25b24/vizro-0.1.45.tar.gz", hash = "sha256:62a210cc815dcd3d3815fb3b85f7f21cb8f207cc40546717fd21a80230c362ef", size = 74168503, upload-time = "2025-09-12T11:27:08.036Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/66/4d812dd0f13d4ebd9d5ca83db10a1c92936b66e021b900d0cea53350daff/vizro-0.1.42-py3-none-any.whl", hash = "sha256:9e75765b646204ee4022d4f122a1e0ee02f9c6cc0867e9f6fed145eb85c1a180", size = 917279, upload-time = "2025-06-27T11:53:43.022Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/de/fbd25cf7f4fc116d9810745d3bb0393413623495c65060f2537fa11c2c63/vizro-0.1.45-py3-none-any.whl", hash = "sha256:dc280a658cda41562c69424b9971b7d3751b10190154b5fcc197b0b7d04a5e6f", size = 930263, upload-time = "2025-09-12T11:27:04.666Z" },
 ]
 
 [[package]]
@@ -1369,7 +1369,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
     { name = "pandas", extras = ["excel", "html", "parquet"] },
-    { name = "vizro", specifier = ">=0.1.42" },
+    { name = "vizro", specifier = ">=0.1.45" },
 ]
 
 [[package]]

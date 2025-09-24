@@ -12,7 +12,8 @@ In general, you can create a custom component based on a Dash component from [an
 ## General principles
 
 !!! note "Can you use `extra` instead of creating a custom component?"
-    If you want to modify an existing component, you may not even need to create a custom component. Many of our models have an `extra` argument that lets you pass arguments to the underlying Dash component directly, for example to make the [`RadioItem`][vizro.models.RadioItems] [inline instead of stacked](selectors.md#the-extra-argument).
+
+    If you want to modify an existing component, you may not even need to create a custom component. Many of our models have an `extra` argument to pass arguments to the underlying Dash component directly, for example to make the [`RadioItem`][vizro.models.RadioItems] [inline instead of stacked](selectors.md#the-extra-argument).
 
 To create a custom component:
 
@@ -22,7 +23,7 @@ To create a custom component:
 1. Write the subclass:
     * To extend an existing model you could, for example, add or change model fields or override the `build` method.
     * To create a new component, you need to define fields and the `build` method from scratch.
-1. Look at the field where your component will be used in the [API reference][vizro.models] and check whether it is described as a discriminated union. For example, in [`Filter`][vizro.models.Filter] the `selector` field of type [`SelectorType`][vizro.models.types.SelectorType] is a discriminated union but the `options` field of type [`OptionsType`][vizro.models.types.OptionsType] is not. If the field is a discriminated union, then:
+1. Look at the field where your component will be used in the [API reference][vizro.models] and check whether it is described as a discriminated union. For example, in the [`Filter`][vizro.models.Filter] model the `selector` field of type [`SelectorType`][vizro.models.types.SelectorType] is a discriminated union but the `options` field of type [`OptionsType`][vizro.models.types.OptionsType] is not. If the field is a discriminated union, then:
     - You must ensure your model has a `type` field.
     - You must register the new type with its parent model with [`add_type`][vizro.models.VizroBaseModel.add_type].
 
@@ -45,6 +46,7 @@ such as the `build` method instead of writing it from scratch.
 In this case, the general three steps translate into:
 
 1. Subclass [`RangeSlider`][vizro.models.RangeSlider]:
+
 ```py
 import vizro.models as vm
 
@@ -52,6 +54,7 @@ class TooltipNonCrossRangeSlider(vm.RangeSlider):
 ```
 
 2. Modify the component by changing the underlying parent's `dcc.RangeSlider` Dash component in the `build` method:
+
 ```py
 class TooltipNonCrossRangeSlider(vm.RangeSlider):
     def build(self):
@@ -61,8 +64,10 @@ class TooltipNonCrossRangeSlider(vm.RangeSlider):
 ```
 These lines are highlighted in the example below. They are the only material change to the original `build` method.
 
-3. Since the new model will be inserted into the `selectors` argument of the [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`SelectorType`][vizro.models.types.SelectorType]. Hence we must:
+3. Since the new model will be inserted into the `selectors` argument of the [`Filter`][vizro.models.Filter] model or [`Parameter`][vizro.models.Parameter] model, it will be part of the discriminated union describing the allowed types for that argument, in this case the [`SelectorType`][vizro.models.types.SelectorType]. Hence we must:
+
     - define a new type:
+
 ```py
 class TooltipNonCrossRangeSlider(vm.RangeSlider):
     type: Literal["other_range_slider"] = "other_range_slider"
@@ -188,7 +193,7 @@ class Rating(vm.VizroBaseModel):
     1. This is not the core component but we will later [address it with an action](#model-fields-as-input-and-output), so it must have an `id` set. We prefix its `id` with `self.id`.
     1. This is the core component, and so it has `id=self.id`.
 
-1. Since the new model will be inserted into the `components` argument of the [`Page`][vizro.models.Page], it will be part of the discriminated union [`ComponentType`][vizro.models.types.ComponentType]. Hence we must:
+1. Since the new model will be inserted into the `components` argument of the [`Page`][vizro.models.Page] model, it will be part of the discriminated union [`ComponentType`][vizro.models.types.ComponentType]. Hence we must:
     - define a new type:
 ```py
 class Rating(vm.VizroBaseModel):
@@ -436,7 +441,7 @@ This enables you to replace in your dashboard configuration all action input and
     * You do not wish to address anything other than your custom component's core component.
     * You are happy to [use Dash properties as input and output](#dash-properties-as-input-and-output).
 
-To [map your model's fields onto Dash component properties](../user-guides/custom-actions.md#model-arguments-as-input-and-output) you can define further entries in `_action_inputs` and `_action_outputs`. For example, let's say we wanted to add [radio items][vizro.models.RadioItems] so the user can select which movie to rate. When the movie is selected, it will trigger an action that updates the `title` of our custom `Rating` component. This corresponds to the following Dash component produced in the `Rating` model's `build` method:
+To [map your model's fields onto Dash component properties](../user-guides/custom-actions.md#model-arguments-as-input-and-output) you can define further entries in `_action_inputs` and `_action_outputs`. For example, let's say we wanted to add a [radio items][vizro.models.RadioItems] model so the user can select which movie to rate. When the movie is selected, it will trigger an action that updates the `title` of our custom `Rating` component. This corresponds to the following Dash component produced in the `Rating` model's `build` method:
 
 ```python
 html.Legend(id=f"{self.id}_title", children=self.title, className="form-label")

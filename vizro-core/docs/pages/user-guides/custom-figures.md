@@ -8,7 +8,7 @@ The [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where y
 
 As described in the flowchart detailing [when to use `Figure`](figure.md), custom figures should be used if **both** of the following conditions are met:
 
-- You need a figure that doesn't fit into the existing built-in components ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
+- You need a figure that doesn't fit into the existing built-in models ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
 - You need a figure that isn't available in our built-in figure functions [`vizro.figures`](../API-reference/figure-callables.md).
 
 ## Steps to create a custom figure
@@ -47,7 +47,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
         from vizro.figures import kpi_card
         from vizro.models.types import capture
 
-        tips = px.data.tips
+        tips = px.data.tips()
 
 
         @capture("figure")  # (1)!
@@ -104,7 +104,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
         1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
         1. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
         1. We adjust the return statement to include the icon on the right side of the title. This is achieved by swapping the order of the `html.H2` and `html.P` compared to the original `kpi_card`.
-        1. We use a [`Flex`][vizro.models.Flex] layout with `direction="row"` to ensure the KPI cards are placed side by side and only take up as much space as needed.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout with `direction="row"` to ensure the KPI cards are placed side by side and only take up as much space as needed.
         1. For more information, refer to the API reference for the [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
         1. Our custom figure function `custom_kpi_card` now needs to be passed on to the `vm.Figure`.
 

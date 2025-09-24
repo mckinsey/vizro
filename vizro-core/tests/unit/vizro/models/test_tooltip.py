@@ -24,6 +24,18 @@ class TestTooltipInstantiation:
             "icon": f"{tooltip.id}-icon.children",
         }
 
+    def test_create_tooltip_mandatory_and_optional(self):
+        tooltip = Tooltip(id="tooltip-id", text="Tooltip text", icon="Info")
+
+        assert tooltip.id == "tooltip-id"
+        assert tooltip.text == "Tooltip text"
+        assert tooltip.icon == "info"
+        assert tooltip._action_outputs == {
+            "__default__": "tooltip-id-text.children",
+            "text": "tooltip-id-text.children",
+            "icon": "tooltip-id-icon.children",
+        }
+
     def test_validate_tooltip_invalid(self):
         with pytest.raises(ValidationError):
             Tooltip(text="Tooltip text")

@@ -4,7 +4,7 @@ This guide shows you how to use buttons to interact with your data in the dashbo
 
 The Button component is commonly used for dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/).
 
-To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page].
+To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page] model.
 
 ## Customize button text
 
@@ -97,7 +97,7 @@ If your app includes several action buttons, consider [adding icons](#add-an-ico
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
 
     === "app.yaml"
 
@@ -170,7 +170,7 @@ There are three predefined button styles that can be customized using the `varia
         Vizro().build(dashboard).run()
         ```
 
-        1. We use a [`Flex`][vizro.models.Flex] layout with `direction="row"` to ensure the `Button` components are placed side by side and only take up as much space as needed.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout with `direction="row"` to ensure the `Button` components are placed side by side and only take up as much space as needed.
 
     === "app.yaml"
 
