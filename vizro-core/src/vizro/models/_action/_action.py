@@ -6,10 +6,11 @@ import re
 import time
 import warnings
 from collections.abc import Collection, Iterable, Mapping
+from copy import deepcopy
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
+from dash import ctx, ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
 from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -406,6 +407,68 @@ class _BaseAction(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
+            # TODO Q AM: What if `graph-id.click` is used as action's input and not only as a trigger.
+            #  If so, should I implement it then similarly like _traverse recursive function below and to apply
+            #  extraction function for all action inputs(external) which model has the mapping for the given property?
+            #  In that case, action._first_in_chain_input_trigger_property won't work.
+            # Traverse all action inputs for models that has a _action_trigger_extractions mapping for used property.
+
+            a = self
+
+            def _traverse(ctx_node, ext_node, parent=None, key=None, a=None):
+                if not ctx_node:
+                    return
+
+                if isinstance(ctx_node, dict):
+                    if "id" in ctx_node and "property" in ctx_node:
+                        obj_id = ctx_node["id"]
+                        prop = ctx_node["property"]
+                        try:
+                            # TODO COMMENT: prop here is "clickData". original_prop is "click".
+                            #  To apply the extraction function, we need to find out what is the original property used
+                            #  like "click". self._transformed_inputs are already
+                            #  transformed from "click" -> "clickData". So, we need to dig into self._runtime_args
+                            #  that's built form builtin_args + runtime_args.
+                            #  This solution is brittle as it relies on the fact that action inputs always have an
+                            #  argument name defined in self._runtime_args.
+                            #  Will it cause any other problems when we enable arbitrary number of inputs?
+                            #  or in some other case??
+                            #  Remember that we should be able always to go with clientside conversion solution.
+                            original_prop = (
+                                a._first_in_chain_input_trigger_property
+                                if key == "_trigger"
+                                else self._runtime_args[key].split('.')[1]
+                            )
+
+                            new_value = model_manager[obj_id]._action_trigger_extractions[original_prop](ext_node)
+                            print(new_value)
+                            parent[key] = new_value
+
+                        except Exception:
+                            pass
+                    else:
+                        for key, ctx_child in ctx_node.items():
+                            _traverse(ctx_node=ctx_child, ext_node=ext_node[key], parent=ext_node, key=key, a=a)
+
+                elif isinstance(ctx_node, list):
+                    for i, (ctx_child, ext_child) in enumerate(zip(ctx_node, ext_node)):
+                        _traverse(ctx_node=ctx_child, ext_node=ext_child, parent=ext_node, key=i, a=a)
+
+            _traverse(ctx_node=ctx.args_grouping["external"], ext_node=external, a=a)
+
+            # user_inputs = self._runtime_args.values()
+            #
+            # if trigger_value := external.get("_trigger"):
+            #     # Get the extraction function for the action's parent model
+            #     extraction_fun = getattr(
+            #         self._parent_model,
+            #         "_action_trigger_extractions",
+            #         {}
+            #     ).get(self._first_in_chain_input_trigger_property)
+            #
+            #     if extraction_fun is not None:
+            #         external["_trigger"] = extraction_fun(trigger_value)
+
             external_return = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             return_value = {
                 "internal": {

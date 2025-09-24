@@ -111,7 +111,27 @@ class Graph(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.clickData"}
+        return {
+            # TODO Comment: I didn't decide to map the __default__ -> "{self.id}.click" to avoid recursion.
+            #    See mapping for "description" in the _action_outputs. Alternatively, there
+            "__default__": f"{self.id}.clickData",
+            "click": f"{self.id}.clickData",
+            "select": f"{self.id}.selectedData",
+            "hover": f"{self.id}.hoverData",
+            "zoom":  f"{self.id}.relayoutData",
+        }
+
+    # TODO Q AM: As keys are the same, should we move this into _action_triggers and reformat its dictionary value to
+    #  or tuple or nested dict? Should we align keys for all _action_* properties?
+    @property
+    def _action_trigger_extractions(self):
+        return {
+            "__default__": lambda x: x["points"][0],
+            "click": lambda x: x["points"][0],
+            "hover": lambda x: x["points"][0],
+            "select": lambda x: x["points"],
+            "zoom": lambda x: x,
+        }
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -123,6 +143,16 @@ class Graph(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.clickData",
+            "click": f"{self.id}.clickData",
+            "select": f"{self.id}.selectedData",
+            "hover": f"{self.id}.hoverData",
+            "zoom":  f"{self.id}.relayoutData",
+        }
+
     def _get_value_from_trigger(self, value: str, trigger: dict[str, list[JsonValue]]) -> JsonValue:
         # When a single point is clicked, we are only interested in looking for values inside ["points"][0]. There
         # are no realistic examples which need values outside this. We use Box for two reasons:
@@ -130,7 +160,14 @@ class Graph(VizroBaseModel):
         # string syntax, e.g. value="x" or "value=customdata[0]". This is enabled by box_dots=True.
         # 2. it converts camelCase to snake_case. e.g. if trigger contains something called "someKey" then both
         # value="someKey" and value="some_key" will work. This is enabled by camel_killer_box=True.
-        trigger_box = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
+
+        # TODO PP: Remove OLD
+        # OLD:
+        # trigger_box = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
+
+        # NEW:
+        trigger_box = Box(trigger, camel_killer_box=True, box_dots=True)
+
         try:
             # First try to treat value as a column name. Unfortunately the customdata returned in the trigger does
             # not contain column names (it's just a list) so we must look it up in the called function's `custom_data`

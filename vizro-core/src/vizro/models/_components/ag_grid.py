@@ -109,6 +109,7 @@ class AgGrid(VizroBaseModel):
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {
+            "click": f"{self._inner_component_id}.selectedRows",
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 

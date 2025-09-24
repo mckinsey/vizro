@@ -139,7 +139,12 @@ def make_actions_chain(self):
         else:
             converted_actions.append(action)
 
-    model_action_trigger = self._action_triggers["__default__"]
+    # TODO Comment: Expose setting arbitrary action trigger property for the first action in the chain.
+    # TODO Q AM: Should we consider what happens when action is not first in action?
+    # TODO NOW PP: Enhance naming
+    input_trigger_property = "__default__"
+    model_action_trigger = self._action_triggers[input_trigger_property]
+
     for i, action in enumerate(converted_actions):
         # First action in the chain uses the model's specified trigger.
         # All subsequent actions in the chain are triggered by the previous action's completion.
@@ -149,6 +154,7 @@ def make_actions_chain(self):
 
         # Every action has to know about the model action trigger to properly set the action's builtin arg "_trigger".
         action._first_in_chain_trigger = model_action_trigger
+        action._first_in_chain_input_trigger_property = input_trigger_property
 
         # The actions chain guard should be called only for on page load.
         action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
