@@ -47,7 +47,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
         from vizro.figures import kpi_card
         from vizro.models.types import capture
 
-        tips = px.data.tips
+        tips = px.data.tips()
 
 
         @capture("figure")  # (1)!

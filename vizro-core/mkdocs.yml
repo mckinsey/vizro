@@ -30,7 +30,7 @@ nav:
       - Navigation: pages/user-guides/navigation.md
       - Actions:
           - Overview: pages/user-guides/actions.md
-          - Data interactions: pages/user-guides/data-actions.md
+          - Handle data: pages/user-guides/data-actions.md
           - Graph and table interactions: pages/user-guides/graph-table-actions.md
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
@@ -124,7 +124,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.45
+                vizro==0.1.46
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
