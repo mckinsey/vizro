@@ -90,7 +90,10 @@ class openai_pirate(echo):
         # Should we define these callbacks in pre_build or in _define_callback with call to super()? Not sure yet.
         # Should we use vizro_store? Only if needed for correct functioning on change page. Otherwise best to build
         # in store here.
-        # Must be serverside to use self.message_to_html.
+        # Must be serverside to use self.message_to_html. **ACTUALLY NO IT DOESN'T. We don't need to do
+        # message_to_html on the user input, just on the AI output. ChatGPT only transforms ` on user input,
+        # not other markdown. So could change this to clientside or think again about using dcc.Store as source of
+        # truth.**
         # Should be triggered in exact same way as main callback and at same time, but we assume it finishes before
         # other one because it's faster. Could this cause difficulties? Definitely requires multithreaded server at
         # least but that's ok. Would they ever not finish in right order? Not sure.
