@@ -43,7 +43,7 @@ class TestParameterInstantiation:
                 multi=False,
                 value="lifeExp",
                 title="Choose x-axis",
-                description=vm.Tooltip(id="selector_tooltip_id", text="Test", icon="info"),
+                description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             ),
             show_in_url=True,
         )
@@ -52,13 +52,13 @@ class TestParameterInstantiation:
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.type == "dropdown"
         assert parameter.show_in_url is True
-
+        assert isinstance(parameter.selector.description, vm.Tooltip)
         assert parameter._action_triggers == {"__default__": "selector_id.value"}
         assert parameter._action_outputs == {
             "__default__": "selector_id.value",
             "selector": "parameter_id.children",
             "title": "selector_id_title.children",
-            "description": "selector_tooltip_id-text.children",
+            "description": "tooltip-id-text.children",
         }
         assert parameter._action_inputs == {
             "__default__": "selector_id.value",

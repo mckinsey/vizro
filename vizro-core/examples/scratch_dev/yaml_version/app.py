@@ -10,9 +10,10 @@ from vizro.models import Dashboard
 
 data_manager["iris"] = px.data.iris()
 data_manager["gapminder"] = px.data.gapminder()
+data_manager["tips"] = px.data.tips()
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)

@@ -51,6 +51,9 @@ def clean_path(path: str, allowed_characters: str) -> str:
 class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
 
+    Abstract: Usage documentation
+        [How to make dashboard pages](../user-guides/pages.md)
+
     Args:
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
@@ -89,10 +92,6 @@ class Page(VizroBaseModel):
     def _make_actions_chain(self):
         return make_actions_chain(self)
 
-    @property
-    def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
-
     # This should ideally be a field validator, but we need access to the model_fields_set
     @model_validator(mode="after")
     def validate_path(self):
@@ -114,6 +113,10 @@ class Page(VizroBaseModel):
         self.__dict__["path"] = new_path
 
         return self
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

@@ -27,6 +27,9 @@ class RangeSlider(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)
+
     Args:
         type (Literal["range_slider"]): Defaults to `"range_slider"`.
         min (Optional[float]): Start value for slider. Defaults to `None`.

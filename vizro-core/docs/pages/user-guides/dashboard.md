@@ -5,7 +5,7 @@ This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dash
 To create a dashboard:
 
 1. Choose one of the possible configuration syntaxes
-1. Create your `pages`, see our [guide on Pages](pages.md)
+1. Create your [`pages`](pages.md)
 1. (optional) Customize your `navigation`, see our [guide on Navigation](navigation.md)
 1. (optional) Set a `title` for your dashboard
 1. (optional) Set a `description` for your dashboard to [add a tooltip](#add-a-dashboard-tooltip) and [set meta tags](#meta-tags-for-social-media)

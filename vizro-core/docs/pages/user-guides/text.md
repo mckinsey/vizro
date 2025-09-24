@@ -10,7 +10,7 @@ This guide shows you how to display text in your dashboard with the [`Text` comp
 
     You should use `Card` to display Markdown text that needs attention drawn to it. Generally, this would be relatively short portions of text. Unlike `Text`, a `Card` can also be [used for navigation](card.md#create-a-navigation-card).
 
-You can add a [`Text`][vizro.models.Text] model to your dashboard by inserting [`Text`][vizro.models.Text] into the `components` argument of the [`Page`][vizro.models.Page] or the [`Container`][vizro.models.Container] models.
+You can add a [`Text`][vizro.models.Text] model to your dashboard by inserting [`Text`][vizro.models.Text] into the `components` argument of the [`Page`][vizro.models.Page] or [`Container`][vizro.models.Container] models.
 
 !!! example "Text"
 
