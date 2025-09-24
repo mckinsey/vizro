@@ -52,7 +52,7 @@ page_1 = vm.Page(
                                 value_column="Order ID",
                                 title="No. Orders",
                                 value_format="{value:,}",
-                                icon="money_bag",
+                                icon="numbers",
                                 agg_func="nunique",
                             )
                         ),
@@ -62,7 +62,7 @@ page_1 = vm.Page(
                                 value_column="Customer ID",
                                 title="No. Customers",
                                 value_format="{value:,}",
-                                icon="money_bag",
+                                icon="numbers",
                                 agg_func="nunique",
                             )
                         ),
@@ -131,7 +131,7 @@ page_1 = vm.Page(
                                 value_column="Order ID",
                                 title="No. Orders",
                                 value_format="{value:,}",
-                                icon="money_bag",
+                                icon="numbers",
                                 agg_func="nunique",
                             )
                         ),
@@ -141,7 +141,7 @@ page_1 = vm.Page(
                                 value_column="Customer ID",
                                 title="No. Customers",
                                 value_format="{value:,}",
-                                icon="money_bag",
+                                icon="numbers",
                                 agg_func="nunique",
                             )
                         ),
