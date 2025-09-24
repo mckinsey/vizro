@@ -1,9 +1,10 @@
 """Collection of custom charts."""
 
-import plotly.express as px
+# import plotly.express as px
 import vizro.plotly.express as px
 from dash_ag_grid import AgGrid
 from vizro.models.types import capture
+import pandas as pd
 
 
 @capture("graph")
@@ -215,3 +216,78 @@ def custom_aggrid(data_frame):
         dashGridOptions={"pagination": True, "paginationPageSize": 20},
     )
     return aggrid
+
+#
+# @capture("graph")
+# def bar_chart_by_segment_w_bm(data_frame, custom_data, value_col="Sales"):
+#     # Copy and prepare
+#     df = data_frame.copy()
+#     df["Order Date"] = pd.to_datetime(df["Order Date"])
+#     df["Year"] = df["Order Date"].dt.year
+#
+#     # Latest two years
+#     latest_year = df["Year"].max()
+#     prev_year = latest_year - 1
+#
+#     # Aggregate current year sales
+#     current_sales = df[df["Year"] == latest_year].groupby("Segment")[value_col].sum()
+#
+#     # Aggregate current and previous year profit
+#     current_profit = df[df["Year"] == latest_year].groupby("Segment")["Profit"].sum()
+#     prev_profit = df[df["Year"] == prev_year].groupby("Segment")["Profit"].sum()
+#
+#     # Create plotting dataframe
+#     merged = current_sales.reset_index().rename(columns={value_col: "Sales"})
+#     merged["CurrentProfit"] = merged["Segment"].map(current_profit)
+#     merged["PrevProfit"] = merged["Segment"].map(prev_profit)
+#
+#     # Plot bars (Sales)
+#     fig = px.bar(
+#         merged,
+#         x="Segment",
+#         y="Sales",
+#         color="Segment",
+#         title=f"{value_col} | By Segment",
+#         custom_data=custom_data,
+#     )
+#
+#     # Add benchmarks (previous year profit) + annotations
+#     for i, row in merged.iterrows():
+#         seg = row["Segment"]
+#         current = row["CurrentProfit"]
+#         prev = row["PrevProfit"]
+#
+#         # Benchmark line = previous year profit
+#         fig.add_shape(
+#             type="line",
+#             x0=seg, x1=seg,
+#             y0=prev, y1=prev,
+#             line=dict(color="darkblue", width=4),
+#             xref="x", yref="y"
+#         )
+#
+#         # Growth %
+#         growth = (current - prev) / prev * 100 if pd.notna(prev) and prev != 0 else 0
+#
+#         # Annotation (sales + growth %)
+#         fig.add_annotation(
+#             x=seg,
+#             y=row["Sales"],
+#             text=f"<b>${row['Sales'] / 1000:,.1f}K</b><br>"
+#                  f"<span style='color:{'green' if growth >= 0 else 'red'}'>▲ {growth:.1f}%</span>",
+#             showarrow=False,
+#             yshift=20,
+#             align="center"
+#         )
+#
+#     # Layout tweaks
+#     fig.update_layout(
+#         title=dict(x=0.5, xanchor="center"),
+#         yaxis=dict(visible=False),
+#         showlegend=False,
+#         bargap=0.6,
+#         xaxis_title=None,
+#         yaxis_title=None,
+#     )
+#
+#     return fig

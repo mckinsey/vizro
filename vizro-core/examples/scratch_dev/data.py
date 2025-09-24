@@ -59,3 +59,11 @@ superstore_df = pd.read_csv("superstore.csv", encoding="latin1")
 superstore_df["State_Code"] = superstore_df["State"].map(state_code_map)
 
 superstore_df["Order Date"] = pd.to_datetime(superstore_df["Order Date"], errors="coerce")
+
+superstore_df["Year"] = superstore_df["Order Date"].dt.year
+
+# Find the latest 2 years in the dataset
+latest_two_years = sorted(superstore_df["Year"].unique())[-2:]
+
+# Filter dataframe for only those two years
+superstore_df = superstore_df[superstore_df["Year"].isin(latest_two_years)].copy()
