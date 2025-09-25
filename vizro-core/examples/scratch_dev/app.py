@@ -214,6 +214,7 @@ class openai_pirate(echo):
         # Question for Lingyi: if we do it the "wrong" way with @dash.get_app().server.route() in pre_build,
         # can you easily find any setups where it doesn't work? e.g. Maybe with gunicorn it doesn't?
         # Question: why do we set endpoint here?
+        # Actually probably best to use hooks.route here?
         @app.server.post(f"/streaming-{self.chat_id}", endpoint=f"streaming_chat_{self.chat_id}")
         def streaming_chat():
             try:
