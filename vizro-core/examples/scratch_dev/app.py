@@ -46,119 +46,119 @@ def custom_action_with_no_trigger(input_value):
 df = px.data.iris()
 
 # === PAGE 1 ===
-
-page_1 = vm.Page(
-    title="Playground",
-    components=[
-        vm.Container(
-            layout=vm.Grid(grid=[
-                [0, 2],
-                [1, 2],
-            ]),
-            variant="outlined",
-            components=[
-                vm.Graph(
-                    id="p1_graph_1",
-                    title="[Source] Graph Cross-filter",
-                    figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-                    actions=[
-                        set_control(control="p1_filter_1", value="species"),
-                        set_control(control="p1_filter_2", value="customdata[0]"),
-                        vm.Action(function=custom_action_with_trigger(), outputs="p1_text_1"),
-
-                        # TODO PP NOW 0: Make that the extraction is applied here!!!
-                        vm.Action(function=custom_action_with_no_trigger("p1_graph_1.click"), outputs="p1_text_2"),
-                    ],
-                ),
-                vm.AgGrid(
-                    id="p1_ag_grid_1",
-                    title="[Source] AgGrid Cross-filter",
-                    figure=dash_ag_grid(df),
-                    actions=[
-                        set_control(control="p1_filter_1", value="species"),
-                        set_control(control="p1_filter_2", value="species"),
-                        vm.Action(function=custom_action_with_trigger(), outputs="p1_text_1"),
-                        vm.Action(function=custom_action_with_no_trigger("p1_ag_grid_1.click"), outputs="p1_text_2"),
-                    ],
-                ),
-                vm.Container(
-                    title="[Target] Cross-filter targets",
-                    layout=vm.Grid(grid=[
-                        [0, 0],
-                        [1, 2],
-                    ]),
-                    variant="outlined",
-                    components=[
-                        vm.AgGrid(id="p1_ag_grid_2", figure=dash_ag_grid(df)),
-                        TitledText(id='p1_text_1', title="_trigger", text="""No cross-filter applied"""),
-                        TitledText(id='p1_text_2', title="click", text="""No cross-filter applied""")
-                    ],
-                    controls=[
-                        vm.Filter(id="p1_filter_1", column="species"),
-                        vm.Filter(id="p1_filter_2", column="species", selector=vm.RadioItems()),
-                    ],
-                ),
-            ],
-        ),
-    ]
-)
-
-# === PAGE 2 ===
-
-page_2 = vm.Page(
-    title="Graph mappings with default _trigger",
-    components=[
-        vm.Graph(
-            id="p2_graph_1",
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            actions=[
-                vm.Action(function=custom_action_with_trigger(), outputs="p2_text_1"),
-                vm.Action(function=custom_action_with_no_trigger("p2_graph_1.click"), outputs="p2_text_2"),
-                vm.Action(function=custom_action_with_no_trigger("p2_graph_1.select"), outputs="p2_text_3"),
-                vm.Action(function=custom_action_with_no_trigger("p2_graph_1.hover"), outputs="p2_text_4"),
-                vm.Action(function=custom_action_with_no_trigger("p2_graph_1.zoom"), outputs="p2_text_5"),
-            ],
-        ),
-        vm.Container(
-            variant="outlined",
-            layout=vm.Flex(direction="row", gap="16px"),
-            components=[
-                TitledText(id='p2_text_1', title="_trigger", text="""No cross-filter applied"""),
-                TitledText(id='p2_text_2', title="click", text="""No cross-filter applied"""),
-                TitledText(id='p2_text_3', title="select", text="""No cross-filter applied"""),
-                TitledText(id='p2_text_4', title="hover", text="""No cross-filter applied"""),
-                TitledText(id='p2_text_5', title="zoom", text="""No cross-filter applied"""),
-            ]
-        )
-    ],
-)
-
-# === PAGE 3 ===
-
-page_3 = vm.Page(
-    title="AgGrid mappings with default _trigger",
-    components=[
-        vm.AgGrid(
-            id="p3_ag_grid_1",
-            figure=dash_ag_grid(df),
-            actions=[
-                vm.Action(function=custom_action_with_trigger(), outputs="p3_text_1"),
-                vm.Action(function=custom_action_with_no_trigger("p3_ag_grid_1.click"), outputs="p3_text_2"),
-                vm.Action(function=custom_action_with_no_trigger("p3_ag_grid_1.select"), outputs="p3_text_3"),
-            ],
-        ),
-        vm.Container(
-            variant="outlined",
-            layout=vm.Flex(direction="row", gap="16px"),
-            components=[
-                TitledText(id='p3_text_1', title="_trigger", text="""No cross-filter applied"""),
-                TitledText(id='p3_text_2', title="click", text="""No cross-filter applied"""),
-                TitledText(id='p3_text_3', title="select", text="""No cross-filter applied"""),
-            ]
-        )
-    ],
-)
-
+#
+# page_1 = vm.Page(
+#     title="Playground",
+#     components=[
+#         vm.Container(
+#             layout=vm.Grid(grid=[
+#                 [0, 2],
+#                 [1, 2],
+#             ]),
+#             variant="outlined",
+#             components=[
+#                 vm.Graph(
+#                     id="p1_graph_1",
+#                     title="[Source] Graph Cross-filter",
+#                     figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+#                     actions=[
+#                         set_control(control="p1_filter_1", value="species"),
+#                         set_control(control="p1_filter_2", value="customdata[0]"),
+#                         vm.Action(function=custom_action_with_trigger(), outputs="p1_text_1"),
+#
+#                         # TODO PP NOW 0: Make that the extraction is applied here!!!
+#                         vm.Action(function=custom_action_with_no_trigger("p1_graph_1.click"), outputs="p1_text_2"),
+#                     ],
+#                 ),
+#                 vm.AgGrid(
+#                     id="p1_ag_grid_1",
+#                     title="[Source] AgGrid Cross-filter",
+#                     figure=dash_ag_grid(df),
+#                     actions=[
+#                         set_control(control="p1_filter_1", value="species"),
+#                         set_control(control="p1_filter_2", value="species"),
+#                         vm.Action(function=custom_action_with_trigger(), outputs="p1_text_1"),
+#                         vm.Action(function=custom_action_with_no_trigger("p1_ag_grid_1.click"), outputs="p1_text_2"),
+#                     ],
+#                 ),
+#                 vm.Container(
+#                     title="[Target] Cross-filter targets",
+#                     layout=vm.Grid(grid=[
+#                         [0, 0],
+#                         [1, 2],
+#                     ]),
+#                     variant="outlined",
+#                     components=[
+#                         vm.AgGrid(id="p1_ag_grid_2", figure=dash_ag_grid(df)),
+#                         TitledText(id='p1_text_1', title="_trigger", text="""No cross-filter applied"""),
+#                         TitledText(id='p1_text_2', title="click", text="""No cross-filter applied""")
+#                     ],
+#                     controls=[
+#                         vm.Filter(id="p1_filter_1", column="species"),
+#                         vm.Filter(id="p1_filter_2", column="species", selector=vm.RadioItems()),
+#                     ],
+#                 ),
+#             ],
+#         ),
+#     ]
+# )
+#
+# # === PAGE 2 ===
+#
+# page_2 = vm.Page(
+#     title="Graph mappings with default _trigger",
+#     components=[
+#         vm.Graph(
+#             id="p2_graph_1",
+#             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+#             actions=[
+#                 vm.Action(function=custom_action_with_trigger(), outputs="p2_text_1"),
+#                 vm.Action(function=custom_action_with_no_trigger("p2_graph_1.click"), outputs="p2_text_2"),
+#                 vm.Action(function=custom_action_with_no_trigger("p2_graph_1.select"), outputs="p2_text_3"),
+#                 vm.Action(function=custom_action_with_no_trigger("p2_graph_1.hover"), outputs="p2_text_4"),
+#                 vm.Action(function=custom_action_with_no_trigger("p2_graph_1.zoom"), outputs="p2_text_5"),
+#             ],
+#         ),
+#         vm.Container(
+#             variant="outlined",
+#             layout=vm.Flex(direction="row", gap="16px"),
+#             components=[
+#                 TitledText(id='p2_text_1', title="_trigger", text="""No cross-filter applied"""),
+#                 TitledText(id='p2_text_2', title="click", text="""No cross-filter applied"""),
+#                 TitledText(id='p2_text_3', title="select", text="""No cross-filter applied"""),
+#                 TitledText(id='p2_text_4', title="hover", text="""No cross-filter applied"""),
+#                 TitledText(id='p2_text_5', title="zoom", text="""No cross-filter applied"""),
+#             ]
+#         )
+#     ],
+# )
+#
+# # === PAGE 3 ===
+#
+# page_3 = vm.Page(
+#     title="AgGrid mappings with default _trigger",
+#     components=[
+#         vm.AgGrid(
+#             id="p3_ag_grid_1",
+#             figure=dash_ag_grid(df),
+#             actions=[
+#                 vm.Action(function=custom_action_with_trigger(), outputs="p3_text_1"),
+#                 vm.Action(function=custom_action_with_no_trigger("p3_ag_grid_1.click"), outputs="p3_text_2"),
+#                 vm.Action(function=custom_action_with_no_trigger("p3_ag_grid_1.select"), outputs="p3_text_3"),
+#             ],
+#         ),
+#         vm.Container(
+#             variant="outlined",
+#             layout=vm.Flex(direction="row", gap="16px"),
+#             components=[
+#                 TitledText(id='p3_text_1', title="_trigger", text="""No cross-filter applied"""),
+#                 TitledText(id='p3_text_2', title="click", text="""No cross-filter applied"""),
+#                 TitledText(id='p3_text_3', title="select", text="""No cross-filter applied"""),
+#             ]
+#         )
+#     ],
+# )
+#
 
 # === PAGE 4 ===
 
@@ -181,50 +181,50 @@ _TRIGGER:
 {json.dumps(_trigger, indent=4)}
 ```"""
 
-
-page_4 = vm.Page(
-    title="[multiple outputs] Graph mappings with default _trigger",
-    components=[
-        vm.Graph(
-            id="p4_graph_1",
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            actions=[
-                vm.Action(
-                    function=custom_action_with_trigger_and_multiple_inputs(
-                        "p4_graph_1.click",
-                        "p4_graph_1.select",
-                        "p4_graph_1.hover",
-                        "p4_graph_1.zoom",
-                    ),
-                    outputs="p4_text_1"
-                ),
-            ],
-        ),
-        TitledText(id='p4_text_1', title="click, select, hover, zoom, _trigger", text="""No cross-filter applied"""),
-    ],
-)
-
-
-# === PAGE 5 ===
-page_5 = vm.Page(
-    title="[multiple outputs] AgGrid mappings with default _trigger",
-    components=[
-        vm.AgGrid(
-            id="p5_ag_grid_1",
-            figure=dash_ag_grid(df),
-            actions=[
-                vm.Action(
-                    function=custom_action_with_trigger_and_multiple_inputs(
-                        "p5_ag_grid_1.click",
-                        "p5_ag_grid_1.select",
-                    ),
-                    outputs="p5_text_1"
-                ),
-            ],
-        ),
-        TitledText(id='p5_text_1', title="click, select, _trigger", text="""No cross-filter applied"""),
-    ],
-)
+#
+# page_4 = vm.Page(
+#     title="[multiple outputs] Graph mappings with default _trigger",
+#     components=[
+#         vm.Graph(
+#             id="p4_graph_1",
+#             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+#             actions=[
+#                 vm.Action(
+#                     function=custom_action_with_trigger_and_multiple_inputs(
+#                         "p4_graph_1.click",
+#                         "p4_graph_1.select",
+#                         "p4_graph_1.hover",
+#                         "p4_graph_1.zoom",
+#                     ),
+#                     outputs="p4_text_1"
+#                 ),
+#             ],
+#         ),
+#         TitledText(id='p4_text_1', title="click, select, hover, zoom, _trigger", text="""No cross-filter applied"""),
+#     ],
+# )
+#
+#
+# # === PAGE 5 ===
+# page_5 = vm.Page(
+#     title="[multiple outputs] AgGrid mappings with default _trigger",
+#     components=[
+#         vm.AgGrid(
+#             id="p5_ag_grid_1",
+#             figure=dash_ag_grid(df),
+#             actions=[
+#                 vm.Action(
+#                     function=custom_action_with_trigger_and_multiple_inputs(
+#                         "p5_ag_grid_1.click",
+#                         "p5_ag_grid_1.select",
+#                     ),
+#                     outputs="p5_text_1"
+#                 ),
+#             ],
+#         ),
+#         TitledText(id='p5_text_1', title="click, select, _trigger", text="""No cross-filter applied"""),
+#     ],
+# )
 
 
 # === PAGE 6 ===
@@ -244,21 +244,25 @@ page_6 = vm.Page(
         vm.Graph(
             id="p6_graph_2",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+            action_trigger="click",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p6_text_2")
         ),
         vm.Graph(
             id="p6_graph_3",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+            action_trigger="select",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p6_text_3")
         ),
         vm.Graph(
             id="p6_graph_4",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+            action_trigger="hover",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p6_text_4")
         ),
         vm.Graph(
             id="p6_graph_5",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+            action_trigger="zoom",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p6_text_5")
         ),
         vm.Container(
@@ -276,41 +280,45 @@ page_6 = vm.Page(
 )
 
 # # === Page 7 ===
-page_7 = vm.Page(
-    title="Different AgGrid triggers",
-    layout=vm.Grid(grid=[
-        [0, 1, 2],
-        [3, 3, 3],
-    ]),
-    components=[
-        vm.AgGrid(
-            id="p7_ag_grid_1",
-            figure=dash_ag_grid(df),
-            actions=vm.Action(function=custom_action_with_trigger(), outputs="p7_text_1")
-        ),
-        vm.AgGrid(
-            id="p7_ag_grid_2",
-            figure=dash_ag_grid(df),
-            actions=vm.Action(function=custom_action_with_trigger(), outputs="p7_text_2")
-        ),
-        vm.AgGrid(
-            id="p7_ag_grid_3",
-            figure=dash_ag_grid(df),
-            actions=vm.Action(function=custom_action_with_trigger(), outputs="p7_text_3")
-        ),
-        vm.Container(
-            variant="outlined",
-            layout=vm.Flex(direction="row", gap="16px"),
-            components=[
-                TitledText(id='p7_text_1', title="_trigger", text="""No cross-filter applied"""),
-                TitledText(id='p7_text_2', title="click", text="""No cross-filter applied"""),
-                TitledText(id='p7_text_3', title="select", text="""No cross-filter applied"""),
-            ]
-        )
-    ]
-)
+# page_7 = vm.Page(
+#     title="Different AgGrid triggers",
+#     layout=vm.Grid(grid=[
+#         [0, 1, 2],
+#         [3, 3, 3],
+#     ]),
+#     components=[
+#         vm.AgGrid(
+#             id="p7_ag_grid_1",
+#             figure=dash_ag_grid(df),
+#             actions=vm.Action(function=custom_action_with_trigger(), outputs="p7_text_1")
+#         ),
+#         vm.AgGrid(
+#             id="p7_ag_grid_2",
+#             figure=dash_ag_grid(df),
+#             actions=vm.Action(function=custom_action_with_trigger(), outputs="p7_text_2")
+#         ),
+#         vm.AgGrid(
+#             id="p7_ag_grid_3",
+#             figure=dash_ag_grid(df),
+#             actions=vm.Action(function=custom_action_with_trigger(), outputs="p7_text_3")
+#         ),
+#         vm.Container(
+#             variant="outlined",
+#             layout=vm.Flex(direction="row", gap="16px"),
+#             components=[
+#                 TitledText(id='p7_text_1', title="_trigger", text="""No cross-filter applied"""),
+#                 TitledText(id='p7_text_2', title="click", text="""No cross-filter applied"""),
+#                 TitledText(id='p7_text_3', title="select", text="""No cross-filter applied"""),
+#             ]
+#         )
+#     ]
+# )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7])
+dashboard = vm.Dashboard(pages=[
+    # page_1, page_2, page_3, page_4, page_5,
+    page_6,
+    # page_7,
+])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

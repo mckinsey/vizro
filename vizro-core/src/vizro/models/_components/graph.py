@@ -88,6 +88,17 @@ class Graph(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
+    action_trigger: Annotated[
+        Literal["click", "select", "hover", "zoom"],
+        Field(
+            default="click",
+            description="""The user interaction that triggers the actions. Defaults to `"click"`.
+        - `"click"`: Trigger actions when a data point is clicked.
+        - `"select"`: Trigger actions when a selection is made (e.g., box or lasso select).
+        - `"hover"`: Trigger actions when hovering over a data point.
+        - `"zoom"`: Trigger actions when zooming or panning the graph.""",
+        ),
+    ]
     actions: ActionsType = []
     extra: SkipJsonSchema[
         Annotated[
