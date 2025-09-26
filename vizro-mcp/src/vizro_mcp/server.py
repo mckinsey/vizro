@@ -22,6 +22,7 @@ from vizro_mcp._utils import (
     CHART_INSTRUCTIONS,
     GAPMINDER,
     IRIS,
+    LAYOUT_INSTRUCTIONS,
     STOCKS,
     TIPS,
     DFInfo,
@@ -114,6 +115,13 @@ def get_model_json_schema(
     Returns:
         JSON schema of the requested Vizro model
     """
+    if not hasattr(vm, model_name):
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema={},
+            additional_info=f"Model '{model_name}' not found in vizro.models",
+        )
+
     modified_models = {
         "Graph": GraphEnhanced,
         "AgGrid": AgGridEnhanced,
@@ -129,14 +137,14 @@ def get_model_json_schema(
 that model if necessary. Do NOT forget to call `validate_dashboard_config` after each iteration.""",
         )
 
-    if not hasattr(vm, model_name):
+    model_class = getattr(vm, model_name)
+    if model_name in {"Grid", "Flex"}:
         return ModelJsonSchemaResults(
             model_name=model_name,
-            json_schema={},
-            additional_info=f"Model '{model_name}' not found in vizro.models",
+            json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
+            additional_info=LAYOUT_INSTRUCTIONS,
         )
 
-    model_class = getattr(vm, model_name)
     return ModelJsonSchemaResults(
         model_name=model_name,
         json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
