@@ -60,24 +60,34 @@ set_control_graph_interactions_page = vm.Page(
 set_control_ag_grid_interactions_page = vm.Page(
     title=cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_PAGE,
     components=[
-        vm.AgGrid(
-            id=cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_ID,
-            title="Table Country",
-            figure=dash_ag_grid(
-                id="set_control_ag_grid_table_country",
-                data_frame=gapminder,
-            ),
-            actions=[set_control(control="filter_continent", value="continent")],
+        vm.Container(
+            components=[
+                vm.AgGrid(
+                    id=cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_ID,
+                    title="Table Country",
+                    figure=dash_ag_grid(
+                        id="set_control_ag_grid_table_country",
+                        data_frame=gapminder,
+                    ),
+                    actions=[set_control(control="filter_continent", value="continent")],
+                ),
+            ],
+            variant="filled",
         ),
-        vm.Graph(
-            id=cnst.SET_CONTROL_LINE_AG_GRID_INTERACTIONS_ID,
-            figure=px.line(
-                gapminder,
-                title="Line Country",
-                x="year",
-                y="gdpPercap",
-                markers=True,
-            ),
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id=cnst.SET_CONTROL_LINE_AG_GRID_INTERACTIONS_ID,
+                    figure=px.line(
+                        gapminder,
+                        title="Line Country",
+                        x="year",
+                        y="gdpPercap",
+                        markers=True,
+                    ),
+                ),
+            ],
+            variant="filled",
         ),
     ],
     controls=[
