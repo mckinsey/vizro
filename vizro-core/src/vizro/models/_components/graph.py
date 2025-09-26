@@ -134,6 +134,7 @@ class Graph(VizroBaseModel):
 
     # TODO Q AM: As keys are the same, should we move this into _action_triggers and reformat its dictionary value to
     #  or tuple or nested dict? Should we align keys for all _action_* properties?
+    # TODO PP NOW: Rename as it's applied on any input and not only on action triggers.
     @property
     def _action_trigger_extractions(self):
         return {

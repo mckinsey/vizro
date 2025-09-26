@@ -78,6 +78,15 @@ class AgGrid(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
+    action_trigger: Annotated[
+        Literal["click", "select"],
+        Field(
+            default="click",
+            description="""The user interaction that triggers the actions. Defaults to `"click"`.
+        - `click`: Trigger actions when a single row is clicked/selected.
+        - `select`: Trigger actions when a single or multiple rows are selected."""
+        ),
+    ]
     actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
@@ -92,7 +101,11 @@ class AgGrid(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self._inner_component_id}.selectedRows"}
+        return {
+            "__default__": f"{self._inner_component_id}.selectedRows",
+            "click": f"{self._inner_component_id}.selectedRows",
+            "select": f"{self._inner_component_id}.selectedRows",
+        }
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -109,8 +122,19 @@ class AgGrid(VizroBaseModel):
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {
+            "__default__": f"{self._inner_component_id}.selectedRows",
             "click": f"{self._inner_component_id}.selectedRows",
+            "select": f"{self._inner_component_id}.selectedRows",
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
+
+    # TODO PP NOW: Rename as it's applied on any input and not only on action triggers.
+    @property
+    def _action_trigger_extractions(self):
+        return {
+            "__default__": lambda x: x[0],
+            "click": lambda x: x[0],
+            "select": lambda x: x,
         }
 
     def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
@@ -121,7 +145,7 @@ class AgGrid(VizroBaseModel):
             return []
 
         try:
-            return trigger[0][value]
+            return trigger[value]
         except KeyError:
             raise ValueError(
                 f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "

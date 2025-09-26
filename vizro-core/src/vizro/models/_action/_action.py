@@ -6,6 +6,7 @@ import re
 import time
 import warnings
 from collections.abc import Collection, Iterable, Mapping
+from contextlib import suppress
 from copy import deepcopy
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
@@ -422,6 +423,13 @@ class _BaseAction(VizroBaseModel):
                 if isinstance(ctx_node, dict):
                     if "id" in ctx_node and "property" in ctx_node:
                         obj_id = ctx_node["id"]
+
+                        # TODO COMMENT: The problem here is that the obj_id might be underlying ID (e.g. inner AgGrid).
+                        if obj_id not in model_manager:
+                            from vizro.actions._actions_utils import _get_triggered_model
+                            with suppress(KeyError):
+                                obj_id = _get_triggered_model(obj_id).id
+
                         prop = ctx_node["property"]
                         try:
                             # TODO COMMENT: prop here is "clickData". original_prop is "click".
