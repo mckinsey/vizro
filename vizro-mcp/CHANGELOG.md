@@ -10,7 +10,7 @@
 
 - Updated Layout prompting for better Layout performance of the MCP server. ([#1405](https://github.com/mckinsey/vizro/pull/1405))
 
-- Update Vizro version to >=0.1.46. ([#1423](https://github.com/mckinsey/vizro/pull/1423))
+- Updated Vizro version to >=0.1.46. ([#1423](https://github.com/mckinsey/vizro/pull/1423))
 
 ## Fixed
 
