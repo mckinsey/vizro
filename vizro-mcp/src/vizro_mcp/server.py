@@ -137,7 +137,7 @@ def get_model_json_schema(
 that model if necessary. Do NOT forget to call `validate_dashboard_config` after each iteration.""",
         )
     deprecated_models = {"filter_interaction": "set_control", "Layout": "Grid"}
-    if model_name in deprecated_models.keys():
+    if model_name in deprecated_models:
         return ModelJsonSchemaResults(
             model_name=model_name,
             json_schema={},
