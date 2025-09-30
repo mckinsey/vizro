@@ -115,7 +115,6 @@ class set_control(_AbstractAction):
                 f"(e.g. Filter, Parameter)."
             )
 
-        a = 4
         # Determine whether the control selector is single, multi or range.
         if (
             isinstance(control_model.selector, (vm.RadioItems, vm.Slider, vm.Switch))
@@ -148,17 +147,12 @@ class set_control(_AbstractAction):
             )
 
         if self._control_selector_type == "range" and self._first_in_chain_input_trigger_property == "click":
-            raise TypeError(
-                f"Model with ID `{self.control}` used as a `control` in `set_control` action has a range select "
-                f"selector type (e.g. RangeSlider or DatePicker with `range=True`) "
-                f"and so cannot be set by a trigger with actions_trigger='click'`. "
-                f"Use another control type or use `actions_trigger='select'` instead."
-            )
-
-        if self._control_selector_type == "multi" and self._first_in_chain_input_trigger_property == "click":
-            # TODO PP NOW: Raise a warning only.
+            # TODO PP NOW: Raise a warning maybe.
             pass
 
+        if self._control_selector_type == "multi" and self._first_in_chain_input_trigger_property == "click":
+            # TODO PP NOW: Raise a warning maybe.
+            pass
 
         if control_model_page == model_manager._get_model_page(self):
             self._same_page = True
@@ -192,10 +186,6 @@ class set_control(_AbstractAction):
         return ["vizro_url.pathname", "vizro_url.search"]
 
     def _adjust_result_by_control_type(self, value):
-        # TODO PP NOW: Do this in pre_build. While validating actions_trigger vs action.control,
-        #  remember whether the control is single, multi or range. Validate that "click" goes with single/multi,
-        #  and "select" with multi/range.
-
         # TODO PP NOW: Validation/adjustment scheme:
         #  single = RadioItems, Dropdown(multi=False), Slider, DatePicker(range=False), Switch
         #  multi = Checklist, Dropdown(multi=True)
@@ -204,7 +194,8 @@ class set_control(_AbstractAction):
         #  2. select + single control -> ERROR
         #  3. click + multi control -> OK(warn) -> value if isinstance(value, list) else [value]  # try with get_options here as well
         #  4. select + multi control -> OK -> Filter._get_options(value)  # to get unique values
-        #  5. click + range control -> ERROR
+        #  5. click + range control -> OK - questionable, buy I'm ok with that.
+        #    It would mean that default actions-trigger can deal with any target. And, there's other triggers that work "better".
         #  6. select + range control -> OK -> Filter._get_min_max(value)  # to get min/max only
 
         if self._control_selector_type == "single":
