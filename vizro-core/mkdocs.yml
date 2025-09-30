@@ -1,6 +1,7 @@
 site_name: Vizro
 site_url: https://vizro.readthedocs.io/en/stable/
 nav:
+  # Make sure any new page added here is also added to the llmstxt plugin below (around line 156)
   - Vizro: index.md
   - Tutorials:
       - Quickstart tutorial: pages/tutorials/quickstart-tutorial.md
@@ -186,6 +187,8 @@ plugins:
           - pages/user-guides/custom-css.md: "Custom CSS"
         "ACTIONS":
           - pages/user-guides/actions.md: "Actions"
+          - pages/user-guides/data-actions.md: "Handle data"
+          - pages/user-guides/graph-table-actions.md: "Graph and table interactions"
         "MANAGE DATA USED BY THE DASHBOARD":
           - pages/user-guides/data.md: "Data"
           - pages/user-guides/kedro-data-catalog.md: "Kedro Data Catalog"
