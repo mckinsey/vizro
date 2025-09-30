@@ -1,4 +1,20 @@
-<a id='changelog-0.1.2'></a>
+<a id='changelog-0.1.3'></a>
+
+# 0.1.3 — 2025-09-29
+
+## Added
+
+- Added ability to use KPI cards in `Figure`. ([#1392](https://github.com/mckinsey/vizro/pull/1392))
+
+## Changed
+
+- Updated Layout prompting for better Layout performance of the MCP server. ([#1405](https://github.com/mckinsey/vizro/pull/1405))
+
+- Updated Vizro version to >=0.1.46. ([#1423](https://github.com/mckinsey/vizro/pull/1423))
+
+## Fixed
+
+- Added tool parameter descriptions to Field definition instead of docstring so that they display properly in hosts like Cursor. ([#1374](https://github.com/mckinsey/vizro/pull/1374)) <a id='changelog-0.1.2'></a>
 
 # 0.1.2 — 2025-06-30
 

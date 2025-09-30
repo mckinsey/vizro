@@ -4,6 +4,7 @@
 from typing import Literal, Optional, Protocol
 
 import vizro
+import vizro.actions as va
 import vizro.figures as vf
 import vizro.models as vm
 
@@ -88,6 +89,10 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
     "additional_info": [vm.Tooltip],
+    "actions available for the actions argument of a model": [
+        va.export_data,
+        va.set_control,
+    ],
     "functions available for vm.Figure(...,figure=...) model": [vf.__dict__[func] for func in vf.__all__],
 }
 

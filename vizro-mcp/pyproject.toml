@@ -16,7 +16,7 @@ classifiers = [
 dependencies = [
   "httpx>=0.28.1",
   "mcp[cli]>=1.6.0",
-  "vizro>=0.1.45",
+  "vizro>=0.1.46",
   "click>=8.1.7",
   "pandas[html,parquet,excel]"
 ]

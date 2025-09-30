@@ -136,6 +136,13 @@ def get_model_json_schema(
             additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
 that model if necessary. Do NOT forget to call `validate_dashboard_config` after each iteration.""",
         )
+    deprecated_models = {"filter_interaction": "set_control", "Layout": "Grid"}
+    if model_name in deprecated_models:
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema={},
+            additional_info=f"Model '{model_name}' is deprecated. Use {deprecated_models[model_name]} instead.",
+        )
 
     model_class = getattr(vm, model_name)
     if model_name in {"Grid", "Flex"}:
