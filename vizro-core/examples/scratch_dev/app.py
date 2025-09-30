@@ -15,19 +15,15 @@ page_show_controls = vm.Page(
         vm.Container(
             components=[
                 vm.Graph(
-                    id="graph_1",
-                    figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
+                    id="graph_1", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
                 )
             ],
             controls=[
                 vm.Filter(
                     column="species",
-                    selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"])
+                    selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
                 ),
-                vm.Filter(
-                    column="species",
-                    selector=vm.Checklist(title="Dynamic Filter")
-                ),
+                vm.Filter(column="species", selector=vm.Checklist(title="Dynamic Filter")),
                 vm.Parameter(
                     targets=["graph_1.x"],
                     selector=vm.RadioItems(
@@ -35,19 +31,16 @@ page_show_controls = vm.Page(
                         options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
                         value="sepal_width",
                     ),
-                )
+                ),
             ],
         )
     ],
     controls=[
         vm.Filter(
             column="species",
-            selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"])
+            selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
         ),
-        vm.Filter(
-            column="species",
-            selector=vm.Checklist(title="Dynamic Filter")
-        ),
+        vm.Filter(column="species", selector=vm.Checklist(title="Dynamic Filter")),
         vm.Parameter(
             targets=["graph_1.y"],
             selector=vm.RadioItems(
@@ -55,18 +48,17 @@ page_show_controls = vm.Page(
                 options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
                 value="sepal_length",
             ),
-        )
+        ),
     ],
 )
 
-page_no_controls =  vm.Page(
+page_no_controls = vm.Page(
     title="No controls",
     components=[
         vm.Container(
             components=[
                 vm.Graph(
-                    id="graph_2",
-                    figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
+                    id="graph_2", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
                 )
             ],
         )
@@ -79,8 +71,7 @@ page_hidden_controls = vm.Page(
         vm.Container(
             components=[
                 vm.Graph(
-                    id="graph_3",
-                    figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
+                    id="graph_3", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
                 )
             ],
             controls=[
@@ -102,7 +93,7 @@ page_hidden_controls = vm.Page(
                         value="sepal_width",
                     ),
                     hidden=True,
-                )
+                ),
             ],
         )
     ],
@@ -125,7 +116,7 @@ page_hidden_controls = vm.Page(
                 value="sepal_length",
             ),
             hidden=True,
-        )
+        ),
     ],
 )
 
@@ -133,4 +124,3 @@ dashboard = vm.Dashboard(pages=[page_show_controls, page_no_controls, page_hidde
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
-
