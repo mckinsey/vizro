@@ -9,7 +9,7 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
+from dash import ClientsideFunction, Input, Output, Patch, State, callback, clientside_callback, dcc, html, no_update
 from dash.development.base_component import Component
 from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -384,6 +384,8 @@ class _BaseAction(VizroBaseModel):
                 "action_progress_indicator": Output(
                     "action-progress-indicator-placeholder", "children", allow_duplicate=True
                 ),
+                "action_log": Output("vizro_logs", "children", allow_duplicate=True),
+                # Need allow_optional for Output - make Dash ticket.
             },
         }
 
@@ -407,10 +409,17 @@ class _BaseAction(VizroBaseModel):
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             external_return = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
+            # logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
+            # if logger.isEnabledFor(logging.DEBUG):
+            #     logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
+            #     logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
+            action_log = Patch()
+            action_log.append(html.Pre(f"===== Running action with id {self.id}, function {self._action_name} ====="))
             return_value = {
                 "internal": {
                     "action_finished": time.time(),
                     "action_progress_indicator": no_update,
+                    "action_log": action_log,
                 }
             }
             if "external" in callback_outputs:
