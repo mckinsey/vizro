@@ -279,7 +279,7 @@ class TestParameterBuild:
         page.controls = [parameter]
         parameter.pre_build()
         result = parameter.build()
-        expected = html.Div(id="parameter-id", children=html.Div(children=[test_input.build()]))
+        expected = html.Div(id="parameter-id", children=html.Div(children=[test_input.build()]), hidden=False)
 
         assert_component_equal(result, expected)
 
@@ -303,6 +303,7 @@ class TestParameterBuild:
             children=html.Div(
                 children=[test_input.build(), dcc.Store(id=f"{parameter.selector.id}_guard_actions_chain", data=False)]
             ),
+            hidden=False,
         )
 
         assert_component_equal(result, expected)

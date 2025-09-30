@@ -1049,7 +1049,7 @@ class TestFilterBuild:
 
         filter.pre_build()
         result = filter.build()
-        expected = html.Div(id="filter-id", children=html.Div(children=[test_selector.build()]))
+        expected = html.Div(id="filter-id", children=html.Div(children=[test_selector.build()]), hidden=False)
 
         assert_component_equal(result, expected)
 
@@ -1109,8 +1109,9 @@ class TestFilterBuild:
         expected = html.Div(
             id="filter-id",
             children=html.Div(
-                children=[test_selector.build(), dcc.Store(id=f"{filter.selector.id}_guard_actions_chain", data=False)]
+                children=[test_selector.build(), dcc.Store(id=f"{filter.selector.id}_guard_actions_chain", data=False)],
             ),
+            hidden=False,
         )
 
         assert_component_equal(result, expected)
