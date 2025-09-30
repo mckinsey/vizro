@@ -1107,7 +1107,7 @@ class TestFilterBuild:
         result = filter.build()
         expected_selector = filter.selector.build()
         expected_selector[filter.selector.id].className = "invisible"
-        
+
         expected = dcc.Loading(
             id="filter_id",
             children=html.Div(children=[expected_selector]),
