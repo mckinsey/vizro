@@ -330,7 +330,6 @@ class Filter(VizroBaseModel):
             children=selector_build_obj,
             color="grey",
             overlay_style={"visibility": "visible"},
-            hidden=self.hidden,
         )
 
     def _validate_targeted_data(
