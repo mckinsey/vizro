@@ -1092,9 +1092,31 @@ class TestFilterBuild:
             children=html.Div(children=[test_selector.build()]),
             color="grey",
             overlay_style={"visibility": "visible"},
+            className="",
         )
 
-        assert_component_equal(result, expected, keys_to_strip={"className"})
+        assert_component_equal(result, expected)
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
+    @pytest.mark.parametrize("hidden", [True, False])
+    def test_dynamic_filter_build_hidden(self, gapminder_dynamic_first_n_last_n_function, hidden):
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+        filter = vm.Filter(id="filter_id", column="continent", selector=vm.Checklist(), hidden=hidden)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        result = filter.build()
+        expected_selector = filter.selector.build()
+        expected_selector[filter.selector.id].className = "invisible"
+        
+        expected = dcc.Loading(
+            id="filter_id",
+            children=html.Div(children=[expected_selector]),
+            color="grey",
+            overlay_style={"visibility": "visible"},
+            className="d-none" if hidden else "",
+        )
+
+        assert_component_equal(result, expected)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize(
