@@ -1053,6 +1053,18 @@ class TestFilterBuild:
 
         assert_component_equal(result, expected)
 
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize("hidden", [True, False])
+    def test_filter_build_hidden(self, hidden):
+        filter = vm.Filter(id="filter-id", column="continent", selector=vm.Checklist(), hidden=hidden)
+        model_manager["test_page"].controls = [filter]
+
+        filter.pre_build()
+        result = filter.build()
+        expected = html.Div(id="filter-id", children=html.Div(children=[vm.Checklist().build()]), hidden=hidden)
+
+        assert_component_equal(result, expected)
+
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
         "test_column, test_selector",
