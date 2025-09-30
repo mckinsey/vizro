@@ -326,12 +326,13 @@ class Filter(VizroBaseModel):
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
         #  Also, make selector.title visible when the filter is reloading.
         return dcc.Loading(
-            id=self.id,
-            children=selector_build_obj,
-            color="grey",
-            overlay_style={"visibility": "visible"},
-        )
-
+                id=self.id,
+                children=selector_build_obj,
+                color="grey",
+                overlay_style={"visibility": "visible"},
+                className="d-none" if self.hidden else "",
+            )
+            
     def _validate_targeted_data(
         self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error
     ) -> pd.DataFrame:

@@ -120,7 +120,10 @@ page_hidden_controls = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_show_controls, page_no_controls, page_hidden_controls])
+dashboard = vm.Dashboard(
+    pages=[page_show_controls, page_no_controls, page_hidden_controls],
+    navigation=vm.Navigation(nav_selector=vm.NavBar()),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

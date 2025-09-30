@@ -11,6 +11,7 @@ from pydantic_core.core_schema import ValidationInfo
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
+    _all_hidden,
     _build_inner_layout,
     _log_call,
     check_captured_callable_model,
@@ -216,8 +217,10 @@ class Container(VizroBaseModel):
         )
 
     def _build_control_panel(self):
+        controls_content = [control.build() for control in self.controls]
         return html.Div(
             id=f"{self.id}-control-panel",
-            children=[control.build() for control in self.controls],
+            children=controls_content,
             className="container-controls-panel",
+            hidden=_all_hidden(controls_content),
         )
