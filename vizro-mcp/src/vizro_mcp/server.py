@@ -22,6 +22,7 @@ from vizro_mcp._utils import (
     CHART_INSTRUCTIONS,
     GAPMINDER,
     IRIS,
+    LAYOUT_INSTRUCTIONS,
     STOCKS,
     TIPS,
     DFInfo,
@@ -114,6 +115,13 @@ def get_model_json_schema(
     Returns:
         JSON schema of the requested Vizro model
     """
+    if not hasattr(vm, model_name):
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema={},
+            additional_info=f"Model '{model_name}' not found in vizro.models",
+        )
+
     modified_models = {
         "Graph": GraphEnhanced,
         "AgGrid": AgGridEnhanced,
@@ -128,15 +136,22 @@ def get_model_json_schema(
             additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
 that model if necessary. Do NOT forget to call `validate_dashboard_config` after each iteration.""",
         )
-
-    if not hasattr(vm, model_name):
+    deprecated_models = {"filter_interaction": "set_control", "Layout": "Grid"}
+    if model_name in deprecated_models:
         return ModelJsonSchemaResults(
             model_name=model_name,
             json_schema={},
-            additional_info=f"Model '{model_name}' not found in vizro.models",
+            additional_info=f"Model '{model_name}' is deprecated. Use {deprecated_models[model_name]} instead.",
         )
 
     model_class = getattr(vm, model_name)
+    if model_name in {"Grid", "Flex"}:
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
+            additional_info=LAYOUT_INSTRUCTIONS,
+        )
+
     return ModelJsonSchemaResults(
         model_name=model_name,
         json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
