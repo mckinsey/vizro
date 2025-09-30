@@ -64,6 +64,7 @@ class Parameter(VizroBaseModel):
             `"NONE"` into `None` to allow optional parameters.
         show_in_url (bool): Whether the parameter should be included in the URL query string. Defaults to `False`.
             Useful for bookmarking or sharing dashboards with specific parameter values pre-set.
+        hidden (bool): Whether the parameter should be hidden. Defaults to `False`.
 
     """
 
@@ -86,6 +87,10 @@ class Parameter(VizroBaseModel):
             "Whether the parameter should be included in the URL query string. Defaults to `False`. "
             "Useful for bookmarking or sharing dashboards with specific parameter values pre-set."
         ),
+    )
+    hidden: bool = Field(
+        default=False,
+        description="Whether the parameter should be hidden. Defaults to `False`.",
     )
 
     _selector_properties: set[str] = PrivateAttr(set())
@@ -149,7 +154,7 @@ class Parameter(VizroBaseModel):
             # callback update it to True when needed. It'll happen when the parameter value comes from the URL.
             selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
 
-        return html.Div(id=self.id, children=selector_build_obj)
+        return html.Div(id=self.id, children=selector_build_obj, hidden=self.hidden)
 
     def _check_numerical_and_temporal_selectors_values(self):
         if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):
