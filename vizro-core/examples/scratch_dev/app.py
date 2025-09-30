@@ -1,91 +1,126 @@
-############ Imports ##############
-import vizro.plotly.express as px
+"""Dev app to try things out."""
+
+import pandas as pd
 import vizro.models as vm
-import vizro.actions as va
-from vizro.models.types import capture
+import vizro.plotly.express as px
 from vizro import Vizro
-
-SELECTED_COUNTRIES = [
-    "Singapore",
-    "Malaysia",
-    "Thailand",
-    "Indonesia",
-    "Philippines",
-    "Vietnam",
-    "Cambodia",
-    "Myanmar",
-    "NONE",
-]
-
-gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
+from vizro.managers import data_manager
 
 
-@capture("graph")
-def bump_chart(data_frame, highlight_country=None):
-    data_with_rank = data_frame.copy()
-    data_with_rank["rank"] = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
+data_manager["dynamic_df"] = lambda: px.data.iris()
 
-    fig = px.line(
-        data_with_rank,
-        x="year",
-        y="rank",
-        color="country",
-        markers=True,
-    )
-
-    fig.update_layout(
-        legend_title="",
-        xaxis_title="",
-        yaxis=dict(autorange="reversed"),
-        yaxis_title="Rank (1 = Highest lifeExp)",
-    )
-
-    if highlight_country:
-        for trace in fig.data:
-            if trace.name == highlight_country:
-                trace.opacity = 1.0
-                trace.line.width = 3
-            else:
-                trace.opacity = 0.3
-                trace.line.width = 2
-
-    return fig
-
-
-@capture("graph")
-def bar_chart(data_frame):
-    fig = px.bar(
-        data_frame[data_frame["year"] == 2007],
-        y="country",
-        x="lifeExp",
-    )
-    fig.update_layout(yaxis_title="", xaxis_title="lifeExp (2007)")
-    return fig
-
-
-page = vm.Page(
-    title="Cross-highlighting example",
+page_show_controls = vm.Page(
+    title="Controls shown",
     components=[
-        vm.Graph(
-            figure=bar_chart(data_frame=gapminder),
-            header="💡 Click on any bar to highlight that country's trace in the bump chart",
-            actions=[va.set_control(control="highlight_country_parameter", value="y")],
-        ),
-        vm.Graph(id="bump_chart", figure=bump_chart(data_frame=gapminder)),
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="graph_1", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
+                )
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
+                ),
+                vm.Filter(column="species", selector=vm.Checklist(title="Dynamic Filter")),
+                vm.Parameter(
+                    targets=["graph_1.x"],
+                    selector=vm.RadioItems(
+                        title="x-axis Parameter",
+                        options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
+                        value="sepal_width",
+                    ),
+                ),
+            ],
+        )
     ],
     controls=[
-        #     vm.Filter(column="year"),
+        vm.Filter(
+            column="species",
+            selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
+        ),
+        vm.Filter(column="species", selector=vm.Checklist(title="Dynamic Filter")),
         vm.Parameter(
-            id="highlight_country_parameter",
-            targets=["bump_chart.highlight_country"],
-            selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),
+            targets=["graph_1.y"],
+            selector=vm.RadioItems(
+                title="y-axis Parameter",
+                options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
+                value="sepal_length",
+            ),
+        ),
+    ],
+)
+
+page_no_controls = vm.Page(
+    title="No controls",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="graph_2", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
+                )
+            ],
+        )
+    ],
+)
+
+page_hidden_controls = vm.Page(
+    title="Controls hidden",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="graph_3", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
+                )
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
+                    hidden=True,
+                ),
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(title="Dynamic Filter"),
+                    hidden=True,
+                ),
+                vm.Parameter(
+                    targets=["graph_3.x"],
+                    selector=vm.RadioItems(
+                        title="x-axis Parameter",
+                        options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
+                        value="sepal_width",
+                    ),
+                    hidden=True,
+                ),
+            ],
+        )
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
+            hidden=True,
+        ),
+        vm.Filter(
+            column="species",
+            selector=vm.Checklist(title="Dynamic Filter"),
+            hidden=True,
+        ),
+        vm.Parameter(
+            targets=["graph_3.y"],
+            selector=vm.RadioItems(
+                title="y-axis Parameter",
+                options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
+                value="sepal_length",
+            ),
             hidden=True,
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
-
+dashboard = vm.Dashboard(pages=[page_show_controls, page_no_controls, page_hidden_controls])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
