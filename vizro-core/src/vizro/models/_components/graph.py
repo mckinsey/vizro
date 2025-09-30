@@ -88,7 +88,9 @@ class Graph(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    action_trigger: Annotated[
+    # TODO Q AM: Maybe we can keep it but as a private field and set it internally if target is multi/range selector.
+    #  One consequence is that users won't intuitively see that they should select graph points.
+    actions_trigger: Annotated[
         Literal["click", "select", "hover", "zoom"],
         Field(
             default="click",
@@ -142,6 +144,7 @@ class Graph(VizroBaseModel):
             "click": lambda x: x["points"][0],
             "hover": lambda x: x["points"][0],
             "select": lambda x: x["points"],
+            # "petar_select": lambda x: [x["points"]]
             "zoom": lambda x: x,
         }
 
@@ -177,28 +180,32 @@ class Graph(VizroBaseModel):
         # OLD:
         # trigger_box = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
 
-        # NEW:
-        trigger_box = Box(trigger, camel_killer_box=True, box_dots=True)
-
-        try:
-            # First try to treat value as a column name. Unfortunately the customdata returned in the trigger does
-            # not contain column names (it's just a list) so we must look it up in the called function's `custom_data`
-            # to find its numerical index in this list. This only works if a custom_data was provided in the graph
-            # function call.
-            index = self["custom_data"].index(value)
-            return trigger_box["customdata"][index]
-        except (KeyError, ValueError):
+        def _get_value_from_point(point: dict[str, Any]) -> JsonValue:
+            point_box = Box(point, camel_killer_box=True, box_dots=True)
             try:
-                # Treat the value as a box lookup string, as in
-                # https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots. This works for e.g. value="x" and
-                # value="customdata[0]".
-                return trigger_box[value]
-            except (KeyError, TypeError):
-                raise ValueError(
-                    f"Couldn't find value `{value}` in trigger for `set_control` action. "
-                    f"This action was added to the Graph model with ID `{self.id}`. "
-                    "If you expected the value to come from custom data, add it in the figure's custom_data signature."
-                )
+                # First try to treat value as a column name. Unfortunately the customdata returned in the trigger does
+                # not contain column names (it's just a list) so we must look it up in the called function's
+                # `custom_data` to find its numerical index in this list. This only works if a custom_data was provided
+                # in the graph function call.
+                index = self["custom_data"].index(value)
+                return point_box["customdata"][index]
+            except (KeyError, ValueError):
+                try:
+                    # Treat the value as a box lookup string, as in
+                    # https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots. This works for e.g. value="x" and
+                    # value="customdata[0]".
+                    return point_box[value]
+                except (KeyError, TypeError):
+                    raise ValueError(
+                        f"Couldn't find value `{value}` in trigger for `set_control` action. "
+                        f"This action was added to the Graph model with ID `{self.id}`. "
+                        "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+                    )
+
+        if self.actions_trigger in ["click", "hover"]:
+            return _get_value_from_point(trigger)
+        elif self.actions_trigger == "select":
+            return [_get_value_from_point(point) for point in trigger]
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

@@ -142,7 +142,7 @@ def make_actions_chain(self):
     # TODO Comment: Expose setting arbitrary action trigger property for the first action in the chain.
     # TODO Q AM: Should we consider what happens when action is not first in action?
     # TODO NOW PP: Enhance naming
-    input_trigger_property = getattr(self, "action_trigger", "__default__")
+    input_trigger_property = getattr(self, "actions_trigger", "__default__")
     model_action_trigger = self._action_triggers[input_trigger_property]
 
     for i, action in enumerate(converted_actions):

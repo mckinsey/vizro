@@ -78,7 +78,7 @@ class AgGrid(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-    action_trigger: Annotated[
+    actions_trigger: Annotated[
         Literal["click", "select"],
         Field(
             default="click",
@@ -144,13 +144,19 @@ class AgGrid(VizroBaseModel):
         if not trigger:
             return []
 
-        try:
-            return trigger[value]
-        except KeyError:
-            raise ValueError(
-                f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
-                f"This action was added to the AgGrid model with ID `{self.id}`. "
-            )
+        def _get_value_from_point(point: dict[str, str]):
+            try:
+                return point[value]
+            except KeyError:
+                raise ValueError(
+                    f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
+                    f"This action was added to the AgGrid model with ID `{self.id}`. "
+                )
+
+        if self.actions_trigger == "click":
+            return _get_value_from_point(trigger)
+        elif self.actions_trigger == "select":
+            return [_get_value_from_point(point) for point in trigger]
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

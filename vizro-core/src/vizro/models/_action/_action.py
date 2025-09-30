@@ -434,14 +434,11 @@ class _BaseAction(VizroBaseModel):
                         try:
                             # TODO COMMENT: prop here is "clickData". original_prop is "click".
                             #  To apply the extraction function, we need to find out what is the original property used
-                            #  like "click". self._transformed_inputs are already
-                            #  transformed from "click" -> "clickData". So, we need to dig into self._runtime_args
-                            #  that's built form builtin_args + runtime_args.
-                            #  This solution is brittle as it relies on the fact that action inputs always have an
-                            #  argument name defined in self._runtime_args.
+                            #  like "click".
+                            #  The self._transformed_inputs are already transformed from "click" -> "clickData".
+                            #  So, we need to dig into self._runtime_args that's built form builtin_args + runtime_args.
                             #  Will it cause any other problems when we enable arbitrary number of inputs?
                             #  or in some other case??
-                            #  Remember that we should be able always to go with clientside conversion solution.
                             original_prop = (
                                 a._first_in_chain_input_trigger_property
                                 if key == "_trigger"

@@ -247,28 +247,28 @@ page_6 = vm.Page(
             id="p6_graph_2",
             title="click",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            action_trigger="click",
+            actions_trigger="click",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p6_text_2")
         ),
         vm.Graph(
             id="p6_graph_3",
             title="select",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            action_trigger="select",
+            actions_trigger="select",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p6_text_3")
         ),
         vm.Graph(
             id="p6_graph_4",
             title="hover",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            action_trigger="hover",
+            actions_trigger="hover",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p6_text_4")
         ),
         vm.Graph(
             id="p6_graph_5",
             title="zoom",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            action_trigger="zoom",
+            actions_trigger="zoom",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p6_text_5")
         ),
         vm.Container(
@@ -304,14 +304,14 @@ page_7 = vm.Page(
             id="p7_ag_grid_2",
             title="click",
             figure=dash_ag_grid(df),
-            action_trigger="click",
+            actions_trigger="click",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p7_text_2")
         ),
         vm.AgGrid(
             id="p7_ag_grid_3",
             title="select",
             figure=dash_ag_grid(df, dashGridOptions={"rowSelection": {"mode": "multiRow"}}),
-            action_trigger="select",
+            actions_trigger="select",
             actions=vm.Action(function=custom_action_with_trigger(), outputs="p7_text_3")
         ),
         vm.Container(
@@ -328,58 +328,196 @@ page_7 = vm.Page(
 
 # === Page 8 ===
 
+
+# TODO Q AM: Let's think about should we make this clickmode the default for Graph or just explain how it can be used?
+@capture("graph")
+def clickmode_fig(data_frame, **kwargs):
+    fig = px.scatter(df, **kwargs)
+    fig.update_layout(clickmode="event+select")
+    return fig
+
+
+page_8_fig = px.scatter(
+    data_frame=df, x="sepal_width", y="sepal_length", color="species",
+    title="",
+    custom_data=["species", "sepal_length", "date_column", "is_setosa"],
+    hover_data=["species", "sepal_length", "date_column", "is_setosa"],
+)
+
+
 page_8 = vm.Page(
     title="Graph targets different selectors",
     components=[
-        vm.Graph(
-            id="p8_graph_1",
-            figure=px.scatter(
-                df, x="sepal_width", y="sepal_length", color="species",
-                custom_data=["species", "sepal_length", "date_column", "is_setosa"],
-            ),
-            actions=[
-                set_control(control="p8_filter_1", value="species"),
-                set_control(control="p8_filter_2", value="species"),
-                set_control(control="p8_filter_3", value="species"),
-                set_control(control="p8_filter_4", value="species"),
-                # TODO Q AM: Can we fetch the action.value from the vm.Filter.column?
-                #  This would make the action.value as optional argument for both Graph and AgGrid?
-                # set_control(control="p8_filter_5", value="sepal_length"),
-            ],
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Click set_control",
+                    components=[
+                        vm.Graph(
+                            figure=page_8_fig,
+                            title="Click on points to set the filters below",
+                            actions=[
+                                # TODO Q AM: Can we fetch the action.value from the vm.Filter.column?
+                                #  This would make the action.value as optional argument for both Graph and AgGrid?
+                                set_control(control="p8_filter_1", value="species"),  # ✅Works as expected
+                                set_control(control="p8_filter_2", value="species"),  # ✅Works as expected
+                                set_control(control="p8_filter_5", value="sepal_length"),  # ✅Works as expected
+                                set_control(control="p8_filter_7", value="date_column"),  # ✅Works as expected
+                                set_control(control="p8_filter_9", value="is_setosa"),  # ✅Works as expected
+                            ],
+                        ),
+                        vm.Container(
+                            components=[
+                                vm.Graph(figure=px.scatter(df, x="sepal_width", y="petal_length", color="species")),
+                            ],
+                            controls=[
+                                # Categorical Single
+                                vm.Filter(id="p8_filter_1", column="species", selector=vm.RadioItems()),
+                                vm.Filter(id="p8_filter_2", column="species", selector=vm.Dropdown(multi=False)),
+                                # Numeric Single
+                                vm.Filter(id="p8_filter_5", column="sepal_length", selector=vm.Slider()),
+                                # Temporal Single
+                                vm.Filter(id="p8_filter_7", column="date_column", selector=vm.DatePicker(range=False)),
+                                # Boolean Single
+                                vm.Filter(id="p8_filter_9", column="is_setosa", selector=vm.Switch()),
+                            ]
+                        ),
+                    ]
+                ),
+                vm.Container(
+                    title="Select set_control",
+                    components=[
+                        vm.Graph(
+                            figure=page_8_fig,
+                            title="Select graph points to set the filters below",
+                            actions_trigger="select",
+                            actions=[
+                                # TODO Q AM: This would be a "breaking" change as since now multi select selectors would work only with _actions_trigger="select"
+                                # TODO Q AM: Shold we enable that multi/range selectors work on click too with potentially raising a warning/suggestion to use "select" trigger.
+                                set_control(control="p8_filter_3", value="species"),  # ❌Fix to work with select
+                                set_control(control="p8_filter_4", value="species"),  # ❌Fix to work with select
+                                set_control(control="p8_filter_6", value="sepal_length"),  # ❌ Does not as value have to be list[2]
+                                set_control(control="p8_filter_8", value="date_column"),  # ❌ Does not as value have to be list[2]
+                            ]
+                        ),
+                        vm.Container(
+                            components=[
+                                vm.Graph(figure=px.scatter(df, x="sepal_width", y="petal_length", color="species")),
+                            ],
+                            controls=[
+                                # Categorical Multi
+                                vm.Filter(id="p8_filter_3", column="species", selector=vm.Checklist()),
+                                vm.Filter(id="p8_filter_4", column="species", selector=vm.Dropdown()),
+                                # Numeric Range
+                                vm.Filter(id="p8_filter_6", column="sepal_length", selector=vm.RangeSlider()),
+                                # Temporal Range
+                                vm.Filter(id="p8_filter_8", column="date_column", selector=vm.DatePicker(range=True)),
+                            ]
+                        )
+                    ]
+                ),
+                # TODO: Add hover tab
+                # TODO: Add zoom tab
+            ]
         ),
-        vm.Graph(
-            id="p8_graph_target",
-            figure=px.scatter(df, x="sepal_width", y="petal_length", color="species", custom_data=["species"]),
-        )
     ],
-    controls=[
-        # Categorical Single
-        vm.Filter(id="p8_filter_1", targets=["p8_graph_target"], column="species", selector=vm.RadioItems()),
-        vm.Filter(id="p8_filter_2", targets=["p8_graph_target"], column="species", selector=vm.Dropdown(multi=False)),
-        # Categorical Multi
-        vm.Filter(id="p8_filter_3", targets=["p8_graph_target"], column="species", selector=vm.Checklist()),
-        vm.Filter(id="p8_filter_4", targets=["p8_graph_target"], column="species", selector=vm.Dropdown()),
-        # Numeric Single
-        vm.Filter(id="p8_filter_5", targets=["p8_graph_target"], column="sepal_length", selector=vm.Slider()),
-        # Numeric Range
-        vm.Filter(id="p8_filter_6", targets=["p8_graph_target"], column="sepal_length", selector=vm.RangeSlider()),
-        # Temporal Single
-        vm.Filter(id="p8_filter_7", targets=["p8_graph_target"], column="date_column", selector=vm.DatePicker(range=False)),
-        # Temporal Range
-        vm.Filter(id="p8_filter_8", targets=["p8_graph_target"], column="date_column", selector=vm.DatePicker(range=True)),
-        # Boolean Single
-        vm.Filter(id="p8_filter_9", targets=["p8_graph_target"], column="is_setosa", selector=vm.Switch()),
-    ]
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8])
+page_9 = vm.Page(
+    title="AgGrid targets different selectors",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Click set_control",
+                    components=[
+                        vm.AgGrid(
+                            figure=dash_ag_grid(df),
+                            title="Click on row to set the filters below",
+                            actions=[
+                                set_control(control="p9_filter_1", value="species"),
+                                set_control(control="p9_filter_2", value="species"),
+                                set_control(control="p9_filter_5", value="sepal_length"),
+                                set_control(control="p9_filter_7", value="date_column"),
+                                set_control(control="p9_filter_9", value="is_setosa"),
+                            ],
+                        ),
+                        vm.Container(
+                            components=[
+                                vm.Graph(figure=px.scatter(df, x="sepal_width", y="petal_length", color="species")),
+                            ],
+                            controls=[
+                                # Categorical Single
+                                vm.Filter(id="p9_filter_1", column="species", selector=vm.RadioItems()),
+                                vm.Filter(id="p9_filter_2", column="species", selector=vm.Dropdown(multi=False)),
+                                # Numeric Single
+                                vm.Filter(id="p9_filter_5", column="sepal_length", selector=vm.Slider()),
+                                # Temporal Single
+                                vm.Filter(id="p9_filter_7", column="date_column", selector=vm.DatePicker(range=False)),
+                                # Boolean Single
+                                vm.Filter(id="p9_filter_9", column="is_setosa", selector=vm.Switch()),
+                            ]
+                        ),
+                    ]
+                ),
+                vm.Container(
+                    title="Select set_control",
+                    components=[
+                        vm.AgGrid(
+                            figure=dash_ag_grid(df, dashGridOptions={"rowSelection": {"mode": "multiRow"}}),
+                            title="Select table rows to set the filters below",
+                            actions_trigger="select",
+                            actions=[
+                                set_control(control="p9_filter_3", value="species"),
+                                set_control(control="p9_filter_4", value="species"),
+                                set_control(control="p9_filter_6", value="sepal_length"),
+                                set_control(control="p9_filter_8", value="date_column"),
+                            ]
+                        ),
+                        vm.Container(
+                            components=[
+                                vm.Graph(figure=px.scatter(df, x="sepal_width", y="petal_length", color="species")),
+                            ],
+                            controls=[
+                                # Categorical Multi
+                                vm.Filter(id="p9_filter_3", column="species", selector=vm.Checklist()),
+                                vm.Filter(id="p9_filter_4", column="species", selector=vm.Dropdown()),
+                                # Numeric Range
+                                vm.Filter(id="p9_filter_6", column="sepal_length", selector=vm.RangeSlider()),
+                                # Temporal Range
+                                vm.Filter(id="p9_filter_8", column="date_column", selector=vm.DatePicker(range=True)),
+                            ]
+                        )
+                    ]
+                ),
+            ]
+        ),
+    ],
+)
+
+# TODO: COMMIT and then -> check _adjust_result_by_control_type and check its todo to see should we enable click for multi/range too.
+# TODO: HOW ABOUT: have one transformer of input per model (one method per model), and one set_control output mapper function.
+#   This would be actions-info extraction_inputs function + _adjust_result_by_control_type combined.
+#   Have on mind and check whether multiple potions of info could be propagated through the action input and trigger. (enabling multiple with that triggers??)
+#     I'm talking about dict format dash callback State/Input (something similar that's used for old filter_interaction)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9])
 
 # TODO: Make it work for multiple selector outputs.
+#  1. make that _get_value_from_trigger works for different selector outputs.
+#    1.1. Could value be out of range/options of the targeted selector? SET p8_graph_target.df.head(5) and see.
+#        Seems like it works except checklist_select_all.
+#  2. Think about do we need two place of the similar extraction logic:
+#   - _action callback
+#   - MODEL._get_value_from_trigger
+#   - set_controls._adjust_result_by_control_type
+#  Potential solution:
+#  1. Leave click/select and other _action_inputs and _action_triggers
+#  2. Delete _action_trigger_extractions (we don't get much from this.. see simple lambda functions that don't do much)
+#  3. Do conversion in _get_value_from_trigger for converting inputs to final look like [min_value, max_value]
 
 # TODO: Check page_3 and page_4 and how well the code extract different properties for the same input ID.
-#       Check the TODO in the action.py where this "brittle" behaviour is explained
-
-# TODO: Fix the app so it display the represented feature more clearly.
+#  Check the TO-DO in the action.py where this "brittle" behaviour is explained
 
 # TODO: Streamline the actions props
 

@@ -1,4 +1,5 @@
 from __future__ import annotations
+import pandas as pd
 
 import base64
 import json
@@ -108,12 +109,56 @@ class set_control(_AbstractAction):
                 f"dashboard. Please provide a valid control ID that exists in the dashboard."
             )
 
-        # Validate that control model has a categorical selector.
-        if not isinstance(getattr(control_model, "selector", None), (vm.Dropdown, vm.Checklist, vm.RadioItems)):
+        if not hasattr(control_model, "selector"):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
-                f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
+                f"(e.g. Filter, Parameter)."
             )
+
+        a = 4
+        # Determine whether the control selector is single, multi or range.
+        if (
+            isinstance(control_model.selector, (vm.RadioItems, vm.Slider, vm.Switch))
+            or (isinstance(control_model.selector, vm.Dropdown) and not control_model.selector.multi)
+            or (isinstance(control_model.selector, vm.DatePicker) and not control_model.selector.range)
+        ):
+            self._control_selector_type = "single"
+        elif (
+            isinstance(control_model.selector, vm.Checklist)
+            or (isinstance(control_model.selector, vm.Dropdown) and control_model.selector.multi)
+        ):
+            self._control_selector_type = "multi"
+        elif (
+            isinstance(control_model.selector, vm.RangeSlider)
+            or (isinstance(control_model.selector, vm.DatePicker) and control_model.selector.range)
+        ):
+            self._control_selector_type = "range"
+        else:
+            # TODO PP NOW: Should we cover this case too (for custom selectors IDK)?
+            raise Exception("RAISE FOR NOW; THEN HANDLE IT PROPERLY")
+            self._control_selector_type = "unknown"
+
+        # Validate that action's trigger property is compatible with the target control selector type.
+        if self._control_selector_type == "single" and self._first_in_chain_input_trigger_property == "select":
+            raise TypeError(
+                f"Model with ID `{self.control}` used as a `control` in `set_control` action has a single select "
+                f"selector type (e.g. RadioItems, Slider, Switch, or Dropdown with `multi=False`) "
+                f"and so cannot be set by a trigger with `actions_trigger='select'`. "
+                f"Use another control type or use `actions_trigger='click'` instead."
+            )
+
+        if self._control_selector_type == "range" and self._first_in_chain_input_trigger_property == "click":
+            raise TypeError(
+                f"Model with ID `{self.control}` used as a `control` in `set_control` action has a range select "
+                f"selector type (e.g. RangeSlider or DatePicker with `range=True`) "
+                f"and so cannot be set by a trigger with actions_trigger='click'`. "
+                f"Use another control type or use `actions_trigger='select'` instead."
+            )
+
+        if self._control_selector_type == "multi" and self._first_in_chain_input_trigger_property == "click":
+            # TODO PP NOW: Raise a warning only.
+            pass
+
 
         if control_model_page == model_manager._get_model_page(self):
             self._same_page = True
@@ -129,6 +174,9 @@ class set_control(_AbstractAction):
     def function(self, _trigger):
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
+        # Adjust value according to the control selector type (single, multi, range).
+        value = self._adjust_result_by_control_type(value)
+
         if self._same_page:
             # Returning a single element value works for both single and multi select selectors.
             return value
@@ -142,3 +190,30 @@ class set_control(_AbstractAction):
         if self._same_page:
             return self.control
         return ["vizro_url.pathname", "vizro_url.search"]
+
+    def _adjust_result_by_control_type(self, value):
+        # TODO PP NOW: Do this in pre_build. While validating actions_trigger vs action.control,
+        #  remember whether the control is single, multi or range. Validate that "click" goes with single/multi,
+        #  and "select" with multi/range.
+
+        # TODO PP NOW: Validation/adjustment scheme:
+        #  single = RadioItems, Dropdown(multi=False), Slider, DatePicker(range=False), Switch
+        #  multi = Checklist, Dropdown(multi=True)
+        #  range = RangeSlider, DatePicker(range=True)
+        #  1. click + single control -> OK -> value
+        #  2. select + single control -> ERROR
+        #  3. click + multi control -> OK(warn) -> value if isinstance(value, list) else [value]  # try with get_options here as well
+        #  4. select + multi control -> OK -> Filter._get_options(value)  # to get unique values
+        #  5. click + range control -> ERROR
+        #  6. select + range control -> OK -> Filter._get_min_max(value)  # to get min/max only
+
+        if self._control_selector_type == "single":
+            return value
+        elif self._control_selector_type == "multi":
+            return vm.Filter._get_options(pd.DataFrame(), current_value=value)
+        elif self._control_selector_type == "range":
+            return vm.Filter._get_min_max(pd.DataFrame(), current_value=value)
+        else:
+            # TODO PP NOW: Should we cover this case too (for custom selectors IDK)?
+            raise Exception("RAISE FOR NOW; THEN HANDLE IT PROPERLY")
+            return value
