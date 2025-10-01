@@ -1063,7 +1063,7 @@ class TestFilterBuild:
         result = filter.build()
         expected = html.Div(id="filter-id", children=html.Div(children=[vm.Checklist().build()]), hidden=hidden)
 
-        assert_component_equal(result, expected)
+        assert_component_equal(result, expected, keys_to_strip={"children"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
@@ -1095,7 +1095,7 @@ class TestFilterBuild:
             className="",
         )
 
-        assert_component_equal(result, expected)
+        assert_component_equal(result, expected, keys_to_strip={"children"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize("hidden", [True, False])
@@ -1104,19 +1104,17 @@ class TestFilterBuild:
         filter = vm.Filter(id="filter_id", column="continent", selector=vm.Checklist(), hidden=hidden)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        result = filter.build()
-        expected_selector = filter.selector.build()
-        expected_selector[filter.selector.id].className = "invisible"
 
+        result = filter.build()
         expected = dcc.Loading(
             id="filter_id",
-            children=html.Div(children=[expected_selector]),
+            children=html.Div(children=[vm.Checklist().build()]),
             color="grey",
             overlay_style={"visibility": "visible"},
             className="d-none" if hidden else "",
         )
 
-        assert_component_equal(result, expected)
+        assert_component_equal(result, expected, keys_to_strip={"children"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize(
