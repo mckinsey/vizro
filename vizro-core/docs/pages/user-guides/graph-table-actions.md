@@ -12,7 +12,12 @@ All these interactions use the [`set_control` action][vizro.actions.set_control]
 - A single control can update any number of these target components, and a single source component can set any number of controls. Hence a single source component can interact with any number of target components.
 - A target component can be on the same page as the source or on a different page (so long as the intermediate control has [`show_in_url=True`](run-deploy.md#shareable-url)).
 - A target component can also be the source component to enable a "self-interaction".
-- Interactions are not "invisible"; they are explicitly shown on the screen by the value of the control. Just like a normal control, the value can be changed manually and is persisted when you change page.
+- The value of a control is persisted when you change page.
+- Interactions are not "invisible"; they are explicitly shown on the screen by the value of the control. Just like a normal control, you can change the value manually.
+
+!!! tip
+
+    You can make your control invisible by setting `visible=False`, for example `vm.Parameter(..., visible=False).` The control can then only be set by `set_action`. This achieves a visually cleaner dashboard but can also make it less clear what graph and table interactions have been applied.
 
 ## Cross-filter
 
