@@ -628,8 +628,128 @@ However, it is not yet possible to cross-filter from a pivot table according to 
 
 ## Cross-parameter
 
-This is already possible, and documentation is coming soon!
+A cross-parameter is when the user clicks on one _source_ graph or table to update any argument other than `data_frame` of one or more _target_ components. In Vizro, a cross-parameter operates through an intermediate [parameter](parameters.md). 
+
+Cross-highlighting is a specific example of cross-parameter functionality, where the parameter controls visual properties like opacity, line width, or colors to highlight data in the target component. The [cross-highlight section](#cross-highlight) below demonstrates this pattern in detail.
+
+Other cross-parameter use cases include updating chart titles, axis labels, or any other component properties based on user interactions. This gives you flexible control over how components respond to user clicks beyond just filtering data.
 
 ### Cross-highlight
 
-This is already possible, and documentation is coming soon!
+Cross-highlighting enables users to click on data points in one graph or table to highlight corresponding data in another graph.
+
+**How it works:** Cross-highlighting uses a hidden parameter that acts as a communication channel between components. When a user clicks on the source component, it triggers an action that updates the parameter value, which then affects the target component's appearance.
+
+**Key concept:** The parameter uses `visible=False` to hide its selector from the user interface while keeping the functionality active. This prevents redundant controls since the highlighting effect already shows which data is selected.
+
+To implement cross-highlighting:
+
+1. **Create a hidden parameter** that targets the component you want to highlight.
+2. **Add the trigger action** to the source component that users will click.
+3. **Implement highlighting logic** in your target component's figure function using the parameter value to modify visual properties like opacity, line width, or colors.
+
+!!! example "Cross-highlight from bar chart to line chart"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="15-23"}
+        import vizro.plotly.express as px
+        import vizro.models as vm
+        import vizro.actions as va
+        from vizro.models.types import capture
+        from vizro import Vizro
+
+        SELECTED_COUNTRIES = [
+            "Singapore",
+            "Malaysia",
+            "Thailand",
+            "Indonesia",
+            "Philippines",
+            "Vietnam",
+            "Cambodia",
+            "Myanmar",
+            "NONE",
+        ]
+
+        gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
+
+
+        @capture("graph")
+        def bump_chart(data_frame, highlight_country=None):
+            data_with_rank = data_frame.copy()
+            data_with_rank["rank"] = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
+
+            fig = px.line(data_with_rank, x="year", y="rank", color="country", markers=True)
+            fig.update_layout(
+                legend_title="",
+                xaxis_title="",
+                yaxis=dict(autorange="reversed"),
+                yaxis_title="Rank (1 = Highest lifeExp)",
+            )
+
+            if highlight_country:
+                for trace in fig.data:
+                    if trace.name == highlight_country:
+                        trace.opacity = 1.0
+                        trace.line.width = 3
+                    else:
+                        trace.opacity = 0.3
+                        trace.line.width = 2
+
+            return fig
+
+
+        @capture("graph")
+        def bar_chart(data_frame):
+            fig = px.bar(data_frame[data_frame["year"] == 2007], y="country", x="lifeExp")
+            fig.update_layout(yaxis_title="", xaxis_title="lifeExp (2007)")
+            return fig
+
+
+        page = vm.Page(
+            title="Cross-highlighting example",
+            components=[
+                vm.Graph(
+                    figure=bar_chart(data_frame=gapminder),
+                    header="💡 Click any bar to highlight that country in the bump chart",
+                    actions=[va.set_control(control="highlight_parameter", value="y")],
+                ),
+                vm.Graph(id="bump_chart", figure=bump_chart(data_frame=gapminder)),
+            ],
+            controls=[
+                vm.Parameter(
+                    id="highlight_parameter",
+                    targets=["bump_chart.highlight_country"],
+                    selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),
+                    visible=False,
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        ```
+
+        1. We give the `vm.Graph` an `id` so that it can be targeted explicitly by `vm.Parameter(id="highlight_parameter")`.
+        1. We give the `vm.Parameter` an `id` so that it can be set explicitly by `va.set_control`.
+
+    === "app.yaml"
+
+        This example is currently only possible via Python configuration.
+
+    === "Result"
+
+        [![Cross-highlighting]][cross_highlighting]
+
+When you click on a bar in the bar chart, the corresponding country is highlighted in the line chart.
+
+??? details "Behind the scenes mechanism"
+
+    In full, what happens is as follows:
+
+    1. Clicking on the bar triggers the `va.set_control` action. This uses the value of `y` taken from the graph's `custom_data` (in other words, the country name) to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
+    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed to the target component `bump_chart.highlight_country`, which modifies the visual properties of the line chart to highlight the selected country.
+
+    The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+
+
+[cross_highlighting]: ../../assets/user_guides/control/cross_highlighting.png
