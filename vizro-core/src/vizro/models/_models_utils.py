@@ -1,15 +1,28 @@
 import logging
 import warnings
 from functools import wraps
-from typing import Any
+from typing import Any, Union
 
 from dash import html
+from dash.development.base_component import Component
 from pydantic import ValidationInfo
 
 from vizro.managers import model_manager
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
+
+
+def _all_hidden(components: Union[Component, list[Component]]):
+    """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
+    if isinstance(components, Component):
+        components = [components]
+    return all(
+        component is None
+        or getattr(component, "hidden", False)
+        or "d-none" in getattr(component, "className", "d-inline")
+        for component in components
+    )
 
 
 def _log_call(method):
