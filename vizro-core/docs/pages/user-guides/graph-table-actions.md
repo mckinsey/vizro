@@ -17,7 +17,7 @@ All these interactions use the [`set_control` action][vizro.actions.set_control]
 
 !!! tip
 
-    You can make your control invisble by setting `visible=False`, for example `vm.Parameter(..., visible=False).` The control can then only be set by `set_action`. This achieves a visually cleaner dashboard but can also make it less clear what graph and table interactions have been applied.
+    You can make your control invisible by setting `visible=False`, for example `vm.Parameter(..., visible=False).` The control can then only be set by `set_action`. This achieves a visually cleaner dashboard but can also make it less clear what graph and table interactions have been applied.
 
 ## Cross-filter
 
