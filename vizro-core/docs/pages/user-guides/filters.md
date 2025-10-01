@@ -11,7 +11,7 @@ It is possible to add filters to a [page](pages.md) or [container](container.md#
 When the dashboard is running there are two ways for a user to set a filter:
 
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
-- [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter).
+- [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter). To achieve a visually cleaner dashboard you might like to hide the filter's underlying selector with `visible=False`.
 
 By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
 
@@ -210,15 +210,15 @@ You can explore and test all available selectors interactively on our [feature d
 
 ## Further customization
 
-For further customizations, you can always refer to the [`Filter`][vizro.models.Filter] model reference and the [guide to selectors](selectors.md). Some popular choices are:
+For further customizations, refer to the [guide to selectors](selectors.md) and the [`Filter` model][vizro.models.Filter]. Some popular choices are:
 
-- select which component the filter will apply to by using `targets`
-- specify configuration of the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter
-- hiding the filter from the dashboard interface by setting `visible=False`
+- Select which components the filter applies to by using `targets`. 
+- Customize the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter.
+- Make the filter's selector invisible by setting `visible=False`.
 
-Below is an advanced example where we only target one page component, and where we further customize the chosen `selector`.
+Below is an example where we only target one page component, and where we further customize the chosen `selector`.
 
-!!! example "Advanced Filter"
+!!! example "Customized Filter"
 
     === "app.py"
 
@@ -280,8 +280,6 @@ Below is an advanced example where we only target one page component, and where 
     === "Result"
 
         [![Advanced]][advanced]
-
-To further customize selectors, see our [how-to-guide on creating custom components](custom-components.md).
 
 [advanced]: ../../assets/user_guides/control/control3.png
 [filter]: ../../assets/user_guides/control/control1.png
