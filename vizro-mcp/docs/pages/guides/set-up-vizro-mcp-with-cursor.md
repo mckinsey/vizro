@@ -38,6 +38,20 @@ The following configuration is added to your `mcp.json` ([see Cursor Settings](h
 }
 ```
 
+!!! tip "To specify a version of Vizro-MCP"
+
+	To use a specific version of Vizro-MCP, update the `mcp.json` configuration to instruct `uv` accordingly. For example, to use Vizro-MCP [version 0.1.12](https://github.com/mckinsey/vizro/tree/vizro-mcp-0.1.2), specify the configuration like this:
+	
+	```json
+	{
+	  "vizro-mcp": {
+	    "command": "uvx vizro-mcp@0.1.2 check"
+	  }
+	}
+	```
+	
+	The `uv documentation` contains more information about the [syntax needed to request a specific version ](https://docs.astral.sh/uv/guides/tools/#requesting-specific-versions)of Vizro-MCP.
+
 Click "Install" on the Cursor MCP configuration page:
 
 ![Install Vizro-MCP on Cursor with uv](../../assets/images/install-vizro-mcp-cursor-uv.png)
