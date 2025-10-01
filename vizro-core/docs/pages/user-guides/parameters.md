@@ -198,12 +198,13 @@ Note that in the above example, one parameter affects multiple targets.
 
 If you use [dynamic data](data.md/#dynamic-data) that can be updated while the dashboard is running then you can pass parameters to the dynamic data function to alter the data loaded into your dashboard. For detailed instructions, refer to the section on [parametrized data loading](data.md/#parametrize-data-loading).
 
+
 ## Further customization
 
 For further customizations, refer to the [guide to selectors](selectors.md) and the [`Parameter` model][vizro.models.Parameter]. Some popular choices are:
 
 - Customize the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical parameter or `min` and `max` for a numerical parameter.
-- Make the parameter's selector invisible by setting `visible=False`.
+- Make the parameter's selector invisible by setting `visible=False`. This is particularly useful for graph interactions where you want to hide the selector from the user interface while keeping the functionality active. Cross-highlighting is a common example of this pattern. For a complete code example, see the [cross-highlighting section](graph-table-actions.md#cross-highlight) in the graph and table interactions guide.
 
 [nested]: ../../assets/user_guides/control/control5.png
 [parameter]: ../../assets/user_guides/control/control4.png
