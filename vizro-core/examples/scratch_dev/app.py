@@ -91,8 +91,8 @@ page_1 = vm.Page(
                     variant="outlined",
                     components=[
                         vm.AgGrid(id="p1_ag_grid_2", figure=dash_ag_grid(df)),
-                        TitledText(id='p1_text_1', title="_trigger", text="""No cross-filter applied"""),
-                        TitledText(id='p1_text_2', title="click", text="""No cross-filter applied""")
+                        TitledText(id='p1_text_1', title="default '_trigger' as input", text="""No cross-filter applied"""),
+                        TitledText(id='p1_text_2', title="'click' as input", text="""No cross-filter applied""")
                     ],
                     controls=[
                         vm.Filter(id="p1_filter_1", column="species"),
@@ -107,7 +107,7 @@ page_1 = vm.Page(
 # === PAGE 2 ===
 
 page_2 = vm.Page(
-    title="Graph mappings with default _trigger",
+    title="Graph mappings with default actions trigger (click)",
     components=[
         vm.Graph(
             id="p2_graph_1",
@@ -124,11 +124,11 @@ page_2 = vm.Page(
             variant="outlined",
             layout=vm.Flex(direction="row", gap="16px"),
             components=[
-                TitledText(id='p2_text_1', title="_trigger", text="""No cross-filter applied"""),
-                TitledText(id='p2_text_2', title="click", text="""No cross-filter applied"""),
-                TitledText(id='p2_text_3', title="select", text="""No cross-filter applied"""),
-                TitledText(id='p2_text_4', title="hover", text="""No cross-filter applied"""),
-                TitledText(id='p2_text_5', title="zoom", text="""No cross-filter applied"""),
+                TitledText(id='p2_text_1', title="default '_trigger' as input", text="""No cross-filter applied"""),
+                TitledText(id='p2_text_2', title="'click' as input", text="""No cross-filter applied"""),
+                TitledText(id='p2_text_3', title="'select' as input", text="""No cross-filter applied"""),
+                TitledText(id='p2_text_4', title="'hover' as input", text="""No cross-filter applied"""),
+                TitledText(id='p2_text_5', title="'zoom' as input", text="""No cross-filter applied"""),
             ]
         )
     ],
@@ -137,7 +137,7 @@ page_2 = vm.Page(
 # === PAGE 3 ===
 
 page_3 = vm.Page(
-    title="AgGrid mappings with default _trigger",
+    title="AgGrid mappings with default actions trigger (click)",
     components=[
         vm.AgGrid(
             id="p3_ag_grid_1",
@@ -152,9 +152,9 @@ page_3 = vm.Page(
             variant="outlined",
             layout=vm.Flex(direction="row", gap="16px"),
             components=[
-                TitledText(id='p3_text_1', title="_trigger", text="""No cross-filter applied"""),
-                TitledText(id='p3_text_2', title="click", text="""No cross-filter applied"""),
-                TitledText(id='p3_text_3', title="select", text="""No cross-filter applied"""),
+                TitledText(id='p3_text_1', title="default '_trigger' as input", text="""No cross-filter applied"""),
+                TitledText(id='p3_text_2', title="'click' as input", text="""No cross-filter applied"""),
+                TitledText(id='p3_text_3', title="'select' as input", text="""No cross-filter applied"""),
             ]
         )
     ],
@@ -163,6 +163,7 @@ page_3 = vm.Page(
 
 # === PAGE 4 ===
 
+# TODO Q AM: Should we predefine _click, _select, _hover, _zoom inputs similarly like we did for the _controls/_trigger?
 @capture("action")
 def custom_action_with_trigger_and_multiple_inputs(click, select, hover=None, zoom=None, _trigger=None):
     return f"""```json
@@ -184,7 +185,7 @@ _TRIGGER:
 
 
 page_4 = vm.Page(
-    title="[multiple outputs] Graph mappings with default _trigger",
+    title="[multiple outputs] Graph mappings with default actions trigger (click)",
     components=[
         vm.Graph(
             id="p4_graph_1",
@@ -201,14 +202,14 @@ page_4 = vm.Page(
                 ),
             ],
         ),
-        TitledText(id='p4_text_1', title="click, select, hover, zoom, _trigger", text="""No cross-filter applied"""),
+        TitledText(id='p4_text_1', title="Action inputs: click, select, hover, zoom, _trigger", text="""No cross-filter applied"""),
     ],
 )
 
 
 # === PAGE 5 ===
 page_5 = vm.Page(
-    title="[multiple outputs] AgGrid mappings with default _trigger",
+    title="[multiple outputs] AgGrid mappings with default actions trigger (click)",
     components=[
         vm.AgGrid(
             id="p5_ag_grid_1",
@@ -223,7 +224,7 @@ page_5 = vm.Page(
                 ),
             ],
         ),
-        TitledText(id='p5_text_1', title="click, select, _trigger", text="""No cross-filter applied"""),
+        TitledText(id='p5_text_1', title="Action inputs: click, select, _trigger", text="""No cross-filter applied"""),
     ],
 )
 
@@ -231,7 +232,7 @@ page_5 = vm.Page(
 # === PAGE 6 ===
 
 page_6 = vm.Page(
-    title="Different Graph triggers",
+    title="Different Graph actions triggers",
     layout=vm.Grid(grid=[
         [0, 1, 2, 3, 4],
         [5, 5, 5, 5, 5],
@@ -275,11 +276,11 @@ page_6 = vm.Page(
             variant="outlined",
             layout=vm.Flex(direction="row", gap="16px"),
             components=[
-                TitledText(id='p6_text_1', title="_trigger", text="""No cross-filter applied"""),
-                TitledText(id='p6_text_2', title="click", text="""No cross-filter applied"""),
-                TitledText(id='p6_text_3', title="select", text="""No cross-filter applied"""),
-                TitledText(id='p6_text_4', title="hover", text="""No cross-filter applied"""),
-                TitledText(id='p6_text_5', title="zoom", text="""No cross-filter applied"""),
+                TitledText(id='p6_text_1', title="default `_trigger` as trigger", text="""No cross-filter applied"""),
+                TitledText(id='p6_text_2', title="`click` as trigger", text="""No cross-filter applied"""),
+                TitledText(id='p6_text_3', title="'select` as trigger", text="""No cross-filter applied"""),
+                TitledText(id='p6_text_4', title="'hover` as trigger", text="""No cross-filter applied"""),
+                TitledText(id='p6_text_5', title="'zoom` as trigger", text="""No cross-filter applied"""),
             ]
         )
     ]
@@ -288,7 +289,7 @@ page_6 = vm.Page(
 # # === Page 7 ===
 
 page_7 = vm.Page(
-    title="Different AgGrid triggers",
+    title="Different AgGrid actions triggers",
     layout=vm.Grid(grid=[
         [0, 1, 2],
         [3, 3, 3],
@@ -318,9 +319,9 @@ page_7 = vm.Page(
             variant="outlined",
             layout=vm.Flex(direction="row", gap="16px"),
             components=[
-                TitledText(id='p7_text_1', title="_trigger", text="""No cross-filter applied"""),
-                TitledText(id='p7_text_2', title="click", text="""No cross-filter applied"""),
-                TitledText(id='p7_text_3', title="select", text="""No cross-filter applied"""),
+                TitledText(id='p7_text_1', title="default `_trigger` as trigger", text="""No cross-filter applied"""),
+                TitledText(id='p7_text_2', title="'click` as trigger", text="""No cross-filter applied"""),
+                TitledText(id='p7_text_3', title="'select` as trigger", text="""No cross-filter applied"""),
             ]
         )
     ]
@@ -357,7 +358,7 @@ page_8 = vm.Page(
                             title="Click on points to set the filters below",
                             actions=[
                                 # TODO Q AM: Can we fetch the action.value from the vm.Filter.column?
-                                #  This would make the action.value as optional argument for both Graph and AgGrid?
+                                #  This would simplify defining the set_action for both Graph and AgGrid?
                                 set_control(control="p8_filter_click_1", value="species"),
                                 set_control(control="p8_filter_click_2", value="species"),
                                 set_control(control="p8_filter_click_3", value="species"),
