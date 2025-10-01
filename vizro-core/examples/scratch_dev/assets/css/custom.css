@@ -11,3 +11,7 @@
 #p3-parameter-1 {
   display: none;
 }
+
+.card-kpi .card-body {
+  font-size: 1.2rem;
+}
