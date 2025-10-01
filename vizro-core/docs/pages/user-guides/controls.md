@@ -18,6 +18,8 @@ Vizro has two types of control:
 
 All controls have an [argument `selector`](selectors.md) that configures the visual interface for the control, for example a checklist or a range slider. The same selectors are available for all controls.
 
+You can control the visibility of controls using the `visible` argument. By default, controls are visible (`visible=True`), but you can hide them by setting `visible=False`. Hidden controls remain functional and can still be controlled through actions.
+
 When the dashboard is running there are two ways for a user to set a control:
 
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.

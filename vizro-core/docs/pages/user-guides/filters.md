@@ -214,6 +214,7 @@ For further customizations, you can always refer to the [`Filter`][vizro.models.
 
 - select which component the filter will apply to by using `targets`
 - specify configuration of the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter
+- hiding the filter from the dashboard interface by setting `visible=False`
 
 Below is an advanced example where we only target one page component, and where we further customize the chosen `selector`.
 

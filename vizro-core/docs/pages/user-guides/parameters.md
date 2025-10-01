@@ -198,5 +198,12 @@ Note that in the above example, one parameter affects multiple targets.
 
 If you use [dynamic data](data.md/#dynamic-data) that can be updated while the dashboard is running then you can pass parameters to the dynamic data function to alter the data loaded into your dashboard. For detailed instructions, refer to the section on [parametrized data loading](data.md/#parametrize-data-loading).
 
+## Further customization
+
+For further customizations, you can always refer to the [`Parameter`][vizro.models.Parameter] model reference and the [guide to selectors](selectors.md). Some popular choices are:
+
+- specify configuration of the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter
+- hiding the parameter from the dashboard interface by setting `visible=False`
+
 [nested]: ../../assets/user_guides/control/control5.png
 [parameter]: ../../assets/user_guides/control/control4.png
