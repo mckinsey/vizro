@@ -21,6 +21,7 @@ from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
+    _all_hidden,
     _build_inner_layout,
     _log_call,
     check_captured_callable_model,
@@ -190,7 +191,9 @@ class Page(VizroBaseModel):
     def build(self) -> _PageBuildType:
         # Build control panel
         controls_content = [control.build() for control in self.controls]
-        control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
+        control_panel = html.Div(
+            id="control-panel", children=controls_content, hidden=not controls_content or _all_hidden(controls_content)
+        )
 
         # Build layout with components
         components_container = _build_inner_layout(self.layout, self.components)

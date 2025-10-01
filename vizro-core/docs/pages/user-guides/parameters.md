@@ -11,7 +11,7 @@ It is possible to add parameters to a [page](pages.md) or [container](container.
 When the dashboard is running there are two ways for a user to set a parameter:
 
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
-- [User interaction with a graph or table](graph-table-actions.md#cross-parameter) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-highlighting](graph-table-actions.md#cross-highlight).
+- [User interaction with a graph or table](graph-table-actions.md#cross-parameter) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-highlighting](graph-table-actions.md#cross-highlight). To achieve a visually cleaner dashboard you might like to hide the parameter's underlying selector with `visible=False`.
 
 ## Basic parameters
 
@@ -197,6 +197,13 @@ Note that in the above example, one parameter affects multiple targets.
 ## Dynamic data parameters
 
 If you use [dynamic data](data.md/#dynamic-data) that can be updated while the dashboard is running then you can pass parameters to the dynamic data function to alter the data loaded into your dashboard. For detailed instructions, refer to the section on [parametrized data loading](data.md/#parametrize-data-loading).
+
+## Further customization
+
+For further customizations, refer to the [guide to selectors](selectors.md) and the [`Parameter` model][vizro.models.Parameter]. Some popular choices are:
+
+- Customize the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical parameter or `min` and `max` for a numerical parameter.
+- Make the parameter's selector invisible by setting `visible=False`.
 
 [nested]: ../../assets/user_guides/control/control5.png
 [parameter]: ../../assets/user_guides/control/control4.png

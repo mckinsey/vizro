@@ -839,7 +839,7 @@
     },
     "Filter": {
       "additionalProperties": false,
-      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to use filters](../user-guides/filters.md)\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`. Defaults to `[]`.\n    selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.\n    show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.\n        Useful for bookmarking or sharing dashboards with specific filter values pre-set.",
+      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to use filters](../user-guides/filters.md)\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`. Defaults to `[]`.\n    selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.\n    show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.\n        Useful for bookmarking or sharing dashboards with specific filter values pre-set.\n    visible (bool): Whether the filter should be visible. Defaults to `True`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -917,6 +917,12 @@
           "default": false,
           "description": "Whether the filter should be included in the URL query string. Defaults to `False`. Useful for bookmarking or sharing dashboards with specific filter values pre-set.",
           "title": "Show In Url",
+          "type": "boolean"
+        },
+        "visible": {
+          "default": true,
+          "description": "Whether the filter should be visible. Defaults to `True`.",
+          "title": "Visible",
           "type": "boolean"
         }
       },
@@ -1486,7 +1492,7 @@
     },
     "Parameter": {
       "additionalProperties": false,
-      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to use parameters](../user-guides/parameters.md)\n\nExamples:\n    >>> Parameter(targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (list[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.\n    show_in_url (bool): Whether the parameter should be included in the URL query string. Defaults to `False`.\n        Useful for bookmarking or sharing dashboards with specific parameter values pre-set.",
+      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to use parameters](../user-guides/parameters.md)\n\nExamples:\n    >>> Parameter(targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (list[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.\n    show_in_url (bool): Whether the parameter should be included in the URL query string. Defaults to `False`.\n        Useful for bookmarking or sharing dashboards with specific parameter values pre-set.\n    visible (bool): Whether the parameter should be visible. Defaults to `True`.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1550,6 +1556,12 @@
           "default": false,
           "description": "Whether the parameter should be included in the URL query string. Defaults to `False`. Useful for bookmarking or sharing dashboards with specific parameter values pre-set.",
           "title": "Show In Url",
+          "type": "boolean"
+        },
+        "visible": {
+          "default": true,
+          "description": "Whether the parameter should be visible. Defaults to `True`.",
+          "title": "Visible",
           "type": "boolean"
         }
       },
