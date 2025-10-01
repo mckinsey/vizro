@@ -212,7 +212,7 @@ You can explore and test all available selectors interactively on our [feature d
 
 For further customizations, refer to the [guide to selectors](selectors.md) and the [`Filter` model][vizro.models.Filter]. Some popular choices are:
 
-- Select which components the filter applies to by using `targets`. 
+- Select which components the filter applies to by using `targets`.
 - Customize the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter.
 - Make the filter's selector invisible by setting `visible=False`.
 
