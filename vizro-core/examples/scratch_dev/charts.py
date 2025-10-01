@@ -329,16 +329,17 @@ def custom_aggrid(data_frame):
 
 
 @capture("graph")
-def create_map_bubble_new(data_frame, value_col="Sales"):
+def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
     state_profit = data_frame.groupby(["State_Code", "Region"], as_index=False)[value_col].sum()
     fig = px.choropleth(
         state_profit,
         locations="State_Code",
         locationmode="USA-states",
-        color="Region",
+        color=value_col,
         hover_name="State_Code",
         hover_data=["Region", value_col],
         scope="usa",
+        custom_data=custom_data,
     )
 
     fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
@@ -346,8 +347,8 @@ def create_map_bubble_new(data_frame, value_col="Sales"):
 
 
 @capture("graph")
-def create_bar_chart_by_region(data_frame, value_col="Sales"):
-    region_colors = {"West": "#ff9222", "East": "#474EA6", "South": "#4dabf7", "Central": "#fa5252"}
+def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=None):
+    # region_colors = {"West": "#ff9222", "East": "#474EA6", "South": "#4dabf7", "Central": "#fa5252"}
     region_sales = data_frame.groupby("Region", as_index=False)[value_col].sum()
     fig = px.bar(
         region_sales,
@@ -356,7 +357,7 @@ def create_bar_chart_by_region(data_frame, value_col="Sales"):
         color="Region",
         # text="Sales",  # show sales values on bars
         orientation="h",
-        color_discrete_map=region_colors,
+        # color_discrete_map=region_colors,
     )
 
     # Improve layout
@@ -367,6 +368,16 @@ def create_bar_chart_by_region(data_frame, value_col="Sales"):
         xaxis_title=None,
         yaxis_title=None,
     )
+    if highlight_region:
+        if highlight_region == [None]:
+            for trace in fig.data:
+                trace.marker.opacity = 1
+        else:
+            for trace in fig.data:
+                if trace.name == highlight_region:
+                    trace.marker.opacity = 1
+                else:
+                    trace.marker.opacity = 0.2
 
     return fig
 

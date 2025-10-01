@@ -5,6 +5,7 @@ from vizro import Vizro
 import vizro.models as vm
 import vizro.actions as va
 from vizro.figures import kpi_card
+from vizro.models.types import capture
 
 from data import superstore_df
 from charts import (
@@ -22,6 +23,7 @@ from charts import (
 df = px.data.iris()
 
 vm.Page.add_type("controls", vm.Button)
+vm.Container.add_type("controls", vm.Button)
 
 page_0 = vm.Page(
     title="Overview dashboard",
@@ -73,10 +75,17 @@ page_0 = vm.Page(
         vm.Container(
             title="Regional view",
             components=[
-                vm.Graph(id="region_map_chart", figure=create_map_bubble_new(superstore_df, value_col="Sales")),
+                vm.Graph(
+                    id="region_map_chart",
+                    figure=create_map_bubble_new(superstore_df, value_col="Sales", custom_data=["Region"]),
+                    actions=[va.set_control(control="highlight_region_parameter", value="Region")],
+                ),
                 vm.Graph(id="region_bar_chart", figure=create_bar_chart_by_region(superstore_df, value_col="Sales")),
             ],
-            layout=vm.Grid(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[
+                [0, 1]
+            ]
+            ),
             variant="filled",
         ),
         vm.Container(
@@ -115,6 +124,32 @@ page_0 = vm.Page(
                 "line_chart_by_month.value_col",
                 "bar_chart_by_segment.value_col",
             ],
+        ),
+        vm.Parameter(
+            id="highlight_region_parameter",
+            targets=["region_bar_chart.highlight_region"],
+            selector=vm.Dropdown(multi=False, options=["Central", "East", "West", "South", "NONE"], value="NONE"),
+        ),
+        vm.Button(
+            text="",
+            icon="Reset Settings",
+            description="Reset actions",
+            variant="outlined",
+            actions=[
+                vm.Action(
+                    function=capture("action")(
+                        lambda: ["NONE", "NONE"]
+                    )(),
+                    outputs=["highlight_region_parameter"],
+                )
+            ]
+            # actions=va.set_control(control="highlight_region_parameter", value="NONE")
+        ),
+        vm.Filter(
+            id="filter_region",
+            column="Region",
+            selector=vm.Dropdown(),
+            # targets=["customer_bar_chart", "line_chart_by_month", "bar_chart_by_segment"]
         )
     ],
     layout=vm.Grid(
