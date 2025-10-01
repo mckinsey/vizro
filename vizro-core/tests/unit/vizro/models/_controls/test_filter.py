@@ -1054,14 +1054,14 @@ class TestFilterBuild:
         assert_component_equal(result, expected)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize("hidden", [True, False])
-    def test_filter_build_hidden(self, hidden):
-        filter = vm.Filter(id="filter-id", column="continent", selector=vm.Checklist(), hidden=hidden)
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_filter_build_visible(self, visible):
+        filter = vm.Filter(id="filter-id", column="continent", selector=vm.Checklist(), visible=visible)
         model_manager["test_page"].controls = [filter]
 
         filter.pre_build()
         result = filter.build()
-        expected = html.Div(id="filter-id", children=html.Div(children=[vm.Checklist().build()]), hidden=hidden)
+        expected = html.Div(id="filter-id", children=html.Div(children=[vm.Checklist().build()]), hidden=not visible)
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
 
@@ -1098,10 +1098,10 @@ class TestFilterBuild:
         assert_component_equal(result, expected, keys_to_strip={"children"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
-    @pytest.mark.parametrize("hidden", [True, False])
-    def test_dynamic_filter_build_hidden(self, gapminder_dynamic_first_n_last_n_function, hidden):
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_dynamic_filter_build_visible(self, gapminder_dynamic_first_n_last_n_function, visible):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
-        filter = vm.Filter(id="filter_id", column="continent", selector=vm.Checklist(), hidden=hidden)
+        filter = vm.Filter(id="filter_id", column="continent", selector=vm.Checklist(), visible=visible)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
@@ -1111,7 +1111,7 @@ class TestFilterBuild:
             children=html.Div(children=[vm.Checklist().build()]),
             color="grey",
             overlay_style={"visibility": "visible"},
-            className="d-none" if hidden else "",
+            className="d-none" if not visible else "",
         )
 
         assert_component_equal(result, expected, keys_to_strip={"children"})

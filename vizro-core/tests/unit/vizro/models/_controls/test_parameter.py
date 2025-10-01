@@ -284,15 +284,15 @@ class TestParameterBuild:
         assert_component_equal(result, expected)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize("hidden", [True, False])
-    def test_parameter_build_hidden(self, hidden):
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_parameter_build_visible(self, visible):
         test_input = vm.Checklist(options=["lifeExp", "gdpPercap", "pop"])
-        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input, hidden=hidden)
+        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input, visible=visible)
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
         result = parameter.build()
-        expected = html.Div(id="parameter-id", children=html.Div(children=[test_input.build()]), hidden=hidden)
+        expected = html.Div(id="parameter-id", children=html.Div(children=[test_input.build()]), hidden=not visible)
 
         assert_component_equal(result, expected)
 

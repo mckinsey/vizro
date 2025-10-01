@@ -78,12 +78,12 @@ page_hidden_controls = vm.Page(
                 vm.Filter(
                     column="species",
                     selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
-                    hidden=True,
+                    visible=False,
                 ),
                 vm.Filter(
                     column="species",
                     selector=vm.Checklist(title="Dynamic Filter"),
-                    hidden=True,
+                    visible=False,
                 ),
                 vm.Parameter(
                     targets=["graph_3.x"],
@@ -92,7 +92,7 @@ page_hidden_controls = vm.Page(
                         options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
                         value="sepal_width",
                     ),
-                    hidden=True,
+                    visible=False,
                 ),
             ],
         )
@@ -101,12 +101,12 @@ page_hidden_controls = vm.Page(
         vm.Filter(
             column="species",
             selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
-            hidden=True,
+            visible=False,
         ),
         vm.Filter(
             column="species",
             selector=vm.Checklist(title="Dynamic Filter"),
-            hidden=True,
+            visible=False,
         ),
         vm.Parameter(
             targets=["graph_3.y"],
@@ -115,7 +115,7 @@ page_hidden_controls = vm.Page(
                 options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
                 value="sepal_length",
             ),
-            hidden=True,
+            visible=False,
         ),
     ],
 )

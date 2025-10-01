@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable `hidden` argument inside `Filter` and `Parameter`. ([#1428](https://github.com/mckinsey/vizro/pull/1428))
+- Enable `visible` argument inside `Filter` and `Parameter`. ([#1428](https://github.com/mckinsey/vizro/pull/1428))
 
 
 <!--

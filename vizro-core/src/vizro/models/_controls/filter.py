@@ -91,7 +91,7 @@ class Filter(VizroBaseModel):
         selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
         show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
             Useful for bookmarking or sharing dashboards with specific filter values pre-set.
-        hidden (bool): Whether the filter should be hidden. Defaults to `False`.
+        visible (bool): Whether the filter should be visible. Defaults to `True`.
 
     """
 
@@ -110,9 +110,9 @@ class Filter(VizroBaseModel):
             "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
         ),
     )
-    hidden: bool = Field(
-        default=False,
-        description="Whether the filter should be hidden. Defaults to `False`.",
+    visible: bool = Field(
+        default=True,
+        description="Whether the filter should be visible. Defaults to `True`.",
     )
 
     _dynamic: bool = PrivateAttr(False)
@@ -308,7 +308,7 @@ class Filter(VizroBaseModel):
             selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
-            return html.Div(id=self.id, children=selector_build_obj, hidden=self.hidden)
+            return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
         # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
         # Other components, such as the title, remain visible because of the configuration:
@@ -330,7 +330,7 @@ class Filter(VizroBaseModel):
             children=selector_build_obj,
             color="grey",
             overlay_style={"visibility": "visible"},
-            className="d-none" if self.hidden else "",
+            className="d-none" if not self.visible else "",
         )
 
     def _validate_targeted_data(
