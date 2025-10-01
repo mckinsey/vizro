@@ -12,7 +12,7 @@ from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro import Vizro
-from vizro.models._dashboard import _all_hidden
+from vizro.models._models_utils import _all_hidden
 
 
 class TestDashboardInstantiation:
