@@ -20,7 +20,7 @@ jobs:
           token: ${{ secrets.VIZRO_SVC_PAT }}
 
       - name: Set up Python ${{ matrix.config.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.config.python-version }}
       # Remove the `click` installation constraint once the
