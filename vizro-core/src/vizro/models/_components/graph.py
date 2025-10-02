@@ -89,7 +89,7 @@ class Graph(VizroBaseModel):
         ),
     ]
     # TODO Q AM: Maybe we can keep it but as a private field and set it internally if target is multi/range selector.
-    #  One consequence is that users won't intuitively see that they should select graph points.
+    #  One consequence is that users won't see that they should select graph points instead of clicking.
     actions_trigger: Annotated[
         Literal["click", "select", "hover", "zoom"],
         Field(

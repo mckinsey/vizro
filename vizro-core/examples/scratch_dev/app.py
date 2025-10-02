@@ -507,25 +507,27 @@ page_9 = vm.Page(
     ],
 )
 
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9])
+
 # TODO: HOW ABOUT to have one transformer of input per model (one method per model), and one set_control output mapper function.
 #   This would be actions-info extraction_inputs function + _adjust_result_by_control_type combined.
 #   Have on mind and check whether multiple portions of info could be propagated through the action input and trigger. (enabling multiple with that triggers??)
 #     I'm talking about dict format dash callback State/Input (something similar that's used for old filter_interaction)
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9])
-
-# TODO: Make it work for multiple selector outputs.
-#  1. make that _get_value_from_trigger works for different selector outputs.
-#    1.1. Could value be out of range/options of the targeted selector? SET p8_graph_target.df.head(5) and see.
+# TODO:
+#  Q: Could value be out of range/options of the targeted selector? SET p8_graph_target.df.head(5) and see.
 #        Seems like it works except checklist_select_all.
-#  2. Think about do we need two place of the similar extraction logic:
+#  1. Think about do we need so many places of the similar extraction logic:
 #   - from _action callback calling calling the MODEL._action_trigger_extractions
 #   - from set_controls calling the MODEL._get_value_from_trigger
 #   - from set_controls calling the MODEL._adjust_result_by_control_type
 #  Potential solution:
-#  1. Leave click/select and other _action_inputs and _action_triggers
+#  1. Leave click/select and other _action_inputs and _action_triggers (map it like "click" -> "clickData" directly)
 #  2. Delete _action_trigger_extractions (we don't get much from this.. see simple lambda functions that don't do much)
 #  3. Do conversion in _get_value_from_trigger for converting inputs to final look like [min_value, max_value]
+#    3.1. The _get_value_from_trigger would differ based on whether the input is click/select/...
+#      3.2. Is it only used in set_control?
 
 # TODO: Check page_3 and page_4 and how well the code extract different properties for the same input ID.
 #  Check the TO-DO in the action.py where this "brittle" behaviour is explained

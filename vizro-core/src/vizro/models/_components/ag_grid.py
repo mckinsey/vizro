@@ -132,7 +132,7 @@ class AgGrid(VizroBaseModel):
     @property
     def _action_trigger_extractions(self):
         return {
-            "__default__": lambda x: x[0],
+            "__default__": lambda x: x[0],  # TODO PP NOW: Merge cellClicked and selectedRows on the clien side.
             "click": lambda x: x[0],
             "select": lambda x: x,
         }
