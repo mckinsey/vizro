@@ -829,7 +829,6 @@ When you click on a bar in the bar chart, the corresponding country is highlight
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
-[cross_highlighting]: ../../assets/user_guides/graph_table_actions/cross_highlighting-graph.gif
-
-
 ### Cross-highlight source graph
+
+[cross_highlighting]: ../../assets/user_guides/graph_table_actions/cross_highlighting-graph.gif
