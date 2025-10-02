@@ -668,7 +668,7 @@ In Vizro, cross-highlighting operates through an intermediate [parameter](parame
 
 This example shows how to configure cross-highlighting where clicking on a source graph highlights corresponding data in a separate target graph:
 
-1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight. The parameter should have `visible=False` to hide its selector from the user interface while keeping the functionality active.
+1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight. 
 
     ```python
     import vizro.models as vm
@@ -825,7 +825,7 @@ This example shows how to configure cross-highlighting where clicking on a sourc
 
     === "Result"
 
-        [![CrossHighLightTarget]][cross_highlight_target]
+        ![](../../assets/user_guides/graph_table_actions/cross_highlight_target.gif)
 
 When you click on a bar in the bar chart, the corresponding country is highlighted in the line chart.
 
@@ -843,11 +843,11 @@ Coming soon!
 
 ### Cross-highlight source (self-highlighting)
  
-In source graph cross-highlighting, the user clicks on a _source_ graph to highlight data within the same graph (self-highlighting). The source graph that was clicked receives the visual highlighting. This pattern is often combined with other actions like filtering a table via [cross-filtering](#cross-filter). This creates a combined interaction where clicking on the source graph both highlights itself and affects other components. The configuration combines both cross-highlighting and cross-filtering patterns.
+In self-highlighting, the user clicks on a _source_ graph to highlight data within the same graph. This pattern is often combined with other actions like filtering a table via [cross-filtering](#cross-filter). This creates a combined interaction where clicking on the source graph both highlights itself and affects other components. The configuration combines both cross-highlighting and cross-filtering patterns.
 
 To configure self-highlighting:
 
-1. Create a parameter that targets the same [graph](graph.md) that will trigger the cross-highlight. The parameter should have `visible=False` to hide its selector from the user interface.
+1. Create a parameter that targets the same [graph](graph.md) that will trigger the cross-highlight. 
 
     ```python
     import vizro.models as vm
@@ -871,7 +871,8 @@ To configure self-highlighting:
     ```python
     import vizro.actions as va
 
-    components = [vm.Graph(
+    components = [
+        vm.Graph(
         id="source_graph",  # (1)!
         actions=va.set_control(control="highlight_parameter", value="y")  # (2)!
     )]
@@ -993,7 +994,7 @@ To configure self-highlighting:
 
     === "Result"
 
-        [![CrossHighLightSource]][cross_highlight_source]
+        ![](../../assets/user_guides/graph_table_actions/cross_highlight_source.gif)
 
 When you click on a box in the box plot, that country's box is highlighted with full opacity while all other countries are dimmed. Simultaneously, the table below is filtered to show only data for the selected country.
 
@@ -1006,6 +1007,3 @@ When you click on a box in the box plot, that country's box is highlighted with 
     1. Simultaneously, the same click also triggers the filter action, which filters the table to show only the selected country's data.
 
     The mechanism for triggering both the parameter and filter when their values are set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain). This allows a single click to perform multiple actions: self-highlighting and table filtering.
-
-[cross_highlight_source]: ../../assets/user_guides/graph_table_actions/cross_highlig_source.gif
-[cross_highlight_target]: ../../assets/user_guides/graph_table_actions/cross_highlight_target.gif
