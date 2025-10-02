@@ -655,7 +655,7 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
     components = [vm.Graph(..., actions=va.set_control(control="my_parameter", value="my_argument"))]
     ```
 
-### Cross-highlight from graph
+### Cross-highlight target graph
 
 A cross-highlight is when the user clicks on one _source_ graph or table to highlight corresponding data in another _target_ graph. In Vizro, a cross-highlight operates through an intermediate [parameter](parameters.md). To configure a cross-highlight:
 
@@ -721,11 +721,11 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
     1. `highlight_country` is the parameter argument that receives the value from the cross-parameter interaction. When a user clicks the source graph, this argument will contain the selected country name.
     1. Here, we modify the visual properties of the highlighted country's trace by increasing its opacity and line width, while reducing the opacity of all other country traces to create a highlighting effect.
 
-!!! example "Cross-highlight from Graph to Graph"
+!!! example "Cross-highlight target graph"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="15-23"}
+        ```{.python pycafe-link}
         import vizro.plotly.express as px
         import vizro.models as vm
         import vizro.actions as va
@@ -741,14 +741,14 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
             "Vietnam",
             "Cambodia",
             "Myanmar",
-            "NONE",  # (1)
+            "NONE",  # (1)!
         ]
 
         gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
 
 
         @capture("graph")
-        def bump_chart(data_frame, highlight_country=None):   # (2)
+        def bump_chart(data_frame, highlight_country=None):   # (2)!
             data_with_rank = data_frame.copy()
             data_with_rank["rank"] = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
 
@@ -760,7 +760,7 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
                 yaxis_title="Rank (1 = Highest lifeExp)",
             )
 
-            if highlight_country:   # (3)
+            if highlight_country:   # (3)!
                 for trace in fig.data:
                     if trace.name == highlight_country:
                         trace.opacity = 1.0
@@ -787,13 +787,13 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
                     header="💡 Click any bar to highlight that country in the bump chart",
                     actions=[va.set_control(control="highlight_parameter", value="y")],
                 ),
-                vm.Graph(id="bump_chart", figure=bump_chart(data_frame=gapminder)),  # (4)
+                vm.Graph(id="bump_chart", figure=bump_chart(data_frame=gapminder)),  # (4)!
             ],
             controls=[
                 vm.Parameter(
-                    id="highlight_parameter",  # (5)
+                    id="highlight_parameter",  # (5)!
                     targets=["bump_chart.highlight_country"],
-                    selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),  # (6)
+                    selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),  # (6)!
                     visible=False,
                 ),
             ],
@@ -829,4 +829,7 @@ When you click on a bar in the bar chart, the corresponding country is highlight
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
-[cross_highlighting]: ../../assets/user_guides/control/cross_highlighting.png
+[cross_highlighting]: ../../assets/user_guides/graph_table_actions/cross_highlighting-graph.gif
+
+
+### Cross-highlight source graph
