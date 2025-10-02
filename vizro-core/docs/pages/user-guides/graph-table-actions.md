@@ -664,7 +664,7 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
 
 In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md) that controls the visual highlighting behavior. The parameter is typically set to `visible=False` to hide its selector from the user interface while keeping the functionality active. This is particularly useful for cross-highlighting since the highlighting effect itself provides visual feedback about the selected data, making a separate control selector redundant.
 
-### Cross-highlight target graph (from graph)
+### Cross-highlight target (from graph)
 
 This example shows how to configure cross-highlighting where clicking on a source graph highlights corresponding data in a separate target graph:
 
@@ -838,9 +838,11 @@ When you click on a bar in the bar chart, the corresponding country is highlight
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
+### Cross-highlight target (from table)
+Coming soon!
 
-### Cross-highlight source graph
-
+### Cross-highlight source (self-highlighting)
+ 
 In source graph cross-highlighting, the user clicks on a _source_ graph to highlight data within the same graph (self-highlighting). The source graph that was clicked receives the visual highlighting. This pattern is often combined with other actions like filtering a table via [cross-filtering](#cross-filter). This creates a combined interaction where clicking on the source graph both highlights itself and affects other components. The configuration combines both cross-highlighting and cross-filtering patterns.
 
 To configure self-highlighting:
