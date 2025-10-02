@@ -1,129 +1,66 @@
 """Dev app to try things out."""
 
-import pandas as pd
-import vizro.models as vm
 import vizro.plotly.express as px
+import vizro.models as vm
+import vizro.actions as va
+from vizro.models.types import capture
 from vizro import Vizro
-from vizro.managers import data_manager
+from vizro.tables import dash_ag_grid
+
+SELECTED_COUNTRIES = [
+    "Singapore",
+    "Malaysia",
+    "Thailand",
+    "Indonesia",
+    "Philippines",
+]
+
+gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
 
 
-data_manager["dynamic_df"] = lambda: px.data.iris()
+@capture("graph")
+def highlighted_box(data_frame, highlight_country=None):
+    fig = px.box(data_frame, x="lifeExp", y="country")
+    for trace in fig.data:
+        trace.opacity = 0.3
 
-page_show_controls = vm.Page(
-    title="Controls shown",
+    if highlight_country is not None:
+        df_highlight = data_frame[data_frame["country"] == highlight_country]
+        fig_highlight = px.box(df_highlight, x="lifeExp", y="country", color="country")
+
+        for trace in fig_highlight.data:
+            trace.opacity = 1.0
+            fig.add_trace(trace)
+
+    return fig
+
+
+page = vm.Page(
+    title="Cross-highlight source graph",
     components=[
-        vm.Container(
-            components=[
-                vm.Graph(
-                    id="graph_1", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
-                )
+        vm.Graph(
+            id="box_chart",
+            figure=highlighted_box(data_frame=gapminder),
+            header="💡 Click on a box to highlight the selected country while filtering the table below",
+            actions=[
+                va.set_control(control="country_filter", value="y"),
+                va.set_control(control="highlight_parameter", value="y"),
             ],
-            controls=[
-                vm.Filter(
-                    column="species",
-                    selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
-                ),
-                vm.Filter(column="species", selector=vm.Checklist(title="Dynamic Filter")),
-                vm.Parameter(
-                    targets=["graph_1.x"],
-                    selector=vm.RadioItems(
-                        title="x-axis Parameter",
-                        options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
-                        value="sepal_width",
-                    ),
-                ),
-            ],
-        )
+        ),
+        vm.AgGrid(id="gapminder_table", figure=dash_ag_grid(data_frame=gapminder)),
     ],
     controls=[
-        vm.Filter(
-            column="species",
-            selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
-        ),
-        vm.Filter(column="species", selector=vm.Checklist(title="Dynamic Filter")),
+        vm.Filter(id="country_filter", column="country", targets=["gapminder_table"], visible=False),
         vm.Parameter(
-            targets=["graph_1.y"],
-            selector=vm.RadioItems(
-                title="y-axis Parameter",
-                options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
-                value="sepal_length",
-            ),
-        ),
-    ],
-)
-
-page_no_controls = vm.Page(
-    title="No controls",
-    components=[
-        vm.Container(
-            components=[
-                vm.Graph(
-                    id="graph_2", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
-                )
-            ],
-        )
-    ],
-)
-
-page_hidden_controls = vm.Page(
-    title="Controls hidden",
-    components=[
-        vm.Container(
-            components=[
-                vm.Graph(
-                    id="graph_3", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
-                )
-            ],
-            controls=[
-                vm.Filter(
-                    column="species",
-                    selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
-                    visible=False,
-                ),
-                vm.Filter(
-                    column="species",
-                    selector=vm.Checklist(title="Dynamic Filter"),
-                    visible=False,
-                ),
-                vm.Parameter(
-                    targets=["graph_3.x"],
-                    selector=vm.RadioItems(
-                        title="x-axis Parameter",
-                        options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
-                        value="sepal_width",
-                    ),
-                    visible=False,
-                ),
-            ],
-        )
-    ],
-    controls=[
-        vm.Filter(
-            column="species",
-            selector=vm.Checklist(title="Static Filter", options=["setosa", "virginica", "versicolor"]),
-            visible=False,
-        ),
-        vm.Filter(
-            column="species",
-            selector=vm.Checklist(title="Dynamic Filter"),
-            visible=False,
-        ),
-        vm.Parameter(
-            targets=["graph_3.y"],
-            selector=vm.RadioItems(
-                title="y-axis Parameter",
-                options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
-                value="sepal_length",
-            ),
+            id="highlight_parameter",
+            targets=["box_chart.highlight_country"],
+            selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES),
             visible=False,
         ),
     ],
 )
 
-dashboard = vm.Dashboard(
-    pages=[page_show_controls, page_no_controls, page_hidden_controls],
-    navigation=vm.Navigation(nav_selector=vm.NavBar()),
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=False)
