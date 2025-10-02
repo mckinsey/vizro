@@ -1,5 +1,5 @@
 site_name: Vizro
-site_url: https://vizro.readthedocs.io/en/stable/
+site_url: https://vizro.readthedocs.io/en/stable
 nav:
   # Make sure any new page added here is also added to the llmstxt plugin below (around line 156)
   - Vizro: index.md
@@ -139,6 +139,7 @@ plugins:
   - search
   - autorefs
   - llmstxt: # https://pypi.org/project/mkdocs-llmstxt/
+      docs_version: https://vizro.readthedocs.io/en/0.1.46
       markdown_description:
         Vizro is an open-source Python-based toolkit to build data visualization apps.
 
@@ -152,7 +153,6 @@ plugins:
         Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
-      full_output: llms-full.txt
       sections:
         "TUTORIALS":
           - pages/tutorials/quickstart-tutorial.md: "A quickstart dashboard tutorial"
