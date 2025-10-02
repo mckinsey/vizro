@@ -195,3 +195,84 @@ def test_all_selectors_in_url(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_set_control_graph_interactions(page, http_requests_paths):
+    """Page with set_control action for graph working as interactions."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SET_CONTROL_GRAPH_INTERACTIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # filter interaction between charts (3 http)
+    element = page.locator('path[class="point plotly-customdata"]').nth(20)
+    box = element.bounding_box()
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    check_http_requests_count(page, http_requests_paths, 5)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_set_control_ag_grid_interactions(page, http_requests_paths):
+    """Page with set_control action for ag_grid working as interactions."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # filter interaction between af grid and chart (2 http)
+    page.get_by_role("gridcell", name="Europe").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_drill_through_graphs_filter(page, http_requests_paths):
+    """Page with set_control action for filter graph on the different page."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SET_CONTROL_FILTER_DRILL_THROUGH_SOURCE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # filter drill_through between charts (3 http)
+    element = page.locator('path[class="point plotly-customdata"]').nth(20)
+    box = element.bounding_box()
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    check_http_requests_count(page, http_requests_paths, 5)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_drill_through_graphs_parameter(page, http_requests_paths):
+    """Page with set_control action for parametrize graph on the different page."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_SOURCE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # parameter drill_through between charts (3 http)
+    element = page.locator('path[class="point plotly-customdata"]').nth(20)
+    box = element.bounding_box()
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    check_http_requests_count(page, http_requests_paths, 5)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_drill_through_ag_grid_to_graph_filter(page, http_requests_paths):
+    """Page with set_control action for ag_grid filter graph on the different page."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_SOURCE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # filter drill_through between charts (3 http)
+    page.get_by_role("gridcell", name="virginica").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 5)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
