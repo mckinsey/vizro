@@ -824,7 +824,7 @@ When you click on a bar in the bar chart, the corresponding country is highlight
 
     In full, what happens is as follows:
 
-    1. Clicking on the bar triggers the `va.set_control` action. This uses the value of \`\` taken from the graph's `custom_data` (in other words, the country name) to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
+    1. Clicking on the bar triggers the `va.set_control` action. This uses the value of `y` taken from the graph's `custom_data` (in other words, the country name) to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
     1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed to the target component `bump_chart.highlight_country`, which modifies the visual properties of the line chart to highlight the selected country.
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
