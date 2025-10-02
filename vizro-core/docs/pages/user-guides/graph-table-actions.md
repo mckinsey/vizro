@@ -640,8 +640,8 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
             id="my_parameter",
             targets=["target_graph.my_argument"],
             selector=vm.Dropdown(multi=False, options=["option1", "option2", "option3"]),
-            )
-        ]
+        )
+    ]
     ```
 
 1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-parameter.
@@ -654,7 +654,6 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 
     components = [vm.Graph(..., actions=va.set_control(control="my_parameter", value="my_argument"))]
     ```
-
 
 ### Cross-highlight from graph
 
@@ -685,17 +684,14 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
     ```python
     import vizro.actions as va
 
-    components = [
-        vm.Graph(..., actions=va.set_control(control="highlight_parameter", value="highlight_country")
-        )
-    ]
+    components = [vm.Graph(..., actions=va.set_control(control="highlight_parameter", value="highlight_country"))]
     ```
 
 1. Implement highlighting logic in your target Graph's figure function using the parameter value to identify which trace to visually highlight.
 
-
     ```python
     from vizro.models.types import capture
+
 
     @capture("graph")
     def bump_chart(data_frame, highlight_country=None):  # (1)!
@@ -723,8 +719,7 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
     ```
 
     1. `highlight_country` is the parameter argument that receives the value from the cross-parameter interaction. When a user clicks the source graph, this argument will contain the selected country name.
-    1. Here, we modify the visual properties of the highlighted country's trace by increasing its opacity and line width, while reducing the opacity of all 
-    other country traces to create a highlighting effect.
+    1. Here, we modify the visual properties of the highlighted country's trace by increasing its opacity and line width, while reducing the opacity of all other country traces to create a highlighting effect.
 
 !!! example "Cross-highlight from Graph to Graph"
 
@@ -810,8 +805,7 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
 
         1. We include `"NONE"` in the parameter options to provide a default state where no country is highlighted initially.
         1. `highlight_country` is the parameter argument that receives the value from the cross-parameter interaction. When a user clicks the source graph, this argument will contain the selected country name.
-        1. Here, we modify the visual properties of the highlighted country's trace by increasing its opacity and line width, while reducing the opacity of all 
-        other country traces to create a highlighting effect.
+        1. Here, we modify the visual properties of the highlighted country's trace by increasing its opacity and line width, while reducing the opacity of all other country traces to create a highlighting effect.
         1. We give the `vm.Graph` an `id` so that it can be targeted explicitly by `vm.Parameter(id="highlight_parameter")`.
         1. We give the `vm.Parameter` an `id` so that it can be set explicitly by `va.set_control`.
         1. We set the parameter's default `value="NONE"` so that no country is highlighted when the dashboard first loads.
@@ -824,17 +818,15 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
 
         [![Cross-highlighting]][cross_highlighting]
 
-
 When you click on a bar in the bar chart, the corresponding country is highlighted in the line chart.
 
 ??? details "Behind the scenes mechanism"
 
     In full, what happens is as follows:
 
-    1. Clicking on the bar triggers the `va.set_control` action. This uses the value of `` taken from the graph's `custom_data` (in other words, the country name) to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
+    1. Clicking on the bar triggers the `va.set_control` action. This uses the value of \`\` taken from the graph's `custom_data` (in other words, the country name) to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
     1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed to the target component `bump_chart.highlight_country`, which modifies the visual properties of the line chart to highlight the selected country.
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
-
 
 [cross_highlighting]: ../../assets/user_guides/control/cross_highlighting.png
