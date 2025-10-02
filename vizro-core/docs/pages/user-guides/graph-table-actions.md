@@ -839,10 +839,11 @@ When you click on a bar in the bar chart, the corresponding country is highlight
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 ### Cross-highlight target (from table)
+
 Coming soon!
 
 ### Cross-highlight source (self-highlighting)
- 
+
 In source graph cross-highlighting, the user clicks on a _source_ graph to highlight data within the same graph (self-highlighting). The source graph that was clicked receives the visual highlighting. This pattern is often combined with other actions like filtering a table via [cross-filtering](#cross-filter). This creates a combined interaction where clicking on the source graph both highlights itself and affects other components. The configuration combines both cross-highlighting and cross-filtering patterns.
 
 To configure self-highlighting:
@@ -871,10 +872,12 @@ To configure self-highlighting:
     ```python
     import vizro.actions as va
 
-    components = [vm.Graph(
-        id="source_graph",  # (1)!
-        actions=va.set_control(control="highlight_parameter", value="y")  # (2)!
-    )]
+    components = [
+        vm.Graph(
+            id="source_graph",  # (1)!
+            actions=va.set_control(control="highlight_parameter", value="y"),  # (2)!
+        )
+    ]
     ```
 
     1. We give the `vm.Graph` an `id` so that it can target itself through the parameter.
@@ -884,6 +887,7 @@ To configure self-highlighting:
 
     ```python
     from vizro.models.types import capture
+
 
     @capture("graph")
     def highlighted_box(data_frame, highlight_country=None):  # (1)!
