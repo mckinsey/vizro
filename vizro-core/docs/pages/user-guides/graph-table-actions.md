@@ -668,7 +668,7 @@ In Vizro, cross-highlighting operates through an intermediate [parameter](parame
 
 This example shows how to configure cross-highlighting where clicking on a source graph highlights corresponding data in a separate target graph:
 
-1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight. 
+1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
     ```python
     import vizro.models as vm
@@ -839,15 +839,16 @@ When you click on a bar in the bar chart, the corresponding country is highlight
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 ### Cross-highlight target (from table)
+
 Coming soon!
 
 ### Cross-highlight source (self-highlighting)
- 
+
 In self-highlighting, the user clicks on a _source_ graph to highlight data within the same graph. This pattern is often combined with other actions like filtering a table via [cross-filtering](#cross-filter). This creates a combined interaction where clicking on the source graph both highlights itself and affects other components. The configuration combines both cross-highlighting and cross-filtering patterns.
 
 To configure self-highlighting:
 
-1. Create a parameter that targets the same [graph](graph.md) that will trigger the cross-highlight. 
+1. Create a parameter that targets the same [graph](graph.md) that will trigger the cross-highlight.
 
     ```python
     import vizro.models as vm
@@ -873,9 +874,10 @@ To configure self-highlighting:
 
     components = [
         vm.Graph(
-        id="source_graph",  # (1)!
-        actions=va.set_control(control="highlight_parameter", value="y")  # (2)!
-    )]
+            id="source_graph",  # (1)!
+            actions=va.set_control(control="highlight_parameter", value="y"),  # (2)!
+        )
+    ]
     ```
 
     1. We give the `vm.Graph` an `id` so that it can target itself through the parameter.
@@ -885,6 +887,7 @@ To configure self-highlighting:
 
     ```python
     from vizro.models.types import capture
+
 
     @capture("graph")
     def highlighted_box(data_frame, highlight_country=None):  # (1)!
