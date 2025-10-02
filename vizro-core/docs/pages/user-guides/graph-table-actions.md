@@ -657,9 +657,16 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 
 ## Cross-highlight
 
-### Cross-highlight target graph
+A cross-highlight is when the user clicks on one _source_ graph or table to highlight corresponding data, typically in a graph. The highlighting can occur in two ways:
 
-A cross-highlight is when the user clicks on one _source_ graph or table to highlight corresponding data in another _target_ graph. In Vizro, a cross-highlight operates through an intermediate [parameter](parameters.md). To configure a cross-highlight:
+- **Target highlighting:** The highlighting appears in a different _target_ graph (separate from the source that was clicked)
+- **Source highlighting:** The highlighting appears in the same _source_ graph that was clicked (self-highlighting)
+
+In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md) that controls the visual highlighting behavior. The parameter is typically set to `visible=False` to hide its selector from the user interface while keeping the functionality active. This is particularly useful for cross-highlighting since the highlighting effect itself provides visual feedback about the selected data, making a separate control selector redundant.
+
+### Cross-highlight target graph (from graph)
+
+This example shows how to configure cross-highlighting where clicking on a source graph highlights corresponding data in a separate target graph:
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight. The parameter should have `visible=False` to hide its selector from the user interface while keeping the functionality active.
 
@@ -681,12 +688,12 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
 1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value` to the argument name of the target [`Graph`][vizro.models.Graph]
+    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control]. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
 
     ```python
     import vizro.actions as va
 
-    components = [vm.Graph(..., actions=va.set_control(control="highlight_parameter", value="highlight_country"))]
+    components = [vm.Graph(..., actions=va.set_control(control="highlight_parameter", value="y"))]
     ```
 
 1. Implement highlighting logic in your target Graph's figure function using the parameter value to identify which trace to visually highlight.
@@ -831,11 +838,12 @@ When you click on a bar in the bar chart, the corresponding country is highlight
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
+
 ### Cross-highlight source graph
 
-In some cases, you may want to highlight the _source_ graph while also performing other actions like filtering a table via [cross-filtering](#cross-filter). This creates a combined interaction where clicking on the source graph both highlights itself and affects other components. The configuration combines both cross-highlighting and cross-filtering patterns.
+In source graph cross-highlighting, the user clicks on a _source_ graph to highlight data within the same graph (self-highlighting). The source graph that was clicked receives the visual highlighting. This pattern is often combined with other actions like filtering a table via [cross-filtering](#cross-filter). This creates a combined interaction where clicking on the source graph both highlights itself and affects other components. The configuration combines both cross-highlighting and cross-filtering patterns.
 
-To configure source graph cross-highlighting:
+To configure self-highlighting:
 
 1. Create a parameter that targets the same [graph](graph.md) that will trigger the cross-highlight. The parameter should have `visible=False` to hide its selector from the user interface.
 
@@ -844,44 +852,60 @@ To configure source graph cross-highlighting:
 
     controls = [
         vm.Parameter(
-            id="highlight_parameter",
-            targets=["source_graph.highlight_country"],
+            id="highlight_parameter",  # (1)!
+            targets=["source_graph.highlight_country"],  # (2)!
             selector=vm.Dropdown(multi=False, options=["option1", "option2", "option3"]),
-            visible=False,
+            visible=False,  # (3)!
         )
     ]
     ```
+
+    1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+    1. The parameter targets the same graph that triggers the action, creating a self-highlighting effect.
+    1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
 1. Call `set_control` in the `actions` argument of the same [`Graph`][vizro.models.Graph] that will be highlighted.
 
     ```python
     import vizro.actions as va
 
-    components = [vm.Graph(id="source_graph", actions=va.set_control(control="highlight_parameter", value="y"))]
+    components = [vm.Graph(
+        id="source_graph",  # (1)!
+        actions=va.set_control(control="highlight_parameter", value="y")  # (2)!
+    )]
     ```
+
+    1. We give the `vm.Graph` an `id` so that it can target itself through the parameter.
+    1. The `set_control` action uses the `y` value from the clickData to set the parameter.
 
 1. Implement highlighting logic in the graph's figure function using the parameter value to modify the visual appearance of the clicked element.
 
     ```python
     from vizro.models.types import capture
 
-
     @capture("graph")
-    def highlighted_box(data_frame, highlight_country=None):
+    def highlighted_box(data_frame, highlight_country=None):  # (1)!
         fig = px.box(data_frame, x="lifeExp", y="country")
         for trace in fig.data:
-            trace.opacity = 0.3
+            trace.opacity = 0.3  # (2)!
 
-        if highlight_country is not None:
-            df_highlight = data_frame[data_frame["country"] == highlight_country]
-            fig_highlight = px.box(df_highlight, x="lifeExp", y="country", color="country")
+        if highlight_country:
+            df_highlight = data_frame[data_frame["country"] == highlight_country]  # (3)!
+            fig_highlight = px.box(df_highlight, x="lifeExp", y="country", color="country")  # (4)!
 
             for trace in fig_highlight.data:
-                trace.opacity = 1.0
-                fig.add_trace(trace)
+                trace.opacity = 1.0  # (5)!
+                fig.add_trace(trace)  # (6)!
 
         return fig
     ```
+
+    1. The `highlight_country` argument receives the selected country name from the cross-parameter interaction.
+    1. We initially dim all box plot traces to 30% opacity to create a subdued background.
+    1. We filter the data to include only the selected country's data.
+    1. We create a new box plot for just the highlighted country with color coding. The `color="country"` parameter ensures the highlighted trace aligns properly with the corresponding dimmed trace.
+    1. We set the highlighted trace to full opacity to make it stand out.
+    1. We overlay the highlighted trace on top of the dimmed background traces.
 
 !!! example "Cross-highlight source graph"
 
@@ -905,34 +929,32 @@ To configure source graph cross-highlighting:
 
         gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
 
-
         @capture("graph")
-        def highlighted_box(data_frame, highlight_country=None):
+        def highlighted_box(data_frame, highlight_country=None):  # (1)!
             fig = px.box(data_frame, x="lifeExp", y="country")
             for trace in fig.data:
-                trace.opacity = 0.3
+                trace.opacity = 0.3  # (2)!
 
             if highlight_country is not None:
-                df_highlight = data_frame[data_frame["country"] == highlight_country]
-                fig_highlight = px.box(df_highlight, x="lifeExp", y="country", color="country")
+                df_highlight = data_frame[data_frame["country"] == highlight_country]  # (3)!
+                fig_highlight = px.box(df_highlight, x="lifeExp", y="country", color="country")  # (4)!
 
                 for trace in fig_highlight.data:
-                    trace.opacity = 1.0
-                    fig.add_trace(trace)
+                    trace.opacity = 1.0  # (5)!
+                    fig.add_trace(trace)  # (6)!
 
             return fig
-
 
         page = vm.Page(
             title="Cross-highlight source graph",
             components=[
                 vm.Graph(
-                    id="box_chart",
+                    id="box_chart",  # (7)!
                     figure=highlighted_box(data_frame=gapminder),
                     header="💡 Click on a box to highlight the selected country while filtering the table below",
                     actions=[
                         va.set_control(control="country_filter", value="y"),
-                        va.set_control(control="highlight_parameter", value="y"),
+                        va.set_control(control="highlight_parameter", value="y"),  # (8)!
                     ],
                 ),
                 vm.AgGrid(id="gapminder_table", figure=dash_ag_grid(data_frame=gapminder)),
@@ -940,8 +962,8 @@ To configure source graph cross-highlighting:
             controls=[
                 vm.Filter(id="country_filter", column="country", targets=["gapminder_table"], visible=False),
                 vm.Parameter(
-                    id="highlight_parameter",
-                    targets=["box_chart.highlight_country"],
+                    id="highlight_parameter",  # (9)!
+                    targets=["box_chart.highlight_country"],  # (10)!
                     selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES),
                     visible=False,
                 ),
@@ -952,12 +974,14 @@ To configure source graph cross-highlighting:
         Vizro().build(dashboard).run()
         ```
 
-        1. `highlight_country` is the parameter argument that receives the selected country name from the cross-parameter interaction.
-        1. Initially, all box plot traces are dimmed to 30% opacity to create a subdued background.
-        1. The highlighting logic checks if a country is selected for highlighting.
-        1. A new highlighted trace is overlaid on top of the dimmed traces with full opacity, creating the highlighting effect.
+        1. The `highlight_country` argument receives the selected country name from the hidden parameter.
+        1. We initially dim all box plot traces to 30% opacity to create a subdued background.
+        1. We filter the data to include only the selected country's data.
+        1. We create a new box plot for just the highlighted country with color coding. The `color="country"` parameter ensures the highlighted trace aligns properly with the corresponding dimmed trace.
+        1. We set the highlighted trace to full opacity to make it stand out.
+        1. We overlay the highlighted trace on top of the dimmed background traces.
         1. We give the `vm.Graph` an `id` so that it can target itself through the parameter.
-        1. The same graph triggers the cross-highlight action that will modify its own appearance.
+        1. The second `set_control` action highlights the source graph using the clicked country.
         1. We give the `vm.Parameter` an `id` so that it can be set explicitly by `va.set_control`.
         1. The parameter targets the same graph that triggers the action, creating a self-highlighting effect.
 
@@ -976,9 +1000,10 @@ When you click on a box in the box plot, that country's box is highlighted with 
     In full, what happens is as follows:
 
     1. Clicking on the box triggers the `va.set_control` action. This uses the value of `y` taken from the graph's `clickData` (in other words, the country name) to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
-    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed to the same component `box_chart.highlight_country`, which modifies the visual properties of the source graph to highlight the selected country.
+    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed back to the same component `box_chart.highlight_country`, creating a self-highlighting effect where the graph modifies its own visual properties to highlight the selected country.
+    1. Simultaneously, the same click also triggers the filter action, which filters the table to show only the selected country's data.
 
-    The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+    The mechanism for triggering both the parameter and filter when their values are set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain). This allows a single click to perform multiple actions: self-highlighting and table filtering.
 
 [cross_highlight_source]: ../../assets/user_guides/graph_table_actions/cross_highlig_source.gif
 [cross_highlight_target]: ../../assets/user_guides/graph_table_actions/cross_highlight_target.gif
