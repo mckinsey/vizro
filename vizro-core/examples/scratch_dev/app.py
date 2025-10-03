@@ -13,9 +13,9 @@ from vizro.managers import data_manager
 #    [DONE] Make js fun
 #  [DONE] Make guardian existing for all filter/parameters
 #  [DONE] Fix output OPL-trigger duplicate output issue.
-#  [] Fix comments
 #  [] scratch-app add all selectors to all pages. [static, dynamic, url, hidden]
-#  [] Fix null originalValue added for p1_control_1_selector
+#  [] Fix null originalValue added for p1_control_1_selector and maybe others
+#  [] Fix comments
 #  [] Investigate should the just adjust the sync_url except adding a new clientside callback.
 #    [] Fix it exists only if there are controls on the page.
 
