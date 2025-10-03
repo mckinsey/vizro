@@ -151,15 +151,16 @@ class Page(VizroBaseModel):
         if targets:
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
-        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
-        url_controls = [
+        page_controls = [
             control
             for control in cast(
                 Iterable[ControlType],
                 [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
             )
-            if control.show_in_url
         ]
+
+        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
+        url_controls = [control for control in page_controls if control.show_in_url]
 
         if url_controls:
             selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
@@ -186,6 +187,19 @@ class Page(VizroBaseModel):
                 *control_ids_states,
                 *control_selector_ids_states,
             )
+        # TODO PP: Think about just adding additional inputs (reset btn, vizro_controls_store) into the URL callback.
+        #  In that case change that this callback is registered if any control exist on the page.
+
+        # TODO PP NOW: Register only if there's controls on the page.
+        clientside_callback(
+            ClientsideFunction(namespace="page", function_name="reset_page_controls"),
+            Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
+            Input(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
+            Input(f"{self.id}_reset_button", "n_clicks"),
+            State("vizro_controls_store", "data"),
+            State(f"{self.id}_page_id_store", "data"),
+            prevent_initial_call=True,
+        )
 
     @_log_call
     def build(self) -> _PageBuildType:

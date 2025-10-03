@@ -35,6 +35,8 @@ from vizro.models._action._action import _BaseAction
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ControlType
+from vizro.models._controls import Filter, Parameter
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -175,6 +177,15 @@ class Dashboard(VizroBaseModel):
                 State("collapse-left-side", "is_open"),
             )
 
+        # Define callbacks when the dashboard is built but not every time the page is changed.
+        dashboard_controls = [
+            control
+            for control in cast(
+                Iterable[ControlType],
+                [*model_manager._get_models(Parameter), *model_manager._get_models(Filter)],
+            )
+        ]
+
         layout = html.Div(
             id="dashboard-container",
             children=[
@@ -186,6 +197,24 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
+
+                *[dcc.Store(id=f"{page.id}_page_id_store", data=page.id) for page in self.pages],
+
+                dcc.Store(id="vizro_controls_store", data={
+                    page.id: {
+                        control.id: {
+                            "selectorId": control.selector.id,
+                            "originalValue": control.selector.value,
+
+                        }
+                        for control in cast(
+                            Iterable[ControlType],
+                            [*model_manager._get_models(Parameter, root_model=page), *model_manager._get_models(Filter, root_model=page)],
+                        )
+                    }
+                    for page in self.pages
+                }),
+
                 dash.page_container,
             ],
         )
@@ -299,6 +328,25 @@ class Dashboard(VizroBaseModel):
                     # Placeholder div is added as used as target from actions to show loading indicator.
                     children=html.Div(id="action-progress-indicator-placeholder"),
                 ),
+
+                # TODO PP NOW: Don't add if there's not controls on the page.
+                dbc.Button(
+                    id=f"{page.id}_reset_button",
+                    children=html.Span(
+                        children=[
+                            html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                            dbc.Tooltip(
+                                children="Click to reset all page control values.",
+                                target=f"{page.id}_reset_button",
+                            ),
+                        ],
+                        className="btn-text"
+                    ),
+                    color="primary",
+                    outline=True,
+                    class_name="btn-circular",
+                ),
+
                 dbc.Switch(
                     id="theme-selector",
                     value=self.theme == "vizro_light",

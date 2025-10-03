@@ -148,11 +148,16 @@ class Parameter(VizroBaseModel):
         # Wrap the selector in a Div so that the "guard" component can be added.
         selector_build_obj = html.Div(children=[self.selector.build()])
 
-        if self.show_in_url:
-            # Add the guard to the show_in_url parameter selector in the build phase because clientside callback
-            # sync_url will be triggered and may adjust its value. Set it to False and let the sync_url clientside
-            # callback update it to True when needed. It'll happen when the parameter value comes from the URL.
-            selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+        # if self.show_in_url:
+        #     # Add the guard to the show_in_url parameter selector in the build phase because clientside callback
+        #     # sync_url will be triggered and may adjust its value. Set it to False and let the sync_url clientside
+        #     # callback update it to True when needed. It'll happen when the parameter value comes from the URL.
+        #     selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+
+        # Add the guard to the parameter selector in the build phase because clientside callback sync_url might be
+        # triggered and may adjust its value. Or reset button could do the same. Set it to False and let the sync_url
+        # clientside callback update it to True when needed. It'll happen when the filter value comes from the URL.
+        selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
 
         return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
