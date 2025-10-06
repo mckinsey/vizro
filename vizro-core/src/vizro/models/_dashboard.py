@@ -197,24 +197,23 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-
                 *[dcc.Store(id=f"{page.id}_page_id_store", data=page.id) for page in self.pages],
-
-                dcc.Store(id="vizro_controls_store", data={
-                    page.id: {
-                        control.id: {
-                            "selectorId": control.selector.id,
-                            "originalValue": control.selector.value,
-
+                dcc.Store(
+                    id="vizro_controls_store",
+                    data={
+                        page.id: {
+                            control.id: {
+                                "selectorId": control.selector.id,
+                                "originalValue": control.selector.value,
+                            }
+                            for control in cast(
+                                Iterable[ControlType],
+                                [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
+                            )
                         }
-                        for control in cast(
-                            Iterable[ControlType],
-                            [*model_manager._get_models(Parameter, root_model=page), *model_manager._get_models(Filter, root_model=page)],
-                        )
+                        for page in self.pages
                     }
-                    for page in self.pages
-                }),
-
+                ),
                 dash.page_container,
             ],
         )
@@ -312,6 +311,12 @@ class Dashboard(VizroBaseModel):
         page_header_content = [page_title]
         page_header = html.Div(id="page-header", children=page_header_content)
 
+        # Page-level reset controls button
+        reset_page_controls_btn = dbc.Button(id=f"{page.id}_reset_button", children="Reset controls")
+        has_page_controls = bool(
+            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
+        )
+
         # Page header controls that appear on the right side of the header.
         header_controls = html.Div(
             id="header-controls",
@@ -328,25 +333,8 @@ class Dashboard(VizroBaseModel):
                     # Placeholder div is added as used as target from actions to show loading indicator.
                     children=html.Div(id="action-progress-indicator-placeholder"),
                 ),
-
-                # TODO PP NOW: Don't add if there's not controls on the page.
-                dbc.Button(
-                    id=f"{page.id}_reset_button",
-                    children=html.Span(
-                        children=[
-                            html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                            dbc.Tooltip(
-                                children="Click to reset all page control values.",
-                                target=f"{page.id}_reset_button",
-                            ),
-                        ],
-                        className="btn-text"
-                    ),
-                    color="primary",
-                    outline=True,
-                    class_name="btn-circular",
-                ),
-
+                # Show reset button in header when page controls exist but control panel does not exist
+                reset_page_controls_btn if has_page_controls and _all_hidden(control_panel) else None,
                 dbc.Switch(
                     id="theme-selector",
                     value=self.theme == "vizro_light",
@@ -361,6 +349,10 @@ class Dashboard(VizroBaseModel):
             page_header_content.append(header_controls)
         else:
             header_right_content.append(header_controls)
+
+        # Show reset button in the control panel when page controls and control panel exist
+        if has_page_controls and not _all_hidden(control_panel):
+            control_panel.children.append(reset_page_controls_btn)
 
         header_right = html.Div(
             id="header-right",

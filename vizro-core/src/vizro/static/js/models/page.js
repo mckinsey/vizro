@@ -181,12 +181,13 @@ Received input: ${JSON.stringify(values_ids)}`,
 }
 
 
-function reset_page_controls(opl_triggered, reset_btn_clicked, vizro_controls_store, page_id) {
+function reset_page_controls(reset_btn_clicked, vizro_controls_store, page_id) {
     // page is just opened so skip
     if (reset_btn_clicked === undefined) {
         return null;
     }
 
+    console.debug("Reset controls on page:", page_id);
     for (const [controlId, controlInfo] of Object.entries(vizro_controls_store[page_id])) {
          const selectorId = controlInfo["selectorId"];
          const originalValue = controlInfo["originalValue"];

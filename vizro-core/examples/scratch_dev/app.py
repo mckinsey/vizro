@@ -19,6 +19,12 @@ from vizro.models.types import capture
 #    [DONE] Add a parameter
 #  [DONE] Fix null originalValue added for p1_control_1_selector and maybe others
 #  [DONE] Fix comments
+#  [DONE] Fix appearance of reset-controls btn.
+#    1. if controls and control-panel show in control panel
+#    2. if controls and no control-page show in header (dashboard or page level)
+#    3. if no controls, no button.
+#  [DONE] Adjust so it's a text button.
+#  [] Fix page store by creating one page store with a single ID in the page.build.
 #  [] Refactor code
 #  [] Investigate should the just adjust the sync_url except adding a new clientside callback.
 #  [] Fix it exists only if there are controls on the page.
@@ -219,6 +225,8 @@ page_url_controls = vm.Page(
 # ========== Dashboard ==========
 
 dashboard = vm.Dashboard(
+    # Uncomment the dashboard title below to check whether it works.
+    # title="Dashboard title",
     pages=[
         page_show_controls,
         page_no_controls,
