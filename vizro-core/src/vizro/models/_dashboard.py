@@ -177,14 +177,19 @@ class Dashboard(VizroBaseModel):
                 State("collapse-left-side", "is_open"),
             )
 
-        # Define callbacks when the dashboard is built but not every time the page is changed.
-        dashboard_controls = [
-            control
-            for control in cast(
-                Iterable[ControlType],
-                [*model_manager._get_models(Parameter), *model_manager._get_models(Filter)],
-            )
-        ]
+        vizro_controls_store_data = {
+            page.id: {
+                control.id: {
+                    "selectorId": control.selector.id,
+                    "originalValue": control.selector.value,
+                }
+                for control in cast(
+                    Iterable[ControlType],
+                    [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
+                )
+            }
+            for page in self.pages
+        }
 
         layout = html.Div(
             id="dashboard-container",
@@ -197,22 +202,7 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-                dcc.Store(
-                    id="vizro_controls_store",
-                    data={
-                        page.id: {
-                            control.id: {
-                                "selectorId": control.selector.id,
-                                "originalValue": control.selector.value,
-                            }
-                            for control in cast(
-                                Iterable[ControlType],
-                                [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
-                            )
-                        }
-                        for page in self.pages
-                    }
-                ),
+                dcc.Store(id="vizro_controls_store", data=vizro_controls_store_data),
                 dash.page_container,
             ],
         )

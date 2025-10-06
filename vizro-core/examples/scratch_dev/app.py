@@ -24,10 +24,9 @@ from vizro.models.types import capture
 #    2. if controls and no control-page show in header (dashboard or page level)
 #    3. if no controls, no button.
 #  [DONE] Adjust so it's a text button.
-#  [] Fix page store by creating one page store with a single ID in the page.build.
-#  [] Refactor code
-#  [] Investigate should the just adjust the sync_url except adding a new clientside callback.
-#  [] Fix it exists only if there are controls on the page.
+#  [DONE] Fix page store by creating one page store with a single ID in the page.build.
+#  [DONE] Fix it exists only if there are controls on the page.
+#  [COMMENT ADDED] Investigate should the just adjust the sync_url except adding a new clientside callback.
 #  [] unit tests
 #  [] js tests
 #  [] screenshot and other e2e tests
