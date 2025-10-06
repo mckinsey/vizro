@@ -638,8 +638,8 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
     controls = [
         vm.Parameter(
             id="my_parameter",
-            targets=["target_graph.my_argument"],
-            selector=vm.Dropdown(multi=False, options=["option1", "option2", "option3"]),
+            targets=["target_component.my_argument"],
+            selector=vm.RadioItems(options=["option1", "option2", "option3"]),
         )
     ]
     ```
@@ -647,7 +647,7 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-parameter.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value` to the argument name of the target component.
+    1. Set `value` to specify which data from the source component to pass to the target component's parameter. The format depends on the source component type (see the [API reference][vizro.actions.set_control]). For tables, use the column name. For graphs, use the argument name where that data is plotted (e.g., `"y"` for data on the y-axis).
 
     ```python
     import vizro.actions as va
@@ -662,7 +662,7 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
 - **Target highlighting:** The highlighting appears in a different _target_ graph (separate from the source that was clicked)
 - **Source highlighting:** The highlighting appears in the same _source_ graph that was clicked (self-highlighting)
 
-In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md) that controls the visual highlighting behavior. The parameter is typically set to `visible=False` to hide its selector from the user interface while keeping the functionality active. This is particularly useful for cross-highlighting since the highlighting effect itself provides visual feedback about the selected data, making a separate control selector redundant.
+In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md) that controls the visual highlighting behavior. The parameter is typically set to `visible=False` to hide its selector from the user interface while keeping the functionality active. This is particularly useful for cross-highlighting since the highlighting effect itself provides sufficient visual feedback about the selected data.
 
 ### Cross-highlight from table
 
@@ -679,7 +679,7 @@ This example shows how to configure cross-highlighting where clicking on a table
             targets=["scatter_chart.highlight_country"],  # (2)!
             selector=vm.Dropdown(
                 multi=False,
-                options=["None"] + gapminder_2007["country"].unique().tolist(),  # (3)!
+                options=["NONE"] + gapminder_2007["country"].unique().tolist(),  # (3)!
             ),
             visible=False,  # (4)!
         )
@@ -688,13 +688,13 @@ This example shows how to configure cross-highlighting where clicking on a table
 
     1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
     1. The parameter targets the scatter plot (`scatter_chart`) and specifically the `highlight_country` argument, which determines which trace to highlight.
-    1. We add "None" as an option so the chart starts in an unhighlighted state.
+    1. We add "None" as an option so the target graph starts in an unhighlighted state.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
 1. Call `set_control` in the `actions` argument of the source [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control]. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
+    1. Set `value` to specify which column contains the values used to identify the trace to highlight. For tables, use the column name (e.g., `"country"`). This value determines what gets passed to the target graph's highlighting parameter.
 
     ```python
     import vizro.actions as va
@@ -846,22 +846,25 @@ This example shows how to configure cross-highlighting where clicking on a sourc
     ```python
     import vizro.models as vm
 
-    controls = [
-        vm.Parameter(
-            id="highlight_parameter",
-            targets=["target_graph.highlight_country"],
-            selector=vm.Dropdown(multi=False, options=["option1", "option2", "option3"]),
-            visible=False,  # (1)!
-        )
-    ]
+    controls=[
+                vm.Parameter(
+                    id="highlight_parameter",  # (1)!
+                    targets=["bump_chart.highlight_country"],  # (2)!
+                    selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),  # (3)!
+                    visible=False,  # (4)!
+                ),
+            ]
     ```
 
-    1. The key to cross-highlighting is using `visible=False` on the parameter to hide the selector from the user interface while keeping the functionality active. This prevents redundant controls since the highlighting effect already shows which data is selected.
+    1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+    1. The parameter targets the bump chart (`bump_chart`) and specifically the `highlight_country` argument, which determines which trace to highlight.
+    1. We set "NONE" to be the default so the target graph starts in an unhighlighted state.
+    1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
 1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control]. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
+    1. Set `value` to specify which argument contains the values used to identify the trace to highlight. For graphs, use the argument name where that data is plotted (e.g., `"y"` if the identifying values are on the y-axis). This value determines what gets passed to the target graph's highlighting parameter.
 
     ```python
     import vizro.actions as va
@@ -942,7 +945,7 @@ This example shows how to configure cross-highlighting where clicking on a sourc
                 yaxis_title="Rank (1 = Highest lifeExp)",
             )
 
-            if highlight_country is not None:   # (3)!
+            if highlight_country:   # (3)!
                 for trace in fig.data:
                     if trace.name == highlight_country:
                         trace.opacity = 1.0
@@ -1038,19 +1041,21 @@ To configure self-highlighting:
 
 1. Call `set_control` in the `actions` argument of the same [`Graph`][vizro.models.Graph] that will be highlighted.
 
+    1. Set `control` to the ID of the parameter.
+    1. Set `value` to specify which argument contains the values used to identify the trace to highlight. For graphs, use the argument name where that data is plotted (e.g., `"y"` if the identifying values are on the y-axis). This value determines what gets passed to the graph's highlighting parameter.
+
     ```python
     import vizro.actions as va
 
     components = [
         vm.Graph(
             id="source_graph",  # (1)!
-            actions=va.set_control(control="highlight_parameter", value="y"),  # (2)!
+            actions=va.set_control(control="highlight_parameter", value="y"),
         )
     ]
     ```
 
     1. We give the `vm.Graph` an `id` so that it can target itself through the parameter.
-    1. The `set_control` action uses the `y` value from the clickData to set the parameter.
 
 1. Implement highlighting logic in the graph's figure function using the parameter value to modify the visual appearance of the clicked element.
 
