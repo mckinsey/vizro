@@ -160,8 +160,7 @@ class Page(VizroBaseModel):
         ]
 
         if page_controls:
-            # TODO PP: Think about just adding additional inputs (reset btn, vizro_controls_store) into the URL callback
-            #  In that case change that this callback is registered if any control exist on the page.
+            # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="reset_page_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
