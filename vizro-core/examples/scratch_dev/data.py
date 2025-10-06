@@ -67,3 +67,13 @@ latest_two_years = sorted(superstore_df["Year"].unique())[-2:]
 
 # Filter dataframe for only those two years
 superstore_df = superstore_df[superstore_df["Year"].isin(latest_two_years)].copy()
+
+
+def create_superstore_product(data_frame):
+
+    data_frame["Category / Sub-Category"] = data_frame["Category"] + " / " + data_frame["Sub-Category"]
+    data_frame = data_frame.groupby(["Category / Sub-Category", "Product Name"]).agg({"Sales": "sum", "Profit": "sum"}).reset_index()
+    data_frame["Profit Margin"] = data_frame["Profit"] / data_frame["Sales"]
+    data_frame["Profit Absolute"] = abs(data_frame["Profit"])
+
+    return data_frame

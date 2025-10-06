@@ -19,3 +19,10 @@
 #highlight_region_parameter {
   display: none;
 }
+
+#region-nav-btn,
+#segment-nav-btn,
+#customer-nav-btn {
+  height: 22px;
+  width: 22px;
+}
