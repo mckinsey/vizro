@@ -167,7 +167,7 @@ class Page(VizroBaseModel):
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
                 Input(f"{self.id}_reset_button", "n_clicks"),
                 State("vizro_controls_store", "data"),
-                State(f"{self.id}_page_id_store", "data"),
+                State("page_id_store", "data"),
                 prevent_initial_call=True,
             )
 
@@ -226,6 +226,7 @@ class Page(VizroBaseModel):
             [
                 *action_components,
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
+                dcc.Store(id="page_id_store", data=self.id),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),
             ]

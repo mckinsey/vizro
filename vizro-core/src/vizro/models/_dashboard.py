@@ -197,7 +197,6 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-                *[dcc.Store(id=f"{page.id}_page_id_store", data=page.id) for page in self.pages],
                 dcc.Store(
                     id="vizro_controls_store",
                     data={
