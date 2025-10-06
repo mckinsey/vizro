@@ -28,7 +28,7 @@ def highlighted_box(data_frame, highlight_country=None):  # (1)!
 
 
 page = vm.Page(
-    title="Cross-highlight source graph",
+    title="Self-highlighting",
     components=[
         vm.Graph(
             id="box_chart",  # (4)!
@@ -55,4 +55,4 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=False)

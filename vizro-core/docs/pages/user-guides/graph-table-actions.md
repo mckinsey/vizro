@@ -1092,7 +1092,7 @@ To configure self-highlighting:
     1. We set all boxes to a uniform light blue color by default, overwriting the automatic color assignment from `color="country"`.
     1. We loop through all traces and compare each trace's name against the country clicked in the box plot (passed via the parameter). When we find the matching trace, we change its color to orange to make it stand out.
 
-!!! example "Cross-highlight source graph"
+!!! example "Self-highlighting"
 
     === "app.py"
 
@@ -1129,7 +1129,7 @@ To configure self-highlighting:
             return fig
 
         page = vm.Page(
-            title="Cross-highlight source graph",
+            title="Self-highlighting",
             components=[
                 vm.Graph(
                     id="box_chart",  # (6)!
