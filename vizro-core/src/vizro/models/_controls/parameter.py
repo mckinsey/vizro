@@ -9,6 +9,7 @@ from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
+from vizro.models._components.form._form_utils import get_dict_options_and_default
 from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID, SelectorType, _IdProperty
@@ -133,6 +134,7 @@ class Parameter(VizroBaseModel):
         check_control_targets(control=self)
         self._check_numerical_and_temporal_selectors_values()
         self._check_categorical_selectors_options()
+        self._set_default_value()
         self._set_selector_title()
         self._set_actions()
 
@@ -148,15 +150,8 @@ class Parameter(VizroBaseModel):
         # Wrap the selector in a Div so that the "guard" component can be added.
         selector_build_obj = html.Div(children=[self.selector.build()])
 
-        # if self.show_in_url:
-        #     # Add the guard to the show_in_url parameter selector in the build phase because clientside callback
-        #     # sync_url will be triggered and may adjust its value. Set it to False and let the sync_url clientside
-        #     # callback update it to True when needed. It'll happen when the parameter value comes from the URL.
-        #     selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
-
-        # Add the guard to the parameter selector in the build phase because clientside callback sync_url might be
-        # triggered and may adjust its value. Or reset button could do the same. Set it to False and let the sync_url
-        # clientside callback update it to True when needed. It'll happen when the filter value comes from the URL.
+        # Add the guard component and set it to False. Let clientside callbacks to update it to True when needed.
+        # For example when the parameter value comes from the URL or when reset button is clicked.
         selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
 
         return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
@@ -171,6 +166,21 @@ class Parameter(VizroBaseModel):
     def _check_categorical_selectors_options(self):
         if isinstance(self.selector, (Checklist, Dropdown, RadioItems)) and not self.selector.options:
             raise TypeError(f"{self.selector.type} requires the argument 'options' when used within Parameter.")
+
+    def _set_default_value(self):
+        if self.selector.value is not None:
+            return
+
+        if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):
+            # RangeSlider and DatePicker(range=True)
+            if isinstance(self.selector, RangeSlider) or getattr(self.selector, "range", None):
+                self.selector.value = [self.selector.min, self.selector.max]
+            # Slider and DatePicker(range=False)
+            else:
+                self.selector.value = self.selector.min
+        elif isinstance(self.selector, (Checklist, Dropdown, RadioItems)):
+            multi = isinstance(self.selector, Checklist) or getattr(self.selector, "multi", None)
+            self.selector.value = get_dict_options_and_default(options=self.selector.options, multi=multi)[1]
 
     def _set_selector_title(self):
         if not self.selector.title:

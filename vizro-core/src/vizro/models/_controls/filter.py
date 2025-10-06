@@ -16,6 +16,7 @@ from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Container, VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch
+from vizro.models._components.form._form_utils import get_dict_options_and_default
 from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
@@ -188,11 +189,11 @@ class Filter(VizroBaseModel):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
 
-        # Wrap the selector in a Div so that the "guard" component can be added.
-        selector_call_obj = html.Div(children=[selector_call_obj])
-
-        # For dynamic filters, return the guard component (data=True) to prevent unexpected filter action firing.
-        selector_call_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True))
+        # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
+        selector_call_obj = html.Div(children=[
+            selector_call_obj,
+            dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True),
+        ])
 
         return selector_call_obj
 
@@ -260,15 +261,24 @@ class Filter(VizroBaseModel):
         if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             self.selector = cast(NumericalTemporalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data)
-            # Note that manually set self.selector.min/max = 0 are Falsey but should not be overwritten.
+            # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
                 self.selector.min = _min
             if self.selector.max is None:
                 self.selector.max = _max
+            if self.selector.value is None:
+                # RangeSlider and DatePicker(range=True)
+                if isinstance(self.selector, RangeSlider) or getattr(self.selector, "range", None):
+                    self.selector.value = [self.selector.min, self.selector.max]
+                # Slider and DatePicker(range=False)
+                else:
+                    self.selector.value = self.selector.min
         elif isinstance(self.selector, SELECTORS["categorical"]):
-            # Categorical selector.
             self.selector = cast(CategoricalSelectorType, self.selector)
             self.selector.options = self.selector.options or self._get_options(targeted_data)
+            if self.selector.value is None:
+                multi = isinstance(self.selector, Checklist) or getattr(self.selector, "multi", None)
+                self.selector.value = get_dict_options_and_default(options=self.selector.options, multi=multi)[1]
 
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (
@@ -301,16 +311,8 @@ class Filter(VizroBaseModel):
         # Wrap the selector in a Div so that the "guard" component can be added.
         selector_build_obj = html.Div(children=[selector.build()])
 
-        # if self.show_in_url:
-        #     # Add the guard to the show_in_url filter selector in the build phase because clientside callback
-        #     # sync_url will be triggered and may adjust its value. Set it to False and let the sync_url clientside
-        #     # callback update it to True when needed. It'll happen when the filter value comes from the URL.
-        #     selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
-
-
-        # Add the guard to the filter selector in the build phase because clientside callback sync_url might be
-        # triggered and may adjust its value. Or reset button could do the same. Set it to False and let the sync_url
-        # clientside callback update it to True when needed. It'll happen when the filter value comes from the URL.
+        # Add the guard component and set it to False. Let clientside callbacks to update it to True when needed.
+        # For example when the filter value comes from the URL or when reset button is clicked.
         selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
