@@ -664,7 +664,6 @@ A cross-highlight is when the user clicks on one _source_ graph or table to high
 
 In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md) that controls the visual highlighting behavior. The parameter is typically set to `visible=False` to hide its selector from the user interface while keeping the functionality active. This is particularly useful for cross-highlighting since the highlighting effect itself provides visual feedback about the selected data, making a separate control selector redundant.
 
-
 ### Cross-highlight from table
 
 This example shows how to configure cross-highlighting where clicking on a table row highlights corresponding data in a separate target graph:
@@ -700,11 +699,7 @@ This example shows how to configure cross-highlighting where clicking on a table
     ```python
     import vizro.actions as va
 
-    components = [
-        vm.AgGrid(
-            actions=[va.set_control(control="highlight_parameter", value="country")]
-        )
-    ]
+    components = [vm.AgGrid(actions=[va.set_control(control="highlight_parameter", value="country")])]
     ```
 
 1. Implement highlighting logic in your target graph's figure function using the parameter value to identify which trace to visually highlight.
@@ -829,7 +824,7 @@ This example shows how to configure cross-highlighting where clicking on a table
 
     === "Result"
 
-        ![](../../assets/user_guides/graph_table_actions/cross_highlight_table_to_graph.gif)
+        ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_table.gif)
 
 When you click on a row in the table, the corresponding country is highlighted in the scatter plot with full opacity, an orange color, and a white border, while all other countries remain at low opacity with a light blue color.
 
@@ -841,7 +836,6 @@ When you click on a row in the table, the corresponding country is highlighted i
     1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed to the target component `scatter_chart.highlight_country`, which modifies the visual properties of the trace whose name matches the value passed through the parameter.
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
-
 
 ### Cross-highlight from graph
 
@@ -1004,7 +998,7 @@ This example shows how to configure cross-highlighting where clicking on a sourc
 
     === "Result"
 
-        ![](../../assets/user_guides/graph_table_actions/cross_highlight_target.gif)
+        ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_graph.gif)
 
 When you click on a bar in the bar chart, the corresponding country is highlighted in the line chart.
 
@@ -1016,8 +1010,6 @@ When you click on a bar in the bar chart, the corresponding country is highlight
     1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed to the target component `bump_chart.highlight_country`, which modifies the visual properties of the line chart to highlight the selected country.
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
-
-
 
 ### Self-highlighting
 
@@ -1174,7 +1166,7 @@ To configure self-highlighting:
 
     === "Result"
 
-        ![](../../assets/user_guides/graph_table_actions/cross_highlight_source.gif)
+        ![](../../assets/user_guides/graph_table_actions/cross_highlight_self.gif)
 
 When you click on a box in the box plot, that country's box is highlighted with full opacity while all other countries are dimmed. Simultaneously, the table below is filtered to show only data for the selected country.
 
