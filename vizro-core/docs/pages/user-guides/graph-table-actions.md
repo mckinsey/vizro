@@ -846,7 +846,7 @@ This example shows how to configure cross-highlighting where clicking on a graph
     ```python
     import vizro.models as vm
 
-    controls=[
+    controls = [
         vm.Parameter(
             id="highlight_parameter",  # (1)!
             targets=["bump_chart.highlight_country"],  # (2)!
@@ -1178,7 +1178,7 @@ To configure self-highlighting:
 
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_self.gif)
 
-When you click on a box in the box plot, that country's box is highlighted in orange  while all other countries remain light blue. Simultaneously, the table below is filtered to show only data for the selected country.
+When you click on a box in the box plot, that country's box is highlighted in orange while all other countries remain light blue. Simultaneously, the table below is filtered to show only data for the selected country.
 
 ??? details "Behind the scenes mechanism"
 

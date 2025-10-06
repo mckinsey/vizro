@@ -7,16 +7,10 @@ from vizro.models.types import capture
 from vizro import Vizro
 from vizro.tables import dash_ag_grid
 
-SELECTED_COUNTRIES = [
-    "Singapore",
-    "Malaysia",
-    "Thailand",
-    "Indonesia",
-    "Philippines",
-    "NONE"
-]
+SELECTED_COUNTRIES = ["Singapore", "Malaysia", "Thailand", "Indonesia", "Philippines", "NONE"]
 
 gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
+
 
 @capture("graph")
 def highlighted_box(data_frame, highlight_country=None):  # (1)!
@@ -26,11 +20,12 @@ def highlighted_box(data_frame, highlight_country=None):  # (1)!
 
     if highlight_country:
         for trace in fig.data:
-            if trace.name == highlight_country:  
+            if trace.name == highlight_country:
                 trace.marker.opacity = 1.0
                 trace.marker.color = "#ff9222"
 
     return fig
+
 
 page = vm.Page(
     title="Cross-highlight source graph",
