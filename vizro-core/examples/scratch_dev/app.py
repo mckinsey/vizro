@@ -7,35 +7,6 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
 
-# TODO PP:
-#  [DONE] Make PoC
-#    [DONE] Make button
-#    [DONE] Make vizro_controls_store
-#    [DONE] Make js fun
-#  [DONE] Make guardian existing for all filter/parameters
-#  [DONE] Fix output OPL-trigger duplicate output issue.
-#  [DONE] scratch-app add all selectors to all pages. [static, dynamic, url, hidden]
-#    [DONE] Add set controls button and fix layout for all pages.
-#    [DONE] Add a parameter
-#  [DONE] Fix null originalValue added for p1_control_1_selector and maybe others
-#  [DONE] Fix comments
-#  [DONE] Fix appearance of reset-controls btn.
-#    1. if controls and control-panel show in control panel
-#    2. if controls and no control-page show in header (dashboard or page level)
-#    3. if no controls, no button.
-#  [DONE] Adjust so it's a text button.
-#  [DONE] Fix page store by creating one page store with a single ID in the page.build.
-#  [DONE] Fix it exists only if there are controls on the page.
-#  [DONE] ADD comment Investigate should the just adjust the sync_url except adding a new clientside callback.
-#    [] cross link this with the https://github.com/McK-Internal/vizro-internal/issues/2054
-#  [] lint
-#  [] unit tests
-#  [] js tests
-#  [] screenshot and other e2e tests
-#  [] Add changelog
-#  [] Should we explain this feature in docs?
-#  [] Should I adjust docs screenshots? Probably not worth it.
-
 
 df = px.data.iris()
 df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
