@@ -7,12 +7,12 @@ from vizro.models.types import capture
 from vizro import Vizro
 from vizro.tables import dash_ag_grid
 
-# Filter to 2007 data and include all countries for better visualization
+
 gapminder_2007 = px.data.gapminder().query("continent == 'Europe' and year == 2007")
 
 
 @capture("graph")
-def scatter_plot(data_frame, highlight_country=None):  # (1)!
+def scatter_plot(data_frame, highlight_country=None):
     fig = px.scatter(
         data_frame,
         x="gdpPercap",
@@ -20,14 +20,11 @@ def scatter_plot(data_frame, highlight_country=None):  # (1)!
         size="pop",
         size_max=60,
         color="country",
-        title="GDP per Capita vs Life Expectancy (2007)",
     )
 
-    # Hide legend and set all points to low opacity by default
     fig.update_layout(showlegend=False)
     fig.update_traces(marker=dict(opacity=0.3, color="#00b4ff"))
 
-    # Implement a highlighting logic for the scatter plot using the parameter value to identify which trace to visually highlight.
     for trace in fig.data:
         if trace.name == highlight_country:
             trace.marker.opacity = 1.0
@@ -40,11 +37,11 @@ def scatter_plot(data_frame, highlight_country=None):  # (1)!
 
 page = vm.Page(
     title="Cross-highlight from table to graph",
-    layout=vm.Layout(grid=[[0, 1]]),
+    layout=vm.Layout(grid=[[0, 1]], col_gap="80px"),
     components=[
         vm.AgGrid(
+            header="💡 Click on a row to highlight that country in the scatter plot",
             figure=dash_ag_grid(data_frame=gapminder_2007),
-            title="Click on a row to highlight that country in the scatter plot",
             actions=[va.set_control(control="highlight_parameter", value="country")],  # (6)!
         ),
         vm.Graph(
