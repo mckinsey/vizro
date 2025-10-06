@@ -179,7 +179,7 @@ class Parameter(VizroBaseModel):
             else:
                 self.selector.value = self.selector.min
         elif isinstance(self.selector, (Checklist, Dropdown, RadioItems)):
-            multi = isinstance(self.selector, Checklist) or getattr(self.selector, "multi", None)
+            multi = isinstance(self.selector, Checklist) or getattr(self.selector, "multi", False)
             self.selector.value = get_dict_options_and_default(options=self.selector.options, multi=multi)[1]
 
     def _set_selector_title(self):

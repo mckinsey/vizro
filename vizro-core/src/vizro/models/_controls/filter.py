@@ -190,15 +190,17 @@ class Filter(VizroBaseModel):
             selector_call_obj = selector(min=_min, max=_max)
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
-        selector_call_obj = html.Div(children=[
-            selector_call_obj,
-            dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True),
-        ])
+        selector_call_obj = html.Div(
+            children=[
+                selector_call_obj,
+                dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True),
+            ]
+        )
 
         return selector_call_obj
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self):  # noqa: PLR0912
         # If page filter validate that targets present on the page where the filter is defined.
         # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
@@ -277,7 +279,7 @@ class Filter(VizroBaseModel):
             self.selector = cast(CategoricalSelectorType, self.selector)
             self.selector.options = self.selector.options or self._get_options(targeted_data)
             if self.selector.value is None:
-                multi = isinstance(self.selector, Checklist) or getattr(self.selector, "multi", None)
+                multi = isinstance(self.selector, Checklist) or getattr(self.selector, "multi", False)
                 self.selector.value = get_dict_options_and_default(options=self.selector.options, multi=multi)[1]
 
         if not self.selector.actions:

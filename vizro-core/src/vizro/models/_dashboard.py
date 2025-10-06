@@ -32,11 +32,11 @@ from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
+from vizro.models._controls import Filter, Parameter
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ControlType
-from vizro.models._controls import Filter, Parameter
 
 if TYPE_CHECKING:
     from vizro.models import Page

@@ -151,13 +151,10 @@ class Page(VizroBaseModel):
         if targets:
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
-        page_controls = [
-            control
-            for control in cast(
-                Iterable[ControlType],
-                [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
-            )
-        ]
+        page_controls = cast(
+            Iterable[ControlType],
+            [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
+        )
 
         if page_controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
