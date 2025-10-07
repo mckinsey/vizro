@@ -202,7 +202,7 @@ If you use [dynamic data](data.md/#dynamic-data) that can be updated while the d
 
 For further customizations, refer to the [guide to selectors](selectors.md) and the [`Parameter` model][vizro.models.Parameter]. Some popular choices are:
 
-- Customize the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical parameter or `min` and `max` for a numerical parameter.
+- Customize the `selector`. For example: `multi`, to switch between a multi-option and single-option selector; `options` for a categorical parameter; or `min` and `max` for a numerical parameter.
 - Make the parameter's selector invisible by setting `visible=False`. This is particularly useful for graph interactions where you want to hide the selector from the user interface while keeping the functionality active. Cross-highlighting is a common example of this pattern. For a complete code example, see the [cross-highlighting section](graph-table-actions.md#cross-highlight) in the graph and table interactions guide.
 
 [nested]: ../../assets/user_guides/control/control5.png
