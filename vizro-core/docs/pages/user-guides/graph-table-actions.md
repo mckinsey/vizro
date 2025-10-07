@@ -670,19 +670,19 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 A cross-highlight is when the user clicks on one _source_ graph or table to highlight corresponding data in a _target_ graph or table (in practice, typically a [custom graph](custom-charts.md)). The highlighting can occur in two ways:
 
 - _Target highlighting_. The highlighting appears in a target graph that is distinct from the source that was clicked. Below we give examples of highlighting a target graph [from a source table](#cross-highlight-from-table) and [from a source graph](#cross-highlight-from-graph).
-- _Source highlighting_ or _self-highlighting_. The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting). 
+- _Source highlighting_ or _self-highlighting_. The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting).
 
 In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md). Often this parameter is hidden from view with `visible=False` since the highlighting effect itself provides sufficient visual feedback about the selected data.
 
 In general, there are many different ways to visually highlight data in a graph. For example:
 
-* Change the [style of a marker](https://plotly.com/python/marker-style/), for example its color, opacity, marker shape or size.
-* Add an [annotation](https://plotly.com/python/text-and-annotations/#text-annotations).
-* Highlight a [region](https://plotly.com/python/horizontal-vertical-shapes/) of the plot's background.
+- Change the [style of a marker](https://plotly.com/python/marker-style/), for example its color, opacity, marker shape or size.
+- Add an [annotation](https://plotly.com/python/text-and-annotations/#text-annotations).
+- Highlight a [region](https://plotly.com/python/horizontal-vertical-shapes/) of the plot's background.
 
 ### Cross-highlight from table
 
-This example shows how to configure cross-highlighting where clicking on the row in a table row highlights the corresponding data in a target graph. The highlighting is visually shown by changing the color of the point for the selected country. 
+This example shows how to configure cross-highlighting where clicking on the row in a table row highlights the corresponding data in a target graph. The highlighting is visually shown by changing the color of the point for the selected country.
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
@@ -712,9 +712,7 @@ This example shows how to configure cross-highlighting where clicking on the row
     ```python
     import vizro.actions as va
 
-    components = [
-        vm.AgGrid(..., actions=va.set_control(control="highlight_parameter", value="country"))
-    ]
+    components = [vm.AgGrid(..., actions=va.set_control(control="highlight_parameter", value="country"))]
     ```
 
 1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
@@ -796,12 +794,12 @@ The full code is given below. This shows a slightly more complicated highlightin
         )
 
         dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()       
+        Vizro().build(dashboard).run()
         ```
 
         1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
-        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted point. 
-        1. We make sure that the colors are always ordered the same way. This ensures that the highlighted point always has the same color regardless of which row in the table is clicked. 
+        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted point.
+        1. We make sure that the colors are always ordered the same way. This ensures that the highlighted point always has the same color regardless of which row in the table is clicked.
         1. When a country is highlighted, make [further modifications](https://plotly.com/python/creating-and-updating-figures/) to the [style of the highlighted point's marker](https://plotly.com/python/marker-style/) to make it stand out more.
         1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected with index 1. The traces are ordered by `category_orders={"color": [False, True]}` and so this corresponds to `True`, in other words the trace that has `country_is_highlighted=True` and contains the highlighted point.
         1. We use a side-by-side [layout](layouts.md) with an 80px column gap to display the table and graph together.
