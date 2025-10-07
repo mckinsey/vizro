@@ -16,8 +16,11 @@ from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Container, VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch
-from vizro.models._components.form._form_utils import get_dict_options_and_default
-from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
+from vizro.models._controls._controls_utils import (
+    check_control_targets,
+    set_selector_default_value,
+    warn_missing_id_for_url_control,
+)
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
@@ -200,7 +203,7 @@ class Filter(VizroBaseModel):
         return selector_call_obj
 
     @_log_call
-    def pre_build(self):  # noqa: PLR0912
+    def pre_build(self):
         # If page filter validate that targets present on the page where the filter is defined.
         # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
@@ -268,19 +271,12 @@ class Filter(VizroBaseModel):
                 self.selector.min = _min
             if self.selector.max is None:
                 self.selector.max = _max
-            if self.selector.value is None:
-                # RangeSlider and DatePicker(range=True)
-                if isinstance(self.selector, RangeSlider) or getattr(self.selector, "range", None):
-                    self.selector.value = [self.selector.min, self.selector.max]
-                # Slider and DatePicker(range=False)
-                else:
-                    self.selector.value = self.selector.min
         elif isinstance(self.selector, SELECTORS["categorical"]):
             self.selector = cast(CategoricalSelectorType, self.selector)
             self.selector.options = self.selector.options or self._get_options(targeted_data)
-            if self.selector.value is None:
-                multi = isinstance(self.selector, Checklist) or getattr(self.selector, "multi", False)
-                self.selector.value = get_dict_options_and_default(options=self.selector.options, multi=multi)[1]
+
+        # Set default value for the selector if not explicitly provided.
+        set_selector_default_value(control_selector=self.selector)
 
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (

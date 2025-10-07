@@ -322,7 +322,7 @@ class Dashboard(VizroBaseModel):
                     # Placeholder div is added as used as target from actions to show loading indicator.
                     children=html.Div(id="action-progress-indicator-placeholder"),
                 ),
-                # Show reset button in header when page controls exist but control panel does not exist
+                # Show the reset button in the header when there are page controls but no control panel.
                 reset_page_controls_btn if has_page_controls and _all_hidden(control_panel) else None,
                 dbc.Switch(
                     id="theme-selector",
@@ -339,7 +339,7 @@ class Dashboard(VizroBaseModel):
         else:
             header_right_content.append(header_controls)
 
-        # Show reset button in the control panel when page controls and control panel exist
+        # Show reset button in the control panel when both page controls and control panel exist.
         if has_page_controls and not _all_hidden(control_panel):
             control_panel.children.append(reset_page_controls_btn)
 

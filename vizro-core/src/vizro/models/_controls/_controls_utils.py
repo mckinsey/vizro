@@ -4,8 +4,9 @@ from typing import Optional
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Container, VizroBaseModel
-from vizro.models.types import ControlType
+from vizro.models import Checklist, Container, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, VizroBaseModel
+from vizro.models._components.form._form_utils import get_dict_options_and_default
+from vizro.models.types import ControlType, SelectorType
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
@@ -52,3 +53,17 @@ def warn_missing_id_for_url_control(control: ControlType) -> None:
             "If you want to ensure that links continue working, set a fixed `id`.",
             UserWarning,
         )
+
+
+def set_selector_default_value(control_selector: SelectorType) -> None:
+    """Set default value for the control's selector if not explicitly provided."""
+    if control_selector.value is not None:
+        return
+
+    if isinstance(control_selector, (Slider, RangeSlider, DatePicker)):
+        is_range = isinstance(control_selector, RangeSlider) or getattr(control_selector, "range", False)
+        control_selector.value = [control_selector.min, control_selector.max] if is_range else control_selector.min
+    elif isinstance(control_selector, (Checklist, Dropdown, RadioItems)):
+        is_multi = isinstance(control_selector, Checklist) or getattr(control_selector, "multi", False)
+        _, default_value = get_dict_options_and_default(options=control_selector.options, multi=is_multi)
+        control_selector.value = default_value
