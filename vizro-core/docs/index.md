@@ -40,8 +40,6 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
-    [`llms.txt`](llms.txt)
-
 - :fontawesome-solid-book-open:{ .lg .middle } __Find out more__
 
     ---
