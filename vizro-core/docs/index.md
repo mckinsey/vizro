@@ -42,8 +42,6 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [`llms.txt`](llms.txt)
 
-    [`llms-full.txt`](llms-full.txt)
-
 - :fontawesome-solid-book-open:{ .lg .middle } __Find out more__
 
     ---

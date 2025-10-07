@@ -139,7 +139,6 @@ plugins:
   - search
   - autorefs
   - llmstxt: # https://pypi.org/project/mkdocs-llmstxt/
-      docs_version: https://vizro.readthedocs.io/en/0.1.46
       markdown_description:
         Vizro is an open-source Python-based toolkit to build data visualization apps.
 
