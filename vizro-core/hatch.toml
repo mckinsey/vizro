@@ -115,7 +115,7 @@ dependencies = [
   "mkdocstrings[python]",
   "griffe-warnings-deprecated",
   "mkdocs-llmstxt-md",
-  "mkdocs-llmstxt>=0.4.0",
+  "mkdocs-llmstxt",
   "linkchecker",
   "mkdocs-open-in-new-tab",
   "mkdocs-pycafe",
