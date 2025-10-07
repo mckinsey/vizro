@@ -151,6 +151,7 @@ page_1 = vm.Page(
         ),
         vm.Container(
             title="",
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0],[1]]),
             components=[
                 vm.Graph(
                     id="line_chart_by_month",
@@ -159,7 +160,6 @@ page_1 = vm.Page(
                         value_col="Sales",
                     ),
                 ),
-                vm.Graph(id="customer_pie_chart", figure=pie_chart_by_category(superstore_df, value_col="Sales")),
                 vm.Button(
                     id="customer-nav-btn",
                     text="",
@@ -171,99 +171,20 @@ page_1 = vm.Page(
                     ),
                 ),
             ],
-            layout=vm.Grid(
-                grid=[
-                    *[
-                        [
-                            -1,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                            1,
-                        ]
-                    ]
-                    * 5,
-                    [
-                        2,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                    ],
-                ],
-                col_gap="2px",
-            ),
+            variant="filled",
+        ),
+        vm.Container(
+            title="",
+            components=[
+                vm.Graph(id="customer_pie_chart", figure=pie_chart_by_category(superstore_df, value_col="Sales")),
+            ],
             variant="filled",
         ),
     ],
     controls=[
         vm.Parameter(
             id="pg1_parameter_1",
-            selector=vm.RadioItems(options=["Sales", "Profit", "Order ID"], title="Metric"),
+            selector=vm.RadioItems(options=["Sales", "Profit", "Order ID", "Customer ID"], title="Metric"),
             targets=[
                 "region_bar_chart.value_col",
                 "customer_pie_chart.value_col",
@@ -272,21 +193,16 @@ page_1 = vm.Page(
             ],
             show_in_url=True,
         ),
-        vm.Parameter(
-            id="highlight_region_parameter",
-            targets=["region_bar_chart.highlight_region"],
-            selector=vm.Dropdown(multi=False, options=["Central", "East", "West", "South", "NONE"], value="NONE"),
-        ),
     ],
     layout=vm.Grid(
         grid=[
-            [0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 2, 2, 2],
-            [1, 1, 1, 1, 2, 2, 2],
-            [1, 1, 1, 1, 2, 2, 2],
-            [3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3, 3],
+            [0, 0, 0, 0, 0],
+            [1, 1, 1, 2, 2],
+            [1, 1, 1, 2, 2],
+            [1, 1, 1, 2, 2],
+            [3, 3, 3, 4, 4],
+            [3, 3, 3, 4, 4],
+            [3, 3, 3, 4, 4],
         ],
     ),
 )
@@ -377,15 +293,7 @@ page_2 = vm.Page(
             ],
         ),
     ],
-    layout=vm.Grid(
-        grid=[
-            [0, 0, 0, 1, 1],
-            [0, 0, 0, 1, 1],
-            [0, 0, 0, 1, 1],
-            [0, 0, 0, 1, 1],
-            [0, 0, 0, 1, 1],
-        ]
-    ),
+    layout=vm.Grid(grid=[[0, 0, 0, 1, 1]]),
 )
 
 page_3 = vm.Page(
@@ -411,12 +319,7 @@ page_3 = vm.Page(
             selector=vm.Dropdown(options=customer_name, value="NONE", multi=False),
         ),
     ],
-    layout=vm.Grid(
-        grid=[
-            [0, 0, 1, 1],
-            [0, 0, 1, 1],
-        ]
-    ),
+    layout=vm.Grid(grid=[[0, 0, 1, 1]]),
 )
 
 
