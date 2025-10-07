@@ -3,7 +3,7 @@
 In this guide we show you how to configure interactions between graphs and tables, as is commonly done in business intelligence (BI) tools. In Vizro, all such interactions are enabled by an intermediate [control](controls.md) that you must explicitly define. For example:
 
 - [Cross-filter](#cross-filter): a _source_ graph or table filters the `data_frame` of a _target_ graph or table. The source component sets a [filter](filters.md), which in turn updates the target component.
-- [Cross-parameter](#cross-parameter): a _source_ graph or table updates any argument other than `data_frame` of a _target_ graph or table. The source components sets a [parameter](parameters.md), which in turn updates the target component.
+- [Cross-parameter](#cross-parameter): a _source_ graph or table updates any argument other than `data_frame` of a _target_ graph or table. The source component sets a [parameter](parameters.md), which in turn updates the target component.
 - [Cross-highlight](#cross-highlight): a _source_ graph or table highlights data in a _target_ graph or table. This is an example of a [cross-parameter](#cross-parameter).
 
 All these interactions use the [`set_control` action][vizro.actions.set_control]. This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
@@ -626,11 +626,21 @@ vm.AgGrid(
 
 However, it is not yet possible to cross-filter from a pivot table according to the row and column of the clicked cell.
 
+<!--
+TODO NOW:
+- cross-highlight as subsection of cross-parameter?
+- real world example of cross-parameter that's not highlight - save for separate PR but what would it be?
+- explain when custom_data needed better. Align cross-filter and cross-parameter explanations on this
+- dropdown to radioitems
+- check bookmarks
+- yaml examples
+-->
+
 ## Cross-parameter
 
 A cross-parameter is when the user clicks on one _source_ graph or table to update any argument other than `data_frame` of one or more _target_ components. In Vizro, a cross-parameter operates through an intermediate [parameter](parameters.md). To configure a cross-parameter:
 
-1. Create a parameter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to update. The parameter can have any [selector](selectors.md) type depending on your use case.
+1. Create a parameter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to update. The parameter must have a [categorical selector](selectors.md#categorical-selectors) (both multi- and single-option are allowed).
 
     ```python
     import vizro.models as vm
@@ -639,7 +649,7 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
         vm.Parameter(
             id="my_parameter",
             targets=["target_component.my_argument"],
-            selector=vm.RadioItems(options=["option1", "option2", "option3"]),
+            selector=vm.RadioItems(options=["A", "B", "C"]),
         )
     ]
     ```
@@ -657,16 +667,22 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 
 ## Cross-highlight
 
-A cross-highlight is when the user clicks on one _source_ graph or table to highlight corresponding data, typically in a graph. The highlighting can occur in two ways:
+A cross-highlight is when the user clicks on one _source_ graph or table to highlight corresponding data in a _target_ graph or table (in practice, typically a [custom graph](custom-charts.md)). The highlighting can occur in two ways:
 
-- **Target highlighting:** The highlighting appears in a different _target_ graph (separate from the source that was clicked)
-- **Source highlighting:** The highlighting appears in the same _source_ graph that was clicked (self-highlighting)
+- _Target highlighting_. The highlighting appears in a target graph that is distinct from the source that was clicked. Below we give examples of highlighting a target graph [from a source table](#cross-highlight-from-table) and [from a source graph](#cross-highlight-from-graph).
+- _Source highlighting_ or _self-highlighting_. The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting). 
 
-In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md) that controls the visual highlighting behavior. The parameter is typically set to `visible=False` to hide its selector from the user interface while keeping the functionality active. This is particularly useful for cross-highlighting since the highlighting effect itself provides sufficient visual feedback about the selected data.
+In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md). Often this parameter is hidden from view with `visible=False` since the highlighting effect itself provides sufficient visual feedback about the selected data.
+
+In general, there are many different ways to visually highlight data in a graph. For example:
+
+* Change the [style of a marker](https://plotly.com/python/marker-style/), for example its color, opacity, marker shape or size.
+* Add an [annotation](https://plotly.com/python/text-and-annotations/#text-annotations).
+* Highlight a [region](https://plotly.com/python/horizontal-vertical-shapes/) of the plot's background.
 
 ### Cross-highlight from table
 
-This example shows how to configure cross-highlighting where clicking on a table row highlights corresponding data in a separate target graph:
+This example shows how to configure cross-highlighting where clicking on the row in a table row highlights the corresponding data in a target graph. The highlighting is visually shown by changing the color of the point for the selected country. 
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
@@ -677,72 +693,54 @@ This example shows how to configure cross-highlighting where clicking on a table
         vm.Parameter(
             id="highlight_parameter",  # (1)!
             targets=["scatter_chart.highlight_country"],  # (2)!
-            selector=vm.Dropdown(
-                multi=False,
-                options=["NONE"] + gapminder_2007["country"].unique().tolist(),  # (3)!
-            ),
+            selector=vm.RadioItems(options=["NONE", ...]),  # (3)!
             visible=False,  # (4)!
         )
     ]
     ```
 
     1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
-    1. The parameter targets the scatter plot (`scatter_chart`) and specifically the `highlight_country` argument, which determines which trace to highlight.
-    1. We add "None" as an option so the target graph starts in an unhighlighted state.
+    1. The parameter targets the argument `highlight_country` of `vm.Graph(id="scatter_chart")`.
+    1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
 1. Call `set_control` in the `actions` argument of the source [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value` to specify which column contains the values used to identify the trace to highlight. For tables, use the column name (e.g., `"country"`). This value determines what gets passed to the target graph's highlighting parameter.
+    1. Set `value` to specify which column contains the value used to identify the trace to highlight. For tables, use the column name (e.g., `"country"`). This value determines what gets passed to the target graph's highlighting parameter.
 
     ```python
     import vizro.actions as va
 
-    components = [vm.AgGrid(actions=[va.set_control(control="highlight_parameter", value="country")])]
+    components = [
+        vm.AgGrid(..., actions=va.set_control(control="highlight_parameter", value="country"))
+    ]
     ```
 
-1. Implement highlighting logic in your target graph's figure function using the parameter value to identify which trace to visually highlight.
+1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
 
     ```python
+    import vizro.plotly.express as px
     from vizro.models.types import capture
 
 
     @capture("graph")
-    def scatter_plot(data_frame, highlight_country=None):  # (1)!
-        fig = px.scatter(
-            data_frame,
-            x="gdpPercap",
-            y="lifeExp",
-            size="pop",
-            size_max=60,
-            color="country",  # (2)!
-            title="GDP per Capita vs Life Expectancy (2007)",
-        )
-        fig.update_layout(showlegend=False)
-        fig.update_traces(marker=dict(opacity=0.3, color="#00b4ff"))  # (3)!
-
-        if highlight_country:
-            for trace in fig.data:
-                if trace.name == highlight_country:  # (4)!
-                    trace.marker.opacity = 1.0
-                    trace.marker.color = "#ff9222"
-                    trace.marker.line.width = 1
-                    trace.marker.line.color = "white"
-
-        return fig
+    def scatter_with_highlight(data_frame, highlight_country):  # (1)!
+        country_is_highlighted = data_frame["country"] == highlight_country  # (2)!
+        return px.scatter(data_frame, x=..., y=..., color=country_is_highlighted)  # (3)!
     ```
 
-    1. The `highlight_country` argument receives the selected country name from the cross-parameter interaction and is used to identify which trace to highlight.
-    1. Using `color="country"` creates one trace per country and sets each trace's name to the country name. This makes it easy to identify traces by name in the highlighting logic. Note that we later overwrite the automatic color assignment to make all points uniformly colored.
-    1. We set all points to low opacity and a uniform light blue color by default, overwriting the automatic color assignment from `color="country"`.
-    1. We loop through all traces and compare each trace's name against the country clicked in the table (passed via the parameter). When we find the matching trace, we increase its opacity, change its color to orange, and add a white border to make it stand out.
+    1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
+    1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others.
+    1. We color the points by `country_is_highlighted`. This will color differently the values `True` (for the highlighted country) and `False` (for all others).
+
+The full code is given below. This shows a slightly more complicated highlighting style that also changes some additional properties of the highlighted point like its opacity.
 
 !!! example "Cross-highlight from table"
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="41"}
         import vizro.plotly.express as px
         import vizro.models as vm
         import vizro.actions as va
@@ -750,72 +748,68 @@ This example shows how to configure cross-highlighting where clicking on a table
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
 
-
-        gapminder_2007 = px.data.gapminder().query("continent == 'Europe' and year == 2007")
-
+        gapminder = px.data.gapminder().query("continent == 'Europe' and year == 2007")
 
         @capture("graph")
-        def scatter_plot(data_frame, highlight_country=None):  # (1)!
+        def scatter_with_highlight(data_frame, highlight_country=None):  # (1)!
+            country_is_highlighted = data_frame["country"] == highlight_country  # (2)!
             fig = px.scatter(
                 data_frame,
                 x="gdpPercap",
                 y="lifeExp",
                 size="pop",
                 size_max=60,
-                color="country",   # (2)!
+                opacity=0.3,
+                color=country_is_highlighted,
+                category_orders={"color": [False, True]},  # (3)!
             )
+
+            if highlight_country is not None: # (4)!
+                fig.update_traces(selector=1, marker={"line_width": 2, "opacity": 1})  # (5)!
+
             fig.update_layout(showlegend=False)
-            fig.update_traces(marker=dict(opacity=0.3, color="#00b4ff"))   # (3)!
-
-            if highlight_country:
-                for trace in fig.data:
-                    if trace.name == highlight_country:  # (4)!
-                        trace.marker.opacity = 1.0
-                        trace.marker.color = "#ff9222"
-                        trace.marker.line.width = 1
-                        trace.marker.line.color = "white"
-
             return fig
 
 
         page = vm.Page(
             title="Cross-highlight from table to graph",
-            layout=vm.Layout(grid=[[0, 1]], col_gap="80px"),  # (5)!
+            layout=vm.Layout(grid=[[0, 1]], col_gap="80px"),  # (6)!
             components=[
                 vm.AgGrid(
                     header="💡 Click on a row to highlight that country in the scatter plot",
-                    figure=dash_ag_grid(data_frame=gapminder_2007),
-                    actions=[va.set_control(control="highlight_parameter", value="country")],  # (6)!
+                    figure=dash_ag_grid(data_frame=gapminder),
+                    actions=va.set_control(control="highlight_parameter", value="country"),  # (7)!
                 ),
                 vm.Graph(
-                    id="scatter_chart",   # (7)!
-                    figure=scatter_plot(data_frame=gapminder_2007),
+                    id="scatter_chart",   # (8)!
+                    figure=scatter_with_highlight(gapminder),
                 ),
             ],
             controls=[
                 vm.Parameter(
-                    id="highlight_parameter",   # (8)!
-                    targets=["scatter_chart.highlight_country"],   # (9)!
-                    selector=vm.Dropdown(multi=False, options=["NONE"] + gapminder_2007["country"].unique().tolist()),   # (10)!
-                    visible=False,   # (11)!
+                    id="highlight_parameter",   # (9)!
+                    targets=["scatter_chart.highlight_country"],   # (10)!
+                    selector=vm.RadioItems(options=["NONE", *gapminder["country"]]),   # (11)!
+                    visible=False,   # (12)!
                 ),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()       
         ```
 
-        1. The `highlight_country` argument receives the selected country name from the cross-parameter interaction and is used to identify which trace to highlight.
-        1. Using `color="country"` creates one trace per country and sets each trace's name to the country name. This makes it easy to identify traces by name in the highlighting logic. Note that we later overwrite the automatic color assignment to make all points uniformly colored.
-        1. We set all points to low opacity and a uniform light blue color by default, overwriting the automatic color assignment from `color="country"`.
-        1. We loop through all traces and compare each trace's name against the country clicked in the table (passed via the parameter). When we find the matching trace, we increase its opacity, change its color to orange, and add a white border to make it stand out.
+        1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
+        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted point. 
+        1. We make sure that the colors are always ordered the same way. This ensures that the highlighted point always has the same color regardless of which row in the table is clicked. 
+        1. When a country is highlighted, make [further modifications](https://plotly.com/python/creating-and-updating-figures/) to the [style of the highlighted point's marker](https://plotly.com/python/marker-style/) to make it stand out more.
+        1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected with index 1. The traces are ordered by `category_orders={"color": [False, True]}` and so this corresponds to `True`, in other words the trace that has `country_is_highlighted=True` and contains the highlighted point.
         1. We use a side-by-side [layout](layouts.md) with an 80px column gap to display the table and graph together.
-        1. The table action sets the parameter using the country from the clicked row.
-        1. We give the `vm.Graph` an `id` so that it can be targeted by the parameter.
-        1. We give the `vm.Parameter` an `id` so that it can be set explicitly by `va.set_control`.
-        1. The parameter targets the scatter plot (`scatter_chart`) and specifically the `highlight_country` argument, which determines which trace to highlight.
-        1. We add "None" as an option so the chart starts in an unhighlighted state.
+        1. The table's `va.set_control` sets `higlight_parameter` to the country from the clicked row.
+        1. We give the `vm.Graph` an `id` so that it can be targeted by `highlight_parameter`.
+        1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+        1. The parameter targets the argument `highlight_country` of `vm.Graph(id="scatter_chart")`.
+        1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
         1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
     === "app.yaml"
@@ -826,20 +820,20 @@ This example shows how to configure cross-highlighting where clicking on a table
 
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_table.gif)
 
-When you click on a row in the table, the corresponding country is highlighted in the scatter plot with full opacity, an orange color, and a white border, while all other countries remain at low opacity with a light blue color.
+When you click on a row in the table, the corresponding point is highlighted in the scatter plot with an orange color, full opacity, and a thick border.
 
 ??? details "Behind the scenes mechanism"
 
     In full, what happens is as follows:
 
     1. Clicking on the table row triggers the `va.set_control` action. This uses the value of `country` taken from the row data to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
-    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed to the target component `scatter_chart.highlight_country`, which modifies the visual properties of the trace whose name matches the value passed through the parameter.
+    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to update the `highlight_country` argument of the target component `scatter_chart` so that a highlighted graph is shown.
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 ### Cross-highlight from graph
 
-This example shows how to configure cross-highlighting where clicking on a graph highlights corresponding data in a separate target graph:
+This example shows how to configure cross-highlighting where clicking on a point in a graph highlights the corresponding data in a different target graph:
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
@@ -850,7 +844,7 @@ This example shows how to configure cross-highlighting where clicking on a graph
         vm.Parameter(
             id="highlight_parameter",  # (1)!
             targets=["bump_chart.highlight_country"],  # (2)!
-            selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),  # (3)!
+            selector=vm.RadioItems(options=SELECTED_COUNTRIES, value="NONE"),  # (3)!
             visible=False,  # (4)!
         ),
     ]
