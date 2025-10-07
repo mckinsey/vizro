@@ -22,19 +22,21 @@ Click the "Install" button below:
 
 [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)
 
-    !!! tip "To specify a version of Vizro-MCP"
+````
+!!! tip "To specify a version of Vizro-MCP"
 
-    To use a specific version of Vizro-MCP, update the `mcp.json` configuration to instruct `uv` accordingly. For example, to use Vizro-MCP [version 0.1.12](https://github.com/mckinsey/vizro/tree/vizro-mcp-0.1.2), specify the configuration like this:
+To use a specific version of Vizro-MCP, update the `mcp.json` configuration to instruct `uv` accordingly. For example, to use Vizro-MCP [version 0.1.12](https://github.com/mckinsey/vizro/tree/vizro-mcp-0.1.2), specify the configuration like this:
 
-    ```json
-    {
-      "vizro-mcp": {
-        "command": "uvx vizro-mcp@0.1.2 check"
-      }
-    }
-    ```
+```json
+{
+  "vizro-mcp": {
+    "command": "uvx vizro-mcp@0.1.2 check"
+  }
+}
+```
 
-    The `uv documentation` contains more information about the [syntax needed to request a specific version ](https://docs.astral.sh/uv/guides/tools/#requesting-specific-versions)of Vizro-MCP.
+The `uv documentation` contains more information about the [syntax needed to request a specific version ](https://docs.astral.sh/uv/guides/tools/#requesting-specific-versions)of Vizro-MCP.
+````
 
 ### Using Docker
 
