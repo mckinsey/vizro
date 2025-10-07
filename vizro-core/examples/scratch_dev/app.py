@@ -473,14 +473,29 @@ navigation = vm.Navigation(
     nav_selector=vm.NavBar(
         items=[
             vm.NavLink(
-                pages=["Overview dashboard", "Regional view", "Customer view", "Product view"],
-                label="Dashboard",
-                icon="analytics",
+                pages=["Overview dashboard"],
+                label="Overview",
+                icon="Home",
+            ),
+            vm.NavLink(
+                pages=["Regional view"],
+                label="Region",
+                icon="Globe Asia",
+            ),
+            vm.NavLink(
+                pages=["Product view"],
+                label="Product",
+                icon="Barcode",
             ),
             vm.NavLink(
                 pages=["Table"],
-                icon="table",
-                label="Table",
+                icon="Shopping Cart",
+                label="Orders",
+            ),
+            vm.NavLink(
+                pages=["Customer view"],
+                label="Customer",
+                icon="Group",
             ),
         ]
     ),
