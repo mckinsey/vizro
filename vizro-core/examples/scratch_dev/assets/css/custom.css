@@ -16,13 +16,17 @@
   font-size: 1.2rem;
 }
 
-#highlight_region_parameter {
-  display: none;
-}
 
 #region-nav-btn,
 #segment-nav-btn,
 #customer-nav-btn {
   height: 22px;
   width: 22px;
+}
+
+#pg2-filter-1,
+#pg2-filter-2,
+#pg2-filter-3,
+#pg2-parameter-1 {
+  display: none;
 }

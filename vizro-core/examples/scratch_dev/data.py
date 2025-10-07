@@ -70,10 +70,23 @@ superstore_df = superstore_df[superstore_df["Year"].isin(latest_two_years)].copy
 
 
 def create_superstore_product(data_frame):
-
     data_frame["Category / Sub-Category"] = data_frame["Category"] + " / " + data_frame["Sub-Category"]
-    data_frame = data_frame.groupby(["Category / Sub-Category", "Product Name"]).agg({"Sales": "sum", "Profit": "sum"}).reset_index()
+    data_frame = (
+        data_frame.groupby(["Category / Sub-Category", "Product Name"])
+        .agg({"Sales": "sum", "Profit": "sum"})
+        .reset_index()
+    )
     data_frame["Profit Margin"] = data_frame["Profit"] / data_frame["Sales"]
     data_frame["Profit Absolute"] = abs(data_frame["Profit"])
 
     return data_frame
+
+
+def pareto_customers_table(data_frame):
+    df = data_frame.groupby("Customer Name")["Sales"].sum().reset_index().sort_values(by="Sales", ascending=False)
+
+    df["Cumulative Sales"] = df["Sales"].cumsum()
+    df["Cumulative %"] = 100 * df["Cumulative Sales"] / df["Sales"].sum()
+    df["Rank"] = range(1, len(df) + 1)
+
+    return df[["Rank", "Customer Name", "Sales", "Cumulative Sales", "Cumulative %"]]
