@@ -1,6 +1,6 @@
 site_name: Vizro
 site_url: https://vizro.readthedocs.io/en/stable/
-base_url: https://vizro.readthedocs.io/en/0.1.47/
+base_url: https://vizro.readthedocs.io/en/0.1.46/
 nav:
   # Make sure any new page added here is also added to the llmstxt plugin below (around line 156)
   - Vizro: index.md
