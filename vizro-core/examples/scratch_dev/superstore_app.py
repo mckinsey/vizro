@@ -1,22 +1,21 @@
 """Dev app to try things out."""
 
-import vizro.plotly.express as px
-from vizro import Vizro
-import vizro.models as vm
 import vizro.actions as va
-from vizro.figures import kpi_card
-from vizro.models.types import capture
-
-from data import superstore_df
+import vizro.models as vm
+import vizro.plotly.express as px
 from charts import (
-    create_map_bubble,
-    bar_chart_by_segment,
-    bar_chart_by_product,
-    bar_chart_by_subcategory,
     bar_chart_by_category,
     bar_chart_by_customer,
+    bar_chart_by_product,
+    bar_chart_by_segment,
+    bar_chart_by_subcategory,
+    create_map_bubble,
     custom_aggrid,
 )
+from data import superstore_df
+from vizro import Vizro
+from vizro.figures import kpi_card
+from vizro.models.types import capture
 
 df = px.data.iris()
 
@@ -89,7 +88,6 @@ def create_discount_analysis_heatmap(data_frame, fill_missing="zero"):
     )
 
     return fig
-
 
 
 @capture("graph")
@@ -278,6 +276,7 @@ def create_bar_sales_vs_profit_segment(data_frame, value_col="Sales"):
 #     )
 #
 #     return fig
+
 
 @capture("graph")
 def line_profit_margin_vs_discount(data_frame):
@@ -473,16 +472,13 @@ page_1 = vm.Page(
             actions=[va.export_data(targets=["sales_by_segment"], file_format="xlsx")],
             # description="Download data",
             variant="outlined",
-        )
+        ),
     ],
 )
 
 page_2 = vm.Page(
     title="Table",
-    components=[vm.AgGrid(
-        id="table_id",
-        figure=custom_aggrid(superstore_df))
-    ],
+    components=[vm.AgGrid(id="table_id", figure=custom_aggrid(superstore_df))],
     controls=[
         vm.Filter(
             column="Order Date",
@@ -496,8 +492,8 @@ page_2 = vm.Page(
             actions=[va.export_data(targets=["table_id"], file_format="xlsx")],
             # description="Download data",
             variant="outlined",
-        )
-    ]
+        ),
+    ],
 )
 
 navigation = vm.Navigation(
@@ -519,4 +515,3 @@ dashboard = vm.Dashboard(pages=[page_1, page_2], navigation=navigation)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)
-
