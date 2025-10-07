@@ -111,7 +111,6 @@ page_1 = vm.Page(
             layout=vm.Grid(grid=[[0, 1, 2, 3]]),
         ),
         vm.Container(
-            title="Regional view",
             components=[
                 vm.Graph(id="region_bar_chart", figure=create_bar_chart_by_region(superstore_df, value_col="Sales")),
                 vm.Button(
@@ -129,7 +128,6 @@ page_1 = vm.Page(
             variant="filled",
         ),
         vm.Container(
-            title="Current vs Previous Year by Customer Segment",
             components=[
                 vm.Graph(
                     id="bar_chart_by_segment",
@@ -184,7 +182,7 @@ page_1 = vm.Page(
     controls=[
         vm.Parameter(
             id="pg1_parameter_1",
-            selector=vm.RadioItems(options=["Sales", "Profit", "Order ID", "Customer ID"], title="Metric"),
+            selector=vm.RadioItems(options=["Sales", "Profit", "Order ID"], title="Metric"),
             targets=[
                 "region_bar_chart.value_col",
                 "customer_pie_chart.value_col",

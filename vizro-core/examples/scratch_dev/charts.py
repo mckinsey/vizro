@@ -359,23 +359,11 @@ def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=N
     )
 
     fig.update_layout(
-        margin=dict(l=20, r=20, t=20, b=20),
         bargap=0.6,
         showlegend=False,
-        xaxis_title=None,
         yaxis_title=None,
+        title=f"{agg_col} | By Region",
     )
-
-    if highlight_region:
-        if highlight_region == [None]:
-            for trace in fig.data:
-                trace.marker.opacity = 1
-        else:
-            for trace in fig.data:
-                if trace.name == highlight_region:
-                    trace.marker.opacity = 1
-                else:
-                    trace.marker.opacity = 0.2
 
     return fig
 
@@ -443,8 +431,8 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
         xaxis_title=None,
         yaxis_title=agg_col,
         bargap=0.25,
+        title=f"{agg_col} | By Segment",
     )
-    fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
 
     return fig
 
@@ -512,7 +500,6 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
     fig.add_trace(go.Scatter(x=curr_year["Month"], y=curr_year[agg_col], mode="lines+markers", name="Current Year"))
 
     fig.update_layout(
-        title=f"{agg_col} per Month: Current Year vs Previous Year",
         xaxis=dict(
             title=None,
             tickmode="array",
@@ -521,13 +508,7 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
         ),
         yaxis_title=agg_col,
         margin=dict(l=20, r=20, t=40, b=20),
-    )
-    fig.update_layout(
-        title={
-            "text": f"{agg_col} per Month: Current Year vs Previous Year",
-            "y": 1,
-            "yanchor": "top",
-        },
+        title=f"{agg_col} | By Month",
         title_pad=dict(t=10),
     )
 
