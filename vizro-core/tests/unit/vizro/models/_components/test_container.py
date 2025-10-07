@@ -273,13 +273,16 @@ class TestContainerBuildMethod:
             ),
         )
 
-    def test_container_build_with_controls(self):
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_container_build_with_controls(self, visible):
         result = vm.Container(
             id="container",
             components=[vm.Button()],
             controls=[
                 vm.Filter(
-                    column="species", selector=vm.RadioItems(id="radio-items-id", options=["A", "B", "C"], value="A")
+                    column="species",
+                    selector=vm.RadioItems(id="radio-items-id", options=["A", "B", "C"], value="A"),
+                    visible=visible,
                 )
             ],
         ).build()
@@ -288,10 +291,7 @@ class TestContainerBuildMethod:
         )
         assert_component_equal(
             result["container-control-panel"],
-            html.Div(
-                id="container-control-panel",
-                className="container-controls-panel",
-            ),
+            html.Div(id="container-control-panel", className="container-controls-panel", hidden=not visible),
             keys_to_strip={"children"},
         )
         assert_component_equal(result["radio-items-id"], dbc.RadioItems(), keys_to_strip=STRIP_ALL)
