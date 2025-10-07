@@ -441,6 +441,61 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
 
 
 @capture("graph")
+def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
+    """Bar chart comparing current year vs previous year by category."""
+    data_frame["Year"] = data_frame["Order Date"].dt.year
+
+    if value_col == "Order ID":
+        agg_df = (
+            data_frame.groupby(["Category", "Year"], as_index=False)["Order ID"]
+            .nunique()
+            .rename(columns={"Order ID": "Orders"})
+        )
+        agg_col = "Orders"
+    else:
+        agg_df = data_frame.groupby(["Category", "Year"], as_index=False)[value_col].sum()
+        agg_col = value_col
+
+    pivot_df = agg_df.pivot(index="Category", columns="Year", values=agg_col).reset_index()
+
+    fig = go.Figure()
+
+    if 2016 in pivot_df.columns:
+        fig.add_trace(
+            go.Bar(
+                x=pivot_df["Category"],
+                y=pivot_df[2016],
+                name="Previous year",
+            )
+        )
+
+    if 2017 in pivot_df.columns:
+        fig.add_trace(
+            go.Bar(
+                x=pivot_df["Category"],
+                y=pivot_df[2017],
+                name="Current year",
+            )
+        )
+
+    fig.update_layout(
+        barmode="group",
+        xaxis_title=None,
+        yaxis_title=None,
+        bargap=0.4,
+        title=f"{agg_col} | By Category", 
+        legend=dict(
+            yanchor="top",
+            y=1.2,
+            xanchor="right",
+            x=1
+        ),
+    )
+
+    return fig
+
+
+@capture("graph")
 def create_line_chart_sales_profit_per_month(data_frame):
     data_frame["Order Date"] = pd.to_datetime(data_frame["Order Date"])
     data_frame["YearMonth"] = data_frame["Order Date"].dt.to_period("M").astype(str)
@@ -657,6 +712,37 @@ def bar_chart_by_state(data_frame, value_col="Sales"):
         },
     )
 
+    return fig
+
+
+@capture("graph")
+def pie_chart_by_order_status(data_frame, value_col="Sales"):
+    """Pie chart showing distribution by Order Status."""
+    if value_col == "Order ID":
+        status_metric = (
+            data_frame.groupby("Order Status", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
+        )
+        agg_col = "Orders"
+    else:
+        status_metric = data_frame.groupby("Order Status", as_index=False)[value_col].sum()
+        agg_col = value_col
+
+    
+    fig = px.pie(
+        status_metric,
+        names="Order Status",
+        values=agg_col,
+        color="Order Status",
+        title=f"{agg_col} by Order Status",
+        hole=0.6,
+    )
+
+    fig.update_layout(
+        title=dict(
+            text=f"{agg_col} | By Order Status",
+        ),
+    )
+    
     return fig
 
 

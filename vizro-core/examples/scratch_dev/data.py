@@ -59,6 +59,7 @@ superstore_df = pd.read_csv("superstore.csv", encoding="latin1")
 superstore_df["State_Code"] = superstore_df["State"].map(state_code_map)
 
 superstore_df["Order Date"] = pd.to_datetime(superstore_df["Order Date"], errors="coerce")
+superstore_df["Ship Date"] = pd.to_datetime(superstore_df["Ship Date"], errors="coerce")
 
 superstore_df["Year"] = superstore_df["Order Date"].dt.year
 
@@ -67,6 +68,13 @@ latest_two_years = sorted(superstore_df["Year"].unique())[-2:]
 
 # Filter dataframe for only those two years
 superstore_df = superstore_df[superstore_df["Year"].isin(latest_two_years)].copy()
+
+# Create Order Status - randomly assign one of three status values
+import random
+random.seed(42)  # For reproducibility
+superstore_df["Order Status"] = superstore_df.apply(
+    lambda x: random.choice(["Delivered", "In Transit", "Processing"]), axis=1
+)
 
 
 def create_superstore_product(data_frame):

@@ -21,9 +21,11 @@ from charts import (
     create_bar_chart_by_region,
     create_line_chart_per_month,
     create_bar_current_vs_previous_segment,
+    create_bar_current_vs_previous_category,
     pareto_customers_chart,
     scatter_with_quadrants,
     pie_chart_by_category,
+    pie_chart_by_order_status,
 )
 from charts import COLUMN_DEFS_PRODUCT, COLUMN_DEFS_CUSTOMERS
 
@@ -137,7 +139,7 @@ page_1 = vm.Page(
         vm.Container(
             title="",
             components=[
-                vm.Graph(figure=pie_chart_by_category(superstore_df, value_col="Sales")),
+                vm.Graph(id="order_status_chart", figure=pie_chart_by_order_status(superstore_df, value_col="Sales")),
             ],
             variant="filled",
         ),
@@ -181,7 +183,7 @@ page_1 = vm.Page(
         vm.Container(
             title="",
             components=[
-                vm.Graph(id="customer_pie_chart", figure=pie_chart_by_category(superstore_df, value_col="Sales")),
+                vm.Graph(id="category_bar_chart", figure=create_bar_current_vs_previous_category(superstore_df, value_col="Sales")),
             ],
             variant="filled",
         ),
@@ -192,7 +194,8 @@ page_1 = vm.Page(
             selector=vm.RadioItems(options=["Sales", "Profit", "Order ID"], title="Metric"),
             targets=[
                 "region_bar_chart.value_col",
-                "customer_pie_chart.value_col",
+                "category_bar_chart.value_col",
+                "order_status_chart.value_col",
                 "line_chart_by_month.value_col",
                 "bar_chart_by_segment.value_col",
             ],
