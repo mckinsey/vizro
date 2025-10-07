@@ -1,5 +1,8 @@
 """Dev app to try things out."""
 
+import json
+import base64
+
 import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
@@ -38,18 +41,25 @@ customer_name = superstore_df["Customer Name"].unique().tolist()
 customer_name.append("NONE")
 
 
-@capture("action")
-def nav_region():
-    return "/regional-view"
+def _encode_to_base64(value):
+    json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
+    b64_bytes = base64.urlsafe_b64encode(json_bytes)
+    return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
 
 @capture("action")
-def nav_product():
+def nav_region(parameter_value):
+    url_query_params = f"?pg2-parameter-2={_encode_to_base64(parameter_value)}"
+    return "/regional-view", url_query_params
+
+
+@capture("action")
+def nav_product(parameter_value):
     return "/product-view"
 
 
 @capture("action")
-def nav_customer():
+def nav_customer(parameter_value):
     return "/customer-view"
 
 
@@ -110,7 +120,9 @@ page_1 = vm.Page(
                     icon="jump_to_element",
                     variant="outlined",
                     description="Click to access detailed regional view",
-                    actions=vm.Action(function=nav_region(), outputs=["vizro_url.href"]),
+                    actions=vm.Action(
+                        function=nav_region("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
+                    ),
                 ),
             ],
             layout=vm.Grid(grid=[*[[-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1]] * 5, [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1]]),
@@ -129,7 +141,9 @@ page_1 = vm.Page(
                     icon="jump_to_element",
                     variant="outlined",
                     description="Click to access detailed customer view",
-                    actions=vm.Action(function=nav_customer(), outputs="vizro_url.href"),
+                    actions=vm.Action(
+                        function=nav_customer("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
+                    ),
                 ),
             ],
             variant="filled",
@@ -152,7 +166,9 @@ page_1 = vm.Page(
                     icon="jump_to_element",
                     variant="outlined",
                     description="Click to access detailed customer view",
-                    actions=vm.Action(function=nav_product(), outputs="vizro_url.href"),
+                    actions=vm.Action(
+                        function=nav_product("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
+                    ),
                 ),
             ],
             layout=vm.Grid(
@@ -246,6 +262,7 @@ page_1 = vm.Page(
     ],
     controls=[
         vm.Parameter(
+            id="pg1_parameter_1",
             selector=vm.RadioItems(options=["Sales", "Profit", "Order ID"], title="Metric"),
             targets=[
                 "region_bar_chart.value_col",
@@ -374,24 +391,25 @@ page_2 = vm.Page(
 page_3 = vm.Page(
     title="Customer view",
     components=[
-        vm.Graph(id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df, custom_data=["Customer Name"])),
+        vm.Graph(
+            id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df.head(30), custom_data=["Customer Name"])
+        ),
         vm.AgGrid(
             id="table-2",
             figure=dash_ag_grid(
-                aggrid_df,
+                aggrid_df.head(30),
                 columnDefs=COLUMN_DEFS_CUSTOMERS,
             ),
-            actions=[
-                va.set_control(control="pg3_parameter_1", value="Customer Name"),
-            ],
+            actions=va.set_control(control="pg3_parameter_1", value="Customer Name"),
         ),
     ],
     controls=[
+        vm.Filter(id="pg3_filter_1", column="Order Date", selector=vm.DatePicker(range=True)),
         vm.Parameter(
             id="pg3_parameter_1",
             targets=["pg3_pareto_chart.highlight_customer"],
             selector=vm.Dropdown(options=customer_name, value="NONE", multi=False),
-        )
+        ),
     ],
     layout=vm.Grid(
         grid=[
