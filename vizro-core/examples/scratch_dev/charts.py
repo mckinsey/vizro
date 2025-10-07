@@ -48,13 +48,10 @@ def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
         y="Segment",
         x=value_col,
         color="Segment",
-        title=f"{value_col} | By Segment",
+        title=f"{value_col} | By Customer",
         custom_data=custom_data,
         orientation="h",
     )
-
-    fig.update_layout(title=dict(x=0.5, xanchor="center"), showlegend=False)
-    fig.update_layout(bargap=0.6, xaxis_title=None)
     return fig
 
 
@@ -186,7 +183,7 @@ def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_
     fig.update_layout(
         yaxis=dict(visible=False),
         showlegend=False,
-        bargap=0.6,
+        bargap=0.4,
         xaxis_title=None,
         yaxis_title=None,
         title=dict(
@@ -359,8 +356,8 @@ def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=N
     )
 
     fig.update_layout(
-        bargap=0.6,
-        showlegend=False,
+        bargap=0.5,
+        xaxis_title=None,
         yaxis_title=None,
         title=f"{agg_col} | By Region",
     )
@@ -378,7 +375,7 @@ def create_line_chart_sales_per_month(data_frame, value_col="Sales"):
         monthly_sales,
         x="YearMonth",
         y="Sales",
-        markers=True,
+      #  markers=True,
     )
 
     fig.update_layout(
@@ -429,9 +426,15 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
     fig.update_layout(
         barmode="group",
         xaxis_title=None,
-        yaxis_title=agg_col,
-        bargap=0.25,
-        title=f"{agg_col} | By Segment",
+        yaxis_title=None,
+        bargap=0.4,
+        title=f"{agg_col} | By Customer", 
+        legend=dict(
+            yanchor="top",
+            y=1.2,
+            xanchor="right",
+            x=1
+        ),
     )
 
     return fig
@@ -496,8 +499,9 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
 
     fig = go.Figure()
 
-    fig.add_trace(go.Scatter(x=prev_year["Month"], y=prev_year[agg_col], mode="lines+markers", name="Previous Year"))
-    fig.add_trace(go.Scatter(x=curr_year["Month"], y=curr_year[agg_col], mode="lines+markers", name="Current Year"))
+
+    fig.add_trace(go.Scatter(x=prev_year["Month"], y=prev_year[agg_col],  fill="tozeroy", name="Previous Year"))
+    fig.add_trace(go.Scatter(x=curr_year["Month"], y=curr_year[agg_col], fill="tonexty", name="Current Year"))
 
     fig.update_layout(
         xaxis=dict(
@@ -506,10 +510,14 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
             tickvals=list(range(1, 13)),
             ticktext=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         ),
-        yaxis_title=agg_col,
-        margin=dict(l=20, r=20, t=40, b=20),
+        yaxis_title=None,
         title=f"{agg_col} | By Month",
-        title_pad=dict(t=10),
+        legend=dict(
+            yanchor="top",
+            y=1.2,
+            xanchor="right",
+            x=1
+        )
     )
 
     return fig
@@ -668,16 +676,9 @@ def pie_chart_by_category(data_frame, value_col="Sales"):
         names="Category",
         values=agg_col,
         color="Category",
-        title=f"{agg_col} | By Category",
+        title=f"{agg_col} | By Product",
         hole=0.6,
     )
-
-    fig.update_layout(
-        title=dict(
-            text=f"{agg_col} | By Category",
-        ),
-    )
-
     return fig
 
 
@@ -866,7 +867,7 @@ def bar_chart_by_category_h(data_frame, custom_data, value_col="Sales", highligh
         custom_data=custom_data,
     )
     fig.update_layout(showlegend=False)
-    fig.update_layout(bargap=0.6, xaxis_title=None, yaxis_title=None)
+    fig.update_layout(bargap=0.4, xaxis_title=None, yaxis_title=None)
 
     if highlight_category:
         for trace in fig.data:

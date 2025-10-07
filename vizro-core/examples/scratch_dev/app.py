@@ -111,43 +111,6 @@ page_1 = vm.Page(
             layout=vm.Grid(grid=[[0, 1, 2, 3]]),
         ),
         vm.Container(
-            components=[
-                vm.Graph(id="region_bar_chart", figure=create_bar_chart_by_region(superstore_df, value_col="Sales")),
-                vm.Button(
-                    id="region-nav-btn",
-                    text="",
-                    icon="jump_to_element",
-                    variant="outlined",
-                    description="Click to access detailed regional view",
-                    actions=vm.Action(
-                        function=nav_region("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
-                    ),
-                ),
-            ],
-            layout=vm.Grid(grid=[*[[-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1]] * 5, [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1]]),
-            variant="filled",
-        ),
-        vm.Container(
-            components=[
-                vm.Graph(
-                    id="bar_chart_by_segment",
-                    figure=create_bar_current_vs_previous_segment(superstore_df, value_col="Sales"),
-                ),
-                vm.Button(
-                    id="segment-nav-btn",
-                    text="",
-                    icon="jump_to_element",
-                    variant="outlined",
-                    description="Click to access detailed customer view",
-                    actions=vm.Action(
-                        function=nav_customer("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
-                    ),
-                ),
-            ],
-            variant="filled",
-            layout=vm.Grid(grid=[*[[-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1]] * 5, [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1]]),
-        ),
-        vm.Container(
             title="",
             layout=vm.Grid(grid=[[0], [0], [0], [0], [0],[1]]),
             components=[
@@ -174,6 +137,50 @@ page_1 = vm.Page(
         vm.Container(
             title="",
             components=[
+                vm.Graph(figure=pie_chart_by_category(superstore_df, value_col="Sales")),
+            ],
+            variant="filled",
+        ),
+        vm.Container(
+            components=[
+                vm.Graph(id="region_bar_chart", figure=create_bar_chart_by_region(superstore_df, value_col="Sales")),
+                vm.Button(
+                    id="region-nav-btn",
+                    text="",
+                    icon="jump_to_element",
+                    variant="outlined",
+                    description="Click to access detailed regional view",
+                    actions=vm.Action(
+                        function=nav_region("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
+                    ),
+                ),
+            ],
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0],[1]]),
+            variant="filled",
+        ),
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="bar_chart_by_segment",
+                    figure=create_bar_current_vs_previous_segment(superstore_df, value_col="Sales"),
+                ),
+                vm.Button(
+                    id="segment-nav-btn",
+                    text="",
+                    icon="jump_to_element",
+                    variant="outlined",
+                    description="Click to access detailed customer view",
+                    actions=vm.Action(
+                        function=nav_customer("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
+                    ),
+                ),
+            ],
+            variant="filled",
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0],[1]]),
+        ),
+        vm.Container(
+            title="",
+            components=[
                 vm.Graph(id="customer_pie_chart", figure=pie_chart_by_category(superstore_df, value_col="Sales")),
             ],
             variant="filled",
@@ -194,13 +201,13 @@ page_1 = vm.Page(
     ],
     layout=vm.Grid(
         grid=[
-            [0, 0, 0, 0, 0],
-            [1, 1, 1, 2, 2],
-            [1, 1, 1, 2, 2],
-            [1, 1, 1, 2, 2],
-            [3, 3, 3, 4, 4],
-            [3, 3, 3, 4, 4],
-            [3, 3, 3, 4, 4],
+            [0, 0, 0],
+            [1, 1, 2],
+            [1, 1, 2],
+            [1, 1, 2],
+            [3, 4, 5],
+            [3, 4, 5],
+            [3, 4, 5],
         ],
     ),
 )
