@@ -300,8 +300,6 @@ class Dashboard(VizroBaseModel):
         page_header_content = [page_title]
         page_header = html.Div(id="page-header", children=page_header_content)
 
-        # Page-level reset controls button
-        reset_page_controls_btn = dbc.Button(id=f"{page.id}_reset_button", children="Reset controls")
         has_page_controls = bool(
             [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
         )
@@ -322,8 +320,25 @@ class Dashboard(VizroBaseModel):
                     # Placeholder div is added as used as target from actions to show loading indicator.
                     children=html.Div(id="action-progress-indicator-placeholder"),
                 ),
-                # Show the reset button in the header when there are page controls but no control panel.
-                reset_page_controls_btn if has_page_controls and _all_hidden(control_panel) else None,
+                # Show the reset icon button in the header when there are page controls but no control panel.
+                dbc.Button(
+                    id=f"{page.id}_reset_button",
+                    children=html.Span(
+                        children=[
+                            html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                            dbc.Tooltip(
+                                children="Click to reset all page control values.",
+                                target=f"{page.id}_reset_button",
+                            ),
+                        ],
+                        className="btn-text",
+                    ),
+                    color="primary",
+                    outline=True,
+                    class_name="btn-circular",
+                )
+                if has_page_controls and _all_hidden(control_panel)
+                else None,
                 dbc.Switch(
                     id="theme-selector",
                     value=self.theme == "vizro_light",
@@ -339,9 +354,20 @@ class Dashboard(VizroBaseModel):
         else:
             header_right_content.append(header_controls)
 
-        # Show reset button in the control panel when both page controls and control panel exist.
+        # Show reset button with the icon in the control panel when both page controls and control panel exist.
         if has_page_controls and not _all_hidden(control_panel):
-            control_panel.children.append(reset_page_controls_btn)
+            control_panel.children.append(
+                dbc.Button(
+                    id=f"{page.id}_reset_button",
+                    children=html.Span(
+                        children=[
+                            html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                            "Reset controls",
+                        ],
+                        className="btn-text",
+                    ),
+                )
+            )
 
         header_right = html.Div(
             id="header-right",
