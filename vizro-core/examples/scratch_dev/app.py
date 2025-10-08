@@ -260,6 +260,7 @@ page_2 = vm.Page(
             id="pg2-filter-1",
             column="State_Code",
             selector=vm.Dropdown(),
+            visible=False,
         ),
         vm.Filter(
             id="pg2-filter-2",
@@ -327,9 +328,10 @@ page_2 = vm.Page(
 page_3 = vm.Page(
     title="Customer view",
     components=[
-        vm.Graph(id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df)),
+        vm.Graph(id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df, highlight_customer=None)),
         vm.AgGrid(
             id="table-2",
+            header="💡 Click on a row to highlight the customer.",
             figure=dash_ag_grid(
                 aggrid_df,
                 columnDefs=COLUMN_DEFS_CUSTOMERS,

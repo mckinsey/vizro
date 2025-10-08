@@ -1072,17 +1072,14 @@ def bar_chart_top_subcategories(data_frame, value_col="Sales", top_x=10):
         subcat_metric = data_frame.groupby("Sub-Category", as_index=False)[value_col].sum()
         agg_col = value_col
 
-    # --- Top 10 sub-categories ---
     df_top10 = subcat_metric.nlargest(top_x, agg_col).reset_index(drop=True)
 
-    # Rank and label formatting
     df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
     if agg_col in ["Sales", "Profit"]:
         df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
     else:
         df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"{x:,}")
 
-    # --- Create horizontal bar chart ---
     fig = px.bar(
         df_top10,
         x=agg_col,
@@ -1094,7 +1091,6 @@ def bar_chart_top_subcategories(data_frame, value_col="Sales", top_x=10):
         title=f"Top {top_x} Sub-Categories by {agg_col}",
     )
 
-    # --- Layout & formatting ---
     fig.update_layout(
         showlegend=False,
         xaxis_title=None,
@@ -1203,7 +1199,6 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
         markers=True,
         title=f"Pareto Analysis of Customers ({value_col})",
         hover_data=["Customer Name", value_col, "Cumulative % Value"],
-        # color="Customer Name",
         color_discrete_sequence=["orange"],
     )
     fig.update_traces(showlegend=False)
