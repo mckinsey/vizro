@@ -177,20 +177,6 @@ class Dashboard(VizroBaseModel):
                 State("collapse-left-side", "is_open"),
             )
 
-        vizro_controls_store_data = {
-            page.id: {
-                control.id: {
-                    "selectorId": control.selector.id,
-                    "originalValue": control.selector.value,
-                }
-                for control in cast(
-                    Iterable[ControlType],
-                    [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
-                )
-            }
-            for page in self.pages
-        }
-
         layout = html.Div(
             id="dashboard-container",
             children=[
@@ -202,7 +188,17 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-                dcc.Store(id="vizro_controls_store", data=vizro_controls_store_data),
+                dcc.Store(
+                    id="vizro_controls_store",
+                    data={
+                        control.id: {"originalValue": control.selector.value, "pageId": page.id}
+                        for page in self.pages
+                        for control in cast(
+                            Iterable[ControlType],
+                            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
+                        )
+                    },
+                ),
                 dash.page_container,
             ],
         )

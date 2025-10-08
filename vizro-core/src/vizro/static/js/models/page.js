@@ -180,27 +180,21 @@ Received input: ${JSON.stringify(values_ids)}`,
   return triggerOPL;
 }
 
-function reset_page_controls(reset_btn_clicked, vizro_controls_store, page_id) {
-  // page is just opened so skip
-  if (reset_btn_clicked === undefined) {
-    return null;
-  }
+function reset_page_controls(_, vizroControlsStore, pageId) {
+  console.debug("Reset controls on page:", pageId);
 
-  console.debug("Reset controls on page:", page_id);
-  for (const [controlId, controlInfo] of Object.entries(
-    vizro_controls_store[page_id],
-  )) {
-    const selectorId = controlInfo["selectorId"];
-    const originalValue = controlInfo["originalValue"];
+  // Get info for all controls on the current page.
+  const pageControlsStore = Object.values(vizroControlsStore).filter(
+    (control) => control.pageId === pageId,
+  );
 
-    dash_clientside.set_props(`${selectorId}_guard_actions_chain`, {
-      data: true,
-    });
-    dash_clientside.set_props(selectorId, { value: originalValue });
-  }
+  // For each control, prepare its original value
+  const outputSelectorValues = pageControlsStore.map((c) => c.originalValue);
+  // For each control set all its guard to true to prevent triggering unnecessary actions.
+  const outputSelectorGuards = pageControlsStore.map(() => true);
 
   // Trigger the OPL after resetting all controls.
-  return null;
+  return [null, ...outputSelectorValues, ...outputSelectorGuards];
 }
 
 window.encodeUrlParams = encodeUrlParams;

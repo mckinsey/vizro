@@ -158,9 +158,20 @@ class Page(VizroBaseModel):
 
         if page_controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
+            # Selector values as outputs to be reset.
+            selector_outputs = [Output(control.selector.id, "value", allow_duplicate=True) for control in page_controls]
+
+            # Selector guard is set to True when selector value is reset to prevent actions chain from running.
+            selector_guard_outputs = [
+                Output(f"{control.selector.id}_guard_actions_chain", "data", allow_duplicate=True)
+                for control in page_controls
+            ]
+
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="reset_page_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
+                *selector_outputs,
+                *selector_guard_outputs,
                 Input(f"{self.id}_reset_button", "n_clicks"),
                 State("vizro_controls_store", "data"),
                 State("page_id_store", "data"),
