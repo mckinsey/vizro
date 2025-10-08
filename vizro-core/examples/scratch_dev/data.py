@@ -71,21 +71,38 @@ superstore_df = superstore_df[superstore_df["Year"].isin(latest_two_years)].copy
 
 # Create Order Status - randomly assign one of three status values
 import random
+
 random.seed(42)  # For reproducibility
 superstore_df["Order Status"] = superstore_df.apply(
     lambda x: random.choice(["Delivered", "In Transit", "Processing"]), axis=1
 )
 
 
+# def create_superstore_product(data_frame):
+#     data_frame["Category / Sub-Category"] = data_frame["Category"] + " / " + data_frame["Sub-Category"]
+#     data_frame = (
+#         data_frame.groupby(["Category / Sub-Category", "Product Name"])
+#         .agg({"Sales": "sum", "Profit": "sum"})
+#         .reset_index()
+#     )
+#     data_frame["Profit Margin"] = data_frame["Profit"] / data_frame["Sales"]
+#     data_frame["Profit Absolute"] = abs(data_frame["Profit"])
+#
+#     return data_frame
+
+
 def create_superstore_product(data_frame):
+    # Create combined label but keep original columns
     data_frame["Category / Sub-Category"] = data_frame["Category"] + " / " + data_frame["Sub-Category"]
-    data_frame = (
-        data_frame.groupby(["Category / Sub-Category", "Product Name"])
-        .agg({"Sales": "sum", "Profit": "sum"})
-        .reset_index()
-    )
+
+    # Aggregate keeping Category and Sub-Category separate
+    data_frame = data_frame.groupby(
+        ["Category", "Sub-Category", "Category / Sub-Category", "Product Name"], as_index=False
+    ).agg({"Sales": "sum", "Profit": "sum"})
+
+    # Compute additional metrics
     data_frame["Profit Margin"] = data_frame["Profit"] / data_frame["Sales"]
-    data_frame["Profit Absolute"] = abs(data_frame["Profit"])
+    data_frame["Profit Absolute"] = data_frame["Profit"].abs()
 
     return data_frame
 

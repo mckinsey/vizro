@@ -26,6 +26,9 @@ from charts import (
     scatter_with_quadrants,
     pie_chart_by_category,
     pie_chart_by_order_status,
+    bar_chart_top_cities,
+    bar_chart_top_subcategories,
+    bar_chart_top_customers,
 )
 from charts import COLUMN_DEFS_PRODUCT, COLUMN_DEFS_CUSTOMERS
 
@@ -114,7 +117,7 @@ page_1 = vm.Page(
         ),
         vm.Container(
             title="",
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [0],[1]]),
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
             components=[
                 vm.Graph(
                     id="line_chart_by_month",
@@ -157,7 +160,7 @@ page_1 = vm.Page(
                     ),
                 ),
             ],
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [0],[1]]),
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
             variant="filled",
         ),
         vm.Container(
@@ -178,12 +181,15 @@ page_1 = vm.Page(
                 ),
             ],
             variant="filled",
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [0],[1]]),
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
         ),
         vm.Container(
             title="",
             components=[
-                vm.Graph(id="category_bar_chart", figure=create_bar_current_vs_previous_category(superstore_df, value_col="Sales")),
+                vm.Graph(
+                    id="category_bar_chart",
+                    figure=create_bar_current_vs_previous_category(superstore_df, value_col="Sales"),
+                ),
             ],
             variant="filled",
         ),
@@ -233,25 +239,17 @@ page_2 = vm.Page(
         vm.Container(
             components=[
                 vm.Graph(
-                    id="regional_category",
-                    figure=bar_chart_by_category(superstore_df, value_col="Sales", custom_data=["Category"]),
-                    actions=[
-                        va.set_control(control="pg2-filter-2", value="Category"),
-                        va.set_control(control="pg2-parameter-1", value="Category"),
-                    ],
+                    id="pg2-chart-1",
+                    figure=bar_chart_top_cities(superstore_df, value_col="Sales"),
                 ),
                 vm.Graph(
-                    id="regional_subcategory",
-                    figure=bar_chart_by_subcategory(
+                    id="pg2-chart-2",
+                    figure=bar_chart_top_subcategories(
                         superstore_df,
                         value_col="Sales",
-                        custom_data=["Sub-Category"],
                     ),
-                    actions=[
-                        va.set_control(control="pg2-filter-3", value="Sub-Category"),
-                    ],
                 ),
-                vm.Graph(id="customer_bar_chart_2", figure=bar_chart_by_customer(superstore_df, value_col="Sales")),
+                vm.Graph(id="pg2-chart-3", figure=bar_chart_top_customers(superstore_df, value_col="Sales")),
             ],
             variant="filled",
             layout=vm.Grid(grid=[[0], [1], [2]]),
@@ -265,28 +263,13 @@ page_2 = vm.Page(
         ),
         vm.Filter(
             id="pg2-filter-2",
-            column="Category",
+            column="Segment",
             selector=vm.Dropdown(),
-            targets=["regional_subcategory", "customer_bar_chart_2", "region_map_chart"],
         ),
         vm.Parameter(
             id="pg2-parameter-1",
-            targets=["regional_category.highlight_category"],
-            selector=vm.Dropdown(
-                multi=False, options=["Furniture", "Technology", "Office Supplies", "NONE"], value="NONE"
-            ),
-        ),
-        vm.Filter(id="pg2-filter-3", column="Sub-Category", selector=vm.Dropdown(), targets=["customer_bar_chart_2"]),
-        vm.Parameter(
-            id="pg2-parameter-2",
-            targets=[
-                "regional_subcategory.value_col",
-                "customer_bar_chart_2.value_col",
-                "region_map_chart.value_col",
-                "regional_category.value_col",
-            ],
-            selector=vm.RadioItems(options=["Sales", "Profit", "Order ID"], title="Metric"),
-            show_in_url=True,
+            targets=["pg2-chart-1.top_x", "pg2-chart-2.top_x", "pg2-chart-3.top_x"],
+            selector=vm.RadioItems(options=[5, 7, 10], title="Top records"),
         ),
         vm.Button(
             text="",
@@ -295,11 +278,48 @@ page_2 = vm.Page(
             variant="outlined",
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda: [state_list, categories, "NONE", subcategories])(),
-                    outputs=["pg2-filter-1", "pg2-filter-2", "pg2-parameter-1", "pg2-filter-3"],
+                    function=capture("action")(lambda: [*state_list])(),
+                    outputs=["pg2-filter-1"],
                 )
             ],
         ),
+        #     vm.Filter(
+        #         id="pg2-filter-2",
+        #         column="Category",
+        #         selector=vm.Dropdown(),
+        #         targets=["regional_subcategory", "customer_bar_chart_2", "region_map_chart"],
+        #     ),
+        #     vm.Parameter(
+        #         id="pg2-parameter-1",
+        #         targets=["regional_category.highlight_category"],
+        #         selector=vm.Dropdown(
+        #             multi=False, options=["Furniture", "Technology", "Office Supplies", "NONE"], value="NONE"
+        #         ),
+        #     ),
+        #     vm.Filter(id="pg2-filter-3", column="Sub-Category", selector=vm.Dropdown(), targets=["customer_bar_chart_2"]),
+        #     vm.Parameter(
+        #         id="pg2-parameter-2",
+        #         targets=[
+        #             "regional_subcategory.value_col",
+        #             "customer_bar_chart_2.value_col",
+        #             "region_map_chart.value_col",
+        #             "regional_category.value_col",
+        #         ],
+        #         selector=vm.RadioItems(options=["Sales", "Profit", "Order ID"], title="Metric"),
+        #         show_in_url=True,
+        #     ),
+        #     vm.Button(
+        #         text="",
+        #         icon="Reset Settings",
+        #         description="Reset actions",
+        #         variant="outlined",
+        #         actions=[
+        #             vm.Action(
+        #                 function=capture("action")(lambda: [state_list, categories, "NONE", subcategories])(),
+        #                 outputs=["pg2-filter-1", "pg2-filter-2", "pg2-parameter-1", "pg2-filter-3"],
+        #             )
+        #         ],
+        #     ),
     ],
     layout=vm.Grid(grid=[[0, 0, 0, 1, 1]]),
 )
@@ -307,20 +327,18 @@ page_2 = vm.Page(
 page_3 = vm.Page(
     title="Customer view",
     components=[
-        vm.Graph(
-            id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df.head(30), custom_data=["Customer Name"])
-        ),
+        vm.Graph(id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df)),
         vm.AgGrid(
             id="table-2",
             figure=dash_ag_grid(
-                aggrid_df.head(30),
+                aggrid_df,
                 columnDefs=COLUMN_DEFS_CUSTOMERS,
             ),
             actions=va.set_control(control="pg3_parameter_1", value="Customer Name"),
         ),
     ],
     controls=[
-        vm.Filter(id="pg3_filter_1", column="Order Date", selector=vm.DatePicker(range=True)),
+        vm.Filter(id="pg3_filter_1", column="Segment"),
         vm.Parameter(
             id="pg3_parameter_1",
             targets=["pg3_pareto_chart.highlight_customer"],
@@ -338,18 +356,49 @@ page_4 = vm.Page(
             title="",
             components=[
                 vm.Graph(
-                    id="scatter",
-                    figure=scatter_with_quadrants(
-                        data_frame=superstore_product_df, x="Sales", y="Profit", custom_data=["Product Name"]
-                    ),
+                    id="pg4-chart-1",
+                    figure=bar_chart_by_category(superstore_df, value_col="Sales", custom_data=["Category"]),
+                    actions=[
+                        va.set_control(control="pg4-filter-1", value="Category"),
+                    ],
                 ),
-                vm.AgGrid(id="table", figure=dash_ag_grid(superstore_product_df, columnDefs=COLUMN_DEFS_PRODUCT)),
+                vm.Graph(
+                    id="pg4-chart-2",
+                    figure=bar_chart_by_subcategory(superstore_df, value_col="Sales", custom_data=["Sub-Category"]),
+                ),
+                vm.Container(
+                    title="",
+                    components=[
+                        vm.AgGrid(
+                            id="table", figure=dash_ag_grid(superstore_product_df, columnDefs=COLUMN_DEFS_PRODUCT)
+                        ),
+                        vm.Graph(
+                            id="pg4-chart-3",
+                            figure=scatter_with_quadrants(
+                                data_frame=superstore_product_df, x="Sales", y="Profit", custom_data=["Product Name"]
+                            ),
+                        ),
+                    ],
+                    controls=[
+                        vm.Filter(
+                            column="Category / Sub-Category",
+                            selector=vm.Dropdown(multi=False, value="Technology / Phones"),
+                        ),
+                    ],
+                    layout=vm.Grid(grid=[[0, 0, 1, 1, 1]]),
+                ),
             ],
-            layout=vm.Grid(grid=[[0, 0, 0, 1, 1]]),
+            layout=vm.Grid(
+                grid=[
+                    [0, 1],
+                    [2, 2],
+                    [2, 2],
+                ]
+            ),
         ),
     ],
     controls=[
-        vm.Filter(column="Category / Sub-Category", selector=vm.Dropdown(multi=False, value="Technology / Phones")),
+        vm.Filter(id="pg4-filter-1", column="Category", targets=["pg4-chart-2", "table"]),
     ],
 )
 

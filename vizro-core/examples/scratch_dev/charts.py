@@ -1,6 +1,7 @@
 """Collection of custom charts."""
 
 # import plotly.express as px
+
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.plotly.express as px
@@ -183,7 +184,7 @@ def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_
     fig.update_layout(
         yaxis=dict(visible=False),
         showlegend=False,
-        bargap=0.4,
+        bargap=0.6,
         xaxis_title=None,
         yaxis_title=None,
         title=dict(
@@ -375,7 +376,7 @@ def create_line_chart_sales_per_month(data_frame, value_col="Sales"):
         monthly_sales,
         x="YearMonth",
         y="Sales",
-      #  markers=True,
+        #  markers=True,
     )
 
     fig.update_layout(
@@ -428,13 +429,8 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
         xaxis_title=None,
         yaxis_title=None,
         bargap=0.4,
-        title=f"{agg_col} | By Customer", 
-        legend=dict(
-            yanchor="top",
-            y=1.2,
-            xanchor="right",
-            x=1
-        ),
+        title=f"{agg_col} | By Customer",
+        legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
     )
 
     return fig
@@ -483,13 +479,8 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
         xaxis_title=None,
         yaxis_title=None,
         bargap=0.4,
-        title=f"{agg_col} | By Category", 
-        legend=dict(
-            yanchor="top",
-            y=1.2,
-            xanchor="right",
-            x=1
-        ),
+        title=f"{agg_col} | By Category",
+        legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
     )
 
     return fig
@@ -554,8 +545,7 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
 
     fig = go.Figure()
 
-
-    fig.add_trace(go.Scatter(x=prev_year["Month"], y=prev_year[agg_col],  fill="tozeroy", name="Previous Year"))
+    fig.add_trace(go.Scatter(x=prev_year["Month"], y=prev_year[agg_col], fill="tozeroy", name="Previous Year"))
     fig.add_trace(go.Scatter(x=curr_year["Month"], y=curr_year[agg_col], fill="tonexty", name="Current Year"))
 
     fig.update_layout(
@@ -567,12 +557,7 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
         ),
         yaxis_title=None,
         title=f"{agg_col} | By Month",
-        legend=dict(
-            yanchor="top",
-            y=1.2,
-            xanchor="right",
-            x=1
-        )
+        legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
     )
 
     return fig
@@ -592,7 +577,7 @@ def pareto_customers_chart(data_frame, custom_data, highlight_customer=None):
     fig = px.bar(
         customer_sales,
         x="Rank",
-        y="Sales",
+        y="Cumulative %",
         hover_data=["Customer Name"],
         labels={"Sales": "Sales ($)", "Rank": "Customer Rank"},
         title="Pareto Analysis of Customers",
@@ -720,14 +705,15 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
     """Pie chart showing distribution by Order Status."""
     if value_col == "Order ID":
         status_metric = (
-            data_frame.groupby("Order Status", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
+            data_frame.groupby("Order Status", as_index=False)["Order ID"]
+            .nunique()
+            .rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
     else:
         status_metric = data_frame.groupby("Order Status", as_index=False)[value_col].sum()
         agg_col = value_col
 
-    
     fig = px.pie(
         status_metric,
         names="Order Status",
@@ -742,7 +728,7 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
             text=f"{agg_col} | By Order Status",
         ),
     )
-    
+
     return fig
 
 
@@ -1023,3 +1009,228 @@ COLUMN_DEFS_CUSTOMERS = [
         "width": 130,
     },
 ]
+
+
+@capture("graph")
+def bar_chart_top_cities(data_frame, value_col="Sales", top_x=10):
+    if value_col == "Order ID":
+        city_metric = (
+            data_frame.groupby("City", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
+        )
+        agg_col = "Orders"
+    else:
+        city_metric = data_frame.groupby("City", as_index=False)[value_col].sum()
+        agg_col = value_col
+
+    df_top10 = city_metric.nlargest(top_x, agg_col).reset_index(drop=True)
+
+    df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
+    if agg_col in ["Sales", "Profit"]:
+        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
+    else:
+        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"{x:,}")
+
+    fig = px.bar(
+        df_top10,
+        x=agg_col,
+        y="Rank",
+        orientation="h",
+        color="City",
+        text="Label",
+        color_discrete_sequence=["#4dabf7"],
+        title=f"Top {top_x} Cities by {agg_col}",
+    )
+
+    fig.update_layout(
+        showlegend=False,
+        xaxis_title=None,
+        yaxis_title=None,
+        yaxis=dict(
+            tickmode="array",
+            tickvals=df_top10["Rank"],
+            ticktext=[f"{c}" for c in df_top10["City"]],
+            autorange="reversed",
+            tickfont=dict(size=13),
+        ),
+    )
+    fig.update_yaxes(ticklabelposition="outside left")
+    fig.update_traces(textposition="outside")
+
+    return fig
+
+
+@capture("graph")
+def bar_chart_top_subcategories(data_frame, value_col="Sales", top_x=10):
+    if value_col == "Order ID":
+        subcat_metric = (
+            data_frame.groupby("Sub-Category", as_index=False)["Order ID"]
+            .nunique()
+            .rename(columns={"Order ID": "Orders"})
+        )
+        agg_col = "Orders"
+    else:
+        subcat_metric = data_frame.groupby("Sub-Category", as_index=False)[value_col].sum()
+        agg_col = value_col
+
+    # --- Top 10 sub-categories ---
+    df_top10 = subcat_metric.nlargest(top_x, agg_col).reset_index(drop=True)
+
+    # Rank and label formatting
+    df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
+    if agg_col in ["Sales", "Profit"]:
+        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
+    else:
+        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"{x:,}")
+
+    # --- Create horizontal bar chart ---
+    fig = px.bar(
+        df_top10,
+        x=agg_col,
+        y="Rank",
+        orientation="h",
+        color="Sub-Category",
+        text="Label",
+        color_discrete_sequence=["#4dabf7"],
+        title=f"Top {top_x} Sub-Categories by {agg_col}",
+    )
+
+    # --- Layout & formatting ---
+    fig.update_layout(
+        showlegend=False,
+        xaxis_title=None,
+        yaxis_title=None,
+        yaxis=dict(
+            tickmode="array",
+            tickvals=df_top10["Rank"],
+            ticktext=[f"{c}" for c in df_top10["Sub-Category"]],
+            autorange="reversed",
+            tickfont=dict(size=13),
+        ),
+    )
+
+    fig.update_yaxes(ticklabelposition="outside left")
+    fig.update_traces(textposition="outside")
+
+    return fig
+
+
+@capture("graph")
+def bar_chart_top_customers(data_frame, value_col="Sales", top_x=10):
+    if value_col == "Order ID":
+        customer_metric = (
+            data_frame.groupby("Customer Name", as_index=False)["Order ID"]
+            .nunique()
+            .rename(columns={"Order ID": "Orders"})
+        )
+        agg_col = "Orders"
+    else:
+        customer_metric = data_frame.groupby("Customer Name", as_index=False)[value_col].sum()
+        agg_col = value_col
+
+    df_top10 = customer_metric.nlargest(top_x, agg_col).reset_index(drop=True)
+    df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
+
+    if agg_col in ["Sales", "Profit"]:
+        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
+    else:
+        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"{x:,}")
+
+    fig = px.bar(
+        df_top10,
+        x=agg_col,
+        y="Rank",
+        orientation="h",
+        color="Customer Name",
+        text="Label",
+        color_discrete_sequence=["#4dabf7"],
+        title=f"Top {top_x} Customers by {agg_col}",
+    )
+
+    fig.update_layout(
+        showlegend=False,
+        xaxis_title=None,
+        yaxis_title=None,
+        yaxis=dict(
+            tickmode="array",
+            tickvals=df_top10["Rank"],
+            ticktext=[f"{c}" for c in df_top10["Customer Name"]],
+            autorange="reversed",
+            tickfont=dict(size=13),
+        ),
+    )
+
+    fig.update_yaxes(ticklabelposition="outside left")
+    fig.update_traces(textposition="outside")
+
+    return fig
+
+
+@capture("graph")
+def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=None):
+    customer_df = (
+        data_frame.groupby("Customer Name", as_index=False)[value_col].sum().sort_values(by=value_col, ascending=False)
+    )
+
+    # 2️⃣ Compute cumulative metrics
+    customer_df["Cumulative Value"] = customer_df[value_col].cumsum()
+    total_value = customer_df[value_col].sum()
+    customer_df["Cumulative % Value"] = 100 * customer_df["Cumulative Value"] / total_value
+
+    customer_df["Customer Rank"] = range(1, len(customer_df) + 1)
+    customer_df["Cumulative % Customers"] = 100 * customer_df["Customer Rank"] / len(customer_df)
+
+    thresholds = {
+        "A": 20,
+        "B": 50,
+        "C": 100,
+    }
+
+    def assign_segment(cust_pct):
+        if cust_pct <= thresholds["A"]:
+            return "A"
+        elif cust_pct <= thresholds["B"]:
+            return "B"
+        else:
+            return "C"
+
+    customer_df["Segment"] = customer_df["Cumulative % Customers"].apply(assign_segment)
+    segment_colors = {"A": "#00b4ff", "B": "#00b4ff", "C": "#00b4ff"}
+
+    fig = px.line(
+        customer_df,
+        x="Cumulative % Customers",
+        y="Cumulative % Value",
+        markers=True,
+        title=f"Pareto Analysis of Customers ({value_col})",
+        hover_data=["Customer Name", value_col, "Cumulative % Value"],
+        # color="Customer Name",
+        color_discrete_sequence=["orange"],
+    )
+    fig.update_traces(showlegend=False)
+    fig.add_vrect(x0=0, x1=thresholds["A"], fillcolor=segment_colors["A"], opacity=0.6, layer="below")
+    fig.add_vrect(x0=thresholds["A"], x1=thresholds["B"], fillcolor=segment_colors["B"], opacity=0.3, layer="below")
+    fig.add_vrect(x0=thresholds["B"], x1=100, fillcolor=segment_colors["C"], opacity=0.1, layer="below")
+
+    if highlight_customer and highlight_customer in customer_df["Customer Name"].values:
+        cust = customer_df[customer_df["Customer Name"] == highlight_customer].iloc[0]
+        fig.add_trace(
+            go.Scatter(
+                x=[cust["Cumulative % Customers"]],
+                y=[cust["Cumulative % Value"]],
+                mode="markers+text",
+                text=[highlight_customer],
+                textposition="bottom right",
+                marker=dict(color="orange", size=12, line=dict(width=2)),
+                showlegend=False,
+            )
+        )
+
+    fig.update_layout(
+        xaxis_title="% of Total Customers",
+        yaxis_title=f"Cumulative % of {value_col}",
+        yaxis=dict(range=[0, 105]),
+        xaxis=dict(range=[0, 105]),
+        hovermode="x unified",
+    )
+
+    return fig

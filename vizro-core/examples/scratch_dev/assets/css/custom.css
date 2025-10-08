@@ -24,9 +24,8 @@
   width: 22px;
 }
 
+
 #pg2-filter-1,
-#pg2-filter-2,
-#pg2-filter-3,
-#pg2-parameter-1 {
+#pg2-filter-3 {
   display: none;
 }
