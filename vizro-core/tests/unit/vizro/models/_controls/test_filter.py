@@ -1046,24 +1046,18 @@ class TestFilterBuild:
     def test_filter_build(self, test_column, test_selector):
         filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
-
         filter.pre_build()
+
         result = filter.build()
-        expected = html.Div(id="filter-id", children=html.Div(children=[test_selector.build()]), hidden=False)
+        expected = html.Div(
+            id="filter-id",
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
+            ),
+            hidden=False,
+        )
 
         assert_component_equal(result, expected)
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize("visible", [True, False])
-    def test_filter_build_visible(self, visible):
-        filter = vm.Filter(id="filter-id", column="continent", selector=vm.Checklist(), visible=visible)
-        model_manager["test_page"].controls = [filter]
-
-        filter.pre_build()
-        result = filter.build()
-        expected = html.Div(id="filter-id", children=html.Div(children=[vm.Checklist().build()]), hidden=not visible)
-
-        assert_component_equal(result, expected, keys_to_strip={"children"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
@@ -1089,11 +1083,24 @@ class TestFilterBuild:
         result = filter.build()
         expected = dcc.Loading(
             id="filter_id",
-            children=html.Div(children=[test_selector.build()]),
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
+            ),
             color="grey",
             overlay_style={"visibility": "visible"},
-            className="",
         )
+
+        assert_component_equal(result, expected, keys_to_strip={"className"})
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_filter_build_visible(self, visible):
+        filter = vm.Filter(id="filter-id", column="continent", visible=visible)
+        model_manager["test_page"].controls = [filter]
+
+        filter.pre_build()
+        result = filter.build()
+        expected = html.Div(id="filter-id", hidden=not visible)
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
 
@@ -1101,49 +1108,16 @@ class TestFilterBuild:
     @pytest.mark.parametrize("visible", [True, False])
     def test_dynamic_filter_build_visible(self, gapminder_dynamic_first_n_last_n_function, visible):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
-        filter = vm.Filter(id="filter_id", column="continent", selector=vm.Checklist(), visible=visible)
+        filter = vm.Filter(id="filter_id", column="continent", visible=visible)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         result = filter.build()
         expected = dcc.Loading(
             id="filter_id",
-            children=html.Div(children=[vm.Checklist().build()]),
             color="grey",
             overlay_style={"visibility": "visible"},
             className="d-none" if not visible else "",
         )
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize(
-        "test_column ,test_selector",
-        [
-            ("continent", vm.Checklist()),
-            ("continent", vm.Dropdown()),
-            ("continent", vm.Dropdown(multi=False)),
-            ("continent", vm.RadioItems()),
-            ("pop", vm.Slider()),
-            ("pop", vm.RangeSlider()),
-            ("year", vm.DatePicker()),
-            ("year", vm.DatePicker(range=False)),
-            ("is_europe", vm.Switch()),
-            ("is_europe", vm.Switch(value=True)),
-        ],
-    )
-    def test_filter_show_in_url_build(self, test_column, test_selector):
-        filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector, show_in_url=True)
-        model_manager["test_page"].controls = [filter]
-        filter.pre_build()
-
-        result = filter.build()
-        expected = html.Div(
-            id="filter-id",
-            children=html.Div(
-                children=[test_selector.build(), dcc.Store(id=f"{filter.selector.id}_guard_actions_chain", data=False)],
-            ),
-            hidden=False,
-        )
-
-        assert_component_equal(result, expected)

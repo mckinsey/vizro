@@ -266,46 +266,15 @@ class TestParameterBuild:
     """Tests parameter build method."""
 
     @pytest.mark.parametrize(
-        "test_input",
+        "test_selector",
         [
             vm.Checklist(options=["lifeExp", "gdpPercap", "pop"]),
             vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"]),
             vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
         ],
     )
-    def test_parameter_build(self, test_input):
-        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input)
-        page = model_manager["test_page"]
-        page.controls = [parameter]
-        parameter.pre_build()
-        result = parameter.build()
-        expected = html.Div(id="parameter-id", children=html.Div(children=[test_input.build()]), hidden=False)
-
-        assert_component_equal(result, expected)
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize("visible", [True, False])
-    def test_parameter_build_visible(self, visible):
-        test_input = vm.Checklist(options=["lifeExp", "gdpPercap", "pop"])
-        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input, visible=visible)
-        page = model_manager["test_page"]
-        page.controls = [parameter]
-        parameter.pre_build()
-        result = parameter.build()
-        expected = html.Div(id="parameter-id", children=html.Div(children=[test_input.build()]), hidden=not visible)
-
-        assert_component_equal(result, expected)
-
-    @pytest.mark.parametrize(
-        "test_input",
-        [
-            vm.Checklist(options=["lifeExp", "gdpPercap", "pop"]),
-            vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"]),
-            vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
-        ],
-    )
-    def test_show_in_url_build_parameter(self, test_input):
-        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input, show_in_url=True)
+    def test_parameter_build(self, test_selector):
+        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_selector)
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
@@ -314,9 +283,29 @@ class TestParameterBuild:
         expected = html.Div(
             id="parameter-id",
             children=html.Div(
-                children=[test_input.build(), dcc.Store(id=f"{parameter.selector.id}_guard_actions_chain", data=False)]
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
             ),
             hidden=False,
+        )
+
+        assert_component_equal(result, expected)
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_parameter_build_visible(self, visible):
+        test_selector = vm.Checklist(id="selector_id", options=["lifeExp", "gdpPercap", "pop"])
+        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_selector, visible=visible)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        parameter.pre_build()
+
+        result = parameter.build()
+        expected = html.Div(
+            id="parameter-id",
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
+            ),
+            hidden=not visible,
         )
 
         assert_component_equal(result, expected)
