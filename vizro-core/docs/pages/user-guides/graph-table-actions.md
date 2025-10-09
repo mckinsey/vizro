@@ -628,12 +628,17 @@ However, it is not yet possible to cross-filter from a pivot table according to 
 
 <!--
 TODO NOW:
-- cross-highlight as subsection of cross-parameter?
-- real world example of cross-parameter that's not highlight - save for separate PR but what would it be?
+- docs for reset controls and redo screenshots
+- cross-highlight as subsection of cross-parameter? 
 - explain when custom_data needed better. Align cross-filter and cross-parameter explanations on this
 - dropdown to radioitems
 - check bookmarks
 - yaml examples
+- add note about cross-container, page ones for cross-highlight
+
+Separate PRs:
+- another non cross-highlight use of parameter. Maybe wait until we can do a non-category selector as an example e.g. to plot movable line or highlight region of graph
+- document drillthrough/down
 -->
 
 ## Cross-parameter
@@ -670,19 +675,19 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 A cross-highlight is when the user clicks on one _source_ graph or table to highlight corresponding data in a _target_ graph or table (in practice, typically a [custom graph](custom-charts.md)). The highlighting can occur in two ways:
 
 - _Target highlighting_. The highlighting appears in a target graph that is distinct from the source that was clicked. Below we give examples of highlighting a target graph [from a source table](#cross-highlight-from-table) and [from a source graph](#cross-highlight-from-graph).
-- _Source highlighting_ or _self-highlighting_. The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting).
+- _Source highlighting_ or _self-highlighting_. The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting). 
 
 In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md). Often this parameter is hidden from view with `visible=False` since the highlighting effect itself provides sufficient visual feedback about the selected data.
 
 In general, there are many different ways to visually highlight data in a graph. For example:
 
-- Change the [style of a marker](https://plotly.com/python/marker-style/), for example its color, opacity, marker shape or size.
-- Add an [annotation](https://plotly.com/python/text-and-annotations/#text-annotations).
-- Highlight a [region](https://plotly.com/python/horizontal-vertical-shapes/) of the plot's background.
+* Change the [style of a marker](https://plotly.com/python/marker-style/), [line](https://plotly.com/python/line-charts/#style-line-plots) or [bar](https://plotly.com/python/bar-charts/#colored-and-styled-bar-chart), for example its color, opacity or shape.
+* Add an [annotation](https://plotly.com/python/text-and-annotations/#text-annotations).
+* Highlight a [region](https://plotly.com/python/horizontal-vertical-shapes/) of the plot's background.
 
 ### Cross-highlight from table
 
-This example shows how to configure cross-highlighting where clicking on the row in a table row highlights the corresponding data in a target graph. The highlighting is visually shown by changing the color of the point for the selected country.
+This example shows how to configure cross-highlighting where clicking on the row in a table row highlights the corresponding data in a target scatter graph. The highlighting is visually shown by changing the color of the point for the selected country. 
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
@@ -712,7 +717,9 @@ This example shows how to configure cross-highlighting where clicking on the row
     ```python
     import vizro.actions as va
 
-    components = [vm.AgGrid(..., actions=va.set_control(control="highlight_parameter", value="country"))]
+    components = [
+        vm.AgGrid(..., actions=va.set_control(control="highlight_parameter", value="country"))
+    ]
     ```
 
 1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
@@ -720,7 +727,6 @@ This example shows how to configure cross-highlighting where clicking on the row
     ```python
     import vizro.plotly.express as px
     from vizro.models.types import capture
-
 
     @capture("graph")
     def scatter_with_highlight(data_frame, highlight_country):  # (1)!
@@ -770,7 +776,7 @@ The full code is given below. This shows a slightly more complicated highlightin
 
 
         page = vm.Page(
-            title="Cross-highlight from table to graph",
+            title="Cross-highlight from table",
             layout=vm.Layout(grid=[[0, 1]], col_gap="80px"),  # (6)!
             components=[
                 vm.AgGrid(
@@ -794,12 +800,12 @@ The full code is given below. This shows a slightly more complicated highlightin
         )
 
         dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()       
         ```
 
         1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
-        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted point.
-        1. We make sure that the colors are always ordered the same way. This ensures that the highlighted point always has the same color regardless of which row in the table is clicked.
+        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted point. 
+        1. We make sure that the colors are always ordered the same way. This ensures that the highlighted point always has the same color regardless of which row in the table is clicked. 
         1. When a country is highlighted, make [further modifications](https://plotly.com/python/creating-and-updating-figures/) to the [style of the highlighted point's marker](https://plotly.com/python/marker-style/) to make it stand out more.
         1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected with index 1. The traces are ordered by `category_orders={"color": [False, True]}` and so this corresponds to `True`, in other words the trace that has `country_is_highlighted=True` and contains the highlighted point.
         1. We use a side-by-side [layout](layouts.md) with an 80px column gap to display the table and graph together.
@@ -831,7 +837,7 @@ When you click on a row in the table, the corresponding point is highlighted in 
 
 ### Cross-highlight from graph
 
-This example shows how to configure cross-highlighting where clicking on a point in a graph highlights the corresponding data in a different target graph:
+This example shows how to configure cross-highlighting where clicking on a point in a graph highlights the corresponding data in a target [bump chart](https://datavizcatalogue.com/blog/chart-snapshot-bump-charts/). The highlighting is visually shown by making the line for the selector country stronger. 
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
@@ -842,18 +848,19 @@ This example shows how to configure cross-highlighting where clicking on a point
         vm.Parameter(
             id="highlight_parameter",  # (1)!
             targets=["bump_chart.highlight_country"],  # (2)!
-            selector=vm.RadioItems(options=SELECTED_COUNTRIES, value="NONE"),  # (3)!
+            selector=vm.RadioItems(options=["NONE", ...]),  # (3)!
             visible=False,  # (4)!
-        ),
+        )
     ]
     ```
 
     1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
-    1. The parameter targets the bump chart (`bump_chart`) and specifically the `highlight_country` argument, which determines which trace to highlight.
-    1. We set "NONE" to be the default so the target graph starts in an unhighlighted state. Note that "NONE" is already included as an option in `SELECTED_COUNTRIES`.
+    1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bump_chart")`.
+    1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
-1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] that triggers the cross-highlight.
+
+1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] component that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
     1. Set `value` to specify which argument contains the values used to identify the trace to highlight. For graphs, use the argument name where that data is plotted (e.g., `"y"` if the identifying values are on the y-axis). This value determines what gets passed to the target graph's highlighting parameter.
@@ -864,52 +871,37 @@ This example shows how to configure cross-highlighting where clicking on a point
     components = [vm.Graph(..., actions=va.set_control(control="highlight_parameter", value="y"))]
     ```
 
-1. Implement highlighting logic in your target Graph's figure function using the parameter value to identify which trace to visually highlight.
+1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
 
     ```python
+    import vizro.plotly.express as px
     from vizro.models.types import capture
 
-
     @capture("graph")
-    def bump_chart(data_frame, highlight_country=None):  # (1)!
-        data_with_rank = data_frame.copy()
-        data_with_rank["rank"] = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
-
-        fig = px.line(data_with_rank, x="year", y="rank", color="country", markers=True)  # (2)!
-        fig.update_layout(
-            legend_title="",
-            xaxis_title="",
-            yaxis=dict(autorange="reversed"),
-            yaxis_title="Rank (1 = Highest lifeExp)",
-        )
-        fig.update_traces(opacity=0.3, line=dict(width=2))  # (3)!
-
-        if highlight_country:  # (4)!
-            for trace in fig.data:
-                if trace.name == highlight_country:
-                    trace.opacity = 1.0
-                    trace.line.width = 3
-
+    def bump_chart_with_highlight(data_frame, highlight_country):  # (1)!
+        fig = px.line(data_frame, x=..., y=..., color="country")  # (2)!
+        fig.update_traces(selector={"name": highlight_country}, line_width=3)  # (3)!
         return fig
     ```
 
-    1. The `highlight_country` argument receives the selected country name from the cross-parameter interaction and is used to identify which trace to highlight.
-    1. Using `color="country"` creates one trace per country and sets each trace's name to the country name. This makes it easy to identify traces by name in the highlighting logic.
-    1. We set all traces to low opacity and thin lines by default.
-    1. We loop through all traces and compare each trace's name against the country clicked in the bar chart (passed via the parameter). When we find the matching trace, we increase its opacity and line width to make it stand out.
+    1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
+    1. We color the plot by `country` so that each country has its own trace in the resulting chart.
+    1. We use [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) to modify the [highlighted line's style](https://plotly.com/python/line-charts/#style-line-plots). 
+
+The full code is given below. This includes the complete code for a bump chart with more advanced styling.
 
 !!! example "Cross-highlight from graph"
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="45"}
         import vizro.plotly.express as px
         import vizro.models as vm
         import vizro.actions as va
         from vizro.models.types import capture
         from vizro import Vizro
-
-        SELECTED_COUNTRIES = [
+        
+        selected_countries = [
             "Singapore",
             "Malaysia",
             "Thailand",
@@ -918,78 +910,67 @@ This example shows how to configure cross-highlighting where clicking on a point
             "Vietnam",
             "Cambodia",
             "Myanmar",
-            "NONE",  # (1)!
         ]
-
-        gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
-
-
-        @capture("graph")
-        def bump_chart(data_frame, highlight_country=None):  # (2)!
-            data_with_rank = data_frame.copy()
-            data_with_rank["rank"] = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
-
-            fig = px.line(data_with_rank, x="year", y="rank", color="country", markers=True)  # (3)!
-            fig.update_layout(
-                legend_title="",
-                xaxis_title="",
-                yaxis=dict(autorange="reversed"),
-                yaxis_title="Rank (1 = Highest lifeExp)",
-            )
-            fig.update_traces(opacity=0.3, line=dict(width=2))  # (4)!
-
-            if highlight_country:  # (5)!
-                for trace in fig.data:
-                    if trace.name == highlight_country:
-                        trace.opacity = 1.0
-                        trace.line.width = 3
-
-            return fig
-
+        
+        gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
 
         @capture("graph")
-        def bar_chart(data_frame):
-            fig = px.bar(data_frame[data_frame["year"] == 2007], y="country", x="lifeExp")
-            fig.update_layout(yaxis_title="", xaxis_title="lifeExp (2007)")
+        def bump_chart_with_highlight(data_frame, highlight_country=None):  # (1)!
+            rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
+        
+            fig = px.line(data_frame, x="year", y=rank, color="country", markers=True)  # (2)!
+            fig.update_yaxes(title="Rank (1 = Highest lifeExp)", autorange="reversed", dtick=1)  # (3)!
+            fig.update_traces(opacity=0.3, line_width=2)  # (4)!
+        
+            if highlight_country is not None:  # (5)!
+                fig.update_traces(selector={"name": highlight_country}, opacity=1, line_width=3)  # (6)!
+        
             return fig
-
-
+        
+        
         page = vm.Page(
-            title="Cross-highlighting example",
+            title="Cross-highlight from graph",
             components=[
                 vm.Graph(
-                    figure=bar_chart(data_frame=gapminder),
+                    figure=px.bar(
+                        gapminder.query("year == 2007"),
+                        y="country",
+                        x="lifeExp",
+                        labels={"lifeExp": "lifeExp in 2007"},
+                    ),
                     header="💡 Click any bar to highlight that country in the bump chart",
-                    actions=[va.set_control(control="highlight_parameter", value="y")],  # (6)!
+                    actions=va.set_control(control="highlight_parameter", value="y"),  # (7)!
                 ),
                 vm.Graph(
-                    id="bump_chart",  # (7)!
-                    figure=bump_chart(data_frame=gapminder),
+                    id="bump_chart",  # (8)!
+                    figure=bump_chart_with_highlight(data_frame=gapminder),
                 ),
             ],
             controls=[
                 vm.Parameter(
-                    id="highlight_parameter",  # (8)!
-                    targets=["bump_chart.highlight_country"],  # (9)!
-                    selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),
-                    visible=False,  # (10)!
+                    id="highlight_parameter",   # (9)!
+                    targets=["bump_chart.highlight_country"],   # (10)!
+                    selector=vm.RadioItems(options=["NONE", *gapminder["country"]]),   # (11)!
+                    visible=False,   # (12)!
                 ),
             ],
         )
-
+        
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
-        1. We add "NONE" as an option in `SELECTED_COUNTRIES` and set the parameter's default `value="NONE"` so that no country is highlighted when the dashboard first loads.
-        1. The `highlight_country` argument receives the selected country name from the cross-parameter interaction and is used to identify which trace to highlight.
-        1. Using `color="country"` creates one trace per country and sets each trace's name to the country name. This makes it easy to identify traces by name in the highlighting logic.
-        1. We set all traces to low opacity and thin lines by default.
-        1. We loop through all traces and compare each trace's name against the country clicked in the bar chart (passed via the parameter). When we find the matching trace, we increase its opacity and line width to make it stand out.
-        1. The bar chart action sets the parameter using the country from the clicked bar (from the y-axis).
-        1. We give the `vm.Graph` an `id` so that it can be targeted by the parameter.
-        1. We give the `vm.Parameter` an `id` so that it can be set explicitly by `va.set_control`.
-        1. The parameter targets the bump chart (`bump_chart`) and specifically the `highlight_country` argument, which determines which trace to highlight.
+        1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
+        1. `rank` is a pandas Series that gives the ranking of each country by life expectancy for every year. We color the plot by `country` so that each country has its own trace in the resulting chart. 
+        1. Format the bump chart's y-axis so that it shows the rank of 1 (highest life expectancy) at the top.
+        1. Style the lines for every country. 
+        1. When a country is highlighted, modify its [line's style](https://plotly.com/python/line-charts/#style-line-plots) to make it stand out more.
+        1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected, which is the `highlighted_country` one. 
+        1. The graph's `va.set_control` sets `higlight_parameter` to the country from the clicked bar.
+        1. We give the `vm.Graph` an `id` so that it can be targeted by `highlight_parameter`.
+        1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+        1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bump_chart")`.
+        1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
         1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
     === "app.yaml"
@@ -1000,7 +981,7 @@ This example shows how to configure cross-highlighting where clicking on a point
 
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_graph.gif)
 
-When you click on a bar in the bar chart, the corresponding country is highlighted in the bump chart with full opacity and a thicker line, while all other countries remain at low opacity with thin lines.
+When you click on a bar in the bar chart, the corresponding line is highlighted in the bump chart with full opacity and a thicker line.
 
 ??? details "Behind the scenes mechanism"
 
