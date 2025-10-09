@@ -15,8 +15,6 @@ from data import superstore_df, create_superstore_product, pareto_customers_tabl
 from charts import (
     bar_chart_by_subcategory,
     bar_chart_by_category,
-    bar_chart_by_customer,
-    custom_aggrid,
     create_map_bubble_new,
     create_bar_chart_by_region,
     create_line_chart_per_month,
@@ -24,11 +22,11 @@ from charts import (
     create_bar_current_vs_previous_category,
     pareto_customers_chart,
     scatter_with_quadrants,
-    pie_chart_by_category,
     pie_chart_by_order_status,
     bar_chart_top_cities,
     bar_chart_top_subcategories,
     bar_chart_top_customers,
+    custom_orders_aggrid,
 )
 from charts import COLUMN_DEFS_PRODUCT, COLUMN_DEFS_CUSTOMERS
 
@@ -59,20 +57,26 @@ def nav_region(parameter_value):
 
 
 @capture("action")
-def nav_product(parameter_value):
+def nav_product():
     return "/product-view"
 
 
 @capture("action")
-def nav_customer(parameter_value):
+def nav_customer():
     return "/customer-view"
+
+
+@capture("action")
+def nav_orders():
+    return "/orders-view"
 
 
 page_1 = vm.Page(
     title="Overview dashboard",
     components=[
         vm.Container(
-            title="",
+            id="pg1-container-1",
+            title="💡 Click on a card to navigate to detailed view.",
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -117,23 +121,12 @@ page_1 = vm.Page(
         ),
         vm.Container(
             title="",
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
             components=[
                 vm.Graph(
                     id="line_chart_by_month",
                     figure=create_line_chart_per_month(
                         superstore_df,
                         value_col="Sales",
-                    ),
-                ),
-                vm.Button(
-                    id="customer-nav-btn",
-                    text="",
-                    icon="jump_to_element",
-                    variant="outlined",
-                    description="Click to access detailed customer view",
-                    actions=vm.Action(
-                        function=nav_product("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
                     ),
                 ),
             ],
@@ -143,7 +136,15 @@ page_1 = vm.Page(
             title="",
             components=[
                 vm.Graph(id="order_status_chart", figure=pie_chart_by_order_status(superstore_df, value_col="Sales")),
+                vm.Button(
+                    id="orders-nav-btn",
+                    text="Navigate to orders view",
+                    icon="jump_to_element",
+                    variant="outlined",
+                    actions=vm.Action(function=nav_orders(), outputs=["vizro_url.pathname"]),
+                ),
             ],
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
             variant="filled",
         ),
         vm.Container(
@@ -151,10 +152,9 @@ page_1 = vm.Page(
                 vm.Graph(id="region_bar_chart", figure=create_bar_chart_by_region(superstore_df, value_col="Sales")),
                 vm.Button(
                     id="region-nav-btn",
-                    text="",
+                    text="Navigate to regional view",
                     icon="jump_to_element",
                     variant="outlined",
-                    description="Click to access detailed regional view",
                     actions=vm.Action(
                         function=nav_region("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
                     ),
@@ -171,13 +171,10 @@ page_1 = vm.Page(
                 ),
                 vm.Button(
                     id="segment-nav-btn",
-                    text="",
+                    text="Navigate to customer view",
                     icon="jump_to_element",
                     variant="outlined",
-                    description="Click to access detailed customer view",
-                    actions=vm.Action(
-                        function=nav_customer("pg1_parameter_1"), outputs=["vizro_url.pathname", "vizro_url.search"]
-                    ),
+                    actions=vm.Action(function=nav_customer(), outputs=["vizro_url.pathname"]),
                 ),
             ],
             variant="filled",
@@ -185,10 +182,18 @@ page_1 = vm.Page(
         ),
         vm.Container(
             title="",
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
             components=[
                 vm.Graph(
                     id="category_bar_chart",
                     figure=create_bar_current_vs_previous_category(superstore_df, value_col="Sales"),
+                ),
+                vm.Button(
+                    id="customer-nav-btn",
+                    text="Navigate to product view",
+                    icon="jump_to_element",
+                    variant="outlined",
+                    actions=vm.Action(function=nav_product(), outputs=["vizro_url.pathname"]),
                 ),
             ],
             variant="filled",
@@ -197,7 +202,15 @@ page_1 = vm.Page(
     controls=[
         vm.Parameter(
             id="pg1_parameter_1",
-            selector=vm.RadioItems(options=["Sales", "Profit", "Order ID"], title="Metric"),
+            selector=vm.RadioItems(
+                options=[
+                    {"value": "Sales", "label": "Sales"},
+                    {"value": "Profit", "label": "Profit"},
+                    {"value": "Order ID", "label": "Orders"},
+                    {"value": "Customer ID", "label": "Customers"},
+                ],
+                title="Metric",
+            ),
             targets=[
                 "region_bar_chart.value_col",
                 "category_bar_chart.value_col",
@@ -211,9 +224,12 @@ page_1 = vm.Page(
     layout=vm.Grid(
         grid=[
             [0, 0, 0],
+            [0, 0, 0],
             [1, 1, 2],
             [1, 1, 2],
             [1, 1, 2],
+            [1, 1, 2],
+            [3, 4, 5],
             [3, 4, 5],
             [3, 4, 5],
             [3, 4, 5],
@@ -229,6 +245,8 @@ page_2 = vm.Page(
             components=[
                 vm.Graph(
                     id="region_map_chart",
+                    title="State level data",
+                    header="💡 Click on a state to filter charts on the right.",
                     figure=create_map_bubble_new(superstore_df, value_col="Sales", custom_data=["State_Code"]),
                     actions=[
                         va.set_control(control="pg2-filter-1", value="State_Code"),
@@ -272,6 +290,25 @@ page_2 = vm.Page(
             targets=["pg2-chart-1.top_x", "pg2-chart-2.top_x", "pg2-chart-3.top_x"],
             selector=vm.RadioItems(options=[5, 7, 10], title="Top records"),
         ),
+        vm.Parameter(
+            id="pg2-parameter-2",
+            selector=vm.RadioItems(
+                options=[
+                    {"value": "Sales", "label": "Sales"},
+                    {"value": "Profit", "label": "Profit"},
+                    {"value": "Order ID", "label": "Orders"},
+                    {"value": "Customer ID", "label": "Customers"},
+                ],
+                title="Metric",
+            ),
+            targets=[
+                "region_map_chart.value_col",
+                "pg2-chart-1.value_col",
+                "pg2-chart-2.value_col",
+                "pg2-chart-3.value_col",
+            ],
+            show_in_url=True,
+        ),
         vm.Button(
             text="",
             icon="Reset Settings",
@@ -284,43 +321,6 @@ page_2 = vm.Page(
                 )
             ],
         ),
-        #     vm.Filter(
-        #         id="pg2-filter-2",
-        #         column="Category",
-        #         selector=vm.Dropdown(),
-        #         targets=["regional_subcategory", "customer_bar_chart_2", "region_map_chart"],
-        #     ),
-        #     vm.Parameter(
-        #         id="pg2-parameter-1",
-        #         targets=["regional_category.highlight_category"],
-        #         selector=vm.Dropdown(
-        #             multi=False, options=["Furniture", "Technology", "Office Supplies", "NONE"], value="NONE"
-        #         ),
-        #     ),
-        #     vm.Filter(id="pg2-filter-3", column="Sub-Category", selector=vm.Dropdown(), targets=["customer_bar_chart_2"]),
-        #     vm.Parameter(
-        #         id="pg2-parameter-2",
-        #         targets=[
-        #             "regional_subcategory.value_col",
-        #             "customer_bar_chart_2.value_col",
-        #             "region_map_chart.value_col",
-        #             "regional_category.value_col",
-        #         ],
-        #         selector=vm.RadioItems(options=["Sales", "Profit", "Order ID"], title="Metric"),
-        #         show_in_url=True,
-        #     ),
-        #     vm.Button(
-        #         text="",
-        #         icon="Reset Settings",
-        #         description="Reset actions",
-        #         variant="outlined",
-        #         actions=[
-        #             vm.Action(
-        #                 function=capture("action")(lambda: [state_list, categories, "NONE", subcategories])(),
-        #                 outputs=["pg2-filter-1", "pg2-filter-2", "pg2-parameter-1", "pg2-filter-3"],
-        #             )
-        #         ],
-        #     ),
     ],
     layout=vm.Grid(grid=[[0, 0, 0, 1, 1]]),
 )
@@ -340,11 +340,12 @@ page_3 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="pg3_filter_1", column="Segment"),
+        vm.Filter(id="pg3_filter_1", column="Segment", selector=vm.Checklist(title="Customer Segment")),
         vm.Parameter(
             id="pg3_parameter_1",
             targets=["pg3_pareto_chart.highlight_customer"],
             selector=vm.Dropdown(options=customer_name, value="NONE", multi=False),
+            visible=False,
         ),
     ],
     layout=vm.Grid(grid=[[0, 0, 1, 1]]),
@@ -357,16 +358,25 @@ page_4 = vm.Page(
         vm.Container(
             title="",
             components=[
-                vm.Graph(
-                    id="pg4-chart-1",
-                    figure=bar_chart_by_category(superstore_df, value_col="Sales", custom_data=["Category"]),
-                    actions=[
-                        va.set_control(control="pg4-filter-1", value="Category"),
+                vm.Container(
+                    title="",
+                    components=[
+                        vm.Graph(
+                            id="pg4-chart-1",
+                            figure=bar_chart_by_category(superstore_df, value_col="Sales", custom_data=["Category"]),
+                            actions=[
+                                va.set_control(control="pg4-filter-1", value="Category"),
+                            ],
+                        ),
+                        vm.Graph(
+                            id="pg4-chart-2",
+                            figure=bar_chart_by_subcategory(
+                                superstore_df, value_col="Sales", custom_data=["Sub-Category"]
+                            ),
+                        ),
                     ],
-                ),
-                vm.Graph(
-                    id="pg4-chart-2",
-                    figure=bar_chart_by_subcategory(superstore_df, value_col="Sales", custom_data=["Sub-Category"]),
+                    layout=vm.Grid(grid=[[0, 1]]),
+                    variant="filled",
                 ),
                 vm.Container(
                     title="",
@@ -388,42 +398,44 @@ page_4 = vm.Page(
                         ),
                     ],
                     layout=vm.Grid(grid=[[0, 0, 1, 1, 1]]),
+                    variant="filled",
                 ),
             ],
             layout=vm.Grid(
                 grid=[
-                    [0, 1],
-                    [2, 2],
-                    [2, 2],
+                    [0, 0],
+                    [1, 1],
+                    [1, 1],
                 ]
             ),
         ),
     ],
     controls=[
-        vm.Filter(id="pg4-filter-1", column="Category", targets=["pg4-chart-2", "table"]),
+        vm.Filter(
+            id="pg4-filter-1",
+            column="Category",
+            targets=["pg4-chart-2", "table"],
+            selector=vm.Checklist(title="Product Category"),
+        ),
     ],
 )
 
 page_5 = vm.Page(
-    title="Table",
-    components=[vm.AgGrid(id="table_id", figure=custom_aggrid(superstore_df))],
+    title="Orders view",
+    components=[vm.AgGrid(id="table_id", figure=custom_orders_aggrid(superstore_df))],
     controls=[
         vm.Filter(
+            id="pg5_filter_1",
             column="Order Date",
             selector=vm.DatePicker(
                 range=True,
             ),
         ),
+        vm.Filter(id="pg5_filter_2", column="Category", selector=vm.Checklist()),
         vm.Button(
             text="Export data",
             icon="download",
             actions=[va.export_data(targets=["table_id"], file_format="xlsx")],
-            variant="outlined",
-        ),
-        vm.Button(
-            text="",
-            icon="Reset Settings",
-            description="Reset actions",
             variant="outlined",
         ),
     ],
@@ -431,7 +443,7 @@ page_5 = vm.Page(
 
 
 navigation = vm.Navigation(
-    pages=["Overview dashboard", "Regional view", "Customer view", "Product view", "Table"],
+    pages=["Overview dashboard", "Regional view", "Customer view", "Product view", "Orders view"],
     nav_selector=vm.NavBar(
         items=[
             vm.NavLink(
@@ -450,7 +462,7 @@ navigation = vm.Navigation(
                 icon="Barcode",
             ),
             vm.NavLink(
-                pages=["Table"],
+                pages=["Orders view"],
                 icon="Shopping Cart",
                 label="Orders",
             ),

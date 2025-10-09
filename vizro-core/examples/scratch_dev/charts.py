@@ -312,8 +312,19 @@ def custom_aggrid(data_frame):
 @capture("graph")
 def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
     if value_col == "Order ID":
-        state_metric = data_frame.groupby(["State_Code", "Region"], as_index=False)["Order ID"].nunique()
-        agg_col = "Order ID"
+        state_metric = (
+            data_frame.groupby(["State_Code", "Region"], as_index=False)["Order ID"]
+            .nunique()
+            .rename(columns={"Order ID": "Orders"})
+        )
+        agg_col = "Orders"
+    elif value_col == "Customer ID":
+        state_metric = (
+            data_frame.groupby(["State_Code", "Region"], as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         state_metric = data_frame.groupby(["State_Code", "Region"], as_index=False)[value_col].sum()
         agg_col = value_col
@@ -323,7 +334,7 @@ def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
         state_metric,
         locations="State_Code",
         locationmode="USA-states",
-        color=value_col,
+        color=agg_col,
         hover_name="Region",
         hover_data=["Region", agg_col],
         scope="usa",
@@ -345,6 +356,13 @@ def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=N
             data_frame.groupby("Region", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
+    elif value_col == "Customer ID":
+        region_metric = (
+            data_frame.groupby("Region", as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         region_metric = data_frame.groupby("Region", as_index=False)[value_col].sum()
         agg_col = value_col
@@ -398,6 +416,13 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
             .rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
+    elif value_col == "Customer ID":
+        agg_df = (
+            data_frame.groupby(["Segment", "Year"], as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         agg_df = data_frame.groupby(["Segment", "Year"], as_index=False)[value_col].sum()
         agg_col = value_col
@@ -429,7 +454,7 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
         xaxis_title=None,
         yaxis_title=None,
         bargap=0.4,
-        title=f"{agg_col} | By Customer",
+        title=f"{agg_col} | By Segment",
         legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
     )
 
@@ -448,6 +473,13 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
             .rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
+    elif value_col == "Customer ID":
+        agg_df = (
+            data_frame.groupby(["Category", "Year"], as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         agg_df = data_frame.groupby(["Category", "Year"], as_index=False)[value_col].sum()
         agg_col = value_col
@@ -536,6 +568,13 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
             .rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
+    elif value_col == "Customer ID":
+        monthly = (
+            data_frame.groupby(["Year", "Month"], as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         monthly = data_frame.groupby(["Year", "Month"], as_index=False)[value_col].sum()
         agg_col = value_col
@@ -710,6 +749,13 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
             .rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
+    elif value_col == "Customer ID":
+        status_metric = (
+            data_frame.groupby("Order Status", as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         status_metric = data_frame.groupby("Order Status", as_index=False)[value_col].sum()
         agg_col = value_col
@@ -727,6 +773,7 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
         title=dict(
             text=f"{agg_col} | By Order Status",
         ),
+        legend=dict(yanchor="bottom", y=-0.2, xanchor="right", orientation="v"),
     )
 
     return fig
@@ -1018,6 +1065,13 @@ def bar_chart_top_cities(data_frame, value_col="Sales", top_x=10):
             data_frame.groupby("City", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
+    elif value_col == "Customer ID":
+        city_metric = (
+            data_frame.groupby("City", as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         city_metric = data_frame.groupby("City", as_index=False)[value_col].sum()
         agg_col = value_col
@@ -1068,6 +1122,13 @@ def bar_chart_top_subcategories(data_frame, value_col="Sales", top_x=10):
             .rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
+    elif value_col == "Customer ID":
+        subcat_metric = (
+            data_frame.groupby("Sub-Category", as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         subcat_metric = data_frame.groupby("Sub-Category", as_index=False)[value_col].sum()
         agg_col = value_col
@@ -1119,6 +1180,13 @@ def bar_chart_top_customers(data_frame, value_col="Sales", top_x=10):
             .rename(columns={"Order ID": "Orders"})
         )
         agg_col = "Orders"
+    if value_col == "Customer ID":
+        customer_metric = (
+            data_frame.groupby("Customer Name", as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
     else:
         customer_metric = data_frame.groupby("Customer Name", as_index=False)[value_col].sum()
         agg_col = value_col
@@ -1229,3 +1297,209 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
     )
 
     return fig
+
+
+@capture("ag_grid")
+def custom_orders_aggrid(data_frame):
+    data_frame["Profit Ratio"] = (data_frame["Profit"] / data_frame["Sales"]).round(3)
+    column_defs_orders = [
+        {"headerName": "Order ID", "field": "Order ID", "minWidth": 150},
+        {
+            "headerName": "Segment",
+            "field": "Segment",
+            "minWidth": 140,
+            "cellStyle": {
+                "styleConditions": [
+                    {
+                        "condition": "params.value === 'Corporate'",
+                        "style": {
+                            "backgroundColor": "#37474F",
+                            "color": "white",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                    {
+                        "condition": "params.value === 'Consumer'",
+                        "style": {
+                            "backgroundColor": "#546E7A",
+                            "color": "white",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                    {
+                        "condition": "params.value === 'Home Office'",
+                        "style": {
+                            "backgroundColor": "#8D8D8D",
+                            "color": "white",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                ]
+            },
+        },
+        {"headerName": "Customer Name", "field": "Customer Name", "minWidth": 170},
+        {"headerName": "Location", "field": "City", "minWidth": 150},
+        {
+            "headerName": "Category",
+            "field": "Category",
+            "minWidth": 150,
+            "cellRenderer": {
+                "function": """
+                function(params) {
+                    if (params.value === 'Furniture') {
+                        return '<span><i class="material-symbols-outlined">chair</i>' + params.value + '</span>';
+                    }
+                    if (params.value === 'Technology') {
+                        return '<span><i class="material-symbols-outlined">laptop_mac</i>' + params.value + '</span>';
+                    }
+                    if (params.value === 'Office Supplies') {
+                        return '<span><i class="material-symbols-outlined">assignment</i>' + params.value + '</span>';
+                    }
+                }
+                """
+            },
+        },
+        {"headerName": "Sales", "field": "Sales", "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"}},
+        {
+            "headerName": "Profit",
+            "field": "Profit",
+            "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"},
+        },
+        {
+            "headerName": "Profit Ratio",
+            "field": "Profit Ratio",
+            "minWidth": 140,
+            "valueFormatter": {"function": "d3.format('.1%')(params.value)"},
+            "cellStyle": {
+                "styleConditions": [
+                    {
+                        "condition": "Number(params.value) < 0",
+                        "style": {
+                            "backgroundColor": "#c42f3e",
+                            "color": "white",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                    {
+                        "condition": "Number(params.value) >= 0 && Number(params.value) < 0.10",
+                        "style": {
+                            "backgroundColor": "#E04A55",
+                            "color": "black",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                    {
+                        "condition": "Number(params.value) >= 0.10 && Number(params.value) < 0.15",
+                        "style": {
+                            "backgroundColor": "#F2A3A9",
+                            "color": "black",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                    {
+                        "condition": "Number(params.value) >= 0.15 && Number(params.value) < 0.25",
+                        "style": {
+                            "backgroundColor": "#C8E6C9",
+                            "color": "black",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                    {
+                        "condition": "Number(params.value) >= 0.25 && Number(params.value) < 0.35",
+                        "style": {
+                            "backgroundColor": "#81C784",
+                            "color": "white",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                    {
+                        "condition": "Number(params.value) >= 0.35",
+                        "style": {
+                            "backgroundColor": "#4CAF50",
+                            "color": "white",
+                            "borderRadius": "18px",
+                            "padding": "4px 12px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "38px",
+                        },
+                    },
+                ]
+            },
+        },
+    ]
+
+    aggrid = AgGrid(
+        columnDefs=column_defs_orders,
+        defaultColDef={"resizable": True, "sortable": True, "filter": True, "minWidth": 30, "flex": 1},
+        style={"height": "800px", "width": "100%"},
+        rowData=data_frame.to_dict("records"),
+        dashGridOptions={
+            "rowHeight": 55,
+            "animateRows": True,
+            "suppressMovableColumns": True,
+            "pagination": True,
+            "paginationPageSize": 20,
+        },
+        dangerously_allow_code=True,
+    )
+    return aggrid

@@ -12,20 +12,32 @@
   display: none;
 }
 
-.card-kpi .card-body {
-  font-size: 1.2rem;
-}
-
 
 #region-nav-btn,
 #segment-nav-btn,
-#customer-nav-btn {
+#customer-nav-btn,
+#orders-nav-btn {
   height: 22px;
-  width: 22px;
 }
 
 
 #pg2-filter-1,
 #pg2-filter-3 {
   display: none;
+}
+
+.card-kpi .card-header .material-symbols-outlined {
+  font-size: 32px;
+}
+
+.card-kpi .card-header .card-kpi-title {
+  font-size: 1.3rem;
+}
+
+#pg1-container-1_title_content {
+  font-size: 14px;
+}
+
+#pg1-container-1.container-fluid {
+  gap: 0;
 }
