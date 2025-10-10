@@ -771,7 +771,7 @@ The full code is given below. This shows a slightly more complicated highlightin
 
         page = vm.Page(
             title="Cross-highlight from table",
-            layout=vm.Layout(grid=[[0, 1]], col_gap="80px"),  # (6)!
+            layout=vm.Grid(grid=[[0, 1]], col_gap="80px"),  # (6)!
             components=[
                 vm.AgGrid(
                     header="💡 Click on a row to highlight that country in the scatter plot",
@@ -812,7 +812,46 @@ The full code is given below. This shows a slightly more complicated highlightin
 
     === "app.yaml"
 
-        This example is currently only possible via Python configuration due to the custom charts.
+        ```
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+        - components:
+          - actions:
+            - control: highlight_parameter
+              type: set_control
+              value: country
+            figure:
+              _target_: dash_ag_grid
+              data_frame: gapminder
+            header: "💡 Click on a row to highlight that country in the scatter plot"
+            type: ag_grid
+          - figure:
+              _target_: __main__.scatter_with_highlight
+              data_frame: gapminder
+            id: scatter_chart
+            type: graph
+          controls:
+          - id: highlight_parameter
+            selector:
+              options:
+              - NONE
+              - Albania
+              - ...
+              - United Kingdom
+              type: radio_items
+            targets:
+            - scatter_chart.highlight_country
+            type: parameter
+            visible: false
+          layout:
+            col_gap: 80px
+            grid:
+            - - 0
+              - 1
+            type: grid
+          title: Cross-highlight from table
+        ```
 
     === "Result"
 

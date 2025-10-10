@@ -1,39 +1,36 @@
-pages:
-  - components:
-      - actions:
-          - control: day_filter
-            type: set_control
-            value: x
-          - control: sex_filter
-            type: set_control
-            value: y
-        figure:
-          _target_: density_heatmap
-          category_orders:
-            day:
-              - Thur
-              - Fri
-              - Sat
-              - Sun
-          data_frame: tips
-          x: day
-          y: sex
-        title: Click on a cell to use that cell's sex and day to filter table
-        type: graph
-      - figure:
-          _target_: dash_ag_grid
-          data_frame: tips
-        id: tips_table
-        type: ag_grid
-    controls:
-      - column: day
-        id: day_filter
-        targets:
-          - tips_table
-        type: filter
-      - column: sex
-        id: sex_filter
-        targets:
-          - tips_table
-        type: filter
-    title: Cross-filter over 2 dimensions
+        pages:
+        - components:
+          - actions:
+            - control: highlight_parameter
+              type: set_control
+              value: country
+            figure:
+              _target_: dash_ag_grid
+              data_frame: gapminder
+            header: "💡 Click on a row to highlight that country in the scatter plot"
+            type: ag_grid
+          - figure:
+              _target_: __main__.scatter_with_highlight
+              data_frame: gapminder
+            id: scatter_chart
+            type: graph
+          controls:
+          - id: highlight_parameter
+            selector:
+              options:
+              - NONE
+              - Albania
+              - ...
+              - United Kingdom
+              type: radio_items
+            targets:
+            - scatter_chart.highlight_country
+            type: parameter
+            visible: false
+          layout:
+            col_gap: 80px
+            grid:
+            - - 0
+              - 1
+            type: grid
+          title: Cross-highlight from table
