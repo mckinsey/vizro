@@ -1,6 +1,8 @@
 import warnings
 from collections.abc import Generator
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
+
+from typing_extensions import TypeIs
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
@@ -18,17 +20,25 @@ from vizro.models import (
 from vizro.models._components.form._form_utils import get_dict_options_and_default
 from vizro.models.types import ControlType, SelectorType
 
-# Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
-# with isinstance checks.
-SELECTORS = {
+SELECTORS: dict[str, tuple[type, ...]] = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Checklist, Dropdown, RadioItems),
     "temporal": (DatePicker,),
     "boolean": (Switch,),
 }
-CategoricalSelectorType = Union[Checklist, Dropdown, RadioItems]
-NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
-BooleanSelectorType = Switch
+
+
+# Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
+def _is_numerical_temporal_selector(x: object) -> TypeIs[Union[RangeSlider, Slider, DatePicker]]:
+    return isinstance(x, SELECTORS["numerical"] + SELECTORS["temporal"])
+
+
+def _is_categorical_selector(x: object) -> TypeIs[Union[Checklist, Dropdown, RadioItems]]:
+    return isinstance(x, SELECTORS["categorical"])
+
+
+def _is_boolean_selector(x: object) -> TypeIs[Switch]:
+    return isinstance(x, SELECTORS["boolean"])
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
@@ -87,10 +97,10 @@ def get_selector_default_value(selector: SelectorType) -> Any:
     if selector.value is not None:
         return selector.value
 
-    if isinstance(selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
+    if _is_numerical_temporal_selector(selector):
         is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
         return [selector.min, selector.max] if is_range else selector.min
-    elif isinstance(selector, SELECTORS["categorical"]):
+    elif _is_categorical_selector(selector):
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
         _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
         return default_value

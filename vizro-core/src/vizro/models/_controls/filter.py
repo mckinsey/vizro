@@ -18,11 +18,12 @@ from vizro.models import Container, VizroBaseModel
 from vizro.models._components.form import DatePicker, Dropdown, RangeSlider, Switch
 from vizro.models._controls._controls_utils import (
     SELECTORS,
-    CategoricalSelectorType,
-    NumericalTemporalSelectorType,
     check_control_targets,
     get_selector_default_value,
     warn_missing_id_for_url_control,
+    _is_numerical_temporal_selector,
+    _is_categorical_selector,
+    _is_boolean_selector,
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
@@ -179,11 +180,9 @@ class Filter(VizroBaseModel):
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
 
-        if isinstance(selector, SELECTORS["categorical"]):
-            selector = cast(CategoricalSelectorType, selector)
+        if _is_categorical_selector(selector):
             selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif isinstance(selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            selector = cast(NumericalTemporalSelectorType, selector)
+        elif _is_numerical_temporal_selector(selector):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
 
@@ -246,7 +245,7 @@ class Filter(VizroBaseModel):
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
         # but should still count as manually set.
         if (
-            not isinstance(self.selector, SELECTORS["boolean"])
+            not _is_boolean_selector(self.selector)
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -258,16 +257,14 @@ class Filter(VizroBaseModel):
                     self.selector._dynamic = True
                     break
 
-        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            self.selector = cast(NumericalTemporalSelectorType, self.selector)
+        if _is_numerical_temporal_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
                 self.selector.min = _min
             if self.selector.max is None:
                 self.selector.max = _max
-        elif isinstance(self.selector, SELECTORS["categorical"]):
-            self.selector = cast(CategoricalSelectorType, self.selector)
+        elif _is_categorical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
 
         # Set default value for the selector if not explicitly provided.
