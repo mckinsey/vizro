@@ -859,7 +859,6 @@ This example shows how to configure cross-highlighting where clicking on a point
     1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
-
 1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] component that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
@@ -992,13 +991,11 @@ When you click on a bar in the bar chart, the corresponding line is highlighted 
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
-### Self-highlighting
+### Self-highlight a graph
 
-In self-highlighting, the user clicks on a graph to highlight data within that same graph. This pattern is often combined with other actions like filtering a table via [cross-filtering](#cross-filter). The example below demonstrates this combined interaction: clicking on a box in the box plot both highlights that box and filters the table below to show only data for the selected country.
+In a self-highlight, the same component is both the source _and_ the target of a highlight. For example, when a user clicks on a graph, part of the graph can remain highlighted to show where they clicked.
 
-To configure self-highlighting:
-
-1. Create a parameter that targets the same [graph](graph.md) that will trigger the self-highlight.
+1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
     ```python
     import vizro.models as vm
@@ -1006,70 +1003,53 @@ To configure self-highlighting:
     controls = [
         vm.Parameter(
             id="highlight_parameter",  # (1)!
-            targets=["box_chart.highlight_country"],  # (2)!
-            selector=vm.Dropdown(
-                multi=False,
-                options=["NONE"] + data_frame["country"].unique().tolist(),  # (3)!
-                value="NONE",
-            ),
+            targets=["bar_chart.highlight_country"],  # (2)!
+            selector=vm.RadioItems(options=["NONE", ...]),  # (3)!
             visible=False,  # (4)!
         )
     ]
     ```
 
     1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
-    1. The parameter targets the same graph that triggers the action, creating a self-highlighting effect.
-    1. We add "NONE" as an option and set it to be the default so the target graph starts in an unhighlighted state.
+    1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bar_chart")`.
+    1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
-1. Call `set_control` in the `actions` argument of the same [`Graph`][vizro.models.Graph] that will be highlighted.
+
+1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] component that triggers the self-highlight.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value` to specify which argument contains the values used to identify the trace to highlight. For graphs, use the argument name where that data is plotted (e.g., `"y"` if the identifying values are on the y-axis). This value determines what gets passed to the graph's highlighting parameter.
+    1. Set `value` to specify which argument contains the values used to identify the trace to highlight. For graphs, use the argument name where that data is plotted (e.g., `"y"` if the identifying values are on the y-axis). This value determines what gets passed to the target graph's highlighting parameter.
 
     ```python
     import vizro.actions as va
 
-    components = [
-        vm.Graph(
-            id="box_chart",  # (1)!
-            actions=va.set_control(control="highlight_parameter", value="y"),
-        )
-    ]
+    components = [vm.Graph(..., actions=va.set_control(control="highlight_parameter", value="y"))]
     ```
 
-    1. We give the `vm.Graph` an `id` so that it can target itself through the parameter.
-
-1. Implement highlighting logic in the graph's figure function using the parameter value to modify the visual appearance of the clicked element.
+1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
 
     ```python
+    import vizro.plotly.express as px
     from vizro.models.types import capture
 
-
     @capture("graph")
-    def highlighted_box(data_frame, highlight_country=None):  # (1)!
-        fig = px.box(data_frame, x="lifeExp", y="country", color="country")  # (2)!
-        fig.update_traces(marker=dict(color="#00b4ff"))  # (3)!
-        fig.update_layout(showlegend=False)
-
-        if highlight_country:  # (4)!
-            for trace in fig.data:
-                if trace.name == highlight_country:
-                    trace.marker.color = "#ff9222"
-
-        return fig
+    def bar_with_highlight(data_frame, highlight_country):  # (1)!
+        country_is_highlighted = data_frame["country"] == highlight_country  # (2)!
+        return px.bar(data_frame, x=..., y=..., color=country_is_highlighted)  # (3)!
     ```
 
-    1. The `highlight_country` argument receives the selected country name from the cross-parameter interaction and is used to identify which trace to highlight.
-    1. Using `color="country"` creates one trace per country and sets each trace's name to the country name. This makes it easy to identify traces by name in the highlighting logic. Note that we later overwrite the automatic color assignment to make all boxes uniformly colored.
-    1. We set all boxes to a uniform light blue color by default, overwriting the automatic color assignment from `color="country"`.
-    1. We loop through all traces and compare each trace's name against the country clicked in the box plot (passed via the parameter). When we find the matching trace, we change its color to orange to make it stand out.
+    1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
+    1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others.
+    1. We color the bars by `country_is_highlighted`. This will color differently the values `True` (for the highlighted country) and `False` (for all others).
 
-!!! example "Self-highlighting"
+A self-highlight is often part of an [actions chain](actions.md#multiple-actions) that includes another action like a [cross-filter](#cross-filter). The example below shows how clicking a graph can perform a self-highlight and [cross-filter a table](#cross-filter-from-graph).
+
+!!! example "Self-highlight a graph and cross-filter"
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="44-47"}
         import vizro.plotly.express as px
         import vizro.models as vm
         import vizro.actions as va
@@ -1077,52 +1057,57 @@ To configure self-highlighting:
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
 
-        SELECTED_COUNTRIES = [
+        selected_countries = [
             "Singapore",
             "Malaysia",
             "Thailand",
             "Indonesia",
             "Philippines",
-            "NONE",  # (1)!
+            "Vietnam",
+            "Cambodia",
+            "Myanmar",
         ]
 
-        gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
+        gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
+
 
         @capture("graph")
-        def highlighted_box(data_frame, highlight_country=None):  # (2)!
-            fig = px.box(data_frame, x="lifeExp", y="country", color="country")  # (3)!
-            fig.update_traces(marker=dict(color="#00b4ff"))  # (4)!
+        def bar_with_highlight(data_frame, highlight_country=None):  # (1)!
+            country_is_highlighted = data_frame["country"] == highlight_country  # (2)!
+            fig = px.bar(
+                data_frame,
+                x="lifeExp",
+                y="country",
+                labels={"lifeExp": "lifeExp in 2007"},
+                color=country_is_highlighted,
+                category_orders={"country": sorted(data_frame["country"])},  # (3)!
+            )
             fig.update_layout(showlegend=False)
-
-            if highlight_country:  # (5)!
-                for trace in fig.data:
-                    if trace.name == highlight_country:
-                        trace.marker.color = "#ff9222"
-
             return fig
 
+
         page = vm.Page(
-            title="Self-highlighting",
+            title="Self-highlight a graph and cross-filter",
             components=[
                 vm.Graph(
-                    id="box_chart",  # (6)!
-                    figure=highlighted_box(data_frame=gapminder),
-                    header="💡 Click on a box to highlight the selected country while filtering the table below",
+                    id="bar_chart",   # (4)!
+                    figure=bar_with_highlight(gapminder.query("year == 2007")),
+                    header="💡 Click on a bar to highlight the selected country and filter the table below",
                     actions=[
-                        va.set_control(control="country_filter", value="y"),
-                        va.set_control(control="highlight_parameter", value="y"),  # (7)!
+                        va.set_control(control="highlight_parameter", value="y"),   # (5)!
+                        va.set_control(control="country_filter", value="y"),   # (6)!
                     ],
                 ),
-                vm.AgGrid(id="gapminder_table", figure=dash_ag_grid(data_frame=gapminder)),
+                vm.AgGrid(id="gapminder_table", figure=dash_ag_grid(data_frame=gapminder)),   # (7)!
             ],
             controls=[
-                vm.Filter(id="country_filter", column="country", targets=["gapminder_table"], visible=False),  # (8)!
                 vm.Parameter(
-                    id="highlight_parameter",  # (9)!
-                    targets=["box_chart.highlight_country"],  # (10)!
-                    selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),  # (11)!
-                    visible=False,  # (12)!
+                    id="highlight_parameter",  # (8)!
+                    targets=["bar_chart.highlight_country"],  # (9)!
+                    selector=vm.RadioItems(options=["NONE", *gapminder["country"]]),  # (10)!
+                    visible=False,  # (11)!
                 ),
+                vm.Filter(id="country_filter", column="country", targets=["gapminder_table"], visible=False),  # (12)!
             ],
         )
 
@@ -1130,18 +1115,18 @@ To configure self-highlighting:
         Vizro().build(dashboard).run()
         ```
 
-        1. We add "NONE" as an option in `SELECTED_COUNTRIES` and set the parameter's default `value="NONE"` so that no country is highlighted when the dashboard first loads.
-        1. The `highlight_country` argument receives the selected country name from the cross-parameter interaction and is used to identify which trace to highlight.
-        1. Using `color="country"` creates one trace per country and sets each trace's name to the country name. This makes it easy to identify traces by name in the highlighting logic. Note that we later overwrite the automatic color assignment to make all boxes uniformly colored.
-        1. We set all boxes to a uniform light blue color by default, overwriting the automatic color assignment from `color="country"`.
-        1. We loop through all traces and compare each trace's name against the country clicked in the box plot (passed via the parameter). When we find the matching trace, we change its color to orange to make it stand out.
-        1. We give the `vm.Graph` an `id` so that it can target itself through the parameter.
-        1. The second `set_control` action sets the highlight parameter using the clicked country (from the y-axis).
-        1. This [cross-filter](#cross-filter-from-graph) filters the table to show only the selected country's data. We set `visible=False` because the filtered value is already visible in the table itself.
-        1. We give the `vm.Parameter` an `id` so that it can be set explicitly by `va.set_control`.
-        1. The parameter targets the same graph (`box_chart`) and specifically the `highlight_country` argument, creating a self-highlighting effect.
-        1. We set the parameter's default `value="NONE"` so that no country is highlighted when the dashboard first loads. Note that "NONE" is already included as an option in `SELECTED_COUNTRIES`.
+        1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
+        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted bar. 
+        1. We make sure that the bars are always ordered the same way regardless of which one is highlighted.
+        1. We give the `vm.Graph` an `id` so that it can be targeted by `highlight_parameter`.
+        1. This `va.set_control` sets `higlight_parameter` to the country from the clicked bar.
+        1. This `va.set_control` sets `country_filter` to the country from the clicked bar.
+        1. We give the `vm.AgGrid` an `id` so that it can be targeted by `country_filter`.
+        1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+        1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bar_chart")`.
+        1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the bar chart is initially unhighlighted.
         1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
+        1. Filter `gapminder_table` to show rows for only the selected country. 
 
     === "app.yaml"
 
@@ -1149,9 +1134,9 @@ To configure self-highlighting:
 
     === "Result"
 
-        ![](../../assets/user_guides/graph_table_actions/cross_highlight_self.gif)
+        TODO NOW: screenshot
 
-When you click on a box in the box plot, that country's box is highlighted in orange while all other countries remain light blue. Simultaneously, the table below is filtered to show only data for the selected country.
+When you click on a bar in the chart, that bar is highlighted in orange and the table below is filtered to show only data for the selected country.
 
 ??? details "Behind the scenes mechanism"
 
