@@ -9,7 +9,6 @@ from pydantic import Field, JsonValue
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
-from vizro.models._controls._controls_utils import _is_categorical_selector
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ControlType, ModelID
 
@@ -92,6 +91,8 @@ class set_control(_AbstractAction):
 
     @_log_call
     def pre_build(self):
+        from vizro.models._controls._controls_utils import _is_categorical_selector
+
         # Validate that action's parent model supports `set_control` action.
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
