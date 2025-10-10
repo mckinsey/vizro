@@ -166,18 +166,22 @@ def bar_chart_by_subcategory(data_frame, custom_data, value_col="Sales"):
 @capture("graph")
 def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_category=None):
     if value_col == "Order ID":
-        category_metric = data_frame.groupby("Category", as_index=False)["Order ID"].nunique()
+        category_metric = data_frame.groupby(["Category", "Sub-Category"], as_index=False)["Order ID"].nunique()
         agg_col = "Order ID"
     else:
-        category_metric = data_frame.groupby("Category", as_index=False)[value_col].sum()
+        category_metric = data_frame.groupby(["Category", "Sub-Category"], as_index=False)[value_col].sum()
         agg_col = value_col
+
+    if data_frame["Category"].nunique() > 1:
+        x = "Category"
+    else:
+        x = "Sub-Category"
 
     fig = px.bar(
         category_metric,
-        x="Category",
+        x=x,
         y=agg_col,
-        title=f"{agg_col} | By Category",
-        color="Category",
+        title=f"{agg_col} | By {x} <br><sup> ⤵ Click on the category to drill-down to sub-category. Reset by using reset button on the right.</sup>",
         custom_data=custom_data,
     )
 
@@ -187,9 +191,6 @@ def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_
         bargap=0.6,
         xaxis_title=None,
         yaxis_title=None,
-        title=dict(
-            text=f"{agg_col} | By Category",
-        ),
     )
 
     if highlight_category:
@@ -809,6 +810,7 @@ def scatter_with_quadrants(
     x_ref_quantile: float = 0.5,
     y_ref_quantile: float = 0.2,
     data_frame: pd.DataFrame = None,
+    highlight_product=None,
 ):
     """Custom scatter plot with quadrants made with Plotly."""
     fig = px.scatter(
@@ -816,6 +818,7 @@ def scatter_with_quadrants(
         x=x,
         y=y,
         custom_data=custom_data,
+        color="Product Name",
         color_discrete_sequence=["grey"],
         size="Profit Absolute",
         size_max=20,
@@ -823,6 +826,11 @@ def scatter_with_quadrants(
         hover_data=["Product Name", "Profit", "Sales", "Profit Margin"],
         title=f"{data_frame['Category / Sub-Category'].iloc[0]} <br><sup> ⤵ Click on a point to filter the table. Refresh the page to deselect.</sup>",
     )
+
+    if highlight_product:
+        for trace in fig.data:
+            if trace.name == highlight_product:
+                trace.marker.color = "orange"
 
     # Add reference lines to figure
     x_reference_line = data_frame[x].quantile(x_ref_quantile)
@@ -887,6 +895,7 @@ def scatter_with_quadrants(
     # Customize hovertemplate
     fig.update_layout(title_pad_t=24)
     fig.update_traces(
+        showlegend=False,
         hovertemplate="<br>".join(
             [
                 "%{customdata[0]}",
@@ -894,7 +903,7 @@ def scatter_with_quadrants(
                 "Sales: %{x:$,.2f}",
             ]
         )
-        + "<extra></extra>"
+        + "<extra></extra>",
     )
 
     return fig

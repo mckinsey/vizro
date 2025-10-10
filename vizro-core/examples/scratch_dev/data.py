@@ -78,33 +78,18 @@ superstore_df["Order Status"] = superstore_df.apply(
 )
 
 
-# def create_superstore_product(data_frame):
-#     data_frame["Category / Sub-Category"] = data_frame["Category"] + " / " + data_frame["Sub-Category"]
-#     data_frame = (
-#         data_frame.groupby(["Category / Sub-Category", "Product Name"])
-#         .agg({"Sales": "sum", "Profit": "sum"})
-#         .reset_index()
-#     )
-#     data_frame["Profit Margin"] = data_frame["Profit"] / data_frame["Sales"]
-#     data_frame["Profit Absolute"] = abs(data_frame["Profit"])
-#
-#     return data_frame
-
-
 def create_superstore_product(data_frame):
-    # Create combined label but keep original columns
     data_frame["Category / Sub-Category"] = data_frame["Category"] + " / " + data_frame["Sub-Category"]
-
-    # Aggregate keeping Category and Sub-Category separate
-    data_frame = data_frame.groupby(
-        ["Category", "Sub-Category", "Category / Sub-Category", "Product Name"], as_index=False
-    ).agg({"Sales": "sum", "Profit": "sum"})
-
-    # Compute additional metrics
+    data_frame = (
+        data_frame.groupby(["Category / Sub-Category", "Product Name"])
+        .agg({"Sales": "sum", "Profit": "sum"})
+        .reset_index()
+    )
     data_frame["Profit Margin"] = data_frame["Profit"] / data_frame["Sales"]
-    data_frame["Profit Absolute"] = data_frame["Profit"].abs()
+    data_frame["Profit Absolute"] = abs(data_frame["Profit"])
 
     return data_frame
+
 
 
 def pareto_customers_table(data_frame):

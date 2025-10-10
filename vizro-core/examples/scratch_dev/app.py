@@ -42,6 +42,8 @@ categories = superstore_df["Category"].unique().tolist()
 subcategories = superstore_df["Sub-Category"].unique().tolist()
 customer_name = superstore_df["Customer Name"].unique().tolist()
 customer_name.append("NONE")
+product_name = superstore_df["Product Name"].unique().tolist()
+product_name.append("NONE")
 
 
 def _encode_to_base64(value):
@@ -328,7 +330,6 @@ page_2 = vm.Page(
 page_3 = vm.Page(
     title="Customer view",
     components=[
-        vm.Graph(id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df, highlight_customer=None)),
         vm.AgGrid(
             id="table-2",
             header="💡 Click on a row to highlight the customer.",
@@ -338,6 +339,7 @@ page_3 = vm.Page(
             ),
             actions=va.set_control(control="pg3_parameter_1", value="Customer Name"),
         ),
+        vm.Graph(id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df, highlight_customer=None)),
     ],
     controls=[
         vm.Filter(id="pg3_filter_1", column="Segment", selector=vm.Checklist(title="Customer Segment")),
@@ -368,33 +370,44 @@ page_4 = vm.Page(
                                 va.set_control(control="pg4-filter-1", value="Category"),
                             ],
                         ),
-                        vm.Graph(
-                            id="pg4-chart-2",
-                            figure=bar_chart_by_subcategory(
-                                superstore_df, value_col="Sales", custom_data=["Sub-Category"]
-                            ),
+                        vm.Button(
+                            text="",
+                            icon="Reset Settings",
+                            description="Reset actions",
+                            variant="outlined",
+                            actions=[
+                                vm.Action(
+                                    function=capture("action")(
+                                        lambda: ["Furniture", "Technology", "Office Supplies"]
+                                    )(),
+                                    outputs=["pg4-filter-1"],
+                                )
+                            ],
                         ),
                     ],
-                    layout=vm.Grid(grid=[[0, 1]]),
+                    layout=vm.Grid(
+                        grid=[
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                        ]
+                    ),
                     variant="filled",
                 ),
                 vm.Container(
                     title="",
                     components=[
                         vm.AgGrid(
-                            id="table", figure=dash_ag_grid(superstore_product_df, columnDefs=COLUMN_DEFS_PRODUCT)
+                            id="table",
+                            figure=dash_ag_grid(superstore_product_df, columnDefs=COLUMN_DEFS_PRODUCT),
+                            actions=va.set_control(control="pg4_parameter_1", value="Product Name"),
                         ),
                         vm.Graph(
                             id="pg4-chart-3",
                             figure=scatter_with_quadrants(
-                                data_frame=superstore_product_df, x="Sales", y="Profit", custom_data=["Product Name"]
+                                data_frame=superstore_product_df,
+                                x="Sales",
+                                y="Profit",
+                                custom_data=["Product Name"],
                             ),
-                        ),
-                    ],
-                    controls=[
-                        vm.Filter(
-                            column="Category / Sub-Category",
-                            selector=vm.Dropdown(multi=False, value="Technology / Phones"),
                         ),
                     ],
                     layout=vm.Grid(grid=[[0, 0, 1, 1, 1]]),
@@ -403,9 +416,9 @@ page_4 = vm.Page(
             ],
             layout=vm.Grid(
                 grid=[
-                    [0, 0],
-                    [1, 1],
-                    [1, 1],
+                    [0, 0, 0, -1, -1],
+                    [1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1],
                 ]
             ),
         ),
@@ -414,8 +427,20 @@ page_4 = vm.Page(
         vm.Filter(
             id="pg4-filter-1",
             column="Category",
-            targets=["pg4-chart-2", "table"],
+            targets=["pg4-chart-1"],
             selector=vm.Checklist(title="Product Category"),
+            visible=False,
+        ),
+        vm.Filter(
+            column="Category / Sub-Category",
+            targets=["pg4-chart-3"],
+            selector=vm.Dropdown(multi=False, value="Technology / Phones"),
+        ),
+        vm.Parameter(
+            id="pg4_parameter_1",
+            targets=["pg4-chart-3.highlight_product"],
+            selector=vm.Dropdown(options=product_name, value="NONE", multi=False),
+            visible=False,
         ),
     ],
 )
