@@ -346,6 +346,10 @@ class TestDashboardBuild:
                                 "vizro_light": dashboard_vizro_light,
                             },
                         ),
+                        dcc.Store(
+                            id="vizro_controls_store",
+                            data={},
+                        ),
                         dash.page_container,
                     ],
                 )

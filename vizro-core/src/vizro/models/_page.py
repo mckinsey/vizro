@@ -151,15 +151,35 @@ class Page(VizroBaseModel):
         if targets:
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
-        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
-        url_controls = [
-            control
-            for control in cast(
-                Iterable[ControlType],
-                [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
+        controls = cast(
+            Iterable[ControlType],
+            [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
+        )
+
+        if controls:
+            # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
+            # Selector values as outputs to be reset.
+            selector_outputs = [Output(control.selector.id, "value", allow_duplicate=True) for control in controls]
+
+            # Selector guard is set to True when selector value is reset to prevent actions chain from running.
+            selector_guard_outputs = [
+                Output(f"{control.selector.id}_guard_actions_chain", "data", allow_duplicate=True)
+                for control in controls
+            ]
+
+            clientside_callback(
+                ClientsideFunction(namespace="page", function_name="reset_controls"),
+                Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
+                *selector_outputs,
+                *selector_guard_outputs,
+                Input(f"{self.id}_reset_button", "n_clicks"),
+                State("vizro_controls_store", "data"),
+                State(self.id, "id"),  # Assigned to outermost Div in Dashboard._make_page_layout.
+                prevent_initial_call=True,
             )
-            if control.show_in_url
-        ]
+
+        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
+        url_controls = [control for control in controls if control.show_in_url]
 
         if url_controls:
             selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
