@@ -92,8 +92,6 @@ class set_control(_AbstractAction):
 
     @_log_call
     def pre_build(self):
-        from vizro.models._controls._controls_utils import SELECTORS
-
         # Validate that action's parent model supports `set_control` action.
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(

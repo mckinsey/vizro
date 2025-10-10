@@ -9,12 +9,11 @@ from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
-    SELECTORS,
+    _is_categorical_selector,
+    _is_numerical_temporal_selector,
     check_control_targets,
     get_selector_default_value,
     warn_missing_id_for_url_control,
-    _is_numerical_temporal_selector,
-    _is_categorical_selector,
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID, SelectorType, _IdProperty
@@ -139,9 +138,7 @@ class Parameter(VizroBaseModel):
         check_control_targets(control=self)
 
         if _is_numerical_temporal_selector(self.selector) and (self.selector.min is None or self.selector.max is None):
-            raise TypeError(
-                f"{self.selector.type} requires the arguments 'min' and 'max' when used within " f"Parameter."
-            )
+            raise TypeError(f"{self.selector.type} requires the arguments 'min' and 'max' when used within Parameter.")
         elif _is_categorical_selector(self.selector) and not self.selector.options:
             raise TypeError(f"{self.selector.type} requires the argument 'options' when used within Parameter.")
 

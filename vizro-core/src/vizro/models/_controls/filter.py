@@ -18,12 +18,12 @@ from vizro.models import Container, VizroBaseModel
 from vizro.models._components.form import DatePicker, Dropdown, RangeSlider, Switch
 from vizro.models._controls._controls_utils import (
     SELECTORS,
+    _is_boolean_selector,
+    _is_categorical_selector,
+    _is_numerical_temporal_selector,
     check_control_targets,
     get_selector_default_value,
     warn_missing_id_for_url_control,
-    _is_numerical_temporal_selector,
-    _is_categorical_selector,
-    _is_boolean_selector,
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty

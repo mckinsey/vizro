@@ -1,6 +1,6 @@
 import warnings
 from collections.abc import Generator
-from typing import Any, Optional, Union, cast
+from typing import Any, Optional, Union
 
 from typing_extensions import TypeIs
 
