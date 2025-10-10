@@ -30,6 +30,18 @@ from pages.layout_pages import (
 )
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
+from pages.set_control_drill_through import (
+    drill_through_filter_ag_grid_page_1,
+    drill_through_filter_ag_grid_page_2,
+    drill_through_filter_page_1,
+    drill_through_filter_page_2,
+    drill_through_parameter_page_1,
+    drill_through_parameter_page_2,
+)
+from pages.set_control_interactions_page import (
+    set_control_ag_grid_interactions_page,
+    set_control_graph_interactions_page,
+)
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
@@ -74,6 +86,14 @@ dashboard = vm.Dashboard(
         collapsible_containers_grid,
         collapsible_containers_flex,
         vizro_url_and_download_page,
+        set_control_graph_interactions_page,
+        set_control_ag_grid_interactions_page,
+        drill_through_filter_page_1,
+        drill_through_filter_page_2,
+        drill_through_parameter_page_1,
+        drill_through_parameter_page_2,
+        drill_through_filter_ag_grid_page_1,
+        drill_through_filter_ag_grid_page_2,
     ],
     navigation=vm.Navigation(
         pages={
@@ -119,6 +139,16 @@ dashboard = vm.Dashboard(
                 cnst.BUTTONS_PAGE,
                 cnst.COLLAPSIBLE_CONTAINERS_GRID,
                 cnst.COLLAPSIBLE_CONTAINERS_FLEX,
+            ],
+            cnst.ACTIONS_ACCORDION: [
+                cnst.SET_CONTROL_GRAPH_INTERACTIONS_PAGE,
+                cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_PAGE,
+                cnst.SET_CONTROL_FILTER_DRILL_THROUGH_SOURCE,
+                cnst.SET_CONTROL_FILTER_DRILL_THROUGH_TARGET,
+                cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_SOURCE,
+                cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_TARGET,
+                cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_SOURCE,
+                cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_TARGET,
             ],
         }
     ),
