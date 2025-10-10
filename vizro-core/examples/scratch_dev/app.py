@@ -203,7 +203,7 @@ dashboard = vm.Dashboard(
     # Uncomment the dashboard title below to check whether it works.
     # title="Dashboard title",
     pages=[page_show_controls, page_no_controls, page_hidden_controls, page_url_controls],
-    navigation=vm.Navigation(nav_selector=vm.NavBar()),
+    # navigation=vm.Navigation(nav_selector=vm.NavBar()),
 )
 
 if __name__ == "__main__":
