@@ -78,7 +78,12 @@ def warn_missing_id_for_url_control(control: ControlType) -> None:
 
 
 def get_selector_default_value(selector: SelectorType) -> Any:
-    """Set default value for the control's selector if not explicitly provided."""
+    """Get default value for a selector if not explicitly provided.
+
+    This is used to set selector.value in controls so that the "Reset controls" button works. Ideally it would be
+    done elsewhere, e.g. in the selector models themselves, but that is tricky to get in the right order because it
+    would require running the selector.pre_build as part of Filter.pre_build.
+    """
     if selector.value is not None:
         return selector.value
 
