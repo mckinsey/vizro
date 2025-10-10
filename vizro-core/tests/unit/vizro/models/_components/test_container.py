@@ -65,12 +65,12 @@ class TestContainerInstantiation:
             vm.Container(title="Title")
 
     def test_invalid_variant(self):
-        with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
+        with pytest.raises(ValidationError, match=r"Input should be 'plain', 'filled' or 'outlined'."):
             vm.Container(title="Title", components=[vm.Button()], variant="test")
 
     def test_invalid_collapsed(self):
         with pytest.raises(
-            ValidationError, match="`Container` must have a `title` explicitly set when `collapsed` is not None."
+            ValidationError, match=r"`Container` must have a `title` explicitly set when `collapsed` is not None."
         ):
             vm.Container(components=[vm.Button()], collapsed=True)
 

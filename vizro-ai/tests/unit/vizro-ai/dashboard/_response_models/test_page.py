@@ -23,7 +23,7 @@ class TestPageCreate:
         assert page_plan.unsupported_specs == []
 
     def test_page_plan_invalid_components(self):
-        with pytest.raises(ValidationError, match="A page must contain at least one component."):
+        with pytest.raises(ValidationError, match=r"A page must contain at least one component."):
             PagePlan(
                 title="Test Page",
                 components_plan=[],

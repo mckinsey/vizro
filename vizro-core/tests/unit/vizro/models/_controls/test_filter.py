@@ -584,8 +584,8 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="column_categorical has changed type from numerical to categorical. "
-            "A filtered column cannot change type while the dashboard is running.",
+            match=r"column_categorical has changed type from numerical to categorical. "
+            r"A filtered column cannot change type while the dashboard is running.",
         ):
             filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])
 
@@ -596,7 +596,7 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_categorical not found in dataframe for column_categorical_exists_1.",
+            match=r"Selected column column_categorical not found in dataframe for column_categorical_exists_1.",
         ):
             filter(target_to_data_frame={"column_categorical_exists_1": pd.DataFrame()}, current_value=["a", "b"])
 
@@ -607,8 +607,8 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_categorical does not contain anything in any dataframe "
-            "for column_categorical_exists_1.",
+            match=r"Selected column column_categorical does not contain anything in any dataframe "
+            r"for column_categorical_exists_1.",
         ):
             filter(
                 target_to_data_frame={"column_categorical_exists_1": pd.DataFrame({"column_categorical": []})},
@@ -618,7 +618,7 @@ class TestFilterCall:
 
 class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object."):
+        with pytest.raises(ValueError, match=r"Control filter_id should be defined within a Page object."):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
 
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
@@ -643,7 +643,7 @@ class TestFilterPreBuildMethod:
         filter = vm.Filter(column="column_numerical", targets=["invalid_target"])
         model_manager["test_page"].controls = [filter]
 
-        with pytest.raises(ValueError, match="Target invalid_target not found within the test_page."):
+        with pytest.raises(ValueError, match=r"Target invalid_target not found within the test_page."):
             filter.pre_build()
 
     def test_targets_default_invalid(self, managers_column_only_exists_in_some):
@@ -652,9 +652,9 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column invalid_choice not found in any dataframe for column_numerical_exists_1, "
+            match=r"Selected column invalid_choice not found in any dataframe for column_numerical_exists_1, "
             "column_numerical_exists_2, column_numerical_exists_empty, column_categorical_exists_1, "
-            "column_categorical_exists_2.",
+            r"column_categorical_exists_2.",
         ):
             filter.pre_build()
 
@@ -664,7 +664,7 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_numerical not found in dataframe for column_categorical_exists_1.",
+            match=r"Selected column column_numerical not found in dataframe for column_categorical_exists_1.",
         ):
             filter.pre_build()
 
@@ -674,8 +674,8 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_numerical does not contain anything in any dataframe for "
-            "column_numerical_exists_empty.",
+            match=r"Selected column column_numerical does not contain anything in any dataframe for "
+            r"column_numerical_exists_empty.",
         ):
             filter.pre_build()
 
@@ -781,7 +781,7 @@ class TestFilterPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match="Inconsistent types detected in column shared_column.",
+            match=r"Inconsistent types detected in column shared_column.",
         ):
             filter.pre_build()
 

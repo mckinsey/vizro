@@ -219,7 +219,7 @@ class TestFilterInteraction:
     @pytest.mark.parametrize("target", ["invalid_target", ["invalid_target"]])
     @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None, None), ("Europe", None, None)], indirect=True)
     def test_filter_interaction_with_invalid_targets(self, target, ctx_filter_interaction):
-        with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
+        with pytest.raises(ValueError, match=r"Target invalid_target not found in model_manager."):
             # Add action to relevant component - here component[0] is the source_chart
             model_manager["box_chart"].actions = [
                 vm.Action(function=filter_interaction(id="test_action", targets=target))

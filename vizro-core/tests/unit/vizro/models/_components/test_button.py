@@ -71,11 +71,11 @@ class TestButtonInstantiation:
         assert action._trigger == "button-id.n_clicks"
 
     def test_invalid_variant(self):
-        with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
+        with pytest.raises(ValidationError, match=r"Input should be 'plain', 'filled' or 'outlined'."):
             vm.Button(variant="test")
 
     def test_invalid_text(self):
-        with pytest.raises(ValueError, match="You must provide either the `text` or `icon` argument."):
+        with pytest.raises(ValueError, match=r"You must provide either the `text` or `icon` argument."):
             vm.Button(text="")
 
 

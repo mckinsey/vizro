@@ -305,7 +305,7 @@ class TestRangeSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
+            ValidationError, match=r"Maximum value of selector is required to be larger than minimum value."
         ):
             vm.RangeSlider(min=10, max=0)
 
@@ -350,7 +350,7 @@ class TestRangeSliderInstantiation:
     def test_validate_step_invalid(self):
         with pytest.raises(
             ValidationError,
-            match="The step value of the slider must be less than or equal to the difference between max and min.",
+            match=r"The step value of the slider must be less than or equal to the difference between max and min.",
         ):
             vm.RangeSlider(min=0, max=10, step=11)
 

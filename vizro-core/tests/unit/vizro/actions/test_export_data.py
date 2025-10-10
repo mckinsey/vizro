@@ -319,7 +319,7 @@ class TestExportDataPreBuild:
         model_manager["button"].actions = [export_data(id="test_action", targets=["invalid_target_id"])]
         action = model_manager["test_action"]
 
-        with pytest.raises(ValueError, match="targets {'invalid_target_id'} are not valid figures on the page."):
+        with pytest.raises(ValueError, match=r"targets {'invalid_target_id'} are not valid figures on the page."):
             action.pre_build()
 
     def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
@@ -327,7 +327,7 @@ class TestExportDataPreBuild:
         monkeypatch.setitem(sys.modules, "xlswriter", None)
 
         with pytest.raises(
-            ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."
+            ModuleNotFoundError, match=r"You must install either openpyxl or xlsxwriter to export to xlsx format."
         ):
             export_data(file_format="xlsx").pre_build()
 

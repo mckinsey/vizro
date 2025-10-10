@@ -122,7 +122,7 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     if value == NONE_OPTION:
         return None
     if isinstance(value, list) and len(value):
-        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item]
+        return [i for i in value if i != NONE_OPTION] or [None]
     return value
 
 

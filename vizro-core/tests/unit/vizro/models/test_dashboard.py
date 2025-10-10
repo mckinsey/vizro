@@ -49,7 +49,7 @@ class TestDashboardInstantiation:
             vm.Dashboard()
 
     def test_field_invalid_pages_empty_list(self):
-        with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
+        with pytest.raises(ValidationError, match=r"Ensure this value has at least 1 item."):
             vm.Dashboard(pages=[])
 
     def test_field_invalid_pages_input_type(self):

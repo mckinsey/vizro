@@ -142,11 +142,11 @@ class TestDropdownInstantiation:
         ],
     )
     def test_create_dropdown_invalid_value(self, test_value, options):
-        with pytest.raises(ValidationError, match="Please provide a valid value from `options`."):
+        with pytest.raises(ValidationError, match=r"Please provide a valid value from `options`."):
             Dropdown(value=test_value, options=options)
 
     def test_create_dropdown_invalid_multi(self):
-        with pytest.raises(ValidationError, match="Please set multi=True if providing a list of default values."):
+        with pytest.raises(ValidationError, match=r"Please set multi=True if providing a list of default values."):
             Dropdown(value=[1, 2], multi=False, options=[1, 2, 3, 4, 5])
 
     def test_dropdown_trigger(self, identity_action_function):

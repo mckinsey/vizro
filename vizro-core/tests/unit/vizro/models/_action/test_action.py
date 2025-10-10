@@ -138,7 +138,7 @@ class TestLegacyActionInputs:
         ],
     )
     def test_action_inputs_invalid_model_id(self, runtime_inputs):
-        with pytest.raises(KeyError, match="Model with ID .* not found. Please provide a valid component ID."):
+        with pytest.raises(KeyError, match=r"Model with ID .* not found. Please provide a valid component ID\."):
             action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
             action._transformed_inputs
 
@@ -155,7 +155,7 @@ class TestLegacyActionInputs:
     def test_action_inputs_invalid_dot_syntax(self, runtime_inputs):
         with pytest.raises(
             ValueError,
-            match="Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+            match=r"Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'\.",
         ):
             action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
             action._transformed_inputs
@@ -163,8 +163,8 @@ class TestLegacyActionInputs:
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
-            "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
+            match=r"Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
+            r"Please specify the input explicitly as 'known_model_with_no_default_props.<property>'\.",
         ):
             action = Action(function=action_with_one_arg(), inputs=["known_model_with_no_default_props"])
             action._transformed_inputs
@@ -296,7 +296,7 @@ class TestLegacyActionOutputs:
     def test_outputs_invalid_model_id(self, outputs):
         with pytest.raises(
             KeyError,
-            match="Model with ID .* not found. Please provide a valid component ID.",
+            match=r"Model with ID .* not found. Please provide a valid component ID\.",
         ):
             # inputs=[] added to force action to be legacy
             action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
@@ -327,7 +327,7 @@ class TestLegacyActionOutputs:
     def test_outputs_invalid_dot_syntax(self, outputs):
         with pytest.raises(
             ValueError,
-            match="Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+            match=r"Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'\.",
         ):
             # inputs=[] added to force action to be legacy
             action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
@@ -337,9 +337,9 @@ class TestLegacyActionOutputs:
     def test_outputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
             KeyError,
-            match="Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
+            match=r"Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
             " `_action_outputs` property. Please specify the output explicitly as"
-            " `known_model_with_no_default_props.<property>`.",
+            r" `known_model_with_no_default_props.<property>`\.",
         ):
             # inputs=[] added to force action to be legacy
             action = Action(function=action_with_no_args(), inputs=[], outputs=["known_model_with_no_default_props"])
@@ -508,8 +508,8 @@ class TestActionInputs:
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
-            "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
+            match=r"Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
+            r"Please specify the input explicitly as 'known_model_with_no_default_props.<property>'\.",
         ):
             action = Action(function=action_with_one_arg("known_model_with_no_default_props"))
 
@@ -616,7 +616,7 @@ class TestActionOutputs:
     def test_outputs_invalid_model_id(self, outputs):
         with pytest.raises(
             KeyError,
-            match="Model with ID .* not found. Please provide a valid component ID.",
+            match=r"Model with ID .* not found. Please provide a valid component ID\.",
         ):
             action = Action(function=action_with_no_args(), outputs=outputs)
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
@@ -646,7 +646,7 @@ class TestActionOutputs:
     def test_outputs_invalid_dot_syntax(self, outputs):
         with pytest.raises(
             ValueError,
-            match="Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+            match=r"Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'\.",
         ):
             action = Action(function=action_with_no_args(), outputs=outputs)
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
@@ -655,9 +655,9 @@ class TestActionOutputs:
     def test_outputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
             KeyError,
-            match="Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
-            " `_action_outputs` property. Please specify the output explicitly as"
-            " `known_model_with_no_default_props.<property>`.",
+            match=r"Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
+            r" `_action_outputs` property\. Please specify the output explicitly as"
+            r" `known_model_with_no_default_props.<property>`\.",
         ):
             action = Action(function=action_with_no_args(), outputs=["known_model_with_no_default_props"])
             action._transformed_outputs
@@ -705,7 +705,7 @@ class TestBaseActionCallbackFunction:
     ):
         action = Action(function=action_with_mock_outputs())
         with pytest.raises(
-            ValueError, match="Action function has returned a value but the action has no defined outputs."
+            ValueError, match=r"Action function has returned a value but the action has no defined outputs\."
         ):
             action._action_callback_function(inputs={}, outputs=callback_outputs)
 
@@ -716,7 +716,7 @@ class TestBaseActionCallbackFunction:
         action = Action(function=action_with_mock_outputs())
         with pytest.raises(
             ValueError,
-            match="Action function has not returned a list-like object but the action's defined outputs are a list.",
+            match=r"Action function has not returned a list-like object but the action's defined outputs are a list\.",
         ):
             action._action_callback_function(
                 inputs={}, outputs=[Output("component_1", "property"), Output("component_2", "property")]
@@ -731,8 +731,8 @@ class TestBaseActionCallbackFunction:
         action = Action(function=action_with_mock_outputs())
         with pytest.raises(
             ValueError,
-            match="Action function has not returned a dictionary-like object "
-            "but the action's defined outputs are a dictionary.",
+            match=r"Action function has not returned a dictionary-like object "
+            r"but the action's defined outputs are a dictionary\.",
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
 
@@ -745,7 +745,7 @@ class TestBaseActionCallbackFunction:
         action = Action(function=action_with_mock_outputs())
         with pytest.raises(
             ValueError,
-            match="Number of action's returned elements .+ does not match the number of action's defined outputs 2.",
+            match=r"Number of action's returned elements .+ does not match the number of action's defined outputs 2\.",
         ):
             action._action_callback_function(
                 inputs={}, outputs=[Output("component_1", "property"), Output("component_2", "property")]
@@ -759,6 +759,7 @@ class TestBaseActionCallbackFunction:
     def test_action_callback_function_outputs_mapping_return_value_keys_not_match(self, action_with_mock_outputs):
         action = Action(function=action_with_mock_outputs())
         with pytest.raises(
-            ValueError, match="Keys of action's returned value .+ do not match the action's defined outputs {'output'}."
+            ValueError,
+            match=r"Keys of action's returned value .+ do not match the action's defined outputs {'output'}.",
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
