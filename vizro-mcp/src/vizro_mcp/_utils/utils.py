@@ -7,7 +7,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -111,13 +111,21 @@ def get_dataframe_info(df: pd.DataFrame) -> DFInfo:
     return DFInfo(general_info=info_string, sample=df.sample(sample_size).to_dict() if sample_size > 0 else {})
 
 
-def create_pycafe_url(python_code: str) -> str:
+def create_pycafe_url(python_code: str, data_infos: list[DFMetaData]) -> str:
     """Create a PyCafe URL for a given Python code."""
+    files = [
+        {
+            "name": info.file_path_or_url,
+            "content": pd.DataFrame(info.complete_data).to_csv(index=False),
+        }
+        for info in data_infos
+        if info.complete_data
+    ]
     # Create JSON object for py.cafe
     json_object = {
         "code": python_code,
         "requirements": f"vizro=={vizro.__version__}",
-        "files": [],
+        "files": files,
     }
 
     # Convert to compressed base64 URL
@@ -187,7 +195,7 @@ def get_python_code_and_preview_link(
 
     python_code = remove_figure_quotes(python_code)
 
-    pycafe_url = create_pycafe_url(python_code)
+    pycafe_url = create_pycafe_url(python_code, data_infos)
 
     return VizroCodeAndPreviewLink(python_code=python_code, pycafe_url=pycafe_url)
 
