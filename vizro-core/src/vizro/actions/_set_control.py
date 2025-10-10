@@ -10,6 +10,7 @@ from pydantic import Field, JsonValue
 import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
+from vizro.models._controls._controls_utils import SELECTORS
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ControlType, ModelID
 
@@ -109,7 +110,7 @@ class set_control(_AbstractAction):
             )
 
         # Validate that control model has a categorical selector.
-        if not isinstance(getattr(control_model, "selector", None), (vm.Dropdown, vm.Checklist, vm.RadioItems)):
+        if not isinstance(getattr(control_model, "selector", None), SELECTORS["categorical"]):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
                 f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."

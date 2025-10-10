@@ -1,12 +1,34 @@
 import warnings
 from collections.abc import Generator
-from typing import Optional
+from typing import Optional, Union, Any
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Checklist, Container, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, VizroBaseModel
+from vizro.models import (
+    Checklist,
+    Container,
+    DatePicker,
+    Dropdown,
+    RadioItems,
+    RangeSlider,
+    Slider,
+    VizroBaseModel,
+    Switch,
+)
 from vizro.models._components.form._form_utils import get_dict_options_and_default
 from vizro.models.types import ControlType, SelectorType
+
+# Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
+# with isinstance checks.
+SELECTORS = {
+    "numerical": (RangeSlider, Slider),
+    "categorical": (Checklist, Dropdown, RadioItems),
+    "temporal": (DatePicker,),
+    "boolean": (Switch,),
+}
+CategoricalSelectorType = Union[Checklist, Dropdown, RadioItems]
+NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
+BooleanSelectorType = Switch
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
@@ -55,15 +77,16 @@ def warn_missing_id_for_url_control(control: ControlType) -> None:
         )
 
 
-def get_selector_default_value(selector: SelectorType) -> None:
+def get_selector_default_value(selector: SelectorType) -> Any:
     """Set default value for the control's selector if not explicitly provided."""
     if selector.value is not None:
         return selector.value
 
-    if isinstance(selector, (Slider, RangeSlider, DatePicker)):
+    if isinstance(selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
         is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
         return [selector.min, selector.max] if is_range else selector.min
-    elif isinstance(selector, (Checklist, Dropdown, RadioItems)):
+    elif isinstance(selector, SELECTORS["categorical"]):
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
         _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
         return default_value
+    # Boolean selectors always have a default value specified so no need to handle them here.

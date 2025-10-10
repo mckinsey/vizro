@@ -20,24 +20,20 @@ from vizro.models._controls._controls_utils import (
     check_control_targets,
     get_selector_default_value,
     warn_missing_id_for_url_control,
+    SELECTORS,
+    CategoricalSelectorType,
+    NumericalTemporalSelectorType,
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
-# Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
-# with isinstance checks.
-# First entry in each tuple is the default selector for that column type.
-# MS: For mypy we need to do this anyway, see below - I have tried to make a function that takes the tuples and
-# converts them in order to reuse code, but I think it does not work
-SELECTORS = {
-    "numerical": (RangeSlider, Slider),
-    "categorical": (Dropdown, Checklist, RadioItems),
-    "temporal": (DatePicker,),
-    "boolean": (Switch,),
+
+DEFAULT_SELECTORS = {
+    "numerical": RangeSlider,
+    "categorical": Dropdown,
+    "temporal": DatePicker,
+    "boolean": Switch,
 }
-CategoricalSelectorType = Union[Dropdown, Checklist, RadioItems]
-NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
-BooleanSelectorType = Switch
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
@@ -236,7 +232,7 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
-        self.selector = self.selector or SELECTORS[self._column_type][0]()
+        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
         self.selector.title = self.selector.title or self.column.title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
