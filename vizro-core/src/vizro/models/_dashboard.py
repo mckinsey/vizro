@@ -301,46 +301,41 @@ class Dashboard(VizroBaseModel):
         )
 
         # Page header controls that appear on the right side of the header.
+        action_progress_indicator = dcc.Loading(
+            id="action-progress-indicator",
+            delay_show=300,
+            delay_hide=300,
+            custom_spinner=html.Span(
+                className="material-symbols-outlined progress-indicator",
+                # Keep "progress_activity" children so the CSS spinner can render/display correctly.
+                children="progress_activity",
+            ),
+            # Placeholder div is added as used as target from actions to show loading indicator.
+            children=html.Div(id="action-progress-indicator-placeholder"),
+        )
+        reset_controls_button = dbc.Button(
+            id=f"{page.id}_reset_button",
+            children=html.Span(
+                children=[
+                    html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                    dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
+                ],
+                className="btn-text",
+            ),
+            color="primary",
+            outline=True,
+            class_name="btn-circular",
+        )
+        theme_switch = dbc.Switch(
+            id="theme-selector", value=self.theme == "vizro_light", persistence=True, persistence_type="session"
+        )
         header_controls = html.Div(
             id="header-controls",
             children=[
-                dcc.Loading(
-                    id="action-progress-indicator",
-                    delay_show=300,
-                    delay_hide=300,
-                    custom_spinner=html.Span(
-                        className="material-symbols-outlined progress-indicator",
-                        # Keep "progress_activity" children so the CSS spinner can render/display correctly.
-                        children="progress_activity",
-                    ),
-                    # Placeholder div is added as used as target from actions to show loading indicator.
-                    children=html.Div(id="action-progress-indicator-placeholder"),
-                ),
+                action_progress_indicator,
                 # Show the reset icon button in the header when there are page controls but no control panel.
-                dbc.Button(
-                    id=f"{page.id}_reset_button",
-                    children=html.Span(
-                        children=[
-                            html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                            dbc.Tooltip(
-                                children="Click to reset all page control values.",
-                                target=f"{page.id}_reset_button",
-                            ),
-                        ],
-                        className="btn-text",
-                    ),
-                    color="primary",
-                    outline=True,
-                    class_name="btn-circular",
-                )
-                if has_page_controls and _all_hidden(control_panel)
-                else None,
-                dbc.Switch(
-                    id="theme-selector",
-                    value=self.theme == "vizro_light",
-                    persistence=True,
-                    persistence_type="session",
-                ),
+                reset_controls_button if has_page_controls and _all_hidden(control_panel) else None,
+                theme_switch,
             ],
         )
 
@@ -349,6 +344,12 @@ class Dashboard(VizroBaseModel):
             page_header_content.append(header_controls)
         else:
             header_right_content.append(header_controls)
+
+        header_right = html.Div(
+            id="header-right",
+            children=header_right_content,
+            hidden=_all_hidden(header_right_content),
+        )
 
         # Show reset button with the icon in the control panel when both page controls and control panel exist.
         if has_page_controls and not _all_hidden(control_panel):
@@ -364,12 +365,6 @@ class Dashboard(VizroBaseModel):
                     ),
                 )
             )
-
-        header_right = html.Div(
-            id="header-right",
-            children=header_right_content,
-            hidden=_all_hidden(header_right_content),
-        )
 
         nav_control_panel_content = [nav_panel, control_panel]
         nav_control_panel = html.Div(

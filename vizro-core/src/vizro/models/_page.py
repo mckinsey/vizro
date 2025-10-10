@@ -151,24 +151,24 @@ class Page(VizroBaseModel):
         if targets:
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
-        page_controls = cast(
+        controls = cast(
             Iterable[ControlType],
             [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
         )
 
-        if page_controls:
+        if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
             # Selector values as outputs to be reset.
-            selector_outputs = [Output(control.selector.id, "value", allow_duplicate=True) for control in page_controls]
+            selector_outputs = [Output(control.selector.id, "value", allow_duplicate=True) for control in controls]
 
             # Selector guard is set to True when selector value is reset to prevent actions chain from running.
             selector_guard_outputs = [
                 Output(f"{control.selector.id}_guard_actions_chain", "data", allow_duplicate=True)
-                for control in page_controls
+                for control in controls
             ]
 
             clientside_callback(
-                ClientsideFunction(namespace="page", function_name="reset_page_controls"),
+                ClientsideFunction(namespace="page", function_name="reset_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
                 *selector_outputs,
                 *selector_guard_outputs,
@@ -179,18 +179,18 @@ class Page(VizroBaseModel):
             )
 
         # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
-        page_url_controls = [control for control in page_controls if control.show_in_url]
+        url_controls = [control for control in controls if control.show_in_url]
 
-        if page_url_controls:
-            selector_values_inputs = [Input(control.selector.id, "value") for control in page_url_controls]
+        if url_controls:
+            selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
-            control_ids_states = [State(control.id, "id") for control in page_url_controls]
+            control_ids_states = [State(control.id, "id") for control in url_controls]
             # `control_selector_ids_states` holds metadata needed for setting selector values
             # and their selector guard component via a clientside callback (`dash_clientside.set_props`).
             # SetProps is used to avoid sending selector values as callback outputs, which can cause unpredictable
             # triggering of the guard-actions-chain callback.
-            control_selector_ids_states = [State(control.selector.id, "id") for control in page_url_controls]
+            control_selector_ids_states = [State(control.selector.id, "id") for control in url_controls]
 
             # The URL is updated in the clientside callback with the `history.replaceState`, instead of using a
             # dcc.Location as a callback Output. Do it because the dcc.Location uses `history.pushState` under the hood
