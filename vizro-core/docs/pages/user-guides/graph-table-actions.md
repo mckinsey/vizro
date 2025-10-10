@@ -15,9 +15,11 @@ All these interactions use the [`set_control` action][vizro.actions.set_control]
 - The value of a control is persisted when you change page.
 - Interactions are not "invisible"; they are explicitly shown on the screen by the value of the control. Just like a normal control, you can change the value manually.
 
-!!! tip
+!!! tip "Invisible controls"
 
-    You can make your control invisible by setting `visible=False`, for example `vm.Parameter(..., visible=False).` The control can then only be set by `set_action`. This achieves a visually cleaner dashboard but can also make it less clear what graph and table interactions have been applied.
+    You can make your control invisible by setting `visible=False`, for example `vm.Parameter(..., visible=False).` The control can then only be set by `set_action`. This achieves a visually cleaner dashboard but can also make it less clear what graph and table interactions have been applied. We use `visible=False` in all our examples on [cross-highlighting](#cross-highlight).
+
+    A user can reset all controls on a page, including those with `visible=False`, by clicking the ["Reset controls" button](controls.md#reset-controls).
 
 ## Cross-filter
 
@@ -143,10 +145,23 @@ When you click on a row in the table, the graph is cross-filtered to show data o
 
 The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. The `value` argument of the [`set_control` action][vizro.actions.set_control] can be used in two ways to specify the value that sets `control`:
 
-- Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
-- Value to extract from [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing), for example `"x"`. This does not use `custom_data`.
+- Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function. For example, for a graph `px.bar(..., color="country", custom_data="country")` you can use `va.set_control(value="country", ...)`.
+- As a shortcut, if the value is encoded by _position_ then you can use the positional variable directly and do not need to set `custom_data`. For example, for a graph `px.bar(x="country", ...)` you can use `va.set_control(value="x", ...)`. Positional variables include `x`, `y`, `z` for Cartesian plots and `lat`, `lon`, `location` for choropleth maps.
 
-We show an example of each of these in turn. Here is an example where we use `custom_data` and `value="sex"` to use a value from the `sex` column. We need to specify `custom_data` because the `sex` column is otherwise not available in `clickData`.
+??? details "Behind the scenes mechanism"
+
+   `value` is an instruction for what to lookup in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing), whose format and content data depends on the type of chart. Generally speaking, positional information is automatically included in `clickData` but other information such as `color` must be manually supplied using `custom_data` to make it available.  
+   
+   The rules for how `value` is interpreted by `set_action` are:
+   
+   1. If the graph has `custom_data` then interpret the `value` as a column name and attempt to find it in `custom_data`.
+      1. If the graph does not have `custom_data` or does not include `value` as a column in `custom_data` then perform a lookup inside the data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). For example:
+          - `value="x"` is equivalent to looking at `clickData["points"][0]["x"]`.
+          - `value="key.subkey[1]"` is equivalent to looking at `clickData["points"][0]["key"]["subkey"][1]`.
+   
+   Based on the source graph and its available `clickData`, you can therefore configure precisely which property to set as `value`. For almost all use cases, this would be a column name or a positional variable such as `x`. However, advanced users might like to use other data that is available in `clickData` such as `pointNumber` or to refer to an object in nested `custom_data`.  
+
+We show an example of each of these in turn. Here is an example where we use `custom_data` and `value="sex"` to use a value from the `sex` column. We need to specify `custom_data` because the `sex` column is not a positional variable in the plot.
 
 !!! example "Cross-filter from graph to table with `custom_data`"
 
@@ -241,7 +256,7 @@ When you click on a box in the graph, the table is cross-filtered to show data f
         return px.scatter(data_grame, custom_data=custom_data, **kwargs)
     ```
 
-Here is an example where we do not need to use `custom_data` because the data is already available in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing). For example, this happens when the `value` you use in `va.set_control` corresponds to the `x` or `y` axis of the graph.
+Here is an example where we do not need to use `custom_data` because the value used in `va.set_control` is positional: it corresponds to the `y` axis of the graph.
 
 !!! example "Cross-filter from graph without `custom_data` to table"
 
@@ -312,7 +327,7 @@ Here is an example where we do not need to use `custom_data` because the data is
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
 
-When you click on a box in the graph, the table is cross-filtered to show data for only one sex, which is the `y` variable for the plot. This works because `"y"` exists in `clickData` for this chart.
+When you click on a box in the graph, the table is cross-filtered to show data for only one sex, which is the `y` variable for the plot.
 
 ??? details "Behind the scenes mechanism"
 
@@ -322,15 +337,6 @@ When you click on a box in the graph, the table is cross-filtered to show data f
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
-
-In general, the data contained in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing) depends on the type of chart used. The rules for how `value` is interpreted by `set_action` are:
-
-1. If the graph has `custom_data` then interpret the `value` as a column name and attempt to find it in `custom_data`.
-1. If the graph does not have `custom_data` or does not include `value` as a column in `custom_data` then perform a lookup inside the data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). For example:
-    - `value="x"` is equivalent to looking at `clickData["points"][0]["x"]`.
-    - `value="key.subkey[1]"` is equivalent to looking at `clickData["points"][0]["key"]["subkey"][1]`.
-
-Based on the source graph and its available `clickData`, you can therefore configure precisely which property to set as `value`.
 
 ### Cross-filter between containers
 
@@ -500,7 +506,7 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
 A single source component can trigger _multiple_ cross-filters. For example, [pivoted data](https://en.wikipedia.org/wiki/Pivot_table) can be visualized using a table or a [2-dimensional heatmap](https://plotly.com/python/heatmaps/).
 
-To perform multiple cross-filters, each dimension that is filtered must have its own `vm.Filter` that is set by `va.set_control` in the `actions` of the source component in an [actions chain](actions.md#multiple-actions). Here is a 2-dimensional example that [cross-filters from a graph](#cross-filter-from-graph):
+To perform multiple cross-filters, each dimension that is filtered must have its own `vm.Filter` that is set by `va.set_control` in the `actions` of the source component in an [actions chain](actions.md#multiple-actions). Here is a 2-dimensional example that [cross-filters from a graph](#cross-filter-from-graph) using the positional variables `x` and `y`.
 
 !!! example "Cross-filter over 2 dimensions"
 
@@ -626,21 +632,6 @@ vm.AgGrid(
 
 However, it is not yet possible to cross-filter from a pivot table according to the row and column of the clicked cell.
 
-<!--
-TODO NOW:
-- docs for reset controls and redo screenshots
-- cross-highlight as subsection of cross-parameter?
-- explain when custom_data needed better. Align cross-filter and cross-parameter explanations on this
-- dropdown to radioitems
-- check bookmarks
-- yaml examples
-- add note about cross-container, page ones for cross-highlight
-
-Separate PRs:
-- another non cross-highlight use of parameter. Maybe wait until we can do a non-category selector as an example e.g. to plot movable line or highlight region of graph
-- document drillthrough/down
--->
-
 ## Cross-parameter
 
 A cross-parameter is when the user clicks on one _source_ graph or table to update any argument other than `data_frame` of one or more _target_ components. In Vizro, a cross-parameter operates through an intermediate [parameter](parameters.md). To configure a cross-parameter:
@@ -662,32 +653,36 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-parameter.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value` to specify which data from the source component to pass to the target component's parameter. The format depends on the source component type (see the [API reference][vizro.actions.set_control]). For tables, use the column name. For graphs, use the argument name where that data is plotted (e.g., `"y"` for data on the y-axis).
+    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control]. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
 
     ```python
     import vizro.actions as va
 
-    components = [vm.Graph(..., actions=va.set_control(control="my_parameter", value="y"))]
+    components = [vm.Graph(..., actions=va.set_control(control="my_parameter", value="country"))]
     ```
 
-## Cross-highlight
+### Cross-highlight
 
-A cross-highlight is when the user clicks on one _source_ graph or table to highlight corresponding data in a _target_ graph or table (in practice, typically a [custom graph](custom-charts.md)). The highlighting can occur in two ways:
+A cross-highlight is an example of a cross-parameter where the effect of the intermediate parameter is to highlight data. When a user clicks on one _source_ graph or table, the corresponding data is highlighted in a _target_ graph or table (typically a [custom graph](custom-charts.md)). The highlighting can occur in two ways:
 
 - _Target highlighting_. The highlighting appears in a target graph that is distinct from the source that was clicked. Below we give examples of highlighting a target graph [from a source table](#cross-highlight-from-table) and [from a source graph](#cross-highlight-from-graph).
-- _Source highlighting_ or _self-highlighting_. The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting).
+- _Source highlighting_ or _self-highlighting_. The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting). 
 
-In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md). Often this parameter is hidden from view with `visible=False` since the highlighting effect itself provides sufficient visual feedback about the selected data.
+In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md). Often this parameter is hidden from view with `visible=False` since the highlighting effect itself provides sufficient visual feedback about the selected data. Remember that the cross-highlight can be cleared with the ["Reset controls" button](controls.md#reset-controls).
 
 In general, there are many different ways to visually highlight data in a graph. For example:
 
-- Change the [style of a marker](https://plotly.com/python/marker-style/), [line](https://plotly.com/python/line-charts/#style-line-plots) or [bar](https://plotly.com/python/bar-charts/#colored-and-styled-bar-chart), for example its color, opacity or shape.
-- Add an [annotation](https://plotly.com/python/text-and-annotations/#text-annotations).
-- Highlight a [region](https://plotly.com/python/horizontal-vertical-shapes/) of the plot's background.
+* Change the [style of a marker](https://plotly.com/python/marker-style/), [line](https://plotly.com/python/line-charts/#style-line-plots) or [bar](https://plotly.com/python/bar-charts/#colored-and-styled-bar-chart), for example its color, opacity or shape.
+* Add an [annotation](https://plotly.com/python/text-and-annotations/#text-annotations).
+* Highlight a [region](https://plotly.com/python/horizontal-vertical-shapes/) of the plot's background.
 
-### Cross-highlight from table
+!!! tip Cross-highlight between containers and pages
 
-This example shows how to configure cross-highlighting where clicking on the row in a table row highlights the corresponding data in a target scatter graph. The highlighting is visually shown by changing the color of the point for the selected country.
+    All [cross-parameters](#cross-parameter), which includes cross-highlights, can operate across different containers and different pages. The use of [`va.set_control`][vizro.actions.set_control] is identical to when source and target are in the same container and page. For hints on styling, we give analogous code examples for cross-filtering [between containers](#cross-filter-between-containers) and [between pages](#cross-filter-between-pages)  
+
+#### Cross-highlight from table
+
+This example shows how to configure cross-highlighting where clicking on the row in a table row highlights the corresponding data in a target scatter graph. The highlighting is visually shown by changing the color of the point for the selected country. Since cross-highlight is a sort of cross-parameter, the method follows the same pattern as configuring a [cross-parameter](#cross-parameter):
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
@@ -712,12 +707,14 @@ This example shows how to configure cross-highlighting where clicking on the row
 1. Call `set_control` in the `actions` argument of the source [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value` to specify which column contains the value used to identify the trace to highlight. For tables, use the column name (e.g., `"country"`). This value determines what gets passed to the target graph's highlighting parameter.
+    1. Set `value` to specify which column contains the value that sets the control when a row in the table is clicked.
 
     ```python
     import vizro.actions as va
 
-    components = [vm.AgGrid(..., actions=va.set_control(control="highlight_parameter", value="country"))]
+    components = [
+        vm.AgGrid(..., actions=va.set_control(control="highlight_parameter", value="country"))
+    ]
     ```
 
 1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
@@ -725,7 +722,6 @@ This example shows how to configure cross-highlighting where clicking on the row
     ```python
     import vizro.plotly.express as px
     from vizro.models.types import capture
-
 
     @capture("graph")
     def scatter_with_highlight(data_frame, highlight_country):  # (1)!
@@ -799,12 +795,12 @@ The full code is given below. This shows a slightly more complicated highlightin
         )
 
         dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()       
         ```
 
         1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
-        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted point.
-        1. We make sure that the colors are always ordered the same way. This ensures that the highlighted point always has the same color regardless of which row in the table is clicked.
+        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted point. 
+        1. We make sure that the colors are always ordered the same way. This ensures that the highlighted point always has the same color regardless of which row in the table is clicked. 
         1. When a country is highlighted, make [further modifications](https://plotly.com/python/creating-and-updating-figures/) to the [style of the highlighted point's marker](https://plotly.com/python/marker-style/) to make it stand out more.
         1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected with index 1. The traces are ordered by `category_orders={"color": [False, True]}` and so this corresponds to `True`, in other words the trace that has `country_is_highlighted=True` and contains the highlighted point.
         1. We use a side-by-side [layout](layouts.md) with an 80px column gap to display the table and graph together.
@@ -823,20 +819,20 @@ The full code is given below. This shows a slightly more complicated highlightin
 
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_table.gif)
 
-When you click on a row in the table, the corresponding point is highlighted in the scatter plot with an orange color, full opacity, and a thick border.
+When you click on a row in the table, the corresponding point is highlighted in the scatter plot with an orange color, full opacity, and a thick border. Clicking the "Reset controls" button resets the parameter to its original value and hence clears the highlighting.
 
 ??? details "Behind the scenes mechanism"
 
     In full, what happens is as follows:
 
-    1. Clicking on the table row triggers the `va.set_control` action. This uses the value of `country` taken from the row data to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
+    1. Clicking on a row triggers the `va.set_control` action. This uses the value of the `country` column for the selected row to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
     1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to update the `highlight_country` argument of the target component `scatter_chart` so that a highlighted graph is shown.
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
-### Cross-highlight from graph
+#### Cross-highlight from graph
 
-This example shows how to configure cross-highlighting where clicking on a point in a graph highlights the corresponding data in a target [bump chart](https://datavizcatalogue.com/blog/chart-snapshot-bump-charts/). The highlighting is visually shown by making the line for the selector country stronger.
+This example shows how to configure cross-highlighting where clicking on a point in a graph highlights the corresponding data in a target [bump chart](https://datavizcatalogue.com/blog/chart-snapshot-bump-charts/). The highlighting is visually shown by making the line for the selector country stronger. Since cross-highlight is a sort of cross-parameter, the method follows the same pattern as configuring a [cross-parameter](#cross-parameter):
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
@@ -861,12 +857,17 @@ This example shows how to configure cross-highlighting where clicking on a point
 1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] component that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value` to specify which argument contains the values used to identify the trace to highlight. For graphs, use the argument name where that data is plotted (e.g., `"y"` if the identifying values are on the y-axis). This value determines what gets passed to the target graph's highlighting parameter.
-
+    1. Set `value`. As with a [cross-filter from a graph](#cross-filter-from-graph), there are two different ways to specify this. However, often the value you require is encoded by a _positional_ variable such as `x`, `y`, `z` for Cartesian plots or `lat`, `lon`, `location` for choropleth maps. If the value is not encoded as a positional variable (for example, it corresponds to `color`) then you should instead use `custom_data` as described in the instructions on [cross-filtering from a graph](#cross-filter-from-graph)
+   
     ```python
     import vizro.actions as va
 
-    components = [vm.Graph(..., actions=va.set_control(control="highlight_parameter", value="y"))]
+    components = [
+        vm.Graph(
+            figure=px.bar(data_frame, x=..., y="country"),
+            actions=va.set_control(control="highlight_parameter", value="y"),
+        )
+    ]
     ```
 
 1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
@@ -874,7 +875,6 @@ This example shows how to configure cross-highlighting where clicking on a point
     ```python
     import vizro.plotly.express as px
     from vizro.models.types import capture
-
 
     @capture("graph")
     def bump_chart_with_highlight(data_frame, highlight_country):  # (1)!
@@ -885,7 +885,7 @@ This example shows how to configure cross-highlighting where clicking on a point
 
     1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
     1. We color the plot by `country` so that each country has its own trace in the resulting chart.
-    1. We use [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) to modify the [highlighted line's style](https://plotly.com/python/line-charts/#style-line-plots).
+    1. We use [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) to modify the [highlighted line's style](https://plotly.com/python/line-charts/#style-line-plots). 
 
 The full code is given below. This includes the complete code for a bump chart with more advanced styling.
 
@@ -899,7 +899,7 @@ The full code is given below. This includes the complete code for a bump chart w
         import vizro.actions as va
         from vizro.models.types import capture
         from vizro import Vizro
-
+        
         selected_countries = [
             "Singapore",
             "Malaysia",
@@ -910,23 +910,23 @@ The full code is given below. This includes the complete code for a bump chart w
             "Cambodia",
             "Myanmar",
         ]
-
+        
         gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
 
         @capture("graph")
         def bump_chart_with_highlight(data_frame, highlight_country=None):  # (1)!
             rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
-
+        
             fig = px.line(data_frame, x="year", y=rank, color="country", markers=True)  # (2)!
             fig.update_yaxes(title="Rank (1 = Highest lifeExp)", autorange="reversed", dtick=1)  # (3)!
             fig.update_traces(opacity=0.3, line_width=2)  # (4)!
-
+        
             if highlight_country is not None:  # (5)!
                 fig.update_traces(selector={"name": highlight_country}, opacity=1, line_width=3)  # (6)!
-
+        
             return fig
-
-
+        
+        
         page = vm.Page(
             title="Cross-highlight from graph",
             components=[
@@ -954,17 +954,17 @@ The full code is given below. This includes the complete code for a bump chart w
                 ),
             ],
         )
-
+        
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
         1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
-        1. `rank` is a pandas Series that gives the ranking of each country by life expectancy for every year. We color the plot by `country` so that each country has its own trace in the resulting chart.
+        1. `rank` is a pandas Series that gives the ranking of each country by life expectancy for every year. We color the plot by `country` so that each country has its own trace in the resulting chart. 
         1. Format the bump chart's y-axis so that it shows the rank of 1 (highest life expectancy) at the top.
-        1. Style the lines for every country.
+        1. Style the lines for every country. 
         1. When a country is highlighted, modify its [line's style](https://plotly.com/python/line-charts/#style-line-plots) to make it stand out more.
-        1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected, which is the `highlighted_country` one.
+        1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected, which is the `highlighted_country` one. 
         1. The graph's `va.set_control` sets `higlight_parameter` to the country from the clicked bar.
         1. We give the `vm.Graph` an `id` so that it can be targeted by `highlight_parameter`.
         1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
@@ -980,68 +980,20 @@ The full code is given below. This includes the complete code for a bump chart w
 
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_graph.gif)
 
-When you click on a bar in the bar chart, the corresponding line is highlighted in the bump chart with full opacity and a thicker line.
+When you click on a bar in the bar chart, the corresponding line is highlighted in the bump chart with full opacity and a thicker line. Clicking the "Reset controls" button resets the parameter to its original value and hence clears the highlighting.
 
 ??? details "Behind the scenes mechanism"
 
     In full, what happens is as follows:
 
-    1. Clicking on the bar triggers the `va.set_control` action. This uses the value of `y` taken from the source graph to set the value of the `vm.Parameter(id="highlight_parameter")`.
-    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed to the target component `bump_chart.highlight_country`, which modifies the visual properties of the trace whose name matches the value passed through the parameter.
+    1. Clicking on a bar triggers the `va.set_control` action. This uses the value of `y` (in other words, the country) taken from the source graph to set the value of the `vm.Parameter(id="highlight_parameter")`.
+    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to update the `highlight_country` argument of the target component `bump_chart` so that a highlighted graph is shown.
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
-### Self-highlight a graph
+#### Self-highlight a graph
 
-In a self-highlight, the same component is both the source _and_ the target of a highlight. For example, when a user clicks on a graph, part of the graph can remain highlighted to show where they clicked.
-
-1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
-
-    ```python
-    import vizro.models as vm
-
-    controls = [
-        vm.Parameter(
-            id="highlight_parameter",  # (1)!
-            targets=["bar_chart.highlight_country"],  # (2)!
-            selector=vm.RadioItems(options=["NONE", ...]),  # (3)!
-            visible=False,  # (4)!
-        )
-    ]
-    ```
-
-    1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
-    1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bar_chart")`.
-    1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
-    1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
-
-1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] component that triggers the self-highlight.
-
-    1. Set `control` to the ID of the parameter.
-    1. Set `value` to specify which argument contains the values used to identify the trace to highlight. For graphs, use the argument name where that data is plotted (e.g., `"y"` if the identifying values are on the y-axis). This value determines what gets passed to the target graph's highlighting parameter.
-
-    ```python
-    import vizro.actions as va
-
-    components = [vm.Graph(..., actions=va.set_control(control="highlight_parameter", value="y"))]
-    ```
-
-1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
-
-    ```python
-    import vizro.plotly.express as px
-    from vizro.models.types import capture
-
-
-    @capture("graph")
-    def bar_with_highlight(data_frame, highlight_country):  # (1)!
-        country_is_highlighted = data_frame["country"] == highlight_country  # (2)!
-        return px.bar(data_frame, x=..., y=..., color=country_is_highlighted)  # (3)!
-    ```
-
-    1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
-    1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others.
-    1. We color the bars by `country_is_highlighted`. This will color differently the values `True` (for the highlighted country) and `False` (for all others).
+In a self-highlight, the same component is both the source _and_ the target of a cross-highlight. For example, when a user clicks on a graph, part of the graph can remain highlighted to show where they clicked. Since it is just a special type of cross-highlighting, the configuration works exactly the same way as a [cross-highlight from a graph](#cross-highlight-from-graph).
 
 A self-highlight is often part of an [actions chain](actions.md#multiple-actions) that includes another action like a [cross-filter](#cross-filter). The example below shows how clicking a graph can perform a self-highlight and [cross-filter a table](#cross-filter-from-graph).
 
@@ -1116,7 +1068,7 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
         ```
 
         1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
-        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted bar.
+        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted bar. 
         1. We make sure that the bars are always ordered the same way regardless of which one is highlighted.
         1. We give the `vm.Graph` an `id` so that it can be targeted by `highlight_parameter`.
         1. This `va.set_control` sets `higlight_parameter` to the country from the clicked bar.
@@ -1126,7 +1078,7 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
         1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bar_chart")`.
         1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the bar chart is initially unhighlighted.
         1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
-        1. Filter `gapminder_table` to show rows for only the selected country.
+        1. Filter `gapminder_table` to show rows for only the selected country. 
 
     === "app.yaml"
 
@@ -1136,14 +1088,17 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
 
         TODO NOW: screenshot
 
-When you click on a bar in the chart, that bar is highlighted in orange and the table below is filtered to show only data for the selected country.
+When you click on a bar in the chart, that bar is highlighted in orange and the table below is filtered to show only data for the selected country. Clicking the "Reset controls" button resets the parameter and the filter to their original values and hence clears the highlighting and filtering.
 
 ??? details "Behind the scenes mechanism"
 
     In full, what happens is as follows:
-
-    1. Clicking on the box triggers the `va.set_control` action. This uses the value of `y` taken from the graph's `clickData` (in other words, the country name) to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
-    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to be passed back to the same component `box_chart.highlight_country`, creating a self-highlighting effect where the graph modifies the visual properties of the trace whose name matches the value passed through the parameter.
-    1. Simultaneously, the same click also triggers the filter action, which filters the table to show only the selected country's data.
-
-    The mechanism for triggering both the parameter and filter when their values are set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain). This allows a single click to perform multiple actions: self-highlighting and [cross-filtering](#cross-filter).
+   
+    1. Clicking on a bar triggers the `va.set_control` action. This uses the value of `y` (in other words, the country) taken from the source graph to set the value of the `vm.Parameter(id="highlight_parameter")`.
+    1. When the `highlight_parameter` has been set, the second `va.set_control` action runs. This also uses the value of `y` (in other words, the country) to set the selector underlying `vm.Filter(id="country_filter")`.
+    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to update the `highlight_country` argument of the target component `bar_chart` so that a highlighted graph is shown.
+    1. The change in value of `vm.Filter(id="country_filter")` triggers the filter on its `targets=["gapminder_table"]` so that a filtered table is shown.
+   
+    The mechanism for triggering the parameter and filter when their values are set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain), while the sequence of applying the two `va.set_control` is an [explicit actions chain](../tutorials/custom-actions-tutorial.md#explicit-actions-chain). In general, steps 2 and 3 above will execute in [parallel](../tutorials/custom-actions-tutorial.md#parallel-actions).
+   
+    When performing multiple filters with [dynamic data](data.md#dynamic-data), you should consider [configuring a cache](data.md#configure-cache) so that steps 3 and 4 above do not repeatedly perform a slow data load.

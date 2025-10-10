@@ -41,7 +41,8 @@ class set_control(_AbstractAction):
 
         * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
         * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
-        trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing), for example `"x"`.
+        trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). This is typically
+        useful for a positional variable, for example `"x"`, and does not require setting `custom_data`.
 
     Args:
         control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
