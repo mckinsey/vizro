@@ -1,6 +1,6 @@
 import warnings
 from collections.abc import Generator
-from typing import Optional, Union, Any
+from typing import Any, Optional, Union
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
@@ -12,8 +12,8 @@ from vizro.models import (
     RadioItems,
     RangeSlider,
     Slider,
-    VizroBaseModel,
     Switch,
+    VizroBaseModel,
 )
 from vizro.models._components.form._form_utils import get_dict_options_and_default
 from vizro.models.types import ControlType, SelectorType

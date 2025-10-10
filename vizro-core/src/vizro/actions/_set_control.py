@@ -7,7 +7,6 @@ from typing import Literal, Protocol, cast, runtime_checkable
 from dash import get_relative_path
 from pydantic import Field, JsonValue
 
-import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._controls._controls_utils import SELECTORS

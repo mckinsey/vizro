@@ -8,12 +8,11 @@ from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._controls._controls_utils import (
+    SELECTORS,
     check_control_targets,
     get_selector_default_value,
     warn_missing_id_for_url_control,
-    SELECTORS,
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID, SelectorType, _IdProperty
