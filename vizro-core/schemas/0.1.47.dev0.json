@@ -1305,6 +1305,7 @@
       "type": "object"
     },
     "OptionsDictType": {
+      "additionalProperties": false,
       "description": "Permissible sub-type for OptionsType. Needs to be in the format of {\"label\": XXX, \"value\": XXX}.",
       "properties": {
         "label": {
