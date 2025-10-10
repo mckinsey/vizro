@@ -185,11 +185,13 @@ function reset_controls(_, vizroControlsStore, pageId) {
 
   // Get info for all controls on the current page.
   const pageControls = Object.values(vizroControlsStore).filter(
-    control => control.pageId === pageId
+    (control) => control.pageId === pageId,
   );
 
   // For each control, prepare its original value
-  const outputSelectorValues = pageControls.map(control => control.originalValue);
+  const outputSelectorValues = pageControls.map(
+    (control) => control.originalValue,
+  );
   // For each control set all its guard to true to prevent triggering unnecessary actions.
   const outputSelectorGuards = pageControlsStore.map(() => true);
 
