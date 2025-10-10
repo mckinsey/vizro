@@ -18,7 +18,7 @@ from vizro.models import Container, VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch
 from vizro.models._controls._controls_utils import (
     check_control_targets,
-    set_selector_default_value,
+    get_selector_default_value,
     warn_missing_id_for_url_control,
 )
 from vizro.models._models_utils import _log_call
@@ -276,7 +276,7 @@ class Filter(VizroBaseModel):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
 
         # Set default value for the selector if not explicitly provided.
-        set_selector_default_value(control_selector=self.selector)
+        self.selector.value = get_selector_default_value(self.selector)
 
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (

@@ -174,7 +174,7 @@ class Page(VizroBaseModel):
                 *selector_guard_outputs,
                 Input(f"{self.id}_reset_button", "n_clicks"),
                 State("vizro_controls_store", "data"),
-                State("page_id_store", "data"),
+                State(self.id, "id"),  # Assigned to outermost Div in Dashboard._make_page_layout.
                 prevent_initial_call=True,
             )
 
@@ -233,7 +233,6 @@ class Page(VizroBaseModel):
             [
                 *action_components,
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
-                dcc.Store(id="page_id_store", data=self.id),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),
             ]

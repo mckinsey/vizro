@@ -55,15 +55,15 @@ def warn_missing_id_for_url_control(control: ControlType) -> None:
         )
 
 
-def set_selector_default_value(control_selector: SelectorType) -> None:
+def get_selector_default_value(selector: SelectorType) -> None:
     """Set default value for the control's selector if not explicitly provided."""
-    if control_selector.value is not None:
-        return
+    if selector.value is not None:
+        return selector.value
 
-    if isinstance(control_selector, (Slider, RangeSlider, DatePicker)):
-        is_range = isinstance(control_selector, RangeSlider) or getattr(control_selector, "range", False)
-        control_selector.value = [control_selector.min, control_selector.max] if is_range else control_selector.min
-    elif isinstance(control_selector, (Checklist, Dropdown, RadioItems)):
-        is_multi = isinstance(control_selector, Checklist) or getattr(control_selector, "multi", False)
-        _, default_value = get_dict_options_and_default(options=control_selector.options, multi=is_multi)
-        control_selector.value = default_value
+    if isinstance(selector, (Slider, RangeSlider, DatePicker)):
+        is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
+        return [selector.min, selector.max] if is_range else selector.min
+    elif isinstance(selector, (Checklist, Dropdown, RadioItems)):
+        is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
+        _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
+        return default_value
