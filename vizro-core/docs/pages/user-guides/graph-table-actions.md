@@ -824,7 +824,7 @@ The full code is given below. This shows a slightly more complicated highlightin
             figure:
               _target_: dash_ag_grid
               data_frame: gapminder
-            header: "💡 Click on a row to highlight that country in the scatter plot"
+            header: 💡 Click on a row to highlight that country in the scatter plot
             type: ag_grid
           - figure:
               _target_: __main__.scatter_with_highlight
@@ -1013,7 +1013,50 @@ The full code is given below. This includes the complete code for a bump chart w
 
     === "app.yaml"
 
-        This example is currently only possible via Python configuration due to the custom charts.
+        ```
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+        - components:
+        - actions:
+            - control: highlight_parameter
+            type: set_control
+            value: y
+            figure:
+            _target_: bar
+            data_frame: gapminder_2007
+            labels:
+                lifeExp: lifeExp in 2007
+            x: lifeExp
+            y: country
+            header: 💡 Click any bar to highlight that country in the bump chart
+            type: graph
+        - figure:
+            _target_: __main__.bump_chart_with_highlight
+            data_frame: gapminder
+            id: bump_chart
+            type: graph
+        controls:
+        - id: highlight_parameter
+            selector:
+            options:
+            - NONE
+            - Cambodia
+            - Indonesia
+            - Malaysia
+            - Myanmar
+            - Philippines
+            - Singapore
+            - Thailand
+            - Vietnam
+            type: radio_items
+            targets:
+            - bump_chart.highlight_country
+            type: parameter
+            visible: false
+        title: Cross-highlight from graph
+
+        ```
 
     === "Result"
 
@@ -1121,7 +1164,56 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
 
     === "app.yaml"
 
-        This example is currently only possible via Python configuration due to the custom charts.
+        ```
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+
+        pages:
+        - components:
+        - actions:
+            - control: highlight_parameter
+            type: set_control
+            value: y
+            - control: country_filter
+            type: set_control
+            value: y
+            figure:
+            _target_: __main__.bar_with_highlight
+            data_frame: gapminder_2007
+            header: 💡 Click on a bar to highlight the selected country and filter the table below
+            id: bar_chart
+            type: graph
+        - figure:
+            _target_: dash_ag_grid
+            data_frame: gapminder
+            id: gapminder_table
+            type: ag_grid
+        controls:
+        - id: highlight_parameter
+            selector:
+            options:
+            - NONE
+            - Cambodia
+            - Indonesia
+            - Malaysia
+            - Myanmar
+            - Philippines
+            - Singapore
+            - Thailand
+            - Vietnam
+            type: radio_items
+            targets:
+            - bar_chart.highlight_country
+            type: parameter
+            visible: false
+        - column: country
+            id: country_filter
+            targets:
+            - gapminder_table
+            type: filter
+            visible: false
+        title: Self-highlight a graph and cross-filter
+        ```
 
     === "Result"
 
