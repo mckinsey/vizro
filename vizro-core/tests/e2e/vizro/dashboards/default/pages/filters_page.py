@@ -38,6 +38,7 @@ filters_page = vm.Page(
                                     href="/",
                                 ),
                                 vm.Button(
+                                    id=cnst.FILTERS_PAGE_EXPORT_DATA_BUTTON,
                                     text="Export data",
                                     actions=[
                                         vm.Action(
