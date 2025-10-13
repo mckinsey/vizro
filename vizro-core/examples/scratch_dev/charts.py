@@ -8,6 +8,9 @@ import vizro.plotly.express as px
 from dash_ag_grid import AgGrid
 from vizro.models.types import capture
 
+PRIMARY_COLOR = "#1a85ff"
+SECONDARY_COLOR = "#A0A2A8"
+
 
 @capture("graph")
 def create_map_bubble(data_frame, value_col="Sales"):
@@ -55,23 +58,6 @@ def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
         custom_data=custom_data,
         orientation="h",
     )
-    return fig
-
-
-@capture("graph")
-def pie_chart_by_segment(data_frame, custom_data, value_col="Sales"):
-    """Custom pie chart made with Plotly."""
-    fig = px.pie(
-        data_frame,
-        names="Segment",
-        values=value_col,
-        color="Segment",
-        title=f"{value_col} | By Segment",
-        custom_data=custom_data,
-        hole=0.6,  # optional: makes it a donut chart
-    )
-
-    fig.update_layout(title=dict(x=0.5, xanchor="center"))
     return fig
 
 
@@ -384,6 +370,7 @@ def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=N
         y="Region",
         x=agg_col,
         orientation="h",
+        color_discrete_sequence=[PRIMARY_COLOR, SECONDARY_COLOR],
     )
 
     fig.update_layout(
@@ -451,6 +438,7 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
                 x=pivot_df["Segment"],
                 y=pivot_df[2016],
                 name="Previous year",
+                marker_color=SECONDARY_COLOR,
             )
         )
 
@@ -460,6 +448,7 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
                 x=pivot_df["Segment"],
                 y=pivot_df[2017],
                 name="Current year",
+                marker_color=PRIMARY_COLOR,
             )
         )
 
@@ -508,6 +497,7 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
                 x=pivot_df["Category"],
                 y=pivot_df[2016],
                 name="Previous year",
+                marker_color=SECONDARY_COLOR,
             )
         )
 
@@ -517,6 +507,7 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
                 x=pivot_df["Category"],
                 y=pivot_df[2017],
                 name="Current year",
+                marker_color=PRIMARY_COLOR,
             )
         )
 
@@ -599,12 +590,24 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
     curr_year = monthly[monthly["Year"] == 2017]
 
     fig = go.Figure()
-
-    fig.add_trace(go.Scatter(x=prev_year["Month"], y=prev_year[agg_col], fill="tozeroy", name="Previous Year"))
-    fig.add_trace(go.Scatter(x=curr_year["Month"], y=curr_year[agg_col], fill="tonexty", name="Current Year"))
+    fig.add_trace(
+        go.Scatter(
+            x=curr_year["Month"], y=curr_year[agg_col], fill="tonexty", name="Current Year", marker_color=PRIMARY_COLOR
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=prev_year["Month"],
+            y=prev_year[agg_col],
+            fill="tozeroy",
+            name="Previous Year",
+            marker_color=SECONDARY_COLOR,
+        )
+    )
 
     fig.update_layout(
         xaxis=dict(
+            showgrid=False,
             title=None,
             tickmode="array",
             tickvals=list(range(1, 13)),
@@ -630,7 +633,6 @@ def create_top_10_states(data_frame, value_col="Sales"):
         top_states,
         x=value_col,
         y="State",
-        # color="Region",
         orientation="h",
         title=f"Top 10 States by {value_col}",
     )
@@ -1160,6 +1162,7 @@ def bar_chart_by_category_h(data_frame, custom_data, value_col="Sales", highligh
         df_sorted,
         x="Category",
         y=value_col,
+        color_discrete_sequence=[PRIMARY_COLOR, SECONDARY_COLOR],
         title=f"{value_col} | By Category",
         custom_data=custom_data,
     )

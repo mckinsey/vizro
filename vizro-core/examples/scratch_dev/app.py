@@ -465,29 +465,21 @@ page_4 = vm.Page(
 )
 
 page_5 = vm.Page(
-    title="Orders view",
-    components=[vm.AgGrid(id="table_id", figure=custom_orders_aggrid(superstore_df))],
-    controls=[
-        vm.Filter(
-            id="pg5_filter_1",
-            column="Order Date",
-            selector=vm.DatePicker(
-                range=True,
-            ),
-        ),
-        vm.Filter(id="pg5_filter_2", column="Category", selector=vm.Checklist()),
+    title="Orders",
+    layout=vm.Flex(),
+    components=[
+        vm.AgGrid(id="table_id", figure=custom_orders_aggrid(superstore_df)),
         vm.Button(
             text="Export data",
             icon="download",
             actions=[va.export_data(targets=["table_id"], file_format="xlsx")],
-            variant="outlined",
         ),
     ],
 )
 
 
 navigation = vm.Navigation(
-    pages=["Overview", "Regional view", "Customer view", "Product view", "Orders view"],
+    pages=["Overview", "Regional view", "Customer view", "Product view", "Orders"],
     nav_selector=vm.NavBar(
         items=[
             vm.NavLink(
@@ -506,7 +498,7 @@ navigation = vm.Navigation(
                 icon="Barcode",
             ),
             vm.NavLink(
-                pages=["Orders view"],
+                pages=["Orders"],
                 icon="Shopping Cart",
                 label="Orders",
             ),
@@ -521,7 +513,10 @@ navigation = vm.Navigation(
 
 dashboard = vm.Dashboard(
     title="Superstore dashboard",
-    pages=[page_1, page_2, page_3, page_4, page_5], navigation=navigation, theme="vizro_light")
+    pages=[page_1, page_2, page_3, page_4, page_5],
+    navigation=navigation,
+    theme="vizro_light",
+)
 
 
 if __name__ == "__main__":
