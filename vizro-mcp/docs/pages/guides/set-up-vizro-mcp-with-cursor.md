@@ -40,7 +40,7 @@ The following configuration is added to your `mcp.json` ([see Cursor Settings](h
 
 !!! tip "To specify a version of Vizro-MCP"
 
-    To use a specific version of Vizro-MCP, update the `mcp.json` configuration to instruct `uv` accordingly. For example, to use Vizro-MCP [version 0.1.12](https://github.com/mckinsey/vizro/tree/vizro-mcp-0.1.2), specify the configuration like this:
+    To use a specific version of Vizro-MCP, update the `mcp.json` configuration to instruct `uv` accordingly. For example, to use Vizro-MCP [version 0.1.2](https://github.com/mckinsey/vizro/tree/vizro-mcp-0.1.2), specify the configuration like this:
 
     ```json
     {
