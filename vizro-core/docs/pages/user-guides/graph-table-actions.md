@@ -666,7 +666,7 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 A cross-highlight is an example of a cross-parameter where the effect of the intermediate parameter is to highlight data. When a user clicks on one _source_ graph or table, the corresponding data is highlighted in a _target_ graph or table (typically a [custom graph](custom-charts.md)). The highlighting can occur in two ways:
 
 - _Target highlighting_: The highlighting appears in a target graph that is distinct from the source that was clicked. Below we give examples of highlighting a target graph [from a source table](#cross-highlight-from-table) and [from a source graph](#cross-highlight-from-graph).
-- _Source highlighting_ or _self-highlighting_: The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting).
+- _Source highlighting_ or _self-highlighting_: The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlight-a-graph).
 
 In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md). Often this parameter is hidden from view with `visible=False` since the highlighting effect itself provides sufficient visual feedback about the selected data. Remember that the cross-highlight can be cleared with the ["Reset controls" button](controls.md#reset-controls).
 
