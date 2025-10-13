@@ -80,19 +80,20 @@ def nav_orders():
 
 
 page_1 = vm.Page(
-    title="Overview dashboard",
+    title="Overview",
     components=[
         vm.Container(
             id="pg1-container-1",
-            title="💡 Click on a card to navigate to detailed view.",
+            title="💡 Click on a KPI card to update the charts below.",
             components=[
                 vm.Figure(
                     figure=kpi_card_reference(
                         data_frame=sales_kpi_df,
                         value_column="total_2017",
                         reference_column="total_2016",
+                        reference_format="{delta_relative:+.1%} vs. last year (${reference:,.0f})",
                         title="Sales",
-                        value_format="${value:0.2f}",
+                        value_format="${value:,.0f}",
                         icon="bar_chart",
                     )
                 ),
@@ -101,8 +102,9 @@ page_1 = vm.Page(
                         data_frame=profit_kpi_df,
                         value_column="total_2017",
                         reference_column="total_2016",
+                        reference_format="{delta_relative:+.1%} vs. last year (${reference:,.0f})",
                         title="Profit",
-                        value_format="${value:0.2f}",
+                        value_format="${value:,.0f}",
                         icon="money_bag",
                     )
                 ),
@@ -111,9 +113,10 @@ page_1 = vm.Page(
                         data_frame=order_kpi_df,
                         value_column="total_2017",
                         reference_column="total_2016",
+                        reference_format="{delta_relative:+.1%} vs. last year ({reference:,.0f})",
                         title="Orders",
-                        value_format="{value:,}",
-                        icon="numbers",
+                        value_format="{value:,.0f}",
+                        icon="orders",
                         # agg_func="nunique",
                     )
                 ),
@@ -123,8 +126,9 @@ page_1 = vm.Page(
                         value_column="total_2017",
                         reference_column="total_2016",
                         title="Customers",
-                        value_format="{value:,}",
-                        icon="numbers",
+                        reference_format="{delta_relative:+.1%} vs. last year ({reference:,.0f})",
+                        value_format="{value:,.0f}",
+                        icon="group",
                         # agg_func="nunique",
                     )
                 ),
@@ -483,11 +487,11 @@ page_5 = vm.Page(
 
 
 navigation = vm.Navigation(
-    pages=["Overview dashboard", "Regional view", "Customer view", "Product view", "Orders view"],
+    pages=["Overview", "Regional view", "Customer view", "Product view", "Orders view"],
     nav_selector=vm.NavBar(
         items=[
             vm.NavLink(
-                pages=["Overview dashboard"],
+                pages=["Overview"],
                 label="Overview",
                 icon="Home",
             ),
@@ -515,7 +519,9 @@ navigation = vm.Navigation(
     ),
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5], navigation=navigation, theme="vizro_light")
+dashboard = vm.Dashboard(
+    title="Superstore dashboard",
+    pages=[page_1, page_2, page_3, page_4, page_5], navigation=navigation, theme="vizro_light")
 
 
 if __name__ == "__main__":

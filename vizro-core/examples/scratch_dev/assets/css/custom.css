@@ -41,3 +41,7 @@
 #pg1-container-1.container-fluid {
   gap: 0;
 }
+
+#header {
+  padding-left: 6px;
+}
