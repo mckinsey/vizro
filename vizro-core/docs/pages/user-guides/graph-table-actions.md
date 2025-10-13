@@ -1166,8 +1166,6 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
         ```
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
         pages:
           - components:
               - type: graph
