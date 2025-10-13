@@ -50,7 +50,7 @@ The following configuration is added to your `mcp.json` ([see Cursor Settings](h
     }
     ```
 
-    The `uv documentation` contains more information about the [syntax needed to request a specific version ](https://docs.astral.sh/uv/guides/tools/#requesting-specific-versions)of Vizro-MCP.
+    The `uv documentation` contains more information about the [syntax needed to request a specific version](https://docs.astral.sh/uv/guides/tools/#requesting-specific-versions)of Vizro-MCP.
 
 Click "Install" on the Cursor MCP configuration page:
 
