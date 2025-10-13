@@ -322,8 +322,6 @@ class Dashboard(VizroBaseModel):
                 ],
                 className="btn-text",
             ),
-            color="primary",
-            outline=True,
             class_name="btn-circular",
         )
         theme_switch = dbc.Switch(
