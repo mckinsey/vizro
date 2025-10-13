@@ -356,6 +356,8 @@ page_3 = vm.Page(
     ],
     controls=[
         vm.Filter(id="pg3_filter_1", column="Segment", selector=vm.Checklist(title="Customer Segment")),
+        vm.Filter(id="pg3_filter_2", column="Category"),
+        vm.Filter(id="pg3_filter_3", column="Sub-Category"),
         vm.Parameter(
             id="pg3_parameter_1",
             targets=["pg3_pareto_chart.highlight_customer"],
