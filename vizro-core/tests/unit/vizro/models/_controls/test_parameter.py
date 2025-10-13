@@ -67,7 +67,7 @@ class TestParameterInstantiation:
     def test_check_dot_notation_failed(self):
         with pytest.raises(
             ValueError,
-            match="Invalid target scatter_chart. "
+            match=r"Invalid target scatter_chart. "
             "Targets must be supplied in the form <target_component>.<target_argument>",
         ):
             Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
@@ -82,11 +82,11 @@ class TestParameterInstantiation:
             Parameter(targets=[target], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     def test_duplicate_parameter_target_failed(self):
-        with pytest.raises(ValueError, match="Duplicate parameter targets {'scatter_chart.x'} found."):
+        with pytest.raises(ValueError, match=r"Duplicate parameter targets {'scatter_chart.x'} found."):
             Parameter(targets=["scatter_chart.x", "scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     def test_duplicate_parameter_target_failed_two_params(self):
-        with pytest.raises(ValueError, match="Duplicate parameter targets {'scatter_chart.x'} found."):
+        with pytest.raises(ValueError, match=r"Duplicate parameter targets {'scatter_chart.x'} found."):
             Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
             Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
@@ -106,7 +106,7 @@ class TestParameterInstantiation:
 
 class TestPreBuildMethod:
     def test_parameter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control parameter_id should be defined within a Page object."):
+        with pytest.raises(ValueError, match=r"Control parameter_id should be defined within a Page object."):
             Parameter(
                 id="parameter_id",
                 targets=["scatter_chart.x"],
@@ -137,7 +137,7 @@ class TestPreBuildMethod:
     def test_targets_present_invalid(self):
         parameter = Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
         model_manager["test_page"].controls = [parameter]
-        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found within the test_page."):
+        with pytest.raises(ValueError, match=r"Target scatter_chart_invalid not found within the test_page."):
             parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
