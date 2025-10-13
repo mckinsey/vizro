@@ -31,4 +31,4 @@ When the dashboard is running there are two ways for a user to set a control:
 
 ## Reset controls
 
-You can reset all controls on the page to their original values with the "Reset controls" button at the bottom of the control panel on the left side of the pag. This applies to all controls on the page, regardless of whether they are visible. When all controls on a page have `visible=False` and hence no control panel is shown, the "Reset controls" button appears next to the theme switch on the top right of the page.
+You can reset all controls on the page to their original values with the "Reset controls" button at the bottom of the control panel on the left side of the page. This applies to all controls on the page, regardless of whether they are visible. When all controls on a page have `visible=False` and hence no control panel is shown, the "Reset controls" button appears next to the theme switch on the top right of the page.

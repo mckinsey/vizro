@@ -665,8 +665,8 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 
 A cross-highlight is an example of a cross-parameter where the effect of the intermediate parameter is to highlight data. When a user clicks on one _source_ graph or table, the corresponding data is highlighted in a _target_ graph or table (typically a [custom graph](custom-charts.md)). The highlighting can occur in two ways:
 
-- _Target highlighting_. The highlighting appears in a target graph that is distinct from the source that was clicked. Below we give examples of highlighting a target graph [from a source table](#cross-highlight-from-table) and [from a source graph](#cross-highlight-from-graph).
-- _Source highlighting_ or _self-highlighting_. The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting).
+- _Target highlighting_: The highlighting appears in a target graph that is distinct from the source that was clicked. Below we give examples of highlighting a target graph [from a source table](#cross-highlight-from-table) and [from a source graph](#cross-highlight-from-graph).
+- _Source highlighting_ or _self-highlighting_: The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlighting).
 
 In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md). Often this parameter is hidden from view with `visible=False` since the highlighting effect itself provides sufficient visual feedback about the selected data. Remember that the cross-highlight can be cleared with the ["Reset controls" button](controls.md#reset-controls).
 
@@ -678,11 +678,11 @@ In general, there are many different ways to visually highlight data in a graph.
 
 !!! tip Cross-highlight between containers and pages
 
-    All [cross-parameters](#cross-parameter), which includes cross-highlights, can operate across different containers and different pages. The use of [`va.set_control`][vizro.actions.set_control] is identical to when source and target are in the same container and page. For hints on styling, we give analogous code examples for cross-filtering [between containers](#cross-filter-between-containers) and [between pages](#cross-filter-between-pages)
+    All [cross-parameters](#cross-parameter), which includes cross-highlights, can operate across different containers and different pages. The use of [`va.set_control`][vizro.actions.set_control] is identical to when source and target are in the same container and page. For hints on styling, we give analogous code examples for cross-filtering [between containers](#cross-filter-between-containers) and [between pages](#cross-filter-between-pages).
 
 #### Cross-highlight from table
 
-This example shows how to configure cross-highlighting where clicking on the row in a table row highlights the corresponding data in a target scatter graph. The highlighting is visually shown by changing the color of the point for the selected country. Since cross-highlight is a sort of cross-parameter, the method follows the same pattern as configuring a [cross-parameter](#cross-parameter):
+This example shows how to configure cross-highlighting where clicking on the row in a table highlights the corresponding data in a target scatter graph. The highlighting is visually shown by changing the color of the point for the selected country. Since cross-highlight is a sort of cross-parameter, the method follows the same pattern as configuring a [cross-parameter](#cross-parameter):
 
 1. Create a parameter that targets the [graph](graph.md) you would like to visually highlight.
 
@@ -738,7 +738,7 @@ The full code is given below. This shows a slightly more complicated highlightin
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="41"}
+        ```{.python pycafe-link hl_lines="38"}
         import vizro.plotly.express as px
         import vizro.models as vm
         import vizro.actions as va
