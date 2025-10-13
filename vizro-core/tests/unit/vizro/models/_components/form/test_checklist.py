@@ -124,7 +124,7 @@ class TestChecklistInstantiation:
         ],
     )
     def test_create_checklist_invalid_value_non_existing(self, test_value, options):
-        with pytest.raises(ValidationError, match="Please provide a valid value from `options`."):
+        with pytest.raises(ValidationError, match=r"Please provide a valid value from `options`."):
             Checklist(value=test_value, options=options)
 
     def test_create_checklist_invalid_value_format(self):

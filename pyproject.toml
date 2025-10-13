@@ -58,7 +58,6 @@ ignore = [
   "D401",  # first-line should be in imperative mood
   # D407 needs to be ignored as it otherwise messes up the formatting in our API docs
   "D407",  # missing dashed underline after section
-  "PD901",  # allow using the generic variable name `df` for DataFrames
   "PLC0415"  # `import` should be at the top-level of a file
 ]
 select = [
