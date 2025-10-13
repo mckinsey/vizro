@@ -1166,26 +1166,28 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
         ```
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
         pages:
           - components:
-            - type: graph
-              id: bar_chart
-              figure:
-                _target_: __main__.bar_with_highlight
-                data_frame: gapminder_2007
-              header: 💡 Click on a bar to highlight the selected country and filter the table below
-              actions:
-                - type: set_control
-                  control: highlight_parameter
-                  value: y
-                - type: set_control
-                  control: country_filter
-                  value: y
-            - type: ag_grid
-              id: gapminder_table
-              figure:
-                _target_: dash_ag_grid
-                data_frame: gapminder
+              - type: graph
+                id: bar_chart
+                figure:
+                  _target_: __main__.bar_with_highlight
+                  data_frame: gapminder_2007
+                header: 💡 Click on a bar to highlight the selected country and filter the table below
+                actions:
+                  - type: set_control
+                    control: highlight_parameter
+                    value: y
+                  - type: set_control
+                    control: country_filter
+                    value: y
+              - type: ag_grid
+                id: gapminder_table
+                figure:
+                  _target_: dash_ag_grid
+                  data_frame: gapminder
             controls:
               - id: highlight_parameter
                 selector:
@@ -1201,13 +1203,13 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
                     - Vietnam
                   type: radio_items
                 targets:
-                    - bar_chart.highlight_country
+                  - bar_chart.highlight_country
                 type: parameter
                 visible: false
               - column: country
                 id: country_filter
                 targets:
-                    - gapminder_table
+                  - gapminder_table
                 type: filter
                 visible: false
             title: Self-highlight a graph and cross-filter

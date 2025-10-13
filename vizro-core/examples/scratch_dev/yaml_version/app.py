@@ -30,7 +30,7 @@ data_manager["iris"] = px.data.iris()
 
 
 @capture("graph")
-def bar_with_highlight(data_frame, highlight_country=None):
+def bar_with_highlight(data_frame, highlight_country=None):  # noqa: D103
     country_is_highlighted = data_frame["country"] == highlight_country
     fig = px.bar(
         data_frame,
@@ -45,7 +45,7 @@ def bar_with_highlight(data_frame, highlight_country=None):
 
 
 @capture("graph")
-def bump_chart_with_highlight(data_frame, highlight_country=None):
+def bump_chart_with_highlight(data_frame, highlight_country=None):  # noqa: D103
     rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
 
     fig = px.line(data_frame, x="year", y=rank, color="country", markers=True)
