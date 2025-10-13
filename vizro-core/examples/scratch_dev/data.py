@@ -1,3 +1,5 @@
+import random
+
 import pandas as pd
 
 # Map state names to state codes
@@ -70,7 +72,6 @@ latest_two_years = sorted(superstore_df["Year"].unique())[-2:]
 superstore_df = superstore_df[superstore_df["Year"].isin(latest_two_years)].copy()
 
 # Create Order Status - randomly assign one of three status values
-import random
 
 random.seed(42)  # For reproducibility
 superstore_df["Order Status"] = superstore_df.apply(
@@ -79,12 +80,9 @@ superstore_df["Order Status"] = superstore_df.apply(
 
 
 def create_superstore_product(data_frame):
-    data_frame["Category / Sub-Category"] = data_frame["Category"] + " / " + data_frame["Sub-Category"]
-    data_frame = (
-        data_frame.groupby(["Category / Sub-Category", "Product Name"])
-        .agg({"Sales": "sum", "Profit": "sum"})
-        .reset_index()
-    )
+    """Creates pandas data frame."""
+    # data_frame["Category / Sub-Category"] = data_frame["Category"] + " / " + data_frame["Sub-Category"]
+    data_frame = data_frame.groupby(["Sub-Category"]).agg({"Sales": "sum", "Profit": "sum"}).reset_index()
     data_frame["Profit Margin"] = data_frame["Profit"] / data_frame["Sales"]
     data_frame["Profit Absolute"] = abs(data_frame["Profit"])
 
@@ -92,6 +90,7 @@ def create_superstore_product(data_frame):
 
 
 def pareto_customers_table(data_frame):
+    """Creates pandas data frame."""
     df = data_frame.groupby("Customer Name")["Sales"].sum().reset_index().sort_values(by="Sales", ascending=False)
 
     df["Cumulative Sales"] = df["Sales"].cumsum()
@@ -102,6 +101,7 @@ def pareto_customers_table(data_frame):
 
 
 def create_kpi_data(df, value_col="Sales"):
+    """Creates pandas data frame."""
     df["Year"] = df["Order Date"].dt.year
     # sales_by_year = df.groupby('Year')[value_col].sum()
 

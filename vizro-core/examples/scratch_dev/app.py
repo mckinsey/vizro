@@ -21,7 +21,7 @@ from charts import (
     create_bar_current_vs_previous_segment,
     create_bar_current_vs_previous_category,
     pareto_customers_chart,
-    scatter_with_quadrants,
+    scatter_with_quadrants_subc,
     pie_chart_by_order_status,
     bar_chart_top_cities,
     bar_chart_top_subcategories,
@@ -40,6 +40,7 @@ aggrid_df = pareto_customers_table(superstore_df)
 state_list = superstore_df["State_Code"].unique().tolist()
 categories = superstore_df["Category"].unique().tolist()
 subcategories = superstore_df["Sub-Category"].unique().tolist()
+subcategories.append("NONE")
 customer_name = superstore_df["Customer Name"].unique().tolist()
 customer_name.append("NONE")
 product_name = superstore_df["Product Name"].unique().tolist()
@@ -410,15 +411,15 @@ page_4 = vm.Page(
                         vm.AgGrid(
                             id="table",
                             figure=dash_ag_grid(superstore_product_df, columnDefs=COLUMN_DEFS_PRODUCT),
-                            actions=va.set_control(control="pg4_parameter_1", value="Product Name"),
+                            actions=va.set_control(control="pg4_parameter_1", value="Sub-Category"),
                         ),
                         vm.Graph(
                             id="pg4-chart-3",
-                            figure=scatter_with_quadrants(
+                            figure=scatter_with_quadrants_subc(
                                 data_frame=superstore_product_df,
                                 x="Sales",
                                 y="Profit",
-                                custom_data=["Product Name"],
+                                custom_data=["Sub-Category"],
                             ),
                         ),
                     ],
@@ -443,15 +444,15 @@ page_4 = vm.Page(
             selector=vm.Checklist(title="Product Category"),
             visible=False,
         ),
-        vm.Filter(
-            column="Category / Sub-Category",
-            targets=["pg4-chart-3"],
-            selector=vm.Dropdown(multi=False, value="Technology / Phones"),
-        ),
+        # vm.Filter(
+        #     column="Category / Sub-Category",
+        #     targets=["pg4-chart-3"],
+        #     selector=vm.Dropdown(multi=False, value="Technology / Phones"),
+        # ),
         vm.Parameter(
             id="pg4_parameter_1",
-            targets=["pg4-chart-3.highlight_product"],
-            selector=vm.Dropdown(options=product_name, value="NONE", multi=False),
+            targets=["pg4-chart-3.highlight_sub_category"],
+            selector=vm.Dropdown(options=subcategories, value="NONE", multi=False),
             visible=False,
         ),
     ],

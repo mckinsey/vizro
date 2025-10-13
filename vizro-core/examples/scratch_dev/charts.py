@@ -11,6 +11,7 @@ from vizro.models.types import capture
 
 @capture("graph")
 def create_map_bubble(data_frame, value_col="Sales"):
+    """Custom map chart made with Plotly."""
     data_frame[value_col] = data_frame[value_col].abs()
     fig = px.scatter_geo(
         data_frame,
@@ -44,6 +45,7 @@ def create_map_bubble(data_frame, value_col="Sales"):
 
 @capture("graph")
 def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
+    """Custom bar chart made with Plotly."""
     fig = px.bar(
         data_frame,
         y="Segment",
@@ -58,6 +60,7 @@ def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
 
 @capture("graph")
 def pie_chart_by_segment(data_frame, custom_data, value_col="Sales"):
+    """Custom pie chart made with Plotly."""
     fig = px.pie(
         data_frame,
         names="Segment",
@@ -74,6 +77,7 @@ def pie_chart_by_segment(data_frame, custom_data, value_col="Sales"):
 
 @capture("graph")
 def pie_chart_by_category(data_frame, custom_data, value_col="Sales"):
+    """Custom pie chart made with Plotly."""
     fig = px.pie(
         data_frame,
         names="Category",
@@ -90,6 +94,7 @@ def pie_chart_by_category(data_frame, custom_data, value_col="Sales"):
 
 @capture("graph")
 def bar_chart_by_product(data_frame, custom_data, value_col="Sales"):
+    """Custom bar chart made with Plotly."""
     df_grouped = data_frame.groupby("Product Name", as_index=False)[value_col].sum()
     df_top10 = df_grouped.nlargest(10, value_col).reset_index(drop=True)
     df_top10["Rank"] = df_top10[value_col].rank(method="first", ascending=False).astype(int)
@@ -125,6 +130,7 @@ def bar_chart_by_product(data_frame, custom_data, value_col="Sales"):
 
 @capture("graph")
 def bar_chart_by_subcategory(data_frame, custom_data, value_col="Sales"):
+    """Custom bar chart made with Plotly."""
     # Handle aggregation depending on metric
     if value_col == "Order ID":
         subcat_metric = (
@@ -165,6 +171,7 @@ def bar_chart_by_subcategory(data_frame, custom_data, value_col="Sales"):
 
 @capture("graph")
 def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_category=None):
+    """Custom bar chart made with Plotly."""
     if value_col == "Order ID":
         category_metric = data_frame.groupby(["Category", "Sub-Category"], as_index=False)["Order ID"].nunique()
         agg_col = "Order ID"
@@ -205,6 +212,7 @@ def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_
 
 @capture("graph")
 def bar_chart_by_customer(data_frame, value_col="Sales"):
+    """Custom bar chart made with Plotly."""
     if value_col == "Order ID":
         df_grouped = data_frame.groupby("Customer Name", as_index=False)["Order ID"].nunique()
         agg_col = "Order ID"
@@ -256,6 +264,7 @@ def bar_chart_by_customer(data_frame, value_col="Sales"):
 
 @capture("ag_grid")
 def custom_aggrid(data_frame):
+    """Custom aggrid table."""
     data_frame["Profit Ratio"] = (data_frame["Profit"] / data_frame["Sales"]).round(3)
 
     column_defs = [
@@ -312,6 +321,7 @@ def custom_aggrid(data_frame):
 
 @capture("graph")
 def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
+    """Custom map chart made with Plotly."""
     if value_col == "Order ID":
         state_metric = (
             data_frame.groupby(["State_Code", "Region"], as_index=False)["Order ID"]
@@ -352,6 +362,7 @@ def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
 
 @capture("graph")
 def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=None):
+    """Custom bar chart made with Plotly."""
     if value_col == "Order ID":
         region_metric = (
             data_frame.groupby("Region", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
@@ -387,6 +398,7 @@ def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=N
 
 @capture("graph")
 def create_line_chart_sales_per_month(data_frame, value_col="Sales"):
+    """Custom line chart made with Plotly."""
     data_frame["Order Date"] = pd.to_datetime(data_frame["Order Date"])
     data_frame["YearMonth"] = data_frame["Order Date"].dt.to_period("M").astype(str)
     monthly_sales = data_frame.groupby("YearMonth", as_index=False)["Sales"].sum()
@@ -407,6 +419,7 @@ def create_line_chart_sales_per_month(data_frame, value_col="Sales"):
 
 @capture("graph")
 def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
+    """Custom bar chart made with Plotly."""
     data_frame["Order Date"] = pd.to_datetime(data_frame["Order Date"])
     data_frame["Year"] = data_frame["Order Date"].dt.year
 
@@ -521,6 +534,7 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
 
 @capture("graph")
 def create_line_chart_sales_profit_per_month(data_frame):
+    """Custom line chart made with Plotly."""
     data_frame["Order Date"] = pd.to_datetime(data_frame["Order Date"])
     data_frame["YearMonth"] = data_frame["Order Date"].dt.to_period("M").astype(str)
     monthly = data_frame.groupby("YearMonth", as_index=False).agg({"Sales": "sum", "Profit": "sum"})
@@ -558,6 +572,7 @@ def create_line_chart_sales_profit_per_month(data_frame):
 
 @capture("graph")
 def create_line_chart_per_month(data_frame, value_col="Sales"):
+    """Custom line chart made with Plotly."""
     data_frame["Order Date"] = pd.to_datetime(data_frame["Order Date"])
     data_frame["Year"] = data_frame["Order Date"].dt.year
     data_frame["Month"] = data_frame["Order Date"].dt.month
@@ -604,56 +619,8 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
 
 
 @capture("graph")
-def pareto_customers_chart(data_frame, custom_data, highlight_customer=None):
-    customer_sales = data_frame.groupby("Customer Name")["Sales"].sum().reset_index()
-
-    customer_sales = customer_sales.sort_values(by="Sales", ascending=False)
-
-    customer_sales["Cumulative Sales"] = customer_sales["Sales"].cumsum()
-    customer_sales["Cumulative %"] = 100 * customer_sales["Cumulative Sales"] / customer_sales["Sales"].sum()
-
-    customer_sales["Rank"] = range(1, len(customer_sales) + 1)
-
-    fig = px.bar(
-        customer_sales,
-        x="Rank",
-        y="Cumulative %",
-        hover_data=["Customer Name"],
-        labels={"Sales": "Sales ($)", "Rank": "Customer Rank"},
-        title="Pareto Analysis of Customers",
-        custom_data=custom_data,
-        color="Customer Name",
-        color_discrete_sequence=["#4dabf7"],
-    )
-
-    fig.add_scatter(
-        x=customer_sales["Rank"],
-        y=customer_sales["Cumulative %"],
-        mode="lines+markers",
-        name="Cumulative %",
-        yaxis="y2",
-    )
-
-    fig.update_layout(
-        yaxis=dict(title="Sales ($)"),
-        yaxis2=dict(title="Cumulative %", overlaying="y", side="right", range=[0, 110]),
-        bargap=0.1,
-        showlegend=False,
-    )
-
-    if highlight_customer:
-        for trace in fig.data:
-            if trace.name == highlight_customer:
-                trace.opacity = 1
-                trace.marker.color = "orange"
-            else:
-                trace.opacity = 0.2
-
-    return fig
-
-
-@capture("graph")
 def create_top_10_states(data_frame, value_col="Sales"):
+    """Custom bar chart made with Plotly."""
     state_sales = data_frame.groupby(["State"], as_index=False)["Sales"].sum()
     state_sales["Rank"] = state_sales.groupby("State")["Sales"].rank(method="first", ascending=False)
 
@@ -674,6 +641,7 @@ def create_top_10_states(data_frame, value_col="Sales"):
 
 @capture("graph")
 def pie_chart_by_region(data_frame, value_col="Sales"):
+    """Custom pie chart made with Plotly."""
     fig = px.pie(
         data_frame,
         names="Region",
@@ -689,6 +657,7 @@ def pie_chart_by_region(data_frame, value_col="Sales"):
 
 @capture("graph")
 def bar_chart_by_state(data_frame, value_col="Sales"):
+    """Custom bar chart made with Plotly."""
     if value_col == "Order ID":
         df_grouped = (
             data_frame.groupby("State", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
@@ -782,6 +751,7 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
 
 @capture("graph")
 def pie_chart_by_category(data_frame, value_col="Sales"):
+    """Custom pie chart made with Plotly."""
     if value_col == "Order ID":
         category_metric = (
             data_frame.groupby("Category", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
@@ -909,6 +879,202 @@ def scatter_with_quadrants(
     return fig
 
 
+@capture("graph")
+def scatter_with_quadrants_subc(
+    x: str,
+    y: str,
+    custom_data: list[str],
+    x_ref_quantile: float = 0.5,
+    y_ref_quantile: float = 0.2,
+    data_frame: pd.DataFrame = None,
+    highlight_sub_category=None,
+):
+    """Custom scatter plot with quadrants grouped by Sub-Category."""
+    fig = px.scatter(
+        data_frame=data_frame,
+        x=x,
+        y=y,
+        custom_data=custom_data,
+        color="Sub-Category",
+        color_discrete_sequence=["grey"],
+        size="Profit Absolute",
+        size_max=20,
+        opacity=0.7,
+        hover_data=["Sub-Category", "Profit", "Sales", "Profit Margin"],
+        title="Sub-Categories <br><sup> ⤵ Click on a point to filter the table. Refresh the page to deselect.</sup>",
+    )
+
+    if highlight_sub_category is not None:
+        mask = data_frame["Sub-Category"] == highlight_sub_category
+        if mask.any():
+            profit_values = data_frame.loc[mask, "Profit Absolute"]
+            max_profit = data_frame["Profit Absolute"].max()
+            marker_sizes = (profit_values / max_profit * 40).clip(lower=6)
+
+            fig.add_scatter(
+                x=data_frame.loc[mask, x],
+                y=data_frame.loc[mask, y],
+                mode="markers+text",
+                text=[highlight_sub_category],
+                marker=dict(color="orange", size=marker_sizes, line=dict(width=2, color="black")),
+                hovertext=highlight_sub_category,
+                textposition="bottom center",
+            )
+
+    # Reference lines (based on all data)
+    x_reference_line = data_frame[x].quantile(x_ref_quantile)
+    y_reference_line = data_frame[y].quantile(y_ref_quantile)
+    fig.add_hline(y=y_reference_line, line_dash="dash", line_color="grey")
+    fig.add_vline(x=x_reference_line, line_dash="dash", line_color="grey")
+
+    # Quadrant shading
+    fig.add_shape(
+        type="rect",
+        xref="x",
+        yref="y",
+        x0=x_reference_line,
+        y0=data_frame[y].max() + 700,
+        x1=data_frame[x].max() + 700,
+        y1=y_reference_line,
+        fillcolor="#00b4ff",
+        line_width=0,
+        opacity=0.4,
+        layer="below",
+    )
+    fig.add_shape(
+        type="rect",
+        xref="x",
+        yref="y",
+        x0=data_frame[x].min(),
+        y0=y_reference_line,
+        x1=x_reference_line,
+        y1=data_frame[y].max() + 700,
+        fillcolor="#00b4ff",
+        line_width=0,
+        opacity=0.2,
+        layer="below",
+    )
+    fig.add_shape(
+        type="rect",
+        xref="x",
+        yref="y",
+        x0=data_frame[x].min(),
+        y0=data_frame[y].min() - 700,
+        x1=x_reference_line,
+        y1=y_reference_line,
+        fillcolor="#ff9222",
+        line_width=0,
+        opacity=0.4,
+        layer="below",
+    )
+    fig.add_shape(
+        type="rect",
+        xref="x",
+        yref="y",
+        x0=x_reference_line,
+        y0=data_frame[y].min() - 700,
+        x1=data_frame[x].max() + 700,
+        y1=y_reference_line,
+        fillcolor="#ff9222",
+        line_width=0,
+        opacity=0.2,
+        layer="below",
+    )
+
+    # Hover and legend tweaks
+    fig.update_traces(
+        showlegend=False,
+        hovertemplate="<br>".join(
+            [
+                "%{customdata[0]}",
+                "Sub-Category: %{marker.color}",
+                "Profit: %{y:$,.2f}",
+                "Sales: %{x:$,.2f}",
+            ]
+        )
+        + "<extra></extra>",
+    )
+
+    fig.update_layout(
+        title_pad_t=24,
+        legend_title_text="Sub-Category",  # ✅ clearer legend
+        legend=dict(itemsizing="trace", orientation="h", yanchor="bottom", y=-0.3),
+    )
+
+    return fig
+
+
+@capture("graph")
+def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=None):
+    """Custom chart made with Plotly."""
+    customer_df = (
+        data_frame.groupby("Customer Name", as_index=False)[value_col].sum().sort_values(by=value_col, ascending=False)
+    )
+
+    # 2️⃣ Compute cumulative metrics
+    customer_df["Cumulative Value"] = customer_df[value_col].cumsum()
+    total_value = customer_df[value_col].sum()
+    customer_df["Cumulative % Value"] = 100 * customer_df["Cumulative Value"] / total_value
+
+    customer_df["Customer Rank"] = range(1, len(customer_df) + 1)
+    customer_df["Cumulative % Customers"] = 100 * customer_df["Customer Rank"] / len(customer_df)
+
+    thresholds = {
+        "A": 20,
+        "B": 50,
+        "C": 100,
+    }
+
+    def assign_segment(cust_pct):
+        if cust_pct <= thresholds["A"]:
+            return "A"
+        elif cust_pct <= thresholds["B"]:
+            return "B"
+        else:
+            return "C"
+
+    customer_df["Segment"] = customer_df["Cumulative % Customers"].apply(assign_segment)
+    segment_colors = {"A": "#00b4ff", "B": "#00b4ff", "C": "#00b4ff"}
+
+    fig = px.line(
+        customer_df,
+        x="Cumulative % Customers",
+        y="Cumulative % Value",
+        markers=True,
+        title=f"Pareto Analysis of Customers ({value_col})",
+        hover_data=["Customer Name", value_col, "Cumulative % Value"],
+        color_discrete_sequence=["orange"],
+    )
+    fig.update_traces(showlegend=False)
+    fig.add_vrect(x0=0, x1=thresholds["A"], fillcolor=segment_colors["A"], opacity=0.6, layer="below")
+    fig.add_vrect(x0=thresholds["A"], x1=thresholds["B"], fillcolor=segment_colors["B"], opacity=0.3, layer="below")
+    fig.add_vrect(x0=thresholds["B"], x1=100, fillcolor=segment_colors["C"], opacity=0.1, layer="below")
+
+    if highlight_customer and highlight_customer in customer_df["Customer Name"].values:
+        cust = customer_df[customer_df["Customer Name"] == highlight_customer].iloc[0]
+        fig.add_trace(
+            go.Scatter(
+                x=[cust["Cumulative % Customers"]],
+                y=[cust["Cumulative % Value"]],
+                mode="markers+text",
+                text=[highlight_customer],
+                textposition="bottom right",
+                marker=dict(color="orange", size=12, line=dict(width=2)),
+                showlegend=False,
+            )
+        )
+
+    fig.update_layout(
+        xaxis_title="% of Total Customers",
+        yaxis_title=f"Cumulative % of {value_col}",
+        yaxis=dict(range=[0, 105]),
+        xaxis=dict(range=[0, 105]),
+        hovermode="x unified",
+    )
+
+    return fig
+
+
 CELL_STYLE_PRODUCT = {
     "styleConditions": [
         {
@@ -940,7 +1106,8 @@ CELL_STYLE_PRODUCT = {
 
 
 COLUMN_DEFS_PRODUCT = [
-    {"field": "Product Name", "cellDataType": "text", "headerName": "Product", "flex": 3},
+    # {"field": "Product Name", "cellDataType": "text", "headerName": "Product", "flex": 3},
+    {"field": "Sub-Category", "cellDataType": "text", "headerName": "Sub-Category", "flex": 3},
     {
         "field": "Profit",
         "cellDataType": "number",
@@ -971,6 +1138,7 @@ def treemap_chart(
     color: str = None,
     title: str = None,
 ):
+    """Custom treemap chart made with Plotly."""
     fig = px.treemap(
         data_frame=data_frame,
         path=path,
@@ -986,6 +1154,7 @@ def treemap_chart(
 
 @capture("graph")
 def bar_chart_by_category_h(data_frame, custom_data, value_col="Sales", highlight_category=None):
+    """Custom bar chart made with Plotly."""
     df_sorted = data_frame.sort_values(value_col, ascending=True)
     fig = px.bar(
         df_sorted,
@@ -1069,6 +1238,7 @@ COLUMN_DEFS_CUSTOMERS = [
 
 @capture("graph")
 def bar_chart_top_cities(data_frame, value_col="Sales", top_x=10):
+    """Custom bar chart made with Plotly."""
     if value_col == "Order ID":
         city_metric = (
             data_frame.groupby("City", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
@@ -1124,6 +1294,7 @@ def bar_chart_top_cities(data_frame, value_col="Sales", top_x=10):
 
 @capture("graph")
 def bar_chart_top_subcategories(data_frame, value_col="Sales", top_x=10):
+    """Custom bar chart made with Plotly."""
     if value_col == "Order ID":
         subcat_metric = (
             data_frame.groupby("Sub-Category", as_index=False)["Order ID"]
@@ -1182,6 +1353,7 @@ def bar_chart_top_subcategories(data_frame, value_col="Sales", top_x=10):
 
 @capture("graph")
 def bar_chart_top_customers(data_frame, value_col="Sales", top_x=10):
+    """Custom bar chart made with Plotly."""
     if value_col == "Order ID":
         customer_metric = (
             data_frame.groupby("Customer Name", as_index=False)["Order ID"]
@@ -1238,78 +1410,9 @@ def bar_chart_top_customers(data_frame, value_col="Sales", top_x=10):
     return fig
 
 
-@capture("graph")
-def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=None):
-    customer_df = (
-        data_frame.groupby("Customer Name", as_index=False)[value_col].sum().sort_values(by=value_col, ascending=False)
-    )
-
-    # 2️⃣ Compute cumulative metrics
-    customer_df["Cumulative Value"] = customer_df[value_col].cumsum()
-    total_value = customer_df[value_col].sum()
-    customer_df["Cumulative % Value"] = 100 * customer_df["Cumulative Value"] / total_value
-
-    customer_df["Customer Rank"] = range(1, len(customer_df) + 1)
-    customer_df["Cumulative % Customers"] = 100 * customer_df["Customer Rank"] / len(customer_df)
-
-    thresholds = {
-        "A": 20,
-        "B": 50,
-        "C": 100,
-    }
-
-    def assign_segment(cust_pct):
-        if cust_pct <= thresholds["A"]:
-            return "A"
-        elif cust_pct <= thresholds["B"]:
-            return "B"
-        else:
-            return "C"
-
-    customer_df["Segment"] = customer_df["Cumulative % Customers"].apply(assign_segment)
-    segment_colors = {"A": "#00b4ff", "B": "#00b4ff", "C": "#00b4ff"}
-
-    fig = px.line(
-        customer_df,
-        x="Cumulative % Customers",
-        y="Cumulative % Value",
-        markers=True,
-        title=f"Pareto Analysis of Customers ({value_col})",
-        hover_data=["Customer Name", value_col, "Cumulative % Value"],
-        color_discrete_sequence=["orange"],
-    )
-    fig.update_traces(showlegend=False)
-    fig.add_vrect(x0=0, x1=thresholds["A"], fillcolor=segment_colors["A"], opacity=0.6, layer="below")
-    fig.add_vrect(x0=thresholds["A"], x1=thresholds["B"], fillcolor=segment_colors["B"], opacity=0.3, layer="below")
-    fig.add_vrect(x0=thresholds["B"], x1=100, fillcolor=segment_colors["C"], opacity=0.1, layer="below")
-
-    if highlight_customer and highlight_customer in customer_df["Customer Name"].values:
-        cust = customer_df[customer_df["Customer Name"] == highlight_customer].iloc[0]
-        fig.add_trace(
-            go.Scatter(
-                x=[cust["Cumulative % Customers"]],
-                y=[cust["Cumulative % Value"]],
-                mode="markers+text",
-                text=[highlight_customer],
-                textposition="bottom right",
-                marker=dict(color="orange", size=12, line=dict(width=2)),
-                showlegend=False,
-            )
-        )
-
-    fig.update_layout(
-        xaxis_title="% of Total Customers",
-        yaxis_title=f"Cumulative % of {value_col}",
-        yaxis=dict(range=[0, 105]),
-        xaxis=dict(range=[0, 105]),
-        hovermode="x unified",
-    )
-
-    return fig
-
-
 @capture("ag_grid")
 def custom_orders_aggrid(data_frame):
+    """Custom aggrid table."""
     data_frame["Profit Ratio"] = (data_frame["Profit"] / data_frame["Sales"]).round(3)
     column_defs_orders = [
         {"headerName": "Order ID", "field": "Order ID", "minWidth": 150},
