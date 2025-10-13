@@ -1215,7 +1215,7 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
 
     === "Result"
 
-        TODO NOW: screenshot
+        ![](../../assets/user_guides/graph_table_actions/cross_highlight_self.gif)
 
 When you click on a bar in the chart, that bar is highlighted in orange and the table below is filtered to show only data for the selected country. Clicking the "Reset controls" button resets the parameter and the filter to their original values and hence clears the highlighting and filtering.
 
