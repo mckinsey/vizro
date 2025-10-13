@@ -7,52 +7,61 @@ from vizro.models.types import capture
 from vizro import Vizro
 from vizro.tables import dash_ag_grid
 
-SELECTED_COUNTRIES = ["Singapore", "Malaysia", "Thailand", "Indonesia", "Philippines", "NONE"]
+selected_countries = [
+    "Singapore",
+    "Malaysia",
+    "Thailand",
+    "Indonesia",
+    "Philippines",
+    "Vietnam",
+    "Cambodia",
+    "Myanmar",
+]
 
-gapminder = px.data.gapminder().query("country.isin(@SELECTED_COUNTRIES)")
+gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
 
 
 @capture("graph")
-def highlighted_box(data_frame, highlight_country=None):  # (1)!
-    fig = px.box(data_frame, x="lifeExp", y="country", color="country")
-    fig.update_traces(marker=dict(opacity=0.1, color="#00b4ff"))  # (2)!
+def bar_with_highlight(data_frame, highlight_country=None):
+    country_is_highlighted = data_frame["country"] == highlight_country
+    fig = px.bar(
+        data_frame,
+        x="lifeExp",
+        y="country",
+        labels={"lifeExp": "lifeExp in 2007"},
+        color=country_is_highlighted,
+        category_orders={"country": sorted(data_frame["country"])},
+    )
     fig.update_layout(showlegend=False)
-
-    if highlight_country:
-        for trace in fig.data:
-            if trace.name == highlight_country:
-                trace.marker.opacity = 1.0
-                trace.marker.color = "#ff9222"
-
     return fig
 
 
 page = vm.Page(
-    title="Self-highlighting",
+    title="Self-highlight a graph and cross-filter",
     components=[
         vm.Graph(
-            id="box_chart",  # (4)!
-            figure=highlighted_box(data_frame=gapminder),
-            header="💡 Click on a box to highlight the selected country while filtering the table below",
+            id="bar_chart",
+            figure=bar_with_highlight(gapminder.query("year == 2007")),
+            header="💡 Click on a bar to highlight the selected country and filter the table below",
             actions=[
+                va.set_control(control="highlight_parameter", value="y"),
                 va.set_control(control="country_filter", value="y"),
-                va.set_control(control="highlight_parameter", value="y"),  # (5)!
             ],
         ),
         vm.AgGrid(id="gapminder_table", figure=dash_ag_grid(data_frame=gapminder)),
     ],
     controls=[
-        vm.Filter(id="country_filter", column="country", targets=["gapminder_table"], visible=False),
         vm.Parameter(
-            id="highlight_parameter",  # (6)!
-            targets=["box_chart.highlight_country"],  # (7)!
-            selector=vm.Dropdown(multi=False, options=SELECTED_COUNTRIES, value="NONE"),
-            visible=False,  # (8)!
+            id="highlight_parameter",
+            targets=["bar_chart.highlight_country"],
+            selector=vm.RadioItems(options=["NONE", *gapminder["country"]]),
+            visible=False,
         ),
+        vm.Filter(id="country_filter", column="country", targets=["gapminder_table"], visible=False),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=False)
+    Vizro().build(dashboard).run()
