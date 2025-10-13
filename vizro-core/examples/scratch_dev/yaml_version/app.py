@@ -26,7 +26,6 @@ data_manager["gapminder"] = gapminder
 data_manager["gapminder_2007"] = gapminder.query("year == 2007")
 
 
-
 @capture("graph")
 def bar_with_highlight(data_frame, highlight_country=None):  # (1)!
     country_is_highlighted = data_frame["country"] == highlight_country  # (2)!
