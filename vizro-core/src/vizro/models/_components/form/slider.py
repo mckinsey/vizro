@@ -27,6 +27,9 @@ class Slider(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)
+
     Args:
         type (Literal["range_slider"]): Defaults to `"range_slider"`.
         min (Optional[float]): Start value for slider. Defaults to `None`.
@@ -94,6 +97,7 @@ class Slider(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
+    _inner_component_properties: list[str] = PrivateAttr(dcc.Slider().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

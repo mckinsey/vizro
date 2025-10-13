@@ -11,6 +11,9 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 
 [envs.default]
 dependencies = [
+  # Remove the `click` installation constraint once the
+  # https://github.com/pypa/hatch/issues/2050 is resolved.
+  "click<8.3.0",
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
@@ -103,12 +106,16 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
+  # Remove the `click` installation constraint once the
+  # https://github.com/pypa/hatch/issues/2050 is resolved.
+  "click<8.3.0",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
+  "griffe-warnings-deprecated",
   "mkdocs-llmstxt-md",
-  "mkdocs-llmstxt",
+  "mkdocs-llmstxt>=0.4.0",
   "linkchecker",
   "mkdocs-open-in-new-tab",
   "mkdocs-pycafe",
@@ -127,7 +134,7 @@ link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --
 logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/install.md"
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
-serve = "mkdocs serve --open"
+serve = "mkdocs serve --open {args}"
 
 [envs.examples]
 # TODO: once the visual-vocabulary dashboard has moved out of this repo, this environment should be removed fully and

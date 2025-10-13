@@ -10,6 +10,7 @@ nav:
       - Use any MCP host: pages/guides/set-up-vizro-mcp-basics.md
   - Tutorials:
       - Claude Desktop and Vizro-MCP: pages/tutorials/claude-desktop-tutorial.md
+      - Cursor and Vizro-MCP: pages/tutorials/cursor-tutorial.md
   - How-to guides:
       - Use prompt templates: pages/guides/use-prompt-templates.md
       - Create only charts: pages/guides/create-charts-only.md
@@ -75,7 +76,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.30
+                vizro==0.1.46
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -105,6 +106,8 @@ plugins:
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
+  - glightbox:
+      manual: true
 
 extra_css:
   - stylesheets/extra.css

@@ -6,20 +6,16 @@ To add images, custom CSS or JS files, create a folder named `assets` in the roo
 
 ```text title="Example folder structure"
 ├── app.py
-├── assets
-│   ├── css
-│       ├── **/*.css
-│   ├── images
-│       ├── icons
-│           ├── collections.svg
-│       ├── app.svg
-│       ├── logo.svg
-│   ├── favicon.ico
+└── assets
+    ├── css
+    │   └── **/*.css
+    ├── images
+    │   ├── icons
+    │   │   └── collections.svg
+    │   ├── app.svg
+    │   └── logo.svg
+    └── favicon.ico
 ```
-
-!!! note "Dash Bootstrap Themes"
-
-    Vizro is not compatible with other [Dash Bootstrap themes](https://www.dash-bootstrap-components.com/docs/themes/), as it uses its own Bootstrap theme. If you like, you can [use the Vizro Bootstrap theme in a pure Dash app](themes.md#vizro-bootstrap-in-a-pure-dash-app).
 
 ## Change the favicon
 
@@ -29,7 +25,7 @@ To change the default favicon (website icon appearing in the browser tab), add a
 
 ### Single logo
 
-If an image named `logo.<extension>` is present in the assets folder, Vizro automatically incorporates the logo in the top-left corner of the dashboard.
+If an image named `logo.<extension>` is present in the assets folder, Vizro automatically incorporates the logo in the top-left corner of the dashboard. By default, clicking the logo redirects to the homepage.
 
 **Supported image extensions:** `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp`
 
@@ -68,3 +64,9 @@ CSS properties will be applied with the last served file taking precedence. The 
 1. User assets folder stylesheets
 
 Within each of these categories, individual files are served in alphanumeric order.
+
+## Alternative styling approaches
+
+While the `assets` folder is perfect for adding your own files and [overriding specific styles via custom CSS](custom-css.md), you may also want to completely replace Vizro's default Bootstrap theme with a different one. For comprehensive theme changes, you can use the `external_stylesheets` argument to load third-party Bootstrap themes that will replace Vizro's default styling entirely.
+
+For detailed instructions on how to implement Bootstrap themes, see our guide on [themes](themes.md#custom-bootstrap-themes).

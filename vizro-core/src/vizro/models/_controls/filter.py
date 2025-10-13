@@ -77,6 +77,9 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
 class Filter(VizroBaseModel):
     """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
 
+    Abstract: Usage documentation
+        [How to use filters](../user-guides/filters.md)
+
     Examples:
         >>> print(repr(Filter(column="species")))
 
@@ -88,6 +91,7 @@ class Filter(VizroBaseModel):
         selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
         show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
             Useful for bookmarking or sharing dashboards with specific filter values pre-set.
+        visible (bool): Whether the filter should be visible. Defaults to `True`.
 
     """
 
@@ -106,8 +110,13 @@ class Filter(VizroBaseModel):
             "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
         ),
     )
+    visible: bool = Field(
+        default=True,
+        description="Whether the filter should be visible. Defaults to `True`.",
+    )
 
     _dynamic: bool = PrivateAttr(False)
+    _selector_properties: set[str] = PrivateAttr(set())
     _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
 
     @model_validator(mode="after")
@@ -118,10 +127,39 @@ class Filter(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        # TODO-AV2 E: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.
-        # This will allow direct interaction with a filter's selector via its ID, essential for the upcoming
-        # 'interact' action.
-        return {"__default__": f"{self.id}.children"}
+        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise,
+        # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
+        selector = cast(SelectorType, self.selector)
+        return {
+            "selector": f"{self.id}.children",
+            **selector._action_outputs,
+            **(
+                {selector_prop: f"{selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise,
+        # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
+        selector = cast(SelectorType, self.selector)
+        return selector._action_triggers
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise,
+        # control.selector might not be set. Cast is justified as the selector is set in pre_build and is not None.
+        selector = cast(SelectorType, self.selector)
+        return {
+            **selector._action_inputs,
+            **(
+                {selector_prop: f"{selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
         # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
@@ -249,6 +287,12 @@ class Filter(VizroBaseModel):
                 ),
             ]
 
+        # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
+        # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
+        # Example: "filter-id.options" is forwarded to "checklist.options".
+        if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
+            self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
+
     @_log_call
     def build(self):
         # Cast is justified as the selector is set in pre_build and is not None.
@@ -264,7 +308,7 @@ class Filter(VizroBaseModel):
             selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
-            return html.Div(id=self.id, children=selector_build_obj)
+            return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
         # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
         # Other components, such as the title, remain visible because of the configuration:
@@ -286,6 +330,7 @@ class Filter(VizroBaseModel):
             children=selector_build_obj,
             color="grey",
             overlay_style={"visibility": "visible"},
+            className="d-none" if not self.visible else "",
         )
 
     def _validate_targeted_data(

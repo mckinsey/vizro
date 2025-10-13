@@ -40,7 +40,7 @@ The [`Page`][vizro.models.Page] model accepts the `components` argument, where y
 
     ---
 
-    Navigate to different URLs or attach any [action](actions.md).
+    Navigate to different URLs or trigger an [action](actions.md).
 
     [:octicons-arrow-right-24: View user guide](button.md)
 

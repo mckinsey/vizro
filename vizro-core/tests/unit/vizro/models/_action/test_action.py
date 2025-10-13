@@ -6,7 +6,7 @@ from dash import Output, State, dcc
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
-from vizro.models.types import capture
+from vizro.models.types import _get_action_discriminator, capture
 
 
 @capture("action")
@@ -25,7 +25,7 @@ def action_with_two_args(arg_1, arg_2):
 
 
 @capture("action")
-def action_with_builtin_runtime_arg(arg_1, _controls):
+def action_with_builtin_runtime_args(arg_1, _trigger, _controls):
     pass
 
 
@@ -38,6 +38,7 @@ def action_with_mock_outputs(request):
     return _action_with_mock_outputs
 
 
+@pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")
 class TestLegacyActionInstantiation:
     def test_action_first_in_chain_mandatory_only(self):
         function = action_with_no_args()
@@ -45,8 +46,8 @@ class TestLegacyActionInstantiation:
         # inputs=[] added to force action to be legacy
         action = Action(id="action-id", function=function, inputs=[])
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = True
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -69,8 +70,9 @@ class TestLegacyActionInstantiation:
         # inputs=[] added to force action to be legacy
         action = Action(id="action-id", function=function, inputs=[])
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = False
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = "trigger.property"
+        action._trigger = "trigger_2.property"
 
         assert hasattr(action, "id")
         assert action.function is function
@@ -85,7 +87,22 @@ class TestLegacyActionInstantiation:
         assert action._runtime_args == {}
         assert action._action_name == "action_with_no_args"
 
+    def test_inputs_deprecated(self):
+        with pytest.warns(FutureWarning, match="The `inputs` argument is deprecated"):
+            Action(function=action_with_no_args(), inputs=[])
 
+    def test_action_deprecated_yaml(self):
+        # Test dictionary configuration of an action without discriminator "type" specified. The behavior here should
+        # be equivalent to specifying vm.Action but with an extra warning. Ideally we would test this using the higher
+        # level ActionsType, analogous to test_layout_deprecated_yaml, but that means resolving lots of ForwardRefs here
+        # which is not worth the effort.
+        with pytest.warns(FutureWarning, match="Action without an explicit `type` specified"):
+            action_tag = _get_action_discriminator({"function": {"_target_": "export_data"}})
+
+        assert action_tag == "action"
+
+
+@pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")
 class TestLegacyActionInputs:
     @pytest.mark.parametrize(
         "action_function, runtime_inputs, expected_transformed_inputs",
@@ -163,12 +180,18 @@ class TestLegacyActionInputs:
             "component.property.property",
         ],
     )
+    @pytest.mark.filterwarnings("ignore:Passing a static argument to a custom action is deprecated:FutureWarning")
     def test_static_inputs(self, static_inputs):
         action = Action(function=action_with_one_arg(static_inputs))
 
         assert action._legacy
         assert action.inputs == []
         assert action._transformed_inputs == []
+
+    def test_static_inputs_deprecated(self):
+        action = Action(function=action_with_one_arg(""))
+        with pytest.warns(FutureWarning, match="Passing a static argument to a custom action is deprecated"):
+            action._transformed_inputs
 
     @pytest.mark.parametrize(
         "action_function, static_inputs, runtime_inputs, expected_transformed_inputs",
@@ -189,6 +212,7 @@ class TestLegacyActionInputs:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore:Passing a static argument to a custom action is deprecated:FutureWarning")
     def test_mixed_static_and_runtime_inputs(
         self,
         action_function,
@@ -203,6 +227,7 @@ class TestLegacyActionInputs:
         assert action._transformed_inputs == expected_transformed_inputs
 
 
+@pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")
 class TestLegacyActionOutputs:
     @pytest.mark.parametrize(
         "outputs, expected_outputs, expected_transformed_outputs",
@@ -321,6 +346,7 @@ class TestLegacyActionOutputs:
             action._transformed_outputs
 
 
+@pytest.mark.filterwarnings("ignore:The `inputs` argument is deprecated:FutureWarning")
 class TestIsActionLegacy:
     """Tests action._legacy property."""
 
@@ -343,6 +369,7 @@ class TestIsActionLegacy:
             (action_with_two_args, {"arg_1": "component.property", "arg_2": "component.property"}, [], False),
         ],
     )
+    @pytest.mark.filterwarnings("ignore:Passing a static argument to a custom action is deprecated:FutureWarning")
     def test_mixed_runtime_and_runtime_inputs(
         self,
         runtime_as_kwargs,
@@ -367,12 +394,11 @@ class TestActionInstantiation:
         function = action_with_no_args()
         action = Action(id="action-id", function=function)
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = True
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
 
         assert hasattr(action, "id")
         assert action.function is function
-        assert action.inputs == []
         assert action.outputs == []
 
         assert_component_equal(
@@ -388,12 +414,12 @@ class TestActionInstantiation:
         function = action_with_no_args()
         action = Action(id="action-id", function=function)
 
-        # Private attribute set by parent component's validation, not Action's.
-        action._first_in_chain = False
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = "trigger.property"
+        action._trigger = "trigger_2.property"
 
         assert hasattr(action, "id")
         assert action.function is function
-        assert action.inputs == []
         assert action.outputs == []
 
         assert_component_equal(action._dash_components, [dcc.Store(id="action-id_finished")])
@@ -426,21 +452,22 @@ class TestActionInputs:
                 {"arg_1": State("component", "property"), "arg_2": State("component", "property")},
             ),
             (
-                action_with_builtin_runtime_arg,
+                action_with_builtin_runtime_args,
                 {},
                 {
                     "_controls": {
                         "filters": [State("known_dropdown_filter_id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
-                    }
+                    },
+                    "_trigger": State("trigger", "property"),
                 },
             ),
             (
                 # Case that a builtin runtime argument is overridden by a user supplied one.
-                action_with_builtin_runtime_arg,
+                action_with_builtin_runtime_args,
                 {"_controls": "component.property"},
-                {"_controls": State("component", "property")},
+                {"_controls": State("component", "property"), "_trigger": State("trigger", "property")},
             ),
         ],
     )
@@ -448,6 +475,10 @@ class TestActionInputs:
         self, action_function, inputs, expected_transformed_inputs, manager_for_testing_actions_output_input_prop
     ):
         action = Action(function=action_function(**inputs))
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+
         assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
@@ -466,8 +497,13 @@ class TestActionInputs:
     )
     @pytest.mark.xfail(reason="Validation will only be performed once legacy actions are removed")
     def test_runtime_inputs_invalid(self, input):
+        action = Action(function=action_with_one_arg(input))
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+
         with pytest.raises(ValidationError):
-            Action(function=action_with_one_arg(input))._transformed_inputs
+            action._transformed_inputs
 
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
@@ -476,15 +512,42 @@ class TestActionInputs:
             "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
             action = Action(function=action_with_one_arg("known_model_with_no_default_props"))
+
+            # Mock private attribute set by parent component's validation, not Action's.
+            action._first_in_chain_trigger = action._trigger = "trigger.property"
+
             action._transformed_inputs
 
 
 class TestBuiltinRuntimeArgs:
     """Test the actual values of the runtime args are correct in a real scenario."""
 
+    @pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning")
+    def test_builtin_runtime_arg_controls_legacy(self, page_actions_builtin_controls_legacy):
+        action = Action(function=action_with_builtin_runtime_args())
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+
+        expected_transformed_input = {
+            **page_actions_builtin_controls_legacy,
+            "_trigger": State("trigger", "property"),
+        }
+
+        assert action._transformed_inputs == expected_transformed_input
+
     def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
-        action = Action(function=action_with_builtin_runtime_arg())
-        assert action._transformed_inputs == page_actions_builtin_controls
+        action = Action(function=action_with_builtin_runtime_args())
+
+        # Mock private attribute set by parent component's validation, not Action's.
+        action._first_in_chain_trigger = action._trigger = "trigger.property"
+
+        expected_transformed_input = {
+            **page_actions_builtin_controls,
+            "_trigger": State("trigger", "property"),
+        }
+
+        assert action._transformed_inputs == expected_transformed_input
 
 
 class TestActionOutputs:

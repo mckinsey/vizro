@@ -102,7 +102,7 @@ def _apply_filter_interaction(
 
     Returns: filtered DataFrame.
     """
-    # The filter_interaction model actually contains the id we require in its _parent_model_id field.
+    # The filter_interaction model actually contains the id we require in its _parent_model field.
     # We could use that if we had the action_id available here. Alternatively we could explicitly pass the
     # input_component_id as a state and then use _get_triggered_model to look up the parent model. Both these methods
     # would mean we can remove modelID from the states, but given that filter_interaction will be removed it's not worth
@@ -196,7 +196,7 @@ def _get_parametrized_config(
         for action in selector_actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  Potentially this function would move to the filter_interaction action. That will be removed so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
             #  new interaction functionality anyway.
             if not isinstance(action, _parameter):

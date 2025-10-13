@@ -147,7 +147,50 @@ def managers_one_page_two_graphs_with_dynamic_data(box_chart_dynamic_data_frame,
 
 @pytest.fixture
 def page_actions_builtin_controls(standard_px_chart):
-    """Instantiates managers with one page that contains filter, parameter, and filter_interaction actions."""
+    """Instantiates managers with one page that contains filter and parameter."""
+    vm.Page(
+        title="title",
+        components=[
+            vm.Graph(
+                id="graph_1",
+                figure=standard_px_chart,
+            ),
+            vm.Graph(id="graph_2", figure=standard_px_chart),
+        ],
+        controls=[
+            vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
+            vm.Parameter(
+                id="parameter",
+                targets=["graph_1.x"],
+                selector=vm.Checklist(
+                    id="parameter_selector",
+                    options=["lifeExp", "gdpPercap", "pop"],
+                ),
+            ),
+        ],
+    )
+
+    Vizro._pre_build()
+
+    return {
+        "_controls": {
+            "filters": [
+                State("filter_selector", "value"),
+            ],
+            "parameters": [
+                State("parameter_selector", "value"),
+            ],
+            "filter_interaction": [],
+        }
+    }
+
+
+@pytest.fixture
+def page_actions_builtin_controls_legacy(standard_px_chart):
+    """Instantiates managers with one page that contains filter, parameter, and filter_interaction actions.
+
+    This legacy version includes filter_interaction.
+    """
     vm.Page(
         title="title",
         components=[
@@ -198,6 +241,15 @@ def vizro_app():
     return Vizro()
 
 
+# Custom Card model with empty _action_outputs and no _action_inputs.
+# Used in tests to verify exceptions for missing vs. empty action attributes.
+# Inherits from vm.Card to avoid the `model_rebuild()` issues in the `test_check_captured_callable` test.
+class MockCardWithNoActionProps(vm.Card):
+    @property
+    def _action_outputs(self):
+        return {}
+
+
 @pytest.fixture
 def manager_for_testing_actions_output_input_prop(ag_grid_with_id):
     """Instantiates the model_manager using a Dropdown (has default input and output properties)."""
@@ -207,7 +259,7 @@ def manager_for_testing_actions_output_input_prop(ag_grid_with_id):
         id="test_page",
         title="My first dashboard",
         components=[
-            vm.Button(id="known_model_with_no_default_props"),
+            MockCardWithNoActionProps(id="known_model_with_no_default_props", text="My Card"),
             vm.AgGrid(id="known_ag_grid_id", figure=ag_grid_with_id),
         ],
         controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known_dropdown_filter_id"))],

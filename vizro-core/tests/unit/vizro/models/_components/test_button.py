@@ -22,8 +22,13 @@ class TestButtonInstantiation:
         assert button.href == ""
         assert button.actions == []
         assert button.variant == "filled"
-        assert button._action_outputs == {"text": f"{button.id}.children"}
         assert button.description is None
+        assert button._action_triggers == {"__default__": f"{button.id}.n_clicks"}
+        assert button._action_outputs == {
+            "__default__": f"{button.id}.n_clicks",
+            "text": f"{button.id}.children",
+        }
+        assert button._action_inputs == {"__default__": f"{button.id}.n_clicks"}
 
     @pytest.mark.parametrize(
         "text, href, variant",
@@ -35,7 +40,13 @@ class TestButtonInstantiation:
         ],
     )
     def test_create_button_mandatory_and_optional(self, text, href, variant):
-        button = vm.Button(id="button-id", text=text, href=href, variant=variant, description="This is description")
+        button = vm.Button(
+            id="button-id",
+            text=text,
+            href=href,
+            variant=variant,
+            description=vm.Tooltip(id="tooltip_id", text="Test Tooltip", icon="info"),
+        )
 
         assert button.id == "button-id"
         assert button.type == "button"
@@ -45,13 +56,17 @@ class TestButtonInstantiation:
         assert button.actions == []
         assert button.variant == variant
         assert isinstance(button.description, vm.Tooltip)
+
+        assert button._action_triggers == {"__default__": "button-id.n_clicks"}
         assert button._action_outputs == {
-            "text": f"{button.id}.children",
-            "description": f"{button.description.id}-text.children",
+            "__default__": "button-id.n_clicks",
+            "text": "button-id.children",
+            "description": "tooltip_id-text.children",
         }
+        assert button._action_inputs == {"__default__": "button-id.n_clicks"}
 
     def test_button_trigger(self):
-        button = vm.Button(id="button-id", actions=[vm.Action(function=export_data())])
+        button = vm.Button(id="button-id", actions=[export_data()])
         [action] = button.actions
         assert action._trigger == "button-id.n_clicks"
 

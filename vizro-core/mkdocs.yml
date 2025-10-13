@@ -1,10 +1,12 @@
 site_name: Vizro
 site_url: https://vizro.readthedocs.io/en/stable/
 nav:
+  # Make sure any new page added here is also added to the llmstxt plugin below (around line 156)
   - Vizro: index.md
   - Tutorials:
       - Quickstart tutorial: pages/tutorials/quickstart-tutorial.md
       - Explore Vizro: pages/tutorials/explore-components.md
+      - Write your own actions: pages/tutorials/custom-actions-tutorial.md
   - How-to guides:
       - Fundamentals:
           - Install Vizro: pages/user-guides/install.md
@@ -27,39 +29,45 @@ nav:
           - Parameter: pages/user-guides/parameters.md
           - Selector: pages/user-guides/selectors.md
       - Navigation: pages/user-guides/navigation.md
+      - Actions:
+          - Overview: pages/user-guides/actions.md
+          - Handle data: pages/user-guides/data-actions.md
+          - Graph and table interactions: pages/user-guides/graph-table-actions.md
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
           - Layout: pages/user-guides/layouts.md
           - Theme: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
           - Custom CSS: pages/user-guides/custom-css.md
-      - Actions: pages/user-guides/actions.md
       - Data:
           - Overview: pages/user-guides/data.md
           - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - Extensions:
           - Overview: pages/user-guides/extensions.md
+          - Custom actions: pages/user-guides/custom-actions.md
           - Custom charts: pages/user-guides/custom-charts.md
           - Custom tables: pages/user-guides/custom-tables.md
-          - Custom components: pages/user-guides/custom-components.md
-          - Custom actions: pages/user-guides/custom-actions.md
           - Custom figures: pages/user-guides/custom-figures.md
+          - Custom components: pages/user-guides/custom-components.md
   - API reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
-      - Action functions: pages/API-reference/action-callables.md
+      - Actions: pages/API-reference/actions.md
       - Table functions: pages/API-reference/table-callables.md
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md
       - Deprecations: pages/API-reference/deprecations.md
   - Find out more:
-      - FAQs: pages/explanation/faq.md
-      - Examples gallery: https://vizro.mckinsey.com/
-      - User examples: pages/explanation/your-examples.md
-      - Contribute to Vizro: pages/explanation/contributing.md
-      - Documentation style: pages/explanation/documentation-style-guide.md
-      - Vizro schema: pages/explanation/schema.md
-      - Authors: pages/explanation/authors.md
+      - Technical:
+          - Vizro schema: pages/explanation/schema.md
+          - Actions: pages/explanation/actions-explanation.md
+      - About Vizro:
+          - FAQs: pages/explanation/faq.md
+          - User examples: pages/explanation/your-examples.md
+          - Cheatsheet: pages/cheatsheet/cheatsheet.html
+          - Contribute to Vizro: pages/explanation/contributing.md
+          - Documentation style: pages/explanation/documentation-style-guide.md
+          - Authors: pages/explanation/authors.md
   - Vizro-MCP:
       - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
 
@@ -117,7 +125,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.44
+                vizro==0.1.46
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -144,7 +152,7 @@ plugins:
         Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
-      full_output: llms-full.txt
+      base_url: https://vizro.readthedocs.io/en/0.1.46/
       sections:
         "TUTORIALS":
           - pages/tutorials/quickstart-tutorial.md: "A quickstart dashboard tutorial"
@@ -179,6 +187,8 @@ plugins:
           - pages/user-guides/custom-css.md: "Custom CSS"
         "ACTIONS":
           - pages/user-guides/actions.md: "Actions"
+          - pages/user-guides/data-actions.md: "Handle data"
+          - pages/user-guides/graph-table-actions.md: "Graph and table interactions"
         "MANAGE DATA USED BY THE DASHBOARD":
           - pages/user-guides/data.md: "Data"
           - pages/user-guides/kedro-data-catalog.md: "Kedro Data Catalog"
@@ -215,6 +225,9 @@ plugins:
               - docs/griffe_extensions.py:
                   paths:
                     [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
+              - griffe_warnings_deprecated:
+                  kind: danger
+                  title: Deprecated
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false

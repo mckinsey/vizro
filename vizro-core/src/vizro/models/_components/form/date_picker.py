@@ -23,6 +23,9 @@ class DatePicker(VizroBaseModel):
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
+
     Args:
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
@@ -87,6 +90,7 @@ class DatePicker(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
+    _inner_component_properties: list[str] = PrivateAttr(dmc.DatePickerInput().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

@@ -39,6 +39,7 @@ class TestTableInstantiation:
         assert table.header == ""
         assert table.footer == ""
         assert hasattr(table, "_inner_component_id")
+        assert table._action_triggers == {"__default__": f"{table._inner_component_id}.active_cell"}
         assert table._action_outputs == {
             "__default__": f"{table.id}.children",
             "figure": f"{table.id}.children",
@@ -49,7 +50,7 @@ class TestTableInstantiation:
             id="table-id",
             figure=dash_data_table_with_id,
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             header="Header",
             footer="Footer",
         )
@@ -63,13 +64,14 @@ class TestTableInstantiation:
         assert table.footer == "Footer"
         assert isinstance(table.description, vm.Tooltip)
         assert table._inner_component_id == "underlying_table_id"
+        assert table._action_triggers == {"__default__": "underlying_table_id.active_cell"}
         assert table._action_outputs == {
-            "__default__": f"{table.id}.children",
-            "figure": f"{table.id}.children",
-            "title": f"{table.id}_title.children",
-            "header": f"{table.id}_header.children",
-            "footer": f"{table.id}_footer.children",
-            "description": f"{table.description.id}-text.children",
+            "__default__": "table-id.children",
+            "figure": "table-id.children",
+            "title": "table-id_title.children",
+            "header": "table-id_header.children",
+            "footer": "table-id_footer.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
@@ -161,7 +163,7 @@ class TestPreBuildTable:
 
         assert table._inner_component_id == "__input_text_table"
 
-    def test_pre_build_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
+    def test_pre_build_underlying_table_id(self, dash_data_table_with_id):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
 

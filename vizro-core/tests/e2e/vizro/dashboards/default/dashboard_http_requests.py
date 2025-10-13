@@ -177,7 +177,7 @@ page_dynamic_parametrisation = vm.Page(
         vm.AgGrid(
             id=f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_grid",
             figure=dash_ag_grid(data_frame="dynamic_df_gapminder_arg"),
-            actions=[vm.Action(function=filter_interaction(targets=[f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_graph"]))],
+            actions=[filter_interaction(targets=[f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_graph"])],
         ),
         vm.Graph(
             id=f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_graph",

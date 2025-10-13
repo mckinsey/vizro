@@ -22,6 +22,9 @@ class RadioItems(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use categorical selectors](../user-guides/selectors.md/#categorical-selectors)
+
     Args:
         type (Literal["radio_items"]): Defaults to `"radio_items"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
@@ -72,6 +75,7 @@ class RadioItems(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
+    _inner_component_properties: list[str] = PrivateAttr(dbc.RadioItems().available_properties)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)

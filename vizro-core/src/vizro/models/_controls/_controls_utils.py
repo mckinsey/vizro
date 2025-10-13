@@ -33,6 +33,7 @@ def _get_control_parent(control: ControlType) -> Optional[VizroBaseModel]:
 
     # Otherwise, return the Container that contains the control.
     page_containers = model_manager._get_models(model_type=Container, root_model=page)
+
     return next(container for container in page_containers if control in container.controls)
 
 

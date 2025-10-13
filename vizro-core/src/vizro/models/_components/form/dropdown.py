@@ -15,7 +15,13 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, MultiValueType, OptionsType, SingleValueType, _IdProperty
+from vizro.models.types import (
+    ActionsType,
+    MultiValueType,
+    OptionsType,
+    SingleValueType,
+    _IdProperty,
+)
 
 
 def validate_multi(multi, info: ValidationInfo):
@@ -50,6 +56,9 @@ class Dropdown(VizroBaseModel):
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
+
+    Abstract: Usage documentation
+        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
 
     Args:
         type (Literal["dropdown"]): Defaults to `"dropdown"`.
@@ -112,6 +121,7 @@ class Dropdown(VizroBaseModel):
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
+    _inner_component_properties: list[str] = PrivateAttr(dcc.Dropdown().available_properties)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)

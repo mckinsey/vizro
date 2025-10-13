@@ -18,12 +18,14 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
-        run: pip install hatch
+        # Remove the `click` installation constraint once the
+        # https://github.com/pypa/hatch/issues/2050 is resolved.
+        run: pip install hatch "click<8.3.0"
 
       - name: Check PyCafe docs links in vizro-core
         working-directory: ./vizro-core
@@ -43,6 +45,5 @@ jobs:
             {
               "text": "PyCafe docs links checker build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          webhook: ${{ env.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook

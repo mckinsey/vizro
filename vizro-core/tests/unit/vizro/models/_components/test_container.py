@@ -25,29 +25,30 @@ class TestContainerInstantiation:
     @pytest.mark.parametrize("variant", ["plain", "filled", "outlined"])
     def test_create_container_mandatory_and_optional(self, variant):
         container = vm.Container(
-            id="my-id",
+            id="container-id",
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             components=[vm.Button(), vm.Button()],
             layout=vm.Grid(grid=[[0, 1]]),
             variant=variant,
             collapsed=True,
             controls=[vm.Filter(column="test")],
         )
-        assert container.id == "my-id"
+        assert container.id == "container-id"
         assert isinstance(container.components[0], vm.Button) and isinstance(container.components[1], vm.Button)
         assert container.layout.grid == [[0, 1]]
         assert container.title == "Title"
         assert container.variant == variant
         assert container.collapsed is True
         assert isinstance(container.controls[0], vm.Filter)
+        assert isinstance(container.description, vm.Tooltip)
         assert container._action_outputs == {
-            "title": f"{container.id}_title.children",
-            "description": f"{container.description.id}-text.children",
+            "title": "container-id_title.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_create_container_mandatory_and_optional_legacy_layout(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             container = vm.Container(
                 id="my-id",
                 title="Title",
@@ -153,7 +154,7 @@ class TestContainerBuildMethod:
         )
 
     def test_container_build_legacy_layout(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             result = vm.Container(
                 id="container", title="Title", components=[vm.Button()], layout=vm.Layout(id="layout_id", grid=[[0]])
             ).build()
@@ -272,13 +273,16 @@ class TestContainerBuildMethod:
             ),
         )
 
-    def test_container_build_with_controls(self):
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_container_build_with_controls(self, visible):
         result = vm.Container(
             id="container",
             components=[vm.Button()],
             controls=[
                 vm.Filter(
-                    column="species", selector=vm.RadioItems(id="radio-items-id", options=["A", "B", "C"], value="A")
+                    column="species",
+                    selector=vm.RadioItems(id="radio-items-id", options=["A", "B", "C"], value="A"),
+                    visible=visible,
                 )
             ],
         ).build()
@@ -287,10 +291,7 @@ class TestContainerBuildMethod:
         )
         assert_component_equal(
             result["container-control-panel"],
-            html.Div(
-                id="container-control-panel",
-                className="container-controls-panel",
-            ),
+            html.Div(id="container-control-panel", className="container-controls-panel", hidden=not visible),
             keys_to_strip={"children"},
         )
         assert_component_equal(result["radio-items-id"], dbc.RadioItems(), keys_to_strip=STRIP_ALL)

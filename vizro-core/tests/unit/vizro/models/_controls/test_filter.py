@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from typing import Literal
 
+import dash_bootstrap_components as dbc
 import pandas as pd
 import pytest
 from asserts import assert_component_equal
@@ -464,23 +465,35 @@ class TestFilterInstantiation:
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == []
-        assert filter.selector is None
-        assert filter._action_outputs == {"__default__": f"{filter.id}.children"}
 
     def test_create_filter_mandatory_and_optional(self):
         filter = Filter(
             id="filter_id",
             column="foo",
             targets=["scatter_chart", "bar_chart"],
-            selector=vm.RadioItems(),
+            selector=vm.RadioItems(
+                id="selector_id",
+                title="Test Title",
+                description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
+            ),
             show_in_url=True,
         )
+
         assert filter.id == "filter_id"
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == ["scatter_chart", "bar_chart"]
         assert isinstance(filter.selector, vm.RadioItems)
         assert filter.show_in_url is True
+        assert isinstance(filter.selector.description, vm.Tooltip)
+        assert filter._action_triggers == {"__default__": "selector_id.value"}
+        assert filter._action_outputs == {
+            "__default__": "selector_id.value",
+            "selector": "filter_id.children",
+            "title": "selector_id_title.children",
+            "description": "tooltip-id-text.children",
+        }
+        assert filter._action_inputs == {"__default__": "selector_id.value"}
 
     def test_missing_id_for_url_control_warning_raised(self):
         with pytest.warns(
@@ -981,6 +994,35 @@ class TestFilterPreBuildMethod:
 
         assert filter.selector.actions == [custom_action]
 
+    def test_filter_action_properties(self, managers_column_only_exists_in_some):
+        filter = Filter(
+            id="filter_id",
+            column="column_categorical",
+            selector=vm.RadioItems(
+                id="selector_id",
+                title="Test Title",
+                description=vm.Tooltip(id="selector_tooltip_id", text="Test", icon="info"),
+            ),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        radio_items_properties = dbc.RadioItems().available_properties
+        filter_selector_properties = set(radio_items_properties) - set(html.Div().available_properties)
+
+        assert filter._action_triggers == {"__default__": "selector_id.value"}
+        assert filter._action_outputs == {
+            "__default__": "selector_id.value",
+            "selector": "filter_id.children",
+            "title": "selector_id_title.children",
+            "description": "selector_tooltip_id-text.children",
+            **{prop: f"selector_id.{prop}" for prop in filter_selector_properties},
+        }
+        assert filter._action_inputs == {
+            "__default__": "selector_id.value",
+            **{prop: f"selector_id.{prop}" for prop in filter_selector_properties},
+        }
+
 
 class TestFilterBuild:
     """Tests filter build method."""
@@ -1007,9 +1049,21 @@ class TestFilterBuild:
 
         filter.pre_build()
         result = filter.build()
-        expected = html.Div(id="filter-id", children=html.Div(children=[test_selector.build()]))
+        expected = html.Div(id="filter-id", children=html.Div(children=[test_selector.build()]), hidden=False)
 
         assert_component_equal(result, expected)
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_filter_build_visible(self, visible):
+        filter = vm.Filter(id="filter-id", column="continent", selector=vm.Checklist(), visible=visible)
+        model_manager["test_page"].controls = [filter]
+
+        filter.pre_build()
+        result = filter.build()
+        expected = html.Div(id="filter-id", children=html.Div(children=[vm.Checklist().build()]), hidden=not visible)
+
+        assert_component_equal(result, expected, keys_to_strip={"children"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
@@ -1038,9 +1092,29 @@ class TestFilterBuild:
             children=html.Div(children=[test_selector.build()]),
             color="grey",
             overlay_style={"visibility": "visible"},
+            className="",
         )
 
-        assert_component_equal(result, expected, keys_to_strip={"className"})
+        assert_component_equal(result, expected, keys_to_strip={"children"})
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_dynamic_filter_build_visible(self, gapminder_dynamic_first_n_last_n_function, visible):
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+        filter = vm.Filter(id="filter_id", column="continent", selector=vm.Checklist(), visible=visible)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        result = filter.build()
+        expected = dcc.Loading(
+            id="filter_id",
+            children=html.Div(children=[vm.Checklist().build()]),
+            color="grey",
+            overlay_style={"visibility": "visible"},
+            className="d-none" if not visible else "",
+        )
+
+        assert_component_equal(result, expected, keys_to_strip={"children"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize(
@@ -1067,8 +1141,9 @@ class TestFilterBuild:
         expected = html.Div(
             id="filter-id",
             children=html.Div(
-                children=[test_selector.build(), dcc.Store(id=f"{filter.selector.id}_guard_actions_chain", data=False)]
+                children=[test_selector.build(), dcc.Store(id=f"{filter.selector.id}_guard_actions_chain", data=False)],
             ),
+            hidden=False,
         )
 
         assert_component_equal(result, expected)

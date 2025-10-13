@@ -115,8 +115,8 @@ class TestMakeActionsChain:
         # Assign actions to a Vizro model so that make_actions_chain can be tested
         MockModelWithActions(id="model-id", actions=[action_1, action_2])
 
-        assert action_1._first_in_chain is True
-        assert action_2._first_in_chain is False
+        assert action_1._first_in_chain_trigger == "model-id.default_property"
+        assert action_2._first_in_chain_trigger == "model-id.default_property"
 
         assert action_1._trigger == "model-id.default_property"
         assert action_2._trigger == "action-1-id_finished.data"
@@ -124,5 +124,5 @@ class TestMakeActionsChain:
         assert action_1._prevent_initial_call_of_guard is True
         assert action_2._prevent_initial_call_of_guard is True
 
-        assert action_1._parent_model_id == "model-id"
-        assert action_2._parent_model_id == "model-id"
+        assert action_1._parent_model.id == "model-id"
+        assert action_2._parent_model.id == "model-id"

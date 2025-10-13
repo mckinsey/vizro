@@ -1,12 +1,15 @@
 # How to make dashboard pages
 
-This guide shows you how to add pages to your dashboard and customize the URL paths if needed. A [`Page`][vizro.models.Page] lets you place and arrange your dashboard content (for example, chart/components, tables, and text) and configure your dashboard interactions (such as filters and parameters).
+This guide shows you how to add pages to your dashboard and customize the URL paths if needed. A [`Page`][vizro.models.Page] model enables you to:
 
-The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, where you can insert your [`Page`][vizro.models.Page].
+- place and arrange your dashboard content (for example, chart/components, tables, and text), and
+- configure your dashboard interactions (such as filters and parameters).
+
+The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, where you can insert your [`Page`][vizro.models.Page] model.
 
 ## Create a page
 
-A [`Page`][vizro.models.Page] is split up into four main containers:
+A [`Page`][vizro.models.Page] splits into four main containers:
 
 1. The **navigation container** where you can customize your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information). Note that the navigation container needs to be configured via the Dashboard.
 1. The **control container** where you can add your `controls` (see [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
@@ -17,7 +20,7 @@ A [`Page`][vizro.models.Page] is split up into four main containers:
 
 To create and add a page to your dashboard, do the following steps:
 
-1. Set a `title` for your [`Page`][vizro.models.Page] (does not have to be unique)
+1. Set a `title` for your [`Page`][vizro.models.Page] model (which does not have to be unique)
 1. Configure your `components`, see our guide on the [various options](components.md)
 1. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
 1. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
@@ -102,7 +105,7 @@ You cannot have duplicate `path` values, whether explicitly set or generated.
 
 The first page always has the URL prefix `/` assigned. A custom URL can, therefore, not be created for the first page.
 
-To customize the page URL, pass a valid URL name to the `path` argument of [`Page`][vizro.models.Page]:
+To customize the page URL, pass a valid URL name to the `path` argument of [`Page`][vizro.models.Page] model:
 
 !!! example "Page"
 

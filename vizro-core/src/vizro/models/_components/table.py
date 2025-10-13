@@ -26,6 +26,9 @@ logger = logging.getLogger(__name__)
 class Table(VizroBaseModel):
     """Wrapper for `dash_table.DataTable` to visualize tables in dashboard.
 
+    Abstract: Usage documentation
+        [How to use tables](../user-guides/table.md)
+
     Args:
         type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
@@ -147,7 +150,7 @@ class Table(VizroBaseModel):
         for action in source_table_actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  Potentially this function would move to the filter_interaction action. That will be removed so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
             #  new interaction functionality anyway.
             if not isinstance(action, filter_interaction) or target not in action.targets:

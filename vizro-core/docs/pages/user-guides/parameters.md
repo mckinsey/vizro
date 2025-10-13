@@ -1,8 +1,17 @@
 # How to use parameters
 
-This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function (`figure` argument) that creates the chart/component. Parameters can also be used to [change the data loaded into the dashboard itself](data.md/#parametrize-data-loading).
+This guide shows you how to add parameters to your dashboard. A parameter sets any argument other than `data_frame` in the `figure` function of a component. For example, a user could select using a dropdown which variable is plotted on the x-axis of a graph. Parameters can also be used to set [dynamic data parameters](parameters.md#dynamic-data-parameters). The following [components](components.md) are reactive to parameters:
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. For example, if the charting function has a `title` argument, you could configure a parameter that enables the user to select the chart title with a dropdown.
+- [built-in graphs](graph.md) and [custom graphs](custom-charts.md)
+- [built-in tables](table.md) and [custom tables](custom-tables.md)
+- [built-in figures](figure.md) and [custom figures](custom-figures.md)
+
+It is possible to add parameters to a [page](pages.md) or [container](container.md#add-controls-to-container). Both the [`Page` model][vizro.models.Page] and the [`Container` model][vizro.models.Container] have an optional `controls` argument where you can give any number of controls including parameters.
+
+When the dashboard is running there are two ways for a user to set a parameter:
+
+- Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
+- [User interaction with a graph or table](graph-table-actions.md#cross-parameter) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-highlighting](graph-table-actions.md#cross-highlight). To achieve a visually cleaner dashboard you might like to hide the parameter's underlying selector with `visible=False`.
 
 ## Basic parameters
 
@@ -189,86 +198,12 @@ Note that in the above example, one parameter affects multiple targets.
 
 If you use [dynamic data](data.md/#dynamic-data) that can be updated while the dashboard is running then you can pass parameters to the dynamic data function to alter the data loaded into your dashboard. For detailed instructions, refer to the section on [parametrized data loading](data.md/#parametrize-data-loading).
 
-## Show in URL
+## Further customization
 
-The `Parameter` model accepts an optional argument `show_in_url`. When `show_in_url=True`, the parameter’s value is synchronized with the page URL as a query parameter, allowing the current control's state to be captured in the link. This makes it easy to share or bookmark specific `Page` parameter settings.
+For further customizations, refer to the [guide to selectors](selectors.md) and the [`Parameter` model][vizro.models.Parameter]. Some popular choices are:
 
-The URL query parameter uses the control’s id as its key and the selected value, encoded in base64, as the URL query parameter value.
-
-!!! warning
-
-    - [PyCafe](https://vizro.readthedocs.io/en/stable/pages/user-guides/run-deploy/#develop-in-pycafe) incompatibility: Vizro does not currently support external URL query parameters and they could be stripped or lost using the app. As a result, dashboards using this feature should not be embedded or deployed in PyCafe environments.
-
-    - Page-specific only: Only parameters on the currently opened page are reflected in the URL. It is not yet possible to share or bookmark the global state of a multi-page dashboard.
-
-!!! example "Parameter in URL"
-
-    === "app.py"
-
-        ```{.python hl_lines="22-23"}
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
-
-        iris = px.data.iris()
-
-        page = vm.Page(
-            title="My first page",
-            components=[
-                vm.Graph(
-                    id="scatter_chart",
-                    figure=px.scatter(iris, title="My scatter chart", x="sepal_length", y="petal_width", color="species"),
-                ),
-            ],
-            controls=[
-                vm.Parameter(
-                    targets=["scatter_chart.title"],
-                    selector=vm.Dropdown(
-                        options=["My scatter chart", "A better title!", "Another title..."],
-                        multi=False,
-                    ),
-                    id="parameter-id",
-                    show_in_url=True,
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml {hl_lines="20-21"}
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - figure:
-                  _target_: scatter
-                  data_frame: iris
-                  x: sepal_length
-                  y: petal_width
-                  color: species
-                id: scatter_chart
-                type: graph
-            controls:
-              - selector:
-                  options: [My scatter chart, A better title!, Another title...]
-                  multi: false
-                  type: dropdown
-                targets:
-                  - scatter_chart.title
-                id: parameter-id
-                show_in_url: true
-                type: parameter
-            title: My first page
-        ```
-
-    === "Result"
-
-        [![parameterInUrl]][parameterinurl]
+- Customize the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical parameter or `min` and `max` for a numerical parameter.
+- Make the parameter's selector invisible by setting `visible=False`.
 
 [nested]: ../../assets/user_guides/control/control5.png
 [parameter]: ../../assets/user_guides/control/control4.png
-[parameterinurl]: ../../assets/user_guides/control/parameter_in_url.png

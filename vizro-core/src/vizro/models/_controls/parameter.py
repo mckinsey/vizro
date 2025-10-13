@@ -2,7 +2,7 @@ from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, model_validator
+from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
@@ -11,7 +11,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ModelID, SelectorType
+from vizro.models.types import ModelID, SelectorType, _IdProperty
 
 
 def check_dot_notation(target):
@@ -51,6 +51,9 @@ def check_duplicate_parameter_target(targets):
 class Parameter(VizroBaseModel):
     """Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].
 
+    Abstract: Usage documentation
+        [How to use parameters](../user-guides/parameters.md)
+
     Examples:
         >>> Parameter(targets=["scatter.x"], selector=Slider(min=0, max=1, default=0.8, title="Bubble opacity"))
 
@@ -61,6 +64,7 @@ class Parameter(VizroBaseModel):
             `"NONE"` into `None` to allow optional parameters.
         show_in_url (bool): Whether the parameter should be included in the URL query string. Defaults to `False`.
             Useful for bookmarking or sharing dashboards with specific parameter values pre-set.
+        visible (bool): Whether the parameter should be visible. Defaults to `True`.
 
     """
 
@@ -84,12 +88,45 @@ class Parameter(VizroBaseModel):
             "Useful for bookmarking or sharing dashboards with specific parameter values pre-set."
         ),
     )
+    visible: bool = Field(
+        default=True,
+        description="Whether the parameter should be visible. Defaults to `True`.",
+    )
+
+    _selector_properties: set[str] = PrivateAttr(set())
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
         # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "selector": f"{self.id}.children",
+            **self.selector._action_outputs,
+            **(
+                {selector_prop: f"{self.selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return self.selector._action_triggers
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {
+            **self.selector._action_inputs,
+            **(
+                {selector_prop: f"{self.selector.id}.{selector_prop}" for selector_prop in self._selector_properties}
+                if self._selector_properties
+                else {}
+            ),
+        }
 
     @_log_call
     def pre_build(self):
@@ -98,6 +135,13 @@ class Parameter(VizroBaseModel):
         self._check_categorical_selectors_options()
         self._set_selector_title()
         self._set_actions()
+
+        # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
+        # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
+        # Example: "parameter-id.options" is forwarded to "checklist.options".
+        # Note: Added in pre_build for consistency with Filter, but could move to the initialization phase.
+        if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
+            self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
     @_log_call
     def build(self):
@@ -110,7 +154,7 @@ class Parameter(VizroBaseModel):
             # callback update it to True when needed. It'll happen when the parameter value comes from the URL.
             selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
 
-        return html.Div(id=self.id, children=selector_build_obj)
+        return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
     def _check_numerical_and_temporal_selectors_values(self):
         if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):

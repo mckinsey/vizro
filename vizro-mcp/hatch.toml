@@ -11,6 +11,9 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 
 [envs.default]
 dependencies = [
+  # Remove the `click` installation constraint once the
+  # https://github.com/pypa/hatch/issues/2050 is resolved.
+  "click<8.3.0",
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
@@ -40,12 +43,16 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
+  # Remove the `click` installation constraint once the
+  # https://github.com/pypa/hatch/issues/2050 is resolved.
+  "click<8.3.0",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "mkdocs-glightbox"
 ]
 detached = true
 installer = "uv"
