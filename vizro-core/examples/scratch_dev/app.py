@@ -7,11 +7,11 @@ import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
 import vizro.actions as va
-from vizro.figures import kpi_card
+from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
-from data import superstore_df, create_superstore_product, pareto_customers_table
+from data import superstore_df, create_superstore_product, pareto_customers_table, create_kpi_data
 from charts import (
     bar_chart_by_subcategory,
     bar_chart_by_category,
@@ -44,6 +44,11 @@ customer_name = superstore_df["Customer Name"].unique().tolist()
 customer_name.append("NONE")
 product_name = superstore_df["Product Name"].unique().tolist()
 product_name.append("NONE")
+
+sales_kpi_df = create_kpi_data(superstore_df, value_col="Sales")
+profit_kpi_df = create_kpi_data(superstore_df, value_col="Profit")
+order_kpi_df = create_kpi_data(superstore_df, value_col="Order ID")
+customer_kpi_df = create_kpi_data(superstore_df, value_col="Customer ID")
 
 
 def _encode_to_base64(value):
@@ -81,41 +86,45 @@ page_1 = vm.Page(
             title="💡 Click on a card to navigate to detailed view.",
             components=[
                 vm.Figure(
-                    figure=kpi_card(
-                        data_frame=superstore_df,
-                        value_column="Sales",
+                    figure=kpi_card_reference(
+                        data_frame=sales_kpi_df,
+                        value_column="total_2017",
+                        reference_column="total_2016",
                         title="Sales",
                         value_format="${value:0.2f}",
                         icon="bar_chart",
                     )
                 ),
                 vm.Figure(
-                    figure=kpi_card(
-                        data_frame=superstore_df,
-                        value_column="Profit",
+                    figure=kpi_card_reference(
+                        data_frame=profit_kpi_df,
+                        value_column="total_2017",
+                        reference_column="total_2016",
                         title="Profit",
                         value_format="${value:0.2f}",
                         icon="money_bag",
                     )
                 ),
                 vm.Figure(
-                    figure=kpi_card(
-                        data_frame=superstore_df,
-                        value_column="Order ID",
+                    figure=kpi_card_reference(
+                        data_frame=order_kpi_df,
+                        value_column="total_2017",
+                        reference_column="total_2016",
                         title="Orders",
                         value_format="{value:,}",
                         icon="numbers",
-                        agg_func="nunique",
+                        # agg_func="nunique",
                     )
                 ),
                 vm.Figure(
-                    figure=kpi_card(
-                        data_frame=superstore_df,
-                        value_column="Customer ID",
+                    figure=kpi_card_reference(
+                        data_frame=customer_kpi_df,
+                        value_column="total_2017",
+                        reference_column="total_2016",
                         title="Customers",
                         value_format="{value:,}",
                         icon="numbers",
-                        agg_func="nunique",
+                        # agg_func="nunique",
                     )
                 ),
             ],
@@ -227,10 +236,13 @@ page_1 = vm.Page(
         grid=[
             [0, 0, 0],
             [0, 0, 0],
+            [0, 0, 0],
             [1, 1, 2],
             [1, 1, 2],
             [1, 1, 2],
             [1, 1, 2],
+            [1, 1, 2],
+            [3, 4, 5],
             [3, 4, 5],
             [3, 4, 5],
             [3, 4, 5],

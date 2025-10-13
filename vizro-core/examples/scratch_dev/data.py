@@ -91,7 +91,6 @@ def create_superstore_product(data_frame):
     return data_frame
 
 
-
 def pareto_customers_table(data_frame):
     df = data_frame.groupby("Customer Name")["Sales"].sum().reset_index().sort_values(by="Sales", ascending=False)
 
@@ -100,3 +99,17 @@ def pareto_customers_table(data_frame):
     df["Rank"] = range(1, len(df) + 1)
 
     return df[["Rank", "Customer Name", "Sales", "Cumulative Sales", "Cumulative %"]]
+
+
+def create_kpi_data(df, value_col="Sales"):
+    df["Year"] = df["Order Date"].dt.year
+    # sales_by_year = df.groupby('Year')[value_col].sum()
+
+    if value_col in ["Order ID", "Customer ID"]:
+        result_by_year = df.groupby("Year")[value_col].nunique()
+    else:
+        result_by_year = df.groupby("Year")[value_col].sum()
+
+    new_df = pd.DataFrame({"total_2016": [result_by_year.get(2016, 0)], "total_2017": [result_by_year.get(2017, 0)]})
+
+    return new_df
