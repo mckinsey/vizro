@@ -7,7 +7,6 @@ import yaml
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models import Dashboard
-from vizro.models.types import capture
 
 selected_countries = [
     "Singapore",
