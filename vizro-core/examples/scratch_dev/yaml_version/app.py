@@ -7,23 +7,8 @@ import yaml
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models import Dashboard
-from vizro.models.types import capture
 
-selected_countries = [
-    "Singapore",
-    "Malaysia",
-    "Thailand",
-    "Indonesia",
-    "Philippines",
-    "Vietnam",
-    "Cambodia",
-    "Myanmar",
-]
-
-gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
-
-data_manager["gapminder"] = gapminder
-data_manager["gapminder_2007"] = gapminder.query("year == 2007")
+data_manager["gapminder"] = px.data.gapminder()
 data_manager["tips"] = px.data.tips()
 data_manager["iris"] = px.data.iris()
 
