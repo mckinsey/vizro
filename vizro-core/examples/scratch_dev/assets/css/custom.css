@@ -12,15 +12,6 @@
   display: none;
 }
 
-
-#region-nav-btn,
-#segment-nav-btn,
-#customer-nav-btn,
-#orders-nav-btn {
-  height: 22px;
-}
-
-
 #pg2-filter-1,
 #pg2-filter-3 {
   display: none;

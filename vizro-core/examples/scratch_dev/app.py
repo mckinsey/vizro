@@ -154,7 +154,7 @@ page_1 = vm.Page(
                 vm.Graph(id="order_status_chart", figure=pie_chart_by_order_status(superstore_df, value_col="Sales")),
                 vm.Button(
                     id="orders-nav-btn",
-                    text="Navigate to orders view",
+                    text="View Deep Dive",
                     icon="jump_to_element",
                     variant="outlined",
                     actions=vm.Action(function=nav_orders(), outputs=["vizro_url.pathname"]),
@@ -168,7 +168,7 @@ page_1 = vm.Page(
                 vm.Graph(id="region_bar_chart", figure=create_bar_chart_by_region(superstore_df, value_col="Sales")),
                 vm.Button(
                     id="region-nav-btn",
-                    text="Navigate to regional view",
+                    text="View Deep Dive",
                     icon="jump_to_element",
                     variant="outlined",
                     actions=vm.Action(
@@ -187,7 +187,7 @@ page_1 = vm.Page(
                 ),
                 vm.Button(
                     id="segment-nav-btn",
-                    text="Navigate to customer view",
+                    text="View Deep Dive",
                     icon="jump_to_element",
                     variant="outlined",
                     actions=vm.Action(function=nav_customer(), outputs=["vizro_url.pathname"]),
@@ -206,7 +206,7 @@ page_1 = vm.Page(
                 ),
                 vm.Button(
                     id="customer-nav-btn",
-                    text="Navigate to product view",
+                    text="View Deep Dive",
                     icon="jump_to_element",
                     variant="outlined",
                     actions=vm.Action(function=nav_product(), outputs=["vizro_url.pathname"]),
