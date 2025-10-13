@@ -23,9 +23,7 @@ from charts import (
     pareto_customers_chart,
     scatter_with_quadrants_subc,
     pie_chart_by_order_status,
-    bar_chart_top_cities,
-    bar_chart_top_subcategories,
-    bar_chart_top_customers,
+    bar_chart_top_n,
     custom_orders_aggrid,
 )
 from charts import COLUMN_DEFS_PRODUCT, COLUMN_DEFS_CUSTOMERS
@@ -260,88 +258,67 @@ page_2 = vm.Page(
     title="Regional view",
     components=[
         vm.Container(
-            title="",
-            components=[
-                vm.Graph(
-                    id="region_map_chart",
-                    title="State level data",
-                    header="💡 Click on a state to filter charts on the right.",
-                    figure=create_map_bubble_new(superstore_df, value_col="Sales", custom_data=["State_Code"]),
-                    actions=[
-                        va.set_control(control="pg2-filter-1", value="State_Code"),
+            controls=[
+                vm.Filter(
+                    id="pg2-filter-1",
+                    column="State_Code",
+                    selector=vm.Dropdown(),
+                    visible=False,
+                ),
+                vm.Parameter(
+                    id="pg2-parameter-2",
+                    selector=vm.RadioItems(
+                        options=["Sales", "Profit"],
+                        title="Choose metric",
+                    ),
+                    targets=[
+                        "region_map_chart.value_col",
+                        "pg2-chart-1.x",
                     ],
                 ),
             ],
-        ),
-        vm.Container(
+            layout=vm.Grid(grid=[[0, 1]]),
             components=[
-                vm.Graph(
-                    id="pg2-chart-1",
-                    figure=bar_chart_top_cities(superstore_df, value_col="Sales"),
+                vm.Container(
+                    variant="filled",
+                    title="",
+                    components=[
+                        vm.Graph(
+                            id="region_map_chart",
+                            header="💡 Click on a state to filter charts on the right.",
+                            figure=create_map_bubble_new(superstore_df, value_col="Sales", custom_data=["State_Code"]),
+                            actions=[
+                                va.set_control(control="pg2-filter-1", value="State_Code"),
+                            ],
+                        ),
+                    ],
                 ),
-                vm.Graph(
-                    id="pg2-chart-2",
-                    figure=bar_chart_top_subcategories(
-                        superstore_df,
-                        value_col="Sales",
-                    ),
+                vm.Container(
+                    controls=[
+                        vm.Parameter(
+                            targets=["pg2-chart-1.top_n"],
+                            selector=vm.Slider(min=5, max=30, step=5, value=5, title="Choose top N"),
+                        ),
+                        vm.Parameter(
+                            selector=vm.RadioItems(
+                                options=["City", "Customer Name"],
+                                title="Choose y-axis",
+                            ),
+                            targets=["pg2-chart-1.y"],
+                        ),
+                    ],
+                    components=[
+                        vm.Graph(
+                            id="pg2-chart-1",
+                            figure=bar_chart_top_n(superstore_df, x="Sales", y="City"),
+                        ),
+                    ],
+                    variant="filled",
                 ),
-                vm.Graph(id="pg2-chart-3", figure=bar_chart_top_customers(superstore_df, value_col="Sales")),
-            ],
-            variant="filled",
-            layout=vm.Grid(grid=[[0], [1], [2]]),
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            id="pg2-filter-1",
-            column="State_Code",
-            selector=vm.Dropdown(),
-            visible=False,
-        ),
-        vm.Filter(
-            id="pg2-filter-2",
-            column="Segment",
-            selector=vm.Dropdown(),
-        ),
-        vm.Parameter(
-            id="pg2-parameter-1",
-            targets=["pg2-chart-1.top_x", "pg2-chart-2.top_x", "pg2-chart-3.top_x"],
-            selector=vm.RadioItems(options=[5, 7, 10], title="Top records"),
-        ),
-        vm.Parameter(
-            id="pg2-parameter-2",
-            selector=vm.RadioItems(
-                options=[
-                    {"value": "Sales", "label": "Sales"},
-                    {"value": "Profit", "label": "Profit"},
-                    {"value": "Order ID", "label": "Orders"},
-                    {"value": "Customer ID", "label": "Customers"},
-                ],
-                title="Metric",
-            ),
-            targets=[
-                "region_map_chart.value_col",
-                "pg2-chart-1.value_col",
-                "pg2-chart-2.value_col",
-                "pg2-chart-3.value_col",
-            ],
-            show_in_url=True,
-        ),
-        vm.Button(
-            text="",
-            icon="Reset Settings",
-            description="Reset actions",
-            variant="outlined",
-            actions=[
-                vm.Action(
-                    function=capture("action")(lambda: [*state_list])(),
-                    outputs=["pg2-filter-1"],
-                )
             ],
         ),
     ],
-    layout=vm.Grid(grid=[[0, 0, 0, 1, 1]]),
+    #  layout=vm.Grid(grid=[[0, 0, 0, 1, 1]]),
 )
 
 page_3 = vm.Page(

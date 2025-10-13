@@ -220,7 +220,7 @@ def bar_chart_by_customer(data_frame, value_col="Sales"):
         y="Rank",
         orientation="h",
         color="Customer Name",
-        color_discrete_sequence=["#4dabf7"] + ["#ff9222"] * 9,
+        color_discrete_sequence=[PRIMARY_COLOR],
         text="Value_Label",
     )
 
@@ -457,7 +457,7 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
         xaxis_title=None,
         yaxis_title=None,
         bargap=0.4,
-        title=f"{agg_col} | By Segment",
+        title=f"{agg_col} | By Customer Segment",
         legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
     )
 
@@ -516,7 +516,7 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
         xaxis_title=None,
         yaxis_title=None,
         bargap=0.4,
-        title=f"{agg_col} | By Category",
+        title=f"{agg_col} | By Product Category",
         legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
     )
 
@@ -640,6 +640,7 @@ def create_top_10_states(data_frame, value_col="Sales"):
         x=value_col,
         y="State",
         orientation="h",
+        color_discrete_sequence=[PRIMARY_COLOR],
         title=f"Top 10 States by {value_col}",
     )
 
@@ -689,6 +690,7 @@ def bar_chart_by_state(data_frame, value_col="Sales"):
         y="Rank",
         orientation="h",
         text="Value_Label",
+        color_discrete_sequence=[PRIMARY_COLOR],
     )
 
     fig.update_layout(
@@ -1246,116 +1248,22 @@ COLUMN_DEFS_CUSTOMERS = [
 
 
 @capture("graph")
-def bar_chart_top_cities(data_frame, value_col="Sales", top_x=10):
-    """Custom bar chart made with Plotly."""
-    if value_col == "Order ID":
-        city_metric = (
-            data_frame.groupby("City", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
-        )
-        agg_col = "Orders"
-    elif value_col == "Customer ID":
-        city_metric = (
-            data_frame.groupby("City", as_index=False)["Customer ID"]
-            .nunique()
-            .rename(columns={"Customer ID": "Customers"})
-        )
-        agg_col = "Customers"
-    else:
-        city_metric = data_frame.groupby("City", as_index=False)[value_col].sum()
-        agg_col = value_col
+def bar_chart_top_n(data_frame, x="Sales", y="City", top_n=10):
+    """Generic bar chart to show top N by any dimension."""
+    df_top = data_frame.groupby(y).agg({x: "sum"}).sort_values(x, ascending=False).head(top_n).reset_index()
+    
+    # Sort ascending so highest appears at top in horizontal bar chart
+    df_top = df_top.sort_values(x, ascending=True)
 
-    df_top10 = city_metric.nlargest(top_x, agg_col).reset_index(drop=True)
-
-    df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
-    if agg_col in ["Sales", "Profit"]:
-        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
-    else:
-        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"{x:,}")
-
+    # Create bar chart
     fig = px.bar(
-        df_top10,
-        x=agg_col,
-        y="Rank",
+        df_top,
+        x=x,
+        y=y,
         orientation="h",
-        color="City",
-        text="Label",
-        color_discrete_sequence=["#4dabf7"],
-        title=f"Top {top_x} Cities by {agg_col}",
+        color_discrete_sequence=[PRIMARY_COLOR],
+        title=f"Top {top_n} {y} by {x}",
     )
-
-    fig.update_layout(
-        showlegend=False,
-        xaxis_title=None,
-        yaxis_title=None,
-        yaxis=dict(
-            tickmode="array",
-            tickvals=df_top10["Rank"],
-            ticktext=[f"{c}" for c in df_top10["City"]],
-            autorange="reversed",
-            tickfont=dict(size=13),
-        ),
-    )
-    fig.update_yaxes(ticklabelposition="outside left")
-    fig.update_traces(textposition="outside")
-
-    return fig
-
-
-@capture("graph")
-def bar_chart_top_subcategories(data_frame, value_col="Sales", top_x=10):
-    """Custom bar chart made with Plotly."""
-    if value_col == "Order ID":
-        subcat_metric = (
-            data_frame.groupby("Sub-Category", as_index=False)["Order ID"]
-            .nunique()
-            .rename(columns={"Order ID": "Orders"})
-        )
-        agg_col = "Orders"
-    elif value_col == "Customer ID":
-        subcat_metric = (
-            data_frame.groupby("Sub-Category", as_index=False)["Customer ID"]
-            .nunique()
-            .rename(columns={"Customer ID": "Customers"})
-        )
-        agg_col = "Customers"
-    else:
-        subcat_metric = data_frame.groupby("Sub-Category", as_index=False)[value_col].sum()
-        agg_col = value_col
-
-    df_top10 = subcat_metric.nlargest(top_x, agg_col).reset_index(drop=True)
-
-    df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
-    if agg_col in ["Sales", "Profit"]:
-        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
-    else:
-        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"{x:,}")
-
-    fig = px.bar(
-        df_top10,
-        x=agg_col,
-        y="Rank",
-        orientation="h",
-        color="Sub-Category",
-        text="Label",
-        color_discrete_sequence=["#4dabf7"],
-        title=f"Top {top_x} Sub-Categories by {agg_col}",
-    )
-
-    fig.update_layout(
-        showlegend=False,
-        xaxis_title=None,
-        yaxis_title=None,
-        yaxis=dict(
-            tickmode="array",
-            tickvals=df_top10["Rank"],
-            ticktext=[f"{c}" for c in df_top10["Sub-Category"]],
-            autorange="reversed",
-            tickfont=dict(size=13),
-        ),
-    )
-
-    fig.update_yaxes(ticklabelposition="outside left")
-    fig.update_traces(textposition="outside")
 
     return fig
 
