@@ -1,210 +1,61 @@
 """Dev app to try things out."""
 
-import pandas as pd
-import vizro.models as vm
 import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.managers import data_manager
+import vizro.models as vm
+import vizro.actions as va
 from vizro.models.types import capture
+from vizro import Vizro
+from vizro.tables import dash_ag_grid
+
+gapminder = px.data.gapminder().query("continent == 'Europe' and year == 2007")
 
 
-df = px.data.iris()
-df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
-df["is_setosa"] = df["species"] == "setosa"
+@capture("graph")
+def scatter_with_highlight(data_frame, highlight_country=None):
+    country_is_highlighted = data_frame["country"] == highlight_country
+    fig = px.scatter(
+        data_frame,
+        x="gdpPercap",
+        y="lifeExp",
+        size="pop",
+        size_max=60,
+        opacity=0.3,
+        color=country_is_highlighted,
+        category_orders={"color": [False, True]},
+    )
 
-data_manager["dynamic_df"] = lambda: df
+    if highlight_country is not None:
+        fig.update_traces(selector=1, marker={"line_width": 2, "opacity": 1})
 
-
-@capture("action")
-def set_all_page_controls():
-    return [
-        "setosa",
-        "setosa",
-        ["setosa"],
-        ["setosa"],
-        5.1,
-        [5.1, 5.3],
-        "2024-01-01",
-        ["2024-01-01", "2024-01-10"],
-        True,
-        "petal_length",
-    ] * 2
+    fig.update_layout(showlegend=False)
+    return fig
 
 
-def _make_all_selectors(prefix_id: str, visible=True, show_in_url=False):
-    return [
-        vm.Filter(
-            id=f"{prefix_id}_filter_1",
-            column="species",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.RadioItems(id=f"{prefix_id}_filter_1_selector"),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Filter(
-            id=f"{prefix_id}_filter_2",
-            column="species",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.Dropdown(id=f"{prefix_id}_filter_2_selector", multi=False),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Filter(
-            id=f"{prefix_id}_filter_3",
-            column="species",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.Checklist(id=f"{prefix_id}_filter_3_selector"),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Filter(
-            id=f"{prefix_id}_filter_4",
-            column="species",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.Dropdown(id=f"{prefix_id}_filter_4_selector"),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Filter(
-            id=f"{prefix_id}_filter_5",
-            column="sepal_length",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.Slider(id=f"{prefix_id}_filter_5_selector"),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Filter(
-            id=f"{prefix_id}_filter_6",
-            column="sepal_length",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.RangeSlider(id=f"{prefix_id}_filter_6_selector"),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Filter(
-            id=f"{prefix_id}_filter_7",
-            column="date_column",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.DatePicker(id=f"{prefix_id}_filter_7_selector", range=False),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Filter(
-            id=f"{prefix_id}_filter_8",
-            column="date_column",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.DatePicker(id=f"{prefix_id}_filter_8_selector"),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Filter(
-            id=f"{prefix_id}_filter_9",
-            column="is_setosa",
-            targets=[f"{prefix_id}_graph"],
-            selector=vm.Switch(id=f"{prefix_id}_filter_9_selector"),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-        vm.Parameter(
-            id=f"{prefix_id}_filter_10",
-            targets=[f"{prefix_id}_graph.x"],
-            selector=vm.RadioItems(
-                id=f"{prefix_id}_filter_10_selector",
-                title="I'M A PARAMETER",
-                options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
-            ),
-            visible=visible,
-            show_in_url=show_in_url,
-        ),
-    ]
-
-
-def _make_page_components(page_id: str, visible=True, show_in_url=False):
-    return [
-        vm.Button(
-            text="Set controls",
-            actions=vm.Action(
-                function=set_all_page_controls(),
-                outputs=[
-                    *[f"{page_id}_static_filter_{i}" for i in range(1, 11)],
-                    *[f"{page_id}_dynamic_filter_{i}" for i in range(1, 11)],
-                ],
-            ),
-        ),
-        vm.Graph(
-            id=f"{page_id}_static_graph",
-            title="Static Graph",
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
-        ),
-        vm.Container(
-            title="Dynamic selectors",
-            components=[
-                vm.Graph(
-                    id=f"{page_id}_dynamic_graph",
-                    title="Dynamic Graph",
-                    figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species"),
-                ),
-            ],
-            controls=_make_all_selectors(prefix_id=f"{page_id}_dynamic", visible=visible, show_in_url=show_in_url),
-        ),
-    ]
-
-
-# ========== Page with all controls shown ==========
-
-page_show_controls = vm.Page(
-    id="page_1",
-    title="All selectors page",
-    layout=vm.Grid(grid=[[0], [1], [1], [1], [1], [2], [2], [2], [2], [2], [2]]),
-    components=_make_page_components(page_id="p1"),
-    controls=_make_all_selectors(prefix_id="p1_static"),
-)
-
-
-# ========== Page with no controls ==========
-
-page_no_controls = vm.Page(
-    id="page_2",
-    title="No controls",
+page = vm.Page(
+    title="Cross-highlight from table",
+    layout=vm.Grid(grid=[[0, 1]], col_gap="80px"),
     components=[
-        vm.Graph(id="p2_static_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+        vm.AgGrid(
+            header="💡 Click on a row to highlight that country in the scatter plot",
+            figure=dash_ag_grid(data_frame=gapminder),
+            actions=va.set_control(control="highlight_parameter", value="country"),
+        ),
         vm.Graph(
-            id="p2_dynamic_graph", figure=px.scatter("dynamic_df", x="sepal_width", y="sepal_length", color="species")
+            id="scatter_chart",
+            figure=scatter_with_highlight(gapminder),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            id="highlight_parameter",
+            targets=["scatter_chart.highlight_country"],
+            selector=vm.RadioItems(options=["NONE", *gapminder["country"]]),
+            visible=False,
         ),
     ],
 )
 
-
-# ========== Page with all controls hidden ==========
-
-page_hidden_controls = vm.Page(
-    id="page_3",
-    title="All hidden selectors page",
-    layout=vm.Grid(grid=[[0], [1], [1], [1], [1], [2], [2], [2], [2], [2], [2]]),
-    components=_make_page_components(page_id="p3", visible=False),
-    controls=_make_all_selectors(prefix_id="p3_static", visible=False),
-)
-
-
-# ========== Page with all controls in URL ==========
-
-page_url_controls = vm.Page(
-    id="page_4",
-    title="All selectors in URL page",
-    layout=vm.Grid(grid=[[0], [1], [1], [1], [1], [2], [2], [2], [2], [2], [2]]),
-    components=_make_page_components(page_id="p4", show_in_url=True),
-    controls=_make_all_selectors(prefix_id="p4_static", show_in_url=True),
-)
-
-
-# ========== Dashboard ==========
-
-dashboard = vm.Dashboard(
-    # Uncomment the dashboard title below to check whether it works.
-    # title="Dashboard title",
-    pages=[page_show_controls, page_no_controls, page_hidden_controls, page_url_controls],
-    # navigation=vm.Navigation(nav_selector=vm.NavBar()),
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=False)
