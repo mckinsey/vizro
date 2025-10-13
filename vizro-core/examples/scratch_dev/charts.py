@@ -1232,12 +1232,6 @@ COLUMN_DEFS_CUSTOMERS = [
         "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"},
     },
     {
-        "field": "Cumulative Sales",
-        "cellDataType": "number",
-        "flex": 3,
-        "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"},
-    },
-    {
         "headerName": "Cumulative %",
         "field": "Cumulative %",
         "type": "numericColumn",
@@ -1250,8 +1244,10 @@ COLUMN_DEFS_CUSTOMERS = [
 @capture("graph")
 def bar_chart_top_n(data_frame, x="Sales", y="City", top_n=10):
     """Generic bar chart to show top N by any dimension."""
+    # TODO: Needs to be fixed when prefiltered on city. Otherwise, top N is not properly recalculated
+    # after clicking on a state.
     df_top = data_frame.groupby(y).agg({x: "sum"}).sort_values(x, ascending=False).head(top_n).reset_index()
-    
+
     # Sort ascending so highest appears at top in horizontal bar chart
     df_top = df_top.sort_values(x, ascending=True)
 

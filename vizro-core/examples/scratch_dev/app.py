@@ -265,6 +265,14 @@ page_2 = vm.Page(
                     selector=vm.Dropdown(),
                     visible=False,
                 ),
+                vm.Filter(
+                    column="Segment",
+                    selector=vm.Checklist(title="Choose segment"),
+                ),
+                vm.Filter(
+                    column="Category",
+                    selector=vm.Checklist(title="Choose category"),
+                ),
                 vm.Parameter(
                     id="pg2-parameter-2",
                     selector=vm.RadioItems(
@@ -297,11 +305,11 @@ page_2 = vm.Page(
                     controls=[
                         vm.Parameter(
                             targets=["pg2-chart-1.top_n"],
-                            selector=vm.Slider(min=5, max=30, step=5, value=5, title="Choose top N"),
+                            selector=vm.Slider(min=5, max=30, step=5, value=20, title="Choose top N"),
                         ),
                         vm.Parameter(
                             selector=vm.RadioItems(
-                                options=["City", "Customer Name"],
+                                options=["City", "Customer Name", "Sub-Category"],
                                 title="Choose y-axis",
                             ),
                             targets=["pg2-chart-1.y"],
@@ -318,27 +326,33 @@ page_2 = vm.Page(
             ],
         ),
     ],
-    #  layout=vm.Grid(grid=[[0, 0, 0, 1, 1]]),
 )
 
 page_3 = vm.Page(
     title="Customer view",
     components=[
-        vm.AgGrid(
-            id="table-2",
-            header="💡 Click on a row to highlight the customer.",
-            figure=dash_ag_grid(
-                aggrid_df,
-                columnDefs=COLUMN_DEFS_CUSTOMERS,
-            ),
-            actions=va.set_control(control="pg3_parameter_1", value="Customer Name"),
+        vm.Container(
+            layout=vm.Grid(grid=[[0, 1]]),
+            controls=[
+                vm.Filter(column="Region"),
+                vm.Filter(column="Segment"),
+                vm.Filter(column="Category"),
+            ],
+            components=[
+                vm.AgGrid(
+                    id="table-2",
+                    header="💡 Click on a row to highlight the customer.",
+                    figure=dash_ag_grid(
+                        aggrid_df,
+                        columnDefs=COLUMN_DEFS_CUSTOMERS,
+                    ),
+                    actions=va.set_control(control="pg3_parameter_1", value="Customer Name"),
+                ),
+                vm.Graph(id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df, highlight_customer=None)),
+            ],
         ),
-        vm.Graph(id="pg3_pareto_chart", figure=pareto_customers_chart(superstore_df, highlight_customer=None)),
     ],
     controls=[
-        vm.Filter(id="pg3_filter_1", column="Segment", selector=vm.Checklist(title="Customer Segment")),
-        vm.Filter(id="pg3_filter_2", column="Category"),
-        vm.Filter(id="pg3_filter_3", column="Sub-Category"),
         vm.Parameter(
             id="pg3_parameter_1",
             targets=["pg3_pareto_chart.highlight_customer"],
@@ -346,7 +360,6 @@ page_3 = vm.Page(
             visible=False,
         ),
     ],
-    layout=vm.Grid(grid=[[0, 0, 1, 1]]),
 )
 
 
@@ -366,26 +379,7 @@ page_4 = vm.Page(
                                 va.set_control(control="pg4-filter-1", value="Category"),
                             ],
                         ),
-                        vm.Button(
-                            text="",
-                            icon="Reset Settings",
-                            description="Reset actions",
-                            variant="outlined",
-                            actions=[
-                                vm.Action(
-                                    function=capture("action")(
-                                        lambda: ["Furniture", "Technology", "Office Supplies"]
-                                    )(),
-                                    outputs=["pg4-filter-1"],
-                                )
-                            ],
-                        ),
                     ],
-                    layout=vm.Grid(
-                        grid=[
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                        ]
-                    ),
                     variant="filled",
                 ),
                 vm.Container(

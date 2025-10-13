@@ -36,3 +36,16 @@
 #header {
   padding-left: 4px;
 }
+
+
+.form-label {
+  font-weight: 600;
+}
+
+.container-controls-panel .dropdown {
+  width: 360px;
+}
+
+.container-controls-panel {
+  padding-bottom: 1rem;
+}
