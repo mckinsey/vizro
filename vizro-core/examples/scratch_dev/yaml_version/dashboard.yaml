@@ -1,47 +1,39 @@
-# Still requires a .py to add data to the data manager and parse YAML configuration
-# See yaml_version example
 pages:
   - components:
-      - type: graph
-        id: bar_chart
-        figure:
-          _target_: __main__.bar_with_highlight
-          data_frame: gapminder_2007
-        header: 💡 Click on a bar to highlight the selected country and filter the table below
-        actions:
-          - type: set_control
-            control: highlight_parameter
+      - actions:
+          - control: day_filter
+            type: set_control
+            value: x
+          - control: sex_filter
+            type: set_control
             value: y
-          - type: set_control
-            control: country_filter
-            value: y
-      - type: ag_grid
-        id: gapminder_table
         figure:
+          _target_: density_heatmap
+          category_orders:
+            day:
+              - Thur
+              - Fri
+              - Sat
+              - Sun
+          data_frame: tips
+          x: day
+          y: sex
+        title: Click on a cell to use that cell's sex and day to filter table
+        type: graph
+      - figure:
           _target_: dash_ag_grid
-          data_frame: gapminder
+          data_frame: tips
+        id: tips_table
+        type: ag_grid
     controls:
-      - id: highlight_parameter
-        selector:
-          options:
-            - NONE
-            - Cambodia
-            - Indonesia
-            - Malaysia
-            - Myanmar
-            - Philippines
-            - Singapore
-            - Thailand
-            - Vietnam
-          type: radio_items
+      - column: day
+        id: day_filter
         targets:
-          - bar_chart.highlight_country
-        type: parameter
-        visible: false
-      - column: country
-        id: country_filter
-        targets:
-          - gapminder_table
+          - tips_table
         type: filter
-        visible: false
-    title: Self-highlight a graph and cross-filter
+      - column: sex
+        id: sex_filter
+        targets:
+          - tips_table
+        type: filter
+    title: Cross-filter over 2 dimensions
