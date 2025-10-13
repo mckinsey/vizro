@@ -590,11 +590,7 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
     curr_year = monthly[monthly["Year"] == 2017]
 
     fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(
-            x=curr_year["Month"], y=curr_year[agg_col], fill="tonexty", name="Current Year", marker_color=PRIMARY_COLOR
-        )
-    )
+    # Add Previous Year first so it renders at the bottom
     fig.add_trace(
         go.Scatter(
             x=prev_year["Month"],
@@ -602,6 +598,16 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
             fill="tozeroy",
             name="Previous Year",
             marker_color=SECONDARY_COLOR,
+        )
+    )
+    # Add Current Year second so it renders on top
+    fig.add_trace(
+        go.Scatter(
+            x=curr_year["Month"],
+            y=curr_year[agg_col],
+            name="Current Year",
+            marker_color=PRIMARY_COLOR,
+            fill="tozeroy",
         )
     )
 
