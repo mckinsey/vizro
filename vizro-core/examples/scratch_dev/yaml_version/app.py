@@ -26,17 +26,19 @@ data_manager["gapminder"] = gapminder
 data_manager["gapminder_2007"] = gapminder.query("year == 2007")
 
 
+
 @capture("graph")
-def bump_chart_with_highlight(data_frame, highlight_country=None):  
-    rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
-
-    fig = px.line(data_frame, x="year", y=rank, color="country", markers=True)  
-    fig.update_yaxes(title="Rank (1 = Highest lifeExp)", autorange="reversed", dtick=1)  
-    fig.update_traces(opacity=0.3, line_width=2)  
-
-    if highlight_country is not None:  
-        fig.update_traces(selector={"name": highlight_country}, opacity=1, line_width=3)  
-
+def bar_with_highlight(data_frame, highlight_country=None):  # (1)!
+    country_is_highlighted = data_frame["country"] == highlight_country  # (2)!
+    fig = px.bar(
+        data_frame,
+        x="lifeExp",
+        y="country",
+        labels={"lifeExp": "lifeExp in 2007"},
+        color=country_is_highlighted,
+        category_orders={"country": sorted(data_frame["country"])},  # (3)!
+    )
+    fig.update_layout(showlegend=False)
     return fig
 
 

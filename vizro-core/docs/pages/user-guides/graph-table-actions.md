@@ -1169,27 +1169,27 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
         pages:
           - components:
             - type: graph
-                id: bar_chart
-                figure:
+              id: bar_chart
+              figure:
                 _target_: __main__.bar_with_highlight
                 data_frame: gapminder_2007
-                header: 💡 Click on a bar to highlight the selected country and filter the table below
-                actions:
+              header: 💡 Click on a bar to highlight the selected country and filter the table below
+              actions:
                 - type: set_control
-                    control: highlight_parameter
-                    value: y
+                  control: highlight_parameter
+                  value: y
                 - type: set_control
-                    control: country_filter
-                    value: y
+                  control: country_filter
+                  value: y
             - type: ag_grid
-                id: gapminder_table
-                figure:
+              id: gapminder_table
+              figure:
                 _target_: dash_ag_grid
                 data_frame: gapminder
             controls:
-                - id: highlight_parameter
+              - id: highlight_parameter
                 selector:
-                    options:
+                  options:
                     - NONE
                     - Cambodia
                     - Indonesia
@@ -1199,12 +1199,12 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
                     - Singapore
                     - Thailand
                     - Vietnam
-                    type: radio_items
+                  type: radio_items
                 targets:
                     - bar_chart.highlight_country
                 type: parameter
                 visible: false
-                - column: country
+              - column: country
                 id: country_filter
                 targets:
                     - gapminder_table
