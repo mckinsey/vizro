@@ -1,14 +1,14 @@
-from typing import Annotated, Literal
+from typing import Any, Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, field_validator
+from pydantic import AfterValidator, Field, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
-from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, _IdProperty, validate_captured_callable
+from vizro.models._models_utils import _log_call, make_actions_chain
+from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, validate_captured_callable
 
 
 class Figure(VizroBaseModel):
@@ -32,8 +32,17 @@ class Figure(VizroBaseModel):
             description="Function that returns a figure-like object.",
         ),
     ]
+    actions: ActionsType = []
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.n_clicks"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -41,6 +50,11 @@ class Figure(VizroBaseModel):
             "__default__": f"{self.id}.children",
             "figure": f"{self.id}.children",
         }
+
+    @staticmethod
+    def _get_value_from_trigger(value: Any, *args) -> Any:
+        """Set value is propagated to targeted control."""
+        return value
 
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
