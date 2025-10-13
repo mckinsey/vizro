@@ -30,7 +30,7 @@ class TestNavigationInstantiation:
 
     @pytest.mark.parametrize("pages", [{"Group": []}, []])
     def test_invalid_field_pages_no_ids_provided(self, pages):
-        with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
+        with pytest.raises(ValidationError, match=r"Ensure this value has at least 1 item."):
             vm.Navigation(pages=pages)
 
     def test_invalid_field_pages_wrong_input_type(self):
