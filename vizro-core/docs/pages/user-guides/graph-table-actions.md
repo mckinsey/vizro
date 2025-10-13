@@ -1017,45 +1017,44 @@ The full code is given below. This includes the complete code for a bump chart w
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-        - components:
-        - actions:
-            - control: highlight_parameter
-            type: set_control
-            value: y
-            figure:
-            _target_: bar
-            data_frame: gapminder_2007
-            labels:
-                lifeExp: lifeExp in 2007
-            x: lifeExp
-            y: country
-            header: 💡 Click any bar to highlight that country in the bump chart
-            type: graph
-        - figure:
-            _target_: __main__.bump_chart_with_highlight
-            data_frame: gapminder
-            id: bump_chart
-            type: graph
-        controls:
-        - id: highlight_parameter
-            selector:
-            options:
-            - NONE
-            - Cambodia
-            - Indonesia
-            - Malaysia
-            - Myanmar
-            - Philippines
-            - Singapore
-            - Thailand
-            - Vietnam
-            type: radio_items
-            targets:
-            - bump_chart.highlight_country
-            type: parameter
-            visible: false
-        title: Cross-highlight from graph
-
+          - components:
+              - type: graph
+                figure:
+                  _target_: bar
+                  data_frame: gapminder_2007
+                  labels:
+                    lifeExp: lifeExp in 2007
+                  x: lifeExp
+                  y: country
+                header: 💡 Click any bar to highlight that country in the bump chart
+                actions:
+                  - type: set_control
+                    control: highlight_parameter
+                    value: y
+              - type: graph
+                id: bump_chart
+                figure:
+                  _target_: __main__.bump_chart_with_highlight
+                  data_frame: gapminder
+            controls:
+              - type: parameter
+                id: highlight_parameter
+                targets:
+                  - bump_chart.highlight_country
+                selector:
+                  type: radio_items
+                  options:
+                    - NONE
+                    - Cambodia
+                    - Indonesia
+                    - Malaysia
+                    - Myanmar
+                    - Philippines
+                    - Singapore
+                    - Thailand
+                    - Vietnam
+                visible: false
+            title: Cross-highlight from graph
         ```
 
     === "Result"
