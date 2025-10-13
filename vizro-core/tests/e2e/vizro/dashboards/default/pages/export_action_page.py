@@ -21,6 +21,7 @@ export_action_page = vm.Page(
             ),
         ),
         vm.Button(
+            id=cnst.EXPORT_PAGE_BUTTON,
             text="Export data",
             actions=[
                 vm.Action(

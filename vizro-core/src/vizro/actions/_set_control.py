@@ -7,7 +7,6 @@ from typing import Literal, Protocol, cast, runtime_checkable
 from dash import get_relative_path
 from pydantic import Field, JsonValue
 
-import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
@@ -92,6 +91,8 @@ class set_control(_AbstractAction):
 
     @_log_call
     def pre_build(self):
+        from vizro.models._controls._controls_utils import _is_categorical_selector
+
         # Validate that action's parent model supports `set_control` action.
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
@@ -109,7 +110,7 @@ class set_control(_AbstractAction):
             )
 
         # Validate that control model has a categorical selector.
-        if not isinstance(getattr(control_model, "selector", None), (vm.Dropdown, vm.Checklist, vm.RadioItems)):
+        if not _is_categorical_selector(getattr(control_model, "selector", None)):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
                 f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
