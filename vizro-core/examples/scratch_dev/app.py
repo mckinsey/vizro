@@ -92,7 +92,8 @@ page_1 = vm.Page(
                         title="Sales",
                         value_format="${value:,.0f}",
                         icon="bar_chart",
-                    )
+                    ),
+                    actions=va.set_control(control="pg1_parameter_1", value="Sales"),
                 ),
                 vm.Figure(
                     figure=kpi_card_reference(
@@ -103,7 +104,8 @@ page_1 = vm.Page(
                         title="Profit",
                         value_format="${value:,.0f}",
                         icon="money_bag",
-                    )
+                    ),
+                    actions=va.set_control(control="pg1_parameter_1", value="Profit"),
                 ),
                 vm.Figure(
                     figure=kpi_card_reference(
@@ -115,7 +117,8 @@ page_1 = vm.Page(
                         value_format="{value:,.0f}",
                         icon="orders",
                         # agg_func="nunique",
-                    )
+                    ),
+                    actions=va.set_control(control="pg1_parameter_1", value="Order ID"),
                 ),
                 vm.Figure(
                     figure=kpi_card_reference(
@@ -127,7 +130,8 @@ page_1 = vm.Page(
                         value_format="{value:,.0f}",
                         icon="group",
                         # agg_func="nunique",
-                    )
+                    ),
+                    actions=va.set_control(control="pg1_parameter_1", value="Customer ID"),
                 ),
             ],
             layout=vm.Grid(grid=[[0, 1, 2, 3]]),
