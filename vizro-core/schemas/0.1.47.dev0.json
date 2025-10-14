@@ -832,6 +832,28 @@
           "default": "figure",
           "title": "Type",
           "type": "string"
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
         }
       },
       "title": "Figure",
