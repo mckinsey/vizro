@@ -100,6 +100,11 @@ class Button(VizroBaseModel):
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.n_clicks"}
 
+    @staticmethod
+    def _get_value_from_trigger(value: str, *args) -> Any:
+        """Return the given `value` without modification."""
+        return value
+
     @_log_call
     def build(self):
         variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
