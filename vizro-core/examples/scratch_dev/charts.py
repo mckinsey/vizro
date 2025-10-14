@@ -12,6 +12,7 @@ PRIMARY_COLOR = "#2251ff"
 SECONDARY_COLOR = "#A0A2A8"
 ORANGE_COLOR = "#f6c343"
 GREEN_COLOR = "#60c96c"
+RED_COLOR = "#f17e7e"
 DIVERGING_RED_GREEN = [
     "#a84545",
     "#b82525",
@@ -398,7 +399,7 @@ def create_lollipop_chart_by_region(data_frame, value_col="Sales"):
             x=region_metric[agg_col],
             y=region_metric["Region"],
             mode="markers",
-            marker=dict(size=14, color=SECONDARY_COLOR, line=dict(color=SECONDARY_COLOR, width=1.5)),
+            marker=dict(size=14, color=PRIMARY_COLOR, line=dict(color=PRIMARY_COLOR, width=1.5)),
             showlegend=False,
         )
     )
@@ -952,7 +953,7 @@ def scatter_with_quadrants_subc(
         y1=data_frame[y].max() + 700,
         fillcolor=PRIMARY_COLOR,
         line_width=0,
-        opacity=0.6,
+        opacity=0.4,
         layer="below",
     )
     fig.add_shape(
@@ -963,9 +964,9 @@ def scatter_with_quadrants_subc(
         y0=data_frame[y].min() - 700,
         x1=x_reference_line,
         y1=y_reference_line,
-        fillcolor=PRIMARY_COLOR,
+        fillcolor=RED_COLOR,
         line_width=0,
-        opacity=0.4,
+        opacity=0.8,
         layer="below",
     )
     fig.add_shape(
@@ -976,9 +977,9 @@ def scatter_with_quadrants_subc(
         y0=data_frame[y].min() - 700,
         x1=data_frame[x].max() + 700,
         y1=y_reference_line,
-        fillcolor=PRIMARY_COLOR,
+        fillcolor=RED_COLOR,
         line_width=0,
-        opacity=0.2,
+        opacity=0.4,
         layer="below",
     )
 
