@@ -172,18 +172,19 @@ class TestInvalid:
         data = make_fixed_data()
         data_manager["data"] = data
         with pytest.raises(
-            AttributeError, match="Static data that is a pandas.DataFrame itself does not support timeout"
+            AttributeError, match=r"Static data that is a pandas\.DataFrame itself does not support timeout"
         ):
             data_manager["data"].timeout = 10
 
     def test_setitem_invalid_type(self):
         with pytest.raises(
-            TypeError, match="Data source data must be a pandas DataFrame or function that returns a pandas DataFrame."
+            TypeError,
+            match=r"Data source data must be a pandas DataFrame or function that returns a pandas DataFrame\.",
         ):
             data_manager["data"] = pd.Series([1, 2, 3])
 
     def test_does_not_exist(self):
-        with pytest.raises(KeyError, match="Data source data does not exist."):
+        with pytest.raises(KeyError, match=r"Data source data does not exist\."):
             data_manager["data"]
 
 

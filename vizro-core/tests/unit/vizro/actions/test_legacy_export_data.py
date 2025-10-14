@@ -313,7 +313,7 @@ class TestExportData:
         ]
         action = model_manager["test_action"]
 
-        with pytest.raises(ValueError, match="targets {'invalid_target_id'} are not valid figures on the page."):
+        with pytest.raises(ValueError, match=r"targets {'invalid_target_id'} are not valid figures on the page."):
             action.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")

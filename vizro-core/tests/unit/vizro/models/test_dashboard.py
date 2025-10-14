@@ -49,7 +49,7 @@ class TestDashboardInstantiation:
             vm.Dashboard()
 
     def test_field_invalid_pages_empty_list(self):
-        with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
+        with pytest.raises(ValidationError, match=r"Ensure this value has at least 1 item."):
             vm.Dashboard(pages=[])
 
     def test_field_invalid_pages_input_type(self):
@@ -345,6 +345,10 @@ class TestDashboardBuild:
                                 "vizro_dark": dashboard_vizro_dark,
                                 "vizro_light": dashboard_vizro_light,
                             },
+                        ),
+                        dcc.Store(
+                            id="vizro_controls_store",
+                            data={},
                         ),
                         dash.page_container,
                     ],
