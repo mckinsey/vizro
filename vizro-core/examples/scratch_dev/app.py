@@ -338,9 +338,9 @@ page_3 = vm.Page(
         vm.Container(
             layout=vm.Grid(grid=[[0, 1]]),
             controls=[
-                vm.Filter(column="Region"),
-                vm.Filter(column="Segment"),
-                vm.Filter(column="Category"),
+                vm.Filter(column="Region", selector=vm.Checklist()),
+                vm.Filter(column="Segment", selector=vm.Checklist()),
+                vm.Filter(column="Category", selector=vm.Checklist()),
             ],
             components=[
                 vm.AgGrid(
