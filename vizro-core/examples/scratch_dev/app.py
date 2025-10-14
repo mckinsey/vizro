@@ -24,6 +24,7 @@ from charts import (
     pie_chart_by_order_status,
     bar_chart_top_n,
     custom_orders_aggrid,
+    create_lollipop_chart_by_region,
 )
 from charts import COLUMN_DEFS_PRODUCT, COLUMN_DEFS_CUSTOMERS
 
@@ -161,12 +162,14 @@ page_1 = vm.Page(
                     actions=vm.Action(function=nav_orders(), outputs=["vizro_url.pathname"]),
                 ),
             ],
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]], row_gap="8px"),
             variant="filled",
         ),
         vm.Container(
             components=[
-                vm.Graph(id="region_bar_chart", figure=create_bar_chart_by_region(superstore_df, value_col="Sales")),
+                vm.Graph(
+                    id="region_bar_chart", figure=create_lollipop_chart_by_region(superstore_df, value_col="Sales")
+                ),
                 vm.Button(
                     id="region-nav-btn",
                     text="View Deep Dive",
@@ -177,7 +180,7 @@ page_1 = vm.Page(
                     ),
                 ),
             ],
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]], row_gap="8px"),
             variant="filled",
         ),
         vm.Container(
@@ -195,11 +198,11 @@ page_1 = vm.Page(
                 ),
             ],
             variant="filled",
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]], row_gap="8px"),
         ),
         vm.Container(
             title="",
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]]),
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [0], [1]], row_gap="8px"),
             components=[
                 vm.Graph(
                     id="category_bar_chart",

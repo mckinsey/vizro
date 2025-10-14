@@ -35,6 +35,7 @@ DIVERGING_RED_BLUE = [
     "#051c2c",  # highest value
 ]
 
+
 @capture("graph")
 def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
     """Custom bar chart made with Plotly."""
@@ -310,7 +311,7 @@ def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
         scope="usa",
         custom_data=custom_data,
         color_continuous_scale=DIVERGING_RED_BLUE,
-        color_continuous_midpoint=0
+        color_continuous_midpoint=0,
     )
 
     fig.update_layout(
@@ -353,6 +354,68 @@ def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=N
         xaxis_title=None,
         yaxis_title=None,
         title=f"{agg_col} | By Region",
+    )
+
+    return fig
+
+
+@capture("graph")
+def create_lollipop_chart_by_region(data_frame, value_col="Sales"):
+    """Create a lollipop chart showing aggregated metrics by region using Plotly."""
+    # --- Aggregate based on chosen metric ---
+    if value_col == "Order ID":
+        region_metric = (
+            data_frame.groupby("Region", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
+        )
+        agg_col = "Orders"
+    elif value_col == "Customer ID":
+        region_metric = (
+            data_frame.groupby("Region", as_index=False)["Customer ID"]
+            .nunique()
+            .rename(columns={"Customer ID": "Customers"})
+        )
+        agg_col = "Customers"
+    else:
+        region_metric = (
+            data_frame.groupby("Region", as_index=False)[value_col].sum().rename(columns={value_col: value_col})
+        )
+        agg_col = value_col
+
+    # --- Sort regions for visual clarity ---
+    region_metric = region_metric.sort_values(by=agg_col, ascending=True)
+
+    # --- Create base lollipop chart ---
+    fig = go.Figure()
+
+    # Add "sticks" (lines)
+    fig.add_trace(
+        go.Bar(
+            x=region_metric[agg_col],
+            y=region_metric["Region"],
+            showlegend=False,
+            hoverinfo="skip",
+            orientation="h",
+            marker=dict(color=PRIMARY_COLOR),
+        )
+    )
+
+    # Add "heads" (circles)
+    fig.add_trace(
+        go.Scatter(
+            x=region_metric[agg_col],
+            y=region_metric["Region"],
+            mode="markers",
+            marker=dict(size=14, color=SECONDARY_COLOR, line=dict(color=SECONDARY_COLOR, width=1.5)),
+            showlegend=False,
+        )
+    )
+
+    # --- Layout customization ---
+    fig.update_layout(
+        title=f"{agg_col} | By Region",
+        xaxis_title=None,
+        yaxis_title=None,
+        bargap=0.8,
     )
 
     return fig
@@ -583,7 +646,6 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
             marker_color=SECONDARY_COLOR,
         )
     )
-    # 
 
     fig.update_layout(
         xaxis=dict(
@@ -620,8 +682,6 @@ def create_top_10_states(data_frame, value_col="Sales"):
 
     fig.update_yaxes(categoryorder="total ascending")
     return fig
-
-
 
 
 @capture("graph")
@@ -718,7 +778,6 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
     )
 
     return fig
-
 
 
 @capture("graph")
