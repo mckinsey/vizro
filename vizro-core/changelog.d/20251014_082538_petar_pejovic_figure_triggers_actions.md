@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Add `actions` argument to `vm.Figure`, enabling actions to be triggered by clicking on the component. ([#1439](https://github.com/mckinsey/vizro/pull/1439))
+- Add `actions` argument to `vm.Figure` enabling actions to run on click. ([#1439](https://github.com/mckinsey/vizro/pull/1439))
 
 <!--
 ### Changed
