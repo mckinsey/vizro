@@ -30,7 +30,7 @@ To use a specific version of Vizro-MCP, update the `mcp.json` configuration to i
 ```json
 {
   "vizro-mcp": {
-    "command": "uvx vizro-mcp@0.1.2 check"
+    "command": "uvx vizro-mcp@0.1.2"
   }
 }
 ```
