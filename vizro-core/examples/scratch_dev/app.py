@@ -490,7 +490,6 @@ dashboard = vm.Dashboard(
     title="Superstore dashboard",
     pages=[page_1, page_2, page_3, page_4, page_5],
     navigation=navigation,
-    theme="vizro_light",
 )
 
 

@@ -50,13 +50,8 @@
   padding-bottom: 1rem;
 }
 
-.card-kpi {
-  margin: 0 1rem;
-}
 .card-kpi:hover {
   border: 8px solid var(--bs-border);
-  transform: scale(1.05);
-  z-index: 10;
 }
 
 .card-kpi:has(.color-pos):hover {
