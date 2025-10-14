@@ -92,3 +92,11 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 .card-kpi:has(.color-neg) {
   border-left: 4px solid var(--bs-pink);
 }
+
+.figure-container-actions > .card-kpi {
+    cursor: pointer;
+}
+
+.figure-container-actions > .card-kpi:hover {
+  border: 1px solid var(--bs-border-color);
+}
