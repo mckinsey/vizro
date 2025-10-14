@@ -13,7 +13,6 @@ from vizro.tables import dash_ag_grid
 
 from data import superstore_df, create_superstore_product, pareto_customers_table, create_kpi_data
 from charts import (
-    bar_chart_by_subcategory,
     bar_chart_by_category,
     create_map_bubble_new,
     create_bar_chart_by_region,

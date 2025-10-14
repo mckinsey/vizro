@@ -14,39 +14,6 @@ ORANGE_COLOR = "#f6c343"
 GREEN_COLOR = "#60c96c"
 
 
-@capture("graph")
-def create_map_bubble(data_frame, value_col="Sales"):
-    """Custom map chart made with Plotly."""
-    data_frame[value_col] = data_frame[value_col].abs()
-    fig = px.scatter_geo(
-        data_frame,
-        locations="State_Code",
-        locationmode="USA-states",
-        size=value_col,
-        hover_name="State",
-        hover_data={value_col: ":$,.0f", "State_Code": False},
-        size_max=40,
-        title=f"{value_col} | By State",
-        scope="usa",
-    )
-
-    fig.update_layout(
-        title={
-            "text": f"{value_col} | By State",
-            "x": 0.5,
-            "xanchor": "center",
-        },
-        geo=dict(
-            showlakes=True,
-            projection_type="albers usa",
-            showframe=True,
-            showcoastlines=True,
-            showsubunits=True,
-        ),
-    )
-
-    return fig
-
 
 @capture("graph")
 def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
@@ -321,6 +288,8 @@ def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
         hover_data=["Region", agg_col],
         scope="usa",
         custom_data=custom_data,
+        color_continuous_scale=['#d73027', '#e86b57', '#f49b8a', '#fac9bf', '#f7f7f7', '#8bc8fe', '#3595f4', '#0060d1', '#003096'],
+        color_continuous_midpoint=0
     )
 
     fig.update_layout(
