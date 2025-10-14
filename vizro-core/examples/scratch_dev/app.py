@@ -160,4 +160,6 @@ page_4 = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
-Vizro().build(dashboard).run()
+
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()
