@@ -8,12 +8,32 @@ import vizro.plotly.express as px
 from dash_ag_grid import AgGrid
 from vizro.models.types import capture
 
-PRIMARY_COLOR = "#1a85ff"
+PRIMARY_COLOR = "#2251ff"
 SECONDARY_COLOR = "#A0A2A8"
 ORANGE_COLOR = "#f6c343"
 GREEN_COLOR = "#60c96c"
-
-
+DIVERGING_RED_GREEN = [
+    "#a84545",
+    "#b82525",
+    "#e33b3b",
+    "#f17e7e",
+    "#e6d7bc",
+    "#75f0e7",
+    "#0bdacb",
+    "#13b8ab",
+    "#108980",
+]
+DIVERGING_RED_BLUE = [
+    "#a84545",
+    "#b82525",
+    "#e33b3b",
+    "#f17e7e",
+    "#e6e6e6",
+    "#99c4ff",
+    "#2251ff",
+    "#061f79",
+    "#051c2c",  # highest value
+]
 
 @capture("graph")
 def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
@@ -289,7 +309,7 @@ def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
         hover_data=["Region", agg_col],
         scope="usa",
         custom_data=custom_data,
-        color_continuous_scale=['#d73027', '#e86b57', '#f49b8a', '#fac9bf', '#f7f7f7', '#8bc8fe', '#3595f4', '#0060d1', '#003096'],
+        color_continuous_scale=DIVERGING_RED_BLUE,
         color_continuous_midpoint=0
     )
 
@@ -545,26 +565,25 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
     curr_year = monthly[monthly["Year"] == 2017]
 
     fig = go.Figure()
-    # Add Previous Year first so it renders at the bottom
-    fig.add_trace(
-        go.Scatter(
-            x=prev_year["Month"],
-            y=prev_year[agg_col],
-            fill="tozeroy",
-            name="Previous Year",
-            marker_color=SECONDARY_COLOR,
-        )
-    )
-    # Add Current Year second so it renders on top
     fig.add_trace(
         go.Scatter(
             x=curr_year["Month"],
             y=curr_year[agg_col],
             name="Current Year",
             marker_color=PRIMARY_COLOR,
+            line_width=2,
             fill="tozeroy",
         )
     )
+    fig.add_trace(
+        go.Scatter(
+            x=prev_year["Month"],
+            y=prev_year[agg_col],
+            name="Previous Year",
+            marker_color=SECONDARY_COLOR,
+        )
+    )
+    # 
 
     fig.update_layout(
         xaxis=dict(
@@ -1008,28 +1027,20 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
 CELL_STYLE_PRODUCT = {
     "styleConditions": [
         {
-            "condition": "params.value < -0.1",
-            "style": {"backgroundColor": "#ff9222"},
+            "condition": "params.value < -0.5",
+            "style": {"backgroundColor": "#e33b3b"},
         },
         {
-            "condition": "params.value >= -0.1 && params.value <= 0",
-            "style": {"backgroundColor": "#ffba7f"},
+            "condition": "params.value >= -0.5 && params.value <= 0",
+            "style": {"backgroundColor": "#f19791"},
         },
         {
-            "condition": "params.value > 0 && params.value <= 0.05",
-            "style": {"backgroundColor": "#e4e4e4"},
+            "condition": "params.value > 0 && params.value <= 0.30",
+            "style": {"backgroundColor": "#728aff"},
         },
         {
-            "condition": "params.value > 0.05 && params.value <= 0.15",
-            "style": {"backgroundColor": "#b7d4ee"},
-        },
-        {
-            "condition": "params.value > 0.15 && params.value <= 0.20",
-            "style": {"backgroundColor": "#80c4f6"},
-        },
-        {
-            "condition": "params.value > 0.20",
-            "style": {"backgroundColor": "#00b4ff"},
+            "condition": "params.value > 0.30",
+            "style": {"backgroundColor": "#2251ff"},
         },
     ]
 }
@@ -1274,93 +1285,63 @@ def custom_orders_aggrid(data_frame):
             "cellStyle": {
                 "styleConditions": [
                     {
-                        "condition": "Number(params.value) < 0",
+                        "condition": "Number(params.value) < -0.5",
                         "style": {
-                            "backgroundColor": "#c42f3e",
+                            "backgroundColor": "#e33b3b",
                             "color": "white",
                             "borderRadius": "18px",
-                            "padding": "4px 12px",
+                            "padding": "4px",
                             "fontWeight": "600",
                             "justifyContent": "center",
                             "alignItems": "center",
                             "display": "flex",
                             "marginTop": "8px",
-                            "height": "38px",
+                            "height": "30px",
                         },
                     },
                     {
-                        "condition": "Number(params.value) >= 0 && Number(params.value) < 0.10",
+                        "condition": "Number(params.value) >= -0.5 && Number(params.value) < 0",
                         "style": {
-                            "backgroundColor": "#E04A55",
-                            "color": "black",
-                            "borderRadius": "18px",
-                            "padding": "4px 12px",
-                            "fontWeight": "600",
-                            "justifyContent": "center",
-                            "alignItems": "center",
-                            "display": "flex",
-                            "marginTop": "8px",
-                            "height": "38px",
-                        },
-                    },
-                    {
-                        "condition": "Number(params.value) >= 0.10 && Number(params.value) < 0.15",
-                        "style": {
-                            "backgroundColor": "#F2A3A9",
-                            "color": "black",
-                            "borderRadius": "18px",
-                            "padding": "4px 12px",
-                            "fontWeight": "600",
-                            "justifyContent": "center",
-                            "alignItems": "center",
-                            "display": "flex",
-                            "marginTop": "8px",
-                            "height": "38px",
-                        },
-                    },
-                    {
-                        "condition": "Number(params.value) >= 0.15 && Number(params.value) < 0.25",
-                        "style": {
-                            "backgroundColor": "#C8E6C9",
-                            "color": "black",
-                            "borderRadius": "18px",
-                            "padding": "4px 12px",
-                            "fontWeight": "600",
-                            "justifyContent": "center",
-                            "alignItems": "center",
-                            "display": "flex",
-                            "marginTop": "8px",
-                            "height": "38px",
-                        },
-                    },
-                    {
-                        "condition": "Number(params.value) >= 0.25 && Number(params.value) < 0.35",
-                        "style": {
-                            "backgroundColor": "#81C784",
+                            "backgroundColor": "#f19791",
                             "color": "white",
                             "borderRadius": "18px",
-                            "padding": "4px 12px",
+                            "padding": "4px",
                             "fontWeight": "600",
                             "justifyContent": "center",
                             "alignItems": "center",
                             "display": "flex",
                             "marginTop": "8px",
-                            "height": "38px",
+                            "height": "30px",
                         },
                     },
                     {
-                        "condition": "Number(params.value) >= 0.35",
+                        "condition": "Number(params.value) >= 0 && Number(params.value) < 0.30",
                         "style": {
-                            "backgroundColor": "#4CAF50",
+                            "backgroundColor": "#728aff",
                             "color": "white",
                             "borderRadius": "18px",
-                            "padding": "4px 12px",
+                            "padding": "4px",
                             "fontWeight": "600",
                             "justifyContent": "center",
                             "alignItems": "center",
                             "display": "flex",
                             "marginTop": "8px",
-                            "height": "38px",
+                            "height": "30px",
+                        },
+                    },
+                    {
+                        "condition": "Number(params.value) >= 0.30",
+                        "style": {
+                            "backgroundColor": "#2251ff",
+                            "color": "white",
+                            "borderRadius": "18px",
+                            "padding": "4px",
+                            "fontWeight": "600",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "display": "flex",
+                            "marginTop": "8px",
+                            "height": "30px",
                         },
                     },
                 ]
