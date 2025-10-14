@@ -74,9 +74,16 @@ class Button(VizroBaseModel):
     ]
 
     @model_validator(mode="after")
-    def validate_text(self):
+    def validate_text_and_icon(self):
         if not self.text and not self.icon:
             raise ValueError("You must provide either the `text` or `icon` argument.")
+
+        return self
+
+    @model_validator(mode="after")
+    def validate_href_and_actions(self):
+        if self.href and self.actions:
+            raise ValueError("Button cannot have both `href` and `actions` defined.")
 
         return self
 
