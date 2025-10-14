@@ -19,7 +19,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ### Added
 
 - Actions can be triggered when clicking a `vm.Figure`. ([#1439](https://github.com/mckinsey/vizro/pull/1439))
-- Enable that `vm.Figure` can be the source of the `set_control` action. ([#1439](https://github.com/mckinsey/vizro/pull/1439))
+
+- `vm.Figure` can be the source of a `set_control` action. ([#1439](https://github.com/mckinsey/vizro/pull/1439))
 
 <!--
 ### Changed
