@@ -69,9 +69,15 @@ example_reference_cards = [
 ]
 
 page_1 = vm.Page(
-    title="KPI cards",
+    title="KPI cards + 1 Nav card",
     layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
+    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards]
+    + [
+        vm.Card(
+            text="This is a nav card. Click to go to page 2.",
+            href="/page-2",
+        )
+    ],
 )
 
 
@@ -82,11 +88,12 @@ def custom_action(_trigger):
 
 page_2 = vm.Page(
     title="KPI cards trigger custom action",
+    path="/page-2",
     layout=vm.Flex(direction="row", wrap=True),
     components=[
         vm.Figure(
             figure=kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
-            actions=vm.Action(function=custom_action(), outputs="text_output")
+            actions=vm.Action(function=custom_action(), outputs="text_output"),
         ),
         vm.Text(id="text_output", text="Click a card to see the action output here."),
     ],
@@ -95,6 +102,7 @@ page_2 = vm.Page(
 
 page_3 = vm.Page(
     title="KPI cards trigger set_control",
+    path="/page-3",
     layout=vm.Flex(direction="row", wrap=True),
     components=[
         vm.Figure(
@@ -112,42 +120,43 @@ page_3 = vm.Page(
         vm.Graph(
             id="graph-1",
             figure=px.bar(
-                df_kpi, x="Category", y="Actual", color="Category",
-                color_discrete_map={"A": "#00b4ff", "B": "#ff9222", "C": "#3949ab"}
-            )
-        )
+                df_kpi,
+                x="Category",
+                y="Actual",
+                color="Category",
+                color_discrete_map={"A": "#00b4ff", "B": "#ff9222", "C": "#3949ab"},
+            ),
+        ),
     ],
-    controls=[
-        vm.Filter(id="filter-id-1", column="Category", targets=["graph-1"])
-    ]
+    controls=[vm.Filter(id="filter-id-1", column="Category", targets=["graph-1"])],
 )
 
 
 @capture("figure")
 def button_as_figure(data_frame):
-    return dbc.Button(children=f"Graph below shows {len(data_frame)} rows. Click to trigger two actions", color="primary", class_name="m-2")
+    return dbc.Button(
+        children=f"Graph below shows {len(data_frame)} rows. Click to trigger two actions",
+        color="primary",
+        class_name="m-2",
+    )
 
 
 page_4 = vm.Page(
     title="Custom button as a figure",
+    path="/page-4",
     components=[
         vm.Figure(
             id="figure-2",
             figure=button_as_figure(df),
             actions=[
                 set_control(control="filter-id-2", value="setosa"),
-                vm.Action(function=custom_action(), outputs="text-2")
+                vm.Action(function=custom_action(), outputs="text-2"),
             ],
         ),
         vm.Text(id="text-2", text="Click the button to see the action output here."),
-        vm.Graph(
-            id="graph-2",
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")
-        )
+        vm.Graph(id="graph-2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
     ],
-    controls=[
-        vm.Filter(id="filter-id-2", column="species", targets=["graph-2", "figure-2"])
-    ]
+    controls=[vm.Filter(id="filter-id-2", column="species", targets=["graph-2", "figure-2"])],
 )
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])

@@ -1,4 +1,4 @@
-from typing import Any, Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from dash import dcc, html
 from pydantic import AfterValidator, Field, field_validator, model_validator
@@ -83,7 +83,7 @@ class Figure(VizroBaseModel):
             # This limitation is handled with this PR -> https://github.com/plotly/dash/pull/2888.
             # The PR is merged but is not released yet. Once it is released, we can try to refactor the following code.
             # In the meantime, we are adding an extra html.div here.
-            html.Div(id=self.id, className="figure-container"),
+            html.Div(id=self.id, className="figure-component-actions" if self.actions else "figure-component"),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
