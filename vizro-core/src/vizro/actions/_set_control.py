@@ -16,7 +16,7 @@ from vizro.models.types import ControlType, ModelID
 # This defines what a model needs to implement for it to be capable of acting as the trigger of set_control.
 @runtime_checkable
 class _SupportsSetControl(Protocol):
-    def _get_value_from_trigger(self, value: str, trigger: JsonValue) -> JsonValue: ...
+    def _get_value_from_trigger(self, value: JsonValue, trigger: JsonValue) -> JsonValue: ...
 
 
 def _encode_to_base64(value):
@@ -43,10 +43,13 @@ class set_control(_AbstractAction):
         trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). This is typically
         useful for a positional variable, for example `"x"`, and does not require setting `custom_data`.
 
+    * [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies what
+    value to set `control` to.
+
     Args:
         control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
             `show_in_url=True`. The control's selector must be categorical (e.g. Dropdown, RadioItems, Checklist).
-        value (str): Value taken from trigger to set `control`. Format depends on the source model that triggers
+        value (JsonValue): Value taken from trigger to set `control`. Format depends on the source model that triggers
             `set_control`.
 
     Example: `AgGrid` as trigger
@@ -78,6 +81,18 @@ class set_control(_AbstractAction):
             actions=va.set_control(control="target_control", value="x"),
         )
         ```
+
+    Example: `Figure` as trigger
+        ```python
+        import vizro.actions as va
+        from vizro.figures import kpi_card
+
+        df = pd.DataFrame({"Category": ["A", "B", "C"], "Actual": [100, 200, 300]})
+        vm.Figure(
+            figure=kpi_card(data_frame=df, value_column="Actual", title="Click KPI to set control to A"),
+            actions=va.set_control(control="target_control", value="A"),
+        )
+        ```
     """
 
     type: Literal["set_control"] = "set_control"
@@ -85,7 +100,7 @@ class set_control(_AbstractAction):
         description="Filter or Parameter component id to be affected by the trigger."
         "If the control is on a different page to the trigger then it must have `show_in_url=True`."
     )
-    value: str = Field(
+    value: JsonValue = Field(
         description="Value to take from trigger and send to the `target`. Format depends on the model "
         "that triggers `set_control`."
     )
