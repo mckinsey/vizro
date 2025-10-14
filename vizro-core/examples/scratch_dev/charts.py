@@ -126,8 +126,9 @@ def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_
         category_metric,
         x=x,
         y=agg_col,
-        title=f"{agg_col} | By {x} <br><sup> ⤵ Click on the category to drill-down to sub-category. Reset by using reset button on the right.</sup>",
+        title=f"{agg_col} | By {x} <br><sup> 💡 Click on the category to drill-down to sub-category. Reset by using reset button next to the theme switch.</sup>",
         custom_data=custom_data,
+        color_discrete_sequence=[PRIMARY_COLOR],
     )
 
     fig.update_layout(
@@ -830,7 +831,7 @@ def scatter_with_quadrants_subc(
         size_max=20,
         opacity=0.7,
         hover_data=["Sub-Category", "Profit", "Sales", "Profit Margin"],
-        title="Sub-Categories <br><sup> ⤵ Click on a point to filter the table. Refresh the page to deselect.</sup>",
+        title="Profit vs. Sales by Sub-Category",
     )
 
     if highlight_sub_category is not None:

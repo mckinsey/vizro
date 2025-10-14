@@ -391,9 +391,16 @@ page_4 = vm.Page(
                     components=[
                         vm.AgGrid(
                             id="table",
+                            header="💡 Click on a row to highlight the data point in the matrix on the right.",
                             figure=dash_ag_grid(superstore_product_df, columnDefs=COLUMN_DEFS_PRODUCT),
                             actions=va.set_control(control="pg4_parameter_1", value="Sub-Category"),
-                        ),
+                        )
+                    ],
+                    variant="filled",
+                ),
+                vm.Container(
+                    title="",
+                    components=[
                         vm.Graph(
                             id="pg4-chart-3",
                             figure=scatter_with_quadrants_subc(
@@ -404,15 +411,14 @@ page_4 = vm.Page(
                             ),
                         ),
                     ],
-                    layout=vm.Grid(grid=[[0, 0, 1, 1, 1]]),
                     variant="filled",
                 ),
             ],
             layout=vm.Grid(
                 grid=[
-                    [0, 0, 0, -1, -1],
-                    [1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1],
+                    [0, 0, 2, 2],
+                    [1, 1, 2, 2],
+                    [1, 1, 2, 2],
                 ]
             ),
         ),
