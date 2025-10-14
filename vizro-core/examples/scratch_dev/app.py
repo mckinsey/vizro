@@ -236,6 +236,7 @@ page_1 = vm.Page(
                 "bar_chart_by_segment.value_col",
             ],
             show_in_url=True,
+            visible=False,
         ),
     ],
     layout=vm.Grid(
