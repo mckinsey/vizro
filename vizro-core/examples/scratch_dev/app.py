@@ -58,17 +58,17 @@ def _encode_to_base64(value):
 @capture("action")
 def nav_region(parameter_value):
     url_query_params = f"?pg2-parameter-2={_encode_to_base64(parameter_value)}"
-    return "/regional-view", url_query_params
+    return "/regions", url_query_params
 
 
 @capture("action")
 def nav_product():
-    return "/product-view"
+    return "/products"
 
 
 @capture("action")
 def nav_customer():
-    return "/customer-view"
+    return "/customers"
 
 
 @capture("action")
@@ -254,7 +254,7 @@ page_1 = vm.Page(
 )
 
 page_2 = vm.Page(
-    title="Regional view",
+    title="Regions",
     components=[
         vm.Container(
             controls=[
@@ -328,7 +328,7 @@ page_2 = vm.Page(
 )
 
 page_3 = vm.Page(
-    title="Customer view",
+    title="Customers",
     components=[
         vm.Container(
             layout=vm.Grid(grid=[[0, 1]]),
@@ -363,7 +363,7 @@ page_3 = vm.Page(
 
 
 page_4 = vm.Page(
-    title="Product view",
+    title="Products",
     components=[
         vm.Container(
             title="",
@@ -449,7 +449,7 @@ page_5 = vm.Page(
 
 
 navigation = vm.Navigation(
-    pages=["Overview", "Regional view", "Customer view", "Product view", "Orders"],
+    pages=["Overview", "Regions", "Customers", "Products", "Orders"],
     nav_selector=vm.NavBar(
         items=[
             vm.NavLink(
@@ -458,12 +458,12 @@ navigation = vm.Navigation(
                 icon="Home",
             ),
             vm.NavLink(
-                pages=["Regional view"],
+                pages=["Regions"],
                 label="Region",
                 icon="Globe Asia",
             ),
             vm.NavLink(
-                pages=["Product view"],
+                pages=["Products"],
                 label="Product",
                 icon="Barcode",
             ),
@@ -473,7 +473,7 @@ navigation = vm.Navigation(
                 label="Orders",
             ),
             vm.NavLink(
-                pages=["Customer view"],
+                pages=["Customers"],
                 label="Customer",
                 icon="Group",
             ),
