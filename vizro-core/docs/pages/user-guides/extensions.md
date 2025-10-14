@@ -186,7 +186,7 @@ Here is an example showing a Dash callback within Vizro, enabling an interaction
             title="Example: Dash callback within Vizro",
             components=[
                 vm.Graph(id="source_chart",
-                         figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"])),
+                         figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data="species")),
                 vm.Card(id="card_id",
                         text="Click on the graph to apply filter interaction."),
             ]

@@ -180,11 +180,31 @@ Received input: ${JSON.stringify(values_ids)}`,
   return triggerOPL;
 }
 
+function reset_controls(_, vizroControlsStore, pageId) {
+  console.debug("Reset controls on page:", pageId);
+
+  // Get info for all controls on the current page.
+  const pageControls = Object.values(vizroControlsStore).filter(
+    (control) => control.pageId === pageId,
+  );
+
+  // For each control, prepare its original value
+  const outputSelectorValues = pageControls.map(
+    (control) => control.originalValue,
+  );
+  // For each control set all its guard to true to prevent triggering unnecessary actions.
+  const outputSelectorGuards = pageControls.map(() => true);
+
+  // Trigger the OPL after resetting all controls.
+  return [null, ...outputSelectorValues, ...outputSelectorGuards];
+}
+
 window.encodeUrlParams = encodeUrlParams;
 window.decodeUrlParams = decodeUrlParams;
 window.dash_clientside = {
   ...window.dash_clientside,
   page: {
     sync_url_query_params_and_controls: sync_url_query_params_and_controls,
+    reset_controls: reset_controls,
   },
 };
