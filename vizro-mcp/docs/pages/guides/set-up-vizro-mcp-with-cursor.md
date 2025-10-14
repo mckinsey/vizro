@@ -45,7 +45,7 @@ The following configuration is added to your `mcp.json` ([see Cursor Settings](h
     ```json
     {
       "vizro-mcp": {
-        "command": "uvx vizro-mcp@0.1.2 check"
+        "command": "uvx vizro-mcp@0.1.2"
       }
     }
     ```
