@@ -11,3 +11,36 @@
 #p3-parameter-1 {
   display: none;
 }
+
+
+
+.card-img {
+  height: 100px;
+  width: 100%
+}
+
+.card-title-desc {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.card-icon-body {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.card-icon {
+  align-content: center;
+  font-size: 40px;
+}
+
+.material-symbols-outlined card-icon {
+  font-size: 40px;
+}
+
+.card-wrapper {
+  display: flex;
+  flex-direction: column;
+}

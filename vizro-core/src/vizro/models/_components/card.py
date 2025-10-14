@@ -1,12 +1,13 @@
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import dcc, get_relative_path
-from pydantic import Field
+from dash import dcc, get_relative_path, html
+from pydantic import BeforeValidator, Field
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import VizroBaseModel
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import _IdProperty
 
 
@@ -27,6 +28,10 @@ class Card(VizroBaseModel):
     """
 
     type: Literal["card"] = "card"
+    title: str = ""
+    header: str = ""
+    image: str = ""
+    footer: str = ""
     text: str = Field(
         description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
     )
@@ -34,6 +39,17 @@ class Card(VizroBaseModel):
         "",
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        # AfterValidator(warn_description_without_title) is not needed here because either 'text' or 'icon' argument
+        # is mandatory.
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the button text.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+        ),
+    ]
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -57,11 +73,18 @@ class Card(VizroBaseModel):
 
     @_log_call
     def build(self):
+        title = html.H4(self.title, className="card-title") if self.title else None
+        header = dbc.CardHeader(self.header) if self.header else None
+        footer = dbc.CardFooter(self.footer) if self.footer else None
         text = dcc.Markdown(
             id=f"{self.id}-text", children=self.text, dangerously_allow_html=False, className="card-text"
         )
 
-        card_content = (
+        description = self.description.build().children if self.description is not None else [None]
+
+        title_d = html.Div(children=[title, *description], className="card-title-desc")
+
+        card_text = (
             dbc.NavLink(
                 children=text,
                 href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
@@ -70,6 +93,9 @@ class Card(VizroBaseModel):
             if self.href
             else text
         )
+        card_body = dbc.CardBody(children=[title_d, card_text])
+
+        card_content = [header, card_body, footer]
 
         defaults = {
             "id": self.id,
