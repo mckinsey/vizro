@@ -98,7 +98,7 @@ class set_control(_AbstractAction):
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
                 f"`set_control` action was added to the model with ID `{self._parent_model.id}`, but this action "
-                f"can only be used with models that support it (e.g. Graph, AgGrid, Figure with kpi_card)."
+                f"can only be used with models that support it (e.g. Graph, AgGrid, Figure)."
             )
 
         # Validate that action's control exists in the dashboard.

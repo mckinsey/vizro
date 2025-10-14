@@ -98,5 +98,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .figure-container-actions > .card-kpi:hover {
-  border: 1px solid var(--bs-border-color);
+  border-bottom: 1px solid var(--bs-border-color);
+  border-right: 1px solid var(--bs-border-color);
+  border-top: 1px solid var(--bs-border-color);
 }
