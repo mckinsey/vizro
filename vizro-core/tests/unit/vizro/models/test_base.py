@@ -773,7 +773,7 @@ class TestAddingDuplicateDiscriminator:
 #         model.model_rebuild(force=True)
 
 
-# TODO[MS]: probably we don't want this as it pollutes the global vm namesspace!!
+# TODO[MS]: probably we don't want this as it pollutes the global vm namespace!!
 # What other consequences does this have when run on a server?
 class TestAddingMultipleHierarchyLevels:
     @pytest.mark.parametrize(
@@ -809,7 +809,7 @@ class TestAddingMultipleHierarchyLevels:
         [(vm.Filter, "selector"), (vm.Parameter, "selector"), (vm.Container, "controls"), (vm.Page, "controls")],
     )
     def test_add_multiple_discriminated_union_types(self, model1, field1, model2, field2):
-        """Test whether adding multiple discriminated union types works and new types are included in dashboard schema."""
+        """Test whether adding multiple discriminated union types works and new types are in dashboard schema."""
 
         class NewType1(vm.VizroBaseModel):
             type: Literal["new_type_1"] = "new_type_1"
