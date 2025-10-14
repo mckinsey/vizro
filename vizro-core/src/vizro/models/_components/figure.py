@@ -53,7 +53,7 @@ class Figure(VizroBaseModel):
 
     @staticmethod
     def _get_value_from_trigger(value: Any, *args) -> Any:
-        """Set value is propagated to targeted control."""
+        """Return the given `value` without modification."""
         return value
 
     def __call__(self, **kwargs):
