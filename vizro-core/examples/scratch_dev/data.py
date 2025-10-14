@@ -64,6 +64,8 @@ superstore_df["Order Date"] = pd.to_datetime(superstore_df["Order Date"], errors
 superstore_df["Ship Date"] = pd.to_datetime(superstore_df["Ship Date"], errors="coerce")
 
 superstore_df["Year"] = superstore_df["Order Date"].dt.year
+superstore_df["Month"] = superstore_df["Order Date"].dt.month
+superstore_df["Day"] = superstore_df["Order Date"].dt.day
 
 # Find the latest 2 years in the dataset
 latest_two_years = sorted(superstore_df["Year"].unique())[-2:]

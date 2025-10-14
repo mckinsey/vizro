@@ -74,7 +74,7 @@ def nav_customer():
 
 @capture("action")
 def nav_orders():
-    return "/orders-view"
+    return "/orders"
 
 
 page_1 = vm.Page(

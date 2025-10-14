@@ -10,6 +10,8 @@ from vizro.models.types import capture
 
 PRIMARY_COLOR = "#1a85ff"
 SECONDARY_COLOR = "#A0A2A8"
+ORANGE_COLOR = "#f6c343"
+GREEN_COLOR = "#60c96c"
 
 
 @capture("graph")
@@ -58,23 +60,6 @@ def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
         custom_data=custom_data,
         orientation="h",
     )
-    return fig
-
-
-@capture("graph")
-def pie_chart_by_category(data_frame, custom_data, value_col="Sales"):
-    """Custom pie chart made with Plotly."""
-    fig = px.pie(
-        data_frame,
-        names="Category",
-        values=value_col,
-        color="Category",
-        title=f"{value_col} | By Category",
-        custom_data=custom_data,
-        hole=0.3,  # optional: makes it a donut chart
-    )
-
-    fig.update_layout(title=dict(x=0.5, xanchor="center"))
     return fig
 
 
@@ -458,7 +443,7 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
         yaxis_title=None,
         bargap=0.4,
         title=f"{agg_col} | By Customer Segment",
-        legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
+        showlegend=False,
     )
 
     return fig
@@ -517,7 +502,7 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
         yaxis_title=None,
         bargap=0.4,
         title=f"{agg_col} | By Product Category",
-        legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
+        showlegend=False,
     )
 
     return fig
@@ -648,20 +633,6 @@ def create_top_10_states(data_frame, value_col="Sales"):
     return fig
 
 
-@capture("graph")
-def pie_chart_by_region(data_frame, value_col="Sales"):
-    """Custom pie chart made with Plotly."""
-    fig = px.pie(
-        data_frame,
-        names="Region",
-        values=value_col,
-        color="Region",
-        title=f"{value_col} | By Region",
-        hole=0.6,
-    )
-
-    fig.update_layout(title=dict(x=0.5, xanchor="center"))
-    return fig
 
 
 @capture("graph")
@@ -746,6 +717,7 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
         values=agg_col,
         color="Order Status",
         title=f"{agg_col} by Order Status",
+        color_discrete_map={"In Transit": PRIMARY_COLOR, "Processing": ORANGE_COLOR, "Delivered": GREEN_COLOR},
         hole=0.6,
     )
 
@@ -758,28 +730,6 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
 
     return fig
 
-
-@capture("graph")
-def pie_chart_by_category(data_frame, value_col="Sales"):
-    """Custom pie chart made with Plotly."""
-    if value_col == "Order ID":
-        category_metric = (
-            data_frame.groupby("Category", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
-        )
-        agg_col = "Orders"
-    else:
-        category_metric = data_frame.groupby("Category", as_index=False)[value_col].sum()
-        agg_col = value_col
-
-    fig = px.pie(
-        category_metric,
-        names="Category",
-        values=agg_col,
-        color="Category",
-        title=f"{agg_col} | By Product",
-        hole=0.6,
-    )
-    return fig
 
 
 @capture("graph")
