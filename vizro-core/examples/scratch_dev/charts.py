@@ -160,13 +160,6 @@ def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_
         yaxis_title=None,
     )
 
-    if highlight_category:
-        for trace in fig.data:
-            if trace.name == highlight_category:
-                trace.opacity = 1
-            else:
-                trace.opacity = 0.2
-
     return fig
 
 
@@ -904,7 +897,7 @@ def scatter_with_quadrants_subc(
         y=y,
         custom_data=custom_data,
         color="Sub-Category",
-        color_discrete_sequence=["grey"],
+        color_discrete_sequence=[SECONDARY_COLOR],
         size="Profit Absolute",
         size_max=20,
         opacity=0.7,
@@ -924,7 +917,7 @@ def scatter_with_quadrants_subc(
                 y=data_frame.loc[mask, y],
                 mode="markers+text",
                 text=[highlight_sub_category],
-                marker=dict(color="orange", size=marker_sizes, line=dict(width=2, color="black")),
+                marker=dict(color=ORANGE_COLOR, size=marker_sizes, line=dict(width=2, color="black")),
                 hovertext=highlight_sub_category,
                 textposition="bottom center",
             )
@@ -932,8 +925,8 @@ def scatter_with_quadrants_subc(
     # Reference lines (based on all data)
     x_reference_line = data_frame[x].quantile(x_ref_quantile)
     y_reference_line = data_frame[y].quantile(y_ref_quantile)
-    fig.add_hline(y=y_reference_line, line_dash="dash", line_color="grey")
-    fig.add_vline(x=x_reference_line, line_dash="dash", line_color="grey")
+    fig.add_hline(y=y_reference_line, line_dash="dash", line_color=SECONDARY_COLOR)
+    fig.add_vline(x=x_reference_line, line_dash="dash", line_color=SECONDARY_COLOR)
 
     # Quadrant shading
     fig.add_shape(
@@ -944,9 +937,9 @@ def scatter_with_quadrants_subc(
         y0=data_frame[y].max() + 700,
         x1=data_frame[x].max() + 700,
         y1=y_reference_line,
-        fillcolor="#00b4ff",
+        fillcolor=PRIMARY_COLOR,
         line_width=0,
-        opacity=0.4,
+        opacity=0.8,
         layer="below",
     )
     fig.add_shape(
@@ -957,9 +950,9 @@ def scatter_with_quadrants_subc(
         y0=y_reference_line,
         x1=x_reference_line,
         y1=data_frame[y].max() + 700,
-        fillcolor="#00b4ff",
+        fillcolor=PRIMARY_COLOR,
         line_width=0,
-        opacity=0.2,
+        opacity=0.6,
         layer="below",
     )
     fig.add_shape(
@@ -970,7 +963,7 @@ def scatter_with_quadrants_subc(
         y0=data_frame[y].min() - 700,
         x1=x_reference_line,
         y1=y_reference_line,
-        fillcolor="#ff9222",
+        fillcolor=PRIMARY_COLOR,
         line_width=0,
         opacity=0.4,
         layer="below",
@@ -983,7 +976,7 @@ def scatter_with_quadrants_subc(
         y0=data_frame[y].min() - 700,
         x1=data_frame[x].max() + 700,
         y1=y_reference_line,
-        fillcolor="#ff9222",
+        fillcolor=PRIMARY_COLOR,
         line_width=0,
         opacity=0.2,
         layer="below",
@@ -1019,7 +1012,6 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
         data_frame.groupby("Customer Name", as_index=False)[value_col].sum().sort_values(by=value_col, ascending=False)
     )
 
-    # 2️⃣ Compute cumulative metrics
     customer_df["Cumulative Value"] = customer_df[value_col].cumsum()
     total_value = customer_df[value_col].sum()
     customer_df["Cumulative % Value"] = 100 * customer_df["Cumulative Value"] / total_value
@@ -1042,7 +1034,6 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
             return "C"
 
     customer_df["Segment"] = customer_df["Cumulative % Customers"].apply(assign_segment)
-    segment_colors = {"A": "#00b4ff", "B": "#00b4ff", "C": "#00b4ff"}
 
     fig = px.line(
         customer_df,
@@ -1051,12 +1042,12 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
         markers=True,
         title=f"Pareto Analysis of Customers ({value_col})",
         hover_data=["Customer Name", value_col, "Cumulative % Value"],
-        color_discrete_sequence=["orange"],
+        color_discrete_sequence=[ORANGE_COLOR],
     )
     fig.update_traces(showlegend=False)
-    fig.add_vrect(x0=0, x1=thresholds["A"], fillcolor=segment_colors["A"], opacity=0.6, layer="below")
-    fig.add_vrect(x0=thresholds["A"], x1=thresholds["B"], fillcolor=segment_colors["B"], opacity=0.3, layer="below")
-    fig.add_vrect(x0=thresholds["B"], x1=100, fillcolor=segment_colors["C"], opacity=0.1, layer="below")
+    fig.add_vrect(x0=0, x1=thresholds["A"], fillcolor=PRIMARY_COLOR, opacity=0.6, layer="below")
+    fig.add_vrect(x0=thresholds["A"], x1=thresholds["B"], fillcolor=PRIMARY_COLOR, opacity=0.3, layer="below")
+    fig.add_vrect(x0=thresholds["B"], x1=100, fillcolor=PRIMARY_COLOR, opacity=0.1, layer="below")
 
     if highlight_customer and highlight_customer in customer_df["Customer Name"].values:
         cust = customer_df[customer_df["Customer Name"] == highlight_customer].iloc[0]
@@ -1066,8 +1057,8 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
                 y=[cust["Cumulative % Value"]],
                 mode="markers+text",
                 text=[highlight_customer],
-                textposition="bottom right",
-                marker=dict(color="orange", size=12, line=dict(width=2)),
+                textposition="top right",
+                marker=dict(color=ORANGE_COLOR, size=12, line=dict(width=2)),
                 showlegend=False,
             )
         )
@@ -1077,7 +1068,6 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
         yaxis_title=f"Cumulative % of {value_col}",
         yaxis=dict(range=[0, 105]),
         xaxis=dict(range=[0, 105]),
-        hovermode="x unified",
     )
 
     return fig

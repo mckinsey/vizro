@@ -15,7 +15,6 @@ from data import superstore_df, create_superstore_product, pareto_customers_tabl
 from charts import (
     bar_chart_by_category,
     create_map_bubble_new,
-    create_bar_chart_by_region,
     create_line_chart_per_month,
     create_bar_current_vs_previous_segment,
     create_bar_current_vs_previous_category,
