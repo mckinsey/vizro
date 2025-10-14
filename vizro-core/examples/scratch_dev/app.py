@@ -2,8 +2,6 @@
 
 from typing import Literal
 
-import pandas as pd
-import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro

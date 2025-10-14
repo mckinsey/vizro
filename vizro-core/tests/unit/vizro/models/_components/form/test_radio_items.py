@@ -123,7 +123,7 @@ class TestRadioItemsInstantiation:
         ],
     )
     def test_create_radio_items_invalid_value_non_existing(self, test_value, options):
-        with pytest.raises(ValidationError, match="Please provide a valid value from `options`."):
+        with pytest.raises(ValidationError, match=r"Please provide a valid value from `options`."):
             RadioItems(value=test_value, options=options)
 
     def test_create_radio_items_invalid_value_format(self):

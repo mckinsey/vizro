@@ -32,9 +32,11 @@ from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
+from vizro.models._controls import Filter, Parameter
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ControlType
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -186,6 +188,17 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
+                dcc.Store(
+                    id="vizro_controls_store",
+                    data={
+                        control.id: {"originalValue": control.selector.value, "pageId": page.id}
+                        for page in self.pages
+                        for control in cast(
+                            Iterable[ControlType],
+                            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
+                        )
+                    },
+                ),
                 dash.page_container,
             ],
         )
@@ -283,28 +296,44 @@ class Dashboard(VizroBaseModel):
         page_header_content = [page_title]
         page_header = html.Div(id="page-header", children=page_header_content)
 
+        has_page_controls = bool(
+            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
+        )
+
         # Page header controls that appear on the right side of the header.
+        action_progress_indicator = dcc.Loading(
+            id="action-progress-indicator",
+            delay_show=300,
+            delay_hide=300,
+            custom_spinner=html.Span(
+                className="material-symbols-outlined progress-indicator",
+                # Keep "progress_activity" children so the CSS spinner can render/display correctly.
+                children="progress_activity",
+            ),
+            # Placeholder div is added as used as target from actions to show loading indicator.
+            children=html.Div(id="action-progress-indicator-placeholder"),
+        )
+        reset_controls_button = dbc.Button(
+            id=f"{page.id}_reset_button",
+            children=html.Span(
+                children=[
+                    html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                    dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
+                ],
+                className="btn-text",
+            ),
+            class_name="btn-circular",
+        )
+        theme_switch = dbc.Switch(
+            id="theme-selector", value=self.theme == "vizro_light", persistence=True, persistence_type="session"
+        )
         header_controls = html.Div(
             id="header-controls",
             children=[
-                dcc.Loading(
-                    id="action-progress-indicator",
-                    delay_show=300,
-                    delay_hide=300,
-                    custom_spinner=html.Span(
-                        className="material-symbols-outlined progress-indicator",
-                        # Keep "progress_activity" children so the CSS spinner can render/display correctly.
-                        children="progress_activity",
-                    ),
-                    # Placeholder div is added as used as target from actions to show loading indicator.
-                    children=html.Div(id="action-progress-indicator-placeholder"),
-                ),
-                dbc.Switch(
-                    id="theme-selector",
-                    value=self.theme == "vizro_light",
-                    persistence=True,
-                    persistence_type="session",
-                ),
+                action_progress_indicator,
+                # Show the reset icon button in the header when there are page controls but no control panel.
+                reset_controls_button if has_page_controls and _all_hidden(control_panel) else None,
+                theme_switch,
             ],
         )
 
@@ -319,6 +348,21 @@ class Dashboard(VizroBaseModel):
             children=header_right_content,
             hidden=_all_hidden(header_right_content),
         )
+
+        # Show reset button with the icon in the control panel when both page controls and control panel exist.
+        if has_page_controls and not _all_hidden(control_panel):
+            control_panel.children.append(
+                dbc.Button(
+                    id=f"{page.id}_reset_button",
+                    children=html.Span(
+                        children=[
+                            html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                            "Reset controls",
+                        ],
+                        className="btn-text",
+                    ),
+                )
+            )
 
         nav_control_panel_content = [nav_panel, control_panel]
         nav_control_panel = html.Div(

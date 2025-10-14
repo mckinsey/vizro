@@ -118,7 +118,7 @@ class TestMalformedGrid:
         ],
     )
     def test_invalid_int_sequence(self, grid):
-        with pytest.raises(ValidationError, match="Grid must contain consecutive integers starting from 0."):
+        with pytest.raises(ValidationError, match=r"Grid must contain consecutive integers starting from 0."):
             vm.Grid(grid=grid)
 
     @pytest.mark.parametrize(
@@ -129,7 +129,7 @@ class TestMalformedGrid:
         ],
     )
     def test_invalid_list_length(self, grid):
-        with pytest.raises(ValidationError, match="All rows must be of same length."):
+        with pytest.raises(ValidationError, match=r"All rows must be of same length."):
             vm.Grid(grid=grid)
 
 
@@ -179,7 +179,7 @@ class TestSharedGridHelpers:
         model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout=vm.Grid(grid=[[0, 1]]))
 
     def test_set_grid_invalid(self, model_with_layout):
-        with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
+        with pytest.raises(ValidationError, match=r"Number of page and grid components need to be the same."):
             model_with_layout(title="Title", components=[vm.Button()], layout=vm.Grid(grid=[[0, 1]]))
 
 
