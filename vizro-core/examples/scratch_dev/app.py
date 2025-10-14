@@ -459,23 +459,23 @@ navigation = vm.Navigation(
             ),
             vm.NavLink(
                 pages=["Regions"],
-                label="Region",
+                label="Regions",
                 icon="Globe Asia",
             ),
             vm.NavLink(
                 pages=["Products"],
-                label="Product",
+                label="Products",
                 icon="Barcode",
+            ),
+            vm.NavLink(
+                pages=["Customers"],
+                label="Customers",
+                icon="Group",
             ),
             vm.NavLink(
                 pages=["Orders"],
                 icon="Shopping Cart",
                 label="Orders",
-            ),
-            vm.NavLink(
-                pages=["Customers"],
-                label="Customer",
-                icon="Group",
             ),
         ]
     ),

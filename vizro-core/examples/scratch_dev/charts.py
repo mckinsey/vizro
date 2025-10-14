@@ -1248,82 +1248,17 @@ def custom_orders_aggrid(data_frame):
     data_frame["Profit Ratio"] = (data_frame["Profit"] / data_frame["Sales"]).round(3)
     column_defs_orders = [
         {"headerName": "Order ID", "field": "Order ID", "minWidth": 150},
+        {"headerName": "Status", "field": "Order Status", "minWidth": 150, "cellRenderer": "statusCellRenderer"},
         {
             "headerName": "Segment",
             "field": "Segment",
             "minWidth": 140,
-            "cellStyle": {
-                "styleConditions": [
-                    {
-                        "condition": "params.value === 'Corporate'",
-                        "style": {
-                            "backgroundColor": "#37474F",
-                            "color": "white",
-                            "borderRadius": "18px",
-                            "padding": "4px 12px",
-                            "fontWeight": "600",
-                            "justifyContent": "center",
-                            "alignItems": "center",
-                            "display": "flex",
-                            "marginTop": "8px",
-                            "height": "38px",
-                        },
-                    },
-                    {
-                        "condition": "params.value === 'Consumer'",
-                        "style": {
-                            "backgroundColor": "#546E7A",
-                            "color": "white",
-                            "borderRadius": "18px",
-                            "padding": "4px 12px",
-                            "fontWeight": "600",
-                            "justifyContent": "center",
-                            "alignItems": "center",
-                            "display": "flex",
-                            "marginTop": "8px",
-                            "height": "38px",
-                        },
-                    },
-                    {
-                        "condition": "params.value === 'Home Office'",
-                        "style": {
-                            "backgroundColor": "#8D8D8D",
-                            "color": "white",
-                            "borderRadius": "18px",
-                            "padding": "4px 12px",
-                            "fontWeight": "600",
-                            "justifyContent": "center",
-                            "alignItems": "center",
-                            "display": "flex",
-                            "marginTop": "8px",
-                            "height": "38px",
-                        },
-                    },
-                ]
-            },
         },
-        {"headerName": "Customer Name", "field": "Customer Name", "minWidth": 170},
-        {"headerName": "Location", "field": "City", "minWidth": 150},
-        {
-            "headerName": "Category",
-            "field": "Category",
-            "minWidth": 150,
-            "cellRenderer": {
-                "function": """
-                function(params) {
-                    if (params.value === 'Furniture') {
-                        return '<span><i class="material-symbols-outlined">chair</i>' + params.value + '</span>';
-                    }
-                    if (params.value === 'Technology') {
-                        return '<span><i class="material-symbols-outlined">laptop_mac</i>' + params.value + '</span>';
-                    }
-                    if (params.value === 'Office Supplies') {
-                        return '<span><i class="material-symbols-outlined">assignment</i>' + params.value + '</span>';
-                    }
-                }
-                """
-            },
-        },
+        {"headerName": "Customer", "field": "Customer Name", "minWidth": 170},
+        {"headerName": "State", "field": "State", "minWidth": 150},
+        {"headerName": "City", "field": "City", "minWidth": 150},
+        {"headerName": "Category", "field": "Category", "minWidth": 150},
+        {"headerName": "Sub-Category", "field": "Sub-Category", "minWidth": 150},
         {"headerName": "Sales", "field": "Sales", "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"}},
         {
             "headerName": "Profit",
