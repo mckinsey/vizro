@@ -78,7 +78,7 @@ class TestDatePickerInstantiation:
 
     def test_validate_max_invalid_min_greater_than_max(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
+            ValidationError, match=r"Maximum value of selector is required to be larger than minimum value."
         ):
             vm.DatePicker(min="2024-02-01", max="2024-01-01")
 
@@ -100,7 +100,7 @@ class TestDatePickerInstantiation:
 
     @pytest.mark.parametrize("range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])])
     def test_validate_datepicker_value_invalid(self, range, value):
-        with pytest.raises(ValidationError, match="Please provide a valid value between the min and max value."):
+        with pytest.raises(ValidationError, match=r"Please provide a valid value between the min and max value."):
             vm.DatePicker(min="1999-01-01", max="1999-02-01", range=range, value=value)
 
     @pytest.mark.parametrize("range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])])

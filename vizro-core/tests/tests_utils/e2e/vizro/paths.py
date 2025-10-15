@@ -53,10 +53,6 @@ def dropdown_arrow_path(dropdown_id):
     return f"div[id='{dropdown_id}'] .Select-arrow"
 
 
-def button_path():
-    return "button[class='btn btn-primary']"
-
-
 def button_id_path(btn_id):
     return f"button[id='{btn_id}']"
 

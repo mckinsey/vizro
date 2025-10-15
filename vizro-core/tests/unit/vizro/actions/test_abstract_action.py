@@ -231,7 +231,7 @@ class TestAbstractActionInputs:
 
         with pytest.raises(
             KeyError,
-            match="Model with ID .* not found. Please provide a valid component ID.",
+            match=r"Model with ID .* not found. Please provide a valid component ID.",
         ):
             action._transformed_inputs
 
@@ -253,7 +253,7 @@ class TestAbstractActionInputs:
 
         with pytest.raises(
             ValueError,
-            match="Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+            match=r"Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
         ):
             action._transformed_inputs
 
@@ -265,7 +265,7 @@ class TestAbstractActionInputs:
 
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
+            match=r"Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
             "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
             action._transformed_inputs
@@ -382,7 +382,7 @@ class TestAbstractActionOutputs:
     def test_outputs_invalid_model_id(self, action_with_mock_outputs):
         with pytest.raises(
             KeyError,
-            match="Model with ID .* not found. Please provide a valid component ID.",
+            match=r"Model with ID .* not found. Please provide a valid component ID.",
         ):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action_with_mock_outputs()._transformed_outputs
@@ -412,7 +412,7 @@ class TestAbstractActionOutputs:
     def test_outputs_invalid_dot_syntax(self, action_with_mock_outputs):
         with pytest.raises(
             ValueError,
-            match="Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+            match=r"Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
         ):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action_with_mock_outputs()._transformed_outputs
@@ -422,7 +422,7 @@ class TestAbstractActionOutputs:
     ):
         with pytest.raises(
             KeyError,
-            match="Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
+            match=r"Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
             " `_action_outputs` property. Please specify the output explicitly as"
             " `known_model_with_no_default_props.<property>`.",
         ):

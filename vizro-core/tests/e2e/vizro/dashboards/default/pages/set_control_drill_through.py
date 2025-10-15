@@ -8,22 +8,22 @@ from vizro.tables import dash_ag_grid
 df = px.data.iris()
 
 
-drill_through_filter_page_1 = vm.Page(
-    title=cnst.SET_CONTROL_FILTER_DRILL_THROUGH_SOURCE,
+drill_through_filter_graph_source_page = vm.Page(
+    title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_FILTER_DRILL_THROUGH_SOURCE_ID,
+            id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_SOURCE_ID,
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
             actions=set_control(control="p2_filter_1", value="species"),
         )
     ],
 )
 
-drill_through_filter_page_2 = vm.Page(
-    title=cnst.SET_CONTROL_FILTER_DRILL_THROUGH_TARGET,
+drill_through_filter_graph_target_page = vm.Page(
+    title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_FILTER_DRILL_THROUGH_TARGET_ID,
+            id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_TARGET_ID,
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
         )
     ],
@@ -32,37 +32,37 @@ drill_through_filter_page_2 = vm.Page(
             id="p2_filter_1",
             column="species",
             show_in_url=True,
-            selector=vm.Checklist(id=cnst.CHECKLIST_FILTER_DRILL_THROUGH_ID),
+            selector=vm.Checklist(id=cnst.CHECKLIST_DRILL_THROUGH_FILTER_GRAPH_ID),
         ),
     ],
 )
 
 
-drill_through_parameter_page_1 = vm.Page(
-    title=cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_SOURCE,
+drill_through_parameter_graph_source_page = vm.Page(
+    title=cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_PARAMETER_DRILL_THROUGH_SOURCE_ID,
+            id=cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE_ID,
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
             actions=set_control(control="p2_parameter_1", value="species"),
         )
     ],
 )
 
-drill_through_parameter_page_2 = vm.Page(
-    title=cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_TARGET,
+drill_through_parameter_graph_target_page = vm.Page(
+    title=cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_TARGET,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_PARAMETER_DRILL_THROUGH_TARGET_ID,
+            id=cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_TARGET_ID,
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
         )
     ],
     controls=[
         vm.Parameter(
             id="p2_parameter_1",
-            targets=[f"{cnst.SCATTER_PARAMETER_DRILL_THROUGH_TARGET_ID}.title"],
+            targets=[f"{cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_TARGET_ID}.title"],
             selector=vm.RadioItems(
-                id=cnst.RADIOITEMS_PARAMETER_DRILL_THROUGH_ID,
+                id=cnst.RADIOITEMS_DRILL_THROUGH_PARAMETER_GRAPH_ID,
                 options=["setosa", "versicolor", "virginica"],
                 value="virginica",
             ),
@@ -71,25 +71,22 @@ drill_through_parameter_page_2 = vm.Page(
     ],
 )
 
-drill_through_filter_ag_grid_page_1 = vm.Page(
-    title=cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_SOURCE,
+drill_through_filter_ag_grid_source_page = vm.Page(
+    title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
     components=[
         vm.AgGrid(
-            id=cnst.AG_GRID_DRILL_THROUGH_ID,
-            figure=dash_ag_grid(df),
+            id=cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID,
+            figure=dash_ag_grid(df[df["species"] == "versicolor"]),
             actions=set_control(control="p5_filter_1", value="species"),
         ),
     ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value="virginica")),
-    ],
 )
 
-drill_through_filter_ag_grid_page_2 = vm.Page(
-    title=cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_TARGET,
+drill_through_filter_ag_grid_target_page = vm.Page(
+    title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_SECOND_FILTER_DRILL_THROUGH_TARGET_ID,
+            id=cnst.SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID,
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
         )
     ],
@@ -98,7 +95,7 @@ drill_through_filter_ag_grid_page_2 = vm.Page(
             id="p5_filter_1",
             column="species",
             show_in_url=True,
-            selector=vm.RadioItems(id=cnst.RADIOITEMS_FILTER_DRILL_THROUGH_ID),
+            selector=vm.RadioItems(id=cnst.RADIOITEMS_DRILL_THROUGH_FILTER_AG_GRID_ID),
         ),
     ],
 )
