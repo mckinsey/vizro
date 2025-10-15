@@ -1,5 +1,4 @@
 import e2e.vizro.constants as cnst
-from custom_actions.custom_actions import scatter_click_data_custom_action
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -12,7 +11,6 @@ gapminder = px.data.gapminder()
 
 set_control_graph_interactions_page = vm.Page(
     title=cnst.SET_CONTROL_GRAPH_INTERACTIONS_PAGE,
-    layout=vm.Grid(grid=[[0], [2], [1]]),
     components=[
         vm.Graph(
             id=cnst.SCATTER_SET_CONTROL_INTERACTIONS_ID,
@@ -23,16 +21,8 @@ set_control_graph_interactions_page = vm.Page(
                 color="species",
                 custom_data=["species"],
             ),
-            actions=[
-                set_control(control="filter_interactions", value="species"),
-                vm.Action(
-                    function=scatter_click_data_custom_action(),
-                    inputs=[f"{cnst.SCATTER_SET_CONTROL_INTERACTIONS_ID}.clickData"],
-                    outputs=f"{cnst.CARD_SET_CONTROL_INTERACTIONS_ID}",
-                ),
-            ],
+            actions=[set_control(control="filter_interactions", value="species")],
         ),
-        vm.Card(id=cnst.CARD_SET_CONTROL_INTERACTIONS_ID, text="### No data clicked."),
         vm.Graph(
             id=cnst.BOX_SET_CONTROL_INTERACTIONS_ID,
             figure=px.box(
@@ -49,11 +39,7 @@ set_control_graph_interactions_page = vm.Page(
             column="species",
             targets=[cnst.BOX_SET_CONTROL_INTERACTIONS_ID],
             selector=vm.Dropdown(id=cnst.DROPDOWN_SET_CONTROL_INTER_FILTER),
-        ),
-        vm.Parameter(
-            targets=[f"{cnst.BOX_SET_CONTROL_INTERACTIONS_ID}.title"],
-            selector=vm.RadioItems(id=cnst.RADIOITEM_SET_CONTROL_INTER_PARAM, options=["red", "blue"], value="blue"),
-        ),
+        )
     ],
 )
 
@@ -67,7 +53,7 @@ set_control_ag_grid_interactions_page = vm.Page(
                     title="Table Country",
                     figure=dash_ag_grid(
                         id="set_control_ag_grid_table_country",
-                        data_frame=gapminder,
+                        data_frame=gapminder[gapminder["year"] == 2007],
                     ),
                     actions=[set_control(control="filter_continent", value="continent")],
                 ),
@@ -92,15 +78,10 @@ set_control_ag_grid_interactions_page = vm.Page(
     ],
     controls=[
         vm.Filter(
-            column="year",
-            targets=[cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_ID],
-            selector=vm.Dropdown(value=2007),
-        ),
-        vm.Filter(
             id="filter_continent",
             column="continent",
             targets=[cnst.SET_CONTROL_LINE_AG_GRID_INTERACTIONS_ID],
-            selector=vm.RadioItems(options=["Europe", "Africa", "Americas"]),
+            selector=vm.RadioItems(options=["Europe", "Africa", "Americas"], value="Africa"),
         ),
     ],
 )

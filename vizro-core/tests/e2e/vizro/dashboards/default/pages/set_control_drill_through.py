@@ -76,12 +76,9 @@ drill_through_filter_ag_grid_page_1 = vm.Page(
     components=[
         vm.AgGrid(
             id=cnst.AG_GRID_DRILL_THROUGH_ID,
-            figure=dash_ag_grid(df),
+            figure=dash_ag_grid(df[df["species"] == "versicolor"]),
             actions=set_control(control="p5_filter_1", value="species"),
         ),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value="virginica")),
     ],
 )
 

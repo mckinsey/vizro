@@ -30,6 +30,7 @@ from pages.layout_pages import (
 )
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
+from pages.set_control_drill_down import set_control_drill_down_page
 from pages.set_control_drill_through import (
     drill_through_filter_ag_grid_page_1,
     drill_through_filter_ag_grid_page_2,
@@ -94,6 +95,7 @@ dashboard = vm.Dashboard(
         drill_through_parameter_page_2,
         drill_through_filter_ag_grid_page_1,
         drill_through_filter_ag_grid_page_2,
+        set_control_drill_down_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -149,6 +151,7 @@ dashboard = vm.Dashboard(
                 cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_TARGET,
                 cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_SOURCE,
                 cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_TARGET,
+                cnst.SET_CONTROL_DRILL_DOWN,
             ],
         }
     ),

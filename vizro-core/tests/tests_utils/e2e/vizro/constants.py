@@ -258,6 +258,9 @@ SET_CONTROL_PARAMETER_DRILL_THROUGH_TARGET = "set-control-parameter-drill-throug
 SCATTER_PARAMETER_DRILL_THROUGH_TARGET_ID = "scatter-parameter-drill-through-target"
 RADIOITEMS_PARAMETER_DRILL_THROUGH_ID = "radioitems-param-drill-through"
 
+SET_CONTROL_DRILL_DOWN = "set-control-drill-down"
+SCATTER_DRILL_DOWN_ID = "scatter-drill-down"
+
 
 SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_SOURCE = "set-control-filter-drill-through-ag_grid-source"
 AG_GRID_DRILL_THROUGH_ID = "ag-grid-filter-drill-trhough"
