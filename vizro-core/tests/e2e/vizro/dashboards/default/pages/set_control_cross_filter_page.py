@@ -10,10 +10,10 @@ gapminder = px.data.gapminder()
 
 
 cross_filter_graph_page = vm.Page(
-    title=cnst.SET_CONTROL_GRAPH_INTERACTIONS_PAGE,
+    title=cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_SET_CONTROL_INTERACTIONS_ID,
+            id=cnst.SCATTER_SET_CONTROL_CROSS_FILTER_ID,
             figure=px.scatter(
                 iris,
                 x="sepal_length",
@@ -24,7 +24,7 @@ cross_filter_graph_page = vm.Page(
             actions=[set_control(control="filter_interactions", value="species")],
         ),
         vm.Graph(
-            id=cnst.BOX_SET_CONTROL_INTERACTIONS_ID,
+            id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID,
             figure=px.box(
                 iris,
                 x="sepal_length",
@@ -37,19 +37,19 @@ cross_filter_graph_page = vm.Page(
         vm.Filter(
             id="filter_interactions",
             column="species",
-            targets=[cnst.BOX_SET_CONTROL_INTERACTIONS_ID],
-            selector=vm.Dropdown(id=cnst.DROPDOWN_SET_CONTROL_INTER_FILTER),
+            targets=[cnst.BOX_SET_CONTROL_CROSS_FILTER_ID],
+            selector=vm.Dropdown(id=cnst.DROPDOWN_SET_CONTROL_CROSS_FILTER),
         )
     ],
 )
 
 cross_filter_ag_grid_page = vm.Page(
-    title=cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_PAGE,
+    title=cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE,
     components=[
         vm.Container(
             components=[
                 vm.AgGrid(
-                    id=cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_ID,
+                    id=cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID,
                     title="Table Country",
                     figure=dash_ag_grid(
                         id="set_control_ag_grid_table_country",
@@ -63,7 +63,7 @@ cross_filter_ag_grid_page = vm.Page(
         vm.Container(
             components=[
                 vm.Graph(
-                    id=cnst.SET_CONTROL_LINE_AG_GRID_INTERACTIONS_ID,
+                    id=cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID,
                     figure=px.line(
                         gapminder,
                         title="Line Country",
@@ -80,7 +80,7 @@ cross_filter_ag_grid_page = vm.Page(
         vm.Filter(
             id="filter_continent",
             column="continent",
-            targets=[cnst.SET_CONTROL_LINE_AG_GRID_INTERACTIONS_ID],
+            targets=[cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID],
             selector=vm.RadioItems(options=["Europe", "Africa", "Americas"], value="Africa"),
         ),
     ],

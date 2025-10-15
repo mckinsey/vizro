@@ -14,10 +14,10 @@ def graph_with_dynamic_title(data_frame, title="ALL", **kwargs):
 
 
 drill_down_graph_page = vm.Page(
-    title=cnst.SET_CONTROL_DRILL_DOWN,
+    title=cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_DRILL_DOWN_ID,
+            id=cnst.SCATTER_DRILL_DOWN_GRAPH_ID,
             figure=graph_with_dynamic_title(
                 data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
             ),
@@ -31,7 +31,7 @@ drill_down_graph_page = vm.Page(
         vm.Filter(id="p3-filter-1", column="species"),
         vm.Parameter(
             id="p3-parameter-1",
-            targets=[f"{cnst.SCATTER_DRILL_DOWN_ID}.title"],
+            targets=[f"{cnst.SCATTER_DRILL_DOWN_GRAPH_ID}.title"],
             selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"]),
         ),
     ],
