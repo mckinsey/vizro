@@ -204,7 +204,7 @@ def test_set_control_cross_filter_graph(page, http_requests_paths):
     page.locator(f"a[href='/{cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # filter interaction between charts (2 http)
+    # cross-filter between charts (2 http)
     # here we have 2 http requests because implicit actions chain happens
     # and set_control implicitly triggers the filter_action
     # https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/#implicit-actions-chain
