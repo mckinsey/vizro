@@ -584,8 +584,8 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="column_categorical has changed type from numerical to categorical. "
-            "A filtered column cannot change type while the dashboard is running.",
+            match=r"column_categorical has changed type from numerical to categorical. "
+            r"A filtered column cannot change type while the dashboard is running.",
         ):
             filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])
 
@@ -596,7 +596,7 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_categorical not found in dataframe for column_categorical_exists_1.",
+            match=r"Selected column column_categorical not found in dataframe for column_categorical_exists_1.",
         ):
             filter(target_to_data_frame={"column_categorical_exists_1": pd.DataFrame()}, current_value=["a", "b"])
 
@@ -607,8 +607,8 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_categorical does not contain anything in any dataframe "
-            "for column_categorical_exists_1.",
+            match=r"Selected column column_categorical does not contain anything in any dataframe "
+            r"for column_categorical_exists_1.",
         ):
             filter(
                 target_to_data_frame={"column_categorical_exists_1": pd.DataFrame({"column_categorical": []})},
@@ -618,7 +618,7 @@ class TestFilterCall:
 
 class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object."):
+        with pytest.raises(ValueError, match=r"Control filter_id should be defined within a Page object."):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
 
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
@@ -643,7 +643,7 @@ class TestFilterPreBuildMethod:
         filter = vm.Filter(column="column_numerical", targets=["invalid_target"])
         model_manager["test_page"].controls = [filter]
 
-        with pytest.raises(ValueError, match="Target invalid_target not found within the test_page."):
+        with pytest.raises(ValueError, match=r"Target invalid_target not found within the test_page."):
             filter.pre_build()
 
     def test_targets_default_invalid(self, managers_column_only_exists_in_some):
@@ -652,9 +652,9 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column invalid_choice not found in any dataframe for column_numerical_exists_1, "
+            match=r"Selected column invalid_choice not found in any dataframe for column_numerical_exists_1, "
             "column_numerical_exists_2, column_numerical_exists_empty, column_categorical_exists_1, "
-            "column_categorical_exists_2.",
+            r"column_categorical_exists_2.",
         ):
             filter.pre_build()
 
@@ -664,7 +664,7 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_numerical not found in dataframe for column_categorical_exists_1.",
+            match=r"Selected column column_numerical not found in dataframe for column_categorical_exists_1.",
         ):
             filter.pre_build()
 
@@ -674,8 +674,8 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_numerical does not contain anything in any dataframe for "
-            "column_numerical_exists_empty.",
+            match=r"Selected column column_numerical does not contain anything in any dataframe for "
+            r"column_numerical_exists_empty.",
         ):
             filter.pre_build()
 
@@ -781,7 +781,7 @@ class TestFilterPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match="Inconsistent types detected in column shared_column.",
+            match=r"Inconsistent types detected in column shared_column.",
         ):
             filter.pre_build()
 
@@ -824,12 +824,12 @@ class TestFilterPreBuildMethod:
             ("continent", vm.Checklist(options=["Africa", "Europe"])),
             ("continent", vm.Dropdown(options=["Africa", "Europe"])),
             ("continent", vm.RadioItems(options=["Africa", "Europe"])),
-            ("pop", vm.Slider(min=2002)),
-            ("pop", vm.Slider(max=2007)),
-            ("pop", vm.Slider(min=2002, max=2007)),
-            ("pop", vm.RangeSlider(min=2002)),
-            ("pop", vm.RangeSlider(max=2007)),
-            ("pop", vm.RangeSlider(min=2002, max=2007)),
+            ("pop", vm.Slider(min=10**6)),
+            ("pop", vm.Slider(max=10**7)),
+            ("pop", vm.Slider(min=10**6, max=10**7)),
+            ("pop", vm.RangeSlider(min=10**6)),
+            ("pop", vm.RangeSlider(max=10**7)),
+            ("pop", vm.RangeSlider(min=10**6, max=10**7)),
             ("year", vm.DatePicker(min="2002-01-01")),
             ("year", vm.DatePicker(max="2007-01-01")),
             ("year", vm.DatePicker(min="2002-01-01", max="2007-01-01")),
@@ -1046,24 +1046,18 @@ class TestFilterBuild:
     def test_filter_build(self, test_column, test_selector):
         filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
-
         filter.pre_build()
+
         result = filter.build()
-        expected = html.Div(id="filter-id", children=html.Div(children=[test_selector.build()]), hidden=False)
+        expected = html.Div(
+            id="filter-id",
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
+            ),
+            hidden=False,
+        )
 
         assert_component_equal(result, expected)
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize("visible", [True, False])
-    def test_filter_build_visible(self, visible):
-        filter = vm.Filter(id="filter-id", column="continent", selector=vm.Checklist(), visible=visible)
-        model_manager["test_page"].controls = [filter]
-
-        filter.pre_build()
-        result = filter.build()
-        expected = html.Div(id="filter-id", children=html.Div(children=[vm.Checklist().build()]), hidden=not visible)
-
-        assert_component_equal(result, expected, keys_to_strip={"children"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
@@ -1089,11 +1083,24 @@ class TestFilterBuild:
         result = filter.build()
         expected = dcc.Loading(
             id="filter_id",
-            children=html.Div(children=[test_selector.build()]),
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
+            ),
             color="grey",
             overlay_style={"visibility": "visible"},
-            className="",
         )
+
+        assert_component_equal(result, expected, keys_to_strip={"className"})
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_filter_build_visible(self, visible):
+        filter = vm.Filter(id="filter-id", column="continent", visible=visible)
+        model_manager["test_page"].controls = [filter]
+
+        filter.pre_build()
+        result = filter.build()
+        expected = html.Div(id="filter-id", hidden=not visible)
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
 
@@ -1101,49 +1108,16 @@ class TestFilterBuild:
     @pytest.mark.parametrize("visible", [True, False])
     def test_dynamic_filter_build_visible(self, gapminder_dynamic_first_n_last_n_function, visible):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
-        filter = vm.Filter(id="filter_id", column="continent", selector=vm.Checklist(), visible=visible)
+        filter = vm.Filter(id="filter_id", column="continent", visible=visible)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         result = filter.build()
         expected = dcc.Loading(
             id="filter_id",
-            children=html.Div(children=[vm.Checklist().build()]),
             color="grey",
             overlay_style={"visibility": "visible"},
             className="d-none" if not visible else "",
         )
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize(
-        "test_column ,test_selector",
-        [
-            ("continent", vm.Checklist()),
-            ("continent", vm.Dropdown()),
-            ("continent", vm.Dropdown(multi=False)),
-            ("continent", vm.RadioItems()),
-            ("pop", vm.Slider()),
-            ("pop", vm.RangeSlider()),
-            ("year", vm.DatePicker()),
-            ("year", vm.DatePicker(range=False)),
-            ("is_europe", vm.Switch()),
-            ("is_europe", vm.Switch(value=True)),
-        ],
-    )
-    def test_filter_show_in_url_build(self, test_column, test_selector):
-        filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector, show_in_url=True)
-        model_manager["test_page"].controls = [filter]
-        filter.pre_build()
-
-        result = filter.build()
-        expected = html.Div(
-            id="filter-id",
-            children=html.Div(
-                children=[test_selector.build(), dcc.Store(id=f"{filter.selector.id}_guard_actions_chain", data=False)],
-            ),
-            hidden=False,
-        )
-
-        assert_component_equal(result, expected)

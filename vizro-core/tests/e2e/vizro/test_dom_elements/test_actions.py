@@ -8,7 +8,7 @@ from e2e.vizro.checkers import (
 )
 from e2e.vizro.navigation import accordion_select, page_select
 from e2e.vizro.paths import (
-    button_path,
+    button_id_path,
     dropdown_arrow_path,
     graph_axis_value_path,
     page_title_path,
@@ -24,7 +24,7 @@ def test_export_data_no_controls(dash_br):
     )
 
     # download files and compare it with base ones
-    dash_br.multiple_click(button_path(), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.EXPORT_PAGE_BUTTON), 1)
     check_exported_file_exists(f"{dash_br.download_path}/{cnst.UNFILTERED_CSV}")
     check_exported_file_exists(f"{dash_br.download_path}/{cnst.UNFILTERED_XLSX}")
     assert_files_equal(cnst.UNFILTERED_BASE_CSV, f"{dash_br.download_path}/{cnst.UNFILTERED_CSV}")
@@ -39,7 +39,7 @@ def test_export_filtered_data(dash_br):
     )
 
     # download files and compare it with base ones
-    dash_br.multiple_click(button_path(), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.FILTERS_PAGE_EXPORT_DATA_BUTTON), 1)
     check_exported_file_exists(f"{dash_br.download_path}/{cnst.FILTERED_CSV}")
     check_exported_file_exists(f"{dash_br.download_path}/{cnst.FILTERED_XLSX}")
     assert_files_equal(cnst.FILTERED_BASE_CSV, f"{dash_br.download_path}/{cnst.FILTERED_CSV}")
