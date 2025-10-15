@@ -647,6 +647,7 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
             title=None,
             tickmode="array",
             tickvals=list(range(1, 13)),
+            range=[1, 12],
             ticktext=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         ),
         yaxis_title=None,
