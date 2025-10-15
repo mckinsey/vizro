@@ -2,17 +2,18 @@ from time import sleep
 
 import e2e.vizro.constants as cnst
 import pandas as pd
-from pages.set_control_drill_through import (
-    drill_through_filter_ag_grid_page_1,
-    drill_through_filter_ag_grid_page_2,
-    drill_through_filter_page_1,
-    drill_through_filter_page_2,
-    drill_through_parameter_page_1,
-    drill_through_parameter_page_2,
+from pages.set_control_cross_filter_page import (
+    cross_filter_ag_grid_page,
+    cross_filter_graph_page,
 )
-from pages.set_control_interactions_page import (
-    set_control_ag_grid_interactions_page,
-    set_control_graph_interactions_page,
+from pages.set_control_drill_down import drill_down_graph_page
+from pages.set_control_drill_through import (
+    drill_through_filter_ag_grid_source_page,
+    drill_through_filter_ag_grid_target_page,
+    drill_through_filter_graph_source_page,
+    drill_through_filter_graph_target_page,
+    drill_through_parameter_graph_source_page,
+    drill_through_parameter_graph_target_page,
 )
 
 import vizro.models as vm
@@ -284,14 +285,15 @@ dashboard = vm.Dashboard(
         page_dynamic_parametrisation,
         page_all_selectors,
         page_all_selectors_in_url,
-        set_control_graph_interactions_page,
-        set_control_ag_grid_interactions_page,
-        drill_through_filter_page_1,
-        drill_through_filter_page_2,
-        drill_through_parameter_page_1,
-        drill_through_parameter_page_2,
-        drill_through_filter_ag_grid_page_1,
-        drill_through_filter_ag_grid_page_2,
+        cross_filter_graph_page,
+        cross_filter_ag_grid_page,
+        drill_through_filter_ag_grid_source_page,
+        drill_through_filter_ag_grid_target_page,
+        drill_through_filter_graph_source_page,
+        drill_through_filter_graph_target_page,
+        drill_through_parameter_graph_source_page,
+        drill_through_parameter_graph_target_page,
+        drill_down_graph_page,
     ]
 )
 

@@ -198,30 +198,36 @@ def test_all_selectors_in_url(page, http_requests_paths):
 
 
 @http_requests
-def test_set_control_graph_interactions(page, http_requests_paths):
-    """Page with set_control action for graph working as interactions."""
+def test_set_control_cross_filter_graph(page, http_requests_paths):
+    """Page with set_control action for graph working as cross filter."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_GRAPH_INTERACTIONS_PAGE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # filter interaction between charts (3 http)
+    # filter interaction between charts (2 http)
+    # here we have 2 http requests because implicit actions chain happens
+    # and set_control implicitly triggers the filter_action
+    # https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/#implicit-actions-chain
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
     page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
-    check_http_requests_count(page, http_requests_paths, 5)
+    check_http_requests_count(page, http_requests_paths, 4)
 
     # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
 
 
 @http_requests
-def test_set_control_ag_grid_interactions(page, http_requests_paths):
-    """Page with set_control action for ag_grid working as interactions."""
+def test_set_control_cross_filter_ag_grid(page, http_requests_paths):
+    """Page with set_control action for ag_grid working as cross filter."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_PAGE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # filter interaction between af grid and chart (2 http)
+    # filter interaction between ag grid and chart (2 http)
+    # here we have 2 http requests because implicit actions chain happens
+    # and set_control implicitly triggers the filter_action
+    # https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/#implicit-actions-chain
     page.get_by_role("gridcell", name="Europe").nth(0).click()
     check_http_requests_count(page, http_requests_paths, 4)
 
@@ -230,13 +236,15 @@ def test_set_control_ag_grid_interactions(page, http_requests_paths):
 
 
 @http_requests
-def test_drill_through_graphs_filter(page, http_requests_paths):
+def test_drill_through_filter_graph(page, http_requests_paths):
     """Page with set_control action for filter graph on the different page."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_FILTER_DRILL_THROUGH_SOURCE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # filter drill_through between charts (3 http)
+    # here we have 3 http requests because one is for set_control action
+    # and two are for on page load that happens while opening a targeted page
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
     page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
@@ -247,13 +255,15 @@ def test_drill_through_graphs_filter(page, http_requests_paths):
 
 
 @http_requests
-def test_drill_through_graphs_parameter(page, http_requests_paths):
+def test_drill_through_parameter_graph(page, http_requests_paths):
     """Page with set_control action for parametrize graph on the different page."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_SOURCE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # parameter drill_through between charts (3 http)
+    # here we have 3 http requests because one is for set_control action
+    # and two are for on_page_load that happens while opening a targeted page
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
     page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
@@ -264,15 +274,36 @@ def test_drill_through_graphs_parameter(page, http_requests_paths):
 
 
 @http_requests
-def test_drill_through_ag_grid_to_graph_filter(page, http_requests_paths):
+def test_drill_through_filter_ag_grid(page, http_requests_paths):
     """Page with set_control action for ag_grid filter graph on the different page."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_SOURCE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # filter drill_through between charts (3 http)
-    page.get_by_role("gridcell", name="virginica").nth(0).click()
+    # here we have 3 http requests because one is for set_control action
+    # and two are for on page load that happens while opening a targeted page
+    page.get_by_role("gridcell", name="versicolor").nth(0).click()
     check_http_requests_count(page, http_requests_paths, 5)
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_drill_down_graph(page, http_requests_paths):
+    """Page with set_control action applied for the same graph as chain actions."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # filter drill_down for the same chart (4 http)
+    # here we have 4 http requests because implicit actions chain triggered twice (two set_control actions in the chain)
+    # https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/#implicit-actions-chain
+    element = page.locator('path[class="point plotly-customdata"]').nth(20)
+    box = element.bounding_box()
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    check_http_requests_count(page, http_requests_paths, 6)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
