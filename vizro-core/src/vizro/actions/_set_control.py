@@ -45,6 +45,8 @@ class set_control(_AbstractAction):
 
     * [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a
     literal value to set `control` to.
+    * [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a
+    literal value to set `control` to.
 
     Args:
         control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
@@ -92,6 +94,17 @@ class set_control(_AbstractAction):
             actions=va.set_control(control="target_control", value="A"),
         )
         ```
+
+    Example: `Card` as trigger
+        ```python
+        import vizro.actions as va
+        import vizro.models as vm
+
+        vm.Card(
+            title="Click Card to set control to A",
+            actions=va.set_control(control="target_control", value="A"),
+        )
+        ```
     """
 
     type: Literal["set_control"] = "set_control"
@@ -112,7 +125,7 @@ class set_control(_AbstractAction):
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
                 f"`set_control` action was added to the model with ID `{self._parent_model.id}`, but this action "
-                f"can only be used with models that support it (e.g. Graph, AgGrid, Figure)."
+                f"can only be used with models that support it (e.g. Graph, AgGrid, Figure, Card)."
             )
 
         # Validate that action's control exists in the dashboard.

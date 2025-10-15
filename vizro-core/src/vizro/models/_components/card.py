@@ -17,6 +17,11 @@ class Card(VizroBaseModel):
     Args:
         type (Literal["card"]): Defaults to `"card"`.
         text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
+        title (str): Title of the `Card`. Defaults to `""`.
+        header (str): Markdown text positioned above the `Card.title`. Follows the CommonMark specification.
+            Ideal for adding supplementary information. Defaults to `""`.
+        footer (str): Markdown text positioned below the `Card`. Follows the CommonMark specification.
+            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
             only. Defaults to `""`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
@@ -29,12 +34,19 @@ class Card(VizroBaseModel):
     """
 
     type: Literal["card"] = "card"
-    title: str = ""
-    header: str = ""
-    image: str = ""
-    footer: str = ""
     text: str = Field(
         description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
+    )
+    title: str = Field(default="", description="Title of the `Card`")
+    header: str = Field(
+        default="",
+        description="Markdown text positioned above the `Card.title`. Follows the CommonMark specification. Ideal for "
+        "adding supplementary information.",
+    )
+    footer: str = Field(
+        default="",
+        description="Markdown text positioned below the `Card`. Follows the CommonMark specification. Ideal for "
+        "providing further details such as sources, disclaimers, or additional notes.",
     )
     href: str = Field(
         "",
@@ -66,12 +78,18 @@ class Card(VizroBaseModel):
     actions: ActionsType = []
 
     @model_validator(mode="after")
+    def _validate_href_if_actions_set(self):
+        if self.href and self.actions:
+            raise ValueError("You cannot define both `href` and `actions` in `Card` model.")
+        return self
+
+    @model_validator(mode="after")
     def _make_actions_chain(self):
         return make_actions_chain(self)
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.n_clicks"}
+        return {"__default__": f"{self.id}-outer.n_clicks"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -87,8 +105,6 @@ class Card(VizroBaseModel):
 
     @_log_call
     def build(self):
-        header = dbc.CardHeader(self.header) if self.header else None
-        footer = dbc.CardFooter(self.footer) if self.footer else None
         text = dcc.Markdown(
             id=f"{self.id}-text", children=self.text, dangerously_allow_html=False, className="card-text"
         )
@@ -97,7 +113,7 @@ class Card(VizroBaseModel):
 
         title = html.Div(
             children=[html.H4(self.title, className="card-title") if self.title else None, *description],
-            className="card-title-desc",
+            className="card-title-outer",
         )
 
         card_text = (
@@ -109,9 +125,12 @@ class Card(VizroBaseModel):
             if self.href
             else text
         )
-        card_body = dbc.CardBody(children=[title, card_text])
 
-        card_content = [header, card_body, footer]
+        card_content = [
+            dbc.CardHeader(self.header) if self.header else None,
+            dbc.CardBody(children=[title, card_text]),
+            dbc.CardFooter(self.footer) if self.footer else None,
+        ]
 
         defaults = {
             "id": self.id,
@@ -119,4 +138,8 @@ class Card(VizroBaseModel):
             "class_name": "card-nav" if self.href else "",
         }
 
-        return html.Div(dbc.Card(**(defaults | self.extra)), className="card-wrapper")
+        return html.Div(
+            id=f"{self.id}-outer",
+            children=dbc.Card(**(defaults | self.extra)),
+            className="card-wrapper-actions" if self.actions else "card-wrapper",
+        )
