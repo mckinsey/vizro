@@ -37,8 +37,32 @@ page_1 = vm.Page(
     controls=[vm.Filter(id="filter-id-1", column="species", targets=["graph-1"])],
 )
 
+page_2 = vm.Page(
+    title="Reset certain control example",
+    components=[
+        vm.Button(
+            text="Reset species filter",
+            actions=set_control(control="filter-id-2", value="setosa"),
+        ),
+        vm.Graph(
+            id="graph-2",
+            figure=px.scatter(
+                df,
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(id="filter-id-2", column="species", selector=vm.RadioItems()),
+        vm.Filter(id="filter-id-3", column="sepal_length"),
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page_1])
+
+dashboard = vm.Dashboard(pages=[page_1, page_2])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
