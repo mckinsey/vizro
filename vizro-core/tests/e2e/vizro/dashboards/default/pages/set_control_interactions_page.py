@@ -9,7 +9,7 @@ iris = px.data.iris()
 gapminder = px.data.gapminder()
 
 
-set_control_graph_interactions_page = vm.Page(
+cross_filter_graph_page = vm.Page(
     title=cnst.SET_CONTROL_GRAPH_INTERACTIONS_PAGE,
     components=[
         vm.Graph(
@@ -43,7 +43,7 @@ set_control_graph_interactions_page = vm.Page(
     ],
 )
 
-set_control_ag_grid_interactions_page = vm.Page(
+cross_filter_ag_grid_page = vm.Page(
     title=cnst.SET_CONTROL_TABLE_AG_GRID_INTERACTIONS_PAGE,
     components=[
         vm.Container(

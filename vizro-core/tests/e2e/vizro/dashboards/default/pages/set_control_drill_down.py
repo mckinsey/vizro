@@ -13,7 +13,7 @@ def graph_with_dynamic_title(data_frame, title="ALL", **kwargs):
     return px.scatter(data_frame, title=f"Graph shows `{title}` species.", **kwargs)
 
 
-set_control_drill_down_page = vm.Page(
+drill_down_graph_page = vm.Page(
     title=cnst.SET_CONTROL_DRILL_DOWN,
     components=[
         vm.Graph(

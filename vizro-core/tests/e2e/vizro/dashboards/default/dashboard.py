@@ -30,18 +30,18 @@ from pages.layout_pages import (
 )
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
-from pages.set_control_drill_down import set_control_drill_down_page
+from pages.set_control_drill_down import drill_down_graph_page
 from pages.set_control_drill_through import (
-    drill_through_filter_ag_grid_page_1,
-    drill_through_filter_ag_grid_page_2,
-    drill_through_filter_page_1,
-    drill_through_filter_page_2,
-    drill_through_parameter_page_1,
-    drill_through_parameter_page_2,
+    drill_through_filter_ag_grid_source_page,
+    drill_through_filter_ag_grid_target_page,
+    drill_through_filter_graph_source_page,
+    drill_through_filter_graph_target_page,
+    drill_through_parameter_graph_source_page,
+    drill_through_parameter_graph_target_page,
 )
 from pages.set_control_interactions_page import (
-    set_control_ag_grid_interactions_page,
-    set_control_graph_interactions_page,
+    cross_filter_ag_grid_page,
+    cross_filter_graph_page,
 )
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
@@ -87,15 +87,15 @@ dashboard = vm.Dashboard(
         collapsible_containers_grid,
         collapsible_containers_flex,
         vizro_url_and_download_page,
-        set_control_graph_interactions_page,
-        set_control_ag_grid_interactions_page,
-        drill_through_filter_page_1,
-        drill_through_filter_page_2,
-        drill_through_parameter_page_1,
-        drill_through_parameter_page_2,
-        drill_through_filter_ag_grid_page_1,
-        drill_through_filter_ag_grid_page_2,
-        set_control_drill_down_page,
+        cross_filter_graph_page,
+        cross_filter_ag_grid_page,
+        drill_down_graph_page,
+        drill_through_filter_graph_source_page,
+        drill_through_filter_graph_target_page,
+        drill_through_parameter_graph_source_page,
+        drill_through_parameter_graph_target_page,
+        drill_through_filter_ag_grid_source_page,
+        drill_through_filter_ag_grid_target_page,
     ],
     navigation=vm.Navigation(
         pages={

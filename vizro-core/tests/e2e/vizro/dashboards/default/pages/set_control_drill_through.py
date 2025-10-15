@@ -8,7 +8,7 @@ from vizro.tables import dash_ag_grid
 df = px.data.iris()
 
 
-drill_through_filter_page_1 = vm.Page(
+drill_through_filter_graph_source_page = vm.Page(
     title=cnst.SET_CONTROL_FILTER_DRILL_THROUGH_SOURCE,
     components=[
         vm.Graph(
@@ -19,7 +19,7 @@ drill_through_filter_page_1 = vm.Page(
     ],
 )
 
-drill_through_filter_page_2 = vm.Page(
+drill_through_filter_graph_target_page = vm.Page(
     title=cnst.SET_CONTROL_FILTER_DRILL_THROUGH_TARGET,
     components=[
         vm.Graph(
@@ -38,7 +38,7 @@ drill_through_filter_page_2 = vm.Page(
 )
 
 
-drill_through_parameter_page_1 = vm.Page(
+drill_through_parameter_graph_source_page = vm.Page(
     title=cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_SOURCE,
     components=[
         vm.Graph(
@@ -49,7 +49,7 @@ drill_through_parameter_page_1 = vm.Page(
     ],
 )
 
-drill_through_parameter_page_2 = vm.Page(
+drill_through_parameter_graph_target_page = vm.Page(
     title=cnst.SET_CONTROL_PARAMETER_DRILL_THROUGH_TARGET,
     components=[
         vm.Graph(
@@ -71,7 +71,7 @@ drill_through_parameter_page_2 = vm.Page(
     ],
 )
 
-drill_through_filter_ag_grid_page_1 = vm.Page(
+drill_through_filter_ag_grid_source_page = vm.Page(
     title=cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_SOURCE,
     components=[
         vm.AgGrid(
@@ -82,7 +82,7 @@ drill_through_filter_ag_grid_page_1 = vm.Page(
     ],
 )
 
-drill_through_filter_ag_grid_page_2 = vm.Page(
+drill_through_filter_ag_grid_target_page = vm.Page(
     title=cnst.SET_CONTROL_FILTER_DRILL_THROUGH_AG_GRID_TARGET,
     components=[
         vm.Graph(
