@@ -39,8 +39,3 @@
 .material-symbols-outlined card-icon {
   font-size: 40px;
 }
-
-.card-wrapper {
-  display: flex;
-  flex-direction: column;
-}

@@ -2,13 +2,13 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html
-from pydantic import BeforeValidator, Field
-from pydantic.json_schema import SkipJsonSchema
+from pydantic import AfterValidator, BeforeValidator, Field, model_validator
+from pydantic.json_schema import JsonValue, SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, make_actions_chain, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import _IdProperty
+from vizro.models.types import ActionsType, _IdProperty
 
 
 class Card(VizroBaseModel):
@@ -24,6 +24,7 @@ class Card(VizroBaseModel):
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
+        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
 
     """
 
@@ -42,11 +43,10 @@ class Card(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
-        # AfterValidator(warn_description_without_title) is not needed here because either 'text' or 'icon' argument
-        # is mandatory.
+        AfterValidator(warn_description_without_title),
         Field(
             default=None,
-            description="""Optional markdown string that adds an icon next to the button text.
+            description="""Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
@@ -63,6 +63,15 @@ class Card(VizroBaseModel):
             ),
         ]
     ]
+    actions: ActionsType = []
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.n_clicks"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -71,9 +80,13 @@ class Card(VizroBaseModel):
             "text": f"{self.id}-text.children",
         }
 
+    @staticmethod
+    def _get_value_from_trigger(value: str, trigger: int) -> JsonValue:
+        """Return the given `value` without modification."""
+        return value
+
     @_log_call
     def build(self):
-        title = html.H4(self.title, className="card-title") if self.title else None
         header = dbc.CardHeader(self.header) if self.header else None
         footer = dbc.CardFooter(self.footer) if self.footer else None
         text = dcc.Markdown(
@@ -82,7 +95,10 @@ class Card(VizroBaseModel):
 
         description = self.description.build().children if self.description is not None else [None]
 
-        title_d = html.Div(children=[title, *description], className="card-title-desc")
+        title = html.Div(
+            children=[html.H4(self.title, className="card-title") if self.title else None, *description],
+            className="card-title-desc",
+        )
 
         card_text = (
             dbc.NavLink(
@@ -93,7 +109,7 @@ class Card(VizroBaseModel):
             if self.href
             else text
         )
-        card_body = dbc.CardBody(children=[title_d, card_text])
+        card_body = dbc.CardBody(children=[title, card_text])
 
         card_content = [header, card_body, footer]
 
@@ -103,4 +119,4 @@ class Card(VizroBaseModel):
             "class_name": "card-nav" if self.href else "",
         }
 
-        return dbc.Card(**(defaults | self.extra))
+        return html.Div(dbc.Card(**(defaults | self.extra)), className="card-wrapper")
