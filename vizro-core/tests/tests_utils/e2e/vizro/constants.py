@@ -235,6 +235,39 @@ COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
 
 COLLAPSIBLE_CONTAINERS_FLEX = "collapsible-containers-flex-layout"
 
+SET_CONTROL_GRAPH_CROSS_FILTER_PAGE = "set-control-graph-cross-filter-page"
+SCATTER_SET_CONTROL_CROSS_FILTER_ID = "scatter_set_control_cross-filter"
+BOX_SET_CONTROL_CROSS_FILTER_ID = "box_set_control_cross-filter"
+DROPDOWN_SET_CONTROL_CROSS_FILTER = "dropdown_set_control_cross-filter_filter"
+
+SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE = "set-control-table-ag-grid-cross-filter-page"
+SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID = "set-control-ag grid cross-filter id"
+SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID = "set-control-line_ag_grid_cross-filter"
+
+SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE = "set-control-drill-through-filter-graph-source"
+SCATTER_DRILL_THROUGH_FILTER_GRAPH_SOURCE_ID = "scatter-drill-through-filter-graph-source"
+
+SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET = "set-control-drill-through-filter-graph-target"
+SCATTER_DRILL_THROUGH_FILTER_GRAPH_TARGET_ID = "scatter-drill-through-filter-graph-target"
+CHECKLIST_DRILL_THROUGH_FILTER_GRAPH_ID = "checklist-drill-through-filter-graph"
+
+SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE = "set-control-drill-through-parameter-graph-source"
+SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE_ID = "scatter-drill-through-parameter-graph-source"
+
+SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_TARGET = "set-control-drill-through-parameter-graph-target"
+SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_TARGET_ID = "scatter-drill-through-parameter-graph-target"
+RADIOITEMS_DRILL_THROUGH_PARAMETER_GRAPH_ID = "radioitems-drill-through-parameter-graph"
+
+SET_CONTROL_DRILL_DOWN_GRAPH_PAGE = "set-control-drill-down-graph-page"
+SCATTER_DRILL_DOWN_GRAPH_ID = "scatter-drill-down-graph"
+
+SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE = "set-control-drill-through-filter-ag_grid-source"
+AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID = "ag-grid-drill-through-filter-ag_grid-id"
+
+SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET = "set-control-drill-through-filter-ag_grid-target"
+SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID = "scatter-2-drill-through-filter-ag_grid-target-id"
+RADIOITEMS_DRILL_THROUGH_FILTER_AG_GRID_ID = "radioitems-drill-through-filter-ag_grid-id"
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names
@@ -246,6 +279,7 @@ DYNAMIC_DATA_ACCORDION = "DYNAMIC data"
 KPI_ACCORDION = "KPI"
 CONTAINER_ACCORDION = "Containers"
 LAYOUT_ACCORDION = "Layouts"
+ACTIONS_ACCORDION = "Actions"
 
 # Ports
 
