@@ -43,6 +43,9 @@ class set_control(_AbstractAction):
         trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). This is typically
         useful for a positional variable, for example `"x"`, and does not require setting `custom_data`.
 
+    * [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a
+    literal value to set `control` to.
+
     Args:
         control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
             `show_in_url=True`. The control's selector must be categorical (e.g. Dropdown, RadioItems, Checklist).
@@ -78,6 +81,17 @@ class set_control(_AbstractAction):
             actions=va.set_control(control="target_control", value="x"),
         )
         ```
+
+    Example: `Figure` as trigger
+        ```python
+        import vizro.actions as va
+        from vizro.figures import kpi_card
+
+        vm.Figure(
+            figure=kpi_card(tips, value_column="tip", title="Click KPI to set control to A"),
+            actions=va.set_control(control="target_control", value="A"),
+        )
+        ```
     """
 
     type: Literal["set_control"] = "set_control"
@@ -98,7 +112,7 @@ class set_control(_AbstractAction):
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
                 f"`set_control` action was added to the model with ID `{self._parent_model.id}`, but this action "
-                f"can only be used with models that support it (e.g. Graph, AgGrid)."
+                f"can only be used with models that support it (e.g. Graph, AgGrid, Figure)."
             )
 
         # Validate that action's control exists in the dashboard.

@@ -2,6 +2,19 @@ from time import sleep
 
 import e2e.vizro.constants as cnst
 import pandas as pd
+from pages.set_control_cross_filter_page import (
+    cross_filter_ag_grid_page,
+    cross_filter_graph_page,
+)
+from pages.set_control_drill_down import drill_down_graph_page
+from pages.set_control_drill_through import (
+    drill_through_filter_ag_grid_source_page,
+    drill_through_filter_ag_grid_target_page,
+    drill_through_filter_graph_source_page,
+    drill_through_filter_graph_target_page,
+    drill_through_parameter_graph_source_page,
+    drill_through_parameter_graph_target_page,
+)
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -272,6 +285,15 @@ dashboard = vm.Dashboard(
         page_dynamic_parametrisation,
         page_all_selectors,
         page_all_selectors_in_url,
+        cross_filter_graph_page,
+        cross_filter_ag_grid_page,
+        drill_through_filter_ag_grid_source_page,
+        drill_through_filter_ag_grid_target_page,
+        drill_through_filter_graph_source_page,
+        drill_through_filter_graph_target_page,
+        drill_through_parameter_graph_source_page,
+        drill_through_parameter_graph_target_page,
+        drill_down_graph_page,
     ]
 )
 
