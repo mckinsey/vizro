@@ -29,12 +29,13 @@ class NewFlexWithType(vm.Flex):
 vm.Page.add_type("layout", Annotated[NewFlexWithType, Tag("anything")])
 
 page = vm.Page(title="a", components=[vm.Text(text="a")], layout=NewFlexNoType())
+# This works fine:
 page_2 = vm.Page(title="b", components=[vm.Text(text="b")], layout=NewFlexWithType())
 
 # Coerces to Flex if we don't explicitly specify new type
 print(f"{type(page.layout)=}")
 print(f"{type(page_2.layout)=}")
 
-
+# This does revalidation so doesn't:
 dashboard = vm.Dashboard(pages=[page, page_2])
 # Vizro().build(dashboard).run(debug=True)
