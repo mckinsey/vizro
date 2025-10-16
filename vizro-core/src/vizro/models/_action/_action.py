@@ -414,9 +414,7 @@ class _BaseAction(VizroBaseModel):
             #  In that case, action._first_in_chain_input_trigger_property won't work.
             # Traverse all action inputs for models that has a _action_trigger_extractions mapping for used property.
 
-            a = self
-
-            def _traverse(ctx_node, ext_node, parent=None, key=None, a=None):
+            def _traverse(ctx_node, ext_node, parent=None, key=None):
                 if not ctx_node:
                     return
 
@@ -440,7 +438,7 @@ class _BaseAction(VizroBaseModel):
                             #  Will it cause any other problems when we enable arbitrary number of inputs?
                             #  or in some other case??
                             original_prop = (
-                                a._first_in_chain_input_trigger_property
+                                self._first_in_chain_input_trigger_property
                                 if key == "_trigger"
                                 else self._runtime_args[key].split('.')[1]
                             )
@@ -453,13 +451,13 @@ class _BaseAction(VizroBaseModel):
                             pass
                     else:
                         for key, ctx_child in ctx_node.items():
-                            _traverse(ctx_node=ctx_child, ext_node=ext_node[key], parent=ext_node, key=key, a=a)
+                            _traverse(ctx_node=ctx_child, ext_node=ext_node[key], parent=ext_node, key=key)
 
                 elif isinstance(ctx_node, list):
                     for i, (ctx_child, ext_child) in enumerate(zip(ctx_node, ext_node)):
-                        _traverse(ctx_node=ctx_child, ext_node=ext_child, parent=ext_node, key=i, a=a)
+                        _traverse(ctx_node=ctx_child, ext_node=ext_child, parent=ext_node, key=i)
 
-            _traverse(ctx_node=ctx.args_grouping["external"], ext_node=external, a=a)
+            _traverse(ctx_node=ctx.args_grouping["external"], ext_node=external)
 
             # user_inputs = self._runtime_args.values()
             #
