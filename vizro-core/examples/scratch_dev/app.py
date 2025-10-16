@@ -39,7 +39,6 @@ page = vm.Page(
             text="Card without title",
             header="This is card header",
             footer="This is card footer",
-            description="Tooltip",
         ),
         vm.Graph(figure=px.bar(gapminder, x="country", y="pop", color="continent")),
         vm.Card(
