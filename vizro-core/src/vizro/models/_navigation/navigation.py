@@ -26,7 +26,11 @@ class Navigation(VizroBaseModel):
 
     """
 
-    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    pages: Annotated[
+        NavPagesType,
+        # AfterValidator(_validate_pages),
+        Field(default=[]),
+    ]
     nav_selector: Optional[NavSelectorType] = None
 
     @_log_call

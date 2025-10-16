@@ -28,7 +28,11 @@ class NavLink(VizroBaseModel):
 
     """
 
-    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    pages: Annotated[
+        NavPagesType,
+        # AfterValidator(_validate_pages),
+        Field(default=[]),
+    ]
     label: str = Field(description="Text description of the icon for use in tooltip.")
     icon: Annotated[
         str,

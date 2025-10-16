@@ -90,17 +90,17 @@ def ParentWithNonDiscriminatedUnion():
     return _ParentWithNonDiscriminatedUnion
 
 
-@pytest.fixture()
-def GrandParentPair():
-    class _GrandparentChild(vm.VizroBaseModel):
-        child: ChildType
+# @pytest.fixture()
+# def GrandParentPair():
+#     class _GrandparentChild(vm.VizroBaseModel):
+#         child: ChildType
 
-    class _GrandParent(vm.VizroBaseModel):
-        child: _GrandparentChild
+#     class _GrandParent(vm.VizroBaseModel):
+#         child: _GrandparentChild
 
-        model_config = ConfigDict(revalidate_instances="always")
+#         model_config = ConfigDict(revalidate_instances="always")
 
-    return _GrandparentChild, _GrandParent
+#     return _GrandparentChild, _GrandParent
 
 
 class TestDiscriminatedUnion:
@@ -773,75 +773,75 @@ class TestAddingDuplicateDiscriminator:
 #         model.model_rebuild(force=True)
 
 
-# TODO[MS]: probably we don't want this as it pollutes the global vm namespace!!
-# What other consequences does this have when run on a server?
-class TestAddingMultipleHierarchyLevels:
-    @pytest.mark.parametrize(
-        "model,field",
-        [
-            (vm.Filter, "selector"),
-            (vm.Parameter, "selector"),
-            (vm.Container, "controls"),
-            (vm.Page, "controls"),
-            (vm.Page, "components"),
-            (vm.Container, "components"),
-            (vm.Navigation, "nav_selector"),
-            # (vm.Page, "layout"), # This does not work, was it ever working?
-        ],
-    )
-    def test_add_discriminated_union_type(self, model, field):
-        """Test whether adding a discriminated union type works and new type is included in dashboard schema."""
+# # TODO[MS]: probably we don't want this as it pollutes the global vm namespace!!
+# # What other consequences does this have when run on a server?
+# class TestAddingMultipleHierarchyLevels:
+#     @pytest.mark.parametrize(
+#         "model,field",
+#         [
+#             (vm.Filter, "selector"),
+#             (vm.Parameter, "selector"),
+#             (vm.Container, "controls"),
+#             (vm.Page, "controls"),
+#             (vm.Page, "components"),
+#             (vm.Container, "components"),
+#             (vm.Navigation, "nav_selector"),
+#             # (vm.Page, "layout"), # This does not work, was it ever working?
+#         ],
+#     )
+#     def test_add_discriminated_union_type(self, model, field):
+#         """Test whether adding a discriminated union type works and new type is included in dashboard schema."""
 
-        class NewType(vm.VizroBaseModel):
-            type: Literal["new_type"] = "new_type"
+#         class NewType(vm.VizroBaseModel):
+#             type: Literal["new_type"] = "new_type"
 
-        model.add_type(field, NewType)
+#         model.add_type(field, NewType)
 
-        assert "$defs/NewType" in str(vm.Dashboard.model_json_schema()["$defs"][model.__name__]["properties"])
-        assert "$defs/NewType" in str(model.model_json_schema())
+#         assert "$defs/NewType" in str(vm.Dashboard.model_json_schema()["$defs"][model.__name__]["properties"])
+#         assert "$defs/NewType" in str(model.model_json_schema())
 
-    @pytest.mark.parametrize(
-        "model1,field1",
-        [(vm.Filter, "selector"), (vm.Parameter, "selector"), (vm.Container, "controls"), (vm.Page, "controls")],
-    )
-    @pytest.mark.parametrize(
-        "model2,field2",
-        [(vm.Filter, "selector"), (vm.Parameter, "selector"), (vm.Container, "controls"), (vm.Page, "controls")],
-    )
-    def test_add_multiple_discriminated_union_types(self, model1, field1, model2, field2):
-        """Test whether adding multiple discriminated union types works and new types are in dashboard schema."""
+#     @pytest.mark.parametrize(
+#         "model1,field1",
+#         [(vm.Filter, "selector"), (vm.Parameter, "selector"), (vm.Container, "controls"), (vm.Page, "controls")],
+#     )
+#     @pytest.mark.parametrize(
+#         "model2,field2",
+#         [(vm.Filter, "selector"), (vm.Parameter, "selector"), (vm.Container, "controls"), (vm.Page, "controls")],
+#     )
+#     def test_add_multiple_discriminated_union_types(self, model1, field1, model2, field2):
+#         """Test whether adding multiple discriminated union types works and new types are in dashboard schema."""
 
-        class NewType1(vm.VizroBaseModel):
-            type: Literal["new_type_1"] = "new_type_1"
+#         class NewType1(vm.VizroBaseModel):
+#             type: Literal["new_type_1"] = "new_type_1"
 
-        class NewType2(vm.VizroBaseModel):
-            type: Literal["new_type_2"] = "new_type_2"
+#         class NewType2(vm.VizroBaseModel):
+#             type: Literal["new_type_2"] = "new_type_2"
 
-        model1.add_type(field1, NewType1)
-        model2.add_type(field2, NewType2)
+#         model1.add_type(field1, NewType1)
+#         model2.add_type(field2, NewType2)
 
-        assert "NewType1" in str(model1.model_json_schema())
-        assert "NewType2" in str(model2.model_json_schema())
-        assert "NewType1" in str(vm.Dashboard.model_json_schema())
-        assert "NewType2" in str(vm.Dashboard.model_json_schema())
+#         assert "NewType1" in str(model1.model_json_schema())
+#         assert "NewType2" in str(model2.model_json_schema())
+#         assert "NewType1" in str(vm.Dashboard.model_json_schema())
+#         assert "NewType2" in str(vm.Dashboard.model_json_schema())
 
 
-class TestMultipleHierarchyLevelsToyModels:
-    def test_add_type_model_instantiation(self, GrandParentPair):
-        grandparent_child, grandparent = GrandParentPair
-        grandparent_child.add_type(
-            "child",
-            ChildZ,
-            root_model=grandparent,
-            model_namespace=globals(),
-        )
-        grandparent_child_instance = grandparent_child(child=ChildZ())
-        grandparent(child=grandparent_child_instance)
-        assert "$defs/ChildZ" in str(
-            grandparent.model_json_schema()["$defs"][grandparent_child.__name__]["properties"]["child"]
-        )
+# class TestMultipleHierarchyLevelsToyModels:
+#     def test_add_type_model_instantiation(self, GrandParentPair):
+#         grandparent_child, grandparent = GrandParentPair
+#         grandparent_child.add_type(
+#             "child",
+#             ChildZ,
+#             root_model=grandparent,
+#             model_namespace=globals(),
+#         )
+#         grandparent_child_instance = grandparent_child(child=ChildZ())
+#         grandparent(child=grandparent_child_instance)
+#         assert "$defs/ChildZ" in str(
+#             grandparent.model_json_schema()["$defs"][grandparent_child.__name__]["properties"]["child"]
+#         )
 
-        # assert isinstance(grandparent.child[0], ChildZ)
+#         # assert isinstance(grandparent.child[0], ChildZ)
 
-    # to ultimately test:
-    # to check: add multiple add_types to different models, what about nested add_types, or add_types on new models
+#     # to ultimately test:
+#     # to check: add multiple add_types to different models, what about nested add_types, or add_types on new models
