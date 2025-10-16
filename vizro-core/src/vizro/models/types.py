@@ -53,7 +53,6 @@ def _get_layout_discriminator(layout: Any) -> Optional[str]:
                 stacklevel=3,
             )
             return "legacy_layout"
-    #
     if hasattr(layout, "type"):
         # If type is not n manual list of expected tags then it must be a custom model, in which case tag as
         # __custom__ so it doesn't get validated any further
