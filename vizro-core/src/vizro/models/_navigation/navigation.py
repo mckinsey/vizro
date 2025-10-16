@@ -4,11 +4,11 @@ from typing import Annotated, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, Field
+from pydantic import Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
+from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType, NavSelectorType
 
