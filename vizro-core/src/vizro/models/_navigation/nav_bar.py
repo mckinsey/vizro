@@ -46,6 +46,7 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        # TODO[MS]: we may need to validate pages here?
         from vizro.models import Page
 
         self.items = self.items or [

@@ -41,6 +41,12 @@ class Accordion(VizroBaseModel):
     ]
 
     @_log_call
+    def pre_build(self):
+        # parent = model_manager._get_node(self.id)
+        # self.pages = self.pages or parent.pages or parent.parent.pages
+        self.pages = _validate_pages(self.pages)
+
+    @_log_call
     def build(self, *, active_page_id=None):
         # Note build does not return _NavBuildType but just a single html.Div with id="nav-panel".
         # Hide navigation panel if there is only one page
