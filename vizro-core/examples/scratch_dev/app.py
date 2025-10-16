@@ -1,6 +1,6 @@
 import base64
 import json
-from typing import Literal, Annotated
+from typing import Literal, Annotated, Union
 
 import dash
 from dash import get_relative_path
@@ -24,18 +24,28 @@ class NewFlexWithType(vm.Flex):
     type: Literal["anything"] = "anything"
 
 
-# No add_type needed!
+class MyPage(vm.Page):
+    title: Union[str, int]
 
-vm.Page.add_type("layout", Annotated[NewFlexWithType, Tag("anything")])
 
-page = vm.Page(title="a", components=[vm.Text(text="a")], layout=NewFlexNoType())
+page = MyPage(title=1, path="a", id="a", components=[vm.Text(text="a")], layout=NewFlexNoType())
 # This works fine:
-page_2 = vm.Page(title="b", components=[vm.Text(text="b")], layout=NewFlexWithType())
+page_2 = MyPage(title="b", components=[vm.Text(text="b")], layout=NewFlexWithType())
+
+# vm.Dashboard.add_type("pages", MyPage)
+
+
+class MyDashboard(vm.Dashboard):
+    pages: list[MyPage]
+
 
 # Coerces to Flex if we don't explicitly specify new type
 print(f"{type(page.layout)=}")
 print(f"{type(page_2.layout)=}")
+print("----")
+dashboard = MyDashboard(pages=[page, page_2])
 
-# This does revalidation so doesn't:
-dashboard = vm.Dashboard(pages=[page, page_2])
+print(f"{type(page.title)=}")
+print(f"{type(page_2.title)=}")
+
 # Vizro().build(dashboard).run(debug=True)
