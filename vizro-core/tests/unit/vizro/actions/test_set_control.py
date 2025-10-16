@@ -92,7 +92,7 @@ class TestSetControlPreBuild:
             ValueError,
             match=re.escape(
                 "`set_control` action was added to the model with ID `button_1`, but this action can only be used with"
-                " models that support it (e.g. Graph, AgGrid, Figure)."
+                " models that support it (e.g. Graph, AgGrid, Figure, Card)."
             ),
         ):
             action.pre_build()

@@ -197,6 +197,52 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
 
         [![CardText]][cardtext]
 
+## Add header and footer
+
+You can add header and footer to your [`Card`][vizro.models.Card] model by specifying `header` and `footer` arguments.
+
+!!! example "Card with header and footer"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Card with header and footer",
+            components=[
+                vm.Card(
+                    text="Commodi repudiandae consequuntur voluptatum.",
+                    header="Lorem ipsum header",
+                    footer="Lorem ipsum footer",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - text: |
+                  Commodi repudiandae consequuntur voluptatum.
+                header: Lorem ipsum header
+                footer: Lorem ipsum footer
+                type: card
+            title: Card with header and footer
+        ```
+
+    === "Result"
+
+        [![CardHeaderFooter]][cardheaderfooter]
+
 ## Place an image on a card
 
 Images can be added to the `text` parameter by using the standard markdown syntax:
@@ -569,6 +615,58 @@ To create a KPI card, use the existing KPI card functions from [`vizro.figures`]
 
 For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#key-performance-indicator-kpi-cards).
 
+## Add a tooltip
+
+The `description` argument enables you to add helpful context to your button by displaying an info icon next to its text. Hovering over the icon shows a tooltip with your chosen text.
+
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+
+!!! example "Card with a tooltip"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Card with a tooltip",
+            components=[
+                vm.Card(
+                    text="Commodi repudiandae consequuntur voluptatum.",
+                    title="Lorem ipsum",
+                    description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+                                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - text: |
+                  Commodi repudiandae consequuntur voluptatum.
+                title: Lorem ipsum
+                description: |
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+
+                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+                type: card
+            title: Card with a tooltip
+        ```
+
+    === "Result"
+
+        [![CardInfoIcon]][cardinfoicon]
+
 ## The `extra` argument
 
 The `Card` is based on the underlying Dash component [`dbc.Card`](https://www.dash-bootstrap-components.com/docs/components/card/). Using the `extra` argument you can pass extra arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
@@ -620,9 +718,11 @@ An example use would be to specify a fixed `Card` height and width. For this, yo
         [![CardStyle]][cardstyle]
 
 [card]: ../../assets/user_guides/components/card.png
+[cardheaderfooter]: ../../assets/user_guides/components/card_header_footer.png
 [cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
 [cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
 [cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
+[cardinfoicon]: ../../assets/user_guides/components/card_info_icon.png
 [cardstyle]: ../../assets/user_guides/components/cardstyle.png
 [cardtext]: ../../assets/user_guides/components/card_text.png
 [navcard]: ../../assets/user_guides/components/nav_card.png
