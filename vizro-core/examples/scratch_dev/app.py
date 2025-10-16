@@ -1,165 +1,197 @@
-import dash_bootstrap_components as dbc
-import pandas as pd
+"""Scratch app"""
+
+from typing import Literal
 
 import vizro.plotly.express as px
-import vizro.models as vm
+from dash import html
 from vizro import Vizro
-from vizro.figures import kpi_card, kpi_card_reference
-from vizro.actions import set_control
-from vizro.models.types import capture
-
 
 df = px.data.iris()
-df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
 
-example_cards = [
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with formatting",
-        value_format="${value:.2f}",
-    ),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with icon",
-        icon="Shopping Cart",
-    ),
-]
+# 2. Create new custom component
+class Jumbotron(vm.VizroBaseModel):
+    """New custom component `Jumbotron`."""
 
-example_reference_cards = [
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference (pos)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        agg_func="median",
-        title="KPI reference (neg)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with formatting",
-        value_format="{value:.2f}€",
-        reference_format="{delta:+.2f}€ vs. last year ({reference:.2f}€)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with icon",
-        icon="Shopping Cart",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference (reverse color)",
-        reverse_color=True,
-    ),
-]
+    type: Literal["jumbotron"] = "jumbotron"
+    title: str
+    subtitle: str
+    text: str
 
-page_1 = vm.Page(
-    title="KPI cards + 1 Nav card",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards]
-    + [
-        vm.Card(
-            text="This is a nav card. Click to go to page 2.",
-            href="/page-2",
-        )
-    ],
-)
+    def build(self):
+        """Build the new component based on Dash components."""
+        return html.Div([html.H2(self.title), html.H3(self.subtitle), html.P(self.text)])
 
 
-@capture("action")
-def custom_action(_trigger):
-    return f"The card is clicked: {_trigger} times."
+# vm.Page.add_type("components", Jumbotron)
+# print("--------------------------------")
 
 
-page_2 = vm.Page(
-    title="KPI cards trigger custom action",
-    path="/page-2",
-    layout=vm.Flex(direction="row", wrap=True),
+class TooltipNonCrossRangeSlider(vm.RangeSlider):
+    """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
+
+    type: Literal["other_range_slider"] = "other_range_slider"
+
+    def build(self):
+        """Extend existing component by calling the super build and update properties."""
+        range_slider_build_obj = super().build()
+        range_slider_build_obj[self.id].allowCross = False
+        range_slider_build_obj[self.id].tooltip = {"always_visible": True, "placement": "bottom"}
+        return range_slider_build_obj
+
+
+print("----Adding to Filter----")
+vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
+print("----Adding to Parameter----")
+vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
+print("--------------------------------")
+
+# First page
+page1 = vm.Page(
+    title="My first page",
     components=[
-        vm.Figure(
-            figure=kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
-            actions=vm.Action(function=custom_action(), outputs="text_output"),
-        ),
-        vm.Text(id="text_output", text="Click a card to see the action output here."),
-    ],
-)
-
-
-page_3 = vm.Page(
-    title="KPI cards trigger set_control",
-    path="/page-3",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[
-        vm.Figure(
-            figure=kpi_card(data_frame=df_kpi[df_kpi["Category"] == "A"], value_column="Actual", title="Actual for A"),
-            actions=set_control(control="filter-id-1", value="A"),
-        ),
-        vm.Figure(
-            figure=kpi_card(data_frame=df_kpi[df_kpi["Category"] == "B"], value_column="Actual", title="Actual for B"),
-            actions=set_control(control="filter-id-1", value="B"),
-        ),
-        vm.Figure(
-            figure=kpi_card(data_frame=df_kpi[df_kpi["Category"] == "C"], value_column="Actual", title="Actual for C"),
-            actions=set_control(control="filter-id-1", value="C"),
-        ),
+        # Jumbotron(
+        #     title="Custom component based on new creation",
+        #     subtitle="This is a subtitle to summarize some content.",
+        #     text="This is the main body of text of the Jumbotron.",
+        # ),
         vm.Graph(
-            id="graph-1",
-            figure=px.bar(
-                df_kpi,
-                x="Category",
-                y="Actual",
-                color="Category",
-                color_discrete_map={"A": "#00b4ff", "B": "#ff9222", "C": "#3949ab"},
+            id="graph_1",
+            figure=px.scatter_matrix(
+                df,
+                dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+                color="species",
+                opacity=0.5,
             ),
         ),
     ],
-    controls=[vm.Filter(id="filter-id-1", column="Category", targets=["graph-1"])],
-)
-
-
-@capture("figure")
-def button_as_figure(data_frame):
-    return dbc.Button(
-        children=f"Graph below shows {len(data_frame)} rows. Click to trigger two actions",
-        color="primary",
-        class_name="m-2",
-    )
-
-
-page_4 = vm.Page(
-    title="Custom button as a figure",
-    path="/page-4",
-    components=[
-        vm.Figure(
-            id="figure-2",
-            figure=button_as_figure(df),
-            actions=[
-                set_control(control="filter-id-2", value="setosa"),
-                vm.Action(function=custom_action(), outputs="text-2"),
-            ],
-        ),
-        vm.Text(id="text-2", text="Click the button to see the action output here."),
-        vm.Graph(id="graph-2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    controls=[
+        vm.Filter(column="sepal_length", selector=TooltipNonCrossRangeSlider(id="filter_1")),
+        vm.Parameter(targets=["graph_1.opacity"], selector=TooltipNonCrossRangeSlider(id="parameter_1")),
     ],
-    controls=[vm.Filter(id="filter-id-2", column="species", targets=["graph-2", "figure-2"])],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
+# page_close = vm.Page.model_validate(page1)
+
+# # Second page with two graphs
+# page2 = vm.Page(
+#     title="My second page",
+#     components=[
+#         vm.Graph(
+#             figure=px.scatter_matrix(
+#                 df, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"], color="species"
+#             ),
+#         ),
+#         vm.Graph(
+#             figure=px.scatter(df, x="sepal_length", y="sepal_width", color="species", size="petal_width"),
+#         ),
+#     ],
+# )
+# So I think the answer is that we need to rebuild also the outer model!
+# Not quite sure why this worked before!
+# Additional note: would that have solved the issue on the Vizro MCP server with CapturedCallables?
+# vm.Dashboard.model_rebuild(force=True)
+
+
+dashboard = vm.Dashboard(pages=[page1])
+
+# dashboard_config = {
+#     "pages": [
+#         {
+#             "id": "page_1",
+#             "title": "My first page",
+#             "components": [
+#                 {
+#                     "type": "graph",
+#                     "id": "graph_1",
+#                     "figure": {
+#                         "_target_": "scatter_matrix",
+#                         "data_frame": "iris",
+#                         "dimensions": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+#                         "color": "species",
+#                     },
+#                 }
+#             ],
+#         },
+#         {
+#             "id": "page_2",
+#             "title": "My second page",
+#             "components": [
+#                 {
+#                     "type": "graph",
+#                     "id": "graph_2",
+#                     "figure": {
+#                         "_target_": "scatter_matrix",
+#                         "data_frame": "iris",
+#                         "dimensions": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+#                         "color": "species",
+#                     },
+#                 },
+#                 {
+#                     "type": "graph",
+#                     "id": "graph_3",
+#                     "figure": {
+#                         "_target_": "scatter",
+#                         "data_frame": "iris",
+#                         "x": "sepal_length",
+#                         "y": "sepal_width",
+#                         "color": "species",
+#                         "size": "petal_width",
+#                     },
+#                 },
+#             ],
+#         },
+#     ],
+# }
+
+# Still requires a .py to add data to the data manager and parse YAML configuration
+# See yaml_version example
+
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    from vizro.managers import model_manager
+
+    # print("=== START ===")
+    # Create dashboard from config
+    # dashboard_from_config = vm.Dashboard.model_validate(dashboard_config, context={"build_tree": True})
+    # dashboard_config = vm.Dashboard(**dashboard_config)  # this line is necessary for yaml/json config of dashboard
+    # What if we want to directly add model to build? ==> instantiate first, then build? That works, see code in _vizro.py
+    # app = Vizro().build(dashboard)
+    # dashboard_from_config._tree.print(repr=lambda node: f"{node.kind}: {node.data.__class__.__name__}: {node.data.id}")
+    # model_manager.print_dashboard_tree()
+
+    print(
+        "Container Filter   ",
+        vm.Container.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+    print(
+        "Container Parameter",
+        vm.Container.model_json_schema()["$defs"]["Parameter"]["properties"]["selector"]["oneOf"][-2:],
+    )
+
+    print(
+        "Page Filter        ",
+        vm.Page.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+    print(
+        "Page Parameter     ",
+        vm.Page.model_json_schema()["$defs"]["Parameter"]["properties"]["selector"]["oneOf"][-2:],
+    )
+    print(
+        "Tabs  Filter       ",
+        vm.Tabs.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+    print(
+        "Tabs  Parameter    ",
+        vm.Tabs.model_json_schema()["$defs"]["Parameter"]["properties"]["selector"]["oneOf"][-2:],
+    )
+    print(
+        "Dashboard Filter   ",
+        vm.Dashboard.model_json_schema()["$defs"]["Filter"]["properties"]["selector"]["anyOf"][0]["oneOf"][-2:],
+    )
+    print(
+        "Dashboard Parameter",
+        vm.Dashboard.model_json_schema()["$defs"]["Parameter"]["properties"]["selector"]["oneOf"][-2:],
+    )
+    print("================================================")
+    # assert vm.Dashboard.model_json_schema()["$defs"]["Filter"] == vm.Container.model_json_schema()["$defs"]["Filter"]

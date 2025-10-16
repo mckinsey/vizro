@@ -4,12 +4,12 @@ from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import BeforeValidator, Field
 
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
+from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._navigation.nav_link import NavLink
 from vizro.models.types import ModelID
 
@@ -38,7 +38,7 @@ class NavBar(VizroBaseModel):
     type: Literal["nav_bar"] = "nav_bar"
     pages: Annotated[
         dict[str, list[ModelID]],
-        AfterValidator(_validate_pages),
+        # AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]

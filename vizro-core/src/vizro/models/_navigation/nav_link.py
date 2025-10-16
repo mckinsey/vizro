@@ -10,7 +10,6 @@ from pydantic import AfterValidator, Field, PrivateAttr
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call, validate_icon
-from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType
 
@@ -28,7 +27,11 @@ class NavLink(VizroBaseModel):
 
     """
 
-    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    pages: Annotated[
+        NavPagesType,
+        # AfterValidator(_validate_pages),
+        Field(default=[]),
+    ]
     label: str = Field(description="Text description of the icon for use in tooltip.")
     icon: Annotated[
         str,

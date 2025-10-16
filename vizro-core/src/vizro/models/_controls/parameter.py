@@ -47,9 +47,9 @@ def check_duplicate_parameter_target(targets):
     all_targets = targets.copy()
     for param in cast(Iterable[Parameter], model_manager._get_models(Parameter)):
         all_targets.extend(param.targets)
-    duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
-    if duplicate_targets:
-        raise ValueError(f"Duplicate parameter targets {duplicate_targets} found.")
+    # duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
+    # if duplicate_targets:
+    #     raise ValueError(f"Duplicate parameter targets {duplicate_targets} found.")
     return targets
 
 
