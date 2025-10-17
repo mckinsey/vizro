@@ -3,7 +3,7 @@ discriminated union even if it has only one type to begin with (e.g. pages: list
 
 We forget about add_type and trying to generate a "correct" schema. Anything that's a custom model must stay as it is
 and so be validated as Any. This sounds bad but is actually ok by me since the custom model itself performs the validation
-it needs.
+it needs. NO - SEE BELOW AAARGH, this is probably not ok :(
 
 Advantages:
 - we keep revalidate_instances="always", so model manager registration works and it feels correct
@@ -19,6 +19,16 @@ mechanism for modifying the schema in future.
 
 Disadvantages:
 - feels very heavy handed/ugly - JSON schema becomes a mess (though arguably more accurate), API docs get messier
+- AAAARGH just realised another problem that's obvious and I didn't think of before. As soon as we have Any then you
+could e.g. do Dashboard(pages=[graph]) and validation would pass when it shouldn't. This seems very bad for
+Vizro-MCP and life in general. How can we prevent this but still allow custom components to be injected anywhere? Do we
+force custom components to have type explicitly specified as "custom_component" instead of just taking it from the class name?
+Or we could maintain a list of built-in tags and throw error if the tag matches one of those when it shouldn't to stop
+e.g. Graph being used as a Page. Probably the explicit type being specified is best. We can manage this by
+distinguishing our built-in models from user-created ones e.g. just by assigning all of ours an explicit type that
+custom components wouldn't specify or checking the import path, etc. So overall this is probably not disastrous,
+we should be able to validate well enough. The below code doesn't demonstrate this and will work for Dashboard(
+pages=[graph]).
 
 Notes:
 - we don't have (or arguably need) a way of updating the schema at all. While you can't add specific types to the schema
@@ -30,6 +40,7 @@ Remaining challenges:
 - will the copy on model revalidate cause us real problems in the model manager? As in last post of
 https://github.com/pydantic/pydantic/issues/7608. Not worried about tests breaking so long as things work in practice
 (and we understand why) since we can fix tests later.
+- how to solve the new AAAARGH above, but I have some ideas here so don't worry about it too much.
 
 Alternative solution:
 - drop revalidate_instances="always", but then need to go back to figure out how to handle model manager in a way that
