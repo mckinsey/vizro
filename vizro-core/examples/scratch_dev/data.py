@@ -1,3 +1,5 @@
+"""Data for custom charts."""
+
 import random
 
 import pandas as pd

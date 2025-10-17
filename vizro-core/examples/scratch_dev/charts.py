@@ -1,12 +1,13 @@
 """Collection of custom charts."""
 
-# import plotly.express as px
-
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.plotly.express as px
 from dash_ag_grid import AgGrid
 from vizro.models.types import capture
+
+CURRENT_YEAR = 2017
+PREVIOUS_YEAR = 2016
 
 PRIMARY_COLOR = "#2251ff"
 SECONDARY_COLOR = "#A0A2A8"
@@ -38,123 +39,25 @@ DIVERGING_RED_BLUE = [
 
 
 @capture("graph")
-def bar_chart_by_segment(data_frame, custom_data, value_col="Sales"):
+def bar_chart_by_category(data_frame, custom_data):
     """Custom bar chart made with Plotly."""
-    fig = px.bar(
-        data_frame,
-        y="Segment",
-        x=value_col,
-        color="Segment",
-        title=f"{value_col} | By Customer",
-        custom_data=custom_data,
-        orientation="h",
-    )
-    return fig
-
-
-@capture("graph")
-def bar_chart_by_product(data_frame, custom_data, value_col="Sales"):
-    """Custom bar chart made with Plotly."""
-    df_grouped = data_frame.groupby("Product Name", as_index=False)[value_col].sum()
-    df_top10 = df_grouped.nlargest(10, value_col).reset_index(drop=True)
-    df_top10["Rank"] = df_top10[value_col].rank(method="first", ascending=False).astype(int)
-    df_top10 = df_top10.sort_values("Rank")
-    df_top10["Sales_Label"] = df_top10[value_col].apply(lambda x: f"${x / 1000:.1f}K")
-
-    fig = px.bar(
-        df_top10,
-        x=value_col,
-        y="Rank",
-        orientation="h",
-        color="Product Name",
-        color_discrete_sequence=["#4dabf7"] + ["#ff9222"] * 9,
-        custom_data=custom_data,
-    )
-
-    fig.update_layout(
-        title="<b>Sales</b> | By Product",
-        xaxis_title=None,
-        yaxis_title=None,
-        yaxis=dict(
-            tickmode="array",
-            tickvals=df_top10["Rank"],
-            autorange="reversed",  # Rank 1 on top
-        ),
-        showlegend=False,
-    )
-
-    fig.update_traces(textposition="outside")
-
-    return fig
-
-
-@capture("graph")
-def bar_chart_by_subcategory(data_frame, custom_data, value_col="Sales"):
-    """Custom bar chart made with Plotly."""
-    # Handle aggregation depending on metric
-    if value_col == "Order ID":
-        subcat_metric = (
-            data_frame.groupby("Sub-Category", as_index=False)["Order ID"].nunique()
-            # .rename(columns={"Order ID": "Orders"}
-            #         )
-        )
-        agg_col = "Order ID"
-    else:
-        subcat_metric = data_frame.groupby("Sub-Category", as_index=False)[value_col].sum()
-        agg_col = value_col
-
-    df_sorted = subcat_metric.sort_values(agg_col, ascending=True)
-
-    fig = px.bar(
-        df_sorted,
-        y="Sub-Category",
-        x=agg_col,
-        orientation="h",
-        title=f"{agg_col} | By Sub-Category",
-        custom_data=custom_data,
-    )
-    fig.update_layout(
-        title=dict(
-            text=f"{agg_col} | By Sub-Category",
-        ),
-        yaxis=dict(
-            visible=True,
-            categoryorder="total ascending",  # ensure bars are ordered by metric
-            title=None,
-        ),
-        xaxis=dict(title=None),
-        showlegend=False,
-    )
-
-    return fig
-
-
-@capture("graph")
-def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_category=None):
-    """Custom bar chart made with Plotly."""
-    if value_col == "Order ID":
-        category_metric = data_frame.groupby(["Category", "Sub-Category"], as_index=False)["Order ID"].nunique()
-        agg_col = "Order ID"
-    else:
-        category_metric = data_frame.groupby(["Category", "Sub-Category"], as_index=False)[value_col].sum()
-        agg_col = value_col
-
-    if data_frame["Category"].nunique() > 1:
+    if not data_frame["Category"].eq(data_frame["Category"].iloc[0]).all():
         x = "Category"
     else:
         x = "Sub-Category"
 
     fig = px.bar(
-        category_metric,
+        data_frame,
         x=x,
-        y=agg_col,
-        title=f"{agg_col} | By {x} <br><sup> 💡 Click on the category to drill-down to sub-category. Reset by using reset button next to the theme switch.</sup>",
+        y="Sales",
+        title=f"Sales | By {x} <br><sup> 💡 Click on the category to drill-down to sub-category. "
+        f"Reset by using reset button next to the theme switch.</sup>",
         custom_data=custom_data,
         color_discrete_sequence=[PRIMARY_COLOR],
     )
 
     fig.update_layout(
-        yaxis=dict(visible=False),
+        yaxis={"visible": False},
         showlegend=False,
         bargap=0.6,
         xaxis_title=None,
@@ -162,115 +65,6 @@ def bar_chart_by_category(data_frame, custom_data, value_col="Sales", highlight_
     )
 
     return fig
-
-
-@capture("graph")
-def bar_chart_by_customer(data_frame, value_col="Sales"):
-    """Custom bar chart made with Plotly."""
-    if value_col == "Order ID":
-        df_grouped = data_frame.groupby("Customer Name", as_index=False)["Order ID"].nunique()
-        agg_col = "Order ID"
-    else:
-        df_grouped = data_frame.groupby("Customer Name", as_index=False)[value_col].sum()
-        agg_col = value_col
-
-    df_top10 = df_grouped.nlargest(10, agg_col).reset_index(drop=True)
-    df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
-
-    if agg_col in ["Sales", "Profit"]:
-        df_top10["Value_Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
-    else:
-        df_top10["Value_Label"] = df_top10[agg_col].astype(str)
-
-    fig = px.bar(
-        df_top10,
-        x=agg_col,
-        y="Rank",
-        orientation="h",
-        color="Customer Name",
-        color_discrete_sequence=[PRIMARY_COLOR],
-        text="Value_Label",
-    )
-
-    fig.update_layout(
-        title=f"{agg_col} | Top 10 Customers",
-        xaxis_title=None,
-        yaxis_title=None,
-        yaxis=dict(
-            tickmode="array",
-            tickvals=df_top10["Rank"],
-            ticktext=[f"{r} | {c}" for r, c in zip(df_top10["Rank"], df_top10["Customer Name"])],
-            autorange="reversed",
-        ),
-        showlegend=False,
-    )
-
-    fig.update_traces(textposition="outside")
-
-    fig.update_layout(
-        title={
-            "text": f"{agg_col} | Top 10 Customers",
-        },
-    )
-
-    return fig
-
-
-@capture("ag_grid")
-def custom_aggrid(data_frame):
-    """Custom aggrid table."""
-    data_frame["Profit Ratio"] = (data_frame["Profit"] / data_frame["Sales"]).round(3)
-
-    column_defs = [
-        {"headerName": "Customer Name", "field": "Customer Name"},
-        {"headerName": "Segment", "field": "Segment"},
-        {"headerName": "Category", "field": "Category"},
-        {"headerName": "Sub-Category", "field": "Sub-Category"},
-        {"headerName": "Product Name", "field": "Product Name"},
-        {"headerName": "Sales", "field": "Sales", "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"}},
-        {"headerName": "Quantity", "field": "Quantity", "cellStyle": {"textAlign": "center"}},
-        {
-            "headerName": "Profit",
-            "field": "Profit",
-            "valueFormatter": {"function": "d3.format('$,.2f')(params.value)"},
-            "cellStyle": {
-                "function": """
-                function(params) {
-                    if (params.value < 0) {
-                        return {color: 'red', fontWeight: 'bold'};
-                    } else {
-                        return {color: 'green', fontWeight: 'bold'};
-                    }
-                }
-                """
-            },
-        },
-        {
-            "headerName": "Profit Ratio",
-            "field": "Profit Ratio",
-            "valueFormatter": {"function": "d3.format('.1%')(params.value)"},
-            "cellStyle": {
-                "styleConditions": [
-                    {
-                        "condition": "params.value < 0.5",
-                        "style": {"color": "red", "fontWeight": "bold"},
-                    },
-                    {
-                        "condition": "params.value >= 0.5",
-                        "style": {"color": "green", "fontWeight": "bold"},
-                    },
-                ]
-            },
-        },
-    ]
-    aggrid = AgGrid(
-        columnDefs=column_defs,
-        defaultColDef={"resizable": True, "sortable": True, "filter": True, "minWidth": 30, "flex": 1},
-        style={"height": "750px", "width": "100%"},
-        rowData=data_frame.to_dict("records"),
-        dashGridOptions={"pagination": True, "paginationPageSize": 20},
-    )
-    return aggrid
 
 
 @capture("graph")
@@ -309,46 +103,9 @@ def create_map_bubble_new(data_frame, custom_data, value_col="Sales"):
     )
 
     fig.update_layout(
-        margin=dict(l=10, r=10, t=10, b=10),
+        margin={"l": 10, "r": 10, "t": 10, "b": 10},
     )
     fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "bottom"}, "orientation": "h", "x": 0.5, "y": 0})
-
-    return fig
-
-
-@capture("graph")
-def create_bar_chart_by_region(data_frame, value_col="Sales", highlight_region=None):
-    """Custom bar chart made with Plotly."""
-    if value_col == "Order ID":
-        region_metric = (
-            data_frame.groupby("Region", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
-        )
-        agg_col = "Orders"
-    elif value_col == "Customer ID":
-        region_metric = (
-            data_frame.groupby("Region", as_index=False)["Customer ID"]
-            .nunique()
-            .rename(columns={"Customer ID": "Customers"})
-        )
-        agg_col = "Customers"
-    else:
-        region_metric = data_frame.groupby("Region", as_index=False)[value_col].sum()
-        agg_col = value_col
-
-    fig = px.bar(
-        region_metric,
-        y="Region",
-        x=agg_col,
-        orientation="h",
-        color_discrete_sequence=[PRIMARY_COLOR, SECONDARY_COLOR],
-    )
-
-    fig.update_layout(
-        bargap=0.5,
-        xaxis_title=None,
-        yaxis_title=None,
-        title=f"{agg_col} | By Region",
-    )
 
     return fig
 
@@ -378,10 +135,8 @@ def create_lollipop_chart_by_region(data_frame, value_col="Sales"):
     # --- Sort regions for visual clarity ---
     region_metric = region_metric.sort_values(by=agg_col, ascending=True)
 
-    # --- Create base lollipop chart ---
     fig = go.Figure()
 
-    # Add "sticks" (lines)
     fig.add_trace(
         go.Bar(
             x=region_metric[agg_col],
@@ -389,22 +144,20 @@ def create_lollipop_chart_by_region(data_frame, value_col="Sales"):
             showlegend=False,
             hoverinfo="skip",
             orientation="h",
-            marker=dict(color=PRIMARY_COLOR),
+            marker={"color": PRIMARY_COLOR},
         )
     )
 
-    # Add "heads" (circles)
     fig.add_trace(
         go.Scatter(
             x=region_metric[agg_col],
             y=region_metric["Region"],
             mode="markers",
-            marker=dict(size=14, color=PRIMARY_COLOR, line=dict(color=PRIMARY_COLOR, width=1.5)),
+            marker={"size": 14, "color": PRIMARY_COLOR, "line": {"color": PRIMARY_COLOR, "width": 1.5}},
             showlegend=False,
         )
     )
 
-    # --- Layout customization ---
     fig.update_layout(
         title=f"{agg_col} | By Region",
         xaxis_title=None,
@@ -412,27 +165,6 @@ def create_lollipop_chart_by_region(data_frame, value_col="Sales"):
         bargap=0.8,
     )
 
-    return fig
-
-
-@capture("graph")
-def create_line_chart_sales_per_month(data_frame, value_col="Sales"):
-    """Custom line chart made with Plotly."""
-    data_frame["Order Date"] = pd.to_datetime(data_frame["Order Date"])
-    data_frame["YearMonth"] = data_frame["Order Date"].dt.to_period("M").astype(str)
-    monthly_sales = data_frame.groupby("YearMonth", as_index=False)["Sales"].sum()
-
-    fig = px.line(
-        monthly_sales,
-        x="YearMonth",
-        y="Sales",
-        #  markers=True,
-    )
-
-    fig.update_layout(
-        xaxis_title=None,
-        yaxis_title=None,
-    )
     return fig
 
 
@@ -460,25 +192,25 @@ def create_bar_current_vs_previous_segment(data_frame, value_col="Sales"):
         agg_df = data_frame.groupby(["Segment", "Year"], as_index=False)[value_col].sum()
         agg_col = value_col
 
-    pivot_df = agg_df.pivot(index="Segment", columns="Year", values=agg_col).reset_index()
+    pivot_df = agg_df.pivot_table(index="Segment", columns="Year", values=agg_col).reset_index()
 
     fig = go.Figure()
 
-    if 2016 in pivot_df.columns:
+    if PREVIOUS_YEAR in pivot_df.columns:
         fig.add_trace(
             go.Bar(
                 x=pivot_df["Segment"],
-                y=pivot_df[2016],
+                y=pivot_df[PREVIOUS_YEAR],
                 name="Previous year",
                 marker_color=SECONDARY_COLOR,
             )
         )
 
-    if 2017 in pivot_df.columns:
+    if CURRENT_YEAR in pivot_df.columns:
         fig.add_trace(
             go.Bar(
                 x=pivot_df["Segment"],
-                y=pivot_df[2017],
+                y=pivot_df[CURRENT_YEAR],
                 name="Current year",
                 marker_color=PRIMARY_COLOR,
             )
@@ -519,25 +251,25 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
         agg_df = data_frame.groupby(["Category", "Year"], as_index=False)[value_col].sum()
         agg_col = value_col
 
-    pivot_df = agg_df.pivot(index="Category", columns="Year", values=agg_col).reset_index()
+    pivot_df = agg_df.pivot_table(index="Category", columns="Year", values=agg_col).reset_index()
 
     fig = go.Figure()
 
-    if 2016 in pivot_df.columns:
+    if PREVIOUS_YEAR in pivot_df.columns:
         fig.add_trace(
             go.Bar(
                 x=pivot_df["Category"],
-                y=pivot_df[2016],
+                y=pivot_df[PREVIOUS_YEAR],
                 name="Previous year",
                 marker_color=SECONDARY_COLOR,
             )
         )
 
-    if 2017 in pivot_df.columns:
+    if CURRENT_YEAR in pivot_df.columns:
         fig.add_trace(
             go.Bar(
                 x=pivot_df["Category"],
-                y=pivot_df[2017],
+                y=pivot_df[CURRENT_YEAR],
                 name="Current year",
                 marker_color=PRIMARY_COLOR,
             )
@@ -550,44 +282,6 @@ def create_bar_current_vs_previous_category(data_frame, value_col="Sales"):
         bargap=0.4,
         title=f"{agg_col} | By Product Category",
         showlegend=False,
-    )
-
-    return fig
-
-
-@capture("graph")
-def create_line_chart_sales_profit_per_month(data_frame):
-    """Custom line chart made with Plotly."""
-    data_frame["Order Date"] = pd.to_datetime(data_frame["Order Date"])
-    data_frame["YearMonth"] = data_frame["Order Date"].dt.to_period("M").astype(str)
-    monthly = data_frame.groupby("YearMonth", as_index=False).agg({"Sales": "sum", "Profit": "sum"})
-
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Scatter(
-            x=monthly["YearMonth"],
-            y=monthly["Sales"],
-            mode="lines+markers",
-            name="Sales",
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=monthly["YearMonth"],
-            y=monthly["Profit"],
-            mode="lines+markers",
-            name="Profit",
-            fill="tozeroy",
-        )
-    )
-
-    fig.update_layout(
-        title="Total Sales and Profit per Month",
-        xaxis_title=None,
-        yaxis_title=None,
-        margin=dict(l=20, r=20, t=40, b=20),
     )
 
     return fig
@@ -618,8 +312,8 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
         monthly = data_frame.groupby(["Year", "Month"], as_index=False)[value_col].sum()
         agg_col = value_col
 
-    prev_year = monthly[monthly["Year"] == 2016]
-    curr_year = monthly[monthly["Year"] == 2017]
+    prev_year = monthly[monthly["Year"] == PREVIOUS_YEAR]
+    curr_year = monthly[monthly["Year"] == CURRENT_YEAR]
 
     fig = go.Figure()
     fig.add_trace(
@@ -642,93 +336,17 @@ def create_line_chart_per_month(data_frame, value_col="Sales"):
     )
 
     fig.update_layout(
-        xaxis=dict(
-            showgrid=False,
-            title=None,
-            tickmode="array",
-            tickvals=list(range(1, 13)),
-            range=[1, 12],
-            ticktext=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        ),
+        xaxis={
+            "showgrid": False,
+            "title": None,
+            "tickmode": "array",
+            "tickvals": list(range(1, 13)),
+            "range": [1, 12],
+            "ticktext": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        },
         yaxis_title=None,
         title=f"{agg_col} | By Month",
-        legend=dict(yanchor="top", y=1.2, xanchor="right", x=1),
-    )
-
-    return fig
-
-
-@capture("graph")
-def create_top_10_states(data_frame, value_col="Sales"):
-    """Custom bar chart made with Plotly."""
-    state_sales = data_frame.groupby(["State"], as_index=False)["Sales"].sum()
-    state_sales["Rank"] = state_sales.groupby("State")["Sales"].rank(method="first", ascending=False)
-
-    top_states = state_sales[state_sales["Rank"] <= 10]
-
-    fig = px.bar(
-        top_states,
-        x=value_col,
-        y="State",
-        orientation="h",
-        color_discrete_sequence=[PRIMARY_COLOR],
-        title=f"Top 10 States by {value_col}",
-    )
-
-    fig.update_yaxes(categoryorder="total ascending")
-    return fig
-
-
-@capture("graph")
-def bar_chart_by_state(data_frame, value_col="Sales"):
-    """Custom bar chart made with Plotly."""
-    if value_col == "Order ID":
-        df_grouped = (
-            data_frame.groupby("State", as_index=False)["Order ID"].nunique().rename(columns={"Order ID": "Orders"})
-        )
-        agg_col = "Orders"
-    else:
-        df_grouped = data_frame.groupby("State", as_index=False)[value_col].sum()
-        agg_col = value_col
-
-    df_top10 = df_grouped.nlargest(10, agg_col).reset_index(drop=True)
-    df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
-
-    if agg_col in ["Sales", "Profit"]:
-        df_top10["Value_Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
-    else:
-        df_top10["Value_Label"] = df_top10[agg_col].astype(str)
-
-    fig = px.bar(
-        df_top10,
-        x=agg_col,
-        y="Rank",
-        orientation="h",
-        text="Value_Label",
-        color_discrete_sequence=[PRIMARY_COLOR],
-    )
-
-    fig.update_layout(
-        title=f"<b>{agg_col}</b> | Top 10 States",
-        xaxis_title=None,
-        yaxis_title=None,
-        yaxis=dict(
-            tickmode="array",
-            tickvals=df_top10["Rank"],
-            ticktext=[f"{s}" for s in df_top10["State"]],
-            autorange="reversed",
-        ),
-        showlegend=False,
-    )
-
-    fig.update_traces(textposition="outside")
-
-    fig.update_layout(
-        title={
-            "text": f"<b>{agg_col}</b> | Top 10 States",
-            "y": 1,
-            "yanchor": "top",
-        },
+        legend={"yanchor": "top", "y": 1.2, "xanchor": "right", "x": 1},
     )
 
     return fig
@@ -766,10 +384,8 @@ def pie_chart_by_order_status(data_frame, value_col="Sales"):
     )
 
     fig.update_layout(
-        title=dict(
-            text=f"{agg_col} | By Order Status",
-        ),
-        legend=dict(yanchor="bottom", y=-0.2, xanchor="right", orientation="v"),
+        title=f"{agg_col} | By Order Status",
+        legend={"yanchor": "bottom", "y": -0.2, "xanchor": "right", "orientation": "v"},
     )
 
     return fig
@@ -780,115 +396,6 @@ def scatter_with_quadrants(
     x: str,
     y: str,
     custom_data: list[str],
-    x_ref_quantile: float = 0.5,
-    y_ref_quantile: float = 0.2,
-    data_frame: pd.DataFrame = None,
-    highlight_product=None,
-):
-    """Custom scatter plot with quadrants made with Plotly."""
-    fig = px.scatter(
-        data_frame=data_frame,
-        x=x,
-        y=y,
-        custom_data=custom_data,
-        color="Product Name",
-        color_discrete_sequence=["grey"],
-        size="Profit Absolute",
-        size_max=20,
-        opacity=0.6,
-        hover_data=["Product Name", "Profit", "Sales", "Profit Margin"],
-        title=f"{data_frame['Category / Sub-Category'].iloc[0]} <br><sup> ⤵ Click on a point to filter the table. Refresh the page to deselect.</sup>",
-    )
-
-    if highlight_product:
-        for trace in fig.data:
-            if trace.name == highlight_product:
-                trace.marker.color = "orange"
-
-    # Add reference lines to figure
-    x_reference_line = data_frame[x].quantile(x_ref_quantile)
-    y_reference_line = data_frame[y].quantile(y_ref_quantile)
-    fig.add_hline(y=y_reference_line, line_dash="dash", line_color="grey")
-    fig.add_vline(x=x_reference_line, line_dash="dash", line_color="grey")
-
-    # Add quadrants to figure
-    fig.add_shape(
-        type="rect",
-        xref="x",
-        yref="y",
-        x0=x_reference_line,
-        y0=data_frame[y].max() + 700,
-        x1=data_frame[x].max() + 700,
-        y1=y_reference_line,
-        fillcolor="#00b4ff",
-        line_width=0,
-        opacity=0.4,
-        layer="below",
-    )
-    fig.add_shape(
-        type="rect",
-        xref="x",
-        yref="y",
-        x0=data_frame[x].min(),
-        y0=y_reference_line,
-        x1=x_reference_line,
-        y1=data_frame[y].max() + 700,
-        fillcolor="#00b4ff",
-        line_width=0,
-        opacity=0.2,
-        layer="below",
-    )
-    fig.add_shape(
-        type="rect",
-        xref="x",
-        yref="y",
-        x0=data_frame[x].min(),
-        y0=data_frame[y].min() - 700,
-        x1=x_reference_line,
-        y1=y_reference_line,
-        fillcolor="#ff9222",
-        line_width=0,
-        opacity=0.4,
-        layer="below",
-    )
-    fig.add_shape(
-        type="rect",
-        xref="x",
-        yref="y",
-        x0=x_reference_line,
-        y0=data_frame[y].min() - 700,
-        x1=data_frame[x].max() + 700,
-        y1=y_reference_line,
-        fillcolor="#ff9222",
-        line_width=0,
-        opacity=0.2,
-        layer="below",
-    )
-
-    # Customize hovertemplate
-    fig.update_layout(title_pad_t=24)
-    fig.update_traces(
-        showlegend=False,
-        hovertemplate="<br>".join(
-            [
-                "%{customdata[0]}",
-                "Profit: %{y:$,.2f}",
-                "Sales: %{x:$,.2f}",
-            ]
-        )
-        + "<extra></extra>",
-    )
-
-    return fig
-
-
-@capture("graph")
-def scatter_with_quadrants_subc(
-    x: str,
-    y: str,
-    custom_data: list[str],
-    x_ref_quantile: float = 0.5,
-    y_ref_quantile: float = 0.2,
     data_frame: pd.DataFrame = None,
     highlight_sub_category=None,
 ):
@@ -919,14 +426,14 @@ def scatter_with_quadrants_subc(
                 y=data_frame.loc[mask, y],
                 mode="markers+text",
                 text=[highlight_sub_category],
-                marker=dict(color=ORANGE_COLOR, size=marker_sizes, line=dict(width=2, color="black")),
+                marker={"color": ORANGE_COLOR, "size": marker_sizes, "line": {"width": 2, "color": "black"}},
                 hovertext=highlight_sub_category,
                 textposition="bottom center",
             )
 
     # Reference lines (based on all data)
-    x_reference_line = data_frame[x].quantile(x_ref_quantile)
-    y_reference_line = data_frame[y].quantile(y_ref_quantile)
+    x_reference_line = data_frame[x].quantile(0.5)
+    y_reference_line = data_frame[y].quantile(0.2)
     fig.add_hline(y=y_reference_line, line_dash="dash", line_color=SECONDARY_COLOR)
     fig.add_vline(x=x_reference_line, line_dash="dash", line_color=SECONDARY_COLOR)
 
@@ -990,7 +497,6 @@ def scatter_with_quadrants_subc(
         hovertemplate="<br>".join(
             [
                 "%{customdata[0]}",
-                "Sub-Category: %{marker.color}",
                 "Profit: %{y:$,.2f}",
                 "Sales: %{x:$,.2f}",
             ]
@@ -1000,8 +506,8 @@ def scatter_with_quadrants_subc(
 
     fig.update_layout(
         title_pad_t=24,
-        legend_title_text="Sub-Category",  # ✅ clearer legend
-        legend=dict(itemsizing="trace", orientation="h", yanchor="bottom", y=-0.3),
+        legend_title_text="Sub-Category",
+        legend={"itemsizing": "trace", "orientation": "h", "yanchor": "bottom", "y": -0.3},
     )
 
     return fig
@@ -1051,7 +557,7 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
     fig.add_vrect(x0=thresholds["A"], x1=thresholds["B"], fillcolor=PRIMARY_COLOR, opacity=0.3, layer="below")
     fig.add_vrect(x0=thresholds["B"], x1=100, fillcolor=PRIMARY_COLOR, opacity=0.1, layer="below")
 
-    if highlight_customer and highlight_customer in customer_df["Customer Name"].values:
+    if highlight_customer and highlight_customer in customer_df["Customer Name"].to_numpy():
         cust = customer_df[customer_df["Customer Name"] == highlight_customer].iloc[0]
         fig.add_trace(
             go.Scatter(
@@ -1060,7 +566,7 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
                 mode="markers+text",
                 text=[highlight_customer],
                 textposition="top right",
-                marker=dict(color=ORANGE_COLOR, size=12, line=dict(width=2)),
+                marker={"color": ORANGE_COLOR, "size": 12, "line": {"width": 2}},
                 showlegend=False,
             )
         )
@@ -1068,8 +574,8 @@ def pareto_customers_chart(data_frame, value_col="Sales", highlight_customer=Non
     fig.update_layout(
         xaxis_title="% of Total Customers",
         yaxis_title=f"Cumulative % of {value_col}",
-        yaxis=dict(range=[0, 105]),
-        xaxis=dict(range=[0, 105]),
+        yaxis={"range": [0, 105]},
+        xaxis={"range": [0, 105]},
     )
 
     return fig
@@ -1120,53 +626,6 @@ COLUMN_DEFS_PRODUCT = [
         "cellStyle": CELL_STYLE_PRODUCT,
     },
 ]
-
-
-@capture("graph")
-def treemap_chart(
-    data_frame: pd.DataFrame,
-    path: list,
-    values: str,
-    color: str = None,
-    title: str = None,
-):
-    """Custom treemap chart made with Plotly."""
-    fig = px.treemap(
-        data_frame=data_frame,
-        path=path,
-        values=values,
-        color=color if color else values,
-        hover_data={values: ":$,.2f", color: ":$,.2f" if color else False},
-        title=title or f"Treemap of {values} by {' > '.join(path)}",
-    )
-    fig.update_coloraxes(colorbar={"thickness": 10})
-
-    return fig
-
-
-@capture("graph")
-def bar_chart_by_category_h(data_frame, custom_data, value_col="Sales", highlight_category=None):
-    """Custom bar chart made with Plotly."""
-    df_sorted = data_frame.sort_values(value_col, ascending=True)
-    fig = px.bar(
-        df_sorted,
-        x="Category",
-        y=value_col,
-        color_discrete_sequence=[PRIMARY_COLOR, SECONDARY_COLOR],
-        title=f"{value_col} | By Category",
-        custom_data=custom_data,
-    )
-    fig.update_layout(showlegend=False)
-    fig.update_layout(bargap=0.4, xaxis_title=None, yaxis_title=None)
-
-    if highlight_category:
-        for trace in fig.data:
-            if trace.name == highlight_category:
-                trace.opacity = 1
-            else:
-                trace.opacity = 0.2
-
-    return fig
 
 
 CELL_STYLE_CUSTOMERS = {
@@ -1242,65 +701,6 @@ def bar_chart_top_n(data_frame, x="Sales", y="City", top_n=10):
         color_discrete_sequence=[PRIMARY_COLOR],
         title=f"Top {top_n} {y} by {x}",
     )
-
-    return fig
-
-
-@capture("graph")
-def bar_chart_top_customers(data_frame, value_col="Sales", top_x=10):
-    """Custom bar chart made with Plotly."""
-    if value_col == "Order ID":
-        customer_metric = (
-            data_frame.groupby("Customer Name", as_index=False)["Order ID"]
-            .nunique()
-            .rename(columns={"Order ID": "Orders"})
-        )
-        agg_col = "Orders"
-    if value_col == "Customer ID":
-        customer_metric = (
-            data_frame.groupby("Customer Name", as_index=False)["Customer ID"]
-            .nunique()
-            .rename(columns={"Customer ID": "Customers"})
-        )
-        agg_col = "Customers"
-    else:
-        customer_metric = data_frame.groupby("Customer Name", as_index=False)[value_col].sum()
-        agg_col = value_col
-
-    df_top10 = customer_metric.nlargest(top_x, agg_col).reset_index(drop=True)
-    df_top10["Rank"] = df_top10[agg_col].rank(method="first", ascending=False).astype(int)
-
-    if agg_col in ["Sales", "Profit"]:
-        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"${x / 1000:.1f}K")
-    else:
-        df_top10["Label"] = df_top10[agg_col].apply(lambda x: f"{x:,}")
-
-    fig = px.bar(
-        df_top10,
-        x=agg_col,
-        y="Rank",
-        orientation="h",
-        color="Customer Name",
-        text="Label",
-        color_discrete_sequence=["#4dabf7"],
-        title=f"Top {top_x} Customers by {agg_col}",
-    )
-
-    fig.update_layout(
-        showlegend=False,
-        xaxis_title=None,
-        yaxis_title=None,
-        yaxis=dict(
-            tickmode="array",
-            tickvals=df_top10["Rank"],
-            ticktext=[f"{c}" for c in df_top10["Customer Name"]],
-            autorange="reversed",
-            tickfont=dict(size=13),
-        ),
-    )
-
-    fig.update_yaxes(ticklabelposition="outside left")
-    fig.update_traces(textposition="outside")
 
     return fig
 

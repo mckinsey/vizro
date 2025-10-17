@@ -19,7 +19,7 @@ from charts import (
     create_bar_current_vs_previous_segment,
     create_bar_current_vs_previous_category,
     pareto_customers_chart,
-    scatter_with_quadrants_subc,
+    scatter_with_quadrants,
     pie_chart_by_order_status,
     bar_chart_top_n,
     custom_orders_aggrid,
@@ -380,7 +380,7 @@ page_4 = vm.Page(
                     components=[
                         vm.Graph(
                             id="pg4-chart-1",
-                            figure=bar_chart_by_category(superstore_df, value_col="Sales", custom_data=["Category"]),
+                            figure=bar_chart_by_category(superstore_df, custom_data=["Category"]),
                             actions=[
                                 va.set_control(control="pg4-filter-1", value="Category"),
                             ],
@@ -405,7 +405,7 @@ page_4 = vm.Page(
                     components=[
                         vm.Graph(
                             id="pg4-chart-3",
-                            figure=scatter_with_quadrants_subc(
+                            figure=scatter_with_quadrants(
                                 data_frame=superstore_product_df,
                                 x="Sales",
                                 y="Profit",
@@ -503,4 +503,4 @@ dashboard = vm.Dashboard(
 
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run()
