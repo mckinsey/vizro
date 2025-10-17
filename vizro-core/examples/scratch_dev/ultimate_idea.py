@@ -1,5 +1,4 @@
-"""
-This file illustrates how we can do revalidate_instances="always" and convert every field that's a Vizro model into a
+"""This file illustrates how we can do revalidate_instances="always" and convert every field that's a Vizro model into a
 discriminated union even if it has only one type to begin with (e.g. pages: list[Page]).
 
 We forget about add_type and trying to generate a "correct" schema. Anything that's a custom model must stay as it is
@@ -39,9 +38,11 @@ useful for DashboardProxy.model_validate(Dashboard, from_attributes=True). See h
 """
 
 from __future__ import annotations
-from typing import Annotated, Union, Any
-from pydantic import BaseModel, ConfigDict, Field, Tag, Discriminator
+
 import re
+from typing import Annotated, Any, Union
+
+from pydantic import BaseModel, ConfigDict, Discriminator, Field, Tag
 
 
 class VizroBaseModel(BaseModel):

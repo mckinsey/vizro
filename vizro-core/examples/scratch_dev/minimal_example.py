@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Union, Annotated, Literal
+from typing import Annotated, Literal, Union
 
-from pydantic import ConfigDict, BaseModel, Field
-
+from pydantic import BaseModel, ConfigDict, Field
 from vizro.models import VizroBaseModel
 
 
@@ -177,65 +176,65 @@ models all the way up the tree. Seems like horrible UX for someone just wanting 
 2. set validate_instances="always" and make some mechanism (like recursive add_type or some other sort of schema
 modification) that would make these schema modifications for you. This means that, unlike now, you'd need to use
 add_type (or whatever it would be) for all custom models, not just discriminated unions. It becomes more complex
-because you're potentially changing non-union fields into unions, need to figure out how to handle nested things like 
+because you're potentially changing non-union fields into unions, need to figure out how to handle nested things like
 list[Page], etc.
 3. set validate_instances="always" and say that no one does this kind of custom model and we don't care about
 supporting it. The only kind of custom model we support then is adding something to a field that's already a
-discriminated union. UPDATE: we think you need to be able to customise e.g. Page model that's not in discriminated 
+discriminated union. UPDATE: we think you need to be able to customise e.g. Page model that's not in discriminated
 union so this isn't a valid option.
-4. *don't set* validate_instances="always" - we said today that we didn't like this idea, but now I'm not so sure. 
-validate_instances="always" makes it much harder for anyone to use a custom model even in a simple (non discriminated 
+4. *don't set* validate_instances="always" - we said today that we didn't like this idea, but now I'm not so sure.
+validate_instances="always" makes it much harder for anyone to use a custom model even in a simple (non discriminated
 union) case. If we think that people being able to easily use a custom model anywhere is important then we could drop
-this. But then it also means figuring out some way to do the whole model manager registration thing without 
-validate_instances="always" :| IMPORTANT UPDATE: now that I realise how validate_instances="always" coerces back to a 
+this. But then it also means figuring out some way to do the whole model manager registration thing without
+validate_instances="always" :| IMPORTANT UPDATE: now that I realise how validate_instances="always" coerces back to a
 parent class, it makes me rethink whether validate_instances="always" is even the right thing to do out of principle.
 I don't even understand why anyone would want that behaviour? Note validate_instances="subclass-instances" is also an
 option but still does the subclass coercion so doesn't help us in any way.
-5. set validate_instances="always" and make all our fields that use VizroBaseModel into discriminated unions. May be 
+5. set validate_instances="always" and make all our fields that use VizroBaseModel into discriminated unions. May be
 able to do this without add_type.
- 
+
 I don't like option 1 at all. All others seem feasible but bad...
 
-Option 2: intention is that you can use custom model anywhere but user needs to manually add_type always (not just 
+Option 2: intention is that you can use custom model anywhere but user needs to manually add_type always (not just
 discriminated unions).
-- how do we actually do this? e.g. need to expand add_type to create Unions out of non-Unions :| Sounds very 
-complicated unless we can think of a much better way of modifying schema consistently - I remember making a 
-deliberate choice to *not* do this when I did add_type originally just for discriminated unions. Or all our type hints 
+- how do we actually do this? e.g. need to expand add_type to create Unions out of non-Unions :| Sounds very
+complicated unless we can think of a much better way of modifying schema consistently - I remember making a
+deliberate choice to *not* do this when I did add_type originally just for discriminated unions. Or all our type hints
 just need to be VizroBaseModel (sounds very bad) or do something really weird/metaclass with pydantic (also sounds awful).
 - breaking change if we assume people are doing this. Some new way for them to still achieve it.
 
 Option 3: intention is that you can't use custom model anywhere, just in discriminated unions.
 - breaking change if we assume people are doing it. No longer any way for people to achieve it.
-- does it seem like a reasonable/principled restriction that you can only inject a custom model where there's a 
-discriminated union? In practice I'm sure this is by a long way the most common, because all the parts where you might 
+- does it seem like a reasonable/principled restriction that you can only inject a custom model where there's a
+discriminated union? In practice I'm sure this is by a long way the most common, because all the parts where you might
 want to add a custom model we have a discriminated union already. But philosophically is this an improvement or not?
-It means we are less extensible but have fewer, better defined, extension points. But what if e.g. you just want to 
+It means we are less extensible but have fewer, better defined, extension points. But what if e.g. you just want to
 modify Page.build? That sounds pretty reasonable to me...
-- we would in the same position we thought we were in earlier today where we only need to think about discriminated 
+- we would in the same position we thought we were in earlier today where we only need to think about discriminated
 unions. For those cases it's still open exactly whether/how you need to do add_type.
 
 Option 4: intention is that you can use custom model anywhere.
 - non-breaking change
-- optionally we could also come up with a new mechanism for allowing arbitrary types in discriminated union without 
-add_type, e.g. inherit from Custom mixin that has type: custom (could even just be VizroBaseModel, means no need to 
-do type field for a custom field which would be nice improvement) and put that the discriminated union; or maybe do 
+- optionally we could also come up with a new mechanism for allowing arbitrary types in discriminated union without
+add_type, e.g. inherit from Custom mixin that has type: custom (could even just be VizroBaseModel, means no need to
+do type field for a custom field which would be nice improvement) and put that the discriminated union; or maybe do
 what's currently in types.py.
-- would also need to come up with some way to do model manager registration or selectively turn 
+- would also need to come up with some way to do model manager registration or selectively turn
 validate_instances="always" on/off.
 
 Conclusion:
-- all options seem bad. Not sure what the ultimate solution should be here regardless of what it currently 
-breaks. Currently in some despair. How we can stay extensible but still benefit from pydantic validation. Do we 
+- all options seem bad. Not sure what the ultimate solution should be here regardless of what it currently
+breaks. Currently in some despair. How we can stay extensible but still benefit from pydantic validation. Do we
 just need to become less tolerant of custom components?
-- if we decide that Option 3 is not too restrictive then it's definitely my preferred one. Let's think about how 
+- if we decide that Option 3 is not too restrictive then it's definitely my preferred one. Let's think about how
 restrictive this would be.
-- if it is too restrictive then Options 2 and 4 both on the table for me but I don't like either. It comes down to 
+- if it is too restrictive then Options 2 and 4 both on the table for me but I don't like either. It comes down to
 the same question we thought of earlier: should user be trying to modify schema or just able to put in a custom model
-easily wherever they want to? Probably my preference is for option 4 (and in future we come up with some better 
-system for being able to properly extend the schema). But then we're back to the model manager problem where 
-validate_instances="always" really felt like the right solution :|   
+easily wherever they want to? Probably my preference is for option 4 (and in future we come up with some better
+system for being able to properly extend the schema). But then we're back to the model manager problem where
+validate_instances="always" really felt like the right solution :|
 - worst case scenario we do Option 1 but it just sounds horrible.
-- UPDATE: given revelation that revalidate_instances="always" coerces to parent class, I'm now rethinking whether 
+- UPDATE: given revelation that revalidate_instances="always" coerces to parent class, I'm now rethinking whether
 it's a good option at all which would mean Option 4 is the only possibility.
 
 Next steps:
@@ -364,6 +363,6 @@ assert type(dashboard.pages[2]) is CustomNewRealPageWithoutSubclassing
 
 """
 Conclusion:
-- for discriminated union, everything works as we want it to... Where exactly is the problem we're trying to solve 
+- for discriminated union, everything works as we want it to... Where exactly is the problem we're trying to solve
 here?
 """
