@@ -42,12 +42,14 @@ ag_grid_interactions_page = vm.Page(
         vm.Filter(
             column="year",
             targets=[cnst.TABLE_AG_GRID_INTERACTIONS_ID],
-            selector=vm.Dropdown(value=2007),
+            selector=vm.Dropdown(id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID, value=2007),
         ),
         vm.Filter(
             column="continent",
             targets=[cnst.TABLE_AG_GRID_INTERACTIONS_ID],
-            selector=vm.RadioItems(options=["Europe", "Africa", "Americas"]),
+            selector=vm.RadioItems(
+                id=cnst.RADIOITEMS_AG_GRID_INTERACTIONS_ID, options=["Europe", "Africa", "Americas"]
+            ),
         ),
     ],
 )

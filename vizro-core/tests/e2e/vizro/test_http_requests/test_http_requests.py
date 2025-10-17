@@ -307,3 +307,31 @@ def test_drill_down_graph(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_reset_controls_header(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.TABLE_AG_GRID_INTERACTIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the reset_controls button (1 http)
+    page.locator("button[id$='reset_button']").click()
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_reset_controls_page(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='{cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the reset_controls button (1 http)
+    page.locator("button[id$='reset_button']").click()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)

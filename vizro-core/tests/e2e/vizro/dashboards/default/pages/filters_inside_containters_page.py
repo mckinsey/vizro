@@ -88,6 +88,7 @@ filters_inside_containers_page = vm.Page(
                             ),
                         ),
                         vm.Filter(
+                            id=cnst.SWITCH_INSIDE_CONTAINERS,
                             column="switch_column",
                             selector=vm.Switch(
                                 value=True,
