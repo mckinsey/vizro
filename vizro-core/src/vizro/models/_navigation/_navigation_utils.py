@@ -72,8 +72,8 @@ def _validate_pages(pages: NavPagesType) -> NavPagesType:
     unknown_pages: list[str] = []
 
     if isinstance(pages, dict):
-        if not any(pages.values()):
-            raise ValueError(_EMPTY_PAGES_ERROR_MSG)
+        # if not any(pages.values()):
+        #     raise ValueError(_EMPTY_PAGES_ERROR_MSG)
 
         validated_dict = {}
 
@@ -83,8 +83,8 @@ def _validate_pages(pages: NavPagesType) -> NavPagesType:
             unknown_pages.extend(group_unknown_pages)
 
     else:
-        if not pages:
-            raise ValueError(_EMPTY_PAGES_ERROR_MSG)
+        # if not pages:
+        #     raise ValueError(_EMPTY_PAGES_ERROR_MSG)
 
         unknown_pages, validated_list = _resolve_list_of_page_references(pages, title_to_ids)
 
