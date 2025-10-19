@@ -53,6 +53,11 @@ def _get_layout_discriminator(layout: Any) -> Optional[str]:
                 stacklevel=3,
             )
             return "legacy_layout"
+    if hasattr(layout, "type"):
+        # If type is not n manual list of expected tags then it must be a custom model, in which case tag as
+        # __custom__ so it doesn't get validated any further
+        if layout.type not in ["flex", "layout"]:
+            return "__custom__"
 
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
     # union_tag_not_found error is raised.
@@ -703,7 +708,12 @@ NavSelectorType = Annotated[
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
 LayoutType = Annotated[
-    Union[Annotated["Grid", Tag("grid")], Annotated["Flex", Tag("flex")], Annotated["Layout", Tag("legacy_layout")]],
+    Union[
+        Annotated[Any, Tag("__custom__")],  # Could be VizroBaseModel rather than Any if we allow_extra
+        Annotated["Grid", Tag("grid")],
+        Annotated["Flex", Tag("flex")],
+        Annotated["Layout", Tag("legacy_layout")],
+    ],
     Field(
         discriminator=Discriminator(_get_layout_discriminator),
         description="Type of layout to place components on the page.",

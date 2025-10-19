@@ -1,165 +1,51 @@
-import dash_bootstrap_components as dbc
-import pandas as pd
+import base64
+import json
+from typing import Literal, Annotated, Union
 
-import vizro.plotly.express as px
+import dash
+from dash import get_relative_path
+from pydantic import Tag
+
 import vizro.models as vm
 from vizro import Vizro
-from vizro.figures import kpi_card, kpi_card_reference
-from vizro.actions import set_control
 from vizro.models.types import capture
 
+import vizro.plotly.express as px
+from vizro.tables import dash_ag_grid
 
-df = px.data.iris()
-df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
-
-
-example_cards = [
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with formatting",
-        value_format="${value:.2f}",
-    ),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with icon",
-        icon="Shopping Cart",
-    ),
-]
-
-example_reference_cards = [
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference (pos)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        agg_func="median",
-        title="KPI reference (neg)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with formatting",
-        value_format="{value:.2f}€",
-        reference_format="{delta:+.2f}€ vs. last year ({reference:.2f}€)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with icon",
-        icon="Shopping Cart",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference (reverse color)",
-        reverse_color=True,
-    ),
-]
-
-page_1 = vm.Page(
-    title="KPI cards + 1 Nav card",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards]
-    + [
-        vm.Card(
-            text="This is a nav card. Click to go to page 2.",
-            href="/page-2",
-        )
-    ],
-)
+df = px.data.gapminder()
 
 
-@capture("action")
-def custom_action(_trigger):
-    return f"The card is clicked: {_trigger} times."
+class NewFlexNoType(vm.Flex):
+    pass
 
 
-page_2 = vm.Page(
-    title="KPI cards trigger custom action",
-    path="/page-2",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[
-        vm.Figure(
-            figure=kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
-            actions=vm.Action(function=custom_action(), outputs="text_output"),
-        ),
-        vm.Text(id="text_output", text="Click a card to see the action output here."),
-    ],
-)
+class NewFlexWithType(vm.Flex):
+    type: Literal["anything"] = "anything"
 
 
-page_3 = vm.Page(
-    title="KPI cards trigger set_control",
-    path="/page-3",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[
-        vm.Figure(
-            figure=kpi_card(data_frame=df_kpi[df_kpi["Category"] == "A"], value_column="Actual", title="Actual for A"),
-            actions=set_control(control="filter-id-1", value="A"),
-        ),
-        vm.Figure(
-            figure=kpi_card(data_frame=df_kpi[df_kpi["Category"] == "B"], value_column="Actual", title="Actual for B"),
-            actions=set_control(control="filter-id-1", value="B"),
-        ),
-        vm.Figure(
-            figure=kpi_card(data_frame=df_kpi[df_kpi["Category"] == "C"], value_column="Actual", title="Actual for C"),
-            actions=set_control(control="filter-id-1", value="C"),
-        ),
-        vm.Graph(
-            id="graph-1",
-            figure=px.bar(
-                df_kpi,
-                x="Category",
-                y="Actual",
-                color="Category",
-                color_discrete_map={"A": "#00b4ff", "B": "#ff9222", "C": "#3949ab"},
-            ),
-        ),
-    ],
-    controls=[vm.Filter(id="filter-id-1", column="Category", targets=["graph-1"])],
-)
+class MyPage(vm.Page):
+    title: Union[str, int]
 
 
-@capture("figure")
-def button_as_figure(data_frame):
-    return dbc.Button(
-        children=f"Graph below shows {len(data_frame)} rows. Click to trigger two actions",
-        color="primary",
-        class_name="m-2",
-    )
+page = MyPage(title=1, path="a", id="a", components=[vm.Text(text="a")], layout=NewFlexNoType())
+# This works fine:
+page_2 = MyPage(title="b", components=[vm.Text(text="b")], layout=NewFlexWithType())
+
+# vm.Dashboard.add_type("pages", MyPage)
 
 
-page_4 = vm.Page(
-    title="Custom button as a figure",
-    path="/page-4",
-    components=[
-        vm.Figure(
-            id="figure-2",
-            figure=button_as_figure(df),
-            actions=[
-                set_control(control="filter-id-2", value="setosa"),
-                vm.Action(function=custom_action(), outputs="text-2"),
-            ],
-        ),
-        vm.Text(id="text-2", text="Click the button to see the action output here."),
-        vm.Graph(id="graph-2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
-    ],
-    controls=[vm.Filter(id="filter-id-2", column="species", targets=["graph-2", "figure-2"])],
-)
+class MyDashboard(vm.Dashboard):
+    pages: list[MyPage]
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
 
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+# Coerces to Flex if we don't explicitly specify new type
+print(f"{type(page.layout)=}")
+print(f"{type(page_2.layout)=}")
+print("----")
+dashboard = MyDashboard(pages=[page, page_2])
+
+print(f"{type(page.title)=}")
+print(f"{type(page_2.title)=}")
+
+# Vizro().build(dashboard).run(debug=True)
