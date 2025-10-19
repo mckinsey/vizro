@@ -3,7 +3,7 @@ discriminated union even if it has only one type to begin with (e.g. pages: list
 
 We forget about add_type and trying to generate a "correct" schema. Anything that's a custom model must stay as it is
 and so be validated as Any. This sounds bad but is actually ok by me since the custom model itself performs the validation
-it needs. NO - SEE BELOW AAARGH, this is probably not ok :(
+it needs. NO - SEE BELOW AAARGH, this is probably not ok :( But I think we can figure it out.
 
 Advantages:
 - we keep revalidate_instances="always", so model manager registration works and it feels correct
@@ -15,7 +15,7 @@ mechanism for modifying the schema in future.
 - hopefully not breaking in any way.
 - no need for the stupid type field in all models (this is handled automatically through discriminator function).
   We now rely on the class name to say whether it's a custom component or not rather than manually supplying the type.
-  We could keep with the current type field system if we wanted to but I don't see any advnatage in doing so.
+  We could keep with the current type field system if we wanted to but I don't see any adnnatage in doing so.
 
 Disadvantages:
 - feels very heavy handed/ugly - JSON schema becomes a mess (though arguably more accurate), API docs get messier
@@ -40,12 +40,25 @@ Remaining challenges:
 - will the copy on model revalidate cause us real problems in the model manager? As in last post of
 https://github.com/pydantic/pydantic/issues/7608. Not worried about tests breaking so long as things work in practice
 (and we understand why) since we can fix tests later.
-- how to solve the new AAAARGH above, but I have some ideas here so don't worry about it too much.
+- how to solve the new AAAARGH above, but I have some ideas here so don't worry about it too much. I am pretty
+confident this is not a show-stopper and I can handle it when I'm back.
 
 Alternative solution:
 - drop revalidate_instances="always", but then need to go back to figure out how to handle model manager in a way that
 builds tree correctly and avoids global variable. If we do go down that route then maybe from_attributes would be
 useful for DashboardProxy.model_validate(Dashboard, from_attributes=True). See https://github.com/pydantic/pydantic/discussions/8933
+
+IMPORTANT IDEA we shouldn't forget:
+- if/when we have dashboard = model_validate(dashboard) in Vizro.build, the argument dashboard: Dashboard can be much more general
+i.e. it could also be dict. This would make loading from yaml/json more direct which would be nice. We could also
+introduce and argument json=True/False or context (to match pydantic), which is passed through to the pydantic
+context (could even use model_validate_json instead?). This would allow us to handle differently the load from json vs.
+Python configuration:
+  - some things are possible from Python but not JSON
+  - CapturedCallable parsing can be split more cleaning depending on pydantic context
+- We can introduce this argument as mandatory for JSON and it's non breaking. Or we could just decide based on
+whether dashboard is instance of Dashboard whether to parse and JSON or as Python. This would be breaking for current
+examples but we could change to this behaviour in breaking release.
 """
 
 from __future__ import annotations
