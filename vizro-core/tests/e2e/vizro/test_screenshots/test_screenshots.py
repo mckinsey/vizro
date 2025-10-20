@@ -12,6 +12,7 @@ from e2e.vizro.navigation import (
     page_select,
 )
 from e2e.vizro.paths import (
+    dropdown_arrow_path,
     kpi_card_path,
     nav_card_link_path,
     switch_path_using_filter_control_id,
@@ -360,6 +361,24 @@ def test_switch_control(dash_br):
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(table_id=cnst.AG_GRID_ACTIVE, row_number=1, column_number=2), "Bob"
     )
+
+
+@image_assertion
+def test_reset_controls_page(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
+    )
+    # change dropdown controls on the page
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+    dash_br.multiple_click(f"#{cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID}_select_all", 1)
+
+    # click reset controls button
+    dash_br.multiple_click("button[id$='_reset_button']", 1, delay=0.1)
+
+    # open dropdown menu to check if select_all is unchecked
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
 
 
 @pytest.mark.mobile_screenshots
