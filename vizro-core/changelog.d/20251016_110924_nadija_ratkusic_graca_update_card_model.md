@@ -16,12 +16,14 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Enable `header`, `title` and `footer` arguments inside `vm.Card`. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
 
--->
+- Actions can be triggered when clicking a `vm.Card`. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+
+- `vm.Card` can be the source of a `set_control` action. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
 <!--
 ### Changed
 

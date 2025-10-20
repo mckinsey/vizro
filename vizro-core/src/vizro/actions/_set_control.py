@@ -98,7 +98,6 @@ class set_control(_AbstractAction):
     Example: `Card` as trigger
         ```python
         import vizro.actions as va
-        import vizro.models as vm
 
         vm.Card(
             title="Click Card to set control to A",

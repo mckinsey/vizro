@@ -29,7 +29,13 @@ class TestCardInstantiation:
     @pytest.mark.parametrize("href", ["/page_1_reference", "https://www.google.de/"])
     def test_create_card_mandatory_and_optional(self, href):
         card = vm.Card(
-            id="card-id", text="Text to test card", href=href, title="Title", header="Header", footer="Footer"
+            id="card-id",
+            text="Text to test card",
+            href=href,
+            title="Title",
+            header="Header",
+            footer="Footer",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert card.id == "card-id"
@@ -39,9 +45,15 @@ class TestCardInstantiation:
         assert card.header == "Header"
         assert card.footer == "Footer"
         assert card.href == href
+        assert isinstance(card.description, vm.Tooltip)
+        assert card._action_triggers == {"__default__": "card-id-outer.n_clicks"}
         assert card._action_outputs == {
             "__default__": "card-id-text.children",
             "text": "card-id-text.children",
+            "title": "card-id_title.children",
+            "header": "card-id_header.children",
+            "footer": "card-id_footer.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_mandatory_text_missing(self):
@@ -59,6 +71,35 @@ class TestCardInstantiation:
 
 class TestBuildMethod:
     """Tests build method."""
+
+    def test_card_build_mandatory(self):
+        card = vm.Card(id="card_id", text="Hello")
+        card = card.build()
+        expected_card = html.Div(
+            id="card_id-outer",
+            children=dbc.Card(
+                id="card_id",
+                children=[
+                    None,
+                    dbc.CardBody(
+                        children=[
+                            html.Div(
+                                children=[None, None],
+                                className="card-title-outer",
+                            ),
+                            dcc.Markdown(
+                                id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
+                            ),
+                        ]
+                    ),
+                    None,
+                ],
+                class_name="",
+            ),
+            className="card-wrapper",
+        )
+
+        assert_component_equal(card, expected_card)
 
     def test_card_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
@@ -124,35 +165,6 @@ class TestBuildMethod:
 
         assert_component_equal(card, expected_card)
 
-    def test_card_build_wo_href(self):
-        card = vm.Card(id="card_id", text="Hello")
-        card = card.build()
-        expected_card = html.Div(
-            id="card_id-outer",
-            children=dbc.Card(
-                id="card_id",
-                children=[
-                    None,
-                    dbc.CardBody(
-                        children=[
-                            html.Div(
-                                children=[None, None],
-                                className="card-title-outer",
-                            ),
-                            dcc.Markdown(
-                                id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
-                            ),
-                        ]
-                    ),
-                    None,
-                ],
-                class_name="",
-            ),
-            className="card-wrapper",
-        )
-
-        assert_component_equal(card, expected_card)
-
     def test_card_build_with_title(self):
         card = vm.Card(id="card_id", text="Hello", title="Title")
         card = card.build()
@@ -165,7 +177,7 @@ class TestBuildMethod:
                     dbc.CardBody(
                         children=[
                             html.Div(
-                                children=[html.H4("Title", className="card-title"), None],
+                                children=[html.H4(id="card_id_title", children="Title", className="card-title"), None],
                                 className="card-title-outer",
                             ),
                             dcc.Markdown(
@@ -210,7 +222,10 @@ class TestBuildMethod:
                     dbc.CardBody(
                         children=[
                             html.Div(
-                                children=[html.H4("Title", className="card-title"), *expected_description],
+                                children=[
+                                    html.H4(id="card_id_title", children="Title", className="card-title"),
+                                    *expected_description,
+                                ],
                                 className="card-title-outer",
                             ),
                             dcc.Markdown(
@@ -235,7 +250,7 @@ class TestBuildMethod:
             children=dbc.Card(
                 id="card_id",
                 children=[
-                    dbc.CardHeader("Header"),
+                    dbc.CardHeader(id="card_id_header", children="Header"),
                     dbc.CardBody(
                         children=[
                             html.Div(
@@ -247,7 +262,7 @@ class TestBuildMethod:
                             ),
                         ]
                     ),
-                    dbc.CardFooter("Footer"),
+                    dbc.CardFooter(id="card_id_footer", children="Footer"),
                 ],
                 class_name="",
             ),

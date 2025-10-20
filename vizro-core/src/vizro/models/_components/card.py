@@ -96,6 +96,10 @@ class Card(VizroBaseModel):
         return {
             "__default__": f"{self.id}-text.children",
             "text": f"{self.id}-text.children",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"header": f"{self.id}_header.children"} if self.header else {}),
+            **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
     @staticmethod
@@ -109,10 +113,13 @@ class Card(VizroBaseModel):
             id=f"{self.id}-text", children=self.text, dangerously_allow_html=False, className="card-text"
         )
 
-        description = self.description.build().children if self.description is not None else [None]
+        description = self.description.build().children if self.description else [None]
 
         title = html.Div(
-            children=[html.H4(self.title, className="card-title") if self.title else None, *description],
+            children=[
+                html.H4(id=f"{self.id}_title", children=self.title, className="card-title") if self.title else None,
+                *description,
+            ],
             className="card-title-outer",
         )
 
@@ -127,9 +134,9 @@ class Card(VizroBaseModel):
         )
 
         card_content = [
-            dbc.CardHeader(self.header) if self.header else None,
+            dbc.CardHeader(id=f"{self.id}_header", children=self.header) if self.header else None,
             dbc.CardBody(children=[title, card_text]),
-            dbc.CardFooter(self.footer) if self.footer else None,
+            dbc.CardFooter(id=f"{self.id}_footer", children=self.footer) if self.footer else None,
         ]
 
         defaults = {
