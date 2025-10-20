@@ -51,7 +51,7 @@ Vizro(assets_folder="path/to/assets/folder").build(dashboard).run()
 
 ## Include a meta tags image
 
-Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>` or `logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
+Vizro automatically adds meta tags to display a preview card when your app is shared on social media and chat clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>` or `logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
 
 Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
 
