@@ -10,14 +10,14 @@ from vizro.managers import model_manager
 
 
 @pytest.fixture
-def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid):
+def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, standard_dash_table):
     """Instantiates the model_manager and the data_manager with two pages."""
     vm.Page(
         id="test-page-1",
         title="test-page-1",
         components=[
             vm.Graph(id="scatter_chart_1", figure=standard_px_chart),
-            vm.Button(id="button_1"),
+            vm.Table(id="table_1", figure=standard_dash_table),
         ],
         controls=[
             vm.Filter(
@@ -86,13 +86,15 @@ class TestSetControlPreBuild:
         action = set_control(control="filter_page_1", value="continent")
 
         # Add action to the component that does not support set_control
-        model_manager["button_1"].actions = action
+        model_manager["table_1"].actions = action
 
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "`set_control` action was added to the model with ID `button_1`, but this action can only be used with"
-                " models that support it (e.g. Graph, AgGrid, Figure)."
+                "`set_control` action was added to the model with ID `table_1`, "
+                "but this action can only be used with models that support it (e.g. Graph, AgGrid, Figure etc). "
+                "See all models that can source a `set_control` at "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
             ),
         ):
             action.pre_build()
