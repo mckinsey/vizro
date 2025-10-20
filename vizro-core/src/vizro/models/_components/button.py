@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -108,7 +108,7 @@ class Button(VizroBaseModel):
         return {"__default__": f"{self.id}.n_clicks"}
 
     @staticmethod
-    def _get_value_from_trigger(value: str, *args) -> Any:
+    def _get_value_from_trigger(value: JsonValue, *args) -> Any:
         """Return the given `value` without modification."""
         return value
 
