@@ -4,7 +4,7 @@ from typing import Any
 
 import pytest
 import vizro.plotly.express as px
-from langchain.output_parsers import PydanticOutputParser
+from langchain_core.output_parsers.pydantic import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
 
 
