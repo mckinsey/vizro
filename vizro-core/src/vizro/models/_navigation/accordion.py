@@ -3,13 +3,12 @@ from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import BeforeValidator, Field
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models.types import ModelID
 
 
