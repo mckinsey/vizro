@@ -142,12 +142,10 @@ class Card(VizroBaseModel):
         card_content = [
             dbc.CardHeader(
                 id=f"{self.id}_header",
-                children=[
-                    html.Div(
-                        children=[dcc.Markdown(children=[self.header], dangerously_allow_html=False), *description],
-                        className="card-header-outer",
-                    ),
-                ],
+                children=html.Div(
+                    children=[dcc.Markdown(children=self.header, dangerously_allow_html=False), *description],
+                    className="card-header-outer",
+                ),
             )
             if self.header
             else None,
