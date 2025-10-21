@@ -36,9 +36,9 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- Fix multi-select `Dropdown` filter to work when its value is defined as a single object instead of a list. ([#2278](https://github.com/mckinsey/vizro/pull/2278))
+- Fix multi-select `Dropdown` filter to work when its value is defined as a single object instead of a list. ([#1450](https://github.com/mckinsey/vizro/pull/1450))
 
-- Fix dynamic numeric filters to handle year-like numbers correctly. ([#2278](https://github.com/mckinsey/vizro/pull/2278))
+- Fix dynamic numeric filters to handle year-like numbers correctly. ([#1450](https://github.com/mckinsey/vizro/pull/1450))
 
 
 <!--
