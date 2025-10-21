@@ -30,23 +30,23 @@ def test_reset_controls_header(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
     # change all controls on the page
-    # dropdown
+    # dropdown change from ["setosa", "versicolor", "virginical"] to ["setosa"]
     clear_dropdown(dash_br, cnst.DROPDOWN_INSIDE_CONTAINERS)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS, value="setosa")
-    # checklist
+    # checklist change from ["SelectAll", "setosa", "versicolor", "virginical"] to ["setosa", "virginica"]
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECK_LIST_INSIDE_CONTAINERS, value=2), 1)
-    # radioitems
+    # radioitems change from "setosa" to "versicolor"
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIO_ITEMS_INSIDE_CONTAINERS, value=2), 1)
-    # slider
+    # slider change from "0.1" to "0.6"
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value=2), 1)
-    # range_slider
+    # range_slider change from "4.3 - 7.9" to "4 - 7"
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value=4), 1)
-    # date_picker
+    # date_picker change from "2024/01/01 - 2024/05/29" to "2024/01/10 - 2024/01/26"
     dash_br.multiple_click(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="10 January 2024"]', 1)
     dash_br.multiple_click('button[aria-label="26 January 2024"]', 1)
-    # switch
+    # switch change from "On" to "Off"
     dash_br.multiple_click(switch_path_using_filter_control_id(filter_control_id=cnst.SWITCH_INSIDE_CONTAINERS), 1)
 
     # click reset controls icon
@@ -105,10 +105,10 @@ def test_reset_controls_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
     )
     # change all controls on the page
-    # dropdown
+    # dropdown change from "2007" to "SelectAll"
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
     dash_br.multiple_click(f"#{cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID}_select_all", 1)
-    # radioitems
+    # radioitems change from "Europe" to "Africa"
     dash_br.multiple_click(
         categorical_components_value_path(elem_id=cnst.RADIOITEMS_AG_GRID_INTERACTIONS_ID, value=2), 1
     )

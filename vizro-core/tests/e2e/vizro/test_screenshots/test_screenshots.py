@@ -377,7 +377,7 @@ def test_reset_controls_page(dash_br):
     # click reset controls button
     dash_br.multiple_click("button[id$='_reset_button']", 1, delay=0.1)
 
-    # open dropdown menu to check if select_all is unchecked
+    # open dropdown menu to check on the screenshot if select_all is unchecked
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
 
 
