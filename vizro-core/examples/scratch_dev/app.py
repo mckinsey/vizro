@@ -17,14 +17,14 @@ def download_data():
 
 
 @capture("graph")
-def custom_bar(data_frame, custom_data):
-    return px.bar(data_frame, x="species", y="sepal_width", custom_data=custom_data)
+def custom_bar(data_frame):
+    return px.bar(data_frame, x="species", y="sepal_width")
 
 
 page_1 = vm.Page(
     title="Vizro download",
     components=[
-        vm.Graph(figure=custom_bar(df, custom_data="species")),
+        vm.Graph(figure=custom_bar(df)),
         vm.Button(text="Download data", actions=vm.Action(function=download_data(), outputs=["vizro_download"])),
     ],
 )
