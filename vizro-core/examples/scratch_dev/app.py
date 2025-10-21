@@ -33,7 +33,6 @@ page = vm.Page(
         vm.Card(
             text="Card without header",
             footer="This is card footer",
-            description="Tooltip",
         ),
         vm.Card(
             text="Regular card with only text",
