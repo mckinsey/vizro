@@ -15,21 +15,22 @@ if TYPE_CHECKING:
     from kedro.io import CatalogProtocol
 
 
+# TODO: Need to decide if we want to keep 0.19 compatibility, the current change would be even a breaking change for Vizro...
 def catalog_from_project(
-    project_path: Union[str, Path], env: Optional[str] = None, extra_params: Optional[dict[str, Any]] = None
+    project_path: Union[str, Path], env: Optional[str] = None, runtime_params: Optional[dict[str, Any]] = None
 ) -> CatalogProtocol:
     """Return the Kedro Data Catalog associated to a Kedro project.
 
     Args:
         project_path: Path to the Kedro project root directory.
         env: Kedro configuration environment to be used. Defaults to "local".
-        extra_params: Optional dictionary containing extra project parameters
+        runtime_params: Optional dictionary containing extra project parameters
             for underlying KedroContext. If specified, will update (and therefore
             take precedence over) the parameters retrieved from the project
             configuration.
 
     Returns:
-         A Kedro Data Catalog.
+        A Kedro Data Catalog.
 
     Examples:
         >>> from vizro.integrations import kedro as kedro_integration
@@ -37,7 +38,7 @@ def catalog_from_project(
     """
     bootstrap_project(project_path)
     with KedroSession.create(
-        project_path=project_path, env=env, save_on_close=False, extra_params=extra_params
+        project_path=project_path, env=env, save_on_close=False, runtime_params=runtime_params
     ) as session:
         return session.load_context().catalog
 
@@ -49,7 +50,7 @@ def pipelines_from_project(project_path: Union[str, Path]) -> dict[str, Pipeline
         project_path: Path to the Kedro project root directory.
 
     Returns:
-         A dictionary mapping pipeline names to Kedro Pipelines.
+        A dictionary mapping pipeline names to Kedro Pipelines.
 
     Examples:
         >>> from vizro.integrations import kedro as kedro_integration

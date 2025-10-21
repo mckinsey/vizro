@@ -41,7 +41,7 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.19.0,<1.0",  # remove once we have tested the released Kedro 1.0
+  "kedro>=0.19.0",  # do we want to still be compatible with `0.19` series? Probably yes
   "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
 ]
 
