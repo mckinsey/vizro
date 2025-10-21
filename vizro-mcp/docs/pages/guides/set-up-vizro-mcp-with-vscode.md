@@ -14,7 +14,7 @@ To access Vizro-MCP, you must first install **either [uv](https://docs.astral.sh
 
 ## Set up instructions
 
-Once you have uv or Docker, and have installed Visual Studio Code, you need to set up the Vizro-MCP server configuration.
+Once you have uv or Docker, and have installed Microsoft Visual Studio Code, you need to set up the Vizro-MCP server configuration.
 
 ### Using uv
 
@@ -22,22 +22,24 @@ Click the "Install" button below:
 
 [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)
 
-````
+
 !!! tip "To specify a version of Vizro-MCP"
 
-To use a specific version of Vizro-MCP, update the `mcp.json` configuration to instruct `uv` accordingly. For example, to use Vizro-MCP [version 0.1.2](https://github.com/mckinsey/vizro/tree/vizro-mcp-0.1.2), specify the configuration like this:
+    To use a specific version of Vizro-MCP, update the `mcp.json` configuration to instruct `uv` accordingly. For example, to use Vizro-MCP [version 0.1.2](https://github.com/mckinsey/vizro/tree/vizro-mcp-0.1.2), specify the configuration like this:
 
-```json
-{
-  "vizro-mcp": {
-    "command": "uvx vizro-mcp@0.1.2"
-  }
-}
-```
+	```json
+	{
+	  "vizro-mcp": {
+	    "command": "uvx vizro-mcp@0.1.2"
+	  }
+	}
+	```
 
-The `uv documentation` contains more information about the [syntax around the `uvx` command version](https://docs.astral.sh/uv/guides/tools/#requesting-specific-versions).
+    The `uv documentation` contains more information about the [syntax around the `uvx` command version](https://docs.astral.sh/uv/guides/tools/#requesting-specific-versions).
 
-````
+Click "Install" on the MCP configuration page:
+
+![Install Vizro-MCP with uv](../../assets/images/install-vizro-mcp-vscode-uv.png)
 
 ### Using Docker
 
