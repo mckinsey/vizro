@@ -16,7 +16,7 @@ from vizro.models.types import ControlType, ModelID
 # This defines what a model needs to implement for it to be capable of acting as the trigger of set_control.
 @runtime_checkable
 class _SupportsSetControl(Protocol):
-    def _get_value_from_trigger(self, value: str, trigger: JsonValue) -> JsonValue: ...
+    def _get_value_from_trigger(self, value: JsonValue, trigger: JsonValue) -> JsonValue: ...
 
 
 def _encode_to_base64(value):
@@ -33,10 +33,10 @@ class set_control(_AbstractAction):
 
     The following Vizro models can be a source of `set_control`:
 
-    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. `value` specifies
-    which column in the clicked row is used to set `control`.
-    * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` can be used
-    in two ways to specify how to set `control`:
+    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. `value` is string
+    specifying which column in the clicked row is used to set `control`.
+    * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` is string
+    that can be used in two ways to specify how to set `control`:
 
         * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
         * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
@@ -45,11 +45,13 @@ class set_control(_AbstractAction):
 
     * [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a
     literal value to set `control` to.
+    * [`Button`][vizro.models.Button]: triggers `set_control` when user clicks on the button. `value` specifies a
+    literal value to set `control` to.
 
     Args:
         control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
             `show_in_url=True`. The control's selector must be categorical (e.g. Dropdown, RadioItems, Checklist).
-        value (str): Value taken from trigger to set `control`. Format depends on the source model that triggers
+        value (JsonValue): Value taken from trigger to set `control`. Format depends on the source model that triggers
             `set_control`.
 
     Example: `AgGrid` as trigger
@@ -92,6 +94,16 @@ class set_control(_AbstractAction):
             actions=va.set_control(control="target_control", value="A"),
         )
         ```
+
+    Example: `Button` as trigger
+        ```python
+        import vizro.actions as va
+
+        vm.Button(
+            text="Click to set control to A",
+            actions=va.set_control(control="target_control", value="A"),
+        )
+        ```
     """
 
     type: Literal["set_control"] = "set_control"
@@ -99,7 +111,7 @@ class set_control(_AbstractAction):
         description="Filter or Parameter component id to be affected by the trigger."
         "If the control is on a different page to the trigger then it must have `show_in_url=True`."
     )
-    value: str = Field(
+    value: JsonValue = Field(
         description="Value to take from trigger and send to the `target`. Format depends on the model "
         "that triggers `set_control`."
     )
@@ -111,8 +123,10 @@ class set_control(_AbstractAction):
         # Validate that action's parent model supports `set_control` action.
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
-                f"`set_control` action was added to the model with ID `{self._parent_model.id}`, but this action "
-                f"can only be used with models that support it (e.g. Graph, AgGrid, Figure)."
+                f"`set_control` action was added to the model with ID `{self._parent_model.id}`, "
+                "but this action can only be used with models that support it (e.g. Graph, AgGrid, Figure etc). "
+                "See all models that can source a `set_control` at "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
             )
 
         # Validate that action's control exists in the dashboard.
