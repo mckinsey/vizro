@@ -11,38 +11,35 @@ page = vm.Page(
     title="Test page",
     components=[
         vm.Card(
-            text="Card with all components",
-            title="Card title",
-            header="This is card header",
-            footer="This is card footer",
+            text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+            "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+            header="### This is card header",
+            footer="##### This is card footer",
             description="Tooltip",
         ),
         vm.Card(
-            title="Card title",
-            text="Card with just title",
-        ),
-        vm.Card(
-            header="This is card header",
+            header="### This is card header",
             text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
             "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
         ),
         vm.Card(
+            text="Card with text and header and footer",
+            header="### This is card header",
+            footer="##### This is card footer",
+        ),
+        vm.Card(
+            text="### Card with just text title",
+        ),
+        vm.Card(
             text="Card without header",
-            title="Card title",
             footer="This is card footer",
             description="Tooltip",
         ),
         vm.Card(
             text="Regular card with only text",
         ),
-        vm.Card(
-            text="Card without title",
-            header="This is card header",
-            footer="This is card footer",
-        ),
         vm.Graph(figure=px.bar(gapminder, x="country", y="pop", color="continent")),
         vm.Card(
-            title="Filter Europe only",
             text="Card with action",
             actions=va.set_control(control="filter-id-1", value="Europe"),
         ),

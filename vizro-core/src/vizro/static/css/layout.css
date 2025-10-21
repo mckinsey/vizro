@@ -336,10 +336,10 @@ Current logic:
   display: block;
 }
 
-.card-title-outer {
+.card-header-outer {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  justify-content: space-between;
 }
 
 .card-wrapper-actions > .card {

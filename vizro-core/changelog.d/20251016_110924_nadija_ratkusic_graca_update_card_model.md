@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable `header`, `title` and `footer` arguments inside `vm.Card`. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+- Enable `header`, `description` and `footer` arguments inside `vm.Card`. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
 
 - Actions can be triggered when clicking a `vm.Card`. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
 
