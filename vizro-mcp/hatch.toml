@@ -52,7 +52,8 @@ dependencies = [
   "mkdocstrings[python]",
   "linkchecker",
   "mkdocs-pycafe",
-  "mkdocs-glightbox"
+  "mkdocs-glightbox",
+  "vizro"
 ]
 detached = true
 installer = "uv"
@@ -77,6 +78,9 @@ linkchecker site \
   --ignore-url=https://claude.ai/download
 '''
 pip = '"{env:HATCH_UV}" pip {args}'
+prompts-link-check = '''
+python ../tools/check_vizro_docs_links_in_mcp_prompts.py
+'''
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "mkdocs serve --open"
 
