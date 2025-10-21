@@ -257,7 +257,7 @@ To append items to the custom header area, subclass the [Dashboard][vizro.models
 
 ## Meta tags for social media
 
-Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat clients. To see an example, try sharing an example such the [Vizro visual vocabulary dashboard](https://huggingface.co/spaces/vizro/demo-visual-vocabulary).
+Vizro automatically adds meta tags to display a preview card when your app is shared on social media and chat clients. To see an example, try sharing an example such the [Vizro visual vocabulary dashboard](https://huggingface.co/spaces/vizro/demo-visual-vocabulary).
 
 The preview includes:
 

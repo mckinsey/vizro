@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -74,9 +74,16 @@ class Button(VizroBaseModel):
     ]
 
     @model_validator(mode="after")
-    def validate_text(self):
+    def validate_text_and_icon(self):
         if not self.text and not self.icon:
             raise ValueError("You must provide either the `text` or `icon` argument.")
+
+        return self
+
+    @model_validator(mode="after")
+    def validate_href_and_actions(self):
+        if self.href and self.actions:
+            raise ValueError("Button cannot have both `href` and `actions` defined.")
 
         return self
 
@@ -99,6 +106,11 @@ class Button(VizroBaseModel):
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.n_clicks"}
+
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, *args) -> Any:
+        """Return the given `value` without modification."""
+        return value
 
     @_log_call
     def build(self):
