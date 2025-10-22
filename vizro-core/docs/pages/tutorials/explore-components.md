@@ -81,7 +81,7 @@ A [`Page`][vizro.models.Page] model is the foundation of any Vizro dashboard. It
 
 ### 3.1. Add a table
 
-To start, let's get an overview of the data by displaying it in a table using [`AgGrid`][vizro.models.AgGrid]. These steps create a page and add a table to it:
+To start, let's get an overview of the data by displaying it in a table using [`AgGrid`](../user-guides/table.md/#ag-grid). These steps create a page and add a table to it:
 
 1. Import the necessary packages and load the dataset.
 1. Create a [`Page`][vizro.models.Page] and set its `title` to `"Data"`.
@@ -132,7 +132,7 @@ In the top-right corner of the dashboard, you'll notice a toggle to switch betwe
 
 ### 3.2. Add an `export data` button
 
-Next, you'll add a button that lets users export the data currently shown in your dashboard.
+Next, you'll add a [`Button`](../user-guides/button.md) that lets users export the data currently shown in your dashboard.
 
 This is an example of an _action_. Vizro provides several [built-in actions](../user-guides/actions.md), and you can also write your own [custom actions](../user-guides/custom-actions.md).
 
