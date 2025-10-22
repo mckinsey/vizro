@@ -199,7 +199,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
 
 ## Add header and footer
 
-You can add header and footer to your [`Card`][vizro.models.Card] model by specifying `header` and `footer` arguments. Each supports any Markdown object, providing flexibility for text, links, or inline formatting, as the underlying components are dbc.CardHeader and dbc.CardFooter.
+YouYou can add header and footer to your [`Card`][vizro.models.Card] model by specifying `header` and `footer` arguments. Both accept Markdown content, allowing you to add text, links, and inline formatting with ease.
 
 !!! example "Card with header and footer"
 
@@ -615,11 +615,11 @@ To create a KPI card, use the existing KPI card functions from [`vizro.figures`]
 
 For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#key-performance-indicator-kpi-cards).
 
-## Add title with a tooltip
+## Add a tooltip
 
 Add a title to your card by passing a string to the `title` argument.
 
-The `description` argument enables you to add helpful context to your button by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your chosen text.
+The `description` argument enables you to add helpful context to your button by displaying an info icon in the top right corner of the card header. Hovering over the icon shows a tooltip with your chosen text.
 
 You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
@@ -636,7 +636,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
             components=[
                 vm.Card(
                     text="Commodi repudiandae consequuntur voluptatum.",
-                    title="Lorem ipsum",
+                    header="Lorem ipsum",
                     description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
                                 "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
                 ),
@@ -656,7 +656,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
           - components:
               - text: |
                   Commodi repudiandae consequuntur voluptatum.
-                title: Lorem ipsum
+                header: Lorem ipsum
                 description: |
                   Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 

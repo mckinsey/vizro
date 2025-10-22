@@ -93,9 +93,10 @@ class Card(VizroBaseModel):
     actions: ActionsType = []
 
     @model_validator(mode="after")
-    def _validate_href_if_actions_set(self):
+    def validate_href_and_actions(self):
         if self.href and self.actions:
-            raise ValueError("You cannot define both `href` and `actions` in `Card` model.")
+            raise ValueError("Button cannot have both `href` and `actions` defined.")
+
         return self
 
     @model_validator(mode="after")
