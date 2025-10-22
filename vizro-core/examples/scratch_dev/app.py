@@ -39,6 +39,7 @@ page = vm.Page(
                 data_frame=df, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
             ),
         ),
+        vm.Text(id="time_text", text="Click the button"),
     ],
     # controls=[
     #     vm.Parameter(

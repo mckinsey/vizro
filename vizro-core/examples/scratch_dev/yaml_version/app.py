@@ -2,13 +2,13 @@
 
 from pathlib import Path
 
+import vizro.models as vm
 import vizro.plotly.express as px
 import yaml
 from dash import dash_table
 from dash_ag_grid import AgGrid
 from vizro import Vizro
 from vizro.managers import data_manager
-from vizro.models import Dashboard
 from vizro.models.types import capture
 
 print(f"DEBUG: Current module is: {__name__}")
@@ -54,7 +54,7 @@ def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
 
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
-dashboard = Dashboard(**dashboard)
+dashboard = vm.Dashboard(**dashboard)
 
 
 if __name__ == "__main__":
