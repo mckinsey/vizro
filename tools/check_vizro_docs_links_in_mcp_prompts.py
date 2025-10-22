@@ -5,8 +5,7 @@ import sys
 from pathlib import Path
 
 import requests
-
-# import vizro
+import vizro
 
 # Regex to find any http/https URLs in text
 URL_PATTERN = re.compile(r'https?://[^\s\'"<>]+')
@@ -14,7 +13,7 @@ URL_PATTERN = re.compile(r'https?://[^\s\'"<>]+')
 
 def replace_version_placeholder(url: str) -> str:
     """Replace the {vizro.__version__} placeholder with the actual vizro version."""
-    return url.replace("{vizro.__version__}", "0")
+    return url.replace("{vizro.__version__}", vizro.__version__)
 
 
 def check_url_availability(url: str) -> bool:
