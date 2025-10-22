@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-import vizro.models as vm
 import vizro.plotly.express as px
 import yaml
 from dash import dash_table
