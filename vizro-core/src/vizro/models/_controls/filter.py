@@ -387,11 +387,12 @@ class Filter(VizroBaseModel):
         targeted_data: pd.DataFrame,
         current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
     ) -> Union[tuple[float, float], tuple[pd.Timestamp, pd.Timestamp]]:
-        # Try to convert the current value to a datetime object. If it fails (like for Slider), it will be left as is.
+        # Try to convert the current value to a datetime object. If it fails (like value=123), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
-        with suppress(ValueError):
-            current_value = pd.to_datetime(current_value, format="ISO8601")
+        if targeted_data.apply(is_datetime64_any_dtype).all():
+            with suppress(ValueError):
+                current_value = pd.to_datetime(current_value, format="ISO8601")
 
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
 
@@ -412,11 +413,12 @@ class Filter(VizroBaseModel):
         targeted_data: pd.DataFrame,
         current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
     ) -> list[Any]:
-        # Try to convert the current value to a datetime object. If it fails (like for Slider), it will be left as is.
+        # Try to convert the current value to a datetime object. If it fails (like value=123), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
-        with suppress(ValueError):
-            current_value = pd.to_datetime(current_value, format="ISO8601")
+        if targeted_data.apply(is_datetime64_any_dtype).all():
+            with suppress(ValueError):
+                current_value = pd.to_datetime(current_value, format="ISO8601")
 
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
