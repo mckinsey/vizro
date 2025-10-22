@@ -1,23 +1,12 @@
-# Still requires a .py to define a CapturedCallables custom action, add switch type to Page.components and parse YAML configuration
+# Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
 # More explanation in the docs on `Dashboard` and extensions.
 pages:
   - components:
-      # Adding a switch model raises the ValidationError exception even though the following line is called in the py:
-      # `vm.Page.add_type("components", vm.Switch)`.
-      #      - type: switch
-      #        id: clock_switch
-      #        title: 24-hour clock
-      #        value: true
-      - type: button
-      #        actions:
-      #          - type: action
-      #            function:
-      #              _target_: __main__.current_time_text
-      #              use_24_hour_clock: clock_switch
-      #            outputs: time_text
-      - type: text
-        id: time_text
-        text: Click the button
-    layout:
-      type: flex
-    title: Action triggered by button
+      - figure:
+          _target_: vizro.plotly.express.bar
+          data_frame: gapminder_2007
+          x: continent
+          y: pop
+          color: continent
+        type: graph
+    title: Simple Bar Chart Example
