@@ -6,6 +6,7 @@ TRANSPARENT = "rgba(0, 0, 0, 0)"
 
 dashboard_overrides = go.layout.Template()
 dashboard_overrides.layout = go.Layout(
+    clickmode="event+select",
     geo_bgcolor=TRANSPARENT,
     geo_lakecolor=TRANSPARENT,
     geo_landcolor=TRANSPARENT,

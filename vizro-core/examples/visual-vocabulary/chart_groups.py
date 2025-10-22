@@ -1,7 +1,10 @@
 """Defines chart groups."""
 
 import itertools
+import json
 from dataclasses import dataclass
+
+import dash
 
 import pages.correlation
 import pages.deviation
@@ -197,6 +200,54 @@ CHART_GROUPS = [
     flow_chart_group,
     spatial_chart_group,
 ]
+
+# TODO NOW PP:
+#  1. add custom_data
+#  2. make table to show click vs selected info per graph.
+for chart_group in CHART_GROUPS:
+    for page in chart_group.pages:
+
+        graph_id = page.components[1].id
+
+        # Callback for clickData
+        @dash.callback(
+            dash.Output(f"click_data_text_{graph_id}", "children"),
+            dash.Input(graph_id, "clickData"),
+        )
+        def update_click_data_text(click_data):
+            """Updates click data text."""
+            return f"""```json
+{json.dumps(click_data, indent=4)}
+```"""
+
+        # Callback for selectedData
+        @dash.callback(
+            dash.Output(f"selected_data_text_{graph_id}", "children"),
+            dash.Input(graph_id, "selectedData"),
+        )
+        def update_selected_data_text(selected_data):
+            """Updates selected data text."""
+            return f"""```json
+    {json.dumps(selected_data, indent=4)}
+```"""
+
+        # Insert clickData / selectedData tab to every page
+        page.components[2].tabs.insert(0, vm.Container(
+            layout=vm.Flex(direction="column", gap="12px"),
+            title="clickData / selectedData",
+            components=[
+                vm.Text(text="clickData"),
+                vm.Text(
+                    id=f"click_data_text_{graph_id}",
+                    text="Click data to see output"
+                ),
+                vm.Text(text="selectedData"),
+                vm.Text(
+                    id=f"selected_data_text_{graph_id}",
+                    text="Selected data to see output"
+                )
+            ],
+        ))
 
 all_intro_text = """
 
