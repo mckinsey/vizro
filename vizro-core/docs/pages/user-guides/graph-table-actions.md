@@ -813,7 +813,7 @@ The full code is given below. This shows a slightly more complicated highlightin
     === "app.yaml"
 
         ```
-        # Still requires a .py to add data to the data manager, define CapturedCallables and parse YAML configuration
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
         # More explanation in the docs on `Dashboard` and extensions.
         pages:
         - components:
