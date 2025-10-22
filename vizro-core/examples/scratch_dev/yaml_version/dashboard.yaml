@@ -9,12 +9,12 @@ pages:
       #        title: 24-hour clock
       #        value: true
       - type: button
-        actions:
-          - type: action
-            function:
-              _target_: __main__.current_time_text
-              use_24_hour_clock: clock_switch
-            outputs: time_text
+      #        actions:
+      #          - type: action
+      #            function:
+      #              _target_: __main__.current_time_text
+      #              use_24_hour_clock: clock_switch
+      #            outputs: time_text
       - type: text
         id: time_text
         text: Click the button
