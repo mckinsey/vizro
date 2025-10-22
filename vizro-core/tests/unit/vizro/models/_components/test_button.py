@@ -78,6 +78,10 @@ class TestButtonInstantiation:
         with pytest.raises(ValueError, match=r"You must provide either the `text` or `icon` argument."):
             vm.Button(text="")
 
+    def test_invalid_href_and_actions(self):
+        with pytest.raises(ValueError, match=r"Button cannot have both `href` and `actions` defined."):
+            vm.Button(href="/page_1_reference", actions=[export_data()])
+
 
 class TestBuildMethod:
     def test_button_build(self):
