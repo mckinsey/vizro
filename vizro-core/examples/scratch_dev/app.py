@@ -7,6 +7,7 @@ from vizro.models.types import capture
 
 @capture("action")
 def current_time_text():
+    """Return the current time as a formatted string."""
     time = datetime.now()
     return f"The time is {time}"
 
