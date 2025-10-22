@@ -3,29 +3,10 @@
 pages:
   - components:
       - figure:
-          _target_: __main__.my_custom_aggrid
-          chosen_columns:
-            - country
-            - continent
-            - lifeExp
-            - pop
-            - gdpPercap
+          _target_: vizro.plotly.express.bar
           data_frame: gapminder_2007
-        id: custom_ag_grid
-        title: Custom Dash AgGrid
-        type: ag_grid
-    controls:
-      - selector:
-          options:
-            - country
-            - continent
-            - lifeExp
-            - pop
-            - gdpPercap
-            - year
-          title: Choose columns
-          type: dropdown
-        targets:
-          - custom_ag_grid.chosen_columns
-        type: parameter
-    title: Example of a custom Dash AgGrid
+          x: continent
+          y: pop
+          color: continent
+        type: graph
+    title: Simple Bar Chart Example

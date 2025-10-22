@@ -11,6 +11,8 @@ from vizro.managers import data_manager
 from vizro.models import Dashboard
 from vizro.models.types import capture
 
+print(f"DEBUG: Current module is: {__name__}")
+
 df = px.data.gapminder().query("year == 2007")
 data_manager["gapminder_2007"] = df
 
@@ -53,6 +55,7 @@ def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)
