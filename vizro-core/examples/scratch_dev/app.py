@@ -48,10 +48,36 @@ df = px.data.iris()
 df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq='D')
 df["is_setosa"] = df["species"] == "setosa"
 
+# === PAGE 0 ===
+
+page_0 = vm.Page(
+    title="Playground",
+    layout=vm.Grid(grid=[[0, 0, 0], [1, 2, 3]]),
+    components=[
+        vm.Graph(
+            id="p0_graph_1",
+            title="Click to see action's outputs",
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+            actions=[
+                # vm.Action(function=custom_action_with_trigger(), outputs="p0_text_1"),
+                vm.Action(function=custom_action_with_no_trigger("p0_graph_1.click"), outputs="p0_text_2"),
+                # vm.Action(function=custom_action_with_no_trigger("p0_graph_1.hover"), outputs="p0_text_3"),
+                vm.Action(function=custom_action_with_no_trigger("p0_graph_1.select"), outputs="p0_text_4"),
+                vm.Action(function=custom_action_with_no_trigger("p0_graph_1.petar_multi_prop"), outputs="p0_text_5"),
+            ],
+        ),
+        # TitledText(id='p0_text_1', title="default '_trigger' as input", text="""No cross-filter applied"""),
+        TitledText(id='p0_text_2', title="'click' as input", text="""No cross-filter applied"""),
+        # TitledText(id='p0_text_3', title="'hover' as input", text="""No cross-filter applied"""),
+        TitledText(id='p0_text_4', title="'select' as input", text="""No cross-filter applied"""),
+        TitledText(id='p0_text_5', title="'petar_multi_prop' as input", text="""No cross-filter applied"""),
+    ]
+)
+
 # === PAGE 1 ===
 
 page_1 = vm.Page(
-    title="Playground",
+    title="Playground 2",
     components=[
         vm.Container(
             layout=vm.Grid(grid=[
@@ -508,7 +534,7 @@ page_9 = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9])
+dashboard = vm.Dashboard(pages=[page_0, page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9])
 
 # TODO: HOW ABOUT to have one transformer of input per model (one method per model), and one set_control output mapper function.
 #   This would be actions-info extraction_inputs function + _adjust_result_by_control_type combined.

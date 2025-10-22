@@ -132,6 +132,7 @@ class Graph(VizroBaseModel):
             "select": f"{self.id}.selectedData",
             "hover": f"{self.id}.hoverData",
             "zoom":  f"{self.id}.relayoutData",
+            "petar_multi_prop": f"{self.id}_props_store.data",
         }
 
     # TODO Q AM: As keys are the same, should we move this into _action_triggers and reformat its dictionary value to
@@ -144,8 +145,8 @@ class Graph(VizroBaseModel):
             "click": lambda x: x["points"][0],
             "hover": lambda x: x["points"][0],
             "select": lambda x: x["points"],
-            # "petar_select": lambda x: [x["points"]]
             "zoom": lambda x: x,
+            # TODO IMPORTANT: There's no extraction for 'petar_multi_prop' as it does it on the clientside.
         }
 
     @property
@@ -156,6 +157,7 @@ class Graph(VizroBaseModel):
             **({"header": f"{self.id}_header.children"} if self.header else {}),
             **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+            "petar_multi_prop": f"{self.id}_props_store.data",
         }
 
     @property
@@ -166,6 +168,7 @@ class Graph(VizroBaseModel):
             "select": f"{self.id}.selectedData",
             "hover": f"{self.id}.hoverData",
             "zoom":  f"{self.id}.relayoutData",
+            "petar_multi_prop": f"{self.id}_props_store.data",
         }
 
     def _get_value_from_trigger(self, value: str, trigger: dict[str, list[JsonValue]]) -> JsonValue:
@@ -365,9 +368,23 @@ class Graph(VizroBaseModel):
         # for graph component we apply a merge to preserve our default values unless explicitly overridden.
         graph_defaults = _set_defaults_nested(self.extra, defaults)
 
+        clientside_callback(
+            ClientsideFunction(namespace="graph", function_name="update_graph_props_store"),
+            output=[
+                Output(f"{self.id}_props_store", "data")
+            ],
+            inputs=[
+                Input(self.id, "clickData"),
+                Input(self.id, "selectedData"),
+                State(f"{self.id}_props_store", "data"),
+            ],
+            prevent_initial_call=True,
+        )
+
         return dcc.Loading(
             children=html.Div(
                 children=[
+                    dcc.Store(id=f"{self.id}_props_store", data={"model_id": self.id}),
                     html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
