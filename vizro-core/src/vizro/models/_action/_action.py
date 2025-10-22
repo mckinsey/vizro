@@ -6,6 +6,7 @@ import re
 import time
 import warnings
 from collections.abc import Collection, Iterable, Mapping
+from contextlib import suppress
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
@@ -40,6 +41,10 @@ class ControlsStates(TypedDict):
     filters: list[State]
     parameters: list[State]
     filter_interaction: list[dict[str, State]]
+
+
+class _VizroDownload:
+    _action_outputs = {"__default__": "vizro_download.data"}
 
 
 class _BaseAction(VizroBaseModel):
@@ -162,6 +167,7 @@ class _BaseAction(VizroBaseModel):
             ValueError: If dependency format is invalid (e.g. "id.prop.prop" or "id..prop")
         """
         attribute_type = "_action_outputs" if type == "output" else "_action_inputs"
+        builtin_components = {"vizro_download": _VizroDownload()}
 
         # Validate that the dependency is in one of two valid formats: id.property ("graph-1.figure") or id ("card-id").
         # By this point we have already validation dependency is a str.
@@ -188,6 +194,10 @@ class _BaseAction(VizroBaseModel):
         try:
             return getattr(model_manager[component_id], attribute_type)[component_property]
         except (KeyError, AttributeError) as exc:
+            # Fallback: try builtin_components
+            with suppress(KeyError, AttributeError):
+                return getattr(builtin_components[component_id], attribute_type)[component_property]
+
             if isinstance(exc, KeyError):
                 if component_property in str(exc):
                     raise KeyError(
