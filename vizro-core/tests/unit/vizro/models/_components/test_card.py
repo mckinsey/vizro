@@ -62,7 +62,7 @@ class TestCardInstantiation:
             vm.Card(text=None)
 
     def test_href_and_actions_defined(self):
-        with pytest.raises(ValidationError, match=r"You cannot define both `href` and `actions` in `Card` model."):
+        with pytest.raises(ValidationError, match=r"Card cannot have both `href` and `actions` defined."):
             vm.Card(text="Test", href="https://www.google.de/", actions=va.set_control(control="filter-1", value="A"))
 
 
