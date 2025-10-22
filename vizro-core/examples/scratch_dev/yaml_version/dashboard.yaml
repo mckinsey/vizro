@@ -4,10 +4,10 @@ pages:
   - components:
       # Adding a switch model raises the ValidationError exception even though the following line is called in the py:
       # `vm.Page.add_type("components", vm.Switch)`.
-      - type: switch
-        id: clock_switch
-        title: 24-hour clock
-        value: true
+#      - type: switch
+#        id: clock_switch
+#        title: 24-hour clock
+#        value: true
       - type: button
         actions:
           - type: action
