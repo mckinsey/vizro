@@ -76,7 +76,7 @@ The following examples show a possible version of a custom table. In this case t
     === "app.yaml"
 
         ```yaml
-        # Still requires a .py to add data to the data manager, define CapturedCallables and parse YAML configuration
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
         # More explanation in the docs on `Dashboard` and extensions.
         pages:
           - components:
