@@ -11,14 +11,13 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
 
-print(f"DEBUG: Current module is: {__name__}")
-
 df = px.data.gapminder().query("year == 2007")
 data_manager["gapminder_2007"] = df
 
 
 @capture("table")
 def my_custom_table(chosen_columns: list[str], data_frame=None):
+    """Custom Dash DataTable."""
     columns = [{"name": i, "id": i} for i in chosen_columns]
     defaults = {
         "style_as_list_view": True,
@@ -34,6 +33,7 @@ def my_custom_table(chosen_columns: list[str], data_frame=None):
 
 @capture("ag_grid")
 def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
+    """Custom Dash AgGrid."""
     defaults = {
         "className": "ag-theme-quartz-dark ag-theme-vizro",
         "defaultColDef": {

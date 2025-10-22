@@ -9,6 +9,7 @@ df = px.data.gapminder().query("year == 2007")
 
 @capture("ag_grid")
 def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
+    """Custom Dash AgGrid."""
     defaults = {
         "className": "ag-theme-quartz-dark ag-theme-vizro",
         "defaultColDef": {
@@ -41,12 +42,12 @@ page = vm.Page(
         ),
         vm.Text(id="time_text", text="Click the button"),
     ],
-    # controls=[
-    #     vm.Parameter(
-    #         targets=["custom_ag_grid.chosen_columns"],
-    #         selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list()),
-    #     )
-    # ],
+    controls=[
+        vm.Parameter(
+            targets=["custom_ag_grid.chosen_columns"],
+            selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list()),
+        )
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
