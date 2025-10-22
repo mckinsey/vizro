@@ -36,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- Fix dynamic numeric filters to handle year-like numbers correctly. ([#1450](https://github.com/mckinsey/vizro/pull/1450))
+- Fix dynamic filters to correctly handle year values (e.g., 1995).([#1450](https://github.com/mckinsey/vizro/pull/1450))
 
 <!--
 ### Security
