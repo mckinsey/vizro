@@ -1,10 +1,10 @@
 """Example to show dashboard configuration specified as a YAML file."""
 
-import yaml
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 import vizro.models as vm
+import yaml
 from vizro import Vizro
 from vizro.models.types import capture
 
