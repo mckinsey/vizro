@@ -1,39 +1,31 @@
+# Still requires a .py to add data to the data manager, define CapturedCallables and parse YAML configuration
+# More explanation in the docs on `Dashboard` and extensions.
 pages:
   - components:
-      - actions:
-          - control: day_filter
-            type: set_control
-            value: x
-          - control: sex_filter
-            type: set_control
-            value: y
-        figure:
-          _target_: density_heatmap
-          category_orders:
-            day:
-              - Thur
-              - Fri
-              - Sat
-              - Sun
-          data_frame: tips
-          x: day
-          y: sex
-        title: Click on a cell to use that cell's sex and day to filter table
-        type: graph
       - figure:
-          _target_: dash_ag_grid
-          data_frame: tips
-        id: tips_table
+          _target_: __main__.my_custom_aggrid
+          chosen_columns:
+            - country
+            - continent
+            - lifeExp
+            - pop
+            - gdpPercap
+          data_frame: gapminder_2007
+        id: custom_ag_grid
+        title: Custom Dash AgGrid
         type: ag_grid
     controls:
-      - column: day
-        id: day_filter
+      - selector:
+          options:
+            - country
+            - continent
+            - lifeExp
+            - pop
+            - gdpPercap
+            - year
+          title: Choose columns
+          type: dropdown
         targets:
-          - tips_table
-        type: filter
-      - column: sex
-        id: sex_filter
-        targets:
-          - tips_table
-        type: filter
-    title: Cross-filter over 2 dimensions
+          - custom_ag_grid.chosen_columns
+        type: parameter
+    title: Example of a custom Dash AgGrid

@@ -813,8 +813,8 @@ The full code is given below. This shows a slightly more complicated highlightin
     === "app.yaml"
 
         ```
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
+        # Still requires a .py to add data to the data manager, define CapturedCallables and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
         pages:
         - components:
           - actions:
@@ -1014,8 +1014,8 @@ The full code is given below. This includes the complete code for a bump chart w
     === "app.yaml"
 
         ```
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
+        # Still requires a .py to add data to the data manager, define CapturedCallables and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
         pages:
           - components:
               - type: graph
@@ -1164,8 +1164,8 @@ A self-highlight is often part of an [actions chain](actions.md#multiple-actions
     === "app.yaml"
 
         ```
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
+        # Still requires a .py to add data to the data manager, define CapturedCallables and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
         pages:
           - components:
               - type: graph
