@@ -11,6 +11,7 @@ from vizro.models.types import capture
 
 @capture("action")
 def current_time_text(use_24_hour_clock):
+    """Return the current time as a formatted string."""
     time_format = "%H:%M:%S" if use_24_hour_clock else "%I:%M:%S %p"
     time = datetime.now().strftime(time_format)
     return f"The time is {time}"
