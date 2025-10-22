@@ -1014,7 +1014,7 @@ The full code is given below. This includes the complete code for a bump chart w
     === "app.yaml"
 
         ```
-        # Still requires a .py to add data to the data manager, define CapturedCallables and parse YAML configuration
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
         # More explanation in the docs on `Dashboard` and extensions.
         pages:
           - components:
