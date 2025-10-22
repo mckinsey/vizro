@@ -11,41 +11,44 @@ page = vm.Page(
     title="Test page",
     components=[
         vm.Card(
-            text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-            "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+            text="Lorem Ipsum is simply dummy text. ",
             header="### This is card header",
             footer="##### This is card footer",
             description="Tooltip",
         ),
         vm.Card(
-            header="### This is card header",
+            header="## This is card header",
             text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
             "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+            description="Tooltip",
         ),
         vm.Card(
             text="Card with text and header and footer",
-            header="### This is card header",
+            header="#### This is card header",
             footer="##### This is card footer",
+            description="Tooltip",
         ),
         vm.Card(
             text="### Card with just text title",
+            description="Tooltip",
         ),
         vm.Card(
             text="Card without header",
             footer="This is card footer",
+            description="Tooltip",
         ),
         vm.Card(
-            text="Regular card with only text",
+            text="Regular card with only text: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+            description="Tooltip",
         ),
         vm.Graph(figure=px.bar(gapminder, x="country", y="pop", color="continent")),
         vm.Card(
-            text="Card with action",
+            text="Card with action: Filter Europe",
             actions=va.set_control(control="filter-id-1", value="Europe"),
         ),
         vm.Card(
             text="Navigate to page",
             href="/dummy-page",
-            # actions=va.set_control(control="filter-id-1", value="Europe")
         ),
     ],
     controls=[vm.Filter(id="filter-id-1", column="continent", selector=vm.RadioItems())],

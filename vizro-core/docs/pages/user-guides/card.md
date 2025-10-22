@@ -199,7 +199,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
 
 ## Add header and footer
 
-YouYou can add header and footer to your [`Card`][vizro.models.Card] model by specifying `header` and `footer` arguments. Both accept Markdown content, allowing you to add text, links, and inline formatting with ease.
+You can now add a header and footer to your [`Card`][vizro.models.Card] by using the `header` and `footer` arguments. Both fields support [Markdown text](https://markdown-guide.readthedocs.io/), so you can easily include text, links, and inline formatting.
 
 !!! example "Card with header and footer"
 
@@ -617,11 +617,9 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 ## Add a tooltip
 
-Add a title to your card by passing a string to the `title` argument.
+Use the `description` argument to add helpful context to your `Card`. This displays an info icon in the top-right corner, and hovering over it reveals a tooltip with your chosen text.
 
-The `description` argument enables you to add helpful context to your button by displaying an info icon in the top right corner of the card header. Hovering over the icon shows a tooltip with your chosen text.
-
-You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to `description` argument to use the default info icon, or pass a [`Tooltip`][vizro.models.Tooltip] model to customize the icon using any symbol from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! example "Card with a tooltip"
 

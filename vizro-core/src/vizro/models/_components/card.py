@@ -1,9 +1,8 @@
-import warnings
 from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo, model_validator
+from pydantic import BeforeValidator, Field, model_validator
 from pydantic.json_schema import JsonValue, SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -12,33 +11,19 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, _IdProperty
 
 
-def warn_description_without_header(description, info: ValidationInfo):
-    header = info.data.get("header")
-
-    if description and not header:
-        warnings.warn(
-            """
-            The `description` field is set, but `header` is missing or empty.
-            The tooltip will not appear unless a `header` is provided.
-            """,
-            UserWarning,
-        )
-    return description
-
-
 class Card(VizroBaseModel):
     """Creates a card based on Markdown syntax.
 
     Args:
         type (Literal["card"]): Defaults to `"card"`.
         text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
-        header (str): Markdown text positioned above the `Card.title`. Follows the CommonMark specification.
+        header (str): Markdown text positioned above the card text. Follows the CommonMark specification.
             Ideal for adding supplementary information. Defaults to `""`.
-        footer (str): Markdown text positioned below the `Card`. Follows the CommonMark specification.
+        footer (str): Markdown text positioned at the bottom of the `Card`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
             only. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the card header.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon in the top-right corner of the Card.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -55,13 +40,13 @@ class Card(VizroBaseModel):
     )
     header: str = Field(
         default="",
-        description="Markdown text positioned above the `Card.title`. Follows the CommonMark specification. Ideal for "
+        description="Markdown text positioned above the card text. Follows the CommonMark specification. Ideal for "
         "adding supplementary information.",
     )
     footer: str = Field(
         default="",
-        description="Markdown text positioned below the `Card`. Follows the CommonMark specification. Ideal for "
-        "providing further details such as sources, disclaimers, or additional notes.",
+        description="Markdown text positioned at the bottom of the `Card`. Follows the CommonMark specification. "
+        "Ideal for providing further details such as sources, disclaimers, or additional notes.",
     )
     href: str = Field(
         "",
@@ -70,10 +55,9 @@ class Card(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
-        AfterValidator(warn_description_without_header),
         Field(
             default=None,
-            description="""Optional markdown string that adds an icon next to the card header.
+            description="""Optional markdown string that adds an icon in the top-right corner of the Card.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
@@ -124,38 +108,13 @@ class Card(VizroBaseModel):
 
     @_log_call
     def build(self):
-        text = dcc.Markdown(
-            id=f"{self.id}-text", children=self.text, dangerously_allow_html=False, className="card-text"
-        )
-
         description = self.description.build().children if self.description else [None]
 
-        card_text = (
-            dbc.NavLink(
-                children=text,
-                href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
-                target="_top",
-            )
-            if self.href
-            else text
-        )
-
+        card_text = self._build_card_text()
         card_content = [
-            dbc.CardHeader(
-                id=f"{self.id}_header",
-                children=html.Div(
-                    children=[dcc.Markdown(children=self.header, dangerously_allow_html=False), *description],
-                    className="card-header-outer",
-                ),
-            )
-            if self.header
-            else None,
-            dbc.CardBody(children=card_text),
-            dbc.CardFooter(
-                id=f"{self.id}_footer", children=dcc.Markdown(children=self.footer, dangerously_allow_html=False)
-            )
-            if self.footer
-            else None,
+            self._build_card_header(description),
+            self._build_card_body(card_text, description),
+            self._build_card_footer(),
         ]
 
         defaults = {
@@ -168,4 +127,50 @@ class Card(VizroBaseModel):
             id=f"{self.id}-outer",
             children=dbc.Card(**(defaults | self.extra)),
             className="card-wrapper-actions" if self.actions else "card-wrapper",
+        )
+
+    def _build_card_text(self):
+        """Wrap text in NavLink if href is provided."""
+        text = dcc.Markdown(
+            id=f"{self.id}-text", children=self.text, dangerously_allow_html=False, className="card-text"
+        )
+        if not self.href:
+            return text
+
+        href = get_relative_path(self.href) if self.href.startswith("/") else self.href
+        return dbc.NavLink(children=text, href=href, target="_top")
+
+    def _build_card_header(self, description):
+        """Build card header."""
+        if not self.header:
+            return None
+
+        children = [dcc.Markdown(children=self.header, dangerously_allow_html=False)]
+
+        # Add description to header if it exists
+        if description is not None:
+            children.extend(description)
+
+        return dbc.CardHeader(
+            id=f"{self.id}_header",
+            children=html.Div(children=children, className="card-header-outer"),
+        )
+
+    def _build_card_body(self, card_text, description):
+        """Build card body with description if no header exists."""
+        children = [card_text]
+
+        # Add description to body only if there's no header
+        if not self.header and description is not None:
+            children.extend(description if isinstance(description, list) else [description])
+
+        return dbc.CardBody(children=children, className="card-body-outer")
+
+    def _build_card_footer(self):
+        """Build card footer if footer text exists."""
+        if not self.footer:
+            return None
+
+        return dbc.CardFooter(
+            id=f"{self.id}_footer", children=dcc.Markdown(children=self.footer, dangerously_allow_html=False)
         )
