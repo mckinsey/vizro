@@ -234,12 +234,9 @@ Here is the full example code that includes the input component `vm.Switch(id="c
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
 
     === "app.yaml"
-
         ```yaml
-        null
-        ...
+        # Custom components and added component types (with `add_type`) are currently only possible via Python configuration
         ```
-
     === "Result"
 
         ![](../../assets/user_guides/actions/custom-actions2.png)
@@ -369,12 +366,9 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.title"` to update the title of the switch.
 
     === "app.yaml"
-
         ```yaml
-        null
-        ...
+        # Custom components and added component types (with `add_type`) are currently only possible via Python configuration
         ```
-
     === "Result"
 
         ![](../../assets/user_guides/actions/custom-actions3.png)
@@ -430,12 +424,9 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.disabled"` to update the `disabled` property of the component with `id="clock_switch"`.
 
     === "app.yaml"
-
         ```yaml
-        null
-        ...
+        # Custom components and added component types (with `add_type`) are currently only possible via Python configuration
         ```
-
     === "Result"
 
         ![](../../assets/user_guides/actions/custom-actions4.png)
