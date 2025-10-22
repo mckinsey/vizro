@@ -119,6 +119,27 @@ Here is the full example code that includes the output component `vm.Time(id="ti
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+    
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to define a CapturedCallables custom action and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+           - components:
+               - type: button
+                 actions:
+                   - type: action
+                     function:
+                       _target_: __main__.current_time_text
+                     outputs: time_text
+               - type: text
+                 id: time_text
+                 text: Click the button
+             layout:
+               type: flex
+             title: Action triggered by button
+        ```
 
     === "Result"
 
@@ -211,6 +232,11 @@ Here is the full example code that includes the input component `vm.Switch(id="c
         ```
 
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
+
+    === "app.yaml"
+        ```yaml
+        # Allowing new components like `vm.Page.add_type("components", vm.Switch)` is currently only possible via Python configuration
+        ```
 
     === "Result"
 
@@ -340,6 +366,11 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         1. In the [previous example](#trigger-with-a-runtime-input), the action was triggered when a button is clicked; now we change the action to be triggered when the switch itself is clicked.
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.title"` to update the title of the switch.
 
+    === "app.yaml"
+        ```yaml
+        # Allowing new components like `vm.Page.add_type("components", vm.Switch)` is currently only possible via Python configuration
+        ```
+
     === "Result"
 
         ![](../../assets/user_guides/actions/custom-actions3.png)
@@ -393,6 +424,11 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         1. We disable the switch by returning `True` to its `disabled` property. After this action runs, the switch can no longer the clicked. To reset it, you must refresh the page.
         1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.disabled"` to update the `disabled` property of the component with `id="clock_switch"`.
+
+    === "app.yaml"
+        ```yaml
+        # Allowing new components like `vm.Page.add_type("components", vm.Switch)` is currently only possible via Python configuration
+        ```
 
     === "Result"
 

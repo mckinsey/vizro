@@ -1,39 +1,23 @@
+# Still requires a .py to define a CapturedCallables custom action, add switch type to Page.components and parse YAML configuration
+# More explanation in the docs on `Dashboard` and extensions.
 pages:
   - components:
-      - actions:
-          - control: day_filter
-            type: set_control
-            value: x
-          - control: sex_filter
-            type: set_control
-            value: y
-        figure:
-          _target_: density_heatmap
-          category_orders:
-            day:
-              - Thur
-              - Fri
-              - Sat
-              - Sun
-          data_frame: tips
-          x: day
-          y: sex
-        title: Click on a cell to use that cell's sex and day to filter table
-        type: graph
-      - figure:
-          _target_: dash_ag_grid
-          data_frame: tips
-        id: tips_table
-        type: ag_grid
-    controls:
-      - column: day
-        id: day_filter
-        targets:
-          - tips_table
-        type: filter
-      - column: sex
-        id: sex_filter
-        targets:
-          - tips_table
-        type: filter
-    title: Cross-filter over 2 dimensions
+      # Adding a switch model raises the ValidationError exception even though the following line is called in the py:
+      # `vm.Page.add_type("components", vm.Switch)`.
+      - type: switch
+        id: clock_switch
+        title: 24-hour clock
+        value: true
+      - type: button
+        actions:
+          - type: action
+            function:
+              _target_: __main__.current_time_text
+              use_24_hour_clock: clock_switch
+            outputs: time_text
+      - type: text
+        id: time_text
+        text: Click the button
+    layout:
+      type: flex
+    title: Action triggered by button
