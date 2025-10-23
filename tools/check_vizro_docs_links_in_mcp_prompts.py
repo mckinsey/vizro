@@ -1,4 +1,4 @@
-"""Checks vizro docs links availability in mcp prompts for the latest vizro version."""
+"""Checks availability of all https docs links in the vizro-mcp `prompts.py` file."""
 
 import re
 import sys
