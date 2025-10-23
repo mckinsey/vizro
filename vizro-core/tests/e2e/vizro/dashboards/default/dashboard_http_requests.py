@@ -2,6 +2,8 @@ from time import sleep
 
 import e2e.vizro.constants as cnst
 import pandas as pd
+from pages.ag_grid_interactions_page import ag_grid_interactions_page
+from pages.filters_inside_containters_page import filters_inside_containers_page
 from pages.set_control_cross_filter_page import (
     cross_filter_ag_grid_page,
     cross_filter_graph_page,
@@ -294,6 +296,8 @@ dashboard = vm.Dashboard(
         drill_through_parameter_graph_source_page,
         drill_through_parameter_graph_target_page,
         drill_down_graph_page,
+        ag_grid_interactions_page,
+        filters_inside_containers_page,
     ]
 )
 
