@@ -114,6 +114,7 @@ def make_discriminated_union(*args):
             if tag in builtin_tags:
                 # It's one of the expected ones, so validate it to that type.
                 return tag
+            # With the new type, do we even need the if else?
             else:
                 # It's a custom component so validate as Any.
                 return "custom_component"
@@ -193,9 +194,10 @@ class Dashboard(VizroBaseModel):
 if __name__ == "__main__":
     """
 TODOs Maxi:
-- build in MM
-- check for model copy
-- check for json schema
+- test all combinations of yaml/python instantiations
+- build in MM, see if pydantic_init_subclass is causing any problems
+- check for model copy, do we loose private attributes still? Does it matter?
+- check for json schema, does it look as nice as before?
 - serialization/deserialization
 
 """

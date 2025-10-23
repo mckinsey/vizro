@@ -52,3 +52,11 @@ assert type(dashboard.pages[0].components[0]) is Graph
 
 ###
 # Try other models
+## THIS NOW WORKS ALREADY :) (as in that it DOESNT pass validation)
+# The reason is (I think) because `revalidate_instances` essentially dumps the model, it gets a type, and the type will
+# then mismatch
+dashboard_wrong = Dashboard(pages=[graph_1])
+# dashboard_wrong_dict = {
+#     "pages": [{"title": 1, "components": [graph_1, custom_graph_1]}],
+# }
+# dashboard_wrong = Dashboard.model_validate(dashboard_wrong_dict)
