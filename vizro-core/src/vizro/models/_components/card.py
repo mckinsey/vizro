@@ -40,18 +40,20 @@ class Card(VizroBaseModel):
     )
     header: str = Field(
         default="",
-        description="Markdown text positioned above the card text. Follows the CommonMark specification. Ideal for "
-        "adding supplementary information.",
+        description="""Markdown text positioned above the card text. Follows the CommonMark specification. Ideal for
+        adding supplementary information.""",
     )
     footer: str = Field(
         default="",
-        description="Markdown text positioned at the bottom of the `Card`. Follows the CommonMark specification. "
-        "Ideal for providing further details such as sources, disclaimers, or additional notes.",
+        description="""Markdown text positioned at the bottom of the `Card`. Follows the CommonMark specification.
+        Ideal for providing further details such as sources, disclaimers, or additional notes.""",
     )
     href: str = Field(
         "",
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
