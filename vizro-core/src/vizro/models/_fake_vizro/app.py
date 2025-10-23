@@ -38,9 +38,10 @@ assert type(dashboard.pages[1].components[1]) is CustomGraph
 ###
 # YAML configuration
 # Must have type specified since it's a real discriminated union:
-graph_1 = dict(figure="a", type="graph")
+graph_1 = dict(figure="a", type="graph")  # , type="graph"
 # Can't specify type since it's not a real discriminated union. There's no way of doing a custom component like this
 # (this is currently possible thanks to add_type but in docs we say it's not possible so it's ok to break).
+# Comment MS: I think "don't have to" is a better term than "can't"?? I think it works if one specifies the type!
 page = dict(title="Title", components=[graph_1])
 
 dashboard = Dashboard(pages=[page])

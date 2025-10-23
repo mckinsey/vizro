@@ -93,6 +93,9 @@ def make_discriminated_union(*args):
 
     print(types)
 
+    # With a proper type field established, we could go back to a normal discriminator on this field
+    # but this has the other consequence of needing a work-around for the stack mechanism of the model manager
+    # see former implementation here: https://github.com/McK-Internal/vizro-internal/issues/2273
     def discriminator(model):
         if isinstance(model, dict):
             # YAML configuration where no custom type possible
