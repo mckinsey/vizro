@@ -47,6 +47,7 @@ CHECK_LIST_FILTERS_CONTAINERS_CONTROL_ID = "filters_containers_checklist_control
 SLIDER_INSIDE_CONTAINERS = "slider-inside filters-page"
 RANGE_SLIDER_INSIDE_CONTAINERS = "range slider-inside filters-page"
 RANGE_DATEPICKER_INSIDE_CONTAINERS = "range datepicker-inside filters-page"
+SWITCH_INSIDE_CONTAINERS = "switch-inside-containers"
 
 PARAMETERS_PAGE = "parameters_p@ge! (tabs + containers)"
 PARAMETERS_PAGE_PATH = "/parameters_page"
@@ -119,6 +120,8 @@ AG_GRID_TOOLTIP_ICON = "info"
 TABLE_AG_GRID_INTERACTIONS_PAGE = "table-ag-grid-inter-page"
 TABLE_AG_GRID_INTERACTIONS_ID = "ag grid inter id"
 LINE_AG_GRID_INTERACTIONS_ID = "line_ag_grid_inter"
+DROPDOWN_AG_GRID_INTERACTIONS_ID = "dropdown-ag-grid-interactions"
+RADIOITEMS_AG_GRID_INTERACTIONS_ID = "radioitems-ag-grid-interactions"
 
 TABLE_PAGE = "table-page"
 TABLE_ID = "123_table"
