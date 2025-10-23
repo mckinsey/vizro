@@ -79,9 +79,13 @@ class TestBuildMethod:
                 children=[
                     None,
                     dbc.CardBody(
-                        children=dcc.Markdown(
-                            id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
-                        ),
+                        children=[
+                            dcc.Markdown(
+                                id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
+                            ),
+                            None,
+                        ],
+                        className="card-body-outer",
                     ),
                     None,
                 ],
@@ -102,9 +106,13 @@ class TestBuildMethod:
                 children=[
                     None,
                     dbc.CardBody(
-                        children=dcc.Markdown(
-                            id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
-                        ),
+                        children=[
+                            dcc.Markdown(
+                                id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
+                            ),
+                            None,
+                        ],
+                        className="card-body-outer",
                     ),
                     None,
                 ],
@@ -124,16 +132,20 @@ class TestBuildMethod:
                 children=[
                     None,
                     dbc.CardBody(
-                        children=dbc.NavLink(
-                            dcc.Markdown(
-                                id="card_id-text",
-                                children="Hello",
-                                dangerously_allow_html=False,
-                                className="card-text",
+                        children=[
+                            dbc.NavLink(
+                                dcc.Markdown(
+                                    id="card_id-text",
+                                    children="Hello",
+                                    dangerously_allow_html=False,
+                                    className="card-text",
+                                ),
+                                href="https://www.google.com",
+                                target="_top",
                             ),
-                            href="https://www.google.com",
-                            target="_top",
-                        ),
+                            None,
+                        ],
+                        className="card-body-outer",
                     ),
                     None,
                 ],
@@ -144,7 +156,7 @@ class TestBuildMethod:
 
         assert_component_equal(card, expected_card)
 
-    def test_card_build_with_description(self):
+    def test_card_build_with_description_header(self):
         card = vm.Card(
             id="card_id",
             text="Hello",
@@ -179,9 +191,54 @@ class TestBuildMethod:
                         ),
                     ),
                     dbc.CardBody(
-                        children=dcc.Markdown(
-                            id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
-                        ),
+                        children=[
+                            dcc.Markdown(
+                                id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
+                            ),
+                        ],
+                        className="card-body-outer",
+                    ),
+                    None,
+                ],
+                class_name="",
+            ),
+            className="card-wrapper",
+        )
+
+        assert_component_equal(card, expected_card)
+
+    def test_card_build_with_description_no_header(self):
+        card = vm.Card(
+            id="card_id",
+            text="Hello",
+            description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
+        )
+        card = card.build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+
+        expected_card = html.Div(
+            id="card_id-outer",
+            children=dbc.Card(
+                id="card_id",
+                children=[
+                    None,
+                    dbc.CardBody(
+                        children=[
+                            dcc.Markdown(
+                                id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
+                            ),
+                            *expected_description,
+                        ],
+                        className="card-body-outer",
                     ),
                     None,
                 ],
@@ -208,9 +265,12 @@ class TestBuildMethod:
                         ),
                     ),
                     dbc.CardBody(
-                        children=dcc.Markdown(
-                            id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
-                        ),
+                        children=[
+                            dcc.Markdown(
+                                id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
+                            ),
+                        ],
+                        className="card-body-outer",
                     ),
                     dbc.CardFooter(
                         id="card_id_footer", children=dcc.Markdown(children="Footer", dangerously_allow_html=False)

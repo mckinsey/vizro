@@ -22,7 +22,7 @@ To use an action:
 
 You can also execute [multiple actions with a single trigger](#multiple-actions).
 
-Some actions are usually triggered by certain components, for example [`export_data`](data-actions.md#export-data) is usually triggered by clicking a [button](button.md). However, many actions can be triggered by any component, for example you could also trigger `export_data` by clicking a point on a graph.
+Some actions are usually triggered by certain components, for example [`export_data`](data-actions.md#export-data) is usually triggered by clicking a [button](button.md). However, many actions can be triggered by any component, for example you could also trigger `export_data` by clicking a point on a graph, or you can trigger `set_control` action by clicking on a [`card`](card.md#trigger-an-action-with-a-card).
 
 !!! note
 
@@ -162,84 +162,6 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
     === "Result"
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
-
-## Trigger an action with a card
-
-Here is an example action that uses the [`set_control` action][vizro.actions.set_control] when a [card](card.md) is clicked.
-
-!!! example "Action triggered by card"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="11-13"}
-        import vizro.actions as va
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-
-        df = px.data.iris()
-
-        page = vm.Page(
-            title="Action triggered by a card",
-            components=[
-                vm.Card(text="Filter: Setosa", actions=va.set_control(control="filter-id-1", value="setosa")),
-                vm.Card(text="Filter: Virginica", actions=va.set_control(control="filter-id-1", value="virginica")),
-                vm.Card(text="Filter: Versicolor", actions=va.set_control(control="filter-id-1", value="versicolor")),
-                vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            controls=[vm.Filter(id="filter-id-1", column="species")],
-            layout=vm.Grid(grid=[[0, 1, 2], [3, 3, 3], [3, 3, 3]])
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: card
-                text: Filter: Setosa
-                actions:
-                  - type: set_control
-                    value: setosa
-              - type: card
-                text: Filter: Viriginica
-                actions:
-                  - type: set_control
-                    value: virginica
-              - type: card
-                text: Filter: Versicolor
-                actions:
-                  - type: set_control
-                    value: versicolor
-              - type: graph
-                figure:
-                  _target_: scatter
-                  x: sepal_width
-                  y: sepal_length
-                  color: species
-              - type: button
-                text: Export data
-                actions:
-                  - type: export_data
-            controls:
-              - type: filter
-                id: filter-id-1
-                column: species
-            layout:
-              - type: grid
-                grid: [[0, 1, 2], [3, 3, 3], [3, 3, 3]]
-            title: Action triggered by a card
-        ```
-
-    === "Result"
-
-        ![](../../assets/user_guides/actions/actions-card-trigger.gif)
 
 ## Multiple actions
 
