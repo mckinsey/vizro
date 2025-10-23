@@ -49,7 +49,7 @@ jobs:
         working-directory: ./vizro-mcp
         if: always()
         run: |
-          hatch run docs:prompts-link-check
+          hatch run docs:links-in-prompts-check
           hatch run docs:pip tree
           hatch run docs:build
           hatch run docs:link-check

@@ -77,10 +77,10 @@ linkchecker site \
   --ignore-url="^https://insiders\.vscode\.dev/redirect/mcp/install\?name=vizro-mcp&config=(.+)$" \
   --ignore-url=https://claude.ai/download
 '''
-pip = '"{env:HATCH_UV}" pip {args}'
-prompts-link-check = '''
+links-in-prompts-check = '''
 python ../tools/check_vizro_docs_links_in_mcp_prompts.py
 '''
+pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "mkdocs serve --open"
 
