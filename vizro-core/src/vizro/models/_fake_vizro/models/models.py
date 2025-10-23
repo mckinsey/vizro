@@ -29,6 +29,7 @@ distinguishing our built-in models from user-created ones e.g. just by assigning
 custom components wouldn't specify or checking the import path, etc. So overall this is probably not disastrous,
 we should be able to validate well enough. The below code doesn't demonstrate this and will work for Dashboard(
 pages=[graph]).
+
 Notes:
 - we don't have (or arguably need) a way of updating the schema at all. While you can't add specific types to the schema
 any more, arguably the "custom" placeholder is just a general "injection point" for arbitrary types (a bit like our
