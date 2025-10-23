@@ -22,6 +22,9 @@ def coerce_pages_type(pages: Any) -> dict[Any, Any]:
 class Accordion(VizroBaseModel):
     """Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].
 
+    Abstract: Usage documentation
+        [How to use accordion](../user-guides/navigation.md/#group-pages)
+
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.
         pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
