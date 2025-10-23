@@ -331,3 +331,28 @@ Current logic:
   height: 24px;
   width: 24px;
 }
+
+.card-wrapper {
+  display: block;
+}
+
+.card-header-outer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+
+.card-body-outer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.card-wrapper-actions > .card {
+    cursor: pointer;
+}
+
+.card-wrapper-actions > .card:hover {
+  border: 1px solid var(--bs-border-color);
+}
