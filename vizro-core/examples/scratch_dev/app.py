@@ -9,6 +9,7 @@ from pydantic import Tag, Field
 from typing import Annotated, Optional, Any
 
 from dash import html, dcc, callback, Output, Input, State, Patch, clientside_callback
+from dash.development.base_component import Component
 from typing import Literal
 from openai import OpenAI, BaseModel
 from pydantic import model_validator
@@ -357,7 +358,17 @@ class ChatAction(echo):
             return store, html_messages
 
     def message_to_html(self, message):
-        return html.Div([html.B(message["role"]), html.Div(message["content"])])
+        content = message["content"]
+        role_label = html.B(message["role"])
+
+        # Check if content is already a Dash component using isinstance
+        # This is more robust than checking hasattr(content, '_type')
+        if isinstance(content, Component):
+            # Content is already a component, just wrap with role
+            return html.Div([role_label, content])
+        else:
+            # Content is text, wrap it in a Div for consistent structure
+            return html.Div([role_label, html.Div(content)])
 
     @property
     def outputs(self):
@@ -456,6 +467,73 @@ class graph(echo):
         return dcc.Graph(figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", title=prompt))
 
 
+# Mixed content chat that can return text, charts, or tables based on the prompt
+class mixed_content(ChatAction):
+    """Chat action that returns different content types based on keywords."""
+    type: Literal["mixed_content"] = "mixed_content"
+    stream: bool = False  # Components can't be streamed
+    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
+
+    def core_function(self, prompt, messages):
+        prompt_lower = prompt.lower()
+
+        if "chart" in prompt_lower or "graph" in prompt_lower or "plot" in prompt_lower:
+            # Return a Plotly chart
+            fig = px.scatter(
+                px.data.iris(),
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                title=f"Iris Dataset - Response to: {prompt}",
+                height=400
+            )
+            return type('Response', (), {'output_text': dcc.Graph(figure=fig)})()
+
+        elif "image" in prompt_lower or "picture" in prompt_lower or "photo" in prompt_lower:
+            # Return an image using dmc.Image
+            image = dmc.Image(
+                radius="md",
+                h=300,
+                w="auto",
+                fit="contain",
+                src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-9.png",
+                caption=f"Image response for: {prompt}",
+                style={"marginTop": "10px"}
+            )
+            return type('Response', (), {'output_text': image})()
+
+        else:
+            # Return regular text with markdown and code
+            response = f"""
+I understand you said: "{prompt}"
+
+I can show you different types of content:
+- Use keywords like **chart**, **graph**, or **plot** to see a scatter plot
+- Use **image**, **picture**, or **photo** to see an image
+- Or just chat normally for text responses
+
+Here's an example of code rendering:
+```python
+# Sample Python code
+import plotly.express as px
+
+# Create a visualization
+fig = px.scatter(data, x="x_col", y="y_col")
+fig.show()
+```
+
+This demonstrates that markdown formatting and code highlighting still work perfectly!
+"""
+            return type('Response', (), {'output_text': response.strip()})()
+
+    @property
+    def outputs(self):
+        return [
+            f"{self.chat_id}-store.data",
+            f"{self.chat_id}-hidden-messages.children",
+        ]
+
+
 class Chat(VizroBaseModel):
     type: Literal["chat"] = "chat"
     actions: list[ActionType] = []
@@ -490,6 +568,7 @@ vm.Page.add_type("components", Chat)
 # doing this. Could have base class for ChatAction that people subclass - sounds like good idea.
 Chat.add_type("actions", Annotated[echo, Tag("echo")])
 Chat.add_type("actions", Annotated[openai_pirate, Tag("openai_pirate")])
+Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 
 pirate_stream_action = openai_pirate(chat_id="chat")
 
@@ -522,7 +601,28 @@ page = vm.Page(
     ],
 )
 
-page_2 = vm.Page(title="Dummy", components=[vm.Card(text="dummy")])
+page_2 = vm.Page(
+    title="Mixed Content Chat",
+    layout=vm.Flex(direction="column"),
+    components=[
+        vm.Card(
+            text="""
+## Mixed Content Chat Demo
+
+This chat can display different types of content:
+- **Text**: Just type normally for markdown-formatted responses with code highlighting
+- **Charts**: Use words like 'chart', 'graph', or 'plot' to see a scatter plot
+- **Images**: Use 'image', 'picture', or 'photo' to display an image
+
+Try typing: "Show me a chart" or "Display an image" or just chat normally!
+"""
+        ),
+        Chat(
+            id="mixed_chat",
+            actions=[mixed_content(chat_id="mixed_chat")]
+        ),
+    ],
+)
 
 page_nostream = vm.Page(
     title="Chat (non-stream)",
