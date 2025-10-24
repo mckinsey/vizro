@@ -343,7 +343,7 @@ At the moment, the Vizro framework serves [Dash](https://github.com/plotly/dash)
 
 ## The role of `extra`
 
-Some of our models, e.g. the [`Container`][vizro.models.Container], have an argument called `extra`. This argument enables the user to pass extra arguments directly to the underlying component of the model. In the case of the `Container`, this would be the [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
+Some of our models, e.g. the [`Container`](../user-guides/container.md), have an argument called `extra`. This argument enables the user to pass extra arguments directly to the underlying component of the model. In the case of the `Container`, this would be the [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
 
 This is clearly implementation specific and, as such, the `extra` argument is (on purpose) excluded from the Vizro schema. The argument helps users to get the maximum flexibility quickly without having to go beyond the Vizro framework, but it should not be assumed to be a core part of Vizro. Using this argument may break your code in future releases of Vizro, although this is very unlikely in the foreseeable future.
 

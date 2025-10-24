@@ -23,7 +23,7 @@ class Accordion(VizroBaseModel):
     """Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].
 
     Abstract: Usage documentation
-        [How to use accordion](../user-guides/navigation.md/#group-pages)
+        [How to use an accordion](../user-guides/navigation.md/#group-pages)
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.

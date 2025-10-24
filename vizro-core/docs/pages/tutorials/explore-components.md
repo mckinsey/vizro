@@ -138,7 +138,7 @@ This is an example of an _action_. Vizro provides several [built-in actions](../
 
 These steps add an export data button:
 
-1. Add a [`Button`][vizro.models.Button] to the `components` list and set `text="Export Data"`.
+1. Add a [`Button`](../user-guides/button.md) to the `components` list and set `text="Export Data"`.
 1. Use the `actions` argument of the `Button` to specify the built-in [`export_data`](../user-guides/data-actions.md#export-data) action.
 
 !!! example "Export Data Button"
