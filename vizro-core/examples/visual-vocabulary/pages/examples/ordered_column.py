@@ -6,4 +6,4 @@ gapminder = (
     .sort_values("pop")
 )
 
-fig = px.bar(gapminder, y="pop", x="country")
+fig = px.bar(gapminder, y="pop", x="country", custom_data=["continent"])

@@ -39,4 +39,4 @@ gapminder = (
     .sort_values("pop")
 )
 
-fig = lollipop(gapminder, y="country", x="pop")
+fig = lollipop(gapminder, y="country", x="pop", custom_data=["continent"])

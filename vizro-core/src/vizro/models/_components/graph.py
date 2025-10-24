@@ -371,7 +371,7 @@ class Graph(VizroBaseModel):
         clientside_callback(
             ClientsideFunction(namespace="graph", function_name="update_graph_props_store"),
             output=[
-                Output(f"{self.id}_props_store", "data")
+                Output(f"{self.id}_props_store", "data", allow_duplicate=True)
             ],
             inputs=[
                 Input(self.id, "clickData"),

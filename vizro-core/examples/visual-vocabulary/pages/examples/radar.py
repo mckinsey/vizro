@@ -12,4 +12,4 @@ def radar(data_frame: pd.DataFrame, **kwargs):
 
 wind = px.data.wind().query("strength == '1-2'")
 
-fig = radar(wind, r="frequency", theta="direction", line_close=True)
+fig = radar(wind, r="frequency", theta="direction", line_close=True, custom_data=["direction"])

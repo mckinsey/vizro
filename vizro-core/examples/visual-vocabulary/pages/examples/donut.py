@@ -2,4 +2,4 @@ import vizro.plotly.express as px
 
 tips = px.data.tips()
 
-fig = px.pie(tips, values="tip", names="day", hole=0.4)
+fig = px.pie(tips, values="tip", names="day", hole=0.4, custom_data=["sex"])

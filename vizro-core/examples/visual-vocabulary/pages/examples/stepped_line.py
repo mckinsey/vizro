@@ -8,4 +8,4 @@ stepped_line_data = pd.DataFrame(
     }
 )
 
-fig = px.line(data_frame=stepped_line_data, x="year", y="rate", line_shape="vh")
+fig = px.line(data_frame=stepped_line_data, x="year", y="rate", line_shape="vh", custom_data=["year"])

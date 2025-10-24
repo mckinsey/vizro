@@ -17,4 +17,4 @@ pastries = pd.DataFrame(
     }
 ).sort_values("Profit Ratio")
 
-fig = px.bar(pastries, x="Profit Ratio", y="pastry")
+fig = px.bar(pastries, x="Profit Ratio", y="pastry", custom_data=["pastry"])

@@ -69,4 +69,5 @@ fig = diverging_stacked_bar(
     y="pastry",
     labels={"value": "", "variable": "", "pastry": ""},
     title="I would recommend this pastry to my friends",
+    custom_data=["pastry"]
 )

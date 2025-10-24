@@ -9,4 +9,4 @@ tasks = pd.DataFrame(
     ]
 ).sort_values("Start", ascending=False)
 
-fig = px.timeline(tasks, x_start="Start", x_end="Finish", y="Task")
+fig = px.timeline(tasks, x_start="Start", x_end="Finish", y="Task", custom_data=["Task"])

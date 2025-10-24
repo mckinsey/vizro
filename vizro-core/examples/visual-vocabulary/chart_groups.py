@@ -209,6 +209,16 @@ for chart_group in CHART_GROUPS:
 
         graph_id = page.components[1].id
 
+        @dash.callback(
+            dash.Output(graph_id, "selectedData"),
+            dash.Input(graph_id, "clickData"),
+            dash.State(graph_id, "selectedData"),
+        )
+        def update_selected_data_if_not_exist(click, select):
+            if not select or select == {"points": []}:
+                return click
+            return dash.no_update
+
         # Callback for clickData
         @dash.callback(
             dash.Output(f"click_data_text_{graph_id}", "children"),
@@ -228,7 +238,7 @@ for chart_group in CHART_GROUPS:
         def update_selected_data_text(selected_data):
             """Updates selected data text."""
             return f"""```json
-    {json.dumps(selected_data, indent=4)}
+{json.dumps(selected_data, indent=4)}
 ```"""
 
         # Insert clickData / selectedData tab to every page

@@ -13,4 +13,4 @@ def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
 
 gapminder = px.data.gapminder().query("country == 'Nigeria' and year > 1970")
 
-fig = categorical_column(gapminder, x="year", y="lifeExp")
+fig = categorical_column(gapminder, x="year", y="lifeExp", custom_data=["continent"])

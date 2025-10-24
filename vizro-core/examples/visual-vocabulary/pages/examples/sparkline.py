@@ -13,4 +13,4 @@ def sparkline(data_frame, **kwargs):
     return fig
 
 
-fig = sparkline(stocks, x="date", y=["GOOG", "AMZN", "AAPL"], labels={"variable": "stock"}, facet_row="variable")
+fig = sparkline(stocks, x="date", y=["GOOG", "AMZN", "AAPL"], labels={"variable": "stock"}, facet_row="variable", custom_data=["GOOG"])

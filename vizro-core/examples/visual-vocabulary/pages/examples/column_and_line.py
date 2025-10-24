@@ -14,7 +14,7 @@ def column_and_line(
     y_column: Union[str, pd.Series, list[str], list[pd.Series]],
     y_line: Union[str, pd.Series, list[str], list[pd.Series]],
 ) -> go.Figure:
-    bar = px.bar(data_frame, x=x, y=y_column)
+    bar = px.bar(data_frame, x=x, y=y_column, custom_data=["continent"])
     fig = make_subplots(figure=bar, specs=[[{"secondary_y": True}]])
 
     line = px.line(

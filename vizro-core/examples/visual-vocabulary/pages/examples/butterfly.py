@@ -33,4 +33,4 @@ ages = pd.DataFrame(
     }
 )
 
-fig = butterfly(ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"})
+fig = butterfly(ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"}, custom_data=["Age"])

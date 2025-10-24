@@ -38,4 +38,4 @@ salaries = pd.DataFrame(
     }
 )
 
-fig = dumbbell(salaries, y="Job", x=["Min", "Max"], labels={"variable": "", "value": "Salary in $"})
+fig = dumbbell(salaries, y="Job", x=["Min", "Max"], labels={"variable": "", "value": "Salary in $"}, custom_data=["Job"])
