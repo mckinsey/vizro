@@ -1,55 +1,16 @@
-import vizro.models as vm
 import vizro.plotly.express as px
-from dash_ag_grid import AgGrid
+import vizro.models as vm
 from vizro import Vizro
-from vizro.models.types import capture
 
-df = px.data.gapminder().query("year == 2007")
+df = px.data.iris()
 
-
-@capture("ag_grid")
-def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
-    """Custom Dash AgGrid."""
-    defaults = {
-        "className": "ag-theme-quartz-dark ag-theme-vizro",
-        "defaultColDef": {
-            "resizable": True,
-            "sortable": True,
-            "filter": True,
-            "filterParams": {
-                "buttons": ["apply", "reset"],
-                "closeOnApply": True,
-            },
-            "flex": 1,
-            "minWidth": 70,
-        },
-        # "style": {"height": "100%"},
-    }
-    return AgGrid(
-        columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"), **defaults
-    )
-
-
-page = vm.Page(
-    title="Example of a custom Dash AgGrid",
-    components=[
-        vm.AgGrid(
-            id="custom_ag_grid",
-            title="Custom Dash AgGrid",
-            figure=my_custom_aggrid(
-                data_frame=df, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
-            ),
-        ),
-        vm.Text(id="time_text", text="Click the button"),
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["custom_ag_grid.chosen_columns"],
-            selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list()),
-        )
-    ],
+page_1 = vm.Page(
+    title="BUG theme switch doesn't work with Flex layout",
+    layout=vm.Flex(),
+    components=[vm.Graph(figure=px.scatter(data_frame=df, x="sepal_width", y="sepal_length"))],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page_1])
+
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
