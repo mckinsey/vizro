@@ -249,7 +249,7 @@ To append items to the custom header area, subclass the [Dashboard][vizro.models
 
     === "app.yaml"
 
-        Custom sashboards are currently only possible via Python configuration.
+        Custom dashboards are currently only possible via Python configuration.
 
     === "Result"
 
