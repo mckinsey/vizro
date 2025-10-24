@@ -36,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- INPUT
+- Fix graph rendering when theme changes in `Flex` layout. ([#1458](https://github.com/mckinsey/vizro/pull/1458))
 
 <!--
 ### Security
