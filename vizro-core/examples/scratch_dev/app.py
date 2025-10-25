@@ -1,72 +1,34 @@
 import base64
-import json
+from typing import Annotated, Optional, Any, Literal, Union
 
 import dash
-from dotenv import load_dotenv
-
-
-from pydantic import Tag, Field
-from typing import Annotated, Optional, Any
-
 from dash import html, dcc, callback, Output, Input, State, Patch, clientside_callback
 from dash.development.base_component import Component
-from typing import Literal
+import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+from dash_extensions import SSE
+from dash_extensions.streaming import sse_message, sse_options
+from dotenv import load_dotenv
+from flask import Response, request
 from openai import OpenAI, BaseModel
-from pydantic import model_validator
+from pydantic import Tag, Field, model_validator
 
 import vizro.models as vm
-
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import make_actions_chain
-
 from vizro.models.types import capture, ActionType
 
-import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
-
-from dash_extensions import SSE
-from dash_extensions.streaming import sse_message, sse_options
-from flask import Response, request
 
 load_dotenv()
 
 
-# User can write a chat response function just like it's an action i.e. just with a single function.
-@capture("action")
-def echo_function(prompt):
-    return f"You said {prompt}"
+# -------------------- Base Classes --------------------
 
 
-# Class hierarchy for chat functionality:
-# - echo: Basic chat functionality (no streaming)
-# - ChatAction: Extends echo to add full chat functionality (streaming + non-streaming)
-# - openai_pirate: Extends ChatAction to add OpenAI-specific API handling
-
-
-# Or they can write it using a class, just like with an action.
-class echo(_AbstractAction):
-    type: Literal["echo"] = "echo"
-    chat_id: str
-    prompt: str = Field(default_factory=lambda data: f"{data['chat_id']}-input.value")
-    # Or maybe input to match client.responses.create? Note input there can also
-    # be whole history and not just latest although previous_response_id now easier way to do it.
-
-    # TBD whether we need messages
-    # messages: str
-
-    def function(self, prompt):
-        return f"You said {prompt}"
-
-    @property
-    def outputs(self):
-        return [f"{self.chat_id}-hidden-messages.children"]
-
-
-# Pydantic model for streaming endpoint request payload
 class StreamingRequest(BaseModel):
     """Request payload for streaming chat endpoint."""
 
@@ -74,9 +36,20 @@ class StreamingRequest(BaseModel):
     messages: Any  # List of message dicts with 'role' and 'content' keys
 
 
-class ChatAction(echo):
+class ChatResponse(BaseModel):
+    """Standard response format for chat actions."""
+    model_config = {"arbitrary_types_allowed": True}
+
+    content: Union[str, Component]  # String or any Dash component instance
+
+
+class ChatAction(_AbstractAction):
     """Base class for chat functionality with streaming and non-streaming support."""
 
+    type: Literal["chat_action"] = "chat_action"
+    chat_id: str
+    prompt: str = Field(default_factory=lambda data: f"{data['chat_id']}-input.value")
+    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
     stream: bool = True
 
     def pre_build(self):
@@ -95,6 +68,7 @@ class ChatAction(echo):
     #     - Non-streaming messages (complete response)
     #     - Restored messages from history (on page load)
     def _setup_streaming_callbacks(self):
+        """SSE streaming decoding and accumulation."""
         clientside_callback(
             """
             function(animatedText, existingChildren, storeData) {
@@ -295,7 +269,6 @@ class ChatAction(echo):
         )
 
         @callback(
-            # outputs are self.outputs
             Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
             Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
             # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
@@ -327,6 +300,9 @@ class ChatAction(echo):
         def on_page_load(_, store):
             return [self.message_to_html(message) for message in store], dash.no_update
 
+    def core_function(self):
+        raise NotImplementedError("Subclasses must implement core_function")
+
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
         # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
@@ -348,7 +324,7 @@ class ChatAction(echo):
             ]
         else:
             response = self.core_function(prompt, messages)
-            latest_output = {"role": "assistant", "content": response.output_text}
+            latest_output = {"role": "assistant", "content": response.content}
 
             # Could do this without Patch and it would also work fine, but that would send more data across network than
             # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
@@ -361,13 +337,9 @@ class ChatAction(echo):
         content = message["content"]
         role_label = html.B(message["role"])
 
-        # Check if content is already a Dash component using isinstance
-        # This is more robust than checking hasattr(content, '_type')
         if isinstance(content, Component):
-            # Content is already a component, just wrap with role
             return html.Div([role_label, content])
         else:
-            # Content is text, wrap it in a Div for consistent structure
             return html.Div([role_label, html.Div(content)])
 
     @property
@@ -388,14 +360,13 @@ class openai_pirate(ChatAction):
     # if you just write a function.
     type: Literal["openai_pirate"] = "openai_pirate"
     model: str = "gpt-4.1-nano"
-    api_key: Optional[str] = None  # takes from os.environ.get("OPENAI_API_KEY") by default so maybe even omit this
-    # and just make people set it through env variable
-    api_base: Optional[str] = None  # similarly with os.environ.get("OPENAI_BASE_URL")
+    api_key: Optional[str] = None  # Uses OPENAI_API_KEY env variable if not provided
+    api_base: Optional[str] = None  # Uses OPENAI_BASE_URL env variable if not provided
     stream: bool = True
     _client: OpenAI
     messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
     # expose instructions and other stuff as fields.
-    # But ultimately users will want to customise a lot of things like tools etc. so should be able to easily write
+    # But ultimately users will want to customize a lot of things like tools etc. so should be able to easily write
     # their own.
     # Could pass through arbitrary kwargs to create function? Should always be configurable via JSON.
     # https://platform.openai.com/docs/api-reference/responses
@@ -431,7 +402,7 @@ class openai_pirate(ChatAction):
             store=False,
             stream=False,
         )
-        return response
+        return ChatResponse(content=response.output_text)
 
     # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
     # yes. It might still be worth having two separate functions though, not sure.
@@ -444,6 +415,7 @@ class openai_pirate(ChatAction):
             return self._non_stream_response(messages)
 
 
+# -------------------- Example Chat Actions --------------------
 # This could also be done as a function and it works fine. client could be defined inside function or outside. There's
 # no big cost recreating it every time.
 # Note the function versions still need you to specify prompt since can't use chat_id as a static argument.
@@ -454,22 +426,27 @@ class openai_pirate(ChatAction):
 # subclassing?
 # Overall this seems fine - you can manually write function or use various built in things to make it easier. Have
 # full flexibility but not too hard to write.
+
+
 @capture("action")
 def openai_pirate_function(prompt):
     client = OpenAI()
     return client.responses.create(model="gpt-4.1-nano", instructions="Talk like a pirate.", input=prompt).output_text
 
 
-# Note different return type objects work immediately - no need for different modes. You can return any Dash
-# components you want.
-class graph(echo):
-    def function(self, prompt):
-        return dcc.Graph(figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", title=prompt))
+class SimpleEchoChat(ChatAction):
+    """Simple echo chat."""
+
+    type: Literal["simple_echo"] = "simple_echo"
+    stream: bool = False
+
+    def core_function(self, prompt, messages):
+        return ChatResponse(content=f"You said: {prompt}")
 
 
-# Mixed content chat that can return text, charts, or tables based on the prompt
 class mixed_content(ChatAction):
     """Chat action that returns different content types based on keywords."""
+
     type: Literal["mixed_content"] = "mixed_content"
     stream: bool = False  # Components can't be streamed
     messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
@@ -485,9 +462,9 @@ class mixed_content(ChatAction):
                 y="sepal_length",
                 color="species",
                 title=f"Iris Dataset - Response to: {prompt}",
-                height=400
+                height=400,
             )
-            return type('Response', (), {'output_text': dcc.Graph(figure=fig)})()
+            return ChatResponse(content=dcc.Graph(figure=fig))
 
         elif "image" in prompt_lower or "picture" in prompt_lower or "photo" in prompt_lower:
             # Return an image using dmc.Image
@@ -497,10 +474,8 @@ class mixed_content(ChatAction):
                 w="auto",
                 fit="contain",
                 src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-9.png",
-                caption=f"Image response for: {prompt}",
-                style={"marginTop": "10px"}
             )
-            return type('Response', (), {'output_text': image})()
+            return ChatResponse(content=image)
 
         else:
             # Return regular text with markdown and code
@@ -524,7 +499,7 @@ fig.show()
 
 This demonstrates that markdown formatting and code highlighting still work perfectly!
 """
-            return type('Response', (), {'output_text': response.strip()})()
+            return ChatResponse(content=response.strip())
 
     @property
     def outputs(self):
@@ -532,6 +507,9 @@ This demonstrates that markdown formatting and code highlighting still work perf
             f"{self.chat_id}-store.data",
             f"{self.chat_id}-hidden-messages.children",
         ]
+
+
+# -------------------- Chat Component --------------------
 
 
 class Chat(VizroBaseModel):
@@ -555,37 +533,25 @@ class Chat(VizroBaseModel):
                 html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
                 # Visible div to display parsed messages with code highlighting
                 html.Div(id=f"{self.id}-rendered-messages", children=[]),
-                dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),  # TBD storage_type
-                # Setting to a much larger value to accommodate full JSON component messages
-                # would this cause performance issues?
+                dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),
                 SSE(id=f"{self.id}-sse", concat=True, animate_chunk=10, animate_delay=5),
             ]
         )
 
 
 vm.Page.add_type("components", Chat)
-# Would just be Chat.add_type("actions", echo) in future but that still seems gross. Maybe need some way to avoid
-# doing this. Could have base class for ChatAction that people subclass - sounds like good idea.
-Chat.add_type("actions", Annotated[echo, Tag("echo")])
+Chat.add_type("actions", Annotated[SimpleEchoChat, Tag("simple_echo")])
 Chat.add_type("actions", Annotated[openai_pirate, Tag("openai_pirate")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 
-pirate_stream_action = openai_pirate(chat_id="chat")
 
 page = vm.Page(
     title="Chat",
     components=[
         Chat(
             id="chat",
-            # actions=[
-            #     echo(chat_id="chat"),
-            # ],
-            # actions=[vm.Action(function=echo_function(prompt="chat-input.value"), outputs=["chat-hidden-messages.children"])],
-            # actions=[graph(chat_id="chat")],
-            # actions=[
-            #     vm.Action(function=openai_pirate_function(prompt="chat-input.value"), outputs=["chat-hidden-messages.children"])
-            # ],
-            actions=[pirate_stream_action],
+            actions=[openai_pirate(chat_id="chat", stream=True)],
+            # actions=[openai_pirate_function(prompt="chat-input.value")],
         ),
         # Soon you wouldn't have to label with id like this. It would be done by looking up in the model
         # manager. So it would just like this and no need to specify id="chat" which looks silly right now.
@@ -617,10 +583,7 @@ This chat can display different types of content:
 Try typing: "Show me a chart" or "Display an image" or just chat normally!
 """
         ),
-        Chat(
-            id="mixed_chat",
-            actions=[mixed_content(chat_id="mixed_chat")]
-        ),
+        Chat(id="mixed_chat", actions=[mixed_content(chat_id="mixed_chat")]),
     ],
 )
 
