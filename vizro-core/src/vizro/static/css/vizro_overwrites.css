@@ -40,6 +40,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 .card {
   margin: 4px;
   overflow: scroll;
+  padding: 0.75rem;
+}
+
+.card-wrapper .card,
+.card-wrapper-actions .card {
   padding: 0;
 }
 

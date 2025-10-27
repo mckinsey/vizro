@@ -104,7 +104,7 @@ class Card(VizroBaseModel):
         }
 
     @staticmethod
-    def _get_value_from_trigger(value: str, trigger: int) -> JsonValue:
+    def _get_value_from_trigger(value: JsonValue, trigger: int) -> JsonValue:
         """Return the given `value` without modification."""
         return value
 

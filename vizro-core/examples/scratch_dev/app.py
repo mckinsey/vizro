@@ -4,6 +4,10 @@ import vizro.plotly.express as px
 import vizro.models as vm
 from vizro import Vizro
 import vizro.actions as va
+from vizro.figures import kpi_card, kpi_card_reference
+import pandas as pd
+
+df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
 gapminder = px.data.gapminder()
 
@@ -64,7 +68,59 @@ page = vm.Page(
 
 page_2 = vm.Page(title="Dummy page", components=[vm.Card(text="This is plain old card.")])
 
-dashboard = vm.Dashboard(pages=[page, page_2])
+page_3 = vm.Page(
+    title="KPI indicator cards",
+    components=[
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference (pos)",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference with icon",
+                icon="Shopping Cart",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference (reverse color)",
+                reverse_color=True,
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df_kpi,
+                value_column="Actual",
+                title="KPI with icon",
+                icon="Shopping Cart",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df_kpi,
+                value_column="Actual",
+                title="KPI with formatting",
+                value_format="${value:.2f}",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+        ),
+    ],
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5]]),
+)
+
+dashboard = vm.Dashboard(pages=[page, page_2, page_3])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
