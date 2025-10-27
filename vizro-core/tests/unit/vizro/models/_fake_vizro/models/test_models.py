@@ -1,10 +1,8 @@
 """Tests for fake Vizro models to verify custom component handling."""
 
-from re import M
 from typing import Union
 
 import pytest
-from numpy import ma
 from pydantic import ValidationError
 
 from vizro.models._fake_vizro.models import Card, Dashboard, Graph, Page, VizroBaseModel
