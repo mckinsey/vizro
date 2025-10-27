@@ -110,14 +110,7 @@ def make_discriminated_union(*args):
                 return model.get("type", None)
         elif isinstance(model, VizroBaseModel):
             # Find tag of supplied model.
-            tag = camel_to_snake(type(model).__name__)
-            if tag in builtin_tags:
-                # It's one of the expected ones, so validate it to that type.
-                return tag
-            # With the new type, do we even need the if else?
-            else:
-                # It's a custom component so validate as Any.
-                return "custom_component"
+            return model.type
         else:
             raise ValueError("something")
 
@@ -140,22 +133,32 @@ class VizroBaseModel(BaseModel):
         """Automatically set the type field as a Literal with the snake_case class name for each subclass.
 
         This is called by Pydantic after basic class initialization, ensuring model_fields is available.
+        If the user has explicitly set type="custom_component", that choice is respected.
         """
         super().__pydantic_init_subclass__(**kwargs)
 
         # Get the snake_case class name
         class_name = camel_to_snake(cls.__name__)
 
-        # Dynamically create Literal type for this specific class
-        literal_type = Literal[class_name]  # type: ignore[misc]
+        # Get the type field
+        type_field: FieldInfo = cls.model_fields["type"]
+        # Check if defined as custom component - this would apply to non-Literal types, but I think that's ok
+        is_custom_component = type_field.default == "custom_component"
+
+        if not is_custom_component:
+            default_value = class_name
+        else:
+            default_value = "custom_component"
+
+        # Create literal type based on the default value - overwrite given type here!
+        literal_type = Literal[default_value]
 
         # Update the type annotation in the class
         cls.__annotations__["type"] = literal_type
 
         # Update the field info with the new annotation and default
-        type_field: FieldInfo = cls.model_fields["type"]  # type: ignore[index]
         type_field.annotation = literal_type
-        type_field.default = class_name
+        type_field.default = default_value
 
         # Rebuild the model to ensure Pydantic updates its schema with the new Literal type
         cls.model_rebuild(force=True)

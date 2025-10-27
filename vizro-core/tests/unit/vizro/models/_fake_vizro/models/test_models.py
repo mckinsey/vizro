@@ -1,28 +1,49 @@
 """Tests for fake Vizro models to verify custom component handling."""
 
+from re import M
 from typing import Union
 
 import pytest
+from numpy import ma
 from pydantic import ValidationError
 
 from vizro.models._fake_vizro.models import Card, Dashboard, Graph, Page, VizroBaseModel
 
-
 # Custom component classes for testing
+
+
+######## Page ############
 class CustomPage(Page):
     """Custom page that accepts int for title instead of str."""
 
+    type: str = "custom_component"
     title: int
 
 
 class CustomPageBase(VizroBaseModel):
     """Custom page component directly subclassing VizroBaseModel."""
 
+    type: str = "custom_component"
     title: int
     components: list[Union[Graph, Card]]
 
 
+######### Graph ############
 class CustomGraph(Graph):
+    """Custom graph that accepts int for figure instead of str."""
+
+    type: str = "custom_component"
+    figure: int
+
+
+class CustomGraph2(Graph):
+    """Custom graph that accepts int for figure instead of str."""
+
+    type: str = "custom_component"
+    figure: int
+
+
+class CustomGraphNoType(Graph):
     """Custom graph that accepts int for figure instead of str."""
 
     figure: int
@@ -31,9 +52,17 @@ class CustomGraph(Graph):
 class CustomGraphBase(VizroBaseModel):
     """Custom graph component directly subclassing VizroBaseModel."""
 
+    type: str = "custom_component"
     figure: int
 
 
+class CustomGraphBaseNoType(VizroBaseModel):
+    """Custom graph component directly subclassing VizroBaseModel but without type."""
+
+    figure: int
+
+
+# Tests
 class TestFakeVizroNormalInstantiation:
     """Test normal (non-custom) component instantiation."""
 
@@ -78,6 +107,25 @@ class TestFakeVizroCustomComponentSubclassSpecificModel:
 
         assert type(dashboard.pages[0].components[0]) is CustomGraph
 
+    def test_custom_graph_no_type_in_discriminated_union_field(self):
+        """Test custom component (subclass of Graph) in discriminated union field (components) without type."""
+        custom_graph_no_type = CustomGraphNoType(figure=999)
+        # If user does not specify type EVEN ON INHERITANCE, then it will fail, as model will take class name as type
+        # which doesn't fit
+        with pytest.raises(ValidationError, match="Input tag 'custom_graph_no_type' found"):
+            Page(title="Test Page", components=[custom_graph_no_type])
+
+    def test_multiple_custom_components_in_discriminated_union_field(self):
+        """Test multiple custom components in discriminated union field (components)."""
+        custom_graph_1 = CustomGraph(figure=123)
+        custom_graph_2 = CustomGraph2(figure=456)
+        page = Page(title="Test Page", components=[custom_graph_1, custom_graph_2])
+        dashboard = Dashboard(pages=[page])
+        dashboard = Dashboard.model_validate(dashboard)
+
+        assert type(dashboard.pages[0].components[0]) is CustomGraph
+        assert type(dashboard.pages[0].components[1]) is CustomGraph2
+
 
 class TestFakeVizroCustomComponentSubclassVizroBaseModel:
     """Test custom components that directly subclass VizroBaseModel."""
@@ -99,6 +147,17 @@ class TestFakeVizroCustomComponentSubclassVizroBaseModel:
 
         assert type(dashboard.pages[0].components[0]) is CustomGraphBase
 
+    def test_custom_graph_base_no_type_in_discriminated_union_field(self):
+        """Test custom component (subclass of VizroBaseModel) in discriminated union field (components) without type."""
+        custom_graph_base_no_type = CustomGraphBaseNoType(figure=999)
+        # If user does not specify type, then it will fail, as model take class name as type which doesn't fit
+        with pytest.raises(ValidationError, match="Input tag 'custom_graph_base_no_type' found"):
+            Page(title="Test Page", components=[custom_graph_base_no_type])
+
+
+# What is still missing
+# Multiple custom components
+
 
 class TestFakeVizroYAMLWithCustomComponent:
     """Test that YAML/dict instantiation with custom components does not work."""
@@ -116,7 +175,6 @@ class TestFakeVizroYAMLWithCustomComponent:
 class TestFakeVizroValidationErrors:
     """Test that invalid configurations raise validation errors."""
 
-    @pytest.mark.xfail(reason="Known limitation: Any type in discriminated union allows wrong types to pass validation")
     def test_wrong_model_in_pages_field_python(self):
         """Test that using Graph instead of Page raises validation error in Python."""
         graph = Graph(figure="a")
@@ -131,3 +189,46 @@ class TestFakeVizroValidationErrors:
 
         with pytest.raises(ValidationError):
             Dashboard.model_validate(dashboard_dict)
+
+
+class TestFakeVizroLiteralType:
+    """Test understanding of Literal errors."""
+
+    def test_literal_type_builtin_model(self):
+        """Test understanding of Literal errors."""
+        graph = Graph(figure="a")
+        assert graph.type == "graph"
+        with pytest.raises(ValidationError):
+            Graph(figure="a", type="custom_component")
+
+    def test_literal_type_custom_model(self):
+        """Test understanding of Literal errors for custom models."""
+        custom_graph = CustomGraph(figure=3, type="custom_component")
+        assert custom_graph.type == "custom_component"
+
+        with pytest.raises(ValidationError):
+            CustomGraph(figure=3, type="graph")
+
+    def test_literal_type_custom_model_no_type(self):
+        """Test understanding of Literal errors for custom models without type."""
+        custom_graph_no_type = CustomGraphNoType(figure=3)
+        assert custom_graph_no_type.type == "custom_graph_no_type"
+        with pytest.raises(ValidationError):
+            CustomGraphNoType(figure=3, type="graph")
+
+    def test_literal_type_custom_model_base(self):
+        """Test understanding of Literal errors for custom model bases"""
+        custom_graph_base = CustomGraphBase(figure=3)
+        assert custom_graph_base.type == "custom_component"
+        with pytest.raises(ValidationError):
+            CustomGraphBase(figure=3, type="graph")
+
+    def test_literal_type_custom_model_base_no_type(self):
+        """Test understanding of Literal errors for custom model bases without type."""
+        custom_graph_base_no_type = CustomGraphBaseNoType(figure=3)
+        assert custom_graph_base_no_type.type == "custom_graph_base_no_type"
+        with pytest.raises(ValidationError):
+            CustomGraphBaseNoType(figure=3, type="graph")
+
+        with pytest.raises(ValidationError):
+            CustomGraphBaseNoType(figure=3, type="custom_component")
