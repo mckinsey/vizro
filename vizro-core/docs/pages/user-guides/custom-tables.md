@@ -75,7 +75,39 @@ The following examples show a possible version of a custom table. In this case t
 
     === "app.yaml"
 
-        Custom tables are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: __main__.my_custom_table
+                  chosen_columns:
+                    - country
+                    - continent
+                    - lifeExp
+                    - pop
+                    - gdpPercap
+                  data_frame: gapminder_2007
+                id: custom_table
+                title: Custom Dash DataTable
+                type: table
+            controls:
+              - selector:
+                  options:
+                    - country
+                    - continent
+                    - lifeExp
+                    - pop
+                    - gdpPercap
+                    - year
+                  title: Choose columns
+                  type: dropdown
+                targets:
+                  - custom_table.chosen_columns
+                type: parameter
+            title: Example of a custom Dash DataTable
+        ```
 
     === "Result"
 
@@ -110,7 +142,6 @@ The following examples show a possible version of a custom table. In this case t
                     "flex": 1,
                     "minWidth": 70,
                 },
-                "style": {"height": "100%"},
             }
             return AgGrid(
                 columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"), **defaults
@@ -142,7 +173,39 @@ The following examples show a possible version of a custom table. In this case t
 
     === "app.yaml"
 
-        Custom Ag Grids are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: __main__.my_custom_aggrid
+                  chosen_columns:
+                    - country
+                    - continent
+                    - lifeExp
+                    - pop
+                    - gdpPercap
+                  data_frame: gapminder_2007
+                id: custom_ag_grid
+                title: Custom Dash AgGrid
+                type: ag_grid
+            controls:
+              - selector:
+                  options:
+                    - country
+                    - continent
+                    - lifeExp
+                    - pop
+                    - gdpPercap
+                    - year
+                  title: Choose columns
+                  type: dropdown
+                targets:
+                  - custom_ag_grid.chosen_columns
+                type: parameter
+            title: Example of a custom Dash AgGrid
+        ```
 
     === "Result"
 
