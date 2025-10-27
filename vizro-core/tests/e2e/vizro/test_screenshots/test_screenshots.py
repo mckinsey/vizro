@@ -182,12 +182,14 @@ def test_flex_layout_all_params(dash_br):
 
 
 @image_assertion
-def test_flex_layout_direction_and_graph(dash_br):
+def test_flex_layout_direction_and_graph_theme_switch(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.LAYOUT_FLEX_DIRECTION_AND_GRAPH,
     )
+    # switch theme to dark (delay is needed to fully load the layout)
+    dash_br.multiple_click(theme_toggle_path(), 1, delay=1.5)
 
 
 @image_assertion
