@@ -32,6 +32,9 @@ DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div()
 class AgGrid(VizroBaseModel):
     """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
 
+    Abstract: Usage documentation
+        [How to use an AgGrid](../user-guides/table.md/#ag-grid)
+
     Args:
         type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
         figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].

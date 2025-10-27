@@ -31,6 +31,9 @@ def set_variant(variant: Optional[Literal["plain", "filled", "outlined"]], info:
 class Container(VizroBaseModel):
     """Container to group together a set of components on a page.
 
+    Abstract: Usage documentation
+        [How to use containers](../user-guides/container.md)
+
     Args:
         type (Literal["container"]): Defaults to `"container"`.
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
