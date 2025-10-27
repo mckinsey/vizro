@@ -619,7 +619,7 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 Use the `description` argument to add helpful context to your `Card`. This displays an info icon in the top-right corner, and hovering over it reveals a tooltip with your chosen text.
 
-You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to `description` argument to use the default info icon, or pass a [`Tooltip`][vizro.models.Tooltip] model to customize the icon using any symbol from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `description` argument to use the default info icon, or pass a [`Tooltip`][vizro.models.Tooltip] model to customize the icon using any symbol from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! example "Card with a tooltip"
 
@@ -669,7 +669,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to `desc
 
 ## Trigger an action with a card
 
-Here is an example action that uses the [`set_control` action][vizro.actions.set_control] when a [card](card.md) is clicked.
+The example below shows how to use the [set_control action][vizro.actions.set_control] to filter another Graph or Table when a [`Card`](vizro.models.Card) is clicked.
 
 !!! example "Action triggered by card"
 

@@ -22,7 +22,10 @@ To use an action:
 
 You can also execute [multiple actions with a single trigger](#multiple-actions).
 
-Some actions are usually triggered by certain components, for example [`export_data`](data-actions.md#export-data) is usually triggered by clicking a [button](button.md). However, many actions can be triggered by any component, for example you could also trigger `export_data` by clicking a point on a graph, or you can trigger `set_control` action by clicking on a [`card`](card.md#trigger-an-action-with-a-card).
+Some actions are typically triggered by certain components, for example [`export_data`](data-actions.md#export-data) is usually triggered by clicking a [button](button.md). However, many actions can be triggered by any component, for example:
+
+- you could also trigger `export_data` by clicking a point on a graph.
+- you can trigger a chart and filter interaction by clicking on a [`card`](card.md#trigger-an-action-with-a-card). There's an illustration of this in the [trigger an action with a card](card.md#trigger-an-action-with-a-card) example.
 
 !!! note
 

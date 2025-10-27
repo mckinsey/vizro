@@ -20,8 +20,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ### Added
 
 - Add support for `header`, `description`, and `footer` in `Card` for more flexible styling. See our user guide on [Cards](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#add-header-and-footer) for an example. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
-- Make `Card` clickable to trigger actions. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
-- Allow `Card` to trigger `set_control` actions (e.g., to filter another chart).  See our user guide on [Actions]((https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#trigger-an-action-with-a-card))  for an example. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+- Make `Card` clickable to trigger actions (e.g., to filter another chart).  See our user guide on [Actions]((https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#trigger-an-action-with-a-card))  for an example. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+
 <!--
 ### Changed
 
