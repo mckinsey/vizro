@@ -64,7 +64,7 @@ assert type(dashboard.pages[0].components[0]) is Graph
 
 """
 Normal cases (2 sub-cases):
-- Python 
+- Python
 - yaml (or json)
 
 Custom components cases (subclassing VizroBaseModel and specific model) (4+1 sub-cases):
