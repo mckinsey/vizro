@@ -669,7 +669,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `
 
 ## Trigger an action with a card
 
-The example below shows how to use the [set_control action][vizro.actions.set_control] to filter another Graph or Table when a [`Card`](vizro.models.Card) is clicked.
+The example below shows how to use the [set_control action][vizro.actions.set_control] to filter another Graph or Table when a [`Card`][vizro.models.Card] is clicked.
 
 !!! example "Action triggered by card"
 
