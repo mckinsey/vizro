@@ -355,10 +355,10 @@ class ChatAction(_AbstractAction):
             return [f"{self.chat_id}-store.data", f"{self.chat_id}-hidden-messages.children"]
 
 
-class openai_pirate(ChatAction):
+class openai_chat(ChatAction):
     # With the class-based definition there's room for static parameters like model and api_key which isn't possible
     # if you just write a function.
-    type: Literal["openai_pirate"] = "openai_pirate"
+    type: Literal["openai_chat"] = "openai_chat"
     model: str = "gpt-4.1-nano"
     api_key: Optional[str] = None  # Uses OPENAI_API_KEY env variable if not provided
     api_base: Optional[str] = None  # Uses OPENAI_BASE_URL env variable if not provided
@@ -429,12 +429,12 @@ class openai_pirate(ChatAction):
 
 
 @capture("action")
-def openai_pirate_function(prompt):
+def openai_chat_function(prompt):
     client = OpenAI()
-    return client.responses.create(model="gpt-4.1-nano", instructions="Talk like a pirate.", input=prompt).output_text
+    return client.responses.create(model="gpt-4.1-nano", instructions="Be polite and creative.", input=prompt).output_text
 
 
-class SimpleEchoChat(ChatAction):
+class simple_echo(ChatAction):
     """Simple echo chat."""
 
     type: Literal["simple_echo"] = "simple_echo"
@@ -540,8 +540,8 @@ class Chat(VizroBaseModel):
 
 
 vm.Page.add_type("components", Chat)
-Chat.add_type("actions", Annotated[SimpleEchoChat, Tag("simple_echo")])
-Chat.add_type("actions", Annotated[openai_pirate, Tag("openai_pirate")])
+Chat.add_type("actions", Annotated[simple_echo, Tag("simple_echo")])
+Chat.add_type("actions", Annotated[openai_chat, Tag("openai_chat")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 
 
@@ -550,8 +550,8 @@ page = vm.Page(
     components=[
         Chat(
             id="chat",
-            actions=[openai_pirate(chat_id="chat", stream=True)],
-            # actions=[openai_pirate_function(prompt="chat-input.value")],
+            actions=[openai_chat(chat_id="chat", stream=True)],
+            # actions=[openai_chat_function(prompt="chat-input.value")],
         ),
         # Soon you wouldn't have to label with id like this. It would be done by looking up in the model
         # manager. So it would just like this and no need to specify id="chat" which looks silly right now.
@@ -593,7 +593,7 @@ page_nostream = vm.Page(
         Chat(
             id="chat_nostream",
             actions=[
-                openai_pirate(
+                openai_chat(
                     chat_id="chat_nostream",
                     stream=False,
                 ),
