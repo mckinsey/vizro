@@ -68,7 +68,6 @@ seriously confuse LLMs
 
 from __future__ import annotations
 
-import json
 import random
 import re
 import uuid
@@ -82,7 +81,6 @@ from pydantic import (
     Discriminator,
     Field,
     ModelWrapValidatorHandler,
-    PrivateAttr,
     Tag,
     ValidatorFunctionWrapHandler,
     field_validator,
