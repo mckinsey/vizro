@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from flask import Response, request
 from openai import OpenAI, BaseModel
 from pydantic import Tag, Field, model_validator
+import anthropic
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -34,13 +35,6 @@ class StreamingRequest(BaseModel):
 
     prompt: str
     messages: Any  # List of message dicts with 'role' and 'content' keys
-
-
-class ChatResponse(BaseModel):
-    """Standard response format for chat actions."""
-    model_config = {"arbitrary_types_allowed": True}
-
-    content: Union[str, Component]  # String or any Dash component instance
 
 
 class ChatAction(_AbstractAction):
@@ -300,8 +294,48 @@ class ChatAction(_AbstractAction):
         def on_page_load(_, store):
             return [self.message_to_html(message) for message in store], dash.no_update
 
-    def core_function(self):
-        raise NotImplementedError("Subclasses must implement core_function")
+    def core_function(self, prompt, messages):
+        """Default implementation that routes to streaming or non-streaming methods.
+
+        Subclasses should implement ONE of:
+        - generate_stream(messages) -> yields text chunks (for streaming)
+        - generate_response(messages) -> returns text/component (for non-streaming)
+        - Or both to support both modes
+
+        The 'stream' parameter determines which method is called.
+        """
+        if self.stream:
+            return self.generate_stream(messages)
+        else:
+            return self.generate_response(messages)
+
+    def generate_stream(self, messages):
+        """Override to implement streaming response.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content' keys
+
+        Yields:
+            str: Text chunks to stream
+        """
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not support streaming (stream=True). "
+            "Either implement generate_stream() or set stream=False."
+        )
+
+    def generate_response(self, messages):
+        """Override to implement non-streaming response.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content' keys
+
+        Returns:
+            Union[str, Component]: Text or any Dash component
+        """
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not support non-streaming (stream=False). "
+            "Either implement generate_response() or set stream=True."
+        )
 
     def function(self, prompt, messages):
         # Need to repeat append here since this runs at same time as store update.
@@ -323,8 +357,7 @@ class ChatAction(_AbstractAction):
                 sse_options(StreamingRequest(prompt=prompt, messages=messages)),
             ]
         else:
-            response = self.core_function(prompt, messages)
-            latest_output = {"role": "assistant", "content": response.content}
+            latest_output = {"role": "assistant", "content": self.core_function(prompt, messages)}
 
             # Could do this without Patch and it would also work fine, but that would send more data across network than
             # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
@@ -355,6 +388,26 @@ class ChatAction(_AbstractAction):
             return [f"{self.chat_id}-store.data", f"{self.chat_id}-hidden-messages.children"]
 
 
+# -------------------- Example Chat Actions --------------------
+
+# HOW TO CREATE A CHAT ACTION:
+#
+# All chat actions inherit from ChatAction and implement ONE or BOTH methods:
+#
+# 1. generate_stream(messages) - For streaming responses
+#    - Yields text chunks
+#    - Used when stream=True
+#    - Example: anthropic_chat (streaming-only)
+#
+# 2. generate_response(messages) - For non-streaming responses
+#    - Returns text (string) or Dash components (charts, images, etc.)
+#    - Used when stream=False
+#    - Examples: simple_echo, mixed_content
+#
+# 3. Both methods - For maximum flexibility
+#    - Users can toggle stream=True/False
+#    - Example: openai_chat
+
 class openai_chat(ChatAction):
     # With the class-based definition there's room for static parameters like model and api_key which isn't possible
     # if you just write a function.
@@ -378,7 +431,7 @@ class openai_chat(ChatAction):
 
         self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
 
-    def _stream_response(self, messages):
+    def generate_stream(self, messages):
         """Handle streaming response from OpenAI."""
         response = self._client.responses.create(
             model=self.model,
@@ -393,7 +446,7 @@ class openai_chat(ChatAction):
             if event.type == "response.output_text.delta":
                 yield event.delta
 
-    def _non_stream_response(self, messages):
+    def generate_response(self, messages):
         """Handle non-streaming response from OpenAI."""
         response = self._client.responses.create(
             model=self.model,
@@ -402,30 +455,39 @@ class openai_chat(ChatAction):
             store=False,
             stream=False,
         )
-        return ChatResponse(content=response.output_text)
-
-    # User writes this function. Can it be the same function for streaming and non streaming and still work? I think
-    # yes. It might still be worth having two separate functions though, not sure.
-    # Note responses.create has different return types in these cases.
-    def core_function(self, prompt, messages):
-        """Core function that handles both streaming and non-streaming responses."""
-        if self.stream:
-            return self._stream_response(messages)
-        else:
-            return self._non_stream_response(messages)
+        return response.output_text
 
 
-# -------------------- Example Chat Actions --------------------
-# This could also be done as a function and it works fine. client could be defined inside function or outside. There's
-# no big cost recreating it every time.
-# Note the function versions still need you to specify prompt since can't use chat_id as a static argument.
-# This will get impractical once there's also message history and previous response id etc. So for user to write
-# their own easily they really need to be able to plug in just a function e.g. def chat_function in openai class that
-# gets called from inside function.
-# Could have some @capture("action", template=...) that makes the class for them so they can still do without
-# subclassing?
-# Overall this seems fine - you can manually write function or use various built in things to make it easier. Have
-# full flexibility but not too hard to write.
+class anthropic_chat(ChatAction):
+    """Streaming-only implementation for Anthropic Claude chat."""
+
+    type: Literal["anthropic_chat"] = "anthropic_chat"
+    model: str = "claude-haiku-4-5-20251001"
+    api_key: Optional[str] = None  # Uses ANTHROPIC_API_KEY env variable if not provided
+    stream: bool = True  # Streaming-only for this implementation
+    _client: anthropic.Anthropic
+    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
+
+    def pre_build(self):
+        super().pre_build()
+        self._client = anthropic.Anthropic(api_key=self.api_key)
+
+    def generate_stream(self, messages):
+        """Generate streaming response from Anthropic Claude.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content' keys
+
+        Yields:
+            str: Text chunks from Claude's response
+        """
+        with self._client.messages.stream(
+            model=self.model,
+            max_tokens=1024,
+            messages=messages,
+        ) as stream:
+            for text in stream.text_stream:
+                yield text
 
 
 @capture("action")
@@ -438,20 +500,22 @@ class simple_echo(ChatAction):
     """Simple echo chat."""
 
     type: Literal["simple_echo"] = "simple_echo"
-    stream: bool = False
+    stream: bool = False  # Non-streaming only
 
-    def core_function(self, prompt, messages):
-        return ChatResponse(content=f"You said: {prompt}")
+    def generate_response(self, messages):
+        last_message = messages[-1]["content"] if messages else ""
+        return f"You said: {last_message}"
 
 
 class mixed_content(ChatAction):
     """Chat action that returns different content types based on keywords."""
 
     type: Literal["mixed_content"] = "mixed_content"
-    stream: bool = False  # Components can't be streamed
+    stream: bool = False  # Non-streaming only - components cannot be streamed
     messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
 
-    def core_function(self, prompt, messages):
+    def generate_response(self, messages):
+        prompt = messages[-1]["content"] if messages else ""
         prompt_lower = prompt.lower()
 
         if "chart" in prompt_lower or "graph" in prompt_lower or "plot" in prompt_lower:
@@ -464,7 +528,7 @@ class mixed_content(ChatAction):
                 title=f"Iris Dataset - Response to: {prompt}",
                 height=400,
             )
-            return ChatResponse(content=dcc.Graph(figure=fig))
+            return dcc.Graph(figure=fig)
 
         elif "image" in prompt_lower or "picture" in prompt_lower or "photo" in prompt_lower:
             # Return an image using dmc.Image
@@ -475,12 +539,12 @@ class mixed_content(ChatAction):
                 fit="contain",
                 src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-9.png",
             )
-            return ChatResponse(content=image)
+            return image
 
         else:
             # Return regular text with markdown and code
             response = f"""
-I understand you said: "{prompt}"
+You said: "{prompt}"
 
 I can show you different types of content:
 - Use keywords like **chart**, **graph**, or **plot** to see a scatter plot
@@ -499,14 +563,7 @@ fig.show()
 
 This demonstrates that markdown formatting and code highlighting still work perfectly!
 """
-            return ChatResponse(content=response.strip())
-
-    @property
-    def outputs(self):
-        return [
-            f"{self.chat_id}-store.data",
-            f"{self.chat_id}-hidden-messages.children",
-        ]
+            return response.strip()  # Can return just a string for text responses!
 
 
 # -------------------- Chat Component --------------------
@@ -542,6 +599,7 @@ class Chat(VizroBaseModel):
 vm.Page.add_type("components", Chat)
 Chat.add_type("actions", Annotated[simple_echo, Tag("simple_echo")])
 Chat.add_type("actions", Annotated[openai_chat, Tag("openai_chat")])
+Chat.add_type("actions", Annotated[anthropic_chat, Tag("anthropic_chat")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 
 
@@ -602,9 +660,26 @@ page_nostream = vm.Page(
     ],
 )
 
+page_anthropic = vm.Page(
+    title="Claude Chat (Streaming)",
+    layout=vm.Flex(direction="column"),
+    components=[
+        vm.Card(
+            text="""
+## Anthropic Claude Chat - Streaming Example
+
+**Note:** Set your `ANTHROPIC_API_KEY` environment variable to use this chat.
+"""
+        ),
+        Chat(
+            id="claude_chat",
+            actions=[anthropic_chat(chat_id="claude_chat")],  # stream=True is set in the class
+        ),
+    ],
+)
 
 dashboard = vm.Dashboard(
-    pages=[page, page_nostream, page_2],
+    pages=[page, page_nostream, page_anthropic, page_2],
     theme="vizro_light",
 )
 
