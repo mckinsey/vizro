@@ -37,6 +37,7 @@ body:
       label: Which package?
       options:
         - vizro
+        - vizro-mcp
         - vizro-ai
 
   - type: checkboxes
