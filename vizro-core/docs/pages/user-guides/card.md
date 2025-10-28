@@ -197,6 +197,52 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
 
         [![CardText]][cardtext]
 
+## Add header and footer
+
+You can now add a header and footer to your [`Card`][vizro.models.Card] by using the `header` and `footer` arguments. Both fields support [Markdown text](https://markdown-guide.readthedocs.io/), so you can easily include text, links, and inline formatting.
+
+!!! example "Card with header and footer"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Card with header and footer",
+            components=[
+                vm.Card(
+                    text="Commodi repudiandae consequuntur voluptatum.",
+                    header="Lorem ipsum header",
+                    footer="Lorem ipsum footer",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - text: |
+                  Commodi repudiandae consequuntur voluptatum.
+                header: Lorem ipsum header
+                footer: Lorem ipsum footer
+                type: card
+            title: Card with header and footer
+        ```
+
+    === "Result"
+
+        [![CardHeaderFooter]][cardheaderfooter]
+
 ## Place an image on a card
 
 Images can be added to the `text` parameter by using the standard markdown syntax:
@@ -569,6 +615,136 @@ To create a KPI card, use the existing KPI card functions from [`vizro.figures`]
 
 For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#key-performance-indicator-kpi-cards).
 
+## Add a tooltip
+
+Use the `description` argument to add helpful context to your `Card`. This displays an info icon in the top-right corner, and hovering over it reveals a tooltip with your chosen text.
+
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `description` argument to use the default info icon, or pass a [`Tooltip`][vizro.models.Tooltip] model to customize the icon using any symbol from the [Google Material Icons library](https://fonts.google.com/icons).
+
+!!! example "Card with a tooltip"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Card with a tooltip",
+            components=[
+                vm.Card(
+                    text="Commodi repudiandae consequuntur voluptatum.",
+                    header="Lorem ipsum",
+                    description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+                                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - text: |
+                  Commodi repudiandae consequuntur voluptatum.
+                header: Lorem ipsum
+                description: |
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+
+                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+                type: card
+            title: Card with a tooltip
+        ```
+
+    === "Result"
+
+        [![CardInfoIcon]][cardinfoicon]
+
+## Trigger an action with a card
+
+The example below shows how to use the [set_control action][vizro.actions.set_control] to filter another Graph or Table when a [`Card`][vizro.models.Card] is clicked.
+
+!!! example "Action triggered by card"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="11-13"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="Action triggered by a card",
+            components=[
+                vm.Card(text="Filter: Setosa", actions=va.set_control(control="filter-id-1", value="setosa")),
+                vm.Card(text="Filter: Virginica", actions=va.set_control(control="filter-id-1", value="virginica")),
+                vm.Card(text="Filter: Versicolor", actions=va.set_control(control="filter-id-1", value="versicolor")),
+                vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+            ],
+            controls=[vm.Filter(id="filter-id-1", column="species")],
+            layout=vm.Grid(grid=[[0, 1, 2], [3, 3, 3], [3, 3, 3]])
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - type: card
+                text: Filter: Setosa
+                actions:
+                  - type: set_control
+                    value: setosa
+              - type: card
+                text: Filter: Viriginica
+                actions:
+                  - type: set_control
+                    value: virginica
+              - type: card
+                text: Filter: Versicolor
+                actions:
+                  - type: set_control
+                    value: versicolor
+              - type: graph
+                figure:
+                  _target_: scatter
+                  x: sepal_width
+                  y: sepal_length
+                  color: species
+              - type: button
+                text: Export data
+                actions:
+                  - type: export_data
+            controls:
+              - type: filter
+                id: filter-id-1
+                column: species
+            layout:
+              - type: grid
+                grid: [[0, 1, 2], [3, 3, 3], [3, 3, 3]]
+            title: Action triggered by a card
+        ```
+
+    === "Result"
+
+        ![](../../assets/user_guides/components/actions-card-trigger.gif)
+
 ## The `extra` argument
 
 The `Card` is based on the underlying Dash component [`dbc.Card`](https://www.dash-bootstrap-components.com/docs/components/card/). Using the `extra` argument you can pass extra arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
@@ -620,9 +796,11 @@ An example use would be to specify a fixed `Card` height and width. For this, yo
         [![CardStyle]][cardstyle]
 
 [card]: ../../assets/user_guides/components/card.png
+[cardheaderfooter]: ../../assets/user_guides/components/card_header_footer.png
 [cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
 [cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
 [cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
+[cardinfoicon]: ../../assets/user_guides/components/card_info_icon.png
 [cardstyle]: ../../assets/user_guides/components/cardstyle.png
 [cardtext]: ../../assets/user_guides/components/card_text.png
 [navcard]: ../../assets/user_guides/components/nav_card.png
