@@ -69,12 +69,30 @@ seriously confuse LLMs
 from __future__ import annotations
 
 import json
+import random
 import re
-from typing import Annotated, Any, Literal, Union
+import uuid
+from types import SimpleNamespace
+from typing import Annotated, Any, Literal, Self, Union
 
-from pydantic import BaseModel, ConfigDict, Discriminator, Field, Tag
+from nutree.typed_tree import TypedTree
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Discriminator,
+    Field,
+    ModelWrapValidatorHandler,
+    PrivateAttr,
+    Tag,
+    ValidatorFunctionWrapHandler,
+    field_validator,
+    model_validator,
+)
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import SkipJsonSchema
+from pydantic_core.core_schema import ValidationInfo
+
+rd = random.Random(0)
 
 
 # Written by ChatGPT
@@ -128,6 +146,16 @@ class VizroBaseModel(BaseModel):
         revalidate_instances="always",
     )
 
+    id: Annotated[
+        str,
+        Field(
+            default_factory=lambda: str(uuid.UUID(int=rd.getrandbits(128))),
+            description="ID to identify model. Must be unique throughout the whole dashboard. "
+            "When no ID is chosen, ID will be automatically generated.",
+            validate_default=True,
+        ),
+    ]
+
     @classmethod
     def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
         """Automatically set the type field as a Literal with the snake_case class name for each subclass.
@@ -163,15 +191,114 @@ class VizroBaseModel(BaseModel):
         # Rebuild the model to ensure Pydantic updates its schema with the new Literal type
         cls.model_rebuild(force=True)
 
-    # @model_validator(mode="before")
-    # @classmethod
-    # def _set_type_default(cls, data: Any) -> Any:
-    #     """Set the type field to the snake_case class name if not already set."""
-    #     if isinstance(data, dict):
-    #         # For both dict-based initialization (e.g., from YAML/JSON) and Python instantiation
-    #         if "type" not in data or not data["type"]:
-    #             data = {**data, "type": camel_to_snake(cls.__name__)}
-    #     return data
+    @field_validator("*", mode="wrap")
+    @classmethod
+    def build_tree_field_wrap(
+        cls,
+        value: Any,
+        handler: ValidatorFunctionWrapHandler,
+        info: ValidationInfo,
+    ) -> Any:
+        if info.context is not None and "build_tree" in info.context:
+            #### Field stack ####
+            if "id_stack" not in info.context:
+                info.context["id_stack"] = []
+            if "field_stack" not in info.context:
+                info.context["field_stack"] = []
+            if info.field_name == "id":
+                info.context["id_stack"].append(value)
+            else:
+                info.context["id_stack"].append(info.data.get("id", "no id"))
+            info.context["field_stack"].append(info.field_name)
+            #### Level and indentation ####
+            # indent = info.context["level"] * " " * 4
+            # info.context["level"] += 1
+
+        #### Validation ####
+        validated_stuff = handler(value)
+
+        if info.context is not None and "build_tree" in info.context:
+            #### Field stack ####
+            info.context["id_stack"].pop()
+            info.context["field_stack"].pop()
+
+            #### Level and indentation ####
+            # info.context["level"] -= 1
+            # indent = info.context["level"] * " " * 4
+        return validated_stuff
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def build_tree_model_wrap(cls, data: Any, handler: ModelWrapValidatorHandler[Self], info: ValidationInfo) -> Self:
+        #### ID ####
+        # Check Page ID case!
+        # Even change way we set it in Page (path logic etc - ideally separate PR)
+        # Leave page setting ID logic for now.
+        model_id = "UNKNOWN_ID"
+        if isinstance(data, dict):
+            if "id" not in data or data["id"] is None:
+                model_id = str(uuid.uuid4())
+                data["id"] = model_id
+                # print(f"    Setting id to {model_id}")
+            elif isinstance(data["id"], str):
+                model_id = data["id"]
+                # print(f"    Using id {model_id}")
+        elif hasattr(data, "id"):
+            model_id = data.id
+            # print(f"    Using id {model_id}")
+        else:
+            print("GRANDE PROBLEMA!!!")
+
+        if info.context is not None and "build_tree" in info.context:
+            #### Level and indentation ####
+            if "level" not in info.context:
+                info.context["level"] = 0
+            indent = info.context["level"] * " " * 4
+            info.context["level"] += 1
+
+            #### Tree ####
+            print(
+                f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'}"
+            )
+
+            if "parent_model" in info.context:
+                # print("IF PARENT MODEL")
+                info.context["tree"] = info.context["parent_model"]._tree
+                tree = info.context["tree"]
+                tree[info.context["parent_model"].id].add(
+                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                )
+                # info.context["tree"].print()
+            elif "tree" not in info.context:
+                # print("NO PARENT MODEL, NO TREE")
+                tree = TypedTree("Root", calc_data_id=lambda tree, data: data.id)
+                tree.add(SimpleNamespace(id=model_id), kind="dashboard")  # make this more general
+                info.context["tree"] = tree
+                # info.context["tree"].print()
+            else:
+                # print("NO PARENT MODEL, TREE")
+                tree = info.context["tree"]
+                # in words: add a node as children to the parent (so id one higher up), but add as kind
+                # the field in which you currently are
+                # ID STACK and FIELD STACK are different "levels" of the tree.
+                tree[info.context["id_stack"][-1]].add(
+                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                )
+            # print("-" * 50)
+
+        #### Validation ####
+        validated_stuff = handler(data)
+        if info.context is not None and "build_tree" in info.context:
+            #### Replace placeholder nodes and propagate tree to all models ####
+            info.context["tree"][validated_stuff.id].set_data(validated_stuff)
+            validated_stuff._tree = info.context["tree"]
+
+            #### Level and indentation ####
+            info.context["level"] -= 1
+            indent = info.context["level"] * " " * 4
+            print(f"{indent}{cls.__name__} After validation: {info.context['field_stack']}")
+
+        return validated_stuff
 
 
 class Graph(VizroBaseModel):
@@ -197,24 +324,24 @@ class Dashboard(VizroBaseModel):
 if __name__ == "__main__":
     """
 TODOs Maxi:
-- test all combinations of yaml/python instantiations
+- test all combinations of yaml/python instantiations - DONE
 - build in MM, see if pydantic_init_subclass is causing any problems
 - check for model copy, do we loose private attributes still? Does it matter?
 - check for json schema, does it look as nice as before?
 - serialization/deserialization
 
 """
-    print("=== Graph Schema ===")
-    print(json.dumps(Graph.model_json_schema(), indent=2))
-    graph = Graph(type="graph", figure="a")
-    print(json.dumps(graph.model_dump(exclude_unset=True, exclude_defaults=True), indent=2))
+    # print("=== Graph Schema ===")
+    # print(json.dumps(Graph.model_json_schema(), indent=2))
+    # graph = Graph(type="graph", figure="a")
+    # print(json.dumps(graph.model_dump(exclude_unset=True, exclude_defaults=True), indent=2))
 
     # print("\n=== Card Schema ===")
     # print(json.dumps(Card.model_json_schema(), indent=2))
     # print("\n=== Page Schema ===")
     # print(json.dumps(Page.model_json_schema(), indent=2))
-    print("\n=== Dashboard Schema ===")
-    print(json.dumps(Dashboard.model_json_schema(), indent=2))
+    # print("\n=== Dashboard Schema ===")
+    # print(json.dumps(Dashboard.model_json_schema(), indent=2))
 
     #####
     # print("=== Card Vizro===")
