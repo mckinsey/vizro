@@ -110,7 +110,32 @@ For instance, to make a KPI card with the icon positioned on the right side of t
 
     === "app.yaml"
 
-        Custom figures are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: kpi_card
+                  data_frame: tips
+                  value_column: tip
+                  value_format: ${value:.2f}
+                  icon: Shopping Cart
+                  title: Default KPI card
+                type: figure
+              - figure:
+                  _target_: __main__.custom_kpi_card
+                  data_frame: tips
+                  value_column: tip
+                  value_format: ${value:.2f}
+                  icon: Payment
+                  title: Custom KPI card
+                type: figure
+            layout:
+              direction: row
+              type: flex
+            title: Create your own KPI card
+        ```
 
     === "Result"
 
@@ -161,7 +186,23 @@ You can create a custom figure for any [Dash component](https://dash.plotly.com/
 
     === "app.yaml"
 
-        Custom figures are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: __main__.dynamic_html_header
+                  data_frame: df
+                  column: names
+                type: figure
+            controls:
+              - column: names
+                type: filter
+                selector:
+                  type: radio_items
+            title: Dynamic HTML header
+        ```
 
     === "Result"
 
@@ -229,6 +270,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
                     selector=vm.Slider(min=2, max=12, step=2, value=10, title="Number of cards to display"),
                 ),
             ],
+            layout=vm.Flex()
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -264,7 +306,30 @@ The example below shows how to create multiple cards created from a `pandas.Data
 
     === "app.yaml"
 
-        Custom figures are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: __main__.multiple_cards
+                  data_frame: df
+                id: my-figure
+                type: figure
+            controls:
+              - targets: [my-figure.n_rows]
+                type: parameter
+                selector:
+                  type: slider
+                  min: 2
+                  max: 12
+                  step: 2
+                  value: 10
+                  title: Number of cards to display
+            layout:
+              type: flex
+            title: Dynamic HTML header
+        ```
 
     === "Result"
 
