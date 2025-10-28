@@ -55,7 +55,7 @@ When the LLM is ready, it opens an instance of [PyCafe](https://py.cafe/) and di
 
 !!! tip "PyCafe needs access to your data"
 
-    PyCafe can only show your chart or dashboard if it can access the data. This tutorial uses downloadable public data so it is straightforward. But if you are working with data stored on your machine, Claude Desktop will not automatically open PyCafe. Read the guide on [how to use local data](../guides/use-data.md) to find out how to view and interact with the dashboard.    
+    PyCafe can only show your chart or dashboard if it can access the data. This tutorial uses downloadable public data so it is straightforward. But if you are working with data stored on your machine, Claude Desktop will not automatically open PyCafe. Read the guide on [how to use local data](../guides/use-data.md) to find out how to view and interact with the dashboard.
 
 ## Iterate the chart
 
