@@ -53,15 +53,9 @@ When the LLM is ready, it opens an instance of [PyCafe](https://py.cafe/) and di
 
 ![](../../assets/images/song-decades-iteration1.png)
 
-### PyCafe needs access to your data
+!!! tip "PyCafe needs access to your data"
 
-Vizro-MCP can only show your chart or dashboard in PyCafe if it can access the data. You can upload the data, for example to GitHub, so that PyCafe can download it from a link. Alternatively, you can share the data directly to the PyCafe project as shown below.
-
-![Install Vizro-MCP with uv](../../assets/images/looping-data-upload.gif)
-
-!!! Tip "Do not share private data!"
-
-    If your data is private and cannot be uploaded to PyCafe or the internet, you can ask Vizro-MCP to save the dashboard code into a `.py` file, and run it locally to access the data.
+    PyCafe can only show your chart or dashboard if it can access the data. This tutorial uses downloadable public data so it is straightforward. But if you are working with data stored on your machine, Claude Desktop will not automatically open PyCafe. Read the guide on [how to use local data](../guides/use-data.md) to find out how to view and interact with the dashboard.    
 
 ## Iterate the chart
 
