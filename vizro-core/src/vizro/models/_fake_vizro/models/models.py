@@ -72,7 +72,7 @@ import random
 import re
 import uuid
 from types import SimpleNamespace
-from typing import Annotated, Any, List, Literal, Optional, Self, Union
+from typing import Annotated, Any, Literal, Optional, Self, Union
 
 from nutree.typed_tree import TypedTree
 from pydantic import (
