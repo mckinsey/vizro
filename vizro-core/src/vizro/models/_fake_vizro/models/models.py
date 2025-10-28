@@ -309,6 +309,7 @@ class VizroBaseModel(BaseModel):
         # model).
         # Since we have revalidate_instances = "always", calling model_validate on a single model will also execute
         # the validators on children models.
+        # MS: On children models we have the problem that they would not be correctly added
         return cls.model_validate(
             data,
             context={
@@ -320,8 +321,25 @@ class VizroBaseModel(BaseModel):
         )
 
 
+def make_actions_chain(self):
+    for action in self.actions:
+        action._parent_model = self
+    return self
+
+
+class Action(VizroBaseModel):
+    action: str
+
+    _parent_model: VizroBaseModel = PrivateAttr()
+
+
 class Graph(VizroBaseModel):
     figure: str
+    actions: list[Action]
+
+    @model_validator(mode="after")
+    def _make_actions_chain(self):
+        return make_actions_chain(self)
 
 
 class Card(VizroBaseModel):
@@ -363,7 +381,7 @@ if __name__ == "__main__":
     """
 TODOs Maxi:
 - test all combinations of yaml/python instantiations - DONE
-- build in MM, see if pydantic_init_subclass is causing any problems
+- build in MM, see if pydantic_init_subclass is causing any problems - DONE
 - check for model copy, do we loose private attributes still? Does it matter?
 - check for json schema, does it look as nice as before?
 - serialization/deserialization

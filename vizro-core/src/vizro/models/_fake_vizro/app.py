@@ -2,7 +2,7 @@
 
 from typing import Union
 
-from vizro.models._fake_vizro.models import Card, Component, Dashboard, Graph, Page, VizroBaseModel
+from vizro.models._fake_vizro.models import Action, Card, Component, Dashboard, Graph, Page, VizroBaseModel
 
 
 class CustomPage(Page):
@@ -25,8 +25,8 @@ class CustomGraphBase(VizroBaseModel):
 
 dashboard = Dashboard(
     pages=[
-        Page(title="page_1", components=[Component(x="c1")]),
-        # Page(title="page_2", components=[Component(x=[SubComponent(y="c3")])]),
+        # Page(title="page_1", components=[Component(x="c1")]),
+        Page(title="page_2", components=[Graph(figure="c3", actions=[Action(action="action1")])]),
     ]
 )
 
@@ -59,4 +59,8 @@ for page in dashboard.pages:
 # )
 # dashboard._tree.print(repr="{node.data.type} (id={node.data.id})")
 
-dashboard.pages[0]._tree.print()  # repr="{node.data.type} (id={node.data.id})"
+# dashboard.pages[0]._tree.print()  # repr="{node.data.type} (id={node.data.id})"
+print(dashboard.pages[0].components[0].actions[0]._parent_model)
+
+# TOMORROW: check how the `_parent_model` got lost originally
+# Probably best to first check if it creates a copy, and if not what is different from the original case
