@@ -72,7 +72,7 @@ import random
 import re
 import uuid
 from types import SimpleNamespace
-from typing import Annotated, Any, Literal, Self, Union
+from typing import Annotated, Any, List, Literal, Optional, Self, Union
 
 from nutree.typed_tree import TypedTree
 from pydantic import (
@@ -81,6 +81,7 @@ from pydantic import (
     Discriminator,
     Field,
     ModelWrapValidatorHandler,
+    PrivateAttr,
     Tag,
     ValidatorFunctionWrapHandler,
     field_validator,
@@ -107,7 +108,7 @@ def make_discriminated_union(*args):
     types = [Annotated[T, Tag(builtin_tag)] for T, builtin_tag in zip(args, builtin_tags)]
     types.append(SkipJsonSchema[Annotated[Any, Tag("custom_component")]])
 
-    print(types)
+    # print(types)
 
     # With a proper type field established, we could go back to a normal discriminator on this field
     # but this has the other consequence of needing a work-around for the stack mechanism of the model manager
@@ -153,6 +154,7 @@ class VizroBaseModel(BaseModel):
             validate_default=True,
         ),
     ]
+    _tree: Optional[TypedTree] = PrivateAttr(None)  # initialised in model_after
 
     @classmethod
     def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
@@ -298,6 +300,25 @@ class VizroBaseModel(BaseModel):
 
         return validated_stuff
 
+    @classmethod
+    # AM NOTE: name TBC.
+    def from_pre_build(cls, data, parent_model, field_name):
+        # Note this always adds new models to the tree. It's not currently possible to replace or remove a node.
+        # It should work with any parent_model, but ideally we should only use it to make children of the calling
+        # model, so that parent_model=self in the call (where self isn't the created model instance, it's the calling
+        # model).
+        # Since we have revalidate_instances = "always", calling model_validate on a single model will also execute
+        # the validators on children models.
+        return cls.model_validate(
+            data,
+            context={
+                "build_tree": True,
+                "parent_model": parent_model,
+                "field_stack": [field_name],
+                "id_stack": [parent_model.id],
+            },
+        )
+
 
 class Graph(VizroBaseModel):
     figure: str
@@ -307,10 +328,29 @@ class Card(VizroBaseModel):
     text: str
 
 
+class SubComponent(VizroBaseModel):
+    y: str = "subcomponent"
+
+
+class Component(VizroBaseModel):
+    x: Union[str, list[SubComponent]]
+
+
 class Page(VizroBaseModel):
     title: str
     # Example of field where there's multiple options so it's already a real discriminated union.
-    components: list[make_discriminated_union(Graph, Card)]
+    components: list[make_discriminated_union(Graph, Card, Component)]
+
+    def pre_build(self):
+        print(f"Updating page {self.type}")
+        if isinstance(self.components[0], Component) and self.components[0].x == "c1":
+            self.components = [
+                Component.from_pre_build(
+                    {"x": "new c1!!!"},  # , SubComponent(y="another new c3")
+                    self,
+                    "components",
+                )
+            ]
 
 
 class Dashboard(VizroBaseModel):
@@ -327,6 +367,10 @@ TODOs Maxi:
 - check for model copy, do we loose private attributes still? Does it matter?
 - check for json schema, does it look as nice as before?
 - serialization/deserialization
+- what if we want to add normal component to other fields? (happens a lot!)
+- check if pre-build needs to overwrite/delete models
+- check if we ever need to add sub models in pre-build, so far it only works for single model
+
 
 """
     # print("=== Graph Schema ===")
