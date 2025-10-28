@@ -133,7 +133,6 @@ For instance, to make a KPI card with the icon positioned on the right side of t
                 type: figure
             layout:
               direction: row
-              wrap: true
               type: flex
             title: Create your own KPI card
         ```
@@ -271,6 +270,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
                     selector=vm.Slider(min=2, max=12, step=2, value=10, title="Number of cards to display"),
                 ),
             ],
+            layout=vm.Flex()
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -326,6 +326,8 @@ The example below shows how to create multiple cards created from a `pandas.Data
                   step: 2
                   value: 10
                   title: Number of cards to display
+            layout:
+              type: flex
             title: Dynamic HTML header
         ```
 
