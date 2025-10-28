@@ -408,16 +408,17 @@ class ChatAction(_AbstractAction):
 #    - Users can toggle stream=True/False
 #    - Example: openai_chat
 
+
 class openai_chat(ChatAction):
-    # With the class-based definition there's room for static parameters like model and api_key which isn't possible
-    # if you just write a function.
+    """OpenAI chat implementation with both streaming and non-streaming support."""
+
     type: Literal["openai_chat"] = "openai_chat"
     model: str = "gpt-4.1-nano"
     api_key: Optional[str] = None  # Uses OPENAI_API_KEY env variable if not provided
     api_base: Optional[str] = None  # Uses OPENAI_BASE_URL env variable if not provided
     stream: bool = True
-    _client: OpenAI
     messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
+
     # expose instructions and other stuff as fields.
     # But ultimately users will want to customize a lot of things like tools etc. so should be able to easily write
     # their own.
@@ -425,15 +426,15 @@ class openai_chat(ChatAction):
     # https://platform.openai.com/docs/api-reference/responses
     # Good idea to make this specific to OpenAI responses API and have specific arguments we've picked out for OpenAI
     # class, create and how to handle response.
-
-    def pre_build(self):
-        super().pre_build()
-
-        self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
+    @property
+    def client(self):
+        if not hasattr(self, "_client"):
+            self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
+        return self._client
 
     def generate_stream(self, messages):
         """Handle streaming response from OpenAI."""
-        response = self._client.responses.create(
+        response = self.client.responses.create(
             model=self.model,
             input=messages,
             instructions="Be polite and creative.",
@@ -448,7 +449,7 @@ class openai_chat(ChatAction):
 
     def generate_response(self, messages):
         """Handle non-streaming response from OpenAI."""
-        response = self._client.responses.create(
+        response = self.client.responses.create(
             model=self.model,
             input=messages,
             instructions="Be polite and creative.",
@@ -458,19 +459,18 @@ class openai_chat(ChatAction):
         return response.output_text
 
 
+# Initialize Anthropic client once at module level
+# Uses ANTHROPIC_API_KEY environment variable
+anthropic_client = anthropic.Anthropic()
+
+
 class anthropic_chat(ChatAction):
     """Streaming-only implementation for Anthropic Claude chat."""
 
     type: Literal["anthropic_chat"] = "anthropic_chat"
     model: str = "claude-haiku-4-5-20251001"
-    api_key: Optional[str] = None  # Uses ANTHROPIC_API_KEY env variable if not provided
     stream: bool = True  # Streaming-only for this implementation
-    _client: anthropic.Anthropic
     messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
-
-    def pre_build(self):
-        super().pre_build()
-        self._client = anthropic.Anthropic(api_key=self.api_key)
 
     def generate_stream(self, messages):
         """Generate streaming response from Anthropic Claude.
@@ -481,7 +481,7 @@ class anthropic_chat(ChatAction):
         Yields:
             str: Text chunks from Claude's response
         """
-        with self._client.messages.stream(
+        with anthropic_client.messages.stream(
             model=self.model,
             max_tokens=1024,
             messages=messages,
@@ -493,7 +493,9 @@ class anthropic_chat(ChatAction):
 @capture("action")
 def openai_chat_function(prompt):
     client = OpenAI()
-    return client.responses.create(model="gpt-4.1-nano", instructions="Be polite and creative.", input=prompt).output_text
+    return client.responses.create(
+        model="gpt-4.1-nano", instructions="Be polite and creative.", input=prompt
+    ).output_text
 
 
 class simple_echo(ChatAction):
