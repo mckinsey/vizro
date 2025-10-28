@@ -62,7 +62,7 @@ Vizro-MCP can only show your chart or dashboard in PyCafe if it can access the d
 !!! Tip "Do not share private data!"
 
     If your data is private and cannot be uploaded to PyCafe or the internet, you can ask Vizro-MCP to save the dashboard code into a `.py` file, and run it locally to access the data.
- 
+
 ## Iterate the chart
 
 You'll notice a few issues with the chart created, so now is the time to iterate:
