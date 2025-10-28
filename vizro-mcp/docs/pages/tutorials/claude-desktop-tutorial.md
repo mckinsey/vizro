@@ -53,10 +53,16 @@ When the LLM is ready, it opens an instance of [PyCafe](https://py.cafe/) and di
 
 ![](../../assets/images/song-decades-iteration1.png)
 
-!!! Tip "PyCafe cannot display charts that use local data"
+### PyCafe needs access to your data
 
-    Vizro-MCP can only show your chart or dashboard in PyCafe if the data it consumes can be downloaded from a public link. If you use local data, you should copy the generated chart or dashboard code into a `.py` file to run locally, so it can access the data.
+Vizro-MCP can only show your chart or dashboard in PyCafe if it can access the data. You can upload the data, for example to GitHub, so that PyCafe can download it from a link. Alternatively, you can share the data directly to the PyCafe project as shown below.
 
+![Install Vizro-MCP with uv](../../assets/images/looping-data-upload.gif)
+
+!!! Tip "Do not share private data!"
+
+    If your data is private and cannot be uploaded to PyCafe or the internet, you can ask Vizro-MCP to save the dashboard code into a `.py` file, and run it locally to access the data.
+ 
 ## Iterate the chart
 
 You'll notice a few issues with the chart created, so now is the time to iterate:
