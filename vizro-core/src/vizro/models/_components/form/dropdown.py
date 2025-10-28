@@ -130,12 +130,14 @@ class Dropdown(VizroBaseModel):
         dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
 
         value = self.value if self.value is not None else default_value
+        if self.multi and not isinstance(value, list):
+            value = [value]
 
         description = self.description.build().children if self.description else [None]
         defaults = {
             "id": self.id,
             "options": dict_options,
-            "value": value if self.multi and not isinstance(value, list) else [value],
+            "value": value,
             "multi": self.multi,
             "persistence": True,
             "persistence_type": "session",
