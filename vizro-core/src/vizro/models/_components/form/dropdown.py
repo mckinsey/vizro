@@ -1,10 +1,8 @@
-import math
-from datetime import date
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
+from dash import dcc, html
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, ValidationInfo, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -31,24 +29,6 @@ def validate_multi(multi, info: ValidationInfo):
     if info.data["value"] and multi is False and isinstance(info.data["value"], list):
         raise ValueError("Please set multi=True if providing a list of default values.")
     return multi
-
-
-def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
-    """Returns a list of labels from the selector options provided."""
-    if all(isinstance(option, dict) for option in full_options):
-        return [option["label"] for option in full_options]  # type: ignore[index]
-    else:
-        return cast(Union[list[StrictBool], list[float], list[str], list[date]], full_options)
-
-
-def _calculate_option_height(full_options: OptionsType, char_count: int) -> int:
-    """Calculates the height of the dropdown options based on the longest option."""
-    # We look at the longest option to find number_of_lines it requires. Option height is the same for all options
-    # and needs 24px for each line + 8px padding.
-    list_of_labels = _get_list_of_labels(full_options)
-    max_length = max(len(str(option)) for option in list_of_labels)
-    number_of_lines = math.ceil(max_length / char_count)
-    return 8 + 24 * number_of_lines
 
 
 class Dropdown(VizroBaseModel):
@@ -148,41 +128,15 @@ class Dropdown(VizroBaseModel):
 
     def __call__(self, options):
         dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
-        # 24 characters is roughly the number of "A" characters you can fit comfortably on a line in the page dropdown
-        # (placed on the left-side 280px width). 15 is the width for when the dropdown is in a container's controls.
-        # "A" is representative of a slightly wider than average character:
-        # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
-        option_height = _calculate_option_height(dict_options, 15 if self._in_container else 24)
 
         value = self.value if self.value is not None else default_value
-
-        if self.multi:
-            self._update_dropdown_select_all()
-            value = value if isinstance(value, list) else [value]  # type: ignore[assignment]
-            dict_options = [
-                {
-                    "label": dbc.Checkbox(
-                        id=f"{self.id}_select_all",
-                        value=len(value) == len(dict_options),  # type: ignore[arg-type]
-                        label="Select All",
-                        persistence=True,
-                        persistence_type="session",
-                        className="dropdown-select-all",
-                    ),
-                    # Special sentinel value used in update_dropdown_select_all.
-                    # This never gets sent to the server.
-                    "value": "__SELECT_ALL",
-                },
-                *dict_options,
-            ]
 
         description = self.description.build().children if self.description else [None]
         defaults = {
             "id": self.id,
             "options": dict_options,
-            "value": value,
+            "value": value if self.multi and not isinstance(value, list) else [value],
             "multi": self.multi,
-            "optionHeight": option_height,
             "persistence": True,
             "persistence_type": "session",
             "placeholder": "Select option",
@@ -214,17 +168,7 @@ class Dropdown(VizroBaseModel):
         # because placeholder for the Dropdown can't be the dropdown itself. The reason is that the Dropdown value can
         # be unexpectedly changed when the new options are added. This is developed as the dash feature
         # https://github.com/plotly/dash/pull/1970.
-        if self.multi:
-            # Add the clientside callback as the callback has to be defined in the page.build process.
-            self._update_dropdown_select_all()
-            # hidden_select_all_dropdown is needed to ensure that clientside callback doesn't raise the no output error.
-            hidden_select_all_dropdown = [dcc.Dropdown(id=f"{self.id}_select_all", style={"display": "none"})]
-            placeholder_model = dcc.Checklist
-            placeholder_options = self.value
-        else:
-            hidden_select_all_dropdown = [None]
-            placeholder_model = dbc.RadioItems
-            placeholder_options = [self.value]  # type: ignore[assignment]
+        plh_model, plh_options = (dcc.Checklist, self.value) if self.multi else (dbc.RadioItems, [self.value])
 
         description = self.description.build().children if self.description else [None]
         return html.Div(
@@ -232,32 +176,16 @@ class Dropdown(VizroBaseModel):
                 dbc.Label(
                     children=[html.Span(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
                 ),
-                placeholder_model(
+                plh_model(
                     id=self.id,
-                    options=placeholder_options,
+                    options=plh_options,
                     value=self.value,
                     persistence=True,
                     persistence_type="session",
                 ),
-                *hidden_select_all_dropdown,
             ]
         )
 
     @_log_call
     def build(self):
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
-
-    def _update_dropdown_select_all(self):
-        """Define the clientside callbacks in the page build phase responsible for handling the select_all."""
-        clientside_callback(
-            ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
-            output=[
-                Output(f"{self.id}_select_all", "value"),
-                Output(self.id, "value", allow_duplicate=True),
-            ],
-            inputs=[
-                Input(self.id, "value"),
-                State(self.id, "options"),
-            ],
-            prevent_initial_call="initial_duplicate",
-        )
