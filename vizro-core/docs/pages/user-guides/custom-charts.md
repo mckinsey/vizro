@@ -72,12 +72,12 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
                 vm.Graph(
                     id="enhanced_scatter",
                     figure=scatter_with_line(
+                        data_frame="iris",
                         x="sepal_length",
                         y="sepal_width",
                         color="species",
                         size="petal_width",
                         hline=3,
-                        data_frame="iris",
                     ),
                 ),
             ],
