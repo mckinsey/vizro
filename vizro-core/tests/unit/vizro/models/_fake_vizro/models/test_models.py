@@ -399,3 +399,29 @@ class TestJSONSchema:
             "type": "object",
         }
         assert schema == expected_schema
+
+
+class TestSerialization:
+    """Test that the serialization works as expected.
+
+    Note that we currently cannot get rid of the ID in serialization I think.
+    """
+
+    def test_serialization_graph(self):
+        """Test that the serialization for Graph works as expected."""
+        graph = Graph(id="graph-id", figure="a", actions=[Action(id="action-id", action="a")])
+        assert graph.model_dump() == {
+            "id": "graph-id",
+            "type": "graph",
+            "figure": "a",
+            "actions": [{"id": "action-id", "type": "action", "action": "a (from make_actions_chain)"}],
+        }
+
+    def test_serialization_without_id(self):
+        """Test that the serialization for Graph works as expected without id."""
+        graph = Graph(id="graph-id", figure="a", actions=[Action(id="action-id", action="a")])
+        assert graph.model_dump(exclude_unset=True) == {
+            "id": "graph-id",
+            "figure": "a",
+            "actions": [{"id": "action-id", "action": "a (from make_actions_chain)"}],
+        }

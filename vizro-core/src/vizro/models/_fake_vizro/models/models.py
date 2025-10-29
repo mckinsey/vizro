@@ -394,10 +394,14 @@ TODOs Maxi:
 - build in MM, see if pydantic_init_subclass is causing any problems - DONE
 - check for model copy, do we loose private attributes still? Does it matter? - DONE
 - check for json schema, does it look as nice as before? - DONE
-- serialization/deserialization
-- what if we want to add normal component to other fields? (happens a lot!)
+- serialization/deserialization - DONE
+
+NOT FULLY RESSOVLED
+- what if we want to add normal component to other fields? (happens a lot!) - just use normal add_type?
 - check if pre-build needs to overwrite/delete models
 - check if we ever need to add sub models in pre-build, so far it only works for single model
+- how much to we need to care about idempotency of validation? Is there a difference between pre and post
+pre-build and/or pre and post tree building?
 
 
 """

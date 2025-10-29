@@ -72,5 +72,6 @@ dashboard = Dashboard(
 # print(dashboard.pages[0].components[0].actions[0]._parent_model)
 
 # JSON Schema
-print("Custom Graph JSON Schema:")
-print(json.dumps(CustomGraph.model_json_schema(), indent=2))
+graph = Graph(id="graph-id", figure="a", actions=[Action(id="action-id", action="a")])
+# graph = Graph.model_validate(graph)
+print(json.dumps(graph.model_dump(), indent=2))
