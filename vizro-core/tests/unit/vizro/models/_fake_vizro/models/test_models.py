@@ -5,7 +5,7 @@ from typing import Union
 import pytest
 from pydantic import ValidationError
 
-from vizro.models._fake_vizro.models import Action, Card, Dashboard, Graph, Page, VizroBaseModel
+from vizro.models._fake_vizro.models import Action, Card, Component, Dashboard, Graph, Page, VizroBaseModel
 
 # Custom component classes for testing
 
@@ -238,6 +238,12 @@ def dashboard_with_graph_and_action():
     return Dashboard(pages=[Page(title="Test Page", components=[Graph(figure="a", actions=[Action(action="a")])])])
 
 
+@pytest.fixture
+def dashboard_with_component_for_pre_build():
+    """Fixture for a dashboard with a component for pre-build."""
+    return Dashboard(pages=[Page(title="Test Page", components=[Component(x="c1")])])
+
+
 class TestTreeCreation:
     """Test tree creation."""
 
@@ -264,16 +270,52 @@ class TestTreeCreation:
         # 3. Check tree depth
         assert dashboard._tree.calc_height() == 4  # Root -> Dashboard -> Page -> Graph -> Action
 
-        # 4. Verify  node kinds are correct (field names)
-        assert dashboard._tree[dashboard.pages[0].id].kind == "pages"
-        assert dashboard._tree[dashboard.pages[0].components[0].id].kind == "components"
-        assert dashboard._tree[dashboard.pages[0].components[0].actions[0].id].kind == "actions"
+        # 4. Verify node kinds are correct (field names)
+        kind_checks = [
+            (dashboard.pages[0].id, "pages"),
+            (dashboard.pages[0].components[0].id, "components"),
+            (dashboard.pages[0].components[0].actions[0].id, "actions"),
+        ]
+        for model_id, expected_kind in kind_checks:
+            assert dashboard._tree[model_id].kind == expected_kind
 
-        # 5. Verify tree navigation works
-        assert next(iter(dashboard._tree.children)).data == dashboard
+        # 5. Check all nodes have valid data and correspond to real model objects
+        models_to_check = [
+            dashboard,
+            dashboard.pages[0],
+            dashboard.pages[0].components[0],
+            dashboard.pages[0].components[0].actions[0],
+        ]
+        for model in models_to_check:
+            node = dashboard._tree[model.id]
+            assert isinstance(node.data, VizroBaseModel)
+            assert hasattr(node.data, "id")
+            assert node.data is model
 
-        # 6. Check all nodes have valid data (not SimpleNamespace placeholders)
-        for node in dashboard._tree:
-            if node is not dashboard._tree:  # Skip the root tree node itself
-                assert isinstance(node.data, VizroBaseModel)
-                assert hasattr(node.data, "id")
+
+class TestPreBuildTreeAddition:
+    """Test pre-build functionality."""
+
+    def test_pre_build_tree_addition(self, dashboard_with_component_for_pre_build):
+        """Test pre-build functionality."""
+        dashboard = Dashboard.model_validate(dashboard_with_component_for_pre_build, context={"build_tree": True})
+
+        for page in dashboard.pages:
+            page.pre_build()
+
+        # Check component was changed by pre-build
+        new_component = dashboard.pages[0].components[0]
+        assert isinstance(new_component, Component)
+        assert new_component.x == "new c1!!!"
+
+        # Check all tree nodes have valid data and correspond to real model objects
+        models_to_check = [
+            dashboard,
+            dashboard.pages[0],
+            new_component,
+        ]
+        for model in models_to_check:
+            node = dashboard._tree[model.id]
+            assert isinstance(node.data, VizroBaseModel)
+            assert hasattr(node.data, "id")
+            assert node.data is model

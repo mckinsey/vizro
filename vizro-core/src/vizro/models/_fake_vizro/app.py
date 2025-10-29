@@ -2,7 +2,7 @@
 
 from typing import Union
 
-from vizro.models._fake_vizro.models import Action, Card, Dashboard, Graph, Page, VizroBaseModel
+from vizro.models._fake_vizro.models import Action, Card, Dashboard, Graph, Page, VizroBaseModel, Component
 
 
 class CustomPage(Page):
@@ -25,7 +25,7 @@ class CustomGraphBase(VizroBaseModel):
 
 dashboard = Dashboard(
     pages=[
-        # Page(title="page_1", components=[Component(x="c1")]),
+        Page(title="page_1", components=[Component(x="c1")]),
         Page(title="page_2", components=[Graph(figure="c3", actions=[Action(action="action1")])]),
     ]
 )
@@ -50,23 +50,22 @@ dashboard = Dashboard(
 # }
 
 dashboard = Dashboard.model_validate(dashboard, context={"build_tree": True})
+print("--------------------------------")
 for page in dashboard.pages:
     page.pre_build()
 # Notes
 # Any additional model validate erases private property of tree, but why does it
 # NOT erase the _parent_model attribute
+print("--------------------------------")
 dashboard = Dashboard.model_validate(dashboard)
 
 # comp = Component.from_pre_build(
 #     {"x": [SubComponent(y="new c3"), SubComponent(y="another new c3")]}, dashboard.pages[0], "components"
 # )
-# dashboard._tree.print(repr="{node.data.type} (id={node.data.id})")
+dashboard._tree.print(repr="{node.data.type} (id={node.data.id})")
 
 # dashboard.pages[0]._tree.print()  # repr="{node.data.type} (id={node.data.id})"
 # dashboard.pages[0]._tree.print()  # repr="{node.data.type} (id={node.data.id})"
-print("---")
-print(dashboard.pages[0].components[0].actions[0])
-print(dashboard.pages[0].components[0].actions[0]._parent_model)
-
-# TOMORROW: check how the `_parent_model` got lost originally
-# Probably best to first check if it creates a copy, and if not what is different from the original case
+# print("---")
+# print(dashboard.pages[0].components[0].actions[0])
+# print(dashboard.pages[0].components[0].actions[0]._parent_model)

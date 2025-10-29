@@ -258,7 +258,7 @@ class VizroBaseModel(BaseModel):
 
             #### Tree ####
             print(
-                f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'}"
+                f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'} with model id {model_id}"
             )
 
             if "parent_model" in info.context:
@@ -288,6 +288,7 @@ class VizroBaseModel(BaseModel):
 
         #### Validation ####
         validated_stuff = handler(data)
+
         if info.context is not None and "build_tree" in info.context:
             #### Replace placeholder nodes and propagate tree to all models ####
             info.context["tree"][validated_stuff.id].set_data(validated_stuff)
@@ -297,6 +298,13 @@ class VizroBaseModel(BaseModel):
             info.context["level"] -= 1
             indent = info.context["level"] * " " * 4
             print(f"{indent}{cls.__name__} After validation: {info.context['field_stack']}")
+        elif hasattr(data, "_tree") and data._tree is not None:
+            #### Revalidation case: model already has a tree (e.g., during assignment) ####
+            # Inherit the tree from the original instance
+            validated_stuff._tree = data._tree
+            # Update the tree node to point to the NEW validated instance
+            validated_stuff._tree[validated_stuff.id].set_data(validated_stuff)
+            print(f"--> Revalidation: Updated tree node for {validated_stuff.id} <--")
 
         return validated_stuff
 
