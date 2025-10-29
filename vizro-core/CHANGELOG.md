@@ -19,7 +19,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Allow hiding `Filter` and `Parameter` by setting `visible=False`. ([#1428](https://github.com/mckinsey/vizro/pull/1428))
 
-- Add a reset button by default, allowing users to restore all controls to their default values. ([#1437](https://github.com/mckinsey/vizro/pull/1437))
+- Add a reset button by default, allowing users to restore all page controls to their default values. ([#1437](https://github.com/mckinsey/vizro/pull/1437))
 
 - Add support for `header`, `description` and `footer` in `Card` for more flexible styling. See our user guide on [Cards](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#add-header-and-footer) for an example. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
 
