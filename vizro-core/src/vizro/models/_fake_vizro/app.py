@@ -1,5 +1,6 @@
 """Example app.py to play with the fake vizro models."""
 
+import json
 from typing import Union
 
 from vizro.models._fake_vizro.models import Action, Card, Component, Dashboard, Graph, Page, VizroBaseModel
@@ -49,23 +50,27 @@ dashboard = Dashboard(
 #     ],
 # }
 
-dashboard = Dashboard.model_validate(dashboard, context={"build_tree": True})
-print("--------------------------------")
-for page in dashboard.pages:
-    page.pre_build()
+# dashboard = Dashboard.model_validate(dashboard, context={"build_tree": True})
+# print("--------------------------------")
+# for page in dashboard.pages:
+#     page.pre_build()
 # Notes
 # Any additional model validate erases private property of tree, but why does it
 # NOT erase the _parent_model attribute
-print("--------------------------------")
-dashboard = Dashboard.model_validate(dashboard)
+# print("--------------------------------")
+# dashboard = Dashboard.model_validate(dashboard)
 
 # comp = Component.from_pre_build(
 #     {"x": [SubComponent(y="new c3"), SubComponent(y="another new c3")]}, dashboard.pages[0], "components"
 # )
-dashboard._tree.print(repr="{node.data.type} (id={node.data.id})")
+# dashboard._tree.print(repr="{node.data.type} (id={node.data.id})")
 
 # dashboard.pages[0]._tree.print()  # repr="{node.data.type} (id={node.data.id})"
 # dashboard.pages[0]._tree.print()  # repr="{node.data.type} (id={node.data.id})"
 # print("---")
 # print(dashboard.pages[0].components[0].actions[0])
 # print(dashboard.pages[0].components[0].actions[0]._parent_model)
+
+# JSON Schema
+print("Custom Graph JSON Schema:")
+print(json.dumps(CustomGraph.model_json_schema(), indent=2))

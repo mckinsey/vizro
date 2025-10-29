@@ -68,6 +68,7 @@ seriously confuse LLMs
 
 from __future__ import annotations
 
+import json
 import random
 import re
 import uuid
@@ -344,7 +345,7 @@ class Action(VizroBaseModel):
 
 class Graph(VizroBaseModel):
     figure: str
-    actions: list[Action]
+    actions: Optional[list[Action]]
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -391,8 +392,8 @@ if __name__ == "__main__":
 TODOs Maxi:
 - test all combinations of yaml/python instantiations - DONE
 - build in MM, see if pydantic_init_subclass is causing any problems - DONE
-- check for model copy, do we loose private attributes still? Does it matter?
-- check for json schema, does it look as nice as before?
+- check for model copy, do we loose private attributes still? Does it matter? - DONE
+- check for json schema, does it look as nice as before? - DONE
 - serialization/deserialization
 - what if we want to add normal component to other fields? (happens a lot!)
 - check if pre-build needs to overwrite/delete models
@@ -400,22 +401,3 @@ TODOs Maxi:
 
 
 """
-    # print("=== Graph Schema ===")
-    # print(json.dumps(Graph.model_json_schema(), indent=2))
-    # graph = Graph(type="graph", figure="a")
-    # print(json.dumps(graph.model_dump(exclude_unset=True, exclude_defaults=True), indent=2))
-
-    # print("\n=== Card Schema ===")
-    # print(json.dumps(Card.model_json_schema(), indent=2))
-    # print("\n=== Page Schema ===")
-    # print(json.dumps(Page.model_json_schema(), indent=2))
-    # print("\n=== Dashboard Schema ===")
-    # print(json.dumps(Dashboard.model_json_schema(), indent=2))
-
-    #####
-    # print("=== Card Vizro===")
-    # from vizro.models import Card
-
-    # card = Card(text="a")
-    # print(json.dumps(Card.model_json_schema(), indent=2))
-    # print(json.dumps(card.model_dump(exclude_unset=True), indent=2))

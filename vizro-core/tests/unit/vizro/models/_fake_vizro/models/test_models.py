@@ -337,10 +337,10 @@ class TestDashboardTreeCreation:
             assert hasattr(node.data, "id")
             assert node.data is model
 
-    @pytest.mark.parametrize("dashboard", DASHBOARDS_WITHOUT_TREE, indirect=True)
+    @pytest.mark.parametrize("dashboard", DASHBOARDS_WITHOUT_TREE + DASHBOARDS_WITH_TREE, indirect=True)
     def test_private_attribute_parent_model(self, dashboard):
         """Test private attribute _parent_model."""
-        assert dashboard.pages[0].components[0].actions[0]._parent_model is not None
+        assert dashboard.pages[0].components[0].actions[0]._parent_model is dashboard.pages[0].components[0]
 
 
 @pytest.fixture
@@ -375,3 +375,27 @@ class TestPreBuildTreeAddition:
             assert isinstance(node.data, VizroBaseModel)
             assert hasattr(node.data, "id")
             assert node.data is model
+
+
+class TestJSONSchema:
+    """Test that the JSON schema looks as expected."""
+
+    def test_json_schema_card(self):
+        """Test that the JSON schema for Card looks as expected, particular for the type field."""
+        schema = Card.model_json_schema()
+        expected_schema = {
+            "additionalProperties": False,
+            "properties": {
+                "type": {"const": "card", "default": "card", "title": "Type", "type": "string"},
+                "id": {
+                    "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+                    "title": "Id",
+                    "type": "string",
+                },
+                "text": {"title": "Text", "type": "string"},
+            },
+            "required": ["text"],
+            "title": "Card",
+            "type": "object",
+        }
+        assert schema == expected_schema
