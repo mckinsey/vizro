@@ -69,9 +69,11 @@ class TestSetControlPreBuild:
         action = set_control(control="filter_page_1", value="continent")
         model_manager["scatter_chart_1"].actions = action
 
-        action.pre_build()
+        # This would fix the unit tests, as we need to take the copy, not the original model
+        new_action = model_manager["scatter_chart_1"].actions[0]
+        new_action.pre_build()
 
-        assert action._same_page is True
+        assert new_action._same_page is True
 
     def test_pre_build_control_model_on_different_page(self):
         # Add action to relevant component and target a control on different page with show_in_url=True
