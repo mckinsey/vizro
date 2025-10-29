@@ -323,6 +323,7 @@ class VizroBaseModel(BaseModel):
 
 def make_actions_chain(self):
     for action in self.actions:
+        action.action = action.action + " (from make_actions_chain)"
         action._parent_model = self
     return self
 
