@@ -5,7 +5,7 @@ from typing import Union
 import pytest
 from pydantic import ValidationError
 
-from vizro.models._fake_vizro.models import Card, Dashboard, Graph, Page, VizroBaseModel
+from vizro.models._fake_vizro.models import Action, Card, Dashboard, Graph, Page, VizroBaseModel
 
 # Custom component classes for testing
 
@@ -215,7 +215,7 @@ class TestFakeVizroLiteralType:
             CustomGraphNoType(figure=3, type="graph")
 
     def test_literal_type_custom_model_base(self):
-        """Test understanding of Literal errors for custom model bases"""
+        """Test understanding of Literal errors for custom model bases."""
         custom_graph_base = CustomGraphBase(figure=3)
         assert custom_graph_base.type == "custom_component"
         with pytest.raises(ValidationError):
@@ -230,3 +230,50 @@ class TestFakeVizroLiteralType:
 
         with pytest.raises(ValidationError):
             CustomGraphBaseNoType(figure=3, type="custom_component")
+
+
+@pytest.fixture
+def dashboard_with_graph_and_action():
+    """Fixture for a dashboard with a graph and an action."""
+    return Dashboard(pages=[Page(title="Test Page", components=[Graph(figure="a", actions=[Action(action="a")])])])
+
+
+class TestTreeCreation:
+    """Test tree creation."""
+
+    def test_tree_creation_not_triggered(self, dashboard_with_graph_and_action):
+        """Test tree creation is not triggered."""
+        dashboard = Dashboard.model_validate(dashboard_with_graph_and_action)
+        assert dashboard._tree is None
+
+    def test_tree_creation_triggered(self, dashboard_with_graph_and_action):
+        """Test tree creation is triggered."""
+        dashboard = Dashboard.model_validate(dashboard_with_graph_and_action, context={"build_tree": True})
+        assert dashboard._tree is not None
+
+        # 0. Check trees are the same everywhere
+        assert dashboard._tree is dashboard.pages[0]._tree
+
+        # 1. Check root exists and has correct structure
+        assert dashboard._tree.name == "Root"
+
+        # 2. Check node count matches expected hierarchy
+        # Dashboard -> Page -> Graph -> Action = 4 nodes total
+        assert len(dashboard._tree) == 4
+
+        # 3. Check tree depth
+        assert dashboard._tree.calc_height() == 4  # Root -> Dashboard -> Page -> Graph -> Action
+
+        # 4. Verify  node kinds are correct (field names)
+        assert dashboard._tree[dashboard.pages[0].id].kind == "pages"
+        assert dashboard._tree[dashboard.pages[0].components[0].id].kind == "components"
+        assert dashboard._tree[dashboard.pages[0].components[0].actions[0].id].kind == "actions"
+
+        # 5. Verify tree navigation works
+        assert next(iter(dashboard._tree.children)).data == dashboard
+
+        # 6. Check all nodes have valid data (not SimpleNamespace placeholders)
+        for node in dashboard._tree:
+            if node is not dashboard._tree:  # Skip the root tree node itself
+                assert isinstance(node.data, VizroBaseModel)
+                assert hasattr(node.data, "id")
