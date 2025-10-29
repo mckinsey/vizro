@@ -13,6 +13,7 @@ from flask import Response, request
 from openai import OpenAI, BaseModel
 from pydantic import Tag, Field, model_validator
 import anthropic
+import pandas as pd
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -568,6 +569,78 @@ This demonstrates that markdown formatting and code highlighting still work perf
             return response.strip()  # Can return just a string for text responses!
 
 
+# Example of using VizroAI to generate plots from natural language
+class vizro_ai_chat(ChatAction):
+    """Generate data visualizations using natural language with VizroAI."""
+
+    type: Literal["vizro_ai_chat"] = "vizro_ai_chat"
+    stream: bool = False  # VizroAI returns complete plots, not streamable
+    uploaded_data: str = Field(default_factory=lambda data: f"{data['chat_id']}-data-store.data")
+
+    @property
+    def inputs(self):
+        """Define runtime inputs including uploaded data."""
+        return [self.prompt, self.messages, self.uploaded_data]
+
+    def function(self, prompt, messages, uploaded_data=None):
+        """Override function to handle uploaded data."""
+        latest_input = {"role": "user", "content": prompt}
+        messages.append(latest_input)
+
+        # Generate response with uploaded data
+        content = self.generate_response(messages, uploaded_data)
+        latest_output = {"role": "assistant", "content": content}
+
+        store, html_messages = Patch(), Patch()
+        store.append(latest_output)
+        html_messages.append(self.message_to_html(latest_output))
+        return store, html_messages
+
+    def generate_response(self, messages, uploaded_data=None):
+        """Generate a plot using VizroAI based on user's request."""
+        from vizro_ai import VizroAI
+        from langchain_openai import ChatOpenAI
+
+        prompt = messages[-1]["content"] if messages else ""
+
+        if not uploaded_data:
+            return html.P("Please upload a CSV file first!", style={"color": "#1890ff"})
+
+        try:
+            import io
+
+            df = pd.read_json(io.StringIO(uploaded_data), orient="split")
+        except Exception as e:
+            return html.P(f"Error loading data: {str(e)}", style={"color": "red"})
+
+        # Generate plot with VizroAI
+        try:
+            llm = ChatOpenAI(model_name="gpt-4o-mini")
+            vizro_ai = VizroAI(model=llm)
+            ai_outputs = vizro_ai.plot(df, prompt, return_elements=True)
+            figure = ai_outputs.get_fig_object(data_frame=df, vizro=False)
+
+            return html.Div(
+                [
+                    dcc.Graph(figure=figure, style={"height": "400px"}),
+                    html.Details(
+                        [
+                            html.Summary("View generated code", style={"cursor": "pointer", "color": "#666"}),
+                            dmc.CodeHighlight(
+                                code=ai_outputs.code,
+                                language="python",
+                                withCopyButton=True,
+                                styles={"root": {"marginTop": "10px"}, "code": {"fontSize": "12px"}},
+                            ),
+                        ],
+                        style={"marginTop": "10px"},
+                    ),
+                ]
+            )
+        except Exception as e:
+            return html.P(f"Error generating plot: {str(e)}", style={"color": "red"})
+
+
 # -------------------- Chat Component --------------------
 
 
@@ -603,27 +676,114 @@ Chat.add_type("actions", Annotated[simple_echo, Tag("simple_echo")])
 Chat.add_type("actions", Annotated[openai_chat, Tag("openai_chat")])
 Chat.add_type("actions", Annotated[anthropic_chat, Tag("anthropic_chat")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
+Chat.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
+
+
+# -------------------- Chat with Upload Component --------------------
+
+
+class ChatWithUpload(Chat):
+    """Chat component with file upload capability for data analysis."""
+
+    type: Literal["chat_with_upload"] = "chat_with_upload"
+
+    def build(self):
+        """Build the chat UI with file upload."""
+        return html.Div(
+            [
+                # File upload area
+                dcc.Upload(
+                    id=f"{self.id}-upload",
+                    children=html.Div(
+                        [
+                            "Drag and Drop or ",
+                            html.A("Select a CSV File", style={"color": "#1890ff", "cursor": "pointer"}),
+                        ]
+                    ),
+                    style={
+                        "width": "100%",
+                        "height": "60px",
+                        "lineHeight": "60px",
+                        "borderWidth": "2px",
+                        "borderStyle": "dashed",
+                        "borderRadius": "5px",
+                        "borderColor": "#d9d9d9",
+                        "textAlign": "center",
+                        "marginBottom": "10px",
+                        "backgroundColor": "#fafafa",
+                    },
+                    multiple=False,
+                ),
+                # Data info display
+                html.Div(id=f"{self.id}-data-info", style={"marginBottom": "10px"}),
+                # Data store
+                dcc.Store(id=f"{self.id}-data-store"),
+                # Standard chat components
+                dbc.Input(id=f"{self.id}-input", placeholder="Ask about your data...", type="text", debounce=True),
+                dbc.Button(id=f"{self.id}-submit", children="Submit"),
+                html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
+                html.Div(id=f"{self.id}-rendered-messages", children=[]),
+                dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),
+                SSE(id=f"{self.id}-sse", concat=True, animate_chunk=10, animate_delay=5),
+            ]
+        )
+
+    def pre_build(self):
+        """Set up file upload callback."""
+
+        @callback(
+            Output(f"{self.id}-data-store", "data"),
+            Output(f"{self.id}-data-info", "children"),
+            Input(f"{self.id}-upload", "contents"),
+            State(f"{self.id}-upload", "filename"),
+            prevent_initial_call=True,
+        )
+        def process_upload(contents, filename):
+            """Process uploaded file and store data."""
+            if contents is None:
+                return None, ""
+
+            try:
+                import io
+
+                # Parse the file
+                content_type, content_string = contents.split(",")
+                decoded = base64.b64decode(content_string)
+
+                if filename.endswith(".csv"):
+                    df = pd.read_csv(io.BytesIO(decoded))
+                else:
+                    return None, html.Div("Please upload a CSV file", style={"color": "red"})
+
+                info = html.Div([html.B(f"Loaded: {filename}")], style={"color": "green", "fontSize": "12px"})
+
+                return df.to_json(orient="split"), info
+
+            except Exception as e:
+                return None, html.Div(f"Error loading file: {str(e)}", style={"color": "red"})
+
+
+vm.Page.add_type("components", ChatWithUpload)
+ChatWithUpload.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
 
 
 page = vm.Page(
-    title="Chat",
+    title="OpenAI Chat (Streaming)",
     components=[
         Chat(
             id="chat",
             actions=[openai_chat(chat_id="chat", stream=True)],
-            # actions=[openai_chat_function(prompt="chat-input.value")],
         ),
-        # Soon you wouldn't have to label with id like this. It would be done by looking up in the model
-        # manager. So it would just like this and no need to specify id="chat" which looks silly right now.
-        # Chat(actions=[echo()])
-        # prompt and output are optional and would have default value defined in pre_build of class that looks at
-        # self._tree. Or better maybe there's some special syntax for "<parent>.value" that could be used for
-        # inputs/outputs. We could have a sort of lookup dictionary like in AIO components. Then it works as above but
-        # just need to have automatic way of specify chat_id.
-        # prompt: str = "<something_special>.input"
-        # Where <something_special> translates to the correct ID somehow - will need to figure out how given that
-        # it's not the direct parent.
-        # Would be able to use same syntax for outputs property.
+    ],
+)
+
+page_nostream = vm.Page(
+    title="OpenAI Chat (Non-Streaming)",
+    components=[
+        Chat(
+            id="chat_nostream",
+            actions=[openai_chat(chat_id="chat_nostream", stream=False)],
+        ),
     ],
 )
 
@@ -647,20 +807,6 @@ Try typing: "Show me a chart" or "Display an image" or just chat normally!
     ],
 )
 
-page_nostream = vm.Page(
-    title="Chat (non-stream)",
-    components=[
-        Chat(
-            id="chat_nostream",
-            actions=[
-                openai_chat(
-                    chat_id="chat_nostream",
-                    stream=False,
-                ),
-            ],
-        ),
-    ],
-)
 
 page_anthropic = vm.Page(
     title="Claude Chat (Streaming)",
@@ -680,8 +826,26 @@ page_anthropic = vm.Page(
     ],
 )
 
+page_vizro_ai = vm.Page(
+    title="VizroAI Natural Language Charts",
+    layout=vm.Flex(direction="column"),
+    components=[
+        vm.Card(
+            text="""
+## AI-Powered Data Visualization with VizroAI
+
+Upload your data and ask for visualizations in plain English!
+"""
+        ),
+        ChatWithUpload(
+            id="vizro_ai_chat",
+            actions=[vizro_ai_chat(chat_id="vizro_ai_chat")],
+        ),
+    ],
+)
+
 dashboard = vm.Dashboard(
-    pages=[page, page_nostream, page_anthropic, page_2],
+    pages=[page, page_nostream, page_anthropic, page_2, page_vizro_ai],
     theme="vizro_light",
 )
 

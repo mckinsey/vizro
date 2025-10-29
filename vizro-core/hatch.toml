@@ -151,7 +151,9 @@ dependencies = [
   "plotly==6.0.0",  # to leverage new MapLibre features in visual-vocabulary,
   "python-dotenv",
   "openai",
-  "dash-extensions"
+  "anthropic",
+  "dash-extensions",
+  "vizro-ai"
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
