@@ -295,7 +295,6 @@ class TestDashboardTreeCreation:
     @pytest.mark.parametrize("dashboard_with_tree", DASHBOARDS_WITH_TREE, indirect=True)
     def test_tree_creation_triggered(self, dashboard_with_tree):
         """Test tree creation is triggered."""
-
         assert dashboard_with_tree._tree is not None
 
         # 0. Check trees are the same everywhere
