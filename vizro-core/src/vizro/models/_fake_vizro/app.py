@@ -2,7 +2,7 @@
 
 from typing import Union
 
-from vizro.models._fake_vizro.models import Action, Card, Dashboard, Graph, Page, VizroBaseModel, Component
+from vizro.models._fake_vizro.models import Action, Card, Component, Dashboard, Graph, Page, VizroBaseModel
 
 
 class CustomPage(Page):
