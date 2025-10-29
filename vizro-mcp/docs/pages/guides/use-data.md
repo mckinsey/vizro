@@ -24,7 +24,7 @@ If your data is private or you prefer not to upload it to PyCafe, you can run th
 1. Navigate to the same folder in the terminal that you have stored `app.py`.
 1. Type `python app.py` to run the code.
 
-This sounds like a complex process but if you use an MCP host like Cursor or Microsoft VS Code, it will guide you. You can even prompt the host with the steps above and ask it to run through them for you.
+This sounds like a complex process but if you use an MCP host like Cursor or VS Code, it will guide you. You can even prompt the host with the steps above and ask it to run through them for you.
 
 ## Remote data
 
