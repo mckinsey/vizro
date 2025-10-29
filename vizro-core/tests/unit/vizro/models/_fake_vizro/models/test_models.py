@@ -66,7 +66,7 @@ class TestFakeVizroNormalInstantiation:
 
     def test_python_instantiation(self):
         """Test normal Python instantiation with model objects."""
-        graph = Graph(figure="test_figure")
+        graph = Graph(figure="test_figure", actions=[Action(action="a")])
         page = Page(title="Test Page", components=[graph])
         dashboard = Dashboard(pages=[page])
         dashboard = Dashboard.model_validate(dashboard)
@@ -76,7 +76,7 @@ class TestFakeVizroNormalInstantiation:
 
     def test_yaml_dict_instantiation(self):
         """Test normal YAML/dict instantiation."""
-        graph_dict = {"figure": "test_figure", "type": "graph"}
+        graph_dict = {"figure": "test_figure", "type": "graph", "actions": [{"action": "a"}]}
         page_dict = {"title": "Test Page", "components": [graph_dict]}
         dashboard_dict = {"pages": [page_dict]}
         dashboard = Dashboard.model_validate(dashboard_dict)
@@ -90,7 +90,7 @@ class TestFakeVizroCustomComponentSubclassSpecificModel:
 
     def test_custom_page_in_normal_field(self):
         """Test custom component (subclass of Page) in normal field (pages)."""
-        custom_page = CustomPage(title=456, components=[Graph(figure="test_figure")])
+        custom_page = CustomPage(title=456, components=[Graph(figure="test_figure", actions=[Action(action="a")])])
         dashboard = Dashboard(pages=[custom_page])
         dashboard = Dashboard.model_validate(dashboard)
 
@@ -98,7 +98,7 @@ class TestFakeVizroCustomComponentSubclassSpecificModel:
 
     def test_custom_graph_in_discriminated_union_field(self):
         """Test custom component (subclass of Graph) in discriminated union field (components)."""
-        custom_graph = CustomGraph(figure=123)
+        custom_graph = CustomGraph(figure=123, actions=[Action(action="a")])
         page = Page(title="Test Page", components=[custom_graph])
         dashboard = Dashboard(pages=[page])
         dashboard = Dashboard.model_validate(dashboard)
@@ -107,7 +107,7 @@ class TestFakeVizroCustomComponentSubclassSpecificModel:
 
     def test_custom_graph_no_type_in_discriminated_union_field(self):
         """Test custom component (subclass of Graph) in discriminated union field (components) without type."""
-        custom_graph_no_type = CustomGraphNoType(figure=999)
+        custom_graph_no_type = CustomGraphNoType(figure=999, actions=[Action(action="a")])
         # If user does not specify type EVEN ON INHERITANCE, then it will fail, as model will take class name as type
         # which doesn't fit
         with pytest.raises(ValidationError, match="Input tag 'custom_graph_no_type' found"):
@@ -115,8 +115,8 @@ class TestFakeVizroCustomComponentSubclassSpecificModel:
 
     def test_multiple_custom_components_in_discriminated_union_field(self):
         """Test multiple custom components in discriminated union field (components)."""
-        custom_graph_1 = CustomGraph(figure=123)
-        custom_graph_2 = CustomGraph2(figure=456)
+        custom_graph_1 = CustomGraph(figure=123, actions=[Action(action="a")])
+        custom_graph_2 = CustomGraph2(figure=456, actions=[Action(action="a")])
         page = Page(title="Test Page", components=[custom_graph_1, custom_graph_2])
         dashboard = Dashboard(pages=[page])
         dashboard = Dashboard.model_validate(dashboard)
@@ -130,7 +130,9 @@ class TestFakeVizroCustomComponentSubclassVizroBaseModel:
 
     def test_custom_page_base_in_normal_field(self):
         """Test custom component (subclass of VizroBaseModel) in normal field (pages)."""
-        custom_page_base = CustomPageBase(title=789, components=[Graph(figure="test_figure")])
+        custom_page_base = CustomPageBase(
+            title=789, components=[Graph(figure="test_figure", actions=[Action(action="a")])]
+        )
         dashboard = Dashboard(pages=[custom_page_base])
         dashboard = Dashboard.model_validate(dashboard)
 
@@ -175,7 +177,7 @@ class TestFakeVizroValidationErrors:
 
     def test_wrong_model_in_pages_field_python(self):
         """Test that using Graph instead of Page raises validation error in Python."""
-        graph = Graph(figure="a")
+        graph = Graph(figure="a", actions=[Action(action="a")])
 
         with pytest.raises(ValidationError):
             Dashboard(pages=[graph])
@@ -194,14 +196,14 @@ class TestFakeVizroLiteralType:
 
     def test_literal_type_builtin_model(self):
         """Test understanding of Literal errors."""
-        graph = Graph(figure="a")
+        graph = Graph(figure="a", actions=[Action(action="a")])
         assert graph.type == "graph"
         with pytest.raises(ValidationError):
             Graph(figure="a", type="custom_component")
 
     def test_literal_type_custom_model(self):
         """Test understanding of Literal errors for custom models."""
-        custom_graph = CustomGraph(figure=3, type="custom_component")
+        custom_graph = CustomGraph(figure=3, type="custom_component", actions=[Action(action="a")])
         assert custom_graph.type == "custom_component"
 
         with pytest.raises(ValidationError):
@@ -209,7 +211,7 @@ class TestFakeVizroLiteralType:
 
     def test_literal_type_custom_model_no_type(self):
         """Test understanding of Literal errors for custom models without type."""
-        custom_graph_no_type = CustomGraphNoType(figure=3)
+        custom_graph_no_type = CustomGraphNoType(figure=3, actions=[Action(action="a")])
         assert custom_graph_no_type.type == "custom_graph_no_type"
         with pytest.raises(ValidationError):
             CustomGraphNoType(figure=3, type="graph")
@@ -239,65 +241,115 @@ def dashboard_with_graph_and_action():
 
 
 @pytest.fixture
+def dashboard_with_graph_and_action_revalidated(dashboard_with_graph_and_action):
+    """Fixture for a dashboard with a graph and an action that has been revalidated."""
+    return Dashboard.model_validate(dashboard_with_graph_and_action)
+
+
+@pytest.fixture
+def dashboard_with_graph_and_action_revalidated_with_tree(dashboard_with_graph_and_action):
+    """Fixture for a dashboard with a graph and an action that has been revalidated with tree."""
+    return Dashboard.model_validate(dashboard_with_graph_and_action, context={"build_tree": True})
+
+
+@pytest.fixture
+def dashboard_with_graph_and_action_revalidated_with_tree_revalidated(
+    dashboard_with_graph_and_action_revalidated_with_tree,
+):
+    """Fixture for a dashboard with a graph and an action that has been revalidated with tree that has been revalidated."""
+    return Dashboard.model_validate(dashboard_with_graph_and_action_revalidated_with_tree)
+
+
+@pytest.fixture
+def dashboard(request):
+    """Parametrized fixture that returns the requested dashboard fixture."""
+    return request.getfixturevalue(request.param)
+
+
+@pytest.fixture
+def dashboard_with_tree(request):
+    """Fixture for a dashboard with tree."""
+    return request.getfixturevalue(request.param)
+
+
+# Fixture name constants for parametrization
+DASHBOARDS_WITHOUT_TREE = [
+    "dashboard_with_graph_and_action",
+    "dashboard_with_graph_and_action_revalidated",
+]
+
+DASHBOARDS_WITH_TREE = [
+    "dashboard_with_graph_and_action_revalidated_with_tree",
+    "dashboard_with_graph_and_action_revalidated_with_tree_revalidated",
+]
+
+
+class TestDashboardTreeCreation:
+    """Test tree creation using the validator approach."""
+
+    @pytest.mark.parametrize("dashboard", DASHBOARDS_WITHOUT_TREE, indirect=True)
+    def test_tree_creation_not_triggered(self, dashboard):
+        """Test tree creation is not triggered."""
+        assert dashboard._tree is None
+
+    @pytest.mark.parametrize("dashboard_with_tree", DASHBOARDS_WITH_TREE, indirect=True)
+    def test_tree_creation_triggered(self, dashboard_with_tree):
+        """Test tree creation is triggered."""
+
+        assert dashboard_with_tree._tree is not None
+
+        # 0. Check trees are the same everywhere
+        assert dashboard_with_tree._tree is dashboard_with_tree.pages[0]._tree
+
+        # 1. Check root exists and has correct structure
+        assert dashboard_with_tree._tree.name == "Root"
+
+        # 2. Check node count matches expected hierarchy
+        # Dashboard -> Page -> Graph -> Action = 4 nodes total
+        assert len(dashboard_with_tree._tree) == 4
+
+        # 3. Check tree depth
+        assert dashboard_with_tree._tree.calc_height() == 4  # Root -> Dashboard -> Page -> Graph -> Action
+
+        # 4. Verify node kinds are correct (field names)
+        kind_checks = [
+            (dashboard_with_tree.pages[0].id, "pages"),
+            (dashboard_with_tree.pages[0].components[0].id, "components"),
+            (dashboard_with_tree.pages[0].components[0].actions[0].id, "actions"),
+        ]
+        for model_id, expected_kind in kind_checks:
+            assert dashboard_with_tree._tree[model_id].kind == expected_kind
+
+        # 5. Check all nodes have valid data and correspond to real model objects
+        models_to_check = [
+            dashboard_with_tree,
+            dashboard_with_tree.pages[0],
+            dashboard_with_tree.pages[0].components[0],
+            dashboard_with_tree.pages[0].components[0].actions[0],
+        ]
+        for model in models_to_check:
+            node = dashboard_with_tree._tree[model.id]
+            assert isinstance(node.data, VizroBaseModel)
+            assert hasattr(node.data, "id")
+            assert node.data is model
+
+    @pytest.mark.parametrize("dashboard", DASHBOARDS_WITHOUT_TREE, indirect=True)
+    def test_private_attribute_parent_model(self, dashboard):
+        """Test private attribute _parent_model."""
+        assert dashboard.pages[0].components[0].actions[0]._parent_model is not None
+
+
+@pytest.fixture
 def dashboard_with_component_for_pre_build():
     """Fixture for a dashboard with a component for pre-build."""
     return Dashboard(pages=[Page(title="Test Page", components=[Component(x="c1")])])
 
 
-class TestTreeCreation:
-    """Test tree creation."""
-
-    def test_tree_creation_not_triggered(self, dashboard_with_graph_and_action):
-        """Test tree creation is not triggered."""
-        dashboard = Dashboard.model_validate(dashboard_with_graph_and_action)
-        assert dashboard._tree is None
-
-    def test_tree_creation_triggered(self, dashboard_with_graph_and_action):
-        """Test tree creation is triggered."""
-        dashboard = Dashboard.model_validate(dashboard_with_graph_and_action, context={"build_tree": True})
-        assert dashboard._tree is not None
-
-        # 0. Check trees are the same everywhere
-        assert dashboard._tree is dashboard.pages[0]._tree
-
-        # 1. Check root exists and has correct structure
-        assert dashboard._tree.name == "Root"
-
-        # 2. Check node count matches expected hierarchy
-        # Dashboard -> Page -> Graph -> Action = 4 nodes total
-        assert len(dashboard._tree) == 4
-
-        # 3. Check tree depth
-        assert dashboard._tree.calc_height() == 4  # Root -> Dashboard -> Page -> Graph -> Action
-
-        # 4. Verify node kinds are correct (field names)
-        kind_checks = [
-            (dashboard.pages[0].id, "pages"),
-            (dashboard.pages[0].components[0].id, "components"),
-            (dashboard.pages[0].components[0].actions[0].id, "actions"),
-        ]
-        for model_id, expected_kind in kind_checks:
-            assert dashboard._tree[model_id].kind == expected_kind
-
-        # 5. Check all nodes have valid data and correspond to real model objects
-        models_to_check = [
-            dashboard,
-            dashboard.pages[0],
-            dashboard.pages[0].components[0],
-            dashboard.pages[0].components[0].actions[0],
-        ]
-        for model in models_to_check:
-            node = dashboard._tree[model.id]
-            assert isinstance(node.data, VizroBaseModel)
-            assert hasattr(node.data, "id")
-            assert node.data is model
-
-
 class TestPreBuildTreeAddition:
-    """Test pre-build functionality."""
+    """Test adding models via pre-build."""
 
     def test_pre_build_tree_addition(self, dashboard_with_component_for_pre_build):
-        """Test pre-build functionality."""
+        """Test adding models via pre-build."""
         dashboard = Dashboard.model_validate(dashboard_with_component_for_pre_build, context={"build_tree": True})
 
         for page in dashboard.pages:
