@@ -72,7 +72,7 @@ import random
 import re
 import uuid
 from types import SimpleNamespace
-from typing import Annotated, Any, Literal, Optional, Self, Union
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, Self, Union
 
 from nutree.typed_tree import TypedTree
 from pydantic import (
@@ -92,6 +92,12 @@ from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
 rd = random.Random(0)
+
+# Forward reference setup - creates circular dependency with actions.py
+# Using TYPE_CHECKING avoids circular import at runtime, but causes forward ref issue
+if TYPE_CHECKING:
+    from vizro.models._fake_vizro.actions import ExportDataAction
+# Don't define ExportDataAction at runtime - this will cause PydanticUndefinedAnnotation
 
 
 # Written by ChatGPT
@@ -189,6 +195,7 @@ class VizroBaseModel(BaseModel):
         type_field.default = default_value
 
         # Rebuild the model to ensure Pydantic updates its schema with the new Literal type
+        # This will fail if there are unresolved forward references!
         cls.model_rebuild(force=True)
 
     @field_validator("*", mode="wrap")
@@ -338,6 +345,9 @@ def make_actions_chain(self):
 
 class Action(VizroBaseModel):
     action: str
+    # This field uses ExportDataAction - creates the forward reference issue
+    # Using string forward reference to trigger PydanticUndefinedAnnotation
+    function: Union[str, "ExportDataAction"] = "default"
 
     _parent_model: VizroBaseModel = PrivateAttr()
 
