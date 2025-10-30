@@ -61,7 +61,7 @@ Additional notes MS:
 - using SkipJsonSchema seems to be a good idea, as it cleans up the schema, which should not care about arbitrary Python extensions.
 - using type = "" is not a good idea because it will hide the default from the JSON schema, which may (although not tested)
 seriously confuse LLMs
-- if __pydantic_init_subclass__ is not causing any trouble, then this might be the better solution
+- if __pydantic_init_subclass__ is not causing any trouble, then this might be the better solution. EDIT: it is causeing trouble!!
 
 
 """
