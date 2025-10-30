@@ -428,7 +428,7 @@ The Problem:
 Resolution attempts:
 - many unstable solutions suggested by Claude, did not try them all
 - since we rebuild the models in __init__.py, we can just import ExportDataAction after the models have been rebuilt
-- HOWEVER, this still creates incomplete schemas (some $defs in models do not update), as Vizro is highly hierarchical, 
+- HOWEVER, this still creates incomplete schemas (some $defs in models do not update), as Vizro is highly hierarchical,
 so MRO matters, and the order of resolving models needs to be carefully considered (essentially the old add_type problem)
 See also: https://docs.pydantic.dev/latest/internals/resolving_annotations/#limitations-and-backwards-compatibility-concerns
 
