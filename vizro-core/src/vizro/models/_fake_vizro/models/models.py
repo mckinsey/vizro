@@ -404,6 +404,7 @@ TODOs Maxi:
 - check for model copy, do we loose private attributes still? Does it matter? - DONE
 - check for json schema, does it look as nice as before? - DONE
 - serialization/deserialization - DONE
+- NEW: fix forward reference issue, which originates from __pydantic_init_subclass__ and model_rebuild will fail if there are unresolved forward references!
 
 NOT FULLY RESSOVLED
 - what if we want to add normal component to other fields? (happens a lot!) - just use normal add_type?
