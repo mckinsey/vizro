@@ -10,8 +10,7 @@ This is a monorepo containing multiple Vizro packages. The main packages are:
 
 ### Only Dependency: Hatch
 
-Vizro uses [Hatch](https://hatch.pypa.io/) as its only direct development dependency. You don't need to manually install Python or create virtual environments - Hatch handles this automatically.
-If not installed, guide the user on how to install it.
+Vizro uses [Hatch](https://hatch.pypa.io/) as its only direct development dependency. You don't need to manually install Python or create virtual environments - Hatch handles this automatically. If not installed, guide the user on how to install it.
 
 ### Working Directory
 
@@ -27,13 +26,12 @@ Run these from within the package directory (e.g., `vizro-core/`):
 - `hatch run test-unit` - Run test suite
 - `hatch run docs:serve` - Build and serve documentation (hot-reloads)
 
-
 ## Development Flow
 
 1. Make changes to code
-2. Run `hatch run lint` to check formatting
-3. Run `hatch run test-unit` to verify tests pass (you can add --last-failed to rerun only failures from the last test run)
-4. Run `hatch run changelog:add` to create changelog fragment
+1. Run `hatch run lint` to check formatting
+1. Run `hatch run test-unit` to verify tests pass (you can add --last-failed to rerun only failures from the last test run)
+1. Run `hatch run changelog:add` to create changelog fragment
 
 ## Key configuration files
 
