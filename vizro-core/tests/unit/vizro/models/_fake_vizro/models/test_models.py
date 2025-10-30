@@ -388,7 +388,10 @@ class TestFakeVizroJSONSchema:
             "properties": {
                 "type": {"const": "card", "default": "card", "title": "Type", "type": "string"},
                 "id": {
-                    "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+                    "description": (
+                        "ID to identify model. Must be unique throughout the whole dashboard. "
+                        "When no ID is chosen, ID will be automatically generated."
+                    ),
                     "title": "Id",
                     "type": "string",
                 },
@@ -414,7 +417,14 @@ class TestFakeVizroSerialization:
             "id": "graph-id",
             "type": "graph",
             "figure": "a",
-            "actions": [{"id": "action-id", "type": "action", "action": "a (from make_actions_chain)"}],
+            "actions": [
+                {
+                    "id": "action-id",
+                    "type": "action",
+                    "action": "a (from make_actions_chain)",
+                    "function": "default",
+                }
+            ],
         }
 
     def test_serialization_without_id(self):

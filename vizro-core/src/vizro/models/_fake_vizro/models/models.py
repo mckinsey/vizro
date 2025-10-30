@@ -194,9 +194,9 @@ class VizroBaseModel(BaseModel):
         type_field.annotation = literal_type
         type_field.default = default_value
 
-        # Rebuild the model to ensure Pydantic updates its schema with the new Literal type
-        # This will fail if there are unresolved forward references!
-        cls.model_rebuild(force=True)
+        # Tried to skip model_rebuild() here as it will be called later in __init__.py after all imports complete
+        # This avoids forward reference issues since ExportDataAction will be imported by then
+        # The rebuild in __init__.py will update the schema with the Literal type, however not for all models
 
     @field_validator("*", mode="wrap")
     @classmethod
@@ -404,7 +404,7 @@ TODOs Maxi:
 - check for model copy, do we loose private attributes still? Does it matter? - DONE
 - check for json schema, does it look as nice as before? - DONE
 - serialization/deserialization - DONE
-- NEW: fix forward reference issue, which originates from __pydantic_init_subclass__ and model_rebuild will fail if there are unresolved forward references!
+- NEW: circular deps issue (see below)
 
 NOT FULLY RESSOVLED
 - what if we want to add normal component to other fields? (happens a lot!) - just use normal add_type?
@@ -413,5 +413,24 @@ NOT FULLY RESSOVLED
 - how much to we need to care about idempotency of validation? Is there a difference between pre and post
 pre-build and/or pre and post tree building?
 
+Circular dependency issue:
+-------------------
+Circular dependency: models.py ↔ actions.py
+- models.py needs ExportDataAction for type annotation
+- actions.py needs VizroBaseModel from models.py to inherit
 
+The Problem:
+- When Action class is defined, __pydantic_init_subclass__ runs
+- It calls model_rebuild(force=True)
+- Pydantic tries to evaluate Union[str, "ExportDataAction"]
+- ExportDataAction not in namespace → PydanticUndefinedAnnotation
+
+Resolution attempts:
+- many unstable solutions suggested by Claude, did not try them all
+- since we rebuild the models in __init__.py, we can just import ExportDataAction after the models have been rebuilt
+- HOWEVER, this still creates incomplete schemas (some $defs in models do not update), as Vizro is highly hierarchical, 
+so MRO matters, and the order of resolving models needs to be carefully considered (essentially the old add_type problem)
+See also: https://docs.pydantic.dev/latest/internals/resolving_annotations/#limitations-and-backwards-compatibility-concerns
+
+==> Using __pydantic_init_subclass__ is not a viable solution if we want the schema of every model to be correct.
 """

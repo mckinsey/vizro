@@ -25,5 +25,6 @@ __all__ = [
 from vizro.models._fake_vizro.actions import ExportDataAction
 
 # Rebuild all models to resolve forward references
-for model in [*__all__]:
-    globals()[model].model_rebuild()
+# Below we see that order matters, and while ExportDataAction now builds properly, not all models have a correct schema
+for model in ["ExportDataAction", *__all__]:
+    globals()[model].model_rebuild(force=True)

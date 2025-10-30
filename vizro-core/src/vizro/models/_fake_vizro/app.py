@@ -11,6 +11,7 @@ from vizro.models._fake_vizro.models import (
     ExportDataAction,
     Graph,
     Page,
+    SubComponent,
     VizroBaseModel,
 )
 
@@ -87,24 +88,21 @@ dashboard = Dashboard(
 # JSON Schema
 graph = Graph(id="graph-id", figure="a", actions=[Action(id="action-id", action="a")])
 # graph = Graph.model_validate(graph)
-print(json.dumps(graph.model_dump(), indent=2))
+# print(json.dumps(graph.model_dump(), indent=2))
+# print(json.dumps(ExportDataAction.model_json_schema(), indent=2))
+# print("=" * 100)
+# print(json.dumps(Card.model_json_schema(), indent=2))
+# print("=" * 100)
+print(json.dumps(Dashboard.model_json_schema(), indent=2))
+print("=" * 100)
+print(json.dumps(SubComponent.model_json_schema(), indent=2))
+print("=" * 100)
+ea = ExportDataAction(format="csv")
+print(json.dumps(ea.model_dump(), indent=2))
+
 
 """
-ISSUE DEMONSTRATION:
--------------------
-Circular dependency: models.py ↔ actions.py
-- models.py needs ExportDataAction for type annotation
-- actions.py needs VizroBaseModel from models.py to inherit
 
-Solution attempt: Use TYPE_CHECKING to break the cycle
-- ExportDataAction only imported under TYPE_CHECKING (not at runtime)
-- Forward reference: function: Union[str, "ExportDataAction"]
-
-The Problem:
-- When Action class is defined, __pydantic_init_subclass__ runs
-- It calls model_rebuild(force=True)
-- Pydantic tries to evaluate Union[str, "ExportDataAction"]
-- ExportDataAction not in namespace → PydanticUndefinedAnnotation
 
 Run this file to see the error:
   $ hatch run python src/vizro/models/_fake_vizro/app.py
