@@ -347,7 +347,7 @@ class Action(VizroBaseModel):
     action: str
     # This field uses ExportDataAction - creates the forward reference issue
     # Using string forward reference to trigger PydanticUndefinedAnnotation
-    function: Union[str, "ExportDataAction"] = "default"
+    function: Union[str, ExportDataAction] = "default"
 
     _parent_model: VizroBaseModel = PrivateAttr()
 
