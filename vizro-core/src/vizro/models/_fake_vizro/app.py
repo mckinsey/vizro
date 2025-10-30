@@ -3,7 +3,16 @@
 import json
 from typing import Union
 
-from vizro.models._fake_vizro.models import Action, Card, Component, Dashboard, Graph, Page, VizroBaseModel
+from vizro.models._fake_vizro.models import (
+    Action,
+    Card,
+    Component,
+    Dashboard,
+    ExportDataAction,
+    Graph,
+    Page,
+    VizroBaseModel,
+)
 
 
 class CustomPage(Page):
@@ -28,6 +37,10 @@ dashboard = Dashboard(
     pages=[
         Page(title="page_1", components=[Component(x="c1")]),
         Page(title="page_2", components=[Graph(figure="c3", actions=[Action(action="action1")])]),
+        Page(
+            title="page_3",
+            components=[Graph(figure="c3", actions=[Action(action="export", function=ExportDataAction(format="csv"))])],
+        ),
     ]
 )
 

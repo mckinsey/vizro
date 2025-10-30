@@ -289,7 +289,7 @@ DASHBOARDS_WITH_TREE = [
 ]
 
 
-class TestDashboardTreeCreation:
+class TestFakeVizroDashboardTreeCreation:
     """Test tree creation using the validator approach."""
 
     @pytest.mark.parametrize("dashboard", DASHBOARDS_WITHOUT_TREE, indirect=True)
@@ -349,7 +349,7 @@ def dashboard_with_component_for_pre_build():
     return Dashboard(pages=[Page(title="Test Page", components=[Component(x="c1")])])
 
 
-class TestPreBuildTreeAddition:
+class TestFakeVizroPreBuildTreeAddition:
     """Test that tree nodes are properly updated when models are modified during pre-build."""
 
     def test_pre_build_tree_addition(self, dashboard_with_component_for_pre_build):
@@ -377,7 +377,7 @@ class TestPreBuildTreeAddition:
             assert node.data is model
 
 
-class TestJSONSchema:
+class TestFakeVizroJSONSchema:
     """Test that the JSON schema looks as expected."""
 
     def test_json_schema_card(self):
@@ -401,7 +401,7 @@ class TestJSONSchema:
         assert schema == expected_schema
 
 
-class TestSerialization:
+class TestFakeVizroSerialization:
     """Test that the serialization works as expected.
 
     Note that we currently cannot get rid of the ID in serialization I think.
