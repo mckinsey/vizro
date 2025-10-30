@@ -405,6 +405,8 @@ TODOs Maxi:
 - check for json schema, does it look as nice as before? - DONE
 - serialization/deserialization - DONE
 - NEW: circular deps issue (see below)
+==> TOMORROW: Try and see what happens if we don't use __pydantic_init_subclass__ at all but maybe revert to concrete
+type fields.
 
 NOT FULLY RESSOVLED
 - what if we want to add normal component to other fields? (happens a lot!) - just use normal add_type?
