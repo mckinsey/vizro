@@ -47,6 +47,8 @@ class set_control(_AbstractAction):
     literal value to set `control` to.
     * [`Button`][vizro.models.Button]: triggers `set_control` when user clicks on the button. `value` specifies a
     literal value to set `control` to.
+    * [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a
+    literal value to set `control` to.
 
     Args:
         control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
@@ -101,6 +103,16 @@ class set_control(_AbstractAction):
 
         vm.Button(
             text="Click to set control to A",
+            actions=va.set_control(control="target_control", value="A"),
+        )
+        ```
+
+    Example: `Card` as trigger
+        ```python
+        import vizro.actions as va
+
+        vm.Card(
+            title="Click Card to set control to A",
             actions=va.set_control(control="target_control", value="A"),
         )
         ```

@@ -35,7 +35,7 @@ class TestFilterProxyCreate:
         result = filter_proxy(targets=["bar_chart"], column="a")
 
         assert result.model_dump(exclude={"id": True}) == expected_filter.model_dump(
-            exclude={"id": True, "selector": True, "type": True, "show_in_url": True}
+            exclude={"id": True, "selector": True, "type": True, "show_in_url": True, "visible": True}
         )
 
 

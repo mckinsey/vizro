@@ -108,7 +108,7 @@ class Button(VizroBaseModel):
         return {"__default__": f"{self.id}.n_clicks"}
 
     @staticmethod
-    def _get_value_from_trigger(value: JsonValue, *args) -> Any:
+    def _get_value_from_trigger(value: JsonValue, trigger: int) -> JsonValue:
         """Return the given `value` without modification."""
         return value
 

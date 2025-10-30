@@ -1,55 +1,126 @@
-import vizro.models as vm
+"""Dev app to try things out."""
+
 import vizro.plotly.express as px
-from dash_ag_grid import AgGrid
+import vizro.models as vm
 from vizro import Vizro
-from vizro.models.types import capture
+import vizro.actions as va
+from vizro.figures import kpi_card, kpi_card_reference
+import pandas as pd
 
-df = px.data.gapminder().query("year == 2007")
+df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
-
-@capture("ag_grid")
-def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
-    """Custom Dash AgGrid."""
-    defaults = {
-        "className": "ag-theme-quartz-dark ag-theme-vizro",
-        "defaultColDef": {
-            "resizable": True,
-            "sortable": True,
-            "filter": True,
-            "filterParams": {
-                "buttons": ["apply", "reset"],
-                "closeOnApply": True,
-            },
-            "flex": 1,
-            "minWidth": 70,
-        },
-        # "style": {"height": "100%"},
-    }
-    return AgGrid(
-        columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"), **defaults
-    )
-
+gapminder = px.data.gapminder()
 
 page = vm.Page(
-    title="Example of a custom Dash AgGrid",
+    title="Test page",
     components=[
-        vm.AgGrid(
-            id="custom_ag_grid",
-            title="Custom Dash AgGrid",
-            figure=my_custom_aggrid(
-                data_frame=df, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
-            ),
+        vm.Card(
+            text="Lorem Ipsum is simply dummy text. ",
+            header="### This is card header",
+            footer="##### This is card footer",
+            description="Tooltip",
         ),
-        vm.Text(id="time_text", text="Click the button"),
+        vm.Card(
+            header="## This is card header",
+            text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+            "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+            description="Tooltip",
+        ),
+        vm.Card(
+            text="Card with text and header and footer",
+            header="#### This is card header",
+            footer="##### This is card footer",
+            description="Tooltip",
+        ),
+        vm.Card(
+            text="### Card with just text title",
+            description="Tooltip",
+        ),
+        vm.Card(
+            text="Card without header",
+            footer="This is card footer",
+            description="Tooltip",
+        ),
+        vm.Card(
+            text="Regular card with only text: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+            description="Tooltip",
+        ),
+        vm.Graph(figure=px.bar(gapminder, x="country", y="pop", color="continent")),
+        vm.Card(
+            text="Card with action: Filter Europe",
+            actions=va.set_control(control="filter-id-1", value="Europe"),
+        ),
+        vm.Card(
+            text="Navigate to page",
+            href="/dummy-page",
+        ),
     ],
-    controls=[
-        vm.Parameter(
-            targets=["custom_ag_grid.chosen_columns"],
-            selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list()),
-        )
-    ],
+    controls=[vm.Filter(id="filter-id-1", column="continent", selector=vm.RadioItems())],
+    layout=vm.Grid(
+        grid=[
+            [0, 1, 2, 3],
+            [4, 5, 7, 8],
+            [6, 6, -1, -1],
+            [6, 6, -1, -1],
+        ]
+    ),
 )
 
-dashboard = vm.Dashboard(pages=[page])
+page_2 = vm.Page(title="Dummy page", components=[vm.Card(text="This is plain old card.")])
+
+page_3 = vm.Page(
+    title="KPI indicator cards",
+    components=[
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference (pos)",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference with icon",
+                icon="Shopping Cart",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference (reverse color)",
+                reverse_color=True,
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df_kpi,
+                value_column="Actual",
+                title="KPI with icon",
+                icon="Shopping Cart",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df_kpi,
+                value_column="Actual",
+                title="KPI with formatting",
+                value_format="${value:.2f}",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+        ),
+    ],
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5]]),
+)
+
+dashboard = vm.Dashboard(pages=[page, page_2, page_3])
+
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
