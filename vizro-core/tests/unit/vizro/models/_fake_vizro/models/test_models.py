@@ -1,6 +1,6 @@
 """Tests for fake Vizro models to verify custom component handling."""
 
-from typing import Union
+from typing import Literal, Union
 
 import pytest
 from pydantic import ValidationError
@@ -14,14 +14,14 @@ from vizro.models._fake_vizro.models import Action, Card, Component, Dashboard, 
 class CustomPage(Page):
     """Custom page that accepts int for title instead of str."""
 
-    type: str = "custom_component"
+    type: Literal["custom_component"] = "custom_component"
     title: int
 
 
 class CustomPageBase(VizroBaseModel):
     """Custom page component directly subclassing VizroBaseModel."""
 
-    type: str = "custom_component"
+    type: Literal["custom_component"] = "custom_component"
     title: int
     components: list[Union[Graph, Card]]
 
@@ -30,14 +30,14 @@ class CustomPageBase(VizroBaseModel):
 class CustomGraph(Graph):
     """Custom graph that accepts int for figure instead of str."""
 
-    type: str = "custom_component"
+    type: Literal["custom_component"] = "custom_component"
     figure: int
 
 
 class CustomGraph2(Graph):
     """Custom graph that accepts int for figure instead of str."""
 
-    type: str = "custom_component"
+    type: Literal["custom_component"] = "custom_component"
     figure: int
 
 
@@ -47,10 +47,18 @@ class CustomGraphNoType(Graph):
     figure: int
 
 
+class CustomGraphNoTypeUpwardsCompatible(Graph):
+    """Custom graph inheriting from Graph without type, but upwards compatible with Graph."""
+
+    @classmethod
+    def dummy_method(cls):
+        return "dummy"
+
+
 class CustomGraphBase(VizroBaseModel):
     """Custom graph component directly subclassing VizroBaseModel."""
 
-    type: str = "custom_component"
+    type: Literal["custom_component"] = "custom_component"
     figure: int
 
 
@@ -108,12 +116,26 @@ class TestFakeVizroCustomComponentSubclassSpecificModel:
     def test_custom_graph_no_type_in_discriminated_union_field(self):
         """Test custom component (subclass of Graph) without explicit type field fails validation.
 
-        When no type is specified, Pydantic uses the class name as the discriminator value,
-        which won't match any registered types in the union.
+        When no type is specified, Pydantic uses the class name of the parent class,
+        which will cause pydantic to validated against that parent class rather than the custom component.
         """
         custom_graph_no_type = CustomGraphNoType(figure=999, actions=[Action(action="a")])
-        with pytest.raises(ValidationError, match="Input tag 'custom_graph_no_type' found"):
+        with pytest.raises(ValidationError, match="Input should be a valid string"):
             Page(title="Test Page", components=[custom_graph_no_type])
+
+    def test_custom_graph_no_type_upwards_compatible_in_discriminated_union_field(self):
+        """Test custom component (subclass of Graph) without explicit type field but upwards compatible with Graph.
+
+        When no type is specified, Pydantic uses the type of the parent class as type,
+        which will cause pydantic to validate against that parent class rather than the custom component.
+        If the custom component is upwards compatible with the parent class, it will be validated against
+        the parent class, losing any extra functionality defined in the custom component.
+        """
+        custom_graph_no_type_upwards_compatible = CustomGraphNoTypeUpwardsCompatible(
+            figure="string", actions=[Action(action="a")]
+        )
+        page = Page(title="Test Page", components=[custom_graph_no_type_upwards_compatible])
+        assert type(page.components[0]) is Graph
 
     def test_multiple_custom_components_in_discriminated_union_field(self):
         """Test multiple custom components in discriminated union field (components)."""
@@ -156,7 +178,7 @@ class TestFakeVizroCustomComponentSubclassVizroBaseModel:
         which won't match registered union types.
         """
         custom_graph_base_no_type = CustomGraphBaseNoType(figure=999)
-        with pytest.raises(ValidationError, match="Input tag 'custom_graph_base_no_type' found"):
+        with pytest.raises(ValidationError, match="Input tag 'vizro_base_model' found"):
             Page(title="Test Page", components=[custom_graph_base_no_type])
 
 
@@ -207,7 +229,7 @@ class TestFakeVizroLiteralType:
             Graph(figure="a", type="custom_component")
 
     def test_literal_type_custom_model(self):
-        """Test understanding of Literal errors for custom models."""
+        """Test custom components with Literal type value enforce their Literal type value."""
         custom_graph = CustomGraph(figure=3, type="custom_component", actions=[Action(action="a")])
         assert custom_graph.type == "custom_component"
 
@@ -215,23 +237,26 @@ class TestFakeVizroLiteralType:
             CustomGraph(figure=3, type="graph")
 
     def test_literal_type_custom_model_no_type(self):
-        """Test understanding of Literal errors for custom models without type."""
+        """When no type is specified, Pydantic uses the type of the parent class as type."""
         custom_graph_no_type = CustomGraphNoType(figure=3, actions=[Action(action="a")])
-        assert custom_graph_no_type.type == "custom_graph_no_type"
+        assert custom_graph_no_type.type == "graph"
         with pytest.raises(ValidationError):
-            CustomGraphNoType(figure=3, type="graph")
+            CustomGraphNoType(figure=3, type="custom_component")
 
     def test_literal_type_custom_model_base(self):
-        """Test understanding of Literal errors for custom model bases."""
+        """Test custom model bases with Literal type value enforce their Literal type value."""
         custom_graph_base = CustomGraphBase(figure=3)
         assert custom_graph_base.type == "custom_component"
         with pytest.raises(ValidationError):
             CustomGraphBase(figure=3, type="graph")
 
     def test_literal_type_custom_model_base_no_type(self):
-        """Test understanding of Literal errors for custom model bases without type."""
+        """When no type is specified, Pydantic uses the type of the parent class as type.
+
+        This model cannot be used anywhere in Vizro though, because it has no valid or custom_component type.
+        """
         custom_graph_base_no_type = CustomGraphBaseNoType(figure=3)
-        assert custom_graph_base_no_type.type == "custom_graph_base_no_type"
+        assert custom_graph_base_no_type.type == "vizro_base_model"
         with pytest.raises(ValidationError):
             CustomGraphBaseNoType(figure=3, type="graph")
 
@@ -299,7 +324,10 @@ class TestFakeVizroDashboardTreeCreation:
 
     @pytest.mark.parametrize("dashboard_with_tree", DASHBOARDS_WITH_TREE, indirect=True)
     def test_tree_creation_triggered(self, dashboard_with_tree):
-        """Test tree creation is triggered when build_tree context is provided."""
+        """Test tree creation is triggered when build_tree context is provided.
+
+        This test checks for a number of facts about the tree.
+        """
         assert dashboard_with_tree._tree is not None
 
         # 0. Check tree reference is shared across all models in the hierarchy
@@ -399,6 +427,43 @@ class TestFakeVizroJSONSchema:
             },
             "required": ["text"],
             "title": "Card",
+            "type": "object",
+        }
+        assert schema == expected_schema
+
+    def test_json_schema_page(self):
+        """Test that the JSON schema for Page looks as expected, particular for the type field and the discriminated union field."""
+        schema = Page.model_json_schema()
+        # Remove all $defs before comparison
+        if "$defs" in schema:
+            schema.pop("$defs")
+        expected_schema = {
+            "additionalProperties": False,
+            "properties": {
+                "type": {"const": "page", "default": "page", "title": "Type", "type": "string"},
+                "id": {
+                    "description": (
+                        "ID to identify model. Must be unique throughout the whole dashboard. "
+                        "When no ID is chosen, ID will be automatically generated."
+                    ),
+                    "title": "Id",
+                    "type": "string",
+                },
+                "title": {"title": "Title", "type": "string"},
+                "components": {
+                    "items": {
+                        "oneOf": [
+                            {"$ref": "#/$defs/Graph"},
+                            {"$ref": "#/$defs/Card"},
+                            {"$ref": "#/$defs/Component"},
+                        ],
+                    },
+                    "title": "Components",
+                    "type": "array",
+                },
+            },
+            "required": ["title", "components"],
+            "title": "Page",
             "type": "object",
         }
         assert schema == expected_schema

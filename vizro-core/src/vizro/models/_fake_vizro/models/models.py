@@ -87,7 +87,6 @@ from pydantic import (
     field_validator,
     model_validator,
 )
-from pydantic.fields import FieldInfo
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
@@ -141,10 +140,9 @@ def make_discriminated_union(*args):
 
 
 class VizroBaseModel(BaseModel):
-    # Need to define some type here so that it's possible to use Graph from yaml without raising an error that
-    # type is unexpected extra argument (unless we relax to extra="allow"). It exists on all models but we never need
-    # to explicitly define it for any models. For dashboard configuration it's only ever specified in YAML config.
-    type: str = Field(default="")
+    # Default type for base model. Subclasses should override with their specific Literal type.
+    # Custom components should set type: str = "custom_component" or type: Literal["custom_component"] = "custom_component"
+    type: Literal["vizro_base_model"] = Field(default="vizro_base_model")
     model_config = ConfigDict(
         extra="forbid",  # Good for spotting user typos and being strict.
         validate_assignment=True,  # Run validators when a field is assigned after model instantiation.
@@ -161,42 +159,6 @@ class VizroBaseModel(BaseModel):
         ),
     ]
     _tree: Optional[TypedTree] = PrivateAttr(None)  # initialised in model_after
-
-    @classmethod
-    def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
-        """Automatically set the type field as a Literal with the snake_case class name for each subclass.
-
-        This is called by Pydantic after basic class initialization, ensuring model_fields is available.
-        If the user has explicitly set type="custom_component", that choice is respected.
-        """
-        super().__pydantic_init_subclass__(**kwargs)
-
-        # Get the snake_case class name
-        class_name = camel_to_snake(cls.__name__)
-
-        # Get the type field
-        type_field: FieldInfo = cls.model_fields["type"]
-        # Check if defined as custom component - this would apply to non-Literal types, but I think that's ok
-        is_custom_component = type_field.default == "custom_component"
-
-        if not is_custom_component:
-            default_value = class_name
-        else:
-            default_value = "custom_component"
-
-        # Create literal type based on the default value - overwrite given type here!
-        literal_type = Literal[default_value]
-
-        # Update the type annotation in the class
-        cls.__annotations__["type"] = literal_type
-
-        # Update the field info with the new annotation and default
-        type_field.annotation = literal_type
-        type_field.default = default_value
-
-        # Tried to skip model_rebuild() here as it will be called later in __init__.py after all imports complete
-        # This avoids forward reference issues since ExportDataAction will be imported by then
-        # The rebuild in __init__.py will update the schema with the Literal type, however not for all models
 
     @field_validator("*", mode="wrap")
     @classmethod
@@ -344,6 +306,7 @@ def make_actions_chain(self):
 
 
 class Action(VizroBaseModel):
+    type: Literal["action"] = "action"
     action: str
     # This field uses ExportDataAction - creates the forward reference issue
     # Using string forward reference to trigger PydanticUndefinedAnnotation
@@ -353,6 +316,7 @@ class Action(VizroBaseModel):
 
 
 class Graph(VizroBaseModel):
+    type: Literal["graph"] = "graph"
     figure: str
     actions: Optional[list[Action]]
 
@@ -362,18 +326,22 @@ class Graph(VizroBaseModel):
 
 
 class Card(VizroBaseModel):
+    type: Literal["card"] = "card"
     text: str
 
 
 class SubComponent(VizroBaseModel):
+    type: Literal["sub_component"] = "sub_component"
     y: str = "subcomponent"
 
 
 class Component(VizroBaseModel):
+    type: Literal["component"] = "component"
     x: Union[str, list[SubComponent]]
 
 
 class Page(VizroBaseModel):
+    type: Literal["page"] = "page"
     title: str
     # Example of field where there's multiple options so it's already a real discriminated union.
     components: list[make_discriminated_union(Graph, Card, Component)]
@@ -391,6 +359,7 @@ class Page(VizroBaseModel):
 
 
 class Dashboard(VizroBaseModel):
+    type: Literal["dashboard"] = "dashboard"
     # Example of field where there's really only one option that's built-in but we need to make it a discriminated union.
     # This will make automated API docstrings much worse but we can explain it somewhere...
     pages: list[make_discriminated_union(Page)]
@@ -404,12 +373,12 @@ TODOs Maxi:
 - check for model copy, do we loose private attributes still? Does it matter? - DONE
 - check for json schema, does it look as nice as before? - DONE
 - serialization/deserialization - DONE
-- NEW: circular deps issue (see below)
-==> TOMORROW: Try and see what happens if we don't use __pydantic_init_subclass__ at all but maybe revert to concrete
-type fields.
+- NEW: circular deps issue (see below) - DONE
 
 NOT FULLY RESSOVLED
 - what if we want to add normal component to other fields? (happens a lot!) - just use normal add_type?
+==> This may run into the usual revalidate_instances problems! We may need to good schema modification function
+==> after all!!
 - check if pre-build needs to overwrite/delete models
 - check if we ever need to add sub models in pre-build, so far it only works for single model
 - how much to we need to care about idempotency of validation? Is there a difference between pre and post
@@ -435,4 +404,5 @@ so MRO matters, and the order of resolving models needs to be carefully consider
 See also: https://docs.pydantic.dev/latest/internals/resolving_annotations/#limitations-and-backwards-compatibility-concerns
 
 ==> Using __pydantic_init_subclass__ is not a viable solution if we want the schema of every model to be correct.
+==> SOLUTION: remove __pydantic_init_subclass__ and use the new (old) system where we explicitly define types.
 """
