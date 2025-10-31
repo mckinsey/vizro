@@ -31,7 +31,6 @@ class NavLink(VizroBaseModel):
     type: Literal["nav_link"] = "nav_link"
     pages: Annotated[
         NavPagesType,
-        # AfterValidator(_validate_pages),
         Field(default=[]),
     ]
     label: str = Field(description="Text description of the icon for use in tooltip.")
@@ -46,6 +45,8 @@ class NavLink(VizroBaseModel):
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
+        # TODO[MS]: Check validate pages properly
+        self.pages = _validate_pages(self.pages)
         self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
 
     @_log_call

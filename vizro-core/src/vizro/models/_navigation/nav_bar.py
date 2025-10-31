@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import BeforeValidator, Field
 
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
@@ -38,7 +38,6 @@ class NavBar(VizroBaseModel):
     type: Literal["nav_bar"] = "nav_bar"
     pages: Annotated[
         dict[str, list[ModelID]],
-        # AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
@@ -48,6 +47,8 @@ class NavBar(VizroBaseModel):
     def pre_build(self):
         from vizro.models import Page
 
+        # TODO[MS]: we may need to validate pages here?
+        # self.pages = _validate_pages(self.pages)
         self.items = self.items or [
             NavLink(
                 # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,

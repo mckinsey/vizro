@@ -8,7 +8,7 @@ from pydantic import Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _NavBuildType
+from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType, NavSelectorType
 
@@ -29,15 +29,16 @@ class Navigation(VizroBaseModel):
     type: Literal["navigation"] = "navigation"
     pages: Annotated[
         NavPagesType,
-        #  AfterValidator(_validate_pages),
         Field(default=[]),
-    ]  #
+    ]
     nav_selector: Optional[NavSelectorType] = None
 
     @_log_call
     def pre_build(self):
+        # TODO[MS]: Check validate pages properly
+        self.pages = _validate_pages(self.pages)
         # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
-        # here. Note that not all nav_selectors have pre_build (Accordion does not).
+        # here.
         self.nav_selector = self.nav_selector or Accordion()
         self.nav_selector.pages = self.nav_selector.pages or self.pages
         if hasattr(self.nav_selector, "pre_build"):
