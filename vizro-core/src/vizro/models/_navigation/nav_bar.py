@@ -38,7 +38,7 @@ class NavBar(VizroBaseModel):
     type: Literal["nav_bar"] = "nav_bar"
     pages: Annotated[
         dict[str, list[ModelID]],
-        AfterValidator(_validate_pages),
+        # AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]

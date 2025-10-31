@@ -995,7 +995,7 @@ custom_tables = vm.Page(
 class TooltipNonCrossRangeSlider(vm.RangeSlider):
     """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
 
-    type: Literal["other_range_slider"] = "other_range_slider"
+    type: Literal["custom_component"] = "custom_component"
 
     def build(self):
         """Extend existing component by calling the super build and update properties."""
@@ -1005,14 +1005,14 @@ class TooltipNonCrossRangeSlider(vm.RangeSlider):
         return range_slider_build_obj
 
 
-vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
+# vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
 
 
 # 2. Create new custom component
 class Jumbotron(vm.VizroBaseModel):
     """New custom component `Jumbotron`."""
 
-    type: Literal["jumbotron"] = "jumbotron"
+    type: Literal["custom_component"] = "custom_component"
     title: str
     subtitle: str
     text: str
@@ -1022,7 +1022,7 @@ class Jumbotron(vm.VizroBaseModel):
         return html.Div([html.H2(self.title), html.H3(self.subtitle), html.P(self.text)])
 
 
-vm.Page.add_type("components", Jumbotron)
+# vm.Page.add_type("components", Jumbotron)
 
 custom_components = vm.Page(
     title="Custom Components",
