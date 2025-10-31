@@ -9,7 +9,7 @@ from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._base import make_discriminated_union
+from vizro.models.types import make_discriminated_union
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,

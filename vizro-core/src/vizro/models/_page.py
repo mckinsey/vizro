@@ -19,7 +19,6 @@ from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
-from vizro.models._base import make_discriminated_union
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,
@@ -29,7 +28,7 @@ from vizro.models._models_utils import (
     make_actions_chain,
     warn_description_without_title,
 )
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty, make_discriminated_union
 
 from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip

@@ -16,7 +16,7 @@ from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._base import make_discriminated_union
+from vizro.models.types import make_discriminated_union
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import (
     _log_call,

@@ -36,6 +36,22 @@ else:
     from typing_extensions import TypeAlias
 
 
+def camel_to_snake(name: str) -> str:
+    """Convert camelCase to snake_case.
+
+    Args:
+        name: CamelCase string to convert
+
+    Returns:
+        snake_case string
+    """
+    import re
+
+    # Add underscores before uppercase letters, then lowercase everything
+    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
+
+
 def _get_layout_discriminator(layout: Any) -> Optional[str]:
     """Helper function for callable discriminator used for LayoutType."""
     # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
@@ -82,24 +98,68 @@ def _get_action_discriminator(action: Any) -> Optional[str]:
     return getattr(action, "type", None)
 
 
-def _get_type_discriminator(model: Any) -> Optional[str]:
-    """Generic helper function for callable discriminators that extract the 'type' field.
+def _get_type_discriminator(model: Any, builtin_tags: Optional[list[str]] = None) -> Optional[str]:
+    """Shared discriminator function for extracting the 'type' field from models or dicts.
 
-    Used for SelectorType, _FormComponentType, ControlType, ComponentType, and NavSelectorType.
-    Equivalent to the discriminator function in make_discriminated_union, but for multi-type unions
-    (no single-type coercion logic needed).
-    Unlike _get_layout_discriminator and _get_action_discriminator, this function does not handle
-    legacy cases or provide defaults - it simply extracts the type field or attribute.
+    Used by both make_discriminated_union (for single-type and multi-type unions) and
+    multi-type unions in types.py (ComponentType, SelectorType, ControlType, etc.).
+
+    Args:
+        model: Model instance, dict, or other object to extract type from
+        builtin_tags: Optional list of builtin tags. If provided and length is 1,
+            enables single-type coercion (returns the tag even if type is not specified).
+
+    Returns:
+        The type string or None if not found
     """
     if isinstance(model, dict):
-        # For multi-type unions, type must be specified
-        return model.get("type", None)
+        # YAML configuration where no custom type possible
+        if builtin_tags is not None and len(builtin_tags) == 1:
+            # Fake discriminated union where there's only one option.
+            # Coerce to that model (could raise error if type specified and doesn't match if we wanted to, doesn't
+            # really matter)
+            return builtin_tags[0]
+        else:
+            # Real discriminated union case need a type to be specified
+            # If it's not specified then return None which will raise a pydantic discriminated union error
+            return model.get("type", None)
     elif hasattr(model, "type") and hasattr(model, "id"):
-        # Check for VizroBaseModel instance (same check as make_discriminated_union)
+        # Find tag of supplied model (check for VizroBaseModel instance).
         return model.type
     else:
-        # For unexpected cases, raise error to match make_discriminated_union behavior
         raise ValueError("something")
+
+
+# Helper function wrapper for multi-type unions that don't need single-type coercion
+def _get_multi_type_discriminator(model: Any) -> Optional[str]:
+    """Wrapper for _get_type_discriminator for multi-type unions.
+
+    Used for SelectorType, _FormComponentType, ControlType, ComponentType, and NavSelectorType.
+    Passes None for builtin_tags to disable single-type coercion.
+    """
+    return _get_type_discriminator(model, builtin_tags=None)
+
+
+def make_discriminated_union(*args):
+    """Build discriminated union out of types in args.
+
+    Tags are just the snake case version of the class names.
+    Tag "custom_component" must validate as Any to keep its custom class.
+
+    Args:
+        *args: Types to include in the discriminated union
+
+    Returns:
+        Annotated union with discriminator field
+    """
+    builtin_tags = [camel_to_snake(T.__name__) for T in args]
+    types = [Annotated[T, Tag(builtin_tag)] for T, builtin_tag in zip(args, builtin_tags)]
+    types.append(SkipJsonSchema[Annotated[Any, Tag("custom_component")]])
+
+    def discriminator(model):
+        return _get_type_discriminator(model, builtin_tags)
+
+    return Annotated[Union[tuple(types)], Field(discriminator=Discriminator(discriminator))]
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -690,7 +750,7 @@ SelectorType = Annotated[
         SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     ],
     Field(
-        discriminator=Discriminator(_get_type_discriminator),
+        discriminator=Discriminator(_get_multi_type_discriminator),
         description="Selectors to be used inside a control.",
     ),
 ]
@@ -706,7 +766,7 @@ _FormComponentType = Annotated[
         SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     ],
     Field(
-        discriminator=Discriminator(_get_type_discriminator),
+        discriminator=Discriminator(_get_multi_type_discriminator),
         description="Components that can be used to receive user input within a form.",
     ),
 ]
@@ -718,7 +778,7 @@ ControlType = Annotated[
         SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     ],
     Field(
-        discriminator=Discriminator(_get_type_discriminator),
+        discriminator=Discriminator(_get_multi_type_discriminator),
         description="Control that affects components on the page.",
     ),
 ]
@@ -739,7 +799,7 @@ ComponentType = Annotated[
         SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     ],
     Field(
-        discriminator=Discriminator(_get_type_discriminator),
+        discriminator=Discriminator(_get_multi_type_discriminator),
         description="Component that makes up part of the layout on the page.",
     ),
 ]
@@ -761,7 +821,7 @@ NavSelectorType = Annotated[
         SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     ],
     Field(
-        discriminator=Discriminator(_get_type_discriminator),
+        discriminator=Discriminator(_get_multi_type_discriminator),
         description="Component for rendering navigation.",
     ),
 ]

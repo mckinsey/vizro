@@ -221,57 +221,6 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
-def camel_to_snake(name: str) -> str:
-    """Convert camelCase to snake_case.
-
-    Args:
-        name: CamelCase string to convert
-
-    Returns:
-        snake_case string
-    """
-    # Add underscores before uppercase letters, then lowercase everything
-    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
-
-
-def make_discriminated_union(*args):
-    """Build discriminated union out of types in args.
-
-    Tags are just the snake case version of the class names.
-    Tag "custom_component" must validate as Any to keep its custom class.
-
-    Args:
-        *args: Types to include in the discriminated union
-
-    Returns:
-        Annotated union with discriminator field
-    """
-    builtin_tags = [camel_to_snake(T.__name__) for T in args]
-    types = [Annotated[T, Tag(builtin_tag)] for T, builtin_tag in zip(args, builtin_tags)]
-    types.append(SkipJsonSchema[Annotated[Any, Tag("custom_component")]])
-
-    def discriminator(model):
-        if isinstance(model, dict):
-            # YAML configuration where no custom type possible
-            if len(builtin_tags) == 1:
-                # Fake discriminated union where there's only one option.
-                # Coerce to that model (could raise error if type specified and doesn't match if we wanted to, doesn't
-                # really matter)
-                return builtin_tags[0]
-            else:
-                # Real discriminated union case need a type to be specified
-                # If it's not specified then return None which wil raise a pydantic discriminated union error
-                return model.get("type", None)
-        elif hasattr(model, "type") and hasattr(model, "id"):
-            # Find tag of supplied model (check for VizroBaseModel instance).
-            return model.type
-        else:
-            raise ValueError("something")
-
-    return Annotated[Union[tuple(types)], Field(discriminator=Discriminator(discriminator))]
-
-
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 

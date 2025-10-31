@@ -11,7 +11,7 @@ from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_mod
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._base import make_discriminated_union
+from vizro.models.types import make_discriminated_union
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import (
     _log_call,
