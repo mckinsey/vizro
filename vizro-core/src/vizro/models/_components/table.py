@@ -11,6 +11,7 @@ from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_mod
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
+from vizro.models._base import make_discriminated_union
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import (
     _log_call,
@@ -66,7 +67,7 @@ class Table(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Optional[make_discriminated_union(Tooltip)],
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

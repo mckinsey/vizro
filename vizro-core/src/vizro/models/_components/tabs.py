@@ -7,6 +7,7 @@ from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
 
 from vizro.models import Tooltip, VizroBaseModel
+from vizro.models._base import make_discriminated_union
 from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import _IdProperty
@@ -41,7 +42,7 @@ class Tabs(VizroBaseModel):
     tabs: conlist(Annotated[Container, AfterValidator(validate_tab_has_title)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(default="", description="Title displayed above Tabs.")
     description: Annotated[
-        Optional[Tooltip],
+        Optional[make_discriminated_union(Tooltip)],
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

@@ -6,6 +6,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
+from vizro.models._base import make_discriminated_union
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
     validate_options_dict,
@@ -50,7 +51,7 @@ class RadioItems(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Optional[make_discriminated_union(Tooltip)],
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,

@@ -107,13 +107,15 @@ class Dashboard(VizroBaseModel):
         default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
     navigation: Annotated[
-        Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
+        Optional[make_discriminated_union(Navigation)],
+        AfterValidator(set_navigation_pages),
+        Field(default=None, validate_default=True),
     ]
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Optional[make_discriminated_union(Tooltip)],
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

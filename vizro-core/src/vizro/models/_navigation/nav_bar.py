@@ -8,6 +8,7 @@ from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
+from vizro.models._base import make_discriminated_union
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.nav_link import NavLink
@@ -42,7 +43,7 @@ class NavBar(VizroBaseModel):
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
-    items: list[NavLink] = []
+    items: list[make_discriminated_union(NavLink)] = []
 
     @_log_call
     def pre_build(self):
