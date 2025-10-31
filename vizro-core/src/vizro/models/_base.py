@@ -7,7 +7,7 @@ import re
 import textwrap
 import uuid
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, Self, Union, cast, get_args, get_origin
+from typing import Annotated, Any, Literal, Optional, Self, Union, cast, get_args, get_origin
 
 import autoflake
 import black
