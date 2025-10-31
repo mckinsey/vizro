@@ -8,7 +8,6 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, Strict
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models.types import make_discriminated_union
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
     validate_options_dict,
@@ -22,6 +21,7 @@ from vizro.models.types import (
     OptionsType,
     SingleValueType,
     _IdProperty,
+    make_discriminated_union,
 )
 
 

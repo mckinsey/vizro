@@ -6,7 +6,6 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models.types import make_discriminated_union
 from vizro.models._components.form._form_utils import (
     set_default_marks,
     validate_max,
@@ -19,7 +18,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty, make_discriminated_union
 
 
 class Slider(VizroBaseModel):

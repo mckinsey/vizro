@@ -5,10 +5,9 @@ from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models.types import make_discriminated_union
 from vizro.models._models_utils import _log_call, warn_description_without_title
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty, make_discriminated_union
 
 
 class TextArea(VizroBaseModel):

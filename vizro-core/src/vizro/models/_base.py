@@ -3,7 +3,6 @@ from __future__ import annotations
 import inspect
 import logging
 import random
-import re
 import textwrap
 import uuid
 from types import SimpleNamespace
@@ -15,20 +14,17 @@ from nutree.typed_tree import TypedTree
 from pydantic import (
     BaseModel,
     ConfigDict,
-    Discriminator,
     Field,
     ModelWrapValidatorHandler,
     PrivateAttr,
     SerializationInfo,
     SerializerFunctionWrapHandler,
-    Tag,
     ValidatorFunctionWrapHandler,
     field_validator,
     model_serializer,
     model_validator,
 )
 from pydantic.fields import FieldInfo
-from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
 from vizro.managers import model_manager

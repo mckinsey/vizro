@@ -6,7 +6,6 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models.types import make_discriminated_union
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
     validate_options_dict,
@@ -14,7 +13,7 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, OptionsType, SingleValueType, _IdProperty
+from vizro.models.types import ActionsType, OptionsType, SingleValueType, _IdProperty, make_discriminated_union
 
 
 class RadioItems(VizroBaseModel):

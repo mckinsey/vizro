@@ -8,11 +8,10 @@ from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
-from vizro.models.types import make_discriminated_union
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.nav_link import NavLink
-from vizro.models.types import ModelID
+from vizro.models.types import ModelID, make_discriminated_union
 
 
 def coerce_pages_type(pages: Any) -> Any:

@@ -16,7 +16,6 @@ from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models.types import make_discriminated_union
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import (
     _log_call,
@@ -24,7 +23,14 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, ModelID, _IdProperty, validate_captured_callable
+from vizro.models.types import (
+    ActionsType,
+    CapturedCallable,
+    ModelID,
+    _IdProperty,
+    make_discriminated_union,
+    validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
