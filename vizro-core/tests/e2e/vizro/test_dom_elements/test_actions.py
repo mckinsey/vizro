@@ -6,9 +6,10 @@ from e2e.vizro.checkers import (
     check_selected_categorical_component,
     check_selected_dropdown,
 )
-from e2e.vizro.navigation import accordion_select, page_select
+from e2e.vizro.navigation import accordion_select, hover_over_element_by_css_selector_selenium, page_select
 from e2e.vizro.paths import (
     button_id_path,
+    categorical_components_value_path,
     dropdown_arrow_path,
     graph_axis_value_path,
     page_title_path,
@@ -256,3 +257,76 @@ def test_drill_down_graph(dash_br):
     )
     # check that graph title changed to 'versicolor'
     dash_br.wait_for_text_to_equal(".gtitle", "Graph shows `versicolor` species.")
+
+
+def test_action_properties_shortcut_title_description_header_footer(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.ACTION_PROPERTIES_SHORTCUT_TITLE_DESCRIPTION_HEADER_FOOTER_PAGE,
+    )
+    # click button which is changing title, description, header and footer for the graph and ag_grid
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ACTION_SHORTCUT_TRIGGER_BUTTON_ID), 1)
+    # check that title for the graph and ag_grid were changed
+    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_title", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title", "Button clicked 1 times.")
+    # check that header for the graph and ag_grid were changed
+    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_header p", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_header p", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title", "Button clicked 1 times.")
+    # check that footer for the graph and ag_grid were changed
+    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_footer p", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_footer p", "Button clicked 1 times.")
+    # check that description for the graph and ag_grid were changed
+    # hover over info icon and wait for the tooltip appear for graph
+    hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_title + span")
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", "Button clicked 1 times.")
+    # hover over info icon and wait for the tooltip appear for ag_grid
+    hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title + span")
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", "Button clicked 1 times.")
+
+
+def test_ag_grid_underlying_id_shortcuts(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.AG_GRID_UNDERLYING_ID_SHORTCUTS_PAGE,
+    )
+    # check if column 'Sepal_length' is available
+    dash_br.wait_for_element(f"div[id='{cnst.AG_GRID_SHORTCUTS_ID}'] div:nth-of-type(1) div[col-id='sepal_length']")
+
+    # click on 'Sepal_length = 4.9'
+    dash_br.multiple_click(
+        f"div[id='{cnst.AG_GRID_SHORTCUTS_ID}'] div[class='ag-center-cols-container'] "
+        f"div:nth-of-type(2) div[col-id='sepal_length']",
+        1,
+    )
+    # check value in Card
+    dash_br.wait_for_text_to_equal(
+        f"#{cnst.CARD_SHORTCUTS_ID} a",
+        "{'sepal_length': 4.9, 'sepal_width': 3, 'petal_length': 1.4, 'petal_width': 0.2, "
+        "'species': 'setosa', 'species_id': 1, 'date_column': '2024-01-02', 'number_column': 1, 'is_setosa': True}",
+    )
+
+
+def test_default_property_controls(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.ACTIONS_DEFAULT_PROPERTY_CONTROLS_PAGE,
+    )
+    # choose 'petal_length' for filter
+    dash_br.multiple_click(
+        categorical_components_value_path(elem_id=cnst.FILTER_DEFAULT_PROPERTY_CONTROLS, value=2), 1, delay=0.1
+    )
+    # check that 'petal_length' was chosen for parameter
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.PARAMETER_DEFAULT_PROPERTY_CONTROLS,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "sepal_length"},
+            {"value": 2, "selected": True, "value_name": "petal_length"},
+        ],
+    )
+    # check that graph 'x' axis changed to 'petal_length'
+    dash_br.wait_for_element('text[class="xtitle"][data-unformatted="petal_length"]')

@@ -1,4 +1,9 @@
 import e2e.vizro.constants as cnst
+from pages.actions_properties_shortcut_page import (
+    actions_default_property_controls_page,
+    ag_grid_underlying_id_shortcuts_page,
+    figures_title_header_footer_page,
+)
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
 from pages.collapsible_containers_pages import collapsible_containers_flex, collapsible_containers_grid
@@ -96,6 +101,9 @@ dashboard = vm.Dashboard(
         drill_through_parameter_graph_target_page,
         drill_through_filter_ag_grid_source_page,
         drill_through_filter_ag_grid_target_page,
+        figures_title_header_footer_page,
+        ag_grid_underlying_id_shortcuts_page,
+        actions_default_property_controls_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -152,6 +160,9 @@ dashboard = vm.Dashboard(
                 cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
                 cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
                 cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
+                cnst.ACTION_PROPERTIES_SHORTCUT_TITLE_DESCRIPTION_HEADER_FOOTER_PAGE,
+                cnst.AG_GRID_UNDERLYING_ID_SHORTCUTS_PAGE,
+                cnst.ACTIONS_DEFAULT_PROPERTY_CONTROLS_PAGE,
             ],
         }
     ),
