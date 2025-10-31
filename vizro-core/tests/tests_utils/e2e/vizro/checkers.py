@@ -135,7 +135,7 @@ def check_selected_categorical_component(
     if checklist:
         select_all = driver.find_element(select_all_path(elem_id=component_id))
         assert_that(select_all.is_selected(), equal_to(select_all_status))
-    values = driver.find_elements(f"div[id='{component_id}'] div[class='form-check']")
+    values = driver.find_elements(f"div[id='{component_id}'] div[class^='form-check']")
     assert_that(len(values), equal_to(len(options_value_status)))
     for option in options_value_status:
         driver.wait_for_text_to_equal(
