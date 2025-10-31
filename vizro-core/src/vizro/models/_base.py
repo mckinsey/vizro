@@ -1,21 +1,35 @@
+from __future__ import annotations
+
 import inspect
 import logging
 import random
+import re
 import textwrap
 import uuid
-from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
+from types import SimpleNamespace
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, Self, Union, cast, get_args, get_origin
 
 import autoflake
 import black
+from nutree.typed_tree import TypedTree
 from pydantic import (
     BaseModel,
     ConfigDict,
+    Discriminator,
     Field,
+    ModelWrapValidatorHandler,
+    PrivateAttr,
     SerializationInfo,
     SerializerFunctionWrapHandler,
+    Tag,
+    ValidatorFunctionWrapHandler,
+    field_validator,
     model_serializer,
+    model_validator,
 )
 from pydantic.fields import FieldInfo
+from pydantic.json_schema import SkipJsonSchema
+from pydantic_core.core_schema import ValidationInfo
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
@@ -207,6 +221,57 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
+def camel_to_snake(name: str) -> str:
+    """Convert camelCase to snake_case.
+
+    Args:
+        name: CamelCase string to convert
+
+    Returns:
+        snake_case string
+    """
+    # Add underscores before uppercase letters, then lowercase everything
+    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
+
+
+def make_discriminated_union(*args):
+    """Build discriminated union out of types in args.
+
+    Tags are just the snake case version of the class names.
+    Tag "custom_component" must validate as Any to keep its custom class.
+
+    Args:
+        *args: Types to include in the discriminated union
+
+    Returns:
+        Annotated union with discriminator field
+    """
+    builtin_tags = [camel_to_snake(T.__name__) for T in args]
+    types = [Annotated[T, Tag(builtin_tag)] for T, builtin_tag in zip(args, builtin_tags)]
+    types.append(SkipJsonSchema[Annotated[Any, Tag("custom_component")]])
+
+    def discriminator(model):
+        if isinstance(model, dict):
+            # YAML configuration where no custom type possible
+            if len(builtin_tags) == 1:
+                # Fake discriminated union where there's only one option.
+                # Coerce to that model (could raise error if type specified and doesn't match if we wanted to, doesn't
+                # really matter)
+                return builtin_tags[0]
+            else:
+                # Real discriminated union case need a type to be specified
+                # If it's not specified then return None which wil raise a pydantic discriminated union error
+                return model.get("type", None)
+        elif hasattr(model, "type") and hasattr(model, "id"):
+            # Find tag of supplied model (check for VizroBaseModel instance).
+            return model.type
+        else:
+            raise ValueError("something")
+
+    return Annotated[Union[tuple(types)], Field(discriminator=Discriminator(discriminator))]
+
+
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
@@ -216,8 +281,15 @@ class VizroBaseModel(BaseModel):
     Args:
         id (ModelID): ID to identify model. Must be unique throughout the whole dashboard.
             When no ID is chosen, ID will be automatically generated.
+        type: Type identifier for the model. Defaults to "vizro_base_model" for the base class.
+            Subclasses should override with their specific Literal type.
+            Custom components should set type: str = "custom_component" or type: Literal["custom_component"] = "custom_component"
 
     """
+
+    # Default type for base model. Subclasses should override with their specific Literal type.
+    # Custom components should set type: str = "custom_component" or type: Literal["custom_component"] = "custom_component"
+    type: Literal["vizro_base_model"] = Field(default="vizro_base_model")
 
     id: Annotated[
         ModelID,
@@ -228,10 +300,138 @@ class VizroBaseModel(BaseModel):
             validate_default=True,
         ),
     ]
+    _tree: Optional[TypedTree] = PrivateAttr(None)  # initialised in model_after
 
     @_log_call
     def model_post_init(self, context: Any) -> None:
         model_manager[self.id] = self
+
+    @field_validator("*", mode="wrap")
+    @classmethod
+    def build_tree_field_wrap(
+        cls,
+        value: Any,
+        handler: ValidatorFunctionWrapHandler,
+        info: ValidationInfo,
+    ) -> Any:
+        if info.context is not None and "build_tree" in info.context:
+            #### Field stack ####
+            if "id_stack" not in info.context:
+                info.context["id_stack"] = []
+            if "field_stack" not in info.context:
+                info.context["field_stack"] = []
+            if info.field_name == "id":
+                info.context["id_stack"].append(value)
+            else:
+                info.context["id_stack"].append(info.data.get("id", "no id"))
+            info.context["field_stack"].append(info.field_name)
+
+        #### Validation ####
+        validated_stuff = handler(value)
+
+        if info.context is not None and "build_tree" in info.context:
+            #### Field stack ####
+            info.context["id_stack"].pop()
+            info.context["field_stack"].pop()
+        return validated_stuff
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def build_tree_model_wrap(cls, data: Any, handler: ModelWrapValidatorHandler[Self], info: ValidationInfo) -> Self:
+        #### ID ####
+        model_id = "UNKNOWN_ID"
+        if isinstance(data, dict):
+            if "id" not in data or data["id"] is None:
+                model_id = str(uuid.uuid4())
+                data["id"] = model_id
+            elif isinstance(data["id"], str):
+                model_id = data["id"]
+        elif hasattr(data, "id"):
+            model_id = data.id
+        else:
+            print("GRANDE PROBLEMA!!!")
+
+        if info.context is not None and "build_tree" in info.context:
+            #### Level and indentation ####
+            if "level" not in info.context:
+                info.context["level"] = 0
+            indent = info.context["level"] * " " * 4
+            info.context["level"] += 1
+
+            #### Tree ####
+            print(
+                f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'} with model id {model_id}"
+            )
+
+            if "parent_model" in info.context:
+                info.context["tree"] = info.context["parent_model"]._tree
+                tree = info.context["tree"]
+                tree[info.context["parent_model"].id].add(
+                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                )
+            elif "tree" not in info.context:
+                tree = TypedTree("Root", calc_data_id=lambda tree, data: data.id)
+                tree.add(SimpleNamespace(id=model_id), kind="dashboard")  # make this more general
+                info.context["tree"] = tree
+            else:
+                tree = info.context["tree"]
+                # in words: add a node as children to the parent (so id one higher up), but add as kind
+                # the field in which you currently are
+                # ID STACK and FIELD STACK are different "levels" of the tree.
+                tree[info.context["id_stack"][-1]].add(
+                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                )
+
+        #### Validation ####
+        validated_stuff = handler(data)
+
+        if info.context is not None and "build_tree" in info.context:
+            #### Replace placeholder nodes and propagate tree to all models ####
+            info.context["tree"][validated_stuff.id].set_data(validated_stuff)
+            validated_stuff._tree = info.context["tree"]
+
+            #### Level and indentation ####
+            info.context["level"] -= 1
+            indent = info.context["level"] * " " * 4
+            print(f"{indent}{cls.__name__} After validation: {info.context['field_stack']}")
+        elif hasattr(data, "_tree") and data._tree is not None:
+            #### Revalidation case: model already has a tree (e.g., during assignment) ####
+            # Inherit the tree from the original instance
+            validated_stuff._tree = data._tree
+            # Update the tree node to point to the NEW validated instance
+            validated_stuff._tree[validated_stuff.id].set_data(validated_stuff)
+            print(f"--> Revalidation: Updated tree node for {validated_stuff.id} <--")
+
+        return validated_stuff
+
+    @classmethod
+    def from_pre_build(cls, data, parent_model, field_name):
+        """Create a model instance with tree building context.
+
+        Note this always adds new models to the tree. It's not currently possible to replace or remove a node.
+        It should work with any parent_model, but ideally we should only use it to make children of the calling
+        model, so that parent_model=self in the call (where self isn't the created model instance, it's the calling
+        model).
+        Since we have revalidate_instances = "always", calling model_validate on a single model will also execute
+        the validators on children models.
+
+        Args:
+            data: Data to validate into the model
+            parent_model: Parent model instance
+            field_name: Name of the field in the parent model
+
+        Returns:
+            Validated model instance
+        """
+        return cls.model_validate(
+            data,
+            context={
+                "build_tree": True,
+                "parent_model": parent_model,
+                "field_stack": [field_name],
+                "id_stack": [parent_model.id],
+            },
+        )
 
     # Previously in V1, we used to have an overwritten `.dict` method, that would add __vizro_model__ to the dictionary
     # if called in the correct context.
@@ -347,4 +547,5 @@ class VizroBaseModel(BaseModel):
     model_config = ConfigDict(
         extra="forbid",  # Good for spotting user typos and being strict.
         validate_assignment=True,  # Run validators when a field is assigned after model instantiation.
+        revalidate_instances="always",
     )

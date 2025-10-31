@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import Annotated, cast
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -28,6 +28,7 @@ class NavLink(VizroBaseModel):
 
     """
 
+    type: Literal["nav_link"] = "nav_link"
     pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
     label: str = Field(description="Text description of the icon for use in tooltip.")
     icon: Annotated[

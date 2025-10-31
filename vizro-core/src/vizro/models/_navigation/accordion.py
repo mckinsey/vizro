@@ -35,7 +35,7 @@ class Accordion(VizroBaseModel):
             str,
             list[ModelID],  # TODO[MS]:this is the type after validation, but the type before validation is NavPagesType
         ],
-        AfterValidator(_validate_pages),
+        # AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from itertools import chain
-from typing import Annotated, Optional, cast
+from typing import Annotated, Literal, Optional, cast
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import (
@@ -69,6 +69,7 @@ class Page(VizroBaseModel):
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    type: Literal["page"] = "page"
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title of the `Page`")
     layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]

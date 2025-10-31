@@ -82,6 +82,26 @@ def _get_action_discriminator(action: Any) -> Optional[str]:
     return getattr(action, "type", None)
 
 
+def _get_type_discriminator(model: Any) -> Optional[str]:
+    """Generic helper function for callable discriminators that extract the 'type' field.
+
+    Used for SelectorType, _FormComponentType, ControlType, ComponentType, and NavSelectorType.
+    Equivalent to the discriminator function in make_discriminated_union, but for multi-type unions
+    (no single-type coercion logic needed).
+    Unlike _get_layout_discriminator and _get_action_discriminator, this function does not handle
+    legacy cases or provide defaults - it simply extracts the type field or attribute.
+    """
+    if isinstance(model, dict):
+        # For multi-type unions, type must be specified
+        return model.get("type", None)
+    elif hasattr(model, "type") and hasattr(model, "id"):
+        # Check for VizroBaseModel instance (same check as make_discriminated_union)
+        return model.type
+    else:
+        # For unexpected cases, raise error to match make_discriminated_union behavior
+        raise ValueError("something")
+
+
 def _clean_module_string(module_string: str) -> str:
     from vizro.models._models_utils import REPLACEMENT_STRINGS
 
@@ -659,29 +679,67 @@ OptionsType = Union[list[StrictBool], list[float], list[str], list[date], list[O
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union["Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider", "Switch"],
-    Field(discriminator="type", description="Selectors to be used inside a control."),
+    Union[
+        Annotated["Checklist", Tag("checklist")],
+        Annotated["DatePicker", Tag("date_picker")],
+        Annotated["Dropdown", Tag("dropdown")],
+        Annotated["RadioItems", Tag("radio_items")],
+        Annotated["RangeSlider", Tag("range_slider")],
+        Annotated["Slider", Tag("slider")],
+        Annotated["Switch", Tag("switch")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
+    Field(
+        discriminator=Discriminator(_get_type_discriminator),
+        description="Selectors to be used inside a control.",
+    ),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
 [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
 [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
 
 _FormComponentType = Annotated[
-    Union[SelectorType, "Button", "UserInput"],
-    Field(discriminator="type", description="Components that can be used to receive user input within a form."),
+    Union[
+        SelectorType,
+        Annotated["Button", Tag("button")],
+        Annotated["UserInput", Tag("user_input")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
+    Field(
+        discriminator=Discriminator(_get_type_discriminator),
+        description="Components that can be used to receive user input within a form.",
+    ),
 ]
 
 ControlType = Annotated[
-    Union["Filter", "Parameter"],
-    Field(discriminator="type", description="Control that affects components on the page."),
+    Union[
+        Annotated["Filter", Tag("filter")],
+        Annotated["Parameter", Tag("parameter")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
+    Field(
+        discriminator=Discriminator(_get_type_discriminator),
+        description="Control that affects components on the page.",
+    ),
 ]
 """Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter] or
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Text", "Table", "Tabs"],
+    Union[
+        Annotated["AgGrid", Tag("ag_grid")],
+        Annotated["Button", Tag("button")],
+        Annotated["Card", Tag("card")],
+        Annotated["Container", Tag("container")],
+        Annotated["Figure", Tag("figure")],
+        Annotated["Graph", Tag("graph")],
+        Annotated["Text", Tag("text")],
+        Annotated["Table", Tag("table")],
+        Annotated["Tabs", Tag("tabs")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
     Field(
-        discriminator="type",
+        discriminator=Discriminator(_get_type_discriminator),
         description="Component that makes up part of the layout on the page.",
     ),
 ]
@@ -697,7 +755,15 @@ NavPagesType = Union[list[ModelID], dict[str, list[ModelID]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
-    Union["Accordion", "NavBar"], Field(discriminator="type", description="Component for rendering navigation.")
+    Union[
+        Annotated["Accordion", Tag("accordion")],
+        Annotated["NavBar", Tag("nav_bar")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
+    Field(
+        discriminator=Discriminator(_get_type_discriminator),
+        description="Component for rendering navigation.",
+    ),
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
