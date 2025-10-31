@@ -405,4 +405,12 @@ See also: https://docs.pydantic.dev/latest/internals/resolving_annotations/#limi
 
 ==> Using __pydantic_init_subclass__ is not a viable solution if we want the schema of every model to be correct.
 ==> SOLUTION: remove __pydantic_init_subclass__ and use the new (old) system where we explicitly define types.
+
+------------------------------------------------------------------------------------------------------------------------
+TODOs after moving the real Vizro:
+------------------------------------------------------------------------------------------------------------------------
+- trial the model manager with the real Vizro and tree
+- sort out page validation
+- then bring over tests
+
 """
