@@ -153,6 +153,7 @@ dependencies = [
   "openai",
   "anthropic",
   "dash-extensions",
+  "dash-iconify",
   "vizro-ai"
 ]
 installer = "uv"

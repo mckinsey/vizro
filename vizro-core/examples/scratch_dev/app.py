@@ -1,11 +1,13 @@
 import base64
-from typing import Annotated, Optional, Any, Literal, Union
+from typing import Annotated, Optional, Any, Literal
+import json
 
 import dash
-from dash import html, dcc, callback, Output, Input, State, Patch, clientside_callback
-from dash.development.base_component import Component
-import dash_bootstrap_components as dbc
+import plotly
+from dash import html, dcc, callback, Output, Input, State, Patch, clientside_callback, no_update
+from dash.exceptions import PreventUpdate
 import dash_mantine_components as dmc
+from dash_iconify import DashIconify
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
 from dotenv import load_dotenv
@@ -27,6 +29,99 @@ from vizro.models.types import capture, ActionType
 
 load_dotenv()
 
+# -------------------- Style Constants --------------------
+# Common style values for consistency
+BORDER_RADIUS = "0px"
+# Spacing from design system
+SPACING_SM = "8px"  # Small gaps
+SPACING_MD = "12px"  # Medium gaps (was 15px, updated to design spec)
+SPACING_LG = "24px"  # Large gaps (was 20px, updated to design spec)
+
+# Typography from design system
+FONT_FAMILY = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+FONT_SIZE_EDITORIAL = "16px"  # Body editorial 01 - for main message content
+FONT_SIZE_HELP = "12px"  # Help text
+LINE_HEIGHT_EDITORIAL = "24px"  # 150% of 16px
+LETTER_SPACING_EDITORIAL = "-0.002em"
+
+COLOR_TEXT_PRIMARY = "var(--text-primary)"
+COLOR_TEXT_SECONDARY = "var(--text-secondary)"
+
+MAX_CHAT_WIDTH = "788px"  # from design system
+
+# Plot dimensions - consistent width for all charts
+PLOT_WIDTH = "600px"
+PLOT_HEIGHT = "400px"
+
+# Message bubble styling - aligned with design system
+MESSAGE_BUBBLE = {
+    "maxWidth": "100%",
+    "paddingTop": "10px",
+    "paddingBottom": "10px",
+    "marginBottom": SPACING_MD,
+    "borderRadius": BORDER_RADIUS,
+    "fontFamily": FONT_FAMILY,  # Inter font from design
+    "lineHeight": LINE_HEIGHT_EDITORIAL,  # 24px from design (was 1.65rem)
+    "letterSpacing": LETTER_SPACING_EDITORIAL,  # -0.002em from design (was 0.2px)
+    "whiteSpace": "pre-wrap",
+    "wordBreak": "break-word",
+    "display": "inline-block",  # Allow natural sizing based on content
+    "color": COLOR_TEXT_PRIMARY,  # rgba(20, 23, 33, 0.88) from design
+}
+
+# User message specific styling
+USER_MESSAGE_STYLE = {
+    **MESSAGE_BUBBLE,
+    "backgroundColor": "var(--surfaces-bg-card)",
+    "marginLeft": "0",  # Align to the left
+    "marginRight": "auto",
+    "paddingLeft": "15px",
+    "paddingRight": "15px",
+}
+
+# Assistant message specific styling
+ASSISTANT_MESSAGE_STYLE = {
+    **MESSAGE_BUBBLE,
+    "backgroundColor": "var(--bs-body-bg)",
+    "marginLeft": "0",  # Align to the left
+    "marginRight": "auto",
+}
+
+# Container styles
+HISTORY_CONTAINER = {
+    "minWidth": MAX_CHAT_WIDTH,
+    "maxWidth": MAX_CHAT_WIDTH,
+    "width": "100%",
+    "paddingBottom": SPACING_LG,
+    "paddingLeft": "5px",
+    "paddingRight": "5px",
+    "overflowY": "auto",
+    "overflowX": "hidden",  # Prevent horizontal scroll
+    "height": "100%",
+    "display": "flex",
+    "flexDirection": "column",
+    "margin": "0 auto",  # Center the container
+}
+
+HISTORY_SECTION = {
+    "display": "flex",
+    "justifyContent": "center",
+    "width": "100%",
+    "flex": "1",
+    "overflow": "hidden",
+    "paddingTop": SPACING_MD,
+}
+
+INPUT_SECTION = {
+    "display": "flex",
+    "justifyContent": "center",
+    "width": "100%",
+    "marginTop": "auto",
+    "paddingBottom": SPACING_LG,
+    "paddingLeft": "10px",
+    "paddingRight": "10px",
+}
+
 
 # -------------------- Base Classes --------------------
 
@@ -43,9 +138,52 @@ class ChatAction(_AbstractAction):
 
     type: Literal["chat_action"] = "chat_action"
     chat_id: str
-    prompt: str = Field(default_factory=lambda data: f"{data['chat_id']}-input.value")
+    prompt: str = Field(default_factory=lambda data: f"{data['chat_id']}-chat-input.value")
     messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
     stream: bool = True
+
+    @model_validator(mode="after")
+    def validate_required_methods(self):
+        """Validate that subclasses implement the required generation methods.
+
+        This enforces the contract:
+        - If stream=True, generate_stream() must be implemented
+        - If stream=False, generate_response() must be implemented
+
+        Methods are considered "implemented" if they're defined in the subclass
+        (not just inherited from ChatAction base class).
+        """
+        cls = self.__class__
+
+        # Check if a method is actually implemented in the subclass (not just inherited from base)
+        def is_implemented_in_subclass(method_name):
+            # Get the method from the instance's class
+            method = getattr(cls, method_name, None)
+            if method is None:
+                return False
+
+            # Check if it's defined in ChatAction base class
+            base_method = getattr(ChatAction, method_name, None)
+
+            # If the method is the same object as the base class method, it's not overridden
+            return method is not base_method
+
+        if self.stream:
+            if not is_implemented_in_subclass("generate_stream"):
+                raise NotImplementedError(
+                    f"{cls.__name__} has stream=True but does not implement generate_stream(). "
+                    f"You must override generate_stream() to yield text chunks, even if you "
+                    f"override function() for custom behavior."
+                )
+        else:
+            if not is_implemented_in_subclass("generate_response"):
+                raise NotImplementedError(
+                    f"{cls.__name__} has stream=False but does not implement generate_response(). "
+                    f"You must override generate_response() to return content (string or Dash component), or a tuple of (content, metadata), even if you "
+                    f"override function() for custom behavior."
+                )
+
+        return self
 
     def pre_build(self):
         if self.stream:
@@ -86,14 +224,17 @@ class ChatAction(_AbstractAction):
                     }
                 }
 
-                // Helper: Get message content from structure
+                // Helper: Get message content from simple structure [role, content]
                 function getMessageContent(msg) {
-                    return msg?.props?.children?.[1]?.props?.children || '';
+                    if (msg?.props?.children && Array.isArray(msg.props.children) && msg.props.children.length >= 2) {
+                        return msg.props.children[1]?.props?.children || '';
+                    }
+                    return '';
                 }
 
-                // Helper: Set message content in structure
+                // Helper: Set message content in simple structure [role, content]
                 function setMessageContent(msg, content) {
-                    if (msg?.props?.children?.[1]?.props) {
+                    if (msg?.props?.children && Array.isArray(msg.props.children) && msg.props.children.length >= 2) {
                         msg.props.children[1].props.children = content;
                     }
                 }
@@ -101,7 +242,7 @@ class ChatAction(_AbstractAction):
                 // Handle stream completion
                 if (!animatedText || animatedText === STREAM_DONE_SIGNAL) {
                     window.lastProcessedChunkCount = 0;
-                    return [existingChildren, window.dash_clientside.no_update];
+                    return [existingChildren, window.dash_clientside.no_update, ""];  // Clear loading
                 }
 
                 const newChildren = [...(existingChildren || [])];
@@ -130,16 +271,19 @@ class ChatAction(_AbstractAction):
                     // Update store data for assistant messages
                     const lastStoreMsg = newData[newData.length - 1];
                     if (lastStoreMsg?.role === 'assistant') {
-                        lastStoreMsg.content += newText;
+                        // During streaming, accumulate in content_json as serialized string
+                        const existingContent = JSON.parse(lastStoreMsg.content_json || '""');
+                        lastStoreMsg.content_json = JSON.stringify(existingContent + newText);
                     }
                 }
 
-                return [newChildren, newData];
+                return [newChildren, newData, window.dash_clientside.no_update];
             }
             """,
             [
                 Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
                 Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
+                Output(f"{self.chat_id}-loading-output", "children", allow_duplicate=True),
             ],
             Input(f"{self.chat_id}-sse", "animation"),
             [State(f"{self.chat_id}-hidden-messages", "children"), State(f"{self.chat_id}-store", "data")],
@@ -157,7 +301,7 @@ class ChatAction(_AbstractAction):
             req = StreamingRequest(**request.get_json())
 
             def event_stream():
-                for chunk in self.core_function(**req.model_dump()):
+                for chunk in self.generate_stream(req.messages):
                     # Encode chunk as base64 to handle any special characters
                     encoded_chunk = base64.b64encode(chunk.encode("utf-8")).decode("utf-8")
                     # Need a robust delimiter for clientside parsing
@@ -177,6 +321,45 @@ class ChatAction(_AbstractAction):
             function(children) {
                 const CODE_BLOCK_REGEX = /```(\\w+)?\\n([\\s\\S]*?)```/g;
 
+                // Style constants
+                const BORDER_RADIUS = "0px";
+                const FONT_FAMILY = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+                const FONT_SIZE_EDITORIAL = "16px";
+                const LINE_HEIGHT_EDITORIAL = "24px";
+                const LETTER_SPACING_EDITORIAL = "-0.002em";
+                const SPACING_MD = "12px";
+
+                const MESSAGE_BUBBLE = {
+                    maxWidth: "100%",
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    marginBottom: SPACING_MD,
+                    borderRadius: BORDER_RADIUS,
+                    fontFamily: FONT_FAMILY,
+                    lineHeight: LINE_HEIGHT_EDITORIAL,
+                    letterSpacing: LETTER_SPACING_EDITORIAL,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    display: "inline-block",
+                    color: "var(--text-primary)"
+                };
+
+                const USER_MESSAGE_STYLE = {
+                    ...MESSAGE_BUBBLE,
+                    backgroundColor: "var(--surfaces-bg-card)",
+                    marginLeft: "0",
+                    marginRight: "auto",
+                    paddingLeft: "15px",
+                    paddingRight: "15px"
+                };
+
+                const ASSISTANT_MESSAGE_STYLE = {
+                    ...MESSAGE_BUBBLE,
+                    backgroundColor: "var(--bs-body-bg)",
+                    marginLeft: "0",
+                    marginRight: "auto"
+                };
+
                 // Component factory helpers
                 const createComponent = (type, namespace, props) => ({
                     type, namespace, props
@@ -185,7 +368,12 @@ class ChatAction(_AbstractAction):
                 const createMarkdown = (text) => createComponent(
                     "Markdown",
                     "dash_core_components",
-                    { children: text, dangerously_allow_html: false }
+                    {
+                        children: text,
+                        dangerously_allow_html: false,
+                        style: { color: "inherit", fontSize: FONT_SIZE_EDITORIAL },
+                        className: "assistant-markdown"
+                    }
                 );
 
                 const createCodeHighlight = (code, language) => createComponent(
@@ -198,10 +386,10 @@ class ChatAction(_AbstractAction):
                     }
                 );
 
-                const createDiv = (children) => createComponent(
+                const createDiv = (children, style) => createComponent(
                     "Div",
                     "dash_html_components",
-                    { children }
+                    { children, style }
                 );
 
                 // Parse content into markdown and code blocks
@@ -237,24 +425,56 @@ class ChatAction(_AbstractAction):
                 if (!children?.length) return [];
 
                 return children.map(msg => {
-                    // Validate message structure
-                    if (!msg?.props?.children || msg.props.children.length < 2) {
-                        return msg;
+                    // Skip if no props
+                    if (!msg?.props?.children) return msg;
+
+                    // Handle simple structure: [role, content]
+                    if (Array.isArray(msg.props.children) && msg.props.children.length >= 2) {
+                        const [roleDiv, contentDiv] = msg.props.children;
+                        const role = roleDiv?.props?.children;
+                        const content = contentDiv?.props?.children;
+
+                        // Only process string content
+                        if (typeof content !== 'string') return msg;
+
+                        // Apply styling based on role
+                        if (role === 'user') {
+                            // User message: simple styled div with text
+                            return createDiv(
+                                createDiv(
+                                    createDiv(content, { fontSize: FONT_SIZE_EDITORIAL }),
+                                    USER_MESSAGE_STYLE
+                                ),
+                                { display: "flex", justifyContent: "flex-start", width: "100%" }
+                            );
+                        } else {
+                            // Assistant message: parse for code blocks
+                            if (/```/g.test(content)) {
+                                // Has code blocks - parse and use CodeHighlight
+                                const parts = parseContent(content);
+                                if (parts.length > 0) {
+                                    return createDiv(
+                                        createDiv(
+                                            createDiv(parts),
+                                            ASSISTANT_MESSAGE_STYLE
+                                        ),
+                                        { display: "flex", justifyContent: "flex-start", width: "100%" }
+                                    );
+                                }
+                            }
+                            // No code blocks - use regular Markdown
+                            return createDiv(
+                                createDiv(
+                                    createMarkdown(content),
+                                    ASSISTANT_MESSAGE_STYLE
+                                ),
+                                { display: "flex", justifyContent: "flex-start", width: "100%" }
+                            );
+                        }
                     }
 
-                    const [role, contentWrapper] = msg.props.children;
-                    const content = contentWrapper?.props?.children;
-
-                    // Only process string content
-                    if (typeof content !== 'string') return msg;
-
-                    const parts = parseContent(content);
-
-                    // Return original if no code blocks found
-                    if (parts.length === 0) return msg;
-
-                    // Reconstruct message with parsed content
-                    return createDiv([role, createDiv(parts)]);
+                    // Return unchanged if structure doesn't match
+                    return msg;
                 });
             }
             """,
@@ -266,18 +486,73 @@ class ChatAction(_AbstractAction):
         @callback(
             Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
             Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
+            Output(f"{self.chat_id}-chat-input", "value"),  # Clear input after sending
+            Output(f"{self.chat_id}-loading-output", "children"),  # Show loading indicator
             # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
             # make sure it.
-            Input(f"{self.chat_id}-submit", "n_clicks"),
+            Input(f"{self.chat_id}-send-button", "n_clicks"),
             State(*self.prompt.split(".")),
             prevent_initial_call=True,
         )
         def update_with_user_input(_, prompt):
+            if not prompt:
+                raise PreventUpdate
+
             store, html_messages = Patch(), Patch()
-            latest_input = {"role": "user", "content": prompt}
+            latest_input = {"role": "user", "content_json": json.dumps(prompt)}
             store.append(latest_input)
             html_messages.append(self.message_to_html(latest_input))
-            return store, html_messages
+
+            # Clear input and show loading
+            # Add a loading indicator as a temporary assistant message
+            loading_msg = html.Div(
+                [
+                    dmc.Paper(
+                        [
+                            dmc.Group(
+                                [
+                                    dmc.Loader(size="md", type="dots"),
+                                ]
+                            )
+                        ],
+                        p="md",
+                        style={"backgroundColor": "var(--left-side-bg)"},
+                    )
+                ],
+                style=ASSISTANT_MESSAGE_STYLE,
+            )
+            html_messages.append(loading_msg)
+
+            return store, html_messages, "", ""
+
+        # Handle Enter key for submission (but allow Shift+Enter for new lines)
+        clientside_callback(
+            f"""
+            function(value) {{
+                // Add event listener for the chat input if not already added
+                setTimeout(() => {{
+                    const chatInput = document.getElementById('{self.chat_id}-chat-input');
+                    if (chatInput && !chatInput.dataset.listenerAdded) {{
+                        chatInput.dataset.listenerAdded = 'true';
+                        chatInput.addEventListener('keydown', function(e) {{
+                            if (e.key === 'Enter' && !e.shiftKey) {{
+                                e.preventDefault();
+                                const sendButton = document.getElementById('{self.chat_id}-send-button');
+                                if (sendButton && chatInput.value.trim()) {{
+                                    sendButton.click();
+                                }}
+                            }}
+                        }});
+                    }}
+                }}, 100);
+
+                return window.dash_clientside.no_update;
+            }}
+            """,
+            Output(f"{self.chat_id}-chat-input", "id", allow_duplicate=True),  # Dummy output
+            Input(f"{self.chat_id}-chat-input", "value"),
+            prevent_initial_call=True,
+        )
 
         # Horrible hack to restore chat history when you change page and return.
         page = model_manager._get_model_page(self)
@@ -295,59 +570,67 @@ class ChatAction(_AbstractAction):
         def on_page_load(_, store):
             return [self.message_to_html(message) for message in store], dash.no_update
 
-    def core_function(self, prompt, messages):
-        """Default implementation that routes to streaming or non-streaming methods.
-
-        Subclasses should implement ONE of:
-        - generate_stream(messages) -> yields text chunks (for streaming)
-        - generate_response(messages) -> returns text/component (for non-streaming)
-        - Or both to support both modes
-
-        The 'stream' parameter determines which method is called.
-        """
-        if self.stream:
-            return self.generate_stream(messages)
-        else:
-            return self.generate_response(messages)
-
     def generate_stream(self, messages):
         """Override to implement streaming response.
 
         Args:
-            messages: List of message dicts with 'role' and 'content' keys
+            messages: List of message dicts with 'role' and 'content_json' keys
+                     (content is serialized JSON)
 
         Yields:
             str: Text chunks to stream
+
+        Note:
+            This method MUST be implemented if stream=True, enforced by
+            validate_required_methods(). Even if you override function() entirely,
+            implement this method to satisfy the contract.
         """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} does not support streaming (stream=True). "
-            "Either implement generate_stream() or set stream=False."
-        )
+        pass
 
     def generate_response(self, messages):
         """Override to implement non-streaming response.
 
         Args:
-            messages: List of message dicts with 'role' and 'content' keys
+            messages: List of message dicts with 'role' and 'content_json' keys
+                     (content is serialized JSON)
 
         Returns:
-            Union[str, Component]: Text or any Dash component
+            dict: Always returns {"content_json": "..."} with serialized content
+                  for consistent handling and persistence
+
+        Note:
+            This method MUST be implemented if stream=False, enforced by
+            validate_required_methods(). Even if you override function() entirely
+            (e.g., to handle extra parameters like uploaded_data), implement this
+            method to satisfy the contract.
         """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} does not support non-streaming (stream=False). "
-            "Either implement generate_response() or set stream=True."
-        )
+        pass
 
     def function(self, prompt, messages):
+        """Main action function called by Dash callback.
+
+        This method can be overridden for special cases (e.g., to handle metadata,
+        extra parameters like uploaded_data, or custom response processing).
+
+        However, even when overriding this method, subclasses MUST still implement
+        generate_stream() or generate_response() to satisfy the class contract.
+
+        Args:
+            prompt: User's input text
+            messages: List of previous messages in conversation
+        """
         # Need to repeat append here since this runs at same time as store update.
         # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
-        latest_input = {"role": "user", "content": prompt}
+        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
         messages.append(latest_input)
 
         if self.stream:
             store, html_messages = Patch(), Patch()
 
-            placeholder_msg = {"role": "assistant", "content": ""}
+            # Remove the loading indicator and add placeholder for streaming
+            html_messages[-1] = html.Div(style={"display": "none"})  # Hide loading
+
+            placeholder_msg = {"role": "assistant", "content_json": json.dumps("")}
             store.append(placeholder_msg)
             html_messages.append(self.message_to_html(placeholder_msg))
 
@@ -356,25 +639,39 @@ class ChatAction(_AbstractAction):
                 html_messages,
                 f"/streaming-{self.chat_id}",
                 sse_options(StreamingRequest(prompt=prompt, messages=messages)),
+                "",  # Clear loading indicator
             ]
         else:
-            latest_output = {"role": "assistant", "content": self.core_function(prompt, messages)}
+            result = self.generate_response(messages)
+            latest_output = {"role": "assistant", **result}
 
             # Could do this without Patch and it would also work fine, but that would send more data across network than
             # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
             store, html_messages = Patch(), Patch()
+
+            # Remove the loading indicator and add actual response
+            html_messages[-1] = html.Div(style={"display": "none"})  # Hide loading
+
             store.append(latest_output)
             html_messages.append(self.message_to_html(latest_output))
-            return store, html_messages
+            return store, html_messages, ""  # Clear loading indicator
 
     def message_to_html(self, message):
-        content = message["content"]
-        role_label = html.B(message["role"])
+        """Convert a message dict to HTML structure.
 
-        if isinstance(content, Component):
-            return html.Div([role_label, content])
-        else:
-            return html.Div([role_label, html.Div(content)])
+        All messages use serialized content_json format.
+        """
+        role = message["role"]
+        content = json.loads(message["content_json"])
+
+        # Return simple structure: role + content (let clientside callback handle styling)
+        content_str = str(content) if content is not None else ""
+        return html.Div(
+            [
+                html.Div(role, style={"display": "none"}),  # Hidden role marker
+                html.Div(content_str),  # Plain text content
+            ]
+        )
 
     @property
     def outputs(self):
@@ -384,9 +681,14 @@ class ChatAction(_AbstractAction):
                 f"{self.chat_id}-hidden-messages.children",
                 f"{self.chat_id}-sse.url",
                 f"{self.chat_id}-sse.options",
+                f"{self.chat_id}-loading-output.children",
             ]
         else:
-            return [f"{self.chat_id}-store.data", f"{self.chat_id}-hidden-messages.children"]
+            return [
+                f"{self.chat_id}-store.data",
+                f"{self.chat_id}-hidden-messages.children",
+                f"{self.chat_id}-loading-output.children",
+            ]
 
 
 # -------------------- Example Chat Actions --------------------
@@ -435,9 +737,10 @@ class openai_chat(ChatAction):
 
     def generate_stream(self, messages):
         """Handle streaming response from OpenAI."""
+        api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
         response = self.client.responses.create(
             model=self.model,
-            input=messages,
+            input=api_messages,
             instructions="Be polite and creative.",
             store=False,
             stream=True,
@@ -450,14 +753,15 @@ class openai_chat(ChatAction):
 
     def generate_response(self, messages):
         """Handle non-streaming response from OpenAI."""
+        api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
         response = self.client.responses.create(
             model=self.model,
-            input=messages,
+            input=api_messages,
             instructions="Be polite and creative.",
             store=False,
             stream=False,
         )
-        return response.output_text
+        return {"content_json": json.dumps(response.output_text)}
 
 
 # Initialize Anthropic client once at module level
@@ -477,26 +781,19 @@ class anthropic_chat(ChatAction):
         """Generate streaming response from Anthropic Claude.
 
         Args:
-            messages: List of message dicts with 'role' and 'content' keys
+            messages: List of message dicts with 'role' and 'content_json' keys
 
         Yields:
             str: Text chunks from Claude's response
         """
+        api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
         with anthropic_client.messages.stream(
             model=self.model,
             max_tokens=1024,
-            messages=messages,
+            messages=api_messages,
         ) as stream:
             for text in stream.text_stream:
                 yield text
-
-
-@capture("action")
-def openai_chat_function(prompt):
-    client = OpenAI()
-    return client.responses.create(
-        model="gpt-4.1-nano", instructions="Be polite and creative.", input=prompt
-    ).output_text
 
 
 class simple_echo(ChatAction):
@@ -506,67 +803,60 @@ class simple_echo(ChatAction):
     stream: bool = False  # Non-streaming only
 
     def generate_response(self, messages):
-        last_message = messages[-1]["content"] if messages else ""
-        return f"You said: {last_message}"
+        last_message = json.loads(messages[-1]["content_json"]) if messages else ""
+        content = f"You said: {last_message}"
+        return {"content_json": json.dumps(content)}
 
 
 class mixed_content(ChatAction):
-    """Chat action that returns different content types based on keywords."""
+    """Simple example showing different content types: text, chart, and image."""
 
     type: Literal["mixed_content"] = "mixed_content"
     stream: bool = False  # Non-streaming only - components cannot be streamed
     messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
 
     def generate_response(self, messages):
-        prompt = messages[-1]["content"] if messages else ""
-        prompt_lower = prompt.lower()
+        """Returns serialized component structure as JSON."""
+        prompt = json.loads(messages[-1]["content_json"]) if messages else ""
 
-        if "chart" in prompt_lower or "graph" in prompt_lower or "plot" in prompt_lower:
-            # Return a Plotly chart
-            fig = px.scatter(
-                px.data.iris(),
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                title=f"Iris Dataset - Response to: {prompt}",
-                height=400,
-            )
-            return dcc.Graph(figure=fig)
+        fig = px.scatter(
+            px.data.iris(),
+            x="sepal_width",
+            y="sepal_length",
+            color="species",
+            title="Iris Dataset",
+            height=400,
+        )
 
-        elif "image" in prompt_lower or "picture" in prompt_lower or "photo" in prompt_lower:
-            # Return an image using dmc.Image
-            image = dmc.Image(
-                radius="md",
-                h=300,
-                w="auto",
-                fit="contain",
-                src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-9.png",
-            )
-            return image
+        content = html.Div(
+            [
+                dcc.Markdown(f"""
+**You said:** "{prompt}"
 
-        else:
-            # Return regular text with markdown and code
-            response = f"""
-You said: "{prompt}"
+This example demonstrates rendering different content types:
+            """),
+                dmc.Image(
+                    radius="md",
+                    h=200,
+                    w="auto",
+                    fit="contain",
+                    src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-9.png",
+                    style={"marginTop": "20px"},
+                ),
+                dcc.Graph(figure=fig, style={"marginTop": "20px"}),
+            ]
+        )
 
-I can show you different types of content:
-- Use keywords like **chart**, **graph**, or **plot** to see a scatter plot
-- Use **image**, **picture**, or **photo** to see an image
-- Or just chat normally for text responses
+        return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
 
-Here's an example of code rendering:
-```python
-# Sample Python code
-import plotly.express as px
+    def message_to_html(self, message):
+        """Override to recreate components from serialized JSON."""
+        content = json.loads(message["content_json"])
 
-# Create a visualization
-fig = px.scatter(data, x="x_col", y="y_col")
-fig.show()
-```
-
-This demonstrates that markdown formatting and code highlighting still work perfectly!
-"""
-            return response.strip()  # Can return just a string for text responses!
+        return html.Div(
+            html.Div(content, style=ASSISTANT_MESSAGE_STYLE),
+            style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
+        )
 
 
 # Example of using VizroAI to generate plots from natural language
@@ -583,35 +873,50 @@ class vizro_ai_chat(ChatAction):
         return [self.prompt, self.messages, self.uploaded_data]
 
     def function(self, prompt, messages, uploaded_data=None):
-        """Override function to handle uploaded data."""
-        latest_input = {"role": "user", "content": prompt}
+        """Override function to handle uploaded data parameter."""
+        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
         messages.append(latest_input)
 
-        # Generate response with uploaded data
-        content = self.generate_response(messages, uploaded_data)
-        latest_output = {"role": "assistant", "content": content}
+        # Store uploaded_data temporarily so generate_response can access it
+        self._uploaded_data = uploaded_data
+
+        # Call generate_response directly (we know stream=False)
+        result = self.generate_response(messages)
+        latest_output = {"role": "assistant", **result}
 
         store, html_messages = Patch(), Patch()
+
+        # Remove the loading indicator and add actual response
+        html_messages[-1] = html.Div(style={"display": "none"})  # Hide loading
+
         store.append(latest_output)
         html_messages.append(self.message_to_html(latest_output))
-        return store, html_messages
+        return store, html_messages, ""  # Clear loading indicator
 
-    def generate_response(self, messages, uploaded_data=None):
-        """Generate a plot using VizroAI based on user's request."""
+    def generate_response(self, messages):
+        """Required by ChatAction contract.
+
+        Generates data visualization using VizroAI. Requires uploaded_data to be
+        available (stored in self._uploaded_data by function()).
+        Returns dict with serialized content for persistence.
+        """
         from vizro_ai import VizroAI
         from langchain_openai import ChatOpenAI
+        import io
 
-        prompt = messages[-1]["content"] if messages else ""
+        prompt = json.loads(messages[-1]["content_json"]) if messages else ""
 
+        # Check if uploaded_data is available (set by function())
+        uploaded_data = getattr(self, "_uploaded_data", None)
         if not uploaded_data:
-            return html.P("Please upload a CSV file first!", style={"color": "#1890ff"})
+            content = html.P("Please upload a CSV file first!", style={"color": "#1890ff"})
+            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
 
         try:
-            import io
-
             df = pd.read_json(io.StringIO(uploaded_data), orient="split")
         except Exception as e:
-            return html.P(f"Error loading data: {str(e)}", style={"color": "red"})
+            content = html.P(f"Error loading data: {str(e)}", style={"color": "red"})
+            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
 
         # Generate plot with VizroAI
         try:
@@ -620,25 +925,41 @@ class vizro_ai_chat(ChatAction):
             ai_outputs = vizro_ai.plot(df, prompt, return_elements=True)
             figure = ai_outputs.get_fig_object(data_frame=df, vizro=False)
 
-            return html.Div(
+            content = html.Div(
                 [
-                    dcc.Graph(figure=figure, style={"height": "400px"}),
+                    dcc.Graph(figure=figure, style={"height": PLOT_HEIGHT, "width": PLOT_WIDTH}),
                     html.Details(
                         [
-                            html.Summary("View generated code", style={"cursor": "pointer", "color": "#666"}),
+                            html.Summary(
+                                "View generated code", style={"cursor": "pointer", "color": COLOR_TEXT_SECONDARY}
+                            ),
                             dmc.CodeHighlight(
                                 code=ai_outputs.code,
                                 language="python",
                                 withCopyButton=True,
-                                styles={"root": {"marginTop": "10px"}, "code": {"fontSize": "12px"}},
                             ),
                         ],
-                        style={"marginTop": "10px"},
+                        style={"marginTop": "10px", "width": PLOT_WIDTH},
                     ),
-                ]
+                ],
+                style={"width": PLOT_WIDTH},
             )
+
+            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+
         except Exception as e:
-            return html.P(f"Error generating plot: {str(e)}", style={"color": "red"})
+            error_msg = f"Error generating visualization: {str(e)}"
+            content = html.P(error_msg, style={"color": "red"})
+            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+
+    def message_to_html(self, message):
+        """Override to recreate components from serialized JSON."""
+        content = json.loads(message["content_json"])
+
+        return html.Div(
+            html.Div(content, style=ASSISTANT_MESSAGE_STYLE),
+            style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
+        )
 
 
 # -------------------- Chat Component --------------------
@@ -653,21 +974,36 @@ class Chat(VizroBaseModel):
 
     @property
     def _action_triggers(self):
-        # Or {"__default__": f"{self.id}-input.value"} or both somehow (clientside callback?)
-        return {"__default__": f"{self.id}-submit.n_clicks"}
+        return {"__default__": f"{self.id}-send-button.n_clicks"}
 
     def build(self):
         return html.Div(
             [
-                dbc.Input(id=f"{self.id}-input", placeholder="Type something...", type="text", debounce=True),
-                dbc.Button(id=f"{self.id}-submit", children="Submit"),
-                # Hidden div to store raw messages
-                html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
-                # Visible div to display parsed messages with code highlighting
-                html.Div(id=f"{self.id}-rendered-messages", children=[]),
+                # Messages container
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                # Hidden div to store raw messages
+                                html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
+                                # Visible div to display parsed messages with code highlighting
+                                html.Div(id=f"{self.id}-rendered-messages", style=HISTORY_CONTAINER),
+                            ],
+                            id=f"{self.id}-chat-messages-container",
+                        )
+                    ],
+                    style=HISTORY_SECTION,
+                ),
+                # Input area - reusable component without file upload
+                build_input_area(chat_id=self.id, placeholder="How can I help you?", show_upload=False),
+                # Loading indicator (hidden by default)
+                html.Div(id=f"{self.id}-loading-output", style={"display": "none"}),
+                # Store for conversation history
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),
+                # Server-Sent Events for streaming support
                 SSE(id=f"{self.id}-sse", concat=True, animate_chunk=10, animate_delay=5),
-            ]
+            ],
+            style={"height": "100%", "width": "100%", "display": "flex", "flexDirection": "column"},
         )
 
 
@@ -677,6 +1013,109 @@ Chat.add_type("actions", Annotated[openai_chat, Tag("openai_chat")])
 Chat.add_type("actions", Annotated[anthropic_chat, Tag("anthropic_chat")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 Chat.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
+
+
+# -------------------- Helper Methods --------------------
+
+
+def build_input_area(chat_id, placeholder="How can I help you?", show_upload=False, upload_id=None, file_info_id=None):
+    """
+    Build a reusable input area with optional file upload support.
+
+    Args:
+        chat_id: ID of the chat component
+        placeholder: Placeholder text for the textarea
+        show_upload: Whether to show the upload button
+        upload_id: ID for the upload component (required if show_upload=True)
+        file_info_id: ID for the file info display (required if show_upload=True)
+
+    Returns:
+        html.Div containing the input area with 3-row layout
+    """
+    rows = []
+
+    # Row 1: File preview area (only if upload is enabled)
+    if show_upload and file_info_id:
+        rows.append(html.Div(id=file_info_id, style={"marginBottom": "8px", "minHeight": "0px"}))
+
+    # Row 2: Textarea
+    rows.append(
+        dmc.Textarea(
+            id=f"{chat_id}-chat-input",
+            placeholder=placeholder,
+            autosize=True,
+            size="md",
+            minRows=1,
+            maxRows=6,
+            radius=0,
+            # styles: targets internal parts of the component (the actual textarea element)
+            styles={
+                "input": {
+                    "borderLeft": "none",
+                    "borderRight": "none",
+                    "borderTop": "none",
+                    "borderRadius": "0",
+                    "resize": "none",
+                    "backgroundColor": "var(--bs-body-bg)",  # from design system
+                    "fontSize": FONT_SIZE_EDITORIAL,  # 16px for input text
+                    "lineHeight": LINE_HEIGHT_EDITORIAL,  # 24px
+                    "color": COLOR_TEXT_PRIMARY,  # Main text color
+                }
+            },
+            # style: targets the outer wrapper div
+            style={"width": "100%"},
+            value="",
+        )
+    )
+
+    # Row 3: Action buttons (upload and send)
+    button_row = []
+
+    if show_upload and upload_id:
+        button_row.append(
+            dcc.Upload(
+                id=upload_id,
+                children=dmc.ActionIcon(
+                    DashIconify(
+                        icon="material-symbols-light:attach-file-add", width=28, height=28
+                    ),  # need to make this smaller so it looks aligned with the send button
+                    variant="subtle",
+                    color="grey",
+                    radius=BORDER_RADIUS,
+                    style={"width": "42px", "height": "42px"},
+                ),
+                style={"width": "fit-content"},
+                multiple=False,
+            )
+        )
+    else:
+        # Invisible placeholder to maintain layout
+        button_row.append(html.Div(style={"width": "42px", "height": "42px", "visibility": "hidden"}))
+
+    button_row.append(
+        dmc.ActionIcon(
+            DashIconify(icon="material-symbols-light:send-outline", width=38, height=38),
+            id=f"{chat_id}-send-button",
+            variant="subtle",
+            color="grey",
+            n_clicks=0,
+            radius=BORDER_RADIUS,
+            style={"width": "42px", "height": "42px"},
+        )
+    )
+
+    rows.append(
+        html.Div(
+            button_row,
+            style={
+                "display": "flex",
+                "justifyContent": "space-between",
+                "width": "100%",
+            },
+        )
+    )
+
+    return html.Div([html.Div(rows, style={"width": "100%", "maxWidth": MAX_CHAT_WIDTH})], style=INPUT_SECTION)
 
 
 # -------------------- Chat with Upload Component --------------------
@@ -691,41 +1130,39 @@ class ChatWithUpload(Chat):
         """Build the chat UI with file upload."""
         return html.Div(
             [
-                # File upload area
-                dcc.Upload(
-                    id=f"{self.id}-upload",
-                    children=html.Div(
-                        [
-                            "Drag and Drop or ",
-                            html.A("Select a CSV File", style={"color": "#1890ff", "cursor": "pointer"}),
-                        ]
-                    ),
-                    style={
-                        "width": "100%",
-                        "height": "60px",
-                        "lineHeight": "60px",
-                        "borderWidth": "2px",
-                        "borderStyle": "dashed",
-                        "borderRadius": "5px",
-                        "borderColor": "#d9d9d9",
-                        "textAlign": "center",
-                        "marginBottom": "10px",
-                        "backgroundColor": "#fafafa",
-                    },
-                    multiple=False,
-                ),
-                # Data info display
-                html.Div(id=f"{self.id}-data-info", style={"marginBottom": "10px"}),
                 # Data store
                 dcc.Store(id=f"{self.id}-data-store"),
-                # Standard chat components
-                dbc.Input(id=f"{self.id}-input", placeholder="Ask about your data...", type="text", debounce=True),
-                dbc.Button(id=f"{self.id}-submit", children="Submit"),
-                html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
-                html.Div(id=f"{self.id}-rendered-messages", children=[]),
+                # Messages container
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                # Hidden div to store raw messages
+                                html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
+                                # Visible div to display parsed messages with code highlighting
+                                html.Div(id=f"{self.id}-rendered-messages", style=HISTORY_CONTAINER),
+                            ],
+                            id=f"{self.id}-chat-messages-container",
+                        )
+                    ],
+                    style=HISTORY_SECTION,
+                ),
+                # Input area - reusable component with file upload
+                build_input_area(
+                    chat_id=self.id,
+                    placeholder="Ask about your data...",
+                    show_upload=True,
+                    upload_id=f"{self.id}-upload",
+                    file_info_id=f"{self.id}-data-info",
+                ),
+                # Loading indicator (hidden by default)
+                html.Div(id=f"{self.id}-loading-output", style={"display": "none"}),
+                # Store for conversation history
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),
+                # Server-Sent Events for streaming support
                 SSE(id=f"{self.id}-sse", concat=True, animate_chunk=10, animate_delay=5),
-            ]
+            ],
+            style={"height": "100%", "width": "100%", "display": "flex", "flexDirection": "column"},
         )
 
     def pre_build(self):
@@ -753,14 +1190,57 @@ class ChatWithUpload(Chat):
                 if filename.endswith(".csv"):
                     df = pd.read_csv(io.BytesIO(decoded))
                 else:
-                    return None, html.Div("Please upload a CSV file", style={"color": "red"})
+                    return None, html.Div(
+                        "Please upload a CSV file", style={"color": "red", "fontSize": FONT_SIZE_HELP}
+                    )
 
-                info = html.Div([html.B(f"Loaded: {filename}")], style={"color": "green", "fontSize": "12px"})
+                # Create a file preview with icon and filename
+                info = html.Div(
+                    [
+                        dmc.Paper(
+                            [
+                                dmc.Group(
+                                    [
+                                        dmc.Text(filename, size="sm", fw=500),
+                                        dmc.ActionIcon(
+                                            DashIconify(icon="material-symbols:close", width=16),
+                                            size="xs",
+                                            variant="subtle",
+                                            id=f"{self.id}-remove-file",
+                                            n_clicks=0,
+                                        ),
+                                    ],
+                                    justify="space-between",
+                                    style={"width": "100%"},
+                                )
+                            ],
+                            p="xs",
+                            radius="sm",
+                            withBorder=True,
+                            style={"backgroundColor": "var(--surfaces-bg-card)"},
+                        )
+                    ],
+                    style={"width": "200px"},
+                )
 
                 return df.to_json(orient="split"), info
 
             except Exception as e:
-                return None, html.Div(f"Error loading file: {str(e)}", style={"color": "red"})
+                return None, html.Div(
+                    f"Error loading file: {str(e)}", style={"color": "red", "fontSize": FONT_SIZE_HELP}
+                )
+
+        @callback(
+            Output(f"{self.id}-data-store", "data", allow_duplicate=True),
+            Output(f"{self.id}-data-info", "children", allow_duplicate=True),
+            Input(f"{self.id}-remove-file", "n_clicks"),
+            prevent_initial_call=True,
+        )
+        def remove_file(n_clicks):
+            """Remove the uploaded file."""
+            if n_clicks:
+                return None, ""
+            return no_update, no_update
 
 
 vm.Page.add_type("components", ChatWithUpload)
@@ -789,18 +1269,18 @@ page_nostream = vm.Page(
 
 page_2 = vm.Page(
     title="Mixed Content Chat",
-    layout=vm.Flex(direction="column"),
+    layout=vm.Grid(grid=[[0, 1, 1]]),
     components=[
         vm.Card(
             text="""
 ## Mixed Content Chat Demo
 
-This chat can display different types of content:
-- **Text**: Just type normally for markdown-formatted responses with code highlighting
-- **Charts**: Use words like 'chart', 'graph', or 'plot' to see a scatter plot
-- **Images**: Use 'image', 'picture', or 'photo' to display an image
+This example demonstrates that a chat response can include multiple content types:
+- Markdown text with formatting
+- Plotly charts
+- Images
 
-Try typing: "Show me a chart" or "Display an image" or just chat normally!
+Type anything to see all content types rendered together!
 """
         ),
         Chat(id="mixed_chat", actions=[mixed_content(chat_id="mixed_chat")]),
@@ -810,7 +1290,7 @@ Try typing: "Show me a chart" or "Display an image" or just chat normally!
 
 page_anthropic = vm.Page(
     title="Claude Chat (Streaming)",
-    layout=vm.Flex(direction="column"),
+    layout=vm.Grid(grid=[[0], [1], [1], [1], [1]]),
     components=[
         vm.Card(
             text="""
@@ -828,15 +1308,7 @@ page_anthropic = vm.Page(
 
 page_vizro_ai = vm.Page(
     title="VizroAI Natural Language Charts",
-    layout=vm.Flex(direction="column"),
     components=[
-        vm.Card(
-            text="""
-## AI-Powered Data Visualization with VizroAI
-
-Upload your data and ask for visualizations in plain English!
-"""
-        ),
         ChatWithUpload(
             id="vizro_ai_chat",
             actions=[vizro_ai_chat(chat_id="vizro_ai_chat")],
@@ -847,6 +1319,7 @@ Upload your data and ask for visualizations in plain English!
 dashboard = vm.Dashboard(
     pages=[page, page_nostream, page_anthropic, page_2, page_vizro_ai],
     theme="vizro_light",
+    title="Vizro",
 )
 
 """
