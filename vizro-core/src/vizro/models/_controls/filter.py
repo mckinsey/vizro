@@ -230,7 +230,10 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
-        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
+        if not self.selector:
+            self.selector = DEFAULT_SELECTORS[self._column_type].from_pre_build(
+                {}, parent_model=self, field_name="selector"
+            )
         self.selector.title = self.selector.title or self.column.title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
@@ -279,12 +282,16 @@ class Filter(VizroBaseModel):
                 filter_function = _filter_isin
 
             self.selector.actions = [
-                _filter(
-                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    column=self.column,
-                    filter_function=filter_function,
-                    targets=self.targets,
-                ),
+                _filter.from_pre_build(
+                    {
+                        "id": f"{FILTER_ACTION_PREFIX}_{self.id}",
+                        "column": self.column,
+                        "filter_function": filter_function,
+                        "targets": self.targets,
+                    },
+                    parent_model=self,
+                    field_name="actions",
+                )
             ]
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).

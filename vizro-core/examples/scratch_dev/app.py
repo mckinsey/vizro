@@ -122,6 +122,7 @@ dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     dashboard = vm.Dashboard.model_validate(dashboard, context={"build_tree": True})
+    app = Vizro().build(dashboard)
     assert all(
         dashboard._tree[model.id].data is model
         for model in [dashboard] + dashboard.pages + [comp for page in dashboard.pages for comp in page.components]
