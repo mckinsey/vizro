@@ -1,6 +1,5 @@
 """Example app.py to play with the fake vizro models."""
 
-import json
 from typing import Literal, Union
 
 from vizro.models._fake_vizro.models import (
@@ -11,7 +10,6 @@ from vizro.models._fake_vizro.models import (
     ExportDataAction,
     Graph,
     Page,
-    SubComponent,
     VizroBaseModel,
 )
 
