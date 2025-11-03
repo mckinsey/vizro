@@ -10,9 +10,10 @@
 
 ### Additional Hatch Commands for vizro-core only
 
-- `hatch run example dev` - Run the scratch dev example on port 8050 (hot-reloads)
-- `hatch run example dev` - Run the feature example dashboard on port 8050 (hot-reloads)
+- `hatch run example` - Run the scratch dev example on port 8050 (hot-reloads)
 - `hatch run example scratch_dev/yaml_version` - Run the scratch_dev yaml example on port 8050 (hot-reloads)
+- `hatch run example dev` - Run the feature example dashboard on port 8050 (hot-reloads)
+
 
 ## Project Architecture
 
