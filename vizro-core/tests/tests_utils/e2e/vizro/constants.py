@@ -275,6 +275,8 @@ ACTION_PROPERTIES_SHORTCUT_TITLE_DESCRIPTION_HEADER_FOOTER_PAGE = "graph_aggrid-
 ACTION_SHORTCUT_GRAPH_ID = "action_shortcut_graph_id"
 ACTION_SHORTCUT_AG_GRID_ID = "action_shortcut_ag_grid_id"
 ACTION_SHORTCUT_TRIGGER_BUTTON_ID = "trigger-figures-title-header-footer-button-id"
+ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT = "Click button to update me"
+ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT = "Button clicked 1 times."
 
 AG_GRID_UNDERLYING_ID_SHORTCUTS_PAGE = "ag_grid-underlying_id_shortcuts"
 AG_GRID_SHORTCUTS_ID = "outer-aggrid-id"

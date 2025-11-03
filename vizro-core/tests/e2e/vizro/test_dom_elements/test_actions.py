@@ -268,22 +268,36 @@ def test_action_properties_shortcut_title_description_header_footer(dash_br):
     # click button which is changing title, description, header and footer for the graph and ag_grid
     dash_br.multiple_click(button_id_path(btn_id=cnst.ACTION_SHORTCUT_TRIGGER_BUTTON_ID), 1)
     # check that title for the graph and ag_grid were changed
-    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_title", "Button clicked 1 times.")
-    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(
+        f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_title", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+    )
+    dash_br.wait_for_text_to_equal(
+        f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+    )
     # check that header for the graph and ag_grid were changed
-    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_header p", "Button clicked 1 times.")
-    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_header p", "Button clicked 1 times.")
-    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(
+        f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_header p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+    )
+    dash_br.wait_for_text_to_equal(
+        f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_header p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+    )
+    dash_br.wait_for_text_to_equal(
+        f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+    )
     # check that footer for the graph and ag_grid were changed
-    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_footer p", "Button clicked 1 times.")
-    dash_br.wait_for_text_to_equal(f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_footer p", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(
+        f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_footer p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+    )
+    dash_br.wait_for_text_to_equal(
+        f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_footer p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+    )
     # check that description for the graph and ag_grid were changed
     # hover over info icon and wait for the tooltip appear for graph
     hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_title + span")
-    dash_br.wait_for_text_to_equal(".tooltip-inner p", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT)
     # hover over info icon and wait for the tooltip appear for ag_grid
     hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title + span")
-    dash_br.wait_for_text_to_equal(".tooltip-inner p", "Button clicked 1 times.")
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT)
 
 
 def test_ag_grid_underlying_id_shortcuts(dash_br):
