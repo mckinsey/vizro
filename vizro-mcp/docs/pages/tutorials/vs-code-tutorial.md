@@ -240,7 +240,7 @@ We have a dashboard with three tabs and three charts. In the next step, you'll l
 
 ## Share your dashboard using PyCafe
 
-The easiest way to share your dashboard is to use [PyCafe](https://py.cafe), which meansyou can email a standard link to others, who just open it in their browser to view and interact with the dashboard. You can choose to share either just the dashboard, or give access to the code too.
+The easiest way to share your dashboard is to use [PyCafe](https://py.cafe), which means you can email a standard link to others, who just open it in their browser to view and interact with the dashboard. You can choose to share either just the dashboard, or give access to the code too.
 
 1. Create a free account at [PyCafe](https://py.cafe).
 1. Create a new Vizro project.
