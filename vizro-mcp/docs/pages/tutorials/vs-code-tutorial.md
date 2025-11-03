@@ -42,13 +42,7 @@ You should receive a response similar to the following:
 
 To set up your environment in VS Code, first create a Workspace. Select **File > Open Folder…**, create a new folder (e.g., `lighting`), then click **Open**.  
 
-**VIDEO**
-
 Next, open the Chat view and use **Agent mode**. We used Claude Sonnet 4 when writing this tutorial.
-
-**VIDEO**
-
-
 
 ## Create a blank dashboard
 
@@ -60,8 +54,6 @@ Generate the code and save it to app.py in the workspace. Don’t open in PyCafe
 ```
 
 When the prompt successfully returns, it should have created code in `app.py`, visible in the left hand side of the screen in the file browser. 
-
-**VIDEO**
 
 ## Run the dashboard
 We need to set up a virtual Python environment to run the code, but it's only necessary to do this once, and you can ask VS Code to do it. Once the dashboard is running in the browser, any further code changes will auto-update so you can see them.
@@ -102,9 +94,9 @@ Here are a few tips to help you prompt Vizro-MCP effectively if the steps above 
 
 ## Add charts with prompts
 
-You will now add three charts to the dashboard to replicate those of the original visualization.
+You will now add three charts to the dashboard to replicate those of the [original visualization](https://ourworldindata.org/grapher/share-of-the-population-with-access-to-electricity).
 
-### Add a choropleth map
+### 1. Add a choropleth map
 
 Submit a prompt like this:
 
@@ -164,7 +156,7 @@ We have our first chart and it's looking pretty good! Next, you'll add a chart t
 
 
 
-### Add a line chart
+### 2. Add a line chart
 The next step is to add a second chart, a line chart for seven countries to show access across the time period of the data.
 
 Submit the following prompt:
@@ -203,7 +195,7 @@ vm.Filter(
 
 **VIDEO**
 
-### Add an animated bar chart
+### 3. Add an animated histogram
 The final chart is an animated histogram for the same seven countries selected for the line chart.
 
 Use the following prompt:
