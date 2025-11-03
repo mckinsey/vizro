@@ -160,9 +160,9 @@ dashboard = vm.Dashboard(
                 cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
                 cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
                 cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
-                cnst.ACTION_PROPERTIES_SHORTCUT_TITLE_DESCRIPTION_HEADER_FOOTER_PAGE,
-                cnst.AG_GRID_UNDERLYING_ID_SHORTCUTS_PAGE,
-                cnst.ACTIONS_DEFAULT_PROPERTY_CONTROLS_PAGE,
+                cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
+                cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
+                cnst.ACTION_CONTROL_SHORTCUT_PAGE,
             ],
         }
     ),

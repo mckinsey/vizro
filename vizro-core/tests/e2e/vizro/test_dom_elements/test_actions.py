@@ -70,6 +70,7 @@ def test_actions_progress_indicator(dash_br):
 
     # click on the dot in the scatter graph
     dash_br.click_at_coord_fractions(f"#{cnst.SCATTER_INTERACTIONS_ID} path:nth-of-type(20)", 0, 1)
+
     # check that that progress indicator appears
     dash_br.wait_for_text_to_equal("span[class='material-symbols-outlined progress-indicator']", "progress_activity")
 
@@ -89,6 +90,7 @@ def test_set_control_cross_filter_graph(dash_br):
         0,
         1,
     )
+
     # Check y axis max value is '1.8'
     dash_br.wait_for_text_to_equal(
         graph_axis_value_path(graph_id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID, axis_value_number="5", axis_value="1.8"),
@@ -125,6 +127,7 @@ def test_set_control_cross_filter_ag_grid(dash_br):
         f"div:nth-of-type(2) div[col-id='country']",
         1,
     )
+
     # Check y axis max value is '50k'
     dash_br.wait_for_text_to_equal(
         graph_axis_value_path(
@@ -141,14 +144,17 @@ def test_drill_through_filter_graph(dash_br):
         dash_br,
         page_name=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
     )
+
     # click on the 'versicolor' data in scatter graph
     dash_br.click_at_coord_fractions(
         f"#{cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_SOURCE_ID} g[class^='trace']:nth-of-type(2) path:nth-of-type(20)",
         0,
         1,
     )
+
     # check that new page is opened
     dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET)
+
     # check that appropriate filter selected on the new page
     check_selected_categorical_component(
         dash_br,
@@ -160,6 +166,7 @@ def test_drill_through_filter_graph(dash_br):
             {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
+
     # Check y axis max value is '7'
     dash_br.wait_for_text_to_equal(
         graph_axis_value_path(
@@ -176,6 +183,7 @@ def test_drill_through_parameter_graph(dash_br):
         dash_br,
         page_name=cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
     )
+
     # click on the 'versicolor' data in scatter graph
     dash_br.click_at_coord_fractions(
         f"#{cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE_ID} "
@@ -183,8 +191,10 @@ def test_drill_through_parameter_graph(dash_br):
         0,
         1,
     )
+
     # check that new page is opened
     dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_TARGET)
+
     # check that appropriate parameter selected on the new page
     check_selected_categorical_component(
         dash_br,
@@ -196,6 +206,7 @@ def test_drill_through_parameter_graph(dash_br):
             {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
+
     # check that graph title changed to 'versicolor'
     dash_br.wait_for_text_to_equal(".gtitle", "versicolor")
 
@@ -206,6 +217,7 @@ def test_drill_through_filter_ag_grid(dash_br):
         dash_br,
         page_name=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
     )
+
     # check if column 'Sepal_length' is available
     dash_br.wait_for_element(
         f"div[id='{cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='sepal_length']"
@@ -217,8 +229,10 @@ def test_drill_through_filter_ag_grid(dash_br):
         f"div:nth-of-type(2) div[col-id='species']",
         1,
     )
+
     # check that new page is opened
     dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET)
+
     # check that appropriate filter selected on the new page
     check_selected_categorical_component(
         dash_br,
@@ -230,6 +244,7 @@ def test_drill_through_filter_ag_grid(dash_br):
             {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
+
     # Check y axis max value is '7'
     dash_br.wait_for_text_to_equal(
         graph_axis_value_path(
@@ -246,15 +261,18 @@ def test_drill_down_graph(dash_br):
         dash_br,
         page_name=cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
     )
+
     # click on the 'versicolor' data in scatter graph
     dash_br.click_at_coord_fractions(
         f"#{cnst.SCATTER_DRILL_DOWN_GRAPH_ID} g[class^='trace']:nth-of-type(2) path:nth-of-type(20)", 0, 1
     )
+
     # Check y axis max value is '7'
     dash_br.wait_for_text_to_equal(
         graph_axis_value_path(graph_id=cnst.SCATTER_DRILL_DOWN_GRAPH_ID, axis_value_number="5", axis_value="7"),
         "7",
     )
+
     # check that graph title changed to 'versicolor'
     dash_br.wait_for_text_to_equal(".gtitle", "Graph shows `versicolor` species.")
 
@@ -263,61 +281,69 @@ def test_action_properties_shortcut_title_description_header_footer(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.ACTION_PROPERTIES_SHORTCUT_TITLE_DESCRIPTION_HEADER_FOOTER_PAGE,
+        page_name=cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
     )
+
     # click button which is changing title, description, header and footer for the graph and ag_grid
-    dash_br.multiple_click(button_id_path(btn_id=cnst.ACTION_SHORTCUT_TRIGGER_BUTTON_ID), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ACTION_MODEL_FIELD_BUTTON_ID), 1)
+
     # check that title for the graph and ag_grid were changed
     dash_br.wait_for_text_to_equal(
-        f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_title", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+        f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}_title", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT
     )
     dash_br.wait_for_text_to_equal(
-        f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+        f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}_title", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT
     )
+
     # check that header for the graph and ag_grid were changed
     dash_br.wait_for_text_to_equal(
-        f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_header p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+        f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}_header p", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT
     )
     dash_br.wait_for_text_to_equal(
-        f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_header p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+        f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}_header p", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT
     )
-    dash_br.wait_for_text_to_equal(
-        f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
-    )
+
     # check that footer for the graph and ag_grid were changed
     dash_br.wait_for_text_to_equal(
-        f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_footer p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+        f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}_footer p", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT
     )
     dash_br.wait_for_text_to_equal(
-        f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_footer p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT
+        f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}_footer p", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT
     )
+
     # check that description for the graph and ag_grid were changed
     # hover over info icon and wait for the tooltip appear for graph
-    hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_SHORTCUT_GRAPH_ID}_title + span")
-    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT)
+    hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}_title + span")
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT)
+
     # hover over info icon and wait for the tooltip appear for ag_grid
-    hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_SHORTCUT_AG_GRID_ID}_title + span")
-    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.ACTION_PROPERTIES_SHORTCUT_BUTTON_CLICKED_FIGURE_TEXT)
+    hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}_title + span")
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT)
 
 
 def test_ag_grid_underlying_id_shortcuts(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.AG_GRID_UNDERLYING_ID_SHORTCUTS_PAGE,
+        page_name=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
     )
-    # check if column 'Sepal_length' is available
-    dash_br.wait_for_element(f"div[id='{cnst.AG_GRID_SHORTCUTS_ID}'] div:nth-of-type(1) div[col-id='sepal_length']")
 
-    # click on 'Sepal_length = 4.9'
+    # check if column 'Sepal_length' is available in ag-grid
+    dash_br.wait_for_element(
+        f"div[id='{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID}'] "
+        f"div:nth-of-type(1) div[col-id='sepal_length']"
+    )
+
+    # click on 'Sepal_length = 4.9' ag-grid cell
     dash_br.multiple_click(
-        f"div[id='{cnst.AG_GRID_SHORTCUTS_ID}'] div[class='ag-center-cols-container'] "
+        f"div[id='{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID}'] div[class='ag-center-cols-container'] "
         f"div:nth-of-type(2) div[col-id='sepal_length']",
         1,
     )
+
     # check value in Card
     dash_br.wait_for_text_to_equal(
-        f"#{cnst.CARD_SHORTCUTS_ID} a",
+        f"#{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_CARD_ID} a",
         "{'sepal_length': 4.9, 'sepal_width': 3, 'petal_length': 1.4, 'petal_width': 0.2, "
         "'species': 'setosa', 'species_id': 1, 'date_column': '2024-01-02', 'number_column': 1, 'is_setosa': True}",
     )
@@ -327,20 +353,23 @@ def test_default_property_controls(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.ACTIONS_DEFAULT_PROPERTY_CONTROLS_PAGE,
+        page_name=cnst.ACTION_CONTROL_SHORTCUT_PAGE,
     )
+
     # choose 'petal_length' for filter
     dash_br.multiple_click(
-        categorical_components_value_path(elem_id=cnst.FILTER_DEFAULT_PROPERTY_CONTROLS, value=2), 1, delay=0.1
+        categorical_components_value_path(elem_id=cnst.ACTION_CONTROL_SHORTCUT_FILTER_ID, value=2), 1, delay=0.1
     )
+
     # check that 'petal_length' was chosen for parameter
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.PARAMETER_DEFAULT_PROPERTY_CONTROLS,
+        component_id=cnst.ACTION_CONTROL_SHORTCUT_PARAMETER_ID,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "sepal_length"},
             {"value": 2, "selected": True, "value_name": "petal_length"},
         ],
     )
+
     # check that graph 'x' axis changed to 'petal_length'
     dash_br.wait_for_element('text[class="xtitle"][data-unformatted="petal_length"]')

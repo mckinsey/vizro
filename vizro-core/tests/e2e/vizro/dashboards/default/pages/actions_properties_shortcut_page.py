@@ -1,9 +1,5 @@
-import time
-
 import e2e.vizro.constants as cnst
 import pandas as pd
-from dash import ctx
-from dash.exceptions import PreventUpdate
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -23,60 +19,55 @@ data_manager["dynamic_df"] = lambda number_of_rows=150: df.head(number_of_rows)
 
 @capture("action")
 def action_return_text(button_number_of_clicks):
-    # Added to handle the bug when a page custom action is triggered if on-page-load is not defined
-    if not button_number_of_clicks:
-        raise PreventUpdate
-
-    # Sleep to see what part of the output component is updating
-    time.sleep(0.5)
-
     title = f"Button clicked {button_number_of_clicks} times."
 
-    # -2 is set due to internal action outputs: "_action_finished" and "_action_progress_indicatior"
-    return [title] * (len(ctx.outputs_list) - 2)
+    # There are 4 identical outputs
+    return [title] * 4
 
 
 vm.Page.add_type("controls", vm.Button)
 
 figures_title_header_footer_page = vm.Page(
-    title=cnst.ACTION_PROPERTIES_SHORTCUT_TITLE_DESCRIPTION_HEADER_FOOTER_PAGE,
-    id=cnst.ACTION_PROPERTIES_SHORTCUT_TITLE_DESCRIPTION_HEADER_FOOTER_PAGE,
+    title=cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
+    id=cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
     layout=vm.Grid(grid=[[0, 1]]),
     components=[
         vm.Graph(
-            id=cnst.ACTION_SHORTCUT_GRAPH_ID,
-            title=cnst.ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT,
-            description=cnst.ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT,
-            header=cnst.ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT,
-            footer=cnst.ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT,
+            id=cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID,
+            title=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
+            description=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
+            header=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
+            footer=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
             figure=px.scatter(df_3_rows, x="sepal_width", y="sepal_length", color="species"),
         ),
         vm.AgGrid(
-            id=cnst.ACTION_SHORTCUT_AG_GRID_ID,
-            title=cnst.ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT,
-            description=cnst.ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT,
-            header=cnst.ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT,
-            footer=cnst.ACTION_PROPERTIES_SHORTCUT_DEFAULT_FIGURE_TEXT,
+            id=cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID,
+            title=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
+            description=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
+            header=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
+            footer=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
             figure=dash_ag_grid(df_3_rows),
         ),
     ],
     controls=[
         vm.Button(
-            id=cnst.ACTION_SHORTCUT_TRIGGER_BUTTON_ID,
+            id=cnst.ACTION_MODEL_FIELD_BUTTON_ID,
             actions=[
                 vm.Action(
-                    function=action_return_text(f"{cnst.ACTION_SHORTCUT_TRIGGER_BUTTON_ID}"),
+                    function=action_return_text(f"{cnst.ACTION_MODEL_FIELD_BUTTON_ID}"),
+                    # Uses model fields (title, header...) as outputs instead of
+                    # accessing the underlying Dash properties such as `children`.
                     outputs=[
                         # Graph
-                        f"{cnst.ACTION_SHORTCUT_GRAPH_ID}.title",
-                        f"{cnst.ACTION_SHORTCUT_GRAPH_ID}.description",
-                        f"{cnst.ACTION_SHORTCUT_GRAPH_ID}.header",
-                        f"{cnst.ACTION_SHORTCUT_GRAPH_ID}.footer",
+                        f"{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}.title",
+                        f"{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}.description",
+                        f"{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}.header",
+                        f"{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}.footer",
                         # AgGrid
-                        f"{cnst.ACTION_SHORTCUT_AG_GRID_ID}.title",
-                        f"{cnst.ACTION_SHORTCUT_AG_GRID_ID}.description",
-                        f"{cnst.ACTION_SHORTCUT_AG_GRID_ID}.header",
-                        f"{cnst.ACTION_SHORTCUT_AG_GRID_ID}.footer",
+                        f"{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}.title",
+                        f"{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}.description",
+                        f"{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}.header",
+                        f"{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}.footer",
                     ],
                 )
             ],
@@ -85,78 +76,59 @@ figures_title_header_footer_page = vm.Page(
 )
 
 
-@capture("action")
-def action_select_ag_grid_rows(button_number_of_clicks):
-    # Sleep to see what part of the output component is updating
-    time.sleep(0.5)
-
-    num_rows = button_number_of_clicks % 4
-    selected_rows = df_3_rows.iloc[:num_rows].to_dict("records") if num_rows > 0 else []
-
-    return selected_rows
-
-
 ag_grid_underlying_id_shortcuts_page = vm.Page(
-    title=cnst.AG_GRID_UNDERLYING_ID_SHORTCUTS_PAGE,
-    id=cnst.AG_GRID_UNDERLYING_ID_SHORTCUTS_PAGE,
+    title=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
+    id=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
     components=[
         vm.AgGrid(
-            id=cnst.AG_GRID_SHORTCUTS_ID,
+            id=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID,
             title="Click button to update the figure",
             figure=dash_ag_grid(df_3_rows),
             actions=[
+                # Lambda action that takes `AgGrid.selectedRows` JSON and pastes it to the Card output.
                 vm.Action(
-                    function=capture("action")(lambda x: str(x))(f"{cnst.AG_GRID_SHORTCUTS_ID}.selectedRows"),
-                    outputs=[cnst.CARD_SHORTCUTS_ID],
+                    # Uses the parent `vm.AgGrid.id` instead of the actual `dag.AgGrid` ID created by `dash_ag_grid`.
+                    function=capture("action")(lambda x: str(x))(
+                        f"{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID}.selectedRows"
+                    ),
+                    outputs=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_CARD_ID,
                 )
             ],
         ),
         vm.Card(
-            id=cnst.CARD_SHORTCUTS_ID,
+            id=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_CARD_ID,
             text="Click ag-grid cell to update me",
-        ),
-    ],
-    controls=[
-        vm.Button(
-            id=cnst.BUTTON_AG_GRID_SHORTCUTS_ID,
-            actions=[
-                vm.Action(
-                    function=action_select_ag_grid_rows(f"{cnst.BUTTON_AG_GRID_SHORTCUTS_ID}"),
-                    outputs=[
-                        f"{cnst.AG_GRID_SHORTCUTS_ID}.selectedRows",
-                    ],
-                )
-            ],
         ),
     ],
 )
 
 
 actions_default_property_controls_page = vm.Page(
-    title=cnst.ACTIONS_DEFAULT_PROPERTY_CONTROLS_PAGE,
-    id=cnst.ACTIONS_DEFAULT_PROPERTY_CONTROLS_PAGE,
+    title=cnst.ACTION_CONTROL_SHORTCUT_PAGE,
+    id=cnst.ACTION_CONTROL_SHORTCUT_PAGE,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_DEFAULT_PROPERTY_CONTROLS_ID,
+            id=cnst.ACTION_CONTROL_SHORTCUT_GRAPH_ID,
             figure=px.scatter(df_3_rows, x="sepal_width", y="sepal_length", color="species"),
         ),
     ],
     controls=[
         vm.Filter(
-            id=cnst.FILTER_DEFAULT_PROPERTY_CONTROLS,
+            id=cnst.ACTION_CONTROL_SHORTCUT_FILTER_ID,
             column="species",
             selector=vm.RadioItems(
                 options=["sepal_length", "petal_length"],
                 value="sepal_length",
+                # Works even without specifying the filter/parameter selector IDs or the `value` property.
                 actions=vm.Action(
-                    function=capture("action")(lambda x: x)(cnst.FILTER_DEFAULT_PROPERTY_CONTROLS),
-                    outputs=cnst.PARAMETER_DEFAULT_PROPERTY_CONTROLS,
+                    function=capture("action")(lambda x: x)(cnst.ACTION_CONTROL_SHORTCUT_FILTER_ID),
+                    outputs=cnst.ACTION_CONTROL_SHORTCUT_PARAMETER_ID,
                 ),
             ),
         ),
         vm.Parameter(
-            id=cnst.PARAMETER_DEFAULT_PROPERTY_CONTROLS,
-            targets=[f"{cnst.SCATTER_DEFAULT_PROPERTY_CONTROLS_ID}.x"],
+            id=cnst.ACTION_CONTROL_SHORTCUT_PARAMETER_ID,
+            targets=[f"{cnst.ACTION_CONTROL_SHORTCUT_GRAPH_ID}.x"],
             selector=vm.RadioItems(
                 value="sepal_length",
                 options=["sepal_length", "petal_length"],
