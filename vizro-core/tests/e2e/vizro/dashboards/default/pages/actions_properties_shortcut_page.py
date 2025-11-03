@@ -21,8 +21,8 @@ data_manager["dynamic_df"] = lambda number_of_rows=150: df.head(number_of_rows)
 def action_return_text(button_number_of_clicks):
     title = f"Button clicked {button_number_of_clicks} times."
 
-    # There are 4 identical outputs
-    return [title] * 4
+    # There are 8 identical outputs (4 for graph and 4 for ag_grid)
+    return [title] * 8
 
 
 vm.Page.add_type("controls", vm.Button)
