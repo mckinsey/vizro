@@ -736,3 +736,9 @@ class TestAddingDuplicateDiscriminator:
             pass
 
         Parent.add_type("child", MultipleChild)
+
+
+class TestSimple:
+    def test_always_passes(self):
+        """Simple test that always passes."""
+        assert True
