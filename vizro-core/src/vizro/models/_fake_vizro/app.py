@@ -1,7 +1,7 @@
 """Example app.py to play with the fake vizro models."""
 
 import json
-from typing import Union
+from typing import Literal, Union
 
 from vizro.models._fake_vizro.models import (
     Action,
@@ -14,6 +14,14 @@ from vizro.models._fake_vizro.models import (
     SubComponent,
     VizroBaseModel,
 )
+
+
+# User-defined custom components (realistic usage)
+class CustomCard(VizroBaseModel):
+    """User-defined custom component - demonstrates tree building issue."""
+
+    type: Literal["custom_component"] = "custom_component"
+    title: str
 
 
 class CustomPage(Page):
@@ -64,6 +72,27 @@ dashboard = Dashboard(
 #     ],
 # }
 
+# Minimal case demonstrating custom component tree building issue
+dashboard_with_custom = Dashboard(
+    pages=[
+        Page(
+            title="test_page",
+            components=[
+                Graph(figure="test_figure", actions=[]),  # Built-in component - appears in tree
+                Card(text="test_card"),  # Built-in component - appears in tree
+                CustomCard(title="custom_card"),  # Custom component - MISSING from tree
+            ],
+        ),
+    ],
+)
+
+dashboard_with_custom = Dashboard.model_validate(dashboard_with_custom, context={"build_tree": True})
+print("\n" + "=" * 80)
+print("Tree output - CustomCard should now appear:")
+print("=" * 80)
+dashboard_with_custom._tree.print(repr="{node.kind} -> {node.data.type} (id={node.data.id})")
+print("\n" + "=" * 80)
+
 # dashboard = Dashboard.model_validate(dashboard, context={"build_tree": True})
 # print("--------------------------------")
 # for page in dashboard.pages:
@@ -85,20 +114,20 @@ dashboard = Dashboard(
 # print(dashboard.pages[0].components[0].actions[0])
 # print(dashboard.pages[0].components[0].actions[0]._parent_model)
 
-# JSON Schema
-graph = Graph(id="graph-id", figure="a", actions=[Action(id="action-id", action="a")])
+# JSON Schema (commented out to focus on tree building issue)
+# graph = Graph(id="graph-id", figure="a", actions=[Action(id="action-id", action="a")])
 # graph = Graph.model_validate(graph)
 # print(json.dumps(graph.model_dump(), indent=2))
 # print(json.dumps(ExportDataAction.model_json_schema(), indent=2))
 # print("=" * 100)
 # print(json.dumps(Card.model_json_schema(), indent=2))
 # print("=" * 100)
-print(json.dumps(Dashboard.model_json_schema(), indent=2))
-print("=" * 100)
-print(json.dumps(SubComponent.model_json_schema(), indent=2))
-print("=" * 100)
-ea = ExportDataAction(format="csv")
-print(json.dumps(ea.model_dump(), indent=2))
+# print(json.dumps(Dashboard.model_json_schema(), indent=2))
+# print("=" * 100)
+# print(json.dumps(SubComponent.model_json_schema(), indent=2))
+# print("=" * 100)
+# ea = ExportDataAction(format="csv")
+# print(json.dumps(ea.model_dump(), indent=2))
 
 
 """

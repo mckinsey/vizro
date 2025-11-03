@@ -322,6 +322,21 @@ class TestFakeVizroDashboardTreeCreation:
         """Test tree creation is not triggered."""
         assert dashboard._tree is None
 
+    def test_custom_component_in_tree(self):
+        """Test that custom components are added to the tree."""
+
+        class CustomCard(VizroBaseModel):
+            type: Literal["custom_component"] = "custom_component"
+            title: str
+
+        dashboard = Dashboard.model_validate(
+            Dashboard(
+                pages=[Page(title="test", components=[Graph(figure="fig", actions=[]), CustomCard(title="custom")])]
+            ),
+            context={"build_tree": True},
+        )
+        assert dashboard.pages[0].components[1].id in {node.data.id for node in dashboard._tree}
+
     @pytest.mark.parametrize("dashboard_with_tree", DASHBOARDS_WITH_TREE, indirect=True)
     def test_tree_creation_triggered(self, dashboard_with_tree):
         """Test tree creation is triggered when build_tree context is provided.
