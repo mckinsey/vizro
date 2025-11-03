@@ -42,7 +42,7 @@ Next, open the Chat view and use **Agent mode**. We used Claude Sonnet 4 when wr
 
 ## Create a blank dashboard
 
-The first step is to create a blank dashboard with three tabs for the different charts that submit this prompt in chat. Don't worry about the instruction about PyCafe at this point; we will explain its purpose later:
+The first step is to create a blank dashboard with three tabs for the different charts. Submit this prompt in chat. Don't worry about the instruction about PyCafe at this point; we will explain its purpose later:
 
 ```text
 Let’s use Vizro-MCP to generate a blank dashboard with one page and three tabs.
