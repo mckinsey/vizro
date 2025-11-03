@@ -85,8 +85,7 @@ repos:
         exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|^vizro-mcp/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md|vizro-core/docs/pages/user-guides/custom-actions.md|^vizro-core/changelog.d|^vizro-ai/changelog.d
         additional_dependencies:
           - mdformat-mkdocs[recommended]==4.3.0
-          - beautysh==6.3.3
-
+          - git+https://github.com/hukkin/mdformat-beautysh # Remove once https://github.com/hukkin/mdformat-beautysh/issues/4 is fully resolved
 # Configuration for https://pre-commit.ci/.
 ci:
   autoupdate_schedule: monthly
