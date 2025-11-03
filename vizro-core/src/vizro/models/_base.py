@@ -5,6 +5,7 @@ import logging
 import random
 import textwrap
 import uuid
+from collections.abc import Mapping
 from types import SimpleNamespace
 from typing import Annotated, Any, Literal, Optional, Self, Union, cast, get_args, get_origin
 
@@ -251,6 +252,30 @@ class VizroBaseModel(BaseModel):
     def model_post_init(self, context: Any) -> None:
         model_manager[self.id] = self
 
+    @staticmethod
+    def _ensure_model_in_tree(model: VizroBaseModel, context: dict[str, Any]) -> VizroBaseModel:
+        """Revalidate a VizroBaseModel instance if it hasn't been added to the tree yet."""
+        has_tree = hasattr(model, "_tree")
+        tree_is_none = getattr(model, "_tree", None) is None
+        if not has_tree or tree_is_none:
+            # Revalidate with build_tree context to ensure tree node is created
+            return model.__class__.model_validate(model, context=context)
+        return model
+
+    @staticmethod
+    def _ensure_models_in_tree(validated_stuff: Any, context: dict[str, Any]) -> Any:
+        """Recursively ensure all VizroBaseModel instances in a structure are added to the tree."""
+        if isinstance(validated_stuff, VizroBaseModel):
+            return VizroBaseModel._ensure_model_in_tree(validated_stuff, context)
+        elif isinstance(validated_stuff, list):
+            return [VizroBaseModel._ensure_models_in_tree(item, context) for item in validated_stuff]
+        elif isinstance(validated_stuff, Mapping) and not isinstance(validated_stuff, str):
+            # Note: str is a Mapping in Python, so we exclude it
+            return type(validated_stuff)(
+                {key: VizroBaseModel._ensure_models_in_tree(value, context) for key, value in validated_stuff.items()}
+            )
+        return validated_stuff
+
     @field_validator("*", mode="wrap")
     @classmethod
     def build_tree_field_wrap(
@@ -275,7 +300,15 @@ class VizroBaseModel(BaseModel):
         validated_stuff = handler(value)
 
         if info.context is not None and "build_tree" in info.context:
-            #### Field stack ####
+            #### Ensure VizroBaseModel instances are added to tree ####
+            # This handles the case where custom components match 'Any' in discriminated unions
+            # and might not go through full revalidation
+            # Note: field_stack and id_stack are still in place here (before the pop below)
+            # so build_tree_model_wrap will have the correct context
+            validated_stuff = VizroBaseModel._ensure_models_in_tree(validated_stuff, info.context)
+
+            #### Field stack cleanup ####
+            # Pop after revalidation so the stacks are available during revalidation
             info.context["id_stack"].pop()
             info.context["field_stack"].pop()
         return validated_stuff

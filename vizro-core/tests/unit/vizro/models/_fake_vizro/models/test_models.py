@@ -322,6 +322,7 @@ class TestFakeVizroDashboardTreeCreation:
         """Test tree creation is not triggered."""
         assert dashboard._tree is None
 
+    # TODO: For real Vizro we need to check all three cases (normal, list, mapping)
     def test_custom_component_in_tree(self):
         """Test that custom components are added to the tree."""
 

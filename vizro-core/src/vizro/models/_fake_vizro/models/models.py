@@ -217,7 +217,7 @@ class VizroBaseModel(BaseModel):
             # and might not go through full revalidation
             # Note: field_stack and id_stack are still in place here (before the pop below)
             # so build_tree_model_wrap will have the correct context
-            # validated_stuff = VizroBaseModel._ensure_models_in_tree(validated_stuff, info.context)
+            validated_stuff = VizroBaseModel._ensure_models_in_tree(validated_stuff, info.context)
 
             #### Field stack cleanup ####
             # Pop after revalidation so the stacks are available during revalidation
