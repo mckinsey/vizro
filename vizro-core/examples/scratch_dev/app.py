@@ -3,9 +3,9 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
+from vizro.actions import set_control, update_figures
 from vizro.managers import data_manager
-from vizro.actions import update_figures
+from vizro.models.types import capture
 
 
 df = px.data.iris()
@@ -104,7 +104,89 @@ page_2_1 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_0_1, page_1_1, page_2_1])
+
+# ====== **NEW** Synced control values ======
+
+page_3_1 = vm.Page(
+    id="page_3_1",
+    title="Sync: By chaining builtin actions",
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p31_filter_1",
+                    column="species",
+                    selector=vm.Checklist(
+                        actions=[
+                            update_figures(targets=["p31_graph_1"]),
+                            set_control(control="p31_filter_2", value="NOT-RELEVANT"),
+                        ]
+                    ),
+                )
+            ],
+            components=[
+                vm.Graph(id="p31_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p31_filter_2",
+                    column="species",
+                    selector=vm.Dropdown(
+                        actions=[
+                            update_figures(targets=["p31_graph_2"]),
+                            set_control(control="p31_filter_1", value="NOT-RELEVANT"),
+                        ]
+                    ),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p31_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+    ],
+)
+
+
+"""
+# ====== Cascading controls ======
+# TODO: Does not work as:
+#  1. Form component does not support the `set_control` action yet.
+#  2. Can't be used as and "value" and "options" have to be updated too.
+#  3. TODO PP (CT): Can't be used with custom action/dash callback as "select_all" option will be overwritten. We should improve "select_all" here. Ben suggested the same.
+#  4. Think about dynamic data here.
+#  5. Think about persistence per cascading filter value. Investigate dash docs about this.
+
+@capture("action")
+def update_country_options_value(_trigger):
+    continent = _trigger
+    if continent:
+        filtered_df = df_gapminder[df_gapminder["continent"].isin([continent])]
+        options = [{"label": c, "value": c} for c in sorted(filtered_df["country"].unique())]
+        value = [options[0]["value"]] if options else []
+        return options, value
+    return [], []
+"""
+
+
+dashboard = vm.Dashboard(
+    pages=[
+        page_0_1,
+        page_1_1,
+        page_2_1,
+        page_3_1,
+    ],
+    navigation=vm.Navigation(
+        pages={
+            "Playgrounds": ["page_0_1"],
+            "Apply filter on parameter change": ["page_1_1"],
+            "Apply controls on button click": ["page_2_1"],
+            "Syncing controls": ["page_3_1"],
+        }
+    ),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
