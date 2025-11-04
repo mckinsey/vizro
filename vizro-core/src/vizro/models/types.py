@@ -36,6 +36,22 @@ else:
     from typing_extensions import TypeAlias
 
 
+def camel_to_snake(name: str) -> str:
+    """Convert camelCase to snake_case.
+
+    Args:
+        name: CamelCase string to convert
+
+    Returns:
+        snake_case string
+    """
+    import re
+
+    # Add underscores before uppercase letters, then lowercase everything
+    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
+
+
 def _get_layout_discriminator(layout: Any) -> Optional[str]:
     """Helper function for callable discriminator used for LayoutType."""
     # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
@@ -80,6 +96,70 @@ def _get_action_discriminator(action: Any) -> Optional[str]:
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
     # union_tag_not_found error is raised.
     return getattr(action, "type", None)
+
+
+def _get_type_discriminator(model: Any, builtin_tags: Optional[list[str]] = None) -> Optional[str]:
+    """Shared discriminator function for extracting the 'type' field from models or dicts.
+
+    Used by both make_discriminated_union (for single-type and multi-type unions) and
+    multi-type unions in types.py (ComponentType, SelectorType, ControlType, etc.).
+
+    Args:
+        model: Model instance, dict, or other object to extract type from
+        builtin_tags: Optional list of builtin tags. If provided and length is 1,
+            enables single-type coercion (returns the tag even if type is not specified).
+
+    Returns:
+        The type string or None if not found
+    """
+    if isinstance(model, dict):
+        # YAML configuration where no custom type possible
+        if builtin_tags is not None and len(builtin_tags) == 1:
+            # Fake discriminated union where there's only one option.
+            # Coerce to that model (could raise error if type specified and doesn't match if we wanted to, doesn't
+            # really matter)
+            return builtin_tags[0]
+        else:
+            # Real discriminated union case need a type to be specified
+            # If it's not specified then return None which will raise a pydantic discriminated union error
+            return model.get("type", None)
+    elif hasattr(model, "type") and hasattr(model, "id"):
+        # Find tag of supplied model (check for VizroBaseModel instance).
+        return model.type
+    else:
+        raise ValueError("something")
+
+
+# Helper function wrapper for multi-type unions that don't need single-type coercion
+def _get_multi_type_discriminator(model: Any) -> Optional[str]:
+    """Wrapper for _get_type_discriminator for multi-type unions.
+
+    Used for SelectorType, _FormComponentType, ControlType, ComponentType, and NavSelectorType.
+    Passes None for builtin_tags to disable single-type coercion.
+    """
+    return _get_type_discriminator(model, builtin_tags=None)
+
+
+def make_discriminated_union(*args):
+    """Build discriminated union out of types in args.
+
+    Tags are just the snake case version of the class names.
+    Tag "custom_component" must validate as Any to keep its custom class.
+
+    Args:
+        *args: Types to include in the discriminated union
+
+    Returns:
+        Annotated union with discriminator field
+    """
+    builtin_tags = [camel_to_snake(T.__name__) for T in args]
+    types = [Annotated[T, Tag(builtin_tag)] for T, builtin_tag in zip(args, builtin_tags)]
+    types.append(SkipJsonSchema[Annotated[Any, Tag("custom_component")]])
+
+    def discriminator(model):
+        return _get_type_discriminator(model, builtin_tags)
+
+    return Annotated[Union[tuple(types)], Field(discriminator=Discriminator(discriminator))]
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -659,29 +739,67 @@ OptionsType = Union[list[StrictBool], list[float], list[str], list[date], list[O
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union["Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider", "Switch"],
-    Field(discriminator="type", description="Selectors to be used inside a control."),
+    Union[
+        Annotated["Checklist", Tag("checklist")],
+        Annotated["DatePicker", Tag("date_picker")],
+        Annotated["Dropdown", Tag("dropdown")],
+        Annotated["RadioItems", Tag("radio_items")],
+        Annotated["RangeSlider", Tag("range_slider")],
+        Annotated["Slider", Tag("slider")],
+        Annotated["Switch", Tag("switch")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
+    Field(
+        discriminator=Discriminator(_get_multi_type_discriminator),
+        description="Selectors to be used inside a control.",
+    ),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
 [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
 [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
 
 _FormComponentType = Annotated[
-    Union[SelectorType, "Button", "UserInput"],
-    Field(discriminator="type", description="Components that can be used to receive user input within a form."),
+    Union[
+        SelectorType,
+        Annotated["Button", Tag("button")],
+        Annotated["UserInput", Tag("user_input")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
+    Field(
+        discriminator=Discriminator(_get_multi_type_discriminator),
+        description="Components that can be used to receive user input within a form.",
+    ),
 ]
 
 ControlType = Annotated[
-    Union["Filter", "Parameter"],
-    Field(discriminator="type", description="Control that affects components on the page."),
+    Union[
+        Annotated["Filter", Tag("filter")],
+        Annotated["Parameter", Tag("parameter")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
+    Field(
+        discriminator=Discriminator(_get_multi_type_discriminator),
+        description="Control that affects components on the page.",
+    ),
 ]
 """Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter] or
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Text", "Table", "Tabs"],
+    Union[
+        Annotated["AgGrid", Tag("ag_grid")],
+        Annotated["Button", Tag("button")],
+        Annotated["Card", Tag("card")],
+        Annotated["Container", Tag("container")],
+        Annotated["Figure", Tag("figure")],
+        Annotated["Graph", Tag("graph")],
+        Annotated["Text", Tag("text")],
+        Annotated["Table", Tag("table")],
+        Annotated["Tabs", Tag("tabs")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
     Field(
-        discriminator="type",
+        discriminator=Discriminator(_get_multi_type_discriminator),
         description="Component that makes up part of the layout on the page.",
     ),
 ]
@@ -697,7 +815,15 @@ NavPagesType = Union[list[ModelID], dict[str, list[ModelID]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
-    Union["Accordion", "NavBar"], Field(discriminator="type", description="Component for rendering navigation.")
+    Union[
+        Annotated["Accordion", Tag("accordion")],
+        Annotated["NavBar", Tag("nav_bar")],
+        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
+    ],
+    Field(
+        discriminator=Discriminator(_get_multi_type_discriminator),
+        description="Component for rendering navigation.",
+    ),
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""

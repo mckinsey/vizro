@@ -1,21 +1,32 @@
+from __future__ import annotations
+
 import inspect
 import logging
 import random
 import textwrap
 import uuid
-from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
+from collections.abc import Mapping
+from types import SimpleNamespace
+from typing import Annotated, Any, Literal, Optional, Self, Union, cast, get_args, get_origin
 
 import autoflake
 import black
+from nutree.typed_tree import TypedTree
 from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
+    ModelWrapValidatorHandler,
+    PrivateAttr,
     SerializationInfo,
     SerializerFunctionWrapHandler,
+    ValidatorFunctionWrapHandler,
+    field_validator,
     model_serializer,
+    model_validator,
 )
 from pydantic.fields import FieldInfo
+from pydantic_core.core_schema import ValidationInfo
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
@@ -216,8 +227,15 @@ class VizroBaseModel(BaseModel):
     Args:
         id (ModelID): ID to identify model. Must be unique throughout the whole dashboard.
             When no ID is chosen, ID will be automatically generated.
+        type: Type identifier for the model. Defaults to "vizro_base_model" for the base class.
+            Subclasses should override with their specific Literal type.
+            Custom components should set type: str = "custom_component" or type: Literal["custom_component"] = "custom_component"
 
     """
+
+    # Default type for base model. Subclasses should override with their specific Literal type.
+    # Custom components should set type: str = "custom_component" or type: Literal["custom_component"] = "custom_component"
+    type: Literal["vizro_base_model"] = Field(default="vizro_base_model")
 
     id: Annotated[
         ModelID,
@@ -228,10 +246,170 @@ class VizroBaseModel(BaseModel):
             validate_default=True,
         ),
     ]
+    _tree: Optional[TypedTree] = PrivateAttr(None)  # initialised in model_after
 
     @_log_call
     def model_post_init(self, context: Any) -> None:
         model_manager[self.id] = self
+
+    @staticmethod
+    def _ensure_model_in_tree(model: VizroBaseModel, context: dict[str, Any]) -> VizroBaseModel:
+        """Revalidate a VizroBaseModel instance if it hasn't been added to the tree yet."""
+        has_tree = hasattr(model, "_tree")
+        tree_is_none = getattr(model, "_tree", None) is None
+        if not has_tree or tree_is_none:
+            # Revalidate with build_tree context to ensure tree node is created
+            return model.__class__.model_validate(model, context=context)
+        return model
+
+    @staticmethod
+    def _ensure_models_in_tree(validated_stuff: Any, context: dict[str, Any]) -> Any:
+        """Recursively ensure all VizroBaseModel instances in a structure are added to the tree."""
+        if isinstance(validated_stuff, VizroBaseModel):
+            return VizroBaseModel._ensure_model_in_tree(validated_stuff, context)
+        elif isinstance(validated_stuff, list):
+            return [VizroBaseModel._ensure_models_in_tree(item, context) for item in validated_stuff]
+        elif isinstance(validated_stuff, Mapping) and not isinstance(validated_stuff, str):
+            # Note: str is a Mapping in Python, so we exclude it
+            return type(validated_stuff)(
+                {key: VizroBaseModel._ensure_models_in_tree(value, context) for key, value in validated_stuff.items()}
+            )
+        return validated_stuff
+
+    @field_validator("*", mode="wrap")
+    @classmethod
+    def build_tree_field_wrap(
+        cls,
+        value: Any,
+        handler: ValidatorFunctionWrapHandler,
+        info: ValidationInfo,
+    ) -> Any:
+        if info.context is not None and "build_tree" in info.context:
+            #### Field stack ####
+            if "id_stack" not in info.context:
+                info.context["id_stack"] = []
+            if "field_stack" not in info.context:
+                info.context["field_stack"] = []
+            if info.field_name == "id":
+                info.context["id_stack"].append(value)
+            else:
+                info.context["id_stack"].append(info.data.get("id", "no id"))
+            info.context["field_stack"].append(info.field_name)
+
+        #### Validation ####
+        validated_stuff = handler(value)
+
+        if info.context is not None and "build_tree" in info.context:
+            #### Ensure VizroBaseModel instances are added to tree ####
+            # This handles the case where custom components match 'Any' in discriminated unions
+            # and might not go through full revalidation
+            # Note: field_stack and id_stack are still in place here (before the pop below)
+            # so build_tree_model_wrap will have the correct context
+            validated_stuff = VizroBaseModel._ensure_models_in_tree(validated_stuff, info.context)
+
+            #### Field stack cleanup ####
+            # Pop after revalidation so the stacks are available during revalidation
+            info.context["id_stack"].pop()
+            info.context["field_stack"].pop()
+        return validated_stuff
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def build_tree_model_wrap(cls, data: Any, handler: ModelWrapValidatorHandler[Self], info: ValidationInfo) -> Self:
+        #### ID ####
+        model_id = "UNKNOWN_ID"
+        if isinstance(data, dict):
+            if "id" not in data or data["id"] is None:
+                model_id = str(uuid.uuid4())
+                data["id"] = model_id
+            elif isinstance(data["id"], str):
+                model_id = data["id"]
+        elif hasattr(data, "id"):
+            model_id = data.id
+        else:
+            print("GRANDE PROBLEMA!!!")
+
+        if info.context is not None and "build_tree" in info.context:
+            #### Level and indentation ####
+            if "level" not in info.context:
+                info.context["level"] = 0
+            indent = info.context["level"] * " " * 4
+            info.context["level"] += 1
+
+            #### Tree ####
+            print(
+                f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'} with model id {model_id}"
+            )
+
+            if "parent_model" in info.context:
+                info.context["tree"] = info.context["parent_model"]._tree
+                tree = info.context["tree"]
+                tree[info.context["parent_model"].id].add(
+                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                )
+            elif "tree" not in info.context:
+                tree = TypedTree("Root", calc_data_id=lambda tree, data: data.id)
+                tree.add(SimpleNamespace(id=model_id), kind="dashboard")  # make this more general
+                info.context["tree"] = tree
+            else:
+                tree = info.context["tree"]
+                # in words: add a node as children to the parent (so id one higher up), but add as kind
+                # the field in which you currently are
+                # ID STACK and FIELD STACK are different "levels" of the tree.
+                tree[info.context["id_stack"][-1]].add(
+                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                )
+
+        #### Validation ####
+        validated_stuff = handler(data)
+
+        if info.context is not None and "build_tree" in info.context:
+            #### Replace placeholder nodes and propagate tree to all models ####
+            info.context["tree"][validated_stuff.id].set_data(validated_stuff)
+            validated_stuff._tree = info.context["tree"]
+
+            #### Level and indentation ####
+            info.context["level"] -= 1
+            indent = info.context["level"] * " " * 4
+            print(f"{indent}{cls.__name__} After validation: {info.context['field_stack']}")
+        elif hasattr(data, "_tree") and data._tree is not None:
+            #### Revalidation case: model already has a tree (e.g., during assignment) ####
+            # Inherit the tree from the original instance
+            validated_stuff._tree = data._tree
+            # Update the tree node to point to the NEW validated instance
+            validated_stuff._tree[validated_stuff.id].set_data(validated_stuff)
+            print(f"--> Revalidation: Updated tree node for {validated_stuff.id} <--")
+
+        return validated_stuff
+
+    @classmethod
+    def from_pre_build(cls, data, parent_model, field_name):
+        """Create a model instance with tree building context.
+
+        Note this always adds new models to the tree. It's not currently possible to replace or remove a node.
+        It should work with any parent_model, but ideally we should only use it to make children of the calling
+        model, so that parent_model=self in the call (where self isn't the created model instance, it's the calling
+        model).
+        Since we have revalidate_instances = "always", calling model_validate on a single model will also execute
+        the validators on children models.
+
+        Args:
+            data: Data to validate into the model
+            parent_model: Parent model instance
+            field_name: Name of the field in the parent model
+
+        Returns:
+            Validated model instance
+        """
+        return cls.model_validate(
+            data,
+            context={
+                "build_tree": True,
+                "parent_model": parent_model,
+                "field_stack": [field_name],
+                "id_stack": [parent_model.id],
+            },
+        )
 
     # Previously in V1, we used to have an overwritten `.dict` method, that would add __vizro_model__ to the dictionary
     # if called in the correct context.
@@ -347,4 +525,5 @@ class VizroBaseModel(BaseModel):
     model_config = ConfigDict(
         extra="forbid",  # Good for spotting user typos and being strict.
         validate_assignment=True,  # Run validators when a field is assigned after model instantiation.
+        revalidate_instances="always",
     )

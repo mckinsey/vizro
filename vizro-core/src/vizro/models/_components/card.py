@@ -8,7 +8,7 @@ from pydantic.json_schema import JsonValue, SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty, make_discriminated_union
 
 
 class Card(VizroBaseModel):
@@ -55,7 +55,7 @@ class Card(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Optional[make_discriminated_union(Tooltip)],
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
