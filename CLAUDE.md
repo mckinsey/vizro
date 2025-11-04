@@ -20,6 +20,7 @@ Navigate to the specific package directory (e.g., `cd vizro-core`) before runnin
 
 Run these from within the package directory (e.g., `vizro-core/`):
 
+- ` hatch run python -c "xxx"` - Run a Python command
 - `hatch run pypath` - Show Python interpreter path
 - `hatch run lint` - Check and fix code quality/formatting
 - `hatch run changelog:add` - Generate changelog fragment (required for PRs)
