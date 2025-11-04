@@ -70,10 +70,11 @@ class Vizro:
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
+            # Skip vizro-bootstrap.min.css if external Bootstrap CSS is provided
+            if path.name == "vizro-bootstrap.min.css" and not use_vizro_bootstrap:
+                continue
+
             if path.suffix == ".css":
-                if path.name == "vizro-bootstrap.min.css" and not use_vizro_bootstrap:
-                    # Skip vizro-bootstrap.min.css if external Bootstrap CSS is provided
-                    continue
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
                 self.dash.scripts.append_script(_make_resource_spec(path))
