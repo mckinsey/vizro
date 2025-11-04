@@ -20,6 +20,10 @@ def hover_over_element_by_xpath_selenium(driver, xpath):
     ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.XPATH, xpath)).perform()
 
 
+def hover_over_element_by_css_selector_selenium(driver, xpath):
+    ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.CSS_SELECTOR, xpath)).perform()
+
+
 def accordion_select(driver, accordion_name):
     """Selecting accordion and checking if it is active."""
     click_element_by_xpath_selenium(driver, f"//button[text()='{accordion_name}']")
