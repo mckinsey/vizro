@@ -58,15 +58,13 @@ You can see the prompt submission and processing in the following video.
 <source src="../../../assets/videos/vs-code-tutorial/00-prompt-submission.mp4" type="video/mp4">
 </video>
 
-
-When you run the prompt, you may find it stops early in the process because it needs permission to run. 
+When you run the prompt, you may find it stops early in the process because it needs permission to run.
 
 ![](../../assets/images/vscode-tutorial-permisson-request.png)
 
-The pause is a security measure to prevent rogue MCP servers from executing code. You can grant permission for Vizro-MCP tools to run as shown. Select Always Allow to avoid being asked for permission each time the prompts run. 
+The pause is a security measure to prevent rogue MCP servers from executing code. You can grant permission for Vizro-MCP tools to run as shown. Select Always Allow to avoid being asked for permission each time the prompts run.
 
 ![](../../assets/images/vscode-tutorial-permission-grant.png)
-
 
 You may be asked to grant similar requests for other Vizro-MCP tools before the prompt runs to completion. However, when it does successfully return, it should have created code in `app.py`, visible in the left hand side of the screen in the file browser.
 
