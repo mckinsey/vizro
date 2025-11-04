@@ -407,6 +407,8 @@ TODOs Maxi:
 - check for json schema, does it look as nice as before? - DONE
 - serialization/deserialization - DONE
 - NEW: circular deps issue (see below) - DONE
+- custom components do not end up in the tree - DONE
+- CURRENT ISSUE: containers in tabs seem to cause problems - need to investigate
 
 NOT FULLY RESSOVLED
 - what if we want to add normal component to other fields? (happens a lot!) - just use normal add_type?
@@ -416,6 +418,16 @@ NOT FULLY RESSOVLED
 - check if we ever need to add sub models in pre-build, so far it only works for single model
 - how much to we need to care about idempotency of validation? Is there a difference between pre and post
 pre-build and/or pre and post tree building?
+- we should also check if users can call validation with build_tree context?
+
+
+------------------------------------------------------------------------------------------------------------------------
+TODOs after moving the real Vizro:
+------------------------------------------------------------------------------------------------------------------------
+- trial the model manager with the real Vizro and tree
+- sort out page validation
+- then bring over tests
+
 
 Circular dependency issue:
 -------------------
@@ -438,12 +450,5 @@ See also: https://docs.pydantic.dev/latest/internals/resolving_annotations/#limi
 
 ==> Using __pydantic_init_subclass__ is not a viable solution if we want the schema of every model to be correct.
 ==> SOLUTION: remove __pydantic_init_subclass__ and use the new (old) system where we explicitly define types.
-
-------------------------------------------------------------------------------------------------------------------------
-TODOs after moving the real Vizro:
-------------------------------------------------------------------------------------------------------------------------
-- trial the model manager with the real Vizro and tree
-- sort out page validation
-- then bring over tests
 
 """
