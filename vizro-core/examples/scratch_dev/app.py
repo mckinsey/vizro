@@ -6,6 +6,8 @@ from vizro import Vizro
 import vizro.actions as va
 from vizro.figures import kpi_card, kpi_card_reference
 import pandas as pd
+import dash_bootstrap_components as dbc
+
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
@@ -123,4 +125,4 @@ page_3 = vm.Page(
 dashboard = vm.Dashboard(pages=[page, page_2, page_3])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
