@@ -50,13 +50,17 @@ class NavBar(VizroBaseModel):
         # TODO[MS]: we may need to validate pages here?
         # self.pages = _validate_pages(self.pages)
         self.items = self.items or [
-            NavLink(
-                # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
-                # then we prefer to have the title rather than id of that page be used
-                label=cast(Page, model_manager[group_title]).title
-                if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
-                else group_title,
-                pages=pages,
+            NavLink.from_pre_build(
+                {
+                    # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
+                    # then we prefer to have the title rather than id of that page be used
+                    "label": cast(Page, model_manager[group_title]).title
+                    if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
+                    else group_title,
+                    "pages": pages,
+                },
+                parent_model=self,
+                field_name="items",
             )
             for group_title, pages in self.pages.items()
         ]

@@ -43,11 +43,13 @@ class NavLink(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        from vizro.models._navigation.accordion import Accordion
-
         # TODO[MS]: Check validate pages properly
         self.pages = _validate_pages(self.pages)
-        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        self._nav_selector = Accordion.from_pre_build(
+            {"pages": self.pages},
+            parent_model=self,
+            field_name="_nav_selector",
+        )
 
     @_log_call
     def build(self, *, active_page_id=None):

@@ -181,7 +181,16 @@ class Parameter(VizroBaseModel):
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
             # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
             self.targets.extend(list(filter_targets))
-            self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+            self.selector.actions = [
+                _parameter.from_pre_build(
+                    {
+                        "id": f"{PARAMETER_ACTION_PREFIX}_{self.id}",
+                        "targets": self.targets,
+                    },
+                    parent_model=self.selector,
+                    field_name="actions",
+                )
+            ]
 
     @_log_call
     def build(self):

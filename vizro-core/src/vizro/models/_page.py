@@ -150,7 +150,16 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
+            self.actions = [
+                _on_page_load.from_pre_build(
+                    {
+                        "id": f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
+                        "targets": targets,
+                    },
+                    parent_model=self,
+                    field_name="actions",
+                )
+            ]
 
         controls = cast(
             Iterable[ControlType],

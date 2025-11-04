@@ -37,12 +37,11 @@ class Navigation(VizroBaseModel):
     def pre_build(self):
         # TODO[MS]: Check validate pages properly
         self.pages = _validate_pages(self.pages)
-        # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
-        # here.
-        self.nav_selector = self.nav_selector or Accordion()
-        self.nav_selector.pages = self.nav_selector.pages or self.pages
-        if hasattr(self.nav_selector, "pre_build"):
-            self.nav_selector.pre_build()
+        self.nav_selector = self.nav_selector or Accordion.from_pre_build(
+            {"pages": self.pages},
+            parent_model=self,
+            field_name="nav_selector",
+        )
 
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
