@@ -84,7 +84,7 @@ sequential_red = [
     colors.red_400,
     colors.red_500,
     colors.red_600,
-    colors.red_700, 
+    colors.red_700,
     colors.red_800,
     colors.red_900,
 ]

@@ -11,13 +11,30 @@
       {
         "connector": {
           "line": {
+            "width": 1,
             "color": "rgba(20, 23, 33, 0.3019607843)"
           }
         },
+        "decreasing": {
+          "marker": {
+            "color": "#FF9222"
+          }
+        },
+        "increasing": {
+          "marker": {
+            "color": "#00B4FF"
+          }
+        },
+        "textposition": "outside",
+        "totals": {
+          "marker": {
+            "color": "#9D9FA5"
+          }
+        },
+        "type": "waterfall",
         "textfont": {
           "color": "rgba(20, 23, 33, 0.8784313725)"
-        },
-        "type": "waterfall"
+        }
       }
     ],
     "bar": [

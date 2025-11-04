@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+import plotly.io as pio
 from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 
@@ -45,56 +46,69 @@ def extract_bs_variables_from_css(variables: list[str], css_content: str) -> tup
     return extracted_dark, extracted_light
 
 
-def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Template:
-    """Generates the Plotly JSON chart template."""
+def create_theme_overrides(extracted_values: dict[str, str]) -> go.layout.Template:
+    """Creates theme-specific template overrides.
+
+    These are the parts that differ between light and dark themes.
+    """
     FONT_COLOR_PRIMARY = extracted_values["BS-PRIMARY"]
     BG_COLOR = extracted_values["BS-BODY-BG"]
     FONT_COLOR_SECONDARY = extracted_values["BS-SECONDARY"]
     GRID_COLOR = extracted_values["BS-BORDER-COLOR"]
     AXIS_COLOR = extracted_values["BS-TERTIARY-COLOR"]
 
-    # Apply common values
-    template = create_template_common()
-    layout = template.layout
-    layout.update(
-        annotationdefaults_font_color=FONT_COLOR_PRIMARY,
-        coloraxis_colorbar_tickcolor=AXIS_COLOR,
-        coloraxis_colorbar_tickfont_color=FONT_COLOR_SECONDARY,
-        coloraxis_colorbar_title_font_color=FONT_COLOR_SECONDARY,
-        font_color=FONT_COLOR_PRIMARY,
-        geo_bgcolor=BG_COLOR,
-        geo_lakecolor=BG_COLOR,
-        geo_landcolor=BG_COLOR,
-        legend_font_color=FONT_COLOR_PRIMARY,
-        legend_title_font_color=FONT_COLOR_PRIMARY,
-        paper_bgcolor=BG_COLOR,
-        plot_bgcolor=BG_COLOR,
-        polar_angularaxis_gridcolor=GRID_COLOR,
-        polar_angularaxis_linecolor=AXIS_COLOR,
-        polar_bgcolor=BG_COLOR,
-        polar_radialaxis_gridcolor=GRID_COLOR,
-        polar_radialaxis_linecolor=AXIS_COLOR,
-        ternary_aaxis_gridcolor=GRID_COLOR,
-        ternary_aaxis_linecolor=AXIS_COLOR,
-        ternary_baxis_gridcolor=GRID_COLOR,
-        ternary_baxis_linecolor=AXIS_COLOR,
-        ternary_bgcolor=BG_COLOR,
-        ternary_caxis_gridcolor=GRID_COLOR,
-        ternary_caxis_linecolor=AXIS_COLOR,
-        title_font_color=FONT_COLOR_PRIMARY,
-        xaxis_gridcolor=GRID_COLOR,
-        xaxis_linecolor=AXIS_COLOR,
-        xaxis_tickcolor=AXIS_COLOR,
-        xaxis_tickfont_color=FONT_COLOR_SECONDARY,
-        xaxis_title_font_color=FONT_COLOR_PRIMARY,
-        yaxis_gridcolor=GRID_COLOR,
-        yaxis_linecolor=AXIS_COLOR,
-        yaxis_tickcolor=AXIS_COLOR,
-        yaxis_tickfont_color=FONT_COLOR_SECONDARY,
-        yaxis_title_font_color=FONT_COLOR_PRIMARY,
+    theme_overrides = go.layout.Template(
+        layout=go.Layout(
+            annotationdefaults_font_color=FONT_COLOR_PRIMARY,
+            coloraxis_colorbar_tickcolor=AXIS_COLOR,
+            coloraxis_colorbar_tickfont_color=FONT_COLOR_SECONDARY,
+            coloraxis_colorbar_title_font_color=FONT_COLOR_SECONDARY,
+            font_color=FONT_COLOR_PRIMARY,
+            geo_bgcolor=BG_COLOR,
+            geo_lakecolor=BG_COLOR,
+            geo_landcolor=BG_COLOR,
+            legend_font_color=FONT_COLOR_PRIMARY,
+            legend_title_font_color=FONT_COLOR_PRIMARY,
+            paper_bgcolor=BG_COLOR,
+            plot_bgcolor=BG_COLOR,
+            polar_angularaxis_gridcolor=GRID_COLOR,
+            polar_angularaxis_linecolor=AXIS_COLOR,
+            polar_bgcolor=BG_COLOR,
+            polar_radialaxis_gridcolor=GRID_COLOR,
+            polar_radialaxis_linecolor=AXIS_COLOR,
+            ternary_aaxis_gridcolor=GRID_COLOR,
+            ternary_aaxis_linecolor=AXIS_COLOR,
+            ternary_baxis_gridcolor=GRID_COLOR,
+            ternary_baxis_linecolor=AXIS_COLOR,
+            ternary_bgcolor=BG_COLOR,
+            ternary_caxis_gridcolor=GRID_COLOR,
+            ternary_caxis_linecolor=AXIS_COLOR,
+            title_font_color=FONT_COLOR_PRIMARY,
+            xaxis_gridcolor=GRID_COLOR,
+            xaxis_linecolor=AXIS_COLOR,
+            xaxis_tickcolor=AXIS_COLOR,
+            xaxis_tickfont_color=FONT_COLOR_SECONDARY,
+            xaxis_title_font_color=FONT_COLOR_PRIMARY,
+            yaxis_gridcolor=GRID_COLOR,
+            yaxis_linecolor=AXIS_COLOR,
+            yaxis_tickcolor=AXIS_COLOR,
+            yaxis_tickfont_color=FONT_COLOR_SECONDARY,
+            yaxis_title_font_color=FONT_COLOR_PRIMARY,
+        ),
+        data=go.layout.template.Data(
+            bar=[go.Bar(marker_line_color=BG_COLOR)],
+            waterfall=[go.Waterfall(textfont_color=FONT_COLOR_PRIMARY, connector_line_color=AXIS_COLOR)],
+        ),
     )
-    template.data.bar = [go.Bar(marker_line_color=BG_COLOR)]
-    template.data.waterfall = [go.Waterfall(textfont_color=FONT_COLOR_PRIMARY, connector_line_color=AXIS_COLOR)]
+    return theme_overrides
+
+
+def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Template:
+    """Generates the Plotly JSON chart template by merging common and theme-specific parts."""
+    common = create_template_common()
+    theme_overrides = create_theme_overrides(extracted_values)
+    # Merge common template with theme-specific overrides
+    template = pio.templates.merge_templates(common, theme_overrides)
     return template
 
 
