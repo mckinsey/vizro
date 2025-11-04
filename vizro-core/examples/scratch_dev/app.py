@@ -128,4 +128,4 @@ if __name__ == "__main__":
         for model in [dashboard] + dashboard.pages + [comp for page in dashboard.pages for comp in page.components]
     )
     dashboard._tree.print(repr="{node.kind} -> {node.data.type} (id={node.data.id})")
-    # Vizro().build(dashboard).run()
+    app.run()
