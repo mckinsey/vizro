@@ -82,7 +82,7 @@ jobs:
           webhook-type: incoming-webhook
 
       - name: Report artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: Report-${{ matrix.config.python-version }}-${{ matrix.config.label }}
@@ -97,7 +97,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Download All Artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
 
       - name: Set current date as env variable
         id: date
@@ -113,7 +113,7 @@ jobs:
           gawk -F, -i inplace 'FNR>1 {$1="${{ steps.date.outputs.date }}"} {print}' OFS=, report-aggregated-${{ steps.date.outputs.date }}.csv
 
       - name: Report artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: Report-aggregated-${{ steps.date.outputs.date }}
