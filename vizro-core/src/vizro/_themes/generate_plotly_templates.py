@@ -10,7 +10,6 @@ from typing import Optional
 from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 
-from vizro._themes._colors import get_colors
 from vizro._themes._common_template import create_template_common
 
 THEMES_FOLDER = Path(__file__).parent
@@ -55,7 +54,6 @@ def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Templa
     AXIS_COLOR = extracted_values["BS-TERTIARY-COLOR"]
 
     # Apply common values
-    COLORS = get_colors()
     template = create_template_common()
     layout = template.layout
     layout.update(
@@ -96,16 +94,7 @@ def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Templa
         yaxis_title_font_color=FONT_COLOR_PRIMARY,
     )
     template.data.bar = [go.Bar(marker_line_color=BG_COLOR)]
-    template.data.waterfall = [
-        go.Waterfall(
-            decreasing={"marker": {"color": COLORS["DISCRETE_10"][1]}},
-            increasing={"marker": {"color": COLORS["DISCRETE_10"][0]}},
-            totals={"marker": {"color": "grey"}},
-            textfont_color=FONT_COLOR_PRIMARY,
-            textposition="outside",
-            connector={"line": {"color": AXIS_COLOR, "width": 1}},
-        )
-    ]
+    template.data.waterfall = [go.Waterfall(textfont_color=FONT_COLOR_PRIMARY, connector_line_color=AXIS_COLOR)]
     return template
 
 
