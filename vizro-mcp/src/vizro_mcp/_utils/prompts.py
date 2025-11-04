@@ -1,7 +1,7 @@
 """Prompts for the Vizro MCP."""
 # ruff: noqa: E501 #Ignore line length only in prompts
 
-from typing import Literal, Optional, Protocol
+from typing import Literal, Protocol
 
 import vizro
 import vizro.actions as va
@@ -61,7 +61,7 @@ class HasNameAndDoc(Protocol):
     """Protocol for objects that have a name and a docstring."""
 
     __name__: str
-    __doc__: Optional[str]
+    __doc__: str | None
 
 
 # This dict is used to give the model and overview of what is available in the vizro.models namespace.
@@ -183,7 +183,7 @@ Create a super simple Vizro dashboard with one page and one chart and one filter
 """
 
 
-def get_dashboard_prompt(file_path_or_url: str, user_context: Optional[str] = None) -> str:
+def get_dashboard_prompt(file_path_or_url: str, user_context: str | None = None) -> str:
     """Get a prompt for creating a Vizro dashboard."""
     USER_INSTRUCTIONS = f"""
 3. Create a Vizro dashboard that follows the user context:
@@ -214,7 +214,7 @@ Create a dashboard based on the following dataset: `{file_path_or_url}`. Proceed
 """
 
 
-def get_chart_prompt(file_path_or_url: str, user_context: Optional[str] = None) -> str:
+def get_chart_prompt(file_path_or_url: str, user_context: str | None = None) -> str:
     """Get a prompt for creating a Vizro chart."""
     FALLBACK_INSTRUCTIONS = """
 - Think what chart could reflect this data-set best, ideally the chart shows some insights about the data-set

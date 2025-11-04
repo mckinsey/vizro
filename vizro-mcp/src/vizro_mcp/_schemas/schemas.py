@@ -1,6 +1,6 @@
 """Schema defining pydantic models for usage in the MCP server."""
 
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any
 
 import vizro.figures as vf
 import vizro.models as vm
@@ -153,7 +153,7 @@ class ChartPlan(BaseModel):
             imports = [imp for imp in imports if "vizro" not in imp]
         return "\n".join(imports) + "\n"
 
-    def get_chart_code(self, chart_name: Optional[str] = None, vizro: bool = False):
+    def get_chart_code(self, chart_name: str | None = None, vizro: bool = False):
         chart_code = self.chart_code
         if vizro:
             chart_code = chart_code.replace(f"def {self.chart_name}", f"@capture('graph')\ndef {self.chart_name}")
