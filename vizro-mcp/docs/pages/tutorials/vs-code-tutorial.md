@@ -92,7 +92,7 @@ Here are a few tips to help you prompt Vizro-MCP effectively if the steps above 
 
 - You can ask Vizro to try the entire prompt again by typing "Clear context" and then, when it has returned, resubmitting your prompt. Or create a new chat by clicking the plus button, and start afresh.
 
-- You can ask Copilot to save checkpoints and restore them to revert code to previous versions. View the [VS Code documentation](https://code.visualstudio.com/docs/copilot/chat/chat-checkpoint) for more details.
+- You can ask Copilot to save checkpoints and restore them to revert code to previous versions. View the [VS Code documentation](https://code.visualstudio.com/docs/copilot/chat/chat-checkpoints) for more details.
 
 - You can pass in the code for a similar project to serve as a guide if the LLM is struggling. For example, if you are working on a Vizro chart, you could pass the equivalent chart from the [Vizro Visual Vocabulary](https://huggingface.co/spaces/vizro/demo-visual-vocabulary).
 
