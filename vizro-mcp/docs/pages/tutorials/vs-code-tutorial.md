@@ -25,12 +25,11 @@ You should receive a response similar to the following:
 > Available Functions:
 
 > - Creating charts and dashboards with guided instructions
-
-- Loading and analyzing data from various formats (CSV, JSON, Excel, Parquet, etc.)
-- Getting sample data for testing purposes
-- Validating chart configurations and dashboard setups
-- Getting model schemas for Vizro components
-- Working with both simple chart creation and advanced dashboard configurations
+> - Loading and analyzing data from various formats (CSV, JSON, Excel, Parquet, etc.)
+> - Getting sample data for testing purposes
+> - Validating chart configurations and dashboard setups
+> - Getting model schemas for Vizro components
+> - Working with both simple chart creation and advanced dashboard configurations
 
 > The MCP server appears to be properly connected and functional. Would you like me to help you create a chart or dashboard using Vizro? I can work with your data or use sample datasets to demonstrate the capabilities.
 
@@ -40,16 +39,22 @@ To set up your environment in VS Code, first create a Workspace. Select **File >
 
 Next, open the Chat view and use **Agent mode**. We used Claude Sonnet 4 when writing this tutorial.
 
+<video controls>
+<source src="../../../assets/videos/vs-code-tutorial/00-create-workspace.mp4" type="video/mp4">
+</video>
+
 ## Create a blank dashboard
 
-The first step is to create a blank dashboard with three tabs for the different charts. Submit this prompt in chat. Don't worry about the instruction about PyCafe at this point; we will explain its purpose later:
+The first step is to create a blank dashboard with three tabs for the different charts that submit this prompt in chat. Don't worry about the instruction about PyCafe at this point; we will explain its purpose later:
 
 ```text
-Let’s use Vizro-MCP to generate a blank dashboard with one page and three tabs.
+Let’s use Vizro-MCP to generate a blank dashboard with one page and three tabs. 
 Generate the code and save it to app.py in the workspace. Don’t open in PyCafe.
 ```
 
 When the prompt successfully returns, it should have created code in `app.py`, visible in the left hand side of the screen in the file browser.
+
+![](../../assets/images/vscode-tutorial-file-creation.png)
 
 ## Run the dashboard
 
@@ -100,12 +105,12 @@ You will now add three charts to the dashboard to replicate those of the [origin
 Submit a prompt like this:
 
 ```text
-Use data from https://ourworldindata.org/grapher/share-of-the-population-with-access-to-electricity?overlay=download-data.
-Edit the code in app.py.
-For the first tab, add a choropleth map for the share of the
-population with electricity in 2023.
-Use Vizro to create the chart and include a legend with a color gradient.
-Use the Vizro design system and Vizro colors.
+Use data from https://ourworldindata.org/grapher/share-of-the-population-with-access-to-electricity?overlay=download-data.  
+Edit the code in app.py. 
+For the first tab, add a choropleth map for the share of the 
+population with electricity in 2023. 
+Use Vizro to create the chart and include a legend with a color gradient. 
+Use the Vizro design system and Vizro colors. 
 Ensure the chart fits the viewport. Use the Vizro light theme.
 ```
 
@@ -122,12 +127,12 @@ The video shows the chart created in light mode:
 The next step is to add a [filter](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/) to the chart to enable the user to change the year shown. To iterate the code and adjust the filter, submit the following prompt:
 
 ```text
-Use Vizro functionality to add a slider to the first tab
-which works as a selector.
-The user can select the year for which the data is shown on the choropleth.
-Use a range slider with range from 1990 to 2023.
-As the slider is moved, update the graphic with
-the Access to electricity (% of population) for each year.
+Use Vizro functionality to add a slider to the first tab 
+which works as a selector. 
+The user can select the year for which the data is shown on the choropleth. 
+Use a range slider with range from 1990 to 2023. 
+As the slider is moved, update the graphic with 
+the Access to electricity (% of population) for each year. 
 Use only the Vizro design system, features and functionality.
 ```
 
@@ -149,7 +154,7 @@ There are some further enhancements possible to produce a chart similar to that 
 
 ```text
 Add animation by year to the choropleth map.
-Replace the year slider with a projection selector
+Replace the year slider with a projection selector 
 so users can switch between flat and 3D globe views.
 ```
 
@@ -172,14 +177,14 @@ The next step is to add a second chart, a line chart for seven countries to show
 Submit the following prompt:
 
 ```text
-Let's work on the second tab.
+Let's work on the second tab. 
 Add a line chart for 7 chosen Entity countries:
-(United States, China, Brazil, India, Afghanistan, Rwanda and Haiti).
-The x axis is Year and the y axis is Access to electricity (% of population).
+(United States, China, Brazil, India, Afghanistan, Rwanda and Haiti). 
+The x axis is Year and the y axis is Access to electricity (% of population). 
 Use Vizro's design system to color each line a different color.
-Add a label to each of the lines for the country it represents.
-Add a checklist selector which lists every country in the dataset
-so the user can add or remove a country from the  plots.
+Add a label to each of the lines for the country it represents. 
+Add a checklist selector which lists every country in the dataset 
+so the user can add or remove a country from the  plots. 
 Use Vizro's design system, features and functionality.
 ```
 
@@ -221,12 +226,12 @@ The final chart is an animated histogram for the same seven countries selected f
 Use the following prompt:
 
 ```text
-Add a third tab with an animated horizontal bar chart showing
-electricity access by country.
-Share the country filter with tab 2 so users can
-switch between line and bar views of the same data.
-Remove the legend since country names are on the y-axis.
-Ensure all selected countries appear in every animation frame,
+Add a third tab with an animated horizontal bar chart showing 
+electricity access by country. 
+Share the country filter with tab 2 so users can 
+switch between line and bar views of the same data. 
+Remove the legend since country names are on the y-axis. 
+Ensure all selected countries appear in every animation frame, 
 filling missing years with interpolated data.
 ```
 
@@ -240,7 +245,7 @@ We have a dashboard with three tabs and three charts. In the next step, you'll l
 
 ## Share your dashboard using PyCafe
 
-The easiest way to share your dashboard is to use [PyCafe](https://py.cafe), which means you can email a standard link to others, who just open it in their browser to view and interact with the dashboard. You can choose to share either just the dashboard, or give access to the code too.
+The easiest way to share your dashboard is to use [PyCafe](https://py.cafe), which meansyou can email a standard link to others, who just open it in their browser to view and interact with the dashboard. You can choose to share either just the dashboard, or give access to the code too.
 
 1. Create a free account at [PyCafe](https://py.cafe).
 1. Create a new Vizro project.
@@ -429,7 +434,7 @@ The code for the dashboard, generated by Vizro-MCP in VS Code using Claude Sonne
                             multi=True,
                             value=[
                                 "United States",
-                                "China",
+                                "China", 
                                 "Brazil",
                                 "India",
                                 "Afghanistan",
