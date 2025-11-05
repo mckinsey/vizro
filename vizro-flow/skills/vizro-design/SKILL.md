@@ -99,15 +99,14 @@ The process spans from initial concept (understanding user needs, selecting metr
 
 **Key principle**: Decide on implementation approach. For Python dashboards with standard Plotly charts, consider Vizro framework (rapid development, professional styling). For other requirements, implement custom solution.
 
-**For Vizro implementation**: Use the **vizro-implementation skill** which provides comprehensive guidance on:
-- When to use Vizro (decision tree)
-- MCP installation and setup
-- Building with Vizro MCP or live documentation
-- Capabilities mapping (automatic vs manual configuration)
-- Implementation patterns and troubleshooting
+**For Vizro implementation**: Use the **vizro-implementation skill** which provides:
+- Decision tree for when to use Vizro
+- MCP installation and setup (if MCP not available)
+- Python quickstart with live documentation references
+- Example configurations from official tutorials
 
 **Vizro** (see vizro-implementation skill for full details):
-- **Offers**: Python toolkit with professional themes, colorblind palette, grid/flex layouts, auto-filters (page & container level), all Plotly charts, Cards/KPIs, Containers/Tabs, actions (export, drill-down), multi-page navigation, theme toggle
+- **Offers**: Python toolkit with professional themes, colorblind-safe palette, grid/flex layouts, auto-filters (page & container level), all Plotly charts, Cards/KPIs, Containers/Tabs, actions (export, drill-down), multi-page navigation, theme toggle
 - **Not for**: CRUD apps, chatbots, very complex UX workflows
 
 **For custom implementation**:
