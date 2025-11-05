@@ -1,5 +1,5 @@
 ---
-name: vizro-implementation
+name: dashboard-implementation
 description: Practical guidance for building dashboards with Vizro. Use when implementing dashboards with Vizro framework, setting up Vizro MCP, or determining if Vizro is appropriate for a dashboard project. Includes decision trees, MCP setup, and Python quickstart references.
 ---
 
