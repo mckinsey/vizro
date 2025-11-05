@@ -1,6 +1,6 @@
 ---
-name: vizro-design
-description: End-to-end guidance for designing effective dashboards from concept through wireframing. This skill provides comprehensive workflows for dashboard design, chart selection, layout planning, and wireframing. Use when creating dashboards, selecting chart types, designing data visualizations, creating wireframes, or planning dashboard implementations. Covers metrics display, KPI visualization, data presentation, analytical interface design, and wireframing patterns. For Vizro implementation, use the vizro-implementation skill.
+name: dashboard-design
+description: End-to-end guidance for designing effective dashboards from concept through wireframing. This skill provides comprehensive workflows for dashboard design, chart selection, layout planning, and wireframing. Use when creating dashboards, selecting chart types, designing data visualizations, creating wireframes, or planning dashboard implementations. Covers metrics display, KPI visualization, data presentation, analytical interface design, and wireframing patterns. For Vizro implementation, use the dashboard-implementation skill.
 ---
 
 # Dashboard Design
@@ -99,13 +99,13 @@ The process spans from initial concept (understanding user needs, selecting metr
 
 **Key principle**: Decide on implementation approach. For Python dashboards with standard Plotly charts, consider Vizro framework (rapid development, professional styling). For other requirements, implement custom solution.
 
-**For Vizro implementation**: Use the **vizro-implementation skill** which provides:
+**For Vizro implementation**: Use the **dashboard-implementation skill** which provides:
 - Decision tree for when to use Vizro
 - MCP installation and setup (if MCP not available)
 - Python quickstart with live documentation references
 - Example configurations from official tutorials
 
-**Vizro** (see vizro-implementation skill for full details):
+**Vizro** (see dashboard-implementation skill for full details):
 - **Offers**: Python toolkit with professional themes, colorblind-safe palette, grid/flex layouts, auto-filters (page & container level), all Plotly charts, Cards/KPIs, Containers/Tabs, actions (export, drill-down), multi-page navigation, theme toggle
 - **Not for**: CRUD apps, chatbots, very complex UX workflows
 
