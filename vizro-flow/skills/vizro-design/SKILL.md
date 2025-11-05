@@ -1,13 +1,15 @@
 ---
-name: dashboard-design
-description: Comprehensive guidance for designing effective dashboards and data visualizations. This skill should be used when creating dashboards, selecting chart types, designing data visualizations, or improving existing dashboard designs. Use when tasks involve metrics display, KPI visualization, data presentation, or analytical interface design.
+name: vizro-design
+description: End-to-end guidance for designing effective dashboards from concept through wireframing. This skill provides comprehensive workflows for dashboard design, chart selection, layout planning, and wireframing. Use when creating dashboards, selecting chart types, designing data visualizations, creating wireframes, or planning dashboard implementations. Covers metrics display, KPI visualization, data presentation, analytical interface design, and wireframing patterns. For Vizro implementation, use the vizro-implementation skill.
 ---
 
 # Dashboard Design
 
 ## Overview
 
-Effective dashboard design requires balancing information density with clarity, selecting appropriate visualizations, and creating clear visual hierarchy. This guide provides a structured process for creating user-centered dashboards that enable quick decision-making.
+Effective dashboard design requires balancing information density with clarity, selecting appropriate visualizations, and creating clear visual hierarchy. This guide provides a complete end-to-end process for designing, wireframing, and building user-centered dashboards that enable quick decision-making.
+
+The process spans from initial concept (understanding user needs, selecting metrics) through visual design (layout, colors, interactions), wireframing (low-fidelity mockups), and implementation (with specific Vizro guidance included).
 
 ## Design Process
 
@@ -70,6 +72,50 @@ Effective dashboard design requires balancing information density with clarity, 
 - Is text contrast sufficient (4.5:1 minimum)?
 - Are all interactions keyboard accessible?
 
+### 8. Create Wireframes
+
+**Key principle**: Create ASCII diagram wireframes first for rapid iteration, then generate simple HTML wireframe after approval. Focus on structure and hierarchy, not colors or fonts.
+
+**Consult** `references/wireframing_guide.md` for ASCII and HTML wireframe templates, grid patterns, and workflow guidance.
+
+**Two-step wireframing**:
+1. **ASCII diagram first**: Create text-based box diagram showing layout structure
+   - Show inline in conversation for immediate feedback
+   - Iterate quickly, create multiple variations
+   - Use `+`, `-`, `|` characters for boxes
+   - Label all sections: KPI, CHART, TABLE, FILTER, PARAMETER (as defined by Vizro), ACTIONS (as defined by Vizro), CONTAINER, TABS
+   - Consider splitting over multiple pages - do each page separately
+2. **HTML wireframe second**: Generate after ASCII approval
+   - Grayscale only
+   - Placeholder boxes for charts
+   - Write to file for browser preview
+   - Use for stakeholder presentations
+
+**When to use each**:
+- ASCII: Quick feedback, layout iteration, multiple variations
+- HTML: Browser preview, stakeholder review, final approval
+
+### 9. Build Dashboard
+
+**Key principle**: Decide on implementation approach. For Python dashboards with standard Plotly charts, consider Vizro framework (rapid development, professional styling). For other requirements, implement custom solution.
+
+**For Vizro implementation**: Use the **vizro-implementation skill** which provides comprehensive guidance on:
+- When to use Vizro (decision tree)
+- MCP installation and setup
+- Building with Vizro MCP or live documentation
+- Capabilities mapping (automatic vs manual configuration)
+- Implementation patterns and troubleshooting
+
+**Vizro** (see vizro-implementation skill for full details):
+- **Offers**: Python toolkit with professional themes, colorblind palette, grid/flex layouts, auto-filters (page & container level), all Plotly charts, Cards/KPIs, Containers/Tabs, actions (export, drill-down), multi-page navigation, theme toggle
+- **Not for**: CRUD apps, chatbots, very complex UX workflows
+
+**For custom implementation**:
+1. Choose appropriate technology stack
+2. Implement based on approved wireframe
+3. Follow design principles from steps 1-7
+4. Test and iterate with users
+
 ## Bundled Resources
 
 ### References
@@ -79,6 +125,8 @@ Effective dashboard design requires balancing information density with clarity, 
 **`design_principles.md`** - Layout patterns, color strategies, typography, interaction patterns, accessibility requirements, advanced considerations. Read when establishing visual design or making accessible.
 
 **`common_mistakes.md`** - 9 critical errors with solutions, subtle issues, anti-patterns, testing methods. Read when reviewing or fixing existing dashboards.
+
+**`wireframing_guide.md`** - ASCII diagram templates and HTML wireframe templates for rapid dashboard mockups. Read when creating wireframes before implementation.
 
 ### Finding Information in References
 
@@ -104,6 +152,13 @@ grep -i "tooltip\|filter\|drill-down" references/design_principles.md
 grep -i "problem\|solution" references/common_mistakes.md
 grep -i "anti-pattern\|avoid" references/common_mistakes.md
 grep -i "test\|checklist" references/common_mistakes.md
+```
+
+**Wireframing**:
+```bash
+grep -i "ascii\|diagram\|template" references/wireframing_guide.md
+grep -i "html wireframe\|grid span" references/wireframing_guide.md
+grep -i "executive\|operational\|analytical" references/wireframing_guide.md
 ```
 
 ### Scripts and Assets
