@@ -137,6 +137,81 @@ def test_set_control_cross_filter_ag_grid(dash_br):
     )
 
 
+def test_set_control_filter_kpi_card(dash_br):
+    """Test filter by clicking kpi_card."""
+    page_select(dash_br, page_name=cnst.KPI_INDICATORS_PAGE)
+
+    # click kpi_card_reference figure
+    dash_br.multiple_click(f"#{cnst.CLICKABLE_KPI_CARD_REFERENCE_ID}", 1, delay=0.1)
+
+    # check dropdown filter value
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE), 1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE,
+        all_value=False,
+        expected_selected_options=["C"],
+        expected_unselected_options=["A", "B", "C"],
+    )
+
+    # click kpi_card figure
+    dash_br.multiple_click(f"#{cnst.CLICKABLE_KPI_CARD_ID}", 1, delay=0.1)
+
+    # check dropdown filter value
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE), 1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE,
+        all_value=False,
+        expected_selected_options=["B"],
+        expected_unselected_options=["A", "B", "C"],
+    )
+
+
+def test_set_control_filter_button(dash_br):
+    """Test filter by clicking button."""
+    page_select(dash_br, page_name=cnst.FILTERS_PAGE, page_path=cnst.FILTERS_PAGE_PATH)
+
+    # click filter button
+    dash_br.multiple_click(button_id_path(btn_id=cnst.FILTERS_PAGE_SET_CONTROL_FILTER_BUTTON), 1, delay=0.1)
+
+    # check radio button filter value
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIO_ITEMS_FILTER_FILTERS_PAGE,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+
+def test_set_control_filter_card(dash_br):
+    """Test filter by clicking card."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
+    )
+
+    # click filter card
+    dash_br.multiple_click(f"#{cnst.CARD_SET_CONTROL_CROSS_FILTER_ID}", 1, delay=0.1)
+
+    # check radio button filter value
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_CROSS_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "Africa"},
+            {"value": 2, "selected": False, "value_name": "Americas"},
+            {"value": 3, "selected": False, "value_name": "Asia"},
+            {"value": 4, "selected": False, "value_name": "Europe"},
+            {"value": 5, "selected": True, "value_name": "Oceania"},
+        ],
+    )
+
+
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_drill_through_filter_graph(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
