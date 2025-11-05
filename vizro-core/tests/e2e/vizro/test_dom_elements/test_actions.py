@@ -1,6 +1,4 @@
 import pytest
-from hamcrest import assert_that, equal_to
-
 from e2e.asserts import assert_files_equal
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
@@ -14,8 +12,10 @@ from e2e.vizro.paths import (
     categorical_components_value_path,
     dropdown_arrow_path,
     graph_axis_value_path,
-    page_title_path, kpi_card_path,
+    kpi_card_path,
+    page_title_path,
 )
+from hamcrest import assert_that, equal_to
 
 
 def test_export_data_no_controls(dash_br):
