@@ -247,8 +247,8 @@ BOX_SET_CONTROL_CROSS_FILTER_ID = "box_set_control_cross-filter"
 DROPDOWN_SET_CONTROL_CROSS_FILTER = "dropdown_set_control_cross-filter_filter"
 
 SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE = "set-control-card-graph-cross-filter-page"
-CARD_SET_CONTROL_CROSS_FILTER_ID = "card_set_control_cross-filter"
-RADIOITEMS_SET_CONTROL_CROSS_FILTER = "radioitems_set_control_cross-filter_filter"
+SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CARD_ID = "set-control-card-graph-cross-filter-card-id"
+SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CONTOL_ID = "set-control-card-graph-cross-filter-control-id"
 
 SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE = "set-control-table-ag-grid-cross-filter-page"
 SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID = "set-control-ag grid cross-filter id"

@@ -91,9 +91,9 @@ cross_filter_card_graph_page = vm.Page(
     title=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
     components=[
         vm.Card(
-            id=cnst.CARD_SET_CONTROL_CROSS_FILTER_ID,
+            id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CARD_ID,
             text="Continent to choose: Oceania",
-            actions=[set_control(control="card-filter", value="Oceania")],
+            actions=set_control(control="card-filter", value="Oceania"),
         ),
         vm.Graph(
             id="box-card-graph-id",
@@ -110,7 +110,7 @@ cross_filter_card_graph_page = vm.Page(
             id="card-filter",
             column="continent",
             targets=["box-card-graph-id"],
-            selector=vm.RadioItems(id=cnst.RADIOITEMS_SET_CONTROL_CROSS_FILTER),
+            selector=vm.RadioItems(id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CONTOL_ID),
         )
     ],
 )
