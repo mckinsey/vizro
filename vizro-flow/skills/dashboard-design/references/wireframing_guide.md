@@ -74,11 +74,13 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 ## Structure Components
 
 **Three-column layout**:
+
 - **Leftmost (icon nav)**: Navigation icons vertically stacked
 - **Middle (left panel)**: Dropdown navigation + global filters below separator
 - **Right (main content)**: Dashboard components in grid layout
 
 **Component types**:
+
 - **KPI**: Metric cards
 - **CHART**: Visualizations with type in brackets `[Line chart]`, `[Bar chart]`, `[Donut chart]`, etc.
 - **TABLE**: Data tables with features in brackets `[sortable columns]`, `[pagination]`
@@ -89,6 +91,7 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 - **PARAMETER**: Changes chart arguments (e.g., metric type, aggregation level)
 
 **Interactions** (show with annotations):
+
 - `[↗ click: drill-down]` - Clicking navigates to detail
 - `[hover: tooltip]` - Hovering shows information
 - `[↗ click: toggle series]` - Clicking toggles chart elements
@@ -97,15 +100,16 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 ## Guidelines
 
 1. Three-column layout: icon nav | left panel (dropdown + filters) | main content
-2. Label sections: KPI, CHART, TABLE, FILTER, PARAMETER, ACTIONS, CONTAINER, TABS
-3. Indicate chart types in brackets: `[Line chart]`, `[Bar chart]`, `[Histogram]`
-4. Show hierarchy through box sizes (larger = more important)
-5. Global filters in left panel, container filters above containers
-6. Annotate interactions: `[↗ click: action]`, `[hover: behavior]`
+1. Label sections: KPI, CHART, TABLE, FILTER, PARAMETER, ACTIONS, CONTAINER, TABS
+1. Indicate chart types in brackets: `[Line chart]`, `[Bar chart]`, `[Histogram]`
+1. Show hierarchy through box sizes (larger = more important)
+1. Global filters in left panel, container filters above containers
+1. Annotate interactions: `[↗ click: action]`, `[hover: behavior]`
 
 ## Optional: HTML Wireframe
 
 After ASCII approval, create HTML wireframe for stakeholder browser preview:
+
 - Three-column flexbox layout (60px icon nav + 220px left panel + flex:1 main)
 - 12-column grid in main content area
 - Grayscale only, placeholder boxes for charts

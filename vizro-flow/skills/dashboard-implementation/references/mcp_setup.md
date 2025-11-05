@@ -7,6 +7,7 @@ Vizro MCP (Model Context Protocol) provides enhanced AI assistance for building 
 ## Checking for MCP
 
 **How to verify MCP is installed**:
+
 - Look for `mcp__vizro__*` tools in available tools list
 
 **If MCP available**: Skip installation and use MCP tools directly.
@@ -26,7 +27,9 @@ Add to your MCP settings file (Claude Desktop, Cursor, or VS Code):
   "mcpServers": {
     "vizro-mcp": {
       "command": "uvx",
-      "args": ["vizro-mcp"]
+      "args": [
+        "vizro-mcp"
+      ]
     }
   }
 }
@@ -35,14 +38,15 @@ Add to your MCP settings file (Claude Desktop, Cursor, or VS Code):
 **Note**: If `uvx` is not in your PATH, use the full path (e.g., `/usr/local/bin/uvx`). Find with `which uvx`.
 
 **Quick install links**:
+
 - Cursor: [Install with UVX](https://cursor.com/en/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)
 - VS Code: [Install with UVX](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)
 
 ## Post-Installation
 
 1. **Restart IDE/Claude Desktop** after adding MCP configuration
-2. **Verify** MCP tools are available: Look for `mcp__vizro__*` tools
-3. **Start building** with MCP assistance
+1. **Verify** MCP tools are available: Look for `mcp__vizro__*` tools
+1. **Start building** with MCP assistance
 
 ## MCP Benefits
 

@@ -5,12 +5,14 @@
 ### 1. Information Overload
 
 **Problem**
+
 - Too many metrics on single screen (>12 charts)
 - Every available metric included
 - No clear focus or priority
 - Users cannot identify what matters
 
 **Solution**
+
 - Follow "7 ± 2 rule": 5-9 key metrics maximum on main view
 - Prioritize based on user goals
 - Use progressive disclosure for detail
@@ -18,6 +20,7 @@
 - Apply "Does this help make a decision?" test
 
 **Example Fix**
+
 ```
 Before: 20 metrics on one screen
 After: 5-7 primary KPIs + drill-downs for detail
@@ -26,12 +29,14 @@ After: 5-7 primary KPIs + drill-downs for detail
 ### 2. Poor Visual Hierarchy
 
 **Problem**
+
 - All elements same size and weight
 - Important metrics buried
 - Random placement without logic
 - No clear scanning path
 
 **Solution**
+
 - Place critical KPIs top-left
 - Use size to indicate importance (3x size difference between most/least important)
 - Group related metrics visually
@@ -39,6 +44,7 @@ After: 5-7 primary KPIs + drill-downs for detail
 - Use color sparingly to highlight
 
 **Visual Weight Formula**
+
 ```
 Primary metric: 48px bold + accent color
 Secondary metric: 24px medium + neutral color
@@ -48,6 +54,7 @@ Tertiary metric: 16px regular + gray
 ### 3. Inappropriate Chart Types
 
 **Problem Examples**
+
 - Pie chart with 10+ slices
 - Pie chart for time-series data
 - 3D charts distorting values
@@ -55,6 +62,7 @@ Tertiary metric: 16px regular + gray
 - Bar chart without zero baseline
 
 **Solutions**
+
 - **Too many pie slices** → Horizontal bar chart
 - **Time-series in pie** → Line or area chart
 - **3D effects** → Flat 2D chart (always)
@@ -62,6 +70,7 @@ Tertiary metric: 16px regular + gray
 - **Truncated bars** → Start at zero or use line chart
 
 **Quick Reference**
+
 ```
 Time series → Line chart
 Comparison → Bar chart
@@ -74,6 +83,7 @@ Correlation → Scatter plot
 ### 4. Color Misuse
 
 **Problem**
+
 - Too many colors (>6)
 - Similar shades hard to distinguish
 - Inconsistent color meanings
@@ -81,6 +91,7 @@ Correlation → Scatter plot
 - "Christmas tree" effect
 
 **Solution**
+
 - Limit to 3 primary colors + neutrals
 - Use color consistently (same entity = same color everywhere)
 - Add patterns/icons with color for accessibility
@@ -88,6 +99,7 @@ Correlation → Scatter plot
 - Use sequential/diverging scales appropriately
 
 **Color Budget**
+
 ```
 Primary data: 1 color
 Comparison data: 1 contrasting color
@@ -98,6 +110,7 @@ Everything else: Grayscale
 ### 5. Lack of Context
 
 **Problem**
+
 - Numbers without comparison
 - No date ranges shown
 - Missing units or labels
@@ -105,6 +118,7 @@ Everything else: Grayscale
 - No targets or benchmarks
 
 **Solution**
+
 - Always include comparisons (vs last period, vs target, vs benchmark)
 - Show date range prominently
 - Include units in labels (%, $, units)
@@ -112,6 +126,7 @@ Everything else: Grayscale
 - Show trends (↑ 15% or ↓ 8%)
 
 **Context Template**
+
 ```
 [Metric Name]: [Value] [Unit]
 [Time Period]
@@ -123,12 +138,14 @@ Example: `Revenue: $1.2M | Oct 2024 | ↑ 15% vs last month`
 ### 6. Cluttered Layout
 
 **Problem**
+
 - No white space
 - Charts touching each other
 - Dense, cramped feeling
 - Difficult to distinguish sections
 
 **Solution**
+
 - Minimum 24px between sections
 - Minimum 16px padding around charts
 - Use white space to group related items
@@ -136,6 +153,7 @@ Example: `Revenue: $1.2M | Oct 2024 | ↑ 15% vs last month`
 - Follow "breathing room" principle
 
 **Spacing System**
+
 ```
 Between unrelated elements: 32px
 Between related elements: 16px
@@ -146,6 +164,7 @@ Section margins: 48px
 ### 7. Inconsistent Design
 
 **Problem**
+
 - Different chart styles across dashboard
 - Varying font sizes and styles
 - Inconsistent colors for same data
@@ -153,6 +172,7 @@ Section margins: 48px
 - Different labeling conventions
 
 **Solution**
+
 - Create and follow design system
 - Use same chart library throughout
 - Standardize all typography
@@ -160,6 +180,7 @@ Section margins: 48px
 - Document interaction patterns
 
 **Consistency Checklist**
+
 - [ ] Same chart style (line width, colors) throughout
 - [ ] Consistent font family and sizes
 - [ ] Same color for same metric everywhere
@@ -169,6 +190,7 @@ Section margins: 48px
 ### 8. Ignoring User Workflow
 
 **Problem**
+
 - Dashboard doesn't match user tasks
 - Wrong metrics for user role
 - No customization options
@@ -176,6 +198,7 @@ Section margins: 48px
 - One-size-fits-all approach
 
 **Solution**
+
 - Conduct user research first
 - Create role-specific views
 - Allow filtering and customization
@@ -183,6 +206,7 @@ Section margins: 48px
 - Test with actual users
 
 **User-Centered Questions**
+
 - What decision does this dashboard support?
 - What questions do users need answered?
 - How frequently will they use it?
@@ -192,6 +216,7 @@ Section margins: 48px
 ### 9. Slow Performance
 
 **Problem**
+
 - Long loading times (>3 seconds)
 - Janky chart animations
 - Unresponsive filters
@@ -199,6 +224,7 @@ Section margins: 48px
 - No loading states
 
 **Solution**
+
 - Implement lazy loading
 - Paginate or aggregate large datasets
 - Show skeleton screens while loading
@@ -207,6 +233,7 @@ Section margins: 48px
 - Set data limits (max rows)
 
 **Performance Budget**
+
 ```
 Initial load: < 2 seconds
 Filter response: < 500ms
@@ -280,62 +307,60 @@ Smooth animations: 60fps
 
 ### The "Dashboard of Dashboards"
 
-**Problem**: Too many dashboards linked together
-**Solution**: Consolidate or create clear navigation hierarchy
+**Problem**: Too many dashboards linked together **Solution**: Consolidate or create clear navigation hierarchy
 
 ### The "Everything Animated"
 
-**Problem**: Every element has animation
-**Solution**: Animate only state changes, keep it subtle
+**Problem**: Every element has animation **Solution**: Animate only state changes, keep it subtle
 
 ### The "PDF Report Replication"
 
-**Problem**: Static, non-interactive digital version of printed report
-**Solution**: Leverage interactivity: filters, drill-downs, tooltips
+**Problem**: Static, non-interactive digital version of printed report **Solution**: Leverage interactivity: filters, drill-downs, tooltips
 
 ### The "Hidden Value"
 
-**Problem**: Most important info requires multiple clicks
-**Solution**: Surface critical insights immediately
+**Problem**: Most important info requires multiple clicks **Solution**: Surface critical insights immediately
 
 ### The "Decorative Dashboard"
 
-**Problem**: Pretty but not functional
-**Solution**: Form follows function; beauty through clarity
+**Problem**: Pretty but not functional **Solution**: Form follows function; beauty through clarity
 
 ### The "Metric Graveyard"
 
-**Problem**: Metrics no one looks at anymore
-**Solution**: Regular audits; remove unused metrics
+**Problem**: Metrics no one looks at anymore **Solution**: Regular audits; remove unused metrics
 
 ### The "Real-Time Everything"
 
-**Problem**: All metrics updating every second
-**Solution**: Match update frequency to decision frequency
+**Problem**: All metrics updating every second **Solution**: Match update frequency to decision frequency
 
 ### The "Surprise Me" Dashboard
 
-**Problem**: Random order, no predictable structure
-**Solution**: Consistent layout users can memorize
+**Problem**: Random order, no predictable structure **Solution**: Consistent layout users can memorize
 
 ## Testing for Common Mistakes
 
 ### 5-Second Test
+
 Show dashboard for 5 seconds. Can user recall the main insight?
 
 ### First-Click Test
+
 Ask user to find specific metric. Where do they click first?
 
 ### Think-Aloud Test
+
 Have user narrate their understanding while viewing dashboard
 
 ### A/B Testing
+
 Test alternative designs with real users and measure success
 
 ### Accessibility Audit
+
 Use automated tools + manual testing with assistive technology
 
 ### Performance Monitoring
+
 Track load times, interaction delays, and error rates
 
 ## Quick Fixes
@@ -343,9 +368,9 @@ Track load times, interaction delays, and error rates
 When facing immediate deadline, prioritize these fixes:
 
 1. **Remove clutter** (fastest impact)
-2. **Fix chart types** (critical accuracy)
-3. **Add context** (improves understanding)
-4. **Improve hierarchy** (aids scanning)
-5. **Reduce colors** (visual clarity)
+1. **Fix chart types** (critical accuracy)
+1. **Add context** (improves understanding)
+1. **Improve hierarchy** (aids scanning)
+1. **Reduce colors** (visual clarity)
 
 These five changes can transform a poor dashboard in under an hour.

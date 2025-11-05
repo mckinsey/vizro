@@ -25,16 +25,18 @@ Zip the individual skill folders (`dashboard-design/` and `dashboard-implementat
 The skills work together for a complete dashboard workflow:
 
 1. **Design Phase**: Use `dashboard-design` skill for:
-   - Defining purpose and audience
-   - Selecting and prioritizing metrics
-   - Choosing chart types
-   - Designing layout and hierarchy
-   - Creating wireframes
 
-2. **Implementation Phase**: Use `dashboard-implementation` skill for:
-   - Deciding if Vizro is appropriate
-   - Installing and configuring Vizro MCP
-   - Building the dashboard with Python
+    - Defining purpose and audience
+    - Selecting and prioritizing metrics
+    - Choosing chart types
+    - Designing layout and hierarchy
+    - Creating wireframes
+
+1. **Implementation Phase**: Use `dashboard-implementation` skill for:
+
+    - Deciding if Vizro is appropriate
+    - Installing and configuring Vizro MCP
+    - Building the dashboard with Python
 
 ## Requirements
 
@@ -44,6 +46,7 @@ The skills work together for a complete dashboard workflow:
 ## Documentation
 
 For more information about these skills:
+
 - See individual `SKILL.md` files in each skill directory
 - Reference files in `references/` folders provide detailed guidance
 - Vizro documentation: https://vizro.readthedocs.io
