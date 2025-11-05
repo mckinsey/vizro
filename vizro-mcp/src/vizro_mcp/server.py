@@ -4,7 +4,7 @@ import mimetypes
 import webbrowser
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 import vizro
 import vizro.models as vm
@@ -48,7 +48,7 @@ class ValidateResults:
     valid: bool
     message: str
     python_code: str
-    pycafe_url: Optional[str]
+    pycafe_url: str | None
     browser_opened: bool
 
 
@@ -58,8 +58,8 @@ class DataAnalysisResults:
 
     valid: bool
     message: str
-    df_info: Optional[DFInfo]
-    df_metadata: Optional[DFMetaData]
+    df_info: DFInfo | None
+    df_metadata: DFMetaData | None
 
 
 @dataclass
@@ -315,7 +315,7 @@ def create_starter_dashboard():
 @mcp.prompt()
 def create_dashboard(
     file_path_or_url: str = Field(description="The absolute path or URL to the data file you want to use."),
-    context: Optional[str] = Field(default=None, description="(Optional) Describe the dashboard you want to create."),
+    context: str | None = Field(default=None, description="(Optional) Describe the dashboard you want to create."),
 ) -> str:
     """Prompt template for creating an EDA dashboard based on one dataset."""
     return get_dashboard_prompt(file_path_or_url, context)
@@ -372,7 +372,7 @@ def validate_chart_code(
 @mcp.prompt()
 def create_vizro_chart(
     file_path_or_url: str = Field(description="The absolute path or URL to the data file you want to use."),
-    context: Optional[str] = Field(default=None, description="(Optional) Describe the chart you want to create."),
+    context: str | None = Field(default=None, description="(Optional) Describe the chart you want to create."),
 ) -> str:
     """Prompt template for creating a Vizro chart."""
     return get_chart_prompt(file_path_or_url, context)
