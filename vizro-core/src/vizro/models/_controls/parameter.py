@@ -5,7 +5,7 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions import update_figures
+from vizro.actions import set_control, update_figures
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
@@ -21,11 +21,13 @@ from vizro.models.types import ModelID, SelectorType, _IdProperty
 
 
 def check_dot_notation(target):
+    # TODO NOW PP: Move this check to pre_build as control targets can be added without '.'
     if "." not in target:
-        raise ValueError(
-            f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
-        )
-    elif target.split(".")[1] == "figure":
+        return target
+        # raise ValueError(
+        #     f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
+        # )
+    if target.split(".")[1] == "figure":
         raise ValueError(
             f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>. "
             "Arguments of the CapturedCallable function can be targeted directly, and not via <.figure.>."
@@ -34,13 +36,16 @@ def check_dot_notation(target):
 
 
 def check_data_frame_as_target_argument(target):
+    if "." not in target:
+        return target
+
     targeted_argument = target.split(".", 1)[1]
     if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
         raise ValueError(
             f"Invalid target {target}. 'data_frame' target must be supplied in the form "
             "<target_component>.data_frame.<dynamic_data_argument>"
         )
-    # TODO: Add validation: Make sure the target data_frame is _DynamicData.
+    # TODO: Add validation: Make sure the target data_frame is _DynamicData. This check has to be done in pre_build.
     return target
 
 
@@ -132,6 +137,14 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        # TODO NOW PP: Refactor this
+        # Extract parameter.targets that are not figure models.
+        targeted_controls = []
+        for target in list(self.targets):
+            if target in model_manager and not hasattr(model_manager[target], "figure"):
+                self.targets.remove(target)
+                targeted_controls.append(target)
+
         check_control_targets(control=self)
 
         if _is_numerical_temporal_selector(self.selector) and (self.selector.min is None or self.selector.max is None):
@@ -182,7 +195,18 @@ class Parameter(VizroBaseModel):
             # We do the update to ensure that `self.targets` is consistent with the target ids passed to `_parameter`.
             self.targets.extend(list(filter_targets))
             targets_ids = [target.partition(".")[0] for target in self.targets]
-            self.selector.actions = update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids)
+            # self.selector.actions = update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids)
+
+            update_figures_action = update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids)
+            # TODO AM-PP OQ: Currently, it's only enabled for Parameter to do the syncing. How to enable cascading?
+            set_control_actions = [set_control(control=control_id, value=None) for control_id in targeted_controls]
+
+            # Post assignment to trigger the _make_actions_chain pydantic validator.
+            self.selector.actions = [update_figures_action, *set_control_actions]
+
+            # TODO AM-PP OQ: I don't know why pre_build has to be called here, but not in the filter case.
+            for set_control_action in set_control_actions:
+                set_control_action.pre_build()
 
     @_log_call
     def build(self):

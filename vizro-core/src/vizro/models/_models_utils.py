@@ -164,7 +164,7 @@ def make_actions_chain(self):
         action._first_in_chain_trigger = model_action_trigger
 
         # The actions chain guard should be called only for on page load.
-        # TODO AM-PP OQ: Revisit this and make the implementation better if possible.
+        # TODO AM-PP OQ: Revisit this and improve the implementation to make the page.actions overwriting possible.
         action._prevent_initial_call_of_guard = not action.id.startswith(ON_PAGE_LOAD_ACTION_PREFIX)
 
         # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
