@@ -15,6 +15,7 @@ uv add vizro
 ## Basic Structure
 
 A Vizro app consists of:
+
 - **Dashboard**: Main container
 - **Pages**: Individual views
 - **Navigation**: Automatic sidebar with page hierarchy
@@ -80,11 +81,7 @@ summary_page = vm.Page(
         ),
         vm.Figure(
             figure=kpi_card(
-                data_frame=tips,
-                value_column="tip",
-                agg_func="mean",
-                value_format="${value:.2f}",
-                title="Average Tips"
+                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
             )
         ),
         vm.Graph(figure=px.histogram(tips, x="total_bill")),

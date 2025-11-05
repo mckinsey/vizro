@@ -18,6 +18,7 @@ The process spans from initial concept (understanding user needs, selecting metr
 **Key principle**: Every dashboard must serve a specific user role and support clear decisions. Understand who, why, and when before designing anything.
 
 **Essential questions**:
+
 - "Who will use this dashboard and what decisions do they need to make?"
 - "What are the 3-5 most important questions this dashboard must answer?"
 - "How frequently will users access it?" (daily monitoring, weekly review, executive overview)
@@ -29,10 +30,11 @@ The process spans from initial concept (understanding user needs, selecting metr
 **Consult** `references/common_mistakes.md` for detailed guidance on avoiding information overload and applying the "Does this help make a decision?" test.
 
 **Prioritization method**:
+
 1. Identify critical KPIs (top 3-5)
-2. Add essential supporting metrics
-3. Move detailed metrics to drill-downs
-4. Remove "nice to have" metrics
+1. Add essential supporting metrics
+1. Move detailed metrics to drill-downs
+1. Remove "nice to have" metrics
 
 ### 3. Choose Chart Types
 
@@ -62,12 +64,13 @@ The process spans from initial concept (understanding user needs, selecting metr
 
 ### 7. Validate Design
 
-**Key principle**: Users must identify the most important metric in <3 seconds. Dashboard purpose must be clear without explanation. Test with real users before launch.
+**Key principle**: Users must identify the most important metric in \<3 seconds. Dashboard purpose must be clear without explanation. Test with real users before launch.
 
 **Consult** `references/design_principles.md` for usability, accessibility, and performance checklists. See `references/common_mistakes.md` for testing methods (5-second test, first-click test, think-aloud).
 
 **Quick validation checks**:
-- Can users identify the most important metric in <3 seconds?
+
+- Can users identify the most important metric in \<3 seconds?
 - Are all chart types appropriate for the data?
 - Is text contrast sufficient (4.5:1 minimum)?
 - Are all interactions keyboard accessible?
@@ -79,19 +82,21 @@ The process spans from initial concept (understanding user needs, selecting metr
 **Consult** `references/wireframing_guide.md` for ASCII and HTML wireframe templates, grid patterns, and workflow guidance.
 
 **Two-step wireframing**:
+
 1. **ASCII diagram first**: Create text-based box diagram showing layout structure
-   - Show inline in conversation for immediate feedback
-   - Iterate quickly, create multiple variations
-   - Use `+`, `-`, `|` characters for boxes
-   - Label all sections: KPI, CHART, TABLE, FILTER, PARAMETER (as defined by Vizro), ACTIONS (as defined by Vizro), CONTAINER, TABS
-   - Consider splitting over multiple pages - do each page separately
-2. **HTML wireframe second**: Generate after ASCII approval
-   - Grayscale only
-   - Placeholder boxes for charts
-   - Write to file for browser preview
-   - Use for stakeholder presentations
+    - Show inline in conversation for immediate feedback
+    - Iterate quickly, create multiple variations
+    - Use `+`, `-`, `|` characters for boxes
+    - Label all sections: KPI, CHART, TABLE, FILTER, PARAMETER (as defined by Vizro), ACTIONS (as defined by Vizro), CONTAINER, TABS
+    - Consider splitting over multiple pages - do each page separately
+1. **HTML wireframe second**: Generate after ASCII approval
+    - Grayscale only
+    - Placeholder boxes for charts
+    - Write to file for browser preview
+    - Use for stakeholder presentations
 
 **When to use each**:
+
 - ASCII: Quick feedback, layout iteration, multiple variations
 - HTML: Browser preview, stakeholder review, final approval
 
@@ -100,20 +105,23 @@ The process spans from initial concept (understanding user needs, selecting metr
 **Key principle**: Decide on implementation approach. For Python dashboards with standard Plotly charts, consider Vizro framework (rapid development, professional styling). For other requirements, implement custom solution.
 
 **For Vizro implementation**: Use the **dashboard-implementation skill** which provides:
+
 - Decision tree for when to use Vizro
 - MCP installation and setup (if MCP not available)
 - Python quickstart with live documentation references
 - Example configurations from official tutorials
 
 **Vizro** (see dashboard-implementation skill for full details):
+
 - **Offers**: Python toolkit with professional themes, colorblind-safe palette, grid/flex layouts, auto-filters (page & container level), all Plotly charts, Cards/KPIs, Containers/Tabs, actions (export, drill-down), multi-page navigation, theme toggle
 - **Not for**: CRUD apps, chatbots, very complex UX workflows
 
 **For custom implementation**:
+
 1. Choose appropriate technology stack
-2. Implement based on approved wireframe
-3. Follow design principles from steps 1-7
-4. Test and iterate with users
+1. Implement based on approved wireframe
+1. Follow design principles from steps 1-7
+1. Test and iterate with users
 
 ## Bundled Resources
 
@@ -132,6 +140,7 @@ The process spans from initial concept (understanding user needs, selecting metr
 Use these grep patterns to quickly locate specific guidance:
 
 **Chart selection**:
+
 ```bash
 grep -i "use for\|avoid when\|best when" references/chart_selection_guide.md
 grep -i "anti-pattern\|never use" references/chart_selection_guide.md
@@ -139,6 +148,7 @@ grep -i "decision tree" references/chart_selection_guide.md
 ```
 
 **Design principles**:
+
 ```bash
 grep -i "contrast\|wcag\|accessibility" references/design_principles.md
 grep -i "f-pattern\|hierarchy\|layout" references/design_principles.md
@@ -147,6 +157,7 @@ grep -i "tooltip\|filter\|drill-down" references/design_principles.md
 ```
 
 **Common mistakes**:
+
 ```bash
 grep -i "problem\|solution" references/common_mistakes.md
 grep -i "anti-pattern\|avoid" references/common_mistakes.md
@@ -154,6 +165,7 @@ grep -i "test\|checklist" references/common_mistakes.md
 ```
 
 **Wireframing**:
+
 ```bash
 grep -i "ascii\|diagram\|template" references/wireframing_guide.md
 grep -i "html wireframe\|grid span" references/wireframing_guide.md
@@ -169,6 +181,7 @@ None. This skill uses only procedural knowledge and references to remain token-e
 ### Pattern: Executive Dashboard
 
 **Characteristics**:
+
 - 3-5 high-level KPIs only
 - Large, prominent numbers
 - Clear trend indicators (↑/↓ with %)
@@ -176,6 +189,7 @@ None. This skill uses only procedural knowledge and references to remain token-e
 - Comparison to targets/benchmarks
 
 **Example structure**:
+
 ```
 [Primary KPI - Large]     [Secondary KPI]   [Tertiary KPI]
 [Trend Chart - Medium]    [Comparison Chart]
@@ -185,6 +199,7 @@ None. This skill uses only procedural knowledge and references to remain token-e
 ### Pattern: Operational Dashboard
 
 **Characteristics**:
+
 - 7-12 metrics for monitoring
 - Real-time or near-real-time updates
 - Alert indicators for exceptions
@@ -192,6 +207,7 @@ None. This skill uses only procedural knowledge and references to remain token-e
 - Drill-downs to detail
 
 **Example structure**:
+
 ```
 [Alert banner if issues exist]
 [Status indicators row]
@@ -202,6 +218,7 @@ None. This skill uses only procedural knowledge and references to remain token-e
 ### Pattern: Analytical Dashboard
 
 **Characteristics**:
+
 - Flexible filtering and segmentation
 - Multiple chart types for exploration
 - Comparative analysis features
@@ -209,6 +226,7 @@ None. This skill uses only procedural knowledge and references to remain token-e
 - Detailed data tables
 
 **Example structure**:
+
 ```
 [Filter panel - top]
 [Primary insight - large]
@@ -219,24 +237,28 @@ None. This skill uses only procedural knowledge and references to remain token-e
 ## Best Practices Summary
 
 ### Layout
+
 - F-pattern for priority (top-left = critical)
 - 5-7 primary metrics maximum
 - 24-32px between sections
 - 30-40% white space total
 
 ### Typography
+
 - Primary metrics: 32-48px bold
 - Secondary metrics: 20-28px medium
 - Labels: 12-16px regular
 - One font family, multiple weights
 
 ### Color
+
 - Maximum 3 colors + neutrals
 - Consistent color mapping
 - 4.5:1 contrast minimum
 - Supplement color with patterns
 
 ### Charts
+
 - Bar for comparison
 - Line for trends
 - Avoid 3D always
@@ -244,19 +266,22 @@ None. This skill uses only procedural knowledge and references to remain token-e
 - Maximum 5 lines per chart
 
 ### Interaction
+
 - Progressive disclosure (3 levels)
 - Tooltips on hover
 - Global filters at top
 
 ### Accessibility
+
 - WCAG AA compliance (4.5:1 text contrast)
 - Keyboard navigation for all interactions
 - ARIA labels for charts
 - Never color alone for meaning
 
 ### Performance
-- <2 second initial load
-- <500ms filter response
+
+- \<2 second initial load
+- \<500ms filter response
 - Lazy load below-fold content
 - Skeleton screens while loading
 
@@ -303,7 +328,7 @@ What are you showing?
 - [ ] Adequate white space (30-40%)
 - [ ] Tooltips provide useful context
 - [ ] Keyboard accessible
-- [ ] <3 second load time
+- [ ] \<3 second load time
 - [ ] Tested with real users
 
 ## Additional Tips

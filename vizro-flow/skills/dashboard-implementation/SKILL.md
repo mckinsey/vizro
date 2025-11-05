@@ -32,6 +32,7 @@ Decision: Use Vizro if Python + standard Plotly charts + rapid development neede
 ## What Vizro Offers
 
 **Out-of-the-box**:
+
 - Professional themes (vizro_dark, vizro_light) with colorblind-safe palette
 - Grid and Flex layouts
 - Auto-filters (page & container level, auto-detects categorical/numerical/temporal)
@@ -84,6 +85,7 @@ grep -i "landing page\|drill-down\|pattern" references/dashboard_examples.md
 ## Quick Reference
 
 **Always do**:
+
 - Check for Vizro MCP first (faster development)
 - Reference live documentation: https://vizro.readthedocs.io/en/latest/llms.txt
 - Use default colorblind-safe palette (override only if needed)
@@ -91,6 +93,7 @@ grep -i "landing page\|drill-down\|pattern" references/dashboard_examples.md
 - Get user feedback early
 
 **Live Documentation**:
+
 - LLM-optimized: https://vizro.readthedocs.io/en/latest/llms.txt
 - Main docs: https://vizro.readthedocs.io/en/stable/
 - API Reference: https://vizro.readthedocs.io/en/stable/pages/API-reference/

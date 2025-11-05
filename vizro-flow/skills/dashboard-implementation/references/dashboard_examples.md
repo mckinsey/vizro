@@ -9,6 +9,7 @@ This reference contains visual examples of one complete, well-designed Vizro BI 
 **File**: `bi_example_landing_page.png`
 
 The main landing page showing:
+
 - KPI cards at the top
 - Multi-page navigation sidebar
 - Grid layout with charts
@@ -48,17 +49,20 @@ Product-level drill-down demonstrating dimensional analysis.
 ## Key Patterns Demonstrated
 
 **Multi-level navigation**:
+
 - Landing page (overview)
 - Drill-down pages (detail by dimension)
 - Consistent sidebar navigation
 
 **Component organization**:
+
 - KPIs in grid at top
 - Charts below KPIs
 - Filters in sidebar or top
 - Tables for detailed data
 
 **Visual consistency**:
+
 - Same theme across all pages
 - Consistent color palette
 - Professional spacing and alignment
@@ -68,8 +72,8 @@ Product-level drill-down demonstrating dimensional analysis.
 When building Vizro dashboards:
 
 1. **Reference visually**: Read these PNG files to see layout patterns
-2. **Study structure**: Note component placement, sizing, and hierarchy
-3. **Adapt patterns**: Use similar layouts for your dashboard requirements
-4. **Follow consistency**: Maintain visual consistency across pages like these examples
+1. **Study structure**: Note component placement, sizing, and hierarchy
+1. **Adapt patterns**: Use similar layouts for your dashboard requirements
+1. **Follow consistency**: Maintain visual consistency across pages like these examples
 
 These examples demonstrate production-quality Vizro dashboards following design principles from the vizro-design skill.
