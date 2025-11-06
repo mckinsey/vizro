@@ -51,6 +51,7 @@ Should I use Vizro for this dashboard?
    │  └─ Check: Can Vizro MCP be easily installed?
    │     (Can run `uvx vizro-mcp` or configure MCP client?)
    │     └─ YES → Install and use MCP (see references/mcp_setup.md)
+   │              Note: May need to restart IDE/Claude Desktop after installation
    │     └─ NO → Use Option 2 (Python)
    │
    └─ OPTION 2: Python Implementation (Manual, when MCP not available)
