@@ -27,7 +27,7 @@ def action_return_text(button_number_of_clicks):
 
 vm.Page.add_type("controls", vm.Button)
 
-figures_title_header_footer_page = vm.Page(
+action_model_field_shortcut_page = vm.Page(
     title=cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
     id=cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
     layout=vm.Grid(grid=[[0, 1]]),
@@ -76,7 +76,7 @@ figures_title_header_footer_page = vm.Page(
 )
 
 
-ag_grid_underlying_id_shortcuts_page = vm.Page(
+action_ag_grid_underlying_id_shortcut_page = vm.Page(
     title=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
     id=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
     components=[
@@ -103,7 +103,7 @@ ag_grid_underlying_id_shortcuts_page = vm.Page(
 )
 
 
-actions_default_property_controls_page = vm.Page(
+action_control_shortcut_page = vm.Page(
     title=cnst.ACTION_CONTROL_SHORTCUT_PAGE,
     id=cnst.ACTION_CONTROL_SHORTCUT_PAGE,
     components=[

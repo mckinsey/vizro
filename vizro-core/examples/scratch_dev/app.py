@@ -1,128 +1,131 @@
 """Dev app to try things out."""
 
-import vizro.plotly.express as px
-import vizro.models as vm
-from vizro import Vizro
-import vizro.actions as va
-from vizro.figures import kpi_card, kpi_card_reference
 import pandas as pd
-import dash_bootstrap_components as dbc
+from vizro import Vizro
+import vizro.models as vm
+from vizro.actions import set_control
+from vizro.figures import kpi_card, kpi_card_reference
 
-
-df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
-
-gapminder = px.data.gapminder()
-
-page = vm.Page(
-    title="Test page",
-    components=[
-        vm.Card(
-            text="Lorem Ipsum is simply dummy text. ",
-            header="### This is card header",
-            footer="##### This is card footer",
-            description="Tooltip",
-        ),
-        vm.Card(
-            header="## This is card header",
-            text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-            "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-            description="Tooltip",
-        ),
-        vm.Card(
-            text="Card with text and header and footer",
-            header="#### This is card header",
-            footer="##### This is card footer",
-            description="Tooltip",
-        ),
-        vm.Card(
-            text="### Card with just text title",
-            description="Tooltip",
-        ),
-        vm.Card(
-            text="Card without header",
-            footer="This is card footer",
-            description="Tooltip",
-        ),
-        vm.Card(
-            text="Regular card with only text: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
-            description="Tooltip",
-        ),
-        vm.Graph(figure=px.bar(gapminder, x="country", y="pop", color="continent")),
-        vm.Card(
-            text="Card with action: Filter Europe",
-            actions=va.set_control(control="filter-id-1", value="Europe"),
-        ),
-        vm.Card(
-            text="Navigate to page",
-            href="/dummy-page",
-        ),
-    ],
-    controls=[vm.Filter(id="filter-id-1", column="continent", selector=vm.RadioItems())],
-    layout=vm.Grid(
-        grid=[
-            [0, 1, 2, 3],
-            [4, 5, 7, 8],
-            [6, 6, -1, -1],
-            [6, 6, -1, -1],
-        ]
-    ),
+kpi_df = pd.DataFrame(
+    [[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]],
+    columns=["Actual", "Reference", "Category"],
 )
 
-page_2 = vm.Page(title="Dummy page", components=[vm.Card(text="This is plain old card.")])
-
-page_3 = vm.Page(
-    title="KPI indicator cards",
+kpi_indicators_page = vm.Page(
+    title="Page",
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
     components=[
+        # Style 1: Value Only
         vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df_kpi,
+            figure=kpi_card(
+                data_frame=kpi_df,
                 value_column="Actual",
-                reference_column="Reference",
-                title="KPI reference (pos)",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df_kpi,
-                value_column="Actual",
-                reference_column="Reference",
-                title="KPI reference with icon",
-                icon="Shopping Cart",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df_kpi,
-                value_column="Actual",
-                reference_column="Reference",
-                title="KPI reference (reverse color)",
-                reverse_color=True,
+                title="Value I",
+                agg_func="sum",
             )
         ),
         vm.Figure(
             figure=kpi_card(
-                data_frame=df_kpi,
+                data_frame=kpi_df,
                 value_column="Actual",
-                title="KPI with icon",
-                icon="Shopping Cart",
+                title="Value II",
+                agg_func="mean",
             )
         ),
         vm.Figure(
             figure=kpi_card(
-                data_frame=df_kpi,
+                data_frame=kpi_df,
                 value_column="Actual",
-                title="KPI with formatting",
+                title="Value III",
+                agg_func="median",
+            )
+        ),
+        # Style 2: Value and reference value
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=kpi_df,
+                value_column="Reference",
+                reference_column="Actual",
+                title="Ref. Value II",
+                agg_func="sum",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=kpi_df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="Ref. Value I",
+                agg_func="sum",
+            )
+        ),
+        vm.Figure(
+            id="kpi-card-reverse-coloring",
+            figure=kpi_card_reference(
+                data_frame=kpi_df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="Ref. Value III",
+                agg_func="median",
+                icon="Shopping Cart",
+            ),
+        ),
+        # Style 3: Value and icon
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=kpi_df,
+                value_column="Actual",
+                icon="Shopping Cart",
+                title="Icon I",
+                agg_func="sum",
                 value_format="${value:.2f}",
             )
         ),
         vm.Figure(
-            figure=kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+            figure=kpi_card(
+                data_frame=kpi_df,
+                value_column="Actual",
+                icon="Payment",
+                title="Icon II",
+                agg_func="mean",
+                value_format="{value:.0f}€",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=kpi_df,
+                value_column="Actual",
+                icon="Monitoring",
+                title="Icon III",
+                agg_func="median",
+            ),
+            actions=set_control(control="kpi_filter", value="B"),
+        ),
+        # Style 4: Reference value and reverse coloring
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=kpi_df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="Ref. Value (pos-reverse)",
+                reverse_color=True,
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=kpi_df,
+                value_column="Reference",
+                reference_column="Actual",
+                title="Ref. Value (neg-reverse)",
+                reverse_color=True,
+            ),
+            actions=set_control(control="kpi_filter", value="C"),
         ),
     ],
-    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5]]),
+    controls=[vm.Filter(id="kpi_filter", column="Category", selector=vm.Dropdown(multi=False))],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_2, page_3])
+dashboard = vm.Dashboard(pages=[kpi_indicators_page])
 
 if __name__ == "__main__":
-    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
+    Vizro().build(dashboard).run()
