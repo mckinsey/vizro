@@ -1,6 +1,6 @@
 ---
 name: dashboard-implementation
-description: Practical guidance for building dashboards with Vizro. Use when implementing dashboards with Vizro framework, setting up Vizro MCP, or determining if Vizro is appropriate for a dashboard project. Includes decision trees, MCP setup, and Python quickstart references.
+description: Practical guidance for building dashboards. Use when determining if Vizro is appropriate for a dashboard project, setting up Vizro MCP, or building a Vizro dashboard without MCP. Use this skill BEFORE using a potential Vizro MCP server.
 ---
 
 # Vizro Implementation
@@ -14,49 +14,48 @@ Vizro is an open-source Python toolkit for building data visualization dashboard
 ```
 Should I use Vizro for this dashboard?
 
-├─ Is this a Python environment?
-│  └─ NO → Do not use Vizro (Vizro requires Python)
+├─ Is Python the preferred implementation language?
+│  └─ NO → Do not use Vizro (requires Python)
 │  └─ YES → Continue
 │
-├─ Do you need custom interactivity beyond filters/drill-downs?
-│  └─ YES → Consider custom Dash/Plotly (Vizro may be limiting)
-│  └─ NO → Continue
+├─ Do the dashboard requirements fit within Vizro's capabilities?
 │
-├─ Are you using standard Plotly Express chart types?
-│  └─ NO → Consider custom implementation
-│  └─ YES → Use Vizro
-
-Decision: Use Vizro if Python + standard Plotly charts + rapid development needed
+│  What Vizro offers:
+│  ✓ Standard components (Graph, Table, Card, Figure)
+│  ✓ Filters (categorical, numerical, temporal) at page & container level
+│  ✓ Basic actions (export, drill-down, cross-filtering)
+│  ✓ Multi-page navigation with automatic sidebar
+│  ✓ Layouts (Grid, Flex) and organization (Container, Tabs)
+│  ✓ Professional themes (vizro_dark, vizro_light) with colorblind-safe palette
+│  ✓ Plotly Express charts and Plotly Graph Objects
+│  ✓ Theme toggle (light/dark)
+│
+│  What Vizro does NOT support:
+│  ✗ CRUD operations, database write actions
+│  ✗ Chatbots, streaming data
+│  ✗ Very complex custom UX workflows
+│
+│  (See references/python_quickstart.md for examples)
+│
+│  └─ NO → Do not use Vizro (requirements too complex)
+│  └─ YES → ✓ Use Vizro → Continue to implementation path
+│
+└─ Implementation Path
+   │
+   ├─ OPTION 1: MCP-based Implementation (Recommended, fastest)
+   │  │
+   │  ├─ Check: Are mcp__vizro__* tools available in tool list?
+   │  │  └─ YES → Use MCP tools to generate, validate, and build dashboard
+   │  │  └─ NO → Continue
+   │  │
+   │  └─ Check: Can Vizro MCP be easily installed?
+   │     (Can run `uvx vizro-mcp` or configure MCP client?)
+   │     └─ YES → Install and use MCP (see references/mcp_setup.md)
+   │     └─ NO → Use Option 2 (Python)
+   │
+   └─ OPTION 2: Python Implementation (Manual, when MCP not available)
+      └─ Follow references/python_quickstart.md for implementation guide
 ```
-
-## What Vizro Offers
-
-**Out-of-the-box**:
-
-- Professional themes (vizro_dark, vizro_light) with colorblind-safe palette
-- Grid and Flex layouts
-- Auto-filters (page & container level, auto-detects categorical/numerical/temporal)
-- All Plotly Express charts
-- Multi-page navigation with automatic sidebar
-- Actions (export, drill-down, cross-filtering)
-- Component organization (Container, Tabs)
-- Theme toggle (light/dark)
-
-**Not for**: CRUD apps, chatbots, very complex custom UX workflows
-
-## Implementation Path
-
-### Option 1: Build with Vizro MCP (Recommended)
-
-**Check for MCP first**: Look for `mcp__vizro__*` tools in available tools list.
-
-**If MCP available**: Use MCP tools to generate, validate, and build Vizro dashboards with AI assistance.
-
-**If MCP not available**: Install MCP following `references/mcp_setup.md`, then use MCP tools.
-
-### Option 2: Build with Python (Manual)
-
-**If MCP not desired**: Follow Python quickstart in `references/python_quickstart.md`.
 
 ## Bundled Resources
 
