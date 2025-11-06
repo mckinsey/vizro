@@ -90,3 +90,15 @@ def test_dashboard_tooltip_and_icon(dash_br_driver):
         dash_br_driver, "//*[@class='material-symbols-outlined tooltip-icon'][text()='info']"
     )
     dash_br_driver.wait_for_text_to_equal(".tooltip-inner p", "dashboard tooltip")
+
+
+def test_card_tooltip_icon(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.LAYOUT_FLEX_ALL_PARAMS,
+        graph_check=False,
+    )
+    # hover over first card icon and wait for the tooltip appear
+    hover_over_element_by_xpath_selenium(dash_br, "//*[@class='material-symbols-outlined tooltip-icon'][text()='info']")
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", "Lorem ipsum dolor sit amet, co")

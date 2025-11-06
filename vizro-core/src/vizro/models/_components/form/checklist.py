@@ -26,6 +26,9 @@ class Checklist(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
+
     Args:
         type (Literal["checklist"]): Defaults to `"checklist"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.

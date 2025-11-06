@@ -1,8 +1,8 @@
 import e2e.vizro.constants as cnst
 from pages.actions_properties_shortcut_page import (
-    actions_default_property_controls_page,
-    ag_grid_underlying_id_shortcuts_page,
-    figures_title_header_footer_page,
+    action_ag_grid_underlying_id_shortcut_page,
+    action_control_shortcut_page,
+    action_model_field_shortcut_page,
 )
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
@@ -37,6 +37,7 @@ from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
 from pages.set_control_cross_filter_page import (
     cross_filter_ag_grid_page,
+    cross_filter_card_graph_page,
     cross_filter_graph_page,
 )
 from pages.set_control_drill_down import drill_down_graph_page
@@ -94,6 +95,7 @@ dashboard = vm.Dashboard(
         vizro_url_and_download_page,
         cross_filter_graph_page,
         cross_filter_ag_grid_page,
+        cross_filter_card_graph_page,
         drill_down_graph_page,
         drill_through_filter_graph_source_page,
         drill_through_filter_graph_target_page,
@@ -101,9 +103,9 @@ dashboard = vm.Dashboard(
         drill_through_parameter_graph_target_page,
         drill_through_filter_ag_grid_source_page,
         drill_through_filter_ag_grid_target_page,
-        figures_title_header_footer_page,
-        ag_grid_underlying_id_shortcuts_page,
-        actions_default_property_controls_page,
+        action_model_field_shortcut_page,
+        action_ag_grid_underlying_id_shortcut_page,
+        action_control_shortcut_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -153,6 +155,7 @@ dashboard = vm.Dashboard(
             cnst.ACTIONS_ACCORDION: [
                 cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE,
                 cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
                 cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
                 cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET,
                 cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
