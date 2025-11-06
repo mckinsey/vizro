@@ -114,7 +114,7 @@ class TestFigureBuild:
         expected_figure = dcc.Loading(
             html.Div(
                 id="figure-id",
-                className="figure-container-actions",
+                className="figure-container is-clickable",
             ),
             color="grey",
             parent_className="loading-container",

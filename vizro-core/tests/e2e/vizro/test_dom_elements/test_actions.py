@@ -12,8 +12,10 @@ from e2e.vizro.paths import (
     categorical_components_value_path,
     dropdown_arrow_path,
     graph_axis_value_path,
+    kpi_card_path,
     page_title_path,
 )
+from hamcrest import assert_that, equal_to
 
 
 def test_export_data_no_controls(dash_br):
@@ -135,6 +137,134 @@ def test_set_control_cross_filter_ag_grid(dash_br):
         ),
         "50k",
     )
+
+
+def test_set_control_filter_kpi_card(dash_br):
+    """Test filter by clicking kpi_card."""
+    page_select(dash_br, page_name=cnst.KPI_INDICATORS_PAGE)
+
+    # click kpi_card_reference figure sets the dropdown value to "C"
+    dash_br.multiple_click(f"#{cnst.CLICKABLE_KPI_CARD_REFERENCE_ID}", 1, delay=0.1)
+
+    # check dropdown filter value
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE), 1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE,
+        all_value=False,
+        expected_selected_options=["C"],
+        expected_unselected_options=["A", "B", "C"],
+    )
+
+    # check kpi_card values
+    values = dash_br.find_elements(kpi_card_path())
+    values_text = [value.text for value in values]
+    assert_that(
+        actual_or_assertion=values_text,
+        matcher=equal_to(
+            [
+                "34",
+                "34.0",
+                "34.0",
+                "53",
+                "34",
+                "34.0",
+                "$34.00",
+                "34€",
+                "34.0",
+                "34",
+                "53",
+            ]
+        ),
+    )
+
+    # click kpi_card figure sets the dropdown value to "B"
+    dash_br.multiple_click(f"#{cnst.CLICKABLE_KPI_CARD_ID}", 1, delay=0.1)
+
+    # check dropdown filter value
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE), 1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE,
+        all_value=False,
+        expected_selected_options=["B"],
+        expected_unselected_options=["A", "B", "C"],
+    )
+
+    # check kpi_card values
+    values = dash_br.find_elements(kpi_card_path())
+    values_text = [value.text for value in values]
+    assert_that(
+        actual_or_assertion=values_text,
+        matcher=equal_to(
+            [
+                "6434",
+                "6434.0",
+                "6434.0",
+                "6553",
+                "6434",
+                "6434.0",
+                "$6434.00",
+                "6434€",
+                "6434.0",
+                "6434",
+                "6553",
+            ]
+        ),
+    )
+
+
+def test_set_control_filter_button(dash_br):
+    """Test filter by clicking button."""
+    page_select(dash_br, page_name=cnst.FILTERS_PAGE, page_path=cnst.FILTERS_PAGE_PATH)
+
+    # click filter button sets the radioitems value to "versicolor"
+    dash_br.multiple_click(button_id_path(btn_id=cnst.FILTERS_PAGE_SET_CONTROL_FILTER_BUTTON), 1, delay=0.1)
+
+    # check radio button filter value
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIO_ITEMS_FILTER_FILTERS_PAGE,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+    # check y axis for box graph has max value is '1.8'
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(graph_id=cnst.BOX_GRAPH_ID, axis_value_number="5", axis_value="1.8"),
+        "1.8",
+    )
+
+
+def test_set_control_filter_card(dash_br):
+    """Test filter by clicking card."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
+    )
+
+    # click filter card sets the radioitems value to "Oceania"
+    dash_br.multiple_click(f"#{cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CARD_ID}", 1, delay=0.1)
+
+    # check radio button filter value
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CONTOL_ID,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "Africa"},
+            {"value": 2, "selected": False, "value_name": "Americas"},
+            {"value": 3, "selected": False, "value_name": "Asia"},
+            {"value": 4, "selected": False, "value_name": "Europe"},
+            {"value": 5, "selected": True, "value_name": "Oceania"},
+        ],
+    )
+
+    # check that graph data changed to "Oceania"
+    dash_br.wait_for_text_to_equal("text[class='legendtext'][data-unformatted='Oceania']", "Oceania")
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
