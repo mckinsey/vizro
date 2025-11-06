@@ -217,7 +217,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
 
 ### Overwrite CSS for selected components
 
-To adjust CSS properties for specific components, such as altering the appearance of a selected [`Card`](../user-guides/card.md) rather than all Cards, you need to supply an `id` to the component you want to style.
+To adjust CSS properties for specific components, such as altering the appearance of a selected [`Card`](../user-guides/card.md) rather than all Cards, supply an `id` to the component you want to style.
 
 Let's say we want to change the `background-color` and `color` of a specific `Card`.
 

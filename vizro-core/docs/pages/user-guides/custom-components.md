@@ -33,7 +33,7 @@ We will refer back to these steps in the examples below.
 
 You may want to use this strategy to:
 
-- Extend an existing component, for example to add a button to [`Card`](../user-guides/card.md).
+- Extend an existing component, for example to add a button to a [`Card`](../user-guides/card.md).
 - Change default configuration of a Dash component set by a Vizro model, for example to set `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider].
 - Change the fields of a models, for example to change the `title` field from `Optional` to have a default.
 
