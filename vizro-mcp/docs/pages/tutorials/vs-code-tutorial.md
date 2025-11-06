@@ -2,7 +2,7 @@
 
 This tutorial shows how to build and share a Vizro dashboard using generative AI. It uses a [public dataset about access to electricity across the globe](https://ourworldindata.org/grapher/share-of-the-population-with-access-to-electricity), but you will not need to download the data. The data is illustrated by a dashboard, and this tutorial shows you how to use Vizro-MCP to create a similar one with Vizro.
 
-The tutorial uses Microsoft VS Code as the MCP host, but if you prefer to use Cursor, you can also follow the instructions since the environments are very similar.
+The tutorial uses VS Code as the MCP host, but if you prefer to use Cursor, you can also follow the instructions since the environments are very similar.
 
 The tutorial uses Vizro-MCP to generate an initial set of Python dashboard code, and a combination of prompting and hand-editing once the code has been generated. The prompts and chart output at the time of writing are shown to illustrate the process. The nature of working with an LLM is that your output may be slightly different.
 
