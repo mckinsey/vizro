@@ -158,25 +158,3 @@ The process spans from initial concept (understanding user needs, selecting metr
 [Comparison charts - 2 columns]
 [Detailed table - bottom]
 ```
-
-## Quick Reference
-
-### Color Usage Checklist
-
-- [ ] Maximum 3 primary colors used
-- [ ] Same color for same entity everywhere
-- [ ] Sufficient contrast (4.5:1 text, 3:1 elements)
-- [ ] Color not sole means of conveying info
-- [ ] Tested with color blindness simulator
-
-### Before Shipping Checklist
-
-- [ ] 5-7 metrics maximum on main view
-- [ ] Most important metric top-left
-- [ ] All chart types appropriate for data
-- [ ] Consistent color usage throughout
-- [ ] Adequate white space (30-40%)
-- [ ] Tooltips provide useful context
-- [ ] Keyboard accessible
-- [ ] \<3 second load time
-- [ ] Tested with real users
