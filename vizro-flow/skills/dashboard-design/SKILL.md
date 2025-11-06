@@ -1,6 +1,6 @@
 ---
 name: dashboard-design
-description: End-to-end guidance for designing effective dashboards from concept through wireframing. This skill provides comprehensive workflows for dashboard design, chart selection, layout planning, and wireframing. Use when creating dashboards, selecting chart types, designing data visualizations, creating wireframes, or planning dashboard implementations. Covers metrics display, KPI visualization, data presentation, analytical interface design, and wireframing patterns. For Vizro implementation, use the dashboard-implementation skill.
+description: USE FIRST when asked to design/critique/improve a dashboard. MUST BE USED BEFORE USING THE dashboard-implementation skill and any vizro-mcp tools. End-to-end guidance for designing effective dashboards from concept through wireframing. Provides comprehensive workflows for dashboard design, chart selection, layout planning, color strategy, KPI visualization, data presentation, analytical interface design, and wireframing.
 ---
 
 # Dashboard Design

@@ -1,6 +1,6 @@
 ---
 name: dashboard-implementation
-description: Practical guidance for building dashboards. Use when determining if Vizro is appropriate for a dashboard project, setting up Vizro MCP, or building a Vizro dashboard without MCP. Use this skill BEFORE using a potential Vizro MCP server.
+description: USE FIRST when asked to create/build/implement a dashboard. MUST BE USED BEFORE USING ANY vizro-mcp tools. Practical guidance for building dashboards. Use when determining if Vizro is appropriate for a dashboard project, setting up Vizro MCP, or building a Vizro dashboard without MCP.
 ---
 
 # Vizro Implementation
