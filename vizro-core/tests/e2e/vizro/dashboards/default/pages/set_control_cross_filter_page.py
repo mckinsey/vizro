@@ -85,3 +85,32 @@ cross_filter_ag_grid_page = vm.Page(
         ),
     ],
 )
+
+
+cross_filter_card_graph_page = vm.Page(
+    title=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
+    components=[
+        vm.Card(
+            id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CARD_ID,
+            text="Continent to choose: Oceania",
+            actions=set_control(control="card-filter", value="Oceania"),
+        ),
+        vm.Graph(
+            id="box-card-graph-id",
+            figure=px.box(
+                gapminder,
+                x="country",
+                y="pop",
+                color="continent",
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id="card-filter",
+            column="continent",
+            targets=["box-card-graph-id"],
+            selector=vm.RadioItems(id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CONTOL_ID),
+        )
+    ],
+)
