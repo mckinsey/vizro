@@ -22,14 +22,7 @@ You should receive a response similar to the following:
 
 > Vizro-MCP provides several capabilities for creating data visualizations and dashboards using Vizro:
 
-> Available Functions:
-
-> - Creating charts and dashboards with guided instructions
-> - Loading and analyzing data from various formats (CSV, JSON, Excel, Parquet, etc.)
-> - Getting sample data for testing purposes
-> - Validating chart configurations and dashboard setups
-> - Getting model schemas for Vizro components
-> - Working with both simple chart creation and advanced dashboard configurations
+> [...]
 
 > The MCP server appears to be properly connected and functional. Would you like me to help you create a chart or dashboard using Vizro? I can work with your data or use sample datasets to demonstrate the capabilities.
 
