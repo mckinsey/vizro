@@ -41,7 +41,7 @@ The skills work together for a complete dashboard workflow:
 ## Requirements
 
 - **dashboard-design**: No dependencies (pure design guidance)
-- **dashboard-implementation**: Python environment for Vizro implementation
+- **dashboard-implementation**: Python environment for Vizro implementation OR public datasets for PyCafe previews
 
 ## Documentation
 
@@ -54,3 +54,11 @@ For more information about these skills:
 ## Support
 
 For issues or questions about these skills, please file an issue in the repository.
+
+## Credits
+
+Some of the skills content is based on the following sources:
+
+- FusionCharts: [10 Dashboard Design Mistakes](https://www.fusioncharts.com/blog/10-dashboard-design-mistakes/)
+- Geckoboard: [Dashboard Design and Build a Great Dashboard](https://www.geckoboard.com/uploads/geckoboard-dashboard-design-and-build-a-great-dashboard.pdf)
+- UXPin: [Dashboard Design Principles](https://www.uxpin.com/studio/blog/dashboard-design-principles/)
