@@ -8,13 +8,13 @@ from e2e.vizro.checkers import (
 )
 from e2e.vizro.navigation import accordion_select, hover_over_element_by_css_selector_selenium, page_select
 from e2e.vizro.paths import (
+    actions_progress_indicator_path,
     button_id_path,
     categorical_components_value_path,
     dropdown_arrow_path,
     graph_axis_value_path,
     kpi_card_path,
     page_title_path,
-    actions_progress_indicator_path
 )
 from hamcrest import assert_that, equal_to
 

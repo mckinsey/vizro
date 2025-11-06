@@ -1,7 +1,7 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_selected_dropdown, check_slider_value
 from e2e.vizro.navigation import page_select, select_dropdown_value
-from e2e.vizro.paths import graph_axis_value_path, slider_value_path
+from e2e.vizro.paths import slider_value_path
 
 
 def test_custom_dropdown(dash_br, check_graph_is_loaded_thread):
