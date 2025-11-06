@@ -71,7 +71,7 @@ linkchecker site \
   --check-extern \
   --no-warnings \
   --ignore=404.html \
-  --ignore-http://localhost:8050 \
+  --ignore-url=http://localhost:8050 \
   --ignore-url=127.0.0.1 \
   --ignore-url=https://vizro.readthedocs.io/ \
   --ignore-url="^https://cursor\.com/install-mcp\?name=vizro-mcp&config=(.+)$" \
