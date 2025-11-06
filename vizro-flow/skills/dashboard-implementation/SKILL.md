@@ -67,31 +67,7 @@ Should I use Vizro for this dashboard?
 
 **`dashboard_examples.md`** - Visual examples of well-designed Vizro dashboards with PNG screenshots showing landing pages, drill-down patterns, KPI layouts, and multi-page navigation. Read when exploring layout patterns or seeking visual design inspiration.
 
-### Finding Information in References
-
-```bash
-# MCP setup
-grep -i "installation\|uvx\|configuration" references/mcp_setup.md
-
-# Python quickstart
-grep -i "example\|configuration" references/python_quickstart.md
-grep -i "layout\|filter\|component" references/python_quickstart.md
-
-# Dashboard examples
-grep -i "landing page\|drill-down\|pattern" references/dashboard_examples.md
-```
-
-## Quick Reference
-
-**Always do**:
-
-- Check for Vizro MCP first (faster development)
-- Reference live documentation: https://vizro.readthedocs.io/en/latest/llms.txt
-- Use default colorblind-safe palette (override only if needed)
-- Test with accessibility tools
-- Get user feedback early
-
-**Live Documentation**:
+## Live Documentation
 
 - LLM-optimized: https://vizro.readthedocs.io/en/latest/llms.txt
 - Main docs: https://vizro.readthedocs.io/en/stable/

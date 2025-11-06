@@ -79,49 +79,15 @@ The process spans from initial concept (understanding user needs, selecting metr
 
 **Key principle**: Create ASCII diagram wireframes first for rapid iteration, then generate simple HTML wireframe after approval. Focus on structure and hierarchy, not colors or fonts.
 
-**Consult** `references/wireframing_guide.md` for ASCII and HTML wireframe templates, grid patterns, and workflow guidance.
-
-**Two-step wireframing**:
-
-1. **ASCII diagram first**: Create text-based box diagram showing layout structure
-    - Show inline in conversation for immediate feedback
-    - Iterate quickly, create multiple variations
-    - Use `+`, `-`, `|` characters for boxes
-    - Label all sections: KPI, CHART, TABLE, FILTER, PARAMETER (as defined by Vizro), ACTIONS (as defined by Vizro), CONTAINER, TABS
-    - Consider splitting over multiple pages - do each page separately
-1. **HTML wireframe second**: Generate after ASCII approval
-    - Grayscale only
-    - Placeholder boxes for charts
-    - Write to file for browser preview
-    - Use for stakeholder presentations
-
-**When to use each**:
-
-- ASCII: Quick feedback, layout iteration, multiple variations
-- HTML: Browser preview, stakeholder review, final approval
+**Consult** `references/wireframing_guide.md` for ASCII and HTML wireframe templates, grid patterns, two-step workflow, and detailed guidance on when to use each format.
 
 ### 9. Build Dashboard
 
-**Key principle**: Decide on implementation approach. For Python dashboards with standard Plotly charts, consider Vizro framework (rapid development, professional styling). For other requirements, implement custom solution.
+**Key principle**: Decide on implementation approach based on technology requirements and complexity.
 
-**For Vizro implementation**: Use the **dashboard-implementation skill** which provides:
+**For Python dashboards with standard components**: Use the **dashboard-implementation skill** which provides decision tree for Vizro suitability, MCP setup, and Python quickstart.
 
-- Decision tree for when to use Vizro
-- MCP installation and setup (if MCP not available)
-- Python quickstart with live documentation references
-- Example configurations from official tutorials
-
-**Vizro** (see dashboard-implementation skill for full details):
-
-- **Offers**: Python toolkit with professional themes, colorblind-safe palette, grid/flex layouts, auto-filters (page & container level), all Plotly charts, Cards/KPIs, Containers/Tabs, actions (export, drill-down), multi-page navigation, theme toggle
-- **Not for**: CRUD apps, chatbots, very complex UX workflows
-
-**For custom implementation**:
-
-1. Choose appropriate technology stack
-1. Implement based on approved wireframe
-1. Follow design principles from steps 1-7
-1. Test and iterate with users
+**For custom implementation**: Choose appropriate technology stack, implement based on approved wireframe, and follow design principles from steps 1-7.
 
 ## Bundled Resources
 
@@ -134,47 +100,6 @@ The process spans from initial concept (understanding user needs, selecting metr
 **`common_mistakes.md`** - 9 critical errors with solutions, subtle issues, anti-patterns, testing methods. Read when reviewing or fixing existing dashboards.
 
 **`wireframing_guide.md`** - ASCII diagram templates and HTML wireframe templates for rapid dashboard mockups. Read when creating wireframes before implementation.
-
-### Finding Information in References
-
-Use these grep patterns to quickly locate specific guidance:
-
-**Chart selection**:
-
-```bash
-grep -i "use for\|avoid when\|best when" references/chart_selection_guide.md
-grep -i "anti-pattern\|never use" references/chart_selection_guide.md
-grep -i "decision tree" references/chart_selection_guide.md
-```
-
-**Design principles**:
-
-```bash
-grep -i "contrast\|wcag\|accessibility" references/design_principles.md
-grep -i "f-pattern\|hierarchy\|layout" references/design_principles.md
-grep -i "color.*scale\|sequential\|diverging" references/design_principles.md
-grep -i "tooltip\|filter\|drill-down" references/design_principles.md
-```
-
-**Common mistakes**:
-
-```bash
-grep -i "problem\|solution" references/common_mistakes.md
-grep -i "anti-pattern\|avoid" references/common_mistakes.md
-grep -i "test\|checklist" references/common_mistakes.md
-```
-
-**Wireframing**:
-
-```bash
-grep -i "ascii\|diagram\|template" references/wireframing_guide.md
-grep -i "html wireframe\|grid span" references/wireframing_guide.md
-grep -i "executive\|operational\|analytical" references/wireframing_guide.md
-```
-
-### Scripts and Assets
-
-None. This skill uses only procedural knowledge and references to remain token-efficient.
 
 ## Common Patterns
 
@@ -234,82 +159,7 @@ None. This skill uses only procedural knowledge and references to remain token-e
 [Detailed table - bottom]
 ```
 
-## Best Practices Summary
-
-### Layout
-
-- F-pattern for priority (top-left = critical)
-- 5-7 primary metrics maximum
-- 24-32px between sections
-- 30-40% white space total
-
-### Typography
-
-- Primary metrics: 32-48px bold
-- Secondary metrics: 20-28px medium
-- Labels: 12-16px regular
-- One font family, multiple weights
-
-### Color
-
-- Maximum 3 colors + neutrals
-- Consistent color mapping
-- 4.5:1 contrast minimum
-- Supplement color with patterns
-
-### Charts
-
-- Bar for comparison
-- Line for trends
-- Avoid 3D always
-- Always start bars at zero
-- Maximum 5 lines per chart
-
-### Interaction
-
-- Progressive disclosure (3 levels)
-- Tooltips on hover
-- Global filters at top
-
-### Accessibility
-
-- WCAG AA compliance (4.5:1 text contrast)
-- Keyboard navigation for all interactions
-- ARIA labels for charts
-- Never color alone for meaning
-
-### Performance
-
-- \<2 second initial load
-- \<500ms filter response
-- Lazy load below-fold content
-- Skeleton screens while loading
-
 ## Quick Reference
-
-### Decision Tree for Chart Selection
-
-```
-What are you showing?
-
-├─ Comparison of categories
-│  └─ Bar chart (horizontal if >7 categories)
-│
-├─ Change over time
-│  ├─ Few points (<12) → Column chart
-│  └─ Many points (12+) → Line chart
-│
-├─ Part-to-whole
-│  ├─ Simple (2-5 parts) → Pie/donut
-│  └─ Complex or comparative → Stacked bar
-│
-├─ Distribution
-│  ├─ Frequency → Histogram
-│  └─ Statistical summary → Box plot
-│
-└─ Relationship
-   └─ Correlation → Scatter plot
-```
 
 ### Color Usage Checklist
 
@@ -330,13 +180,3 @@ What are you showing?
 - [ ] Keyboard accessible
 - [ ] \<3 second load time
 - [ ] Tested with real users
-
-## Additional Tips
-
-- **Start simple**: Begin with 3 metrics, add only if justified
-- **User test early**: Show mockups before building
-- **Iterate based on usage**: Track which metrics users actually view
-- **Document decisions**: Note why specific charts/layouts were chosen
-- **Maintain consistency**: Create and follow a design system
-- **Performance matters**: Users abandon slow dashboards
-- **Accessibility is essential**: Not optional, plan from start
