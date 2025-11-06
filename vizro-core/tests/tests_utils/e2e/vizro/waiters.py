@@ -6,7 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 def graph_load_waiter(driver):
-    """Waiting for graph's x-axis to appear."""
+    """Waiting that all graphs are loaded for the page."""
     driver.wait_for_no_elements('div[data-dash-is-loading="true"]')
 
 

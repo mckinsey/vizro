@@ -8,6 +8,7 @@ from e2e.vizro.checkers import (
 )
 from e2e.vizro.navigation import accordion_select, hover_over_element_by_css_selector_selenium, page_select
 from e2e.vizro.paths import (
+    actions_progress_indicator_path,
     button_id_path,
     categorical_components_value_path,
     dropdown_arrow_path,
@@ -74,7 +75,7 @@ def test_actions_progress_indicator(dash_br):
     dash_br.click_at_coord_fractions(f"#{cnst.SCATTER_INTERACTIONS_ID} path:nth-of-type(20)", 0, 1)
 
     # check that that progress indicator appears
-    dash_br.wait_for_text_to_equal("span[class='material-symbols-outlined progress-indicator']", "progress_activity")
+    dash_br.wait_for_text_to_equal(actions_progress_indicator_path(), "progress_activity")
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
