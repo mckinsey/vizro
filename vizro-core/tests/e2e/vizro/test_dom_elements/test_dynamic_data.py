@@ -152,12 +152,14 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     # move slider to value '60'
     select_slider_handler(dash_br, elem_id=slider_id, value=6)
     callbacks_finish_waiter(dash_br)
+    # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(second_screen)
 
     # move slider to value '20'
     select_slider_handler(dash_br, elem_id=slider_id, value=2)
     callbacks_finish_waiter(dash_br)
+    # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(third_screen)
 

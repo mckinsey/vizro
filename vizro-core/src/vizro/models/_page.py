@@ -21,6 +21,7 @@ from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
+    _all_hidden,
     _build_inner_layout,
     _log_call,
     check_captured_callable_model,
@@ -50,6 +51,9 @@ def clean_path(path: str, allowed_characters: str) -> str:
 
 class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
+
+    Abstract: Usage documentation
+        [How to make dashboard pages](../user-guides/pages.md)
 
     Args:
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
@@ -89,10 +93,6 @@ class Page(VizroBaseModel):
     def _make_actions_chain(self):
         return make_actions_chain(self)
 
-    @property
-    def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
-
     # This should ideally be a field validator, but we need access to the model_fields_set
     @model_validator(mode="after")
     def validate_path(self):
@@ -114,6 +114,10 @@ class Page(VizroBaseModel):
         self.__dict__["path"] = new_path
 
         return self
+
+    @property
+    def _action_triggers(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -147,15 +151,35 @@ class Page(VizroBaseModel):
         if targets:
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
-        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
-        url_controls = [
-            control
-            for control in cast(
-                Iterable[ControlType],
-                [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
+        controls = cast(
+            Iterable[ControlType],
+            [*model_manager._get_models(Parameter, self), *model_manager._get_models(Filter, self)],
+        )
+
+        if controls:
+            # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
+            # Selector values as outputs to be reset.
+            selector_outputs = [Output(control.selector.id, "value", allow_duplicate=True) for control in controls]
+
+            # Selector guard is set to True when selector value is reset to prevent actions chain from running.
+            selector_guard_outputs = [
+                Output(f"{control.selector.id}_guard_actions_chain", "data", allow_duplicate=True)
+                for control in controls
+            ]
+
+            clientside_callback(
+                ClientsideFunction(namespace="page", function_name="reset_controls"),
+                Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
+                *selector_outputs,
+                *selector_guard_outputs,
+                Input(f"{self.id}_reset_button", "n_clicks"),
+                State("vizro_controls_store", "data"),
+                State(self.id, "id"),  # Assigned to outermost Div in Dashboard._make_page_layout.
+                prevent_initial_call=True,
             )
-            if control.show_in_url
-        ]
+
+        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
+        url_controls = [control for control in controls if control.show_in_url]
 
         if url_controls:
             selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
@@ -187,7 +211,9 @@ class Page(VizroBaseModel):
     def build(self) -> _PageBuildType:
         # Build control panel
         controls_content = [control.build() for control in self.controls]
-        control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
+        control_panel = html.Div(
+            id="control-panel", children=controls_content, hidden=not controls_content or _all_hidden(controls_content)
+        )
 
         # Build layout with components
         components_container = _build_inner_layout(self.layout, self.components)

@@ -11,6 +11,100 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.47'></a>
+
+# 0.1.47 — 2025-10-29
+
+## Added
+
+- Allow hiding `Filter` and `Parameter` by setting `visible=False`. ([#1428](https://github.com/mckinsey/vizro/pull/1428))
+
+- Add a reset button by default, allowing users to restore all page controls to their default values. ([#1437](https://github.com/mckinsey/vizro/pull/1437))
+
+- Add support for `header`, `description` and `footer` in `Card` for more flexible styling. See our user guide on [Cards](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#add-header-and-footer) for an example. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+
+- Make `Card` clickable to trigger actions (e.g. clicking the `Card` to filter another chart). See our user guide on [Actions](<(https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#trigger-an-action-with-a-card)>) for an example. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+
+- Make `Figure` clickable to trigger actions (e.g. clicking the `kpi_card` to filter another chart). ([#1439](https://github.com/mckinsey/vizro/pull/1439))
+
+- `Card` can be the source of a `set_control` action. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+
+- `Figure` can be the source of a `set_control` action. ([#1439](https://github.com/mckinsey/vizro/pull/1439))
+
+- `Button` can be the source of a `set_control` action. ([#1441](https://github.com/mckinsey/vizro/pull/1441))
+
+## Fixed
+
+- Fix dynamic filters to correctly handle year values (e.g. 1995).([#1450](https://github.com/mckinsey/vizro/pull/1450))
+
+<a id='changelog-0.1.46'></a>
+
+# 0.1.46 — 2025-09-23
+
+## Highlights ✨
+
+- Introduce `set_control` action to enable much more powerful and flexible graph and table interactions such as cross-filtering and cross-highlighting. See the [user guide on graph and table interactions](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/) for more information. ([#1373](https://github.com/mckinsey/vizro/pull/1373))
+
+## Added
+
+- Add support for any Bootstrap theme via, for example, `Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP])`. ([#1244](https://github.com/mckinsey/vizro/pull/1244))
+
+- A control's `selector` can be used as an action input or output by referring to the parent control's `id`. ([#1366](https://github.com/mckinsey/vizro/pull/1366))
+
+## Changed
+
+- Make the logo clickable so it redirects to the homepage. ([#1393](https://github.com/mckinsey/vizro/pull/1393))
+
+- NavBar no longer collapses with the left side panel. ([#1394](https://github.com/mckinsey/vizro/pull/1394))
+
+## Deprecated
+
+- Deprecate `va.filter_interaction` in favor of new `va.set_control` action. ([#1379](https://github.com/mckinsey/vizro/pull/1379))
+
+## Fixed
+
+- Fix `VizroBaseModel._to_python()` to include `vizro.figures` in the imports. ([#1391](https://github.com/mckinsey/vizro/pull/1391))
+
+<a id='changelog-0.1.45'></a>
+
+# 0.1.45 — 2025-09-12
+
+## Highlights ✨
+
+- New syntax for attaching custom actions: you should now specify runtime inputs directly in the function call as `vm.Action(function=action_function("dropdown_id"))`. See the new [tutorial on custom actions](https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/) for more information. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+- New syntax for attaching built-in actions: you should now specify `actions=va.export_data()` instead of `actions=vm.Action(function=va.export_data())`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+## Added
+
+- Custom action inputs and outputs can directly refer to models, for example `vm.Action(function=update_text("my_selector"), outputs="my_text")`. ([#1153](https://github.com/mckinsey/vizro/pull/1153))
+
+- Custom action inputs and outputs can directly refer to model fields, for example `outputs="my_graph.header"`. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
+
+- Custom actions can now return a dictionary to make it easier to handle actions with many return values. ([#1143](https://github.com/mckinsey/vizro/pull/1143))
+
+- Enable passing a single action to the `actions` argument without nesting it in a list. You can now specify `actions=vm.Action(...)` instead of `actions=[vm.Action(...)]`. ([#1328](https://github.com/mckinsey/vizro/pull/1328))
+
+- Enable passing a single output to the `Action` model without nesting it in a list. You can now specify `outputs="component_id.property"` instead of `outputs=["component_id.property"]`. ([#1334](https://github.com/mckinsey/vizro/pull/1334))
+
+- Add `icon` argument to `vm.Button`, enabling any icon from the [Google Material Icons library](https://fonts.google.com/icons) to be displayed inside the `vm.Button`. This also enables circular buttons with only an icon. ([#1341](https://github.com/mckinsey/vizro/pull/1341))
+
+- Add global progress indicator next to theme switch that shows when actions are running. ([#1352](https://github.com/mckinsey/vizro/pull/1352))
+
+## Changed
+
+- All built-in actions are now Pydantic models and hence validate arguments, exist in the Vizro schema, and can be subclassed. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+- Page ID is now set independently from the page title. You can refer to a page in navigation by ID or title. ([#1339](https://github.com/mckinsey/vizro/pull/1339))
+
+## Deprecated
+
+- The `inputs` argument of the `vm.Action` model is deprecated. Pass references to runtime inputs directly as arguments of `function`. ([#1377](https://github.com/mckinsey/vizro/pull/1377))
+
+- Passing a static argument to a custom action is deprecated. All arguments must instead be runtime inputs. ([#1377](https://github.com/mckinsey/vizro/pull/1377))
+
+- Deprecate old syntax for attaching built-in actions using `vm.Action`. ([#1377](https://github.com/mckinsey/vizro/pull/1377))
+
 <a id='changelog-0.1.44'></a>
 
 # 0.1.44 — 2025-07-29

@@ -88,7 +88,7 @@ function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
   // The solution relies on the fact that the order of control IDs matches the order of the
   // control selector value inputs and their corresponding outputs.
 
-  // Split selector values , control IDs and selector IDs that are in format:
+  // Split selector values, control IDs and selector IDs that are in format:
   // [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
 
   if (values_ids.length % 3 !== 0) {
@@ -180,11 +180,31 @@ Received input: ${JSON.stringify(values_ids)}`,
   return triggerOPL;
 }
 
+function reset_controls(_, vizroControlsStore, pageId) {
+  console.debug("Reset controls on page:", pageId);
+
+  // Get info for all controls on the current page.
+  const pageControls = Object.values(vizroControlsStore).filter(
+    (control) => control.pageId === pageId,
+  );
+
+  // For each control, prepare its original value
+  const outputSelectorValues = pageControls.map(
+    (control) => control.originalValue,
+  );
+  // For each control set all its guard to true to prevent triggering unnecessary actions.
+  const outputSelectorGuards = pageControls.map(() => true);
+
+  // Trigger the OPL after resetting all controls.
+  return [null, ...outputSelectorValues, ...outputSelectorGuards];
+}
+
 window.encodeUrlParams = encodeUrlParams;
 window.decodeUrlParams = decodeUrlParams;
 window.dash_clientside = {
   ...window.dash_clientside,
   page: {
     sync_url_query_params_and_controls: sync_url_query_params_and_controls,
+    reset_controls: reset_controls,
   },
 };

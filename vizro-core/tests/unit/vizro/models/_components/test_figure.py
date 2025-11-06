@@ -29,6 +29,7 @@ class TestFigureInstantiation:
         assert hasattr(figure, "id")
         assert figure.type == "figure"
         assert figure.figure == standard_kpi_card
+        assert figure._action_triggers == {"__default__": f"{figure.id}.n_clicks"}
         assert figure._action_outputs == {
             "__default__": f"{figure.id}.children",
             "figure": f"{figure.id}.children",
@@ -91,13 +92,29 @@ class TestProcessFigureDataFrame:
 
 
 class TestFigureBuild:
-    def test_figure_build(self, standard_kpi_card, gapminder):
+    def test_figure_build(self, standard_kpi_card):
         figure = vm.Figure(id="figure-id", figure=standard_kpi_card).build()
 
         expected_figure = dcc.Loading(
             html.Div(
                 id="figure-id",
                 className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+        assert_component_equal(figure, expected_figure)
+
+    def test_figure_kpi_with_actions_build(self, standard_kpi_card, identity_action_function):
+        figure = vm.Figure(
+            id="figure-id", figure=standard_kpi_card, actions=vm.Action(function=identity_action_function())
+        ).build()
+
+        expected_figure = dcc.Loading(
+            html.Div(
+                id="figure-id",
+                className="figure-container is-clickable",
             ),
             color="grey",
             parent_className="loading-container",

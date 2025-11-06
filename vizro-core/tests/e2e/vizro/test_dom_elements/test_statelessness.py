@@ -8,7 +8,7 @@ from e2e.vizro.checkers import (
     check_theme_color,
 )
 from e2e.vizro.navigation import page_select, page_select_selenium
-from e2e.vizro.paths import button_path, categorical_components_value_path, slider_value_path, theme_toggle_path
+from e2e.vizro.paths import button_id_path, categorical_components_value_path, slider_value_path, theme_toggle_path
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -105,7 +105,7 @@ def test_export_action(chrome_driver, dash_br, check_graph_is_loaded_selenium_th
     ).click()
 
     # export scatter data for the second user without changing anything and check if data is correct
-    dash_br.multiple_click(button_path(), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.FILTERS_PAGE_EXPORT_DATA_BUTTON), 1)
     check_exported_file_exists(f"{dash_br.download_path}/{cnst.FILTERED_CSV}")
     check_exported_file_exists(f"{dash_br.download_path}/{cnst.FILTERED_XLSX}")
     assert_files_equal(cnst.FILTERED_BASE_CSV, f"{dash_br.download_path}/{cnst.FILTERED_CSV}")

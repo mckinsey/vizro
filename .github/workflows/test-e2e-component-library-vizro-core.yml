@@ -23,12 +23,13 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
+      # Remove the `click` installation constraint once the
+      # https://github.com/pypa/hatch/issues/2050 is resolved.
       - name: Install Hatch
-        run: pip install hatch
+        run: pip install hatch "click<8.3.0"
 
       - name: Install pixelmatch
         run: sudo npm install pixelmatch -g

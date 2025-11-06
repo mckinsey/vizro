@@ -32,27 +32,17 @@ from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
-from vizro.models._models_utils import _log_call, warn_description_without_title
+from vizro.models._controls import Filter, Parameter
+from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ControlType
 
 if TYPE_CHECKING:
     from vizro.models import Page
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
-
-
-def _all_hidden(components: Union[Component, list[Component]]):
-    """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
-    if isinstance(components, Component):
-        components = [components]
-    return all(
-        component is None
-        or getattr(component, "hidden", False)
-        or "d-none" in getattr(component, "className", "d-inline")
-        for component in components
-    )
 
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
@@ -75,6 +65,7 @@ _OuterPageContentType = TypedDict(
     "_OuterPageContentType",
     {
         "header": html.Div,
+        "nav-bar": dbc.Navbar,
         "right-side": html.Div,
         "collapse-left-side": dbc.Collapse,
         "collapse-icon-outer": html.Div,
@@ -93,6 +84,9 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
 
 class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
+
+    Abstract: Usage documentation
+        [How to create a dashboard](../user-guides/dashboard.md)
 
     Args:
         pages (list[Page]): See [`Page`][vizro.models.Page].
@@ -194,6 +188,17 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
+                dcc.Store(
+                    id="vizro_controls_store",
+                    data={
+                        control.id: {"originalValue": control.selector.value, "pageId": page.id}
+                        for page in self.pages
+                        for control in cast(
+                            Iterable[ControlType],
+                            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
+                        )
+                    },
+                ),
                 dash.page_container,
             ],
         )
@@ -233,9 +238,15 @@ class Dashboard(VizroBaseModel):
         path_to_logo_dark = get_asset_url(logo_dark_img) if logo_dark_img else None
         path_to_logo_light = get_asset_url(logo_light_img) if logo_light_img else None
 
-        logo = html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo)
-        logo_dark = html.Img(id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark)
-        logo_light = html.Img(id="logo-light", src=path_to_logo_light, hidden=not path_to_logo_light)
+        logo = html.A(html.Img(id="logo", src=path_to_logo), href=get_relative_path("/"), hidden=not path_to_logo)
+        logo_dark = html.A(
+            html.Img(id="logo-dark", src=path_to_logo_dark), href=get_relative_path("/"), hidden=not path_to_logo_dark
+        )
+        logo_light = html.A(
+            html.Img(id="logo-light", src=path_to_logo_light),
+            href=get_relative_path("/"),
+            hidden=not path_to_logo_light,
+        )
 
         return logo, logo_dark, logo_light
 
@@ -285,28 +296,44 @@ class Dashboard(VizroBaseModel):
         page_header_content = [page_title]
         page_header = html.Div(id="page-header", children=page_header_content)
 
+        has_page_controls = bool(
+            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
+        )
+
         # Page header controls that appear on the right side of the header.
+        action_progress_indicator = dcc.Loading(
+            id="action-progress-indicator",
+            delay_show=300,
+            delay_hide=300,
+            custom_spinner=html.Span(
+                className="material-symbols-outlined progress-indicator",
+                # Keep "progress_activity" children so the CSS spinner can render/display correctly.
+                children="progress_activity",
+            ),
+            # Placeholder div is added as used as target from actions to show loading indicator.
+            children=html.Div(id="action-progress-indicator-placeholder"),
+        )
+        reset_controls_button = dbc.Button(
+            id=f"{page.id}_reset_button",
+            children=html.Span(
+                children=[
+                    html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                    dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
+                ],
+                className="btn-text",
+            ),
+            class_name="btn-circular",
+        )
+        theme_switch = dbc.Switch(
+            id="theme-selector", value=self.theme == "vizro_light", persistence=True, persistence_type="session"
+        )
         header_controls = html.Div(
             id="header-controls",
             children=[
-                dcc.Loading(
-                    id="action-progress-indicator",
-                    delay_show=300,
-                    delay_hide=300,
-                    custom_spinner=html.Span(
-                        className="material-symbols-outlined progress-indicator",
-                        # Keep "progress_activity" children so the CSS spinner can render/display correctly.
-                        children="progress_activity",
-                    ),
-                    # Placeholder div is added as used as target from actions to show loading indicator.
-                    children=html.Div(id="action-progress-indicator-placeholder"),
-                ),
-                dbc.Switch(
-                    id="theme-selector",
-                    value=self.theme == "vizro_light",
-                    persistence=True,
-                    persistence_type="session",
-                ),
+                action_progress_indicator,
+                # Show the reset icon button in the header when there are page controls but no control panel.
+                reset_controls_button if has_page_controls and _all_hidden(control_panel) else None,
+                theme_switch,
             ],
         )
 
@@ -321,6 +348,21 @@ class Dashboard(VizroBaseModel):
             children=header_right_content,
             hidden=_all_hidden(header_right_content),
         )
+
+        # Show reset button with the icon in the control panel when both page controls and control panel exist.
+        if has_page_controls and not _all_hidden(control_panel):
+            control_panel.children.append(
+                dbc.Button(
+                    id=f"{page.id}_reset_button",
+                    children=html.Span(
+                        children=[
+                            html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                            "Reset controls",
+                        ],
+                        className="btn-text",
+                    ),
+                )
+            )
 
         nav_control_panel_content = [nav_panel, control_panel]
         nav_control_panel = html.Div(
@@ -366,7 +408,7 @@ class Dashboard(VizroBaseModel):
         right_side = html.Div(id="right-side", children=[page_header, page_components])
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
-            children=html.Div(id="left-side", children=[nav_bar, nav_control_panel]),
+            children=html.Div(id="left-side", children=[nav_control_panel]),
             is_open=True,
             dimension="width",
         )
@@ -381,11 +423,12 @@ class Dashboard(VizroBaseModel):
                 ),
             ],
             id="collapse-icon-outer",
-            hidden=_all_hidden([nav_bar, nav_control_panel]),
+            hidden=_all_hidden([nav_control_panel]),
         )
         return html.Div(
             [
                 header,
+                nav_bar,
                 right_side,
                 collapse_left_side,
                 collapse_icon_outer,
@@ -401,12 +444,13 @@ class Dashboard(VizroBaseModel):
         Returns:
             html.Div: The complete Dash layout for the page, ready to render.
         """
+        nav_bar = outer_page["nav-bar"]
         collapse_left_side = outer_page["collapse-left-side"]
         collapse_icon_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
         header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[collapse_left_side, collapse_icon_outer, right_side])
+        page_main = html.Div(id="page-main", children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side])
         page_main_outer = html.Div(
             children=[header, page_main],
             className="page-main-outer no-left" if _all_hidden(collapse_icon_outer) else "page-main-outer",

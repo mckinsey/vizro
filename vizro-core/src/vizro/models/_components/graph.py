@@ -4,10 +4,11 @@ from contextlib import suppress
 from typing import Annotated, Any, Literal, Optional, cast
 
 import pandas as pd
+from box import Box
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested
@@ -29,6 +30,9 @@ logger = logging.getLogger(__name__)
 
 class Graph(VizroBaseModel):
     """Wrapper for `dcc.Graph` to visualize charts in dashboard.
+
+    Abstract: Usage documentation
+        [How to use graphs](../user-guides/graph.md)
 
     Args:
         type (Literal["graph"]): Defaults to `"graph"`.
@@ -118,6 +122,34 @@ class Graph(VizroBaseModel):
             **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
+
+    def _get_value_from_trigger(self, value: str, trigger: dict[str, list[JsonValue]]) -> JsonValue:
+        # When a single point is clicked, we are only interested in looking for values inside ["points"][0]. There
+        # are no realistic examples which need values outside this. We use Box for two reasons:
+        # 1. it makes it possible to address nested values in the trigger["points"][0] dictionary using a simple
+        # string syntax, e.g. value="x" or "value=customdata[0]". This is enabled by box_dots=True.
+        # 2. it converts camelCase to snake_case. e.g. if trigger contains something called "someKey" then both
+        # value="someKey" and value="some_key" will work. This is enabled by camel_killer_box=True.
+        trigger_box = Box(trigger["points"][0], camel_killer_box=True, box_dots=True)
+        try:
+            # First try to treat value as a column name. Unfortunately the customdata returned in the trigger does
+            # not contain column names (it's just a list) so we must look it up in the called function's `custom_data`
+            # to find its numerical index in this list. This only works if a custom_data was provided in the graph
+            # function call.
+            index = self["custom_data"].index(value)
+            return trigger_box["customdata"][index]
+        except (KeyError, ValueError):
+            try:
+                # Treat the value as a box lookup string, as in
+                # https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots. This works for e.g. value="x" and
+                # value="customdata[0]".
+                return trigger_box[value]
+            except (KeyError, TypeError):
+                raise ValueError(
+                    f"Couldn't find value `{value}` in trigger for `set_control` action. "
+                    f"This action was added to the Graph model with ID `{self.id}`. "
+                    "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+                )
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

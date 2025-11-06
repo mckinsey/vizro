@@ -16,6 +16,9 @@ class Switch(VizroBaseModel):
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use boolean selectors](../user-guides/selectors.md/#boolean-selectors)
+
     Args:
         type (Literal["switch"]): Defaults to `"switch"`.
         value (bool): Initial state of the switch. When `True`, the switch is "on".

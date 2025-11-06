@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import export_data
+from vizro.actions import export_data, set_control
 
 iris = px.data.iris()
 
@@ -18,7 +18,7 @@ filters_page = vm.Page(
                         vm.Container(
                             id=cnst.FILTERS_COMPONENTS_CONTAINER,
                             title=cnst.FILTERS_COMPONENTS_CONTAINER,
-                            layout=vm.Grid(grid=[[0, 1], [0, 1], [0, 2]]),
+                            layout=vm.Grid(grid=[[0, 1], [0, 1], [0, 2], [0, 3]]),
                             components=[
                                 vm.Graph(
                                     id=cnst.SCATTER_GRAPH_ID,
@@ -38,6 +38,7 @@ filters_page = vm.Page(
                                     href="/",
                                 ),
                                 vm.Button(
+                                    id=cnst.FILTERS_PAGE_EXPORT_DATA_BUTTON,
                                     text="Export data",
                                     actions=[
                                         vm.Action(
@@ -53,6 +54,11 @@ filters_page = vm.Page(
                                             )
                                         ),
                                     ],
+                                ),
+                                vm.Button(
+                                    id=cnst.FILTERS_PAGE_SET_CONTROL_FILTER_BUTTON,
+                                    text="Set versicolor",
+                                    actions=set_control(control=cnst.RADIO_ITEMS_FILTER_CONTROL_ID, value="versicolor"),
                                 ),
                             ],
                         )

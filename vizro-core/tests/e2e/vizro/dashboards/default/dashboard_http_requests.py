@@ -2,6 +2,21 @@ from time import sleep
 
 import e2e.vizro.constants as cnst
 import pandas as pd
+from pages.ag_grid_interactions_page import ag_grid_interactions_page
+from pages.filters_inside_containters_page import filters_inside_containers_page
+from pages.set_control_cross_filter_page import (
+    cross_filter_ag_grid_page,
+    cross_filter_graph_page,
+)
+from pages.set_control_drill_down import drill_down_graph_page
+from pages.set_control_drill_through import (
+    drill_through_filter_ag_grid_source_page,
+    drill_through_filter_ag_grid_target_page,
+    drill_through_filter_graph_source_page,
+    drill_through_filter_graph_target_page,
+    drill_through_parameter_graph_source_page,
+    drill_through_parameter_graph_target_page,
+)
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -38,7 +53,7 @@ page_without_chart = vm.Page(
             id=f"{cnst.PAGE_WITHOUT_CHART}_button",
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: x)(f"{cnst.PAGE_WITHOUT_CHART}_button.n_clicks"),
+                    function=capture("action")(lambda x: x)(f"{cnst.PAGE_WITHOUT_CHART}_button"),
                     outputs=f"{cnst.PAGE_WITHOUT_CHART}_button.text",
                 )
             ],
@@ -90,9 +105,9 @@ page_implicit_actions_chain = vm.Page(
             actions=[
                 vm.Action(
                     function=capture("action")(lambda x: radio_items_options[int(x) % 3])(
-                        f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_button.n_clicks"
+                        f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_button"
                     ),
-                    outputs=f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_checklist.value",
+                    outputs=f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_checklist",
                 )
             ],
         ),
@@ -102,7 +117,7 @@ page_implicit_actions_chain = vm.Page(
             value=radio_items_options[0],
             actions=[
                 vm.Action(
-                    function=capture("action")(lambda x: x)(f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_checklist.value"),
+                    function=capture("action")(lambda x: x)(f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_checklist"),
                     outputs=f"{cnst.PAGE_IMPLICIT_ACIONS_CHAIN}_card.text",
                 )
             ],
@@ -272,6 +287,17 @@ dashboard = vm.Dashboard(
         page_dynamic_parametrisation,
         page_all_selectors,
         page_all_selectors_in_url,
+        cross_filter_graph_page,
+        cross_filter_ag_grid_page,
+        drill_through_filter_ag_grid_source_page,
+        drill_through_filter_ag_grid_target_page,
+        drill_through_filter_graph_source_page,
+        drill_through_filter_graph_target_page,
+        drill_through_parameter_graph_source_page,
+        drill_through_parameter_graph_target_page,
+        drill_down_graph_page,
+        ag_grid_interactions_page,
+        filters_inside_containers_page,
     ]
 )
 

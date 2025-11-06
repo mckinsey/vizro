@@ -11,6 +11,9 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 
 [envs.default]
 dependencies = [
+  # Remove the `click` installation constraint once the
+  # https://github.com/pypa/hatch/issues/2050 is resolved.
+  "click<8.3.0",
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
@@ -40,13 +43,17 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
+  # Remove the `click` installation constraint once the
+  # https://github.com/pypa/hatch/issues/2050 is resolved.
+  "click<8.3.0",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
   "mkdocs-pycafe",
-  "mkdocs-glightbox"
+  "mkdocs-glightbox",
+  "vizro"
 ]
 detached = true
 installer = "uv"
@@ -69,6 +76,9 @@ linkchecker site \
   --ignore-url="^https://cursor\.com/install-mcp\?name=vizro-mcp&config=(.+)$" \
   --ignore-url="^https://insiders\.vscode\.dev/redirect/mcp/install\?name=vizro-mcp&config=(.+)$" \
   --ignore-url=https://claude.ai/download
+'''
+links-in-prompts-check = '''
+python ../tools/check_vizro_docs_links_in_mcp_prompts.py
 '''
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"

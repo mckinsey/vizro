@@ -259,6 +259,7 @@ class TestRangeSliderInstantiation:
         assert range_slider.title == ""
         assert range_slider.description is None
         assert range_slider.actions == []
+        assert range_slider._action_triggers == {"__default__": f"{range_slider.id}.value"}
         assert range_slider._action_outputs == {"__default__": f"{range_slider.id}.value"}
         assert range_slider._action_inputs == {"__default__": f"{range_slider.id}.value"}
 
@@ -271,7 +272,7 @@ class TestRangeSliderInstantiation:
             marks={1: "1", 5: "5", 10: "10"},
             value=[1, 9],
             title="Test title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert range_slider.id == "range_slider_id"
@@ -284,12 +285,13 @@ class TestRangeSliderInstantiation:
         assert range_slider.title == "Test title"
         assert range_slider.actions == []
         assert isinstance(range_slider.description, vm.Tooltip)
+        assert range_slider._action_triggers == {"__default__": "range_slider_id.value"}
         assert range_slider._action_outputs == {
-            "__default__": f"{range_slider.id}.value",
-            "title": f"{range_slider.id}_title.children",
-            "description": f"{range_slider.description.id}-text.children",
+            "__default__": "range_slider_id.value",
+            "title": "range_slider_id_title.children",
+            "description": "tooltip-id-text.children",
         }
-        assert range_slider._action_inputs == {"__default__": f"{range_slider.id}.value"}
+        assert range_slider._action_inputs == {"__default__": "range_slider_id.value"}
 
     @pytest.mark.parametrize(
         "min, max, expected_min, expected_max",
@@ -303,7 +305,7 @@ class TestRangeSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
+            ValidationError, match=r"Maximum value of selector is required to be larger than minimum value."
         ):
             vm.RangeSlider(min=10, max=0)
 
@@ -348,7 +350,7 @@ class TestRangeSliderInstantiation:
     def test_validate_step_invalid(self):
         with pytest.raises(
             ValidationError,
-            match="The step value of the slider must be less than or equal to the difference between max and min.",
+            match=r"The step value of the slider must be less than or equal to the difference between max and min.",
         ):
             vm.RangeSlider(min=0, max=10, step=11)
 

@@ -22,15 +22,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      # Remove the `click` installation constraint once the
+      # https://github.com/pypa/hatch/issues/2050 is resolved.
       - name: Install Hatch
-        run: pip install hatch
+        run: pip install hatch "click<8.3.0"
       - name: Build vizro-core package
         run: hatch build -t wheel
       - name: Upload vizro-core artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pip
           path: vizro-core/dist/*.whl
@@ -39,7 +41,7 @@ jobs:
         working-directory: vizro-ai
         run: hatch build -t wheel
       - name: Upload vizro-ai artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pip2
           path: vizro-ai/dist/*.whl

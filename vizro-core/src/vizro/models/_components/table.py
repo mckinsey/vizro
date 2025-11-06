@@ -26,6 +26,9 @@ logger = logging.getLogger(__name__)
 class Table(VizroBaseModel):
     """Wrapper for `dash_table.DataTable` to visualize tables in dashboard.
 
+    Abstract: Usage documentation
+        [How to use tables](../user-guides/table.md)
+
     Args:
         type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].

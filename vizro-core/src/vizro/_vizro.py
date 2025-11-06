@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict, Union, cast
 
 import dash
 import plotly.io as pio
@@ -50,7 +50,7 @@ class Vizro:
 
         # When Vizro is used as a framework, we want to include the library and framework resources.
         # Dash serves resources in the order 1. external_stylesheets/scripts; 2. library resources from the
-        # ComponentRegistry; 3. resources added by append_css/scripts.
+        # ComponentRegistry; 3. resources added by append_css/scripts (which includes user's assets folder).
         # Vizro library resources are already present thanks to ComponentRegistry.registry.add("vizro") in
         # __init__.py. However, since Dash serves these before those added below it means that vizro-bootstrap.css would
         # be served  *after* Vizro library's figures.css. We always want vizro-bootstrap.css to be served first
@@ -62,11 +62,18 @@ class Vizro:
         with suppress(ValueError):
             ComponentRegistry.registry.discard("vizro")
 
+        # Automatically detect if Bootstrap CSS is provided in external_stylesheets
+        use_vizro_bootstrap = not self._has_bootstrap_css(kwargs.get("external_stylesheets", []))
+
         # vizro-bootstrap.min.css must be first so that it can be overridden, e.g. by bootstrap_overrides.css.
         # After that, all other items are sorted alphabetically.
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
+            # Skip vizro-bootstrap.min.css if external Bootstrap CSS is provided
+            if path.name == "vizro-bootstrap.min.css" and not use_vizro_bootstrap:
+                continue
+
             if path.suffix == ".css":
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
@@ -78,6 +85,25 @@ class Vizro:
                 self.dash.scripts.append_script(_make_resource_spec(path))
 
         data_manager.cache.init_app(self.dash.server)
+
+    @staticmethod
+    def _has_bootstrap_css(external_stylesheets: list[Union[str, dict[str, str]]]) -> bool:
+        """Detect if Bootstrap CSS is present in external stylesheets.
+
+        Args:
+            external_stylesheets: List of external stylesheets. Each entry can be a string (the URL).
+
+        Returns:
+            bool: True if Bootstrap CSS is detected, False otherwise
+        """
+
+        def _get_url(stylesheet: Union[str, dict[str, str]]) -> str:
+            """Extract URL from stylesheet."""
+            if isinstance(stylesheet, str):
+                return stylesheet
+            return stylesheet.get("href", "") if isinstance(stylesheet, dict) else ""
+
+        return any("bootstrap" in _get_url(stylesheet).lower() for stylesheet in external_stylesheets)
 
     def build(self, dashboard: Dashboard):
         """Builds the `dashboard`.
@@ -202,21 +228,30 @@ Provide a valid import path for these in your dashboard configuration."""
         ComponentRegistry.registry.add("vizro")
 
 
-class _ResourceSpec(TypedDict, total=False):
-    """Dash specification for a CSS or JS resource.
+class _ResourceType(TypedDict, total=False):
+    """Dash specification for a CSS or JS resource. Based on dash.resources.ResourceType.
 
     Dash uses relative_package_path when serve_locally=False (the default) in the Dash instantiation. When
-    serve_locally=True then, where defined, external_url will be used instead. dynamic and external_url are not
-    required keys.
+    serve_locally=True then, where defined, external_url will be used instead. Only namespace and relative_package_path
+    and required keys.
     """
 
     namespace: str
-    external_url: str
     relative_package_path: str
+    external_url: str
     dynamic: bool
+    dev_package_path: str
+    absolute_path: str
+    asset_path: str
+    external_only: bool
+    filepath: str
+    dev_only: bool
+    # async is a Python keyword so would need to use alternative functional TypedDict syntax for this to work. Since we
+    # don't use it anywhere we keep using this TypedDict class syntax and just don't define it here.
+    # async: bool Union[bool, Literal["eager", "lazy"]]
 
 
-def _make_resource_spec(path: Path) -> _ResourceSpec:
+def _make_resource_spec(path: Path) -> _ResourceType:
     # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
     # to main instead, but this can be manually overridden to the current feature branch name if required.
     # This would only be the case where you need to test something with serve_locally=False and have changed
@@ -230,7 +265,7 @@ def _make_resource_spec(path: Path) -> _ResourceSpec:
     # See https://github.com/mckinsey/vizro/issues/836.
     relative_path = PurePosixPath(path.relative_to(Path(__file__).parent))
 
-    resource_spec: _ResourceSpec = {"namespace": "vizro", "relative_package_path": str(relative_path)}
+    resource_spec: _ResourceType = {"namespace": "vizro", "relative_package_path": str(relative_path)}
 
     if relative_path.suffix in {".css", ".js"}:
         # The CDN automatically minifies CSS and JS files which aren't already minified. Convert "filename.css" to

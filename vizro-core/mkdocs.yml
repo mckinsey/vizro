@@ -1,6 +1,7 @@
 site_name: Vizro
 site_url: https://vizro.readthedocs.io/en/stable/
 nav:
+  # Make sure any new page added here is also added to the llmstxt plugin below (around line 156)
   - Vizro: index.md
   - Tutorials:
       - Quickstart tutorial: pages/tutorials/quickstart-tutorial.md
@@ -30,7 +31,7 @@ nav:
       - Navigation: pages/user-guides/navigation.md
       - Actions:
           - Overview: pages/user-guides/actions.md
-          - Data interactions: pages/user-guides/data-actions.md
+          - Handle data: pages/user-guides/data-actions.md
           - Graph and table interactions: pages/user-guides/graph-table-actions.md
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
@@ -63,6 +64,7 @@ nav:
       - About Vizro:
           - FAQs: pages/explanation/faq.md
           - User examples: pages/explanation/your-examples.md
+          - Cheatsheet: pages/cheatsheet/cheatsheet.html
           - Contribute to Vizro: pages/explanation/contributing.md
           - Documentation style: pages/explanation/documentation-style-guide.md
           - Authors: pages/explanation/authors.md
@@ -123,7 +125,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.44
+                vizro==0.1.47
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -150,7 +152,7 @@ plugins:
         Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
-      full_output: llms-full.txt
+      base_url: https://vizro.readthedocs.io/en/0.1.47/
       sections:
         "TUTORIALS":
           - pages/tutorials/quickstart-tutorial.md: "A quickstart dashboard tutorial"
@@ -185,6 +187,8 @@ plugins:
           - pages/user-guides/custom-css.md: "Custom CSS"
         "ACTIONS":
           - pages/user-guides/actions.md: "Actions"
+          - pages/user-guides/data-actions.md: "Handle data"
+          - pages/user-guides/graph-table-actions.md: "Graph and table interactions"
         "MANAGE DATA USED BY THE DASHBOARD":
           - pages/user-guides/data.md: "Data"
           - pages/user-guides/kedro-data-catalog.md: "Kedro Data Catalog"

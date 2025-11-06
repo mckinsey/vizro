@@ -33,6 +33,7 @@ import vizro.plotly.express as px
 import vizro.tables as vt
 import vizro.models as vm
 import vizro.actions as va
+import vizro.figures as vf
 from vizro import Vizro
 from vizro.models.types import capture
 from vizro.managers import data_manager
@@ -208,6 +209,9 @@ def _add_type_to_annotated_union_if_found(
 
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
+
+    Abstract: Usage documentation
+        See some exemplary usage in the guide on [custom components](../user-guides/custom-components.md).
 
     Args:
         id (ModelID): ID to identify model. Must be unique throughout the whole dashboard.

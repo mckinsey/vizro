@@ -167,6 +167,7 @@ class TestSliderInstantiation:
         assert slider.title == ""
         assert slider.description is None
         assert slider.actions == []
+        assert slider._action_triggers == {"__default__": f"{slider.id}.value"}
         assert slider._action_outputs == {"__default__": f"{slider.id}.value"}
         assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
 
@@ -179,7 +180,7 @@ class TestSliderInstantiation:
             marks={1: "1", 5: "5", 10: "10"},
             value=1,
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
         assert slider.id == "slider_id"
         assert slider.type == "slider"
@@ -191,12 +192,13 @@ class TestSliderInstantiation:
         assert slider.title == "Title"
         assert slider.actions == []
         assert isinstance(slider.description, vm.Tooltip)
+        assert slider._action_triggers == {"__default__": "slider_id.value"}
         assert slider._action_outputs == {
-            "__default__": f"{slider.id}.value",
-            "title": f"{slider.id}_title.children",
-            "description": f"{slider.description.id}-text.children",
+            "__default__": "slider_id.value",
+            "title": "slider_id_title.children",
+            "description": "tooltip-id-text.children",
         }
-        assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
+        assert slider._action_inputs == {"__default__": "slider_id.value"}
 
     @pytest.mark.parametrize("min, max", [(0, None), (None, 10), (0, 10)])
     def test_valid_min_max(self, min, max):
@@ -207,7 +209,7 @@ class TestSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
+            ValidationError, match=r"Maximum value of selector is required to be larger than minimum value."
         ):
             vm.Slider(min=10, max=0)
 
@@ -219,7 +221,7 @@ class TestSliderInstantiation:
 
     @pytest.mark.parametrize("value", [11, -1])
     def test_validate_slider_value_invalid(self, value):
-        with pytest.raises(ValidationError, match="Please provide a valid value between the min and max value."):
+        with pytest.raises(ValidationError, match=r"Please provide a valid value between the min and max value."):
             vm.Slider(min=0, max=10, value=value)
 
     @pytest.mark.parametrize("step, expected", [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)])
@@ -231,7 +233,7 @@ class TestSliderInstantiation:
     def test_validate_step_invalid(self):
         with pytest.raises(
             ValidationError,
-            match="The step value of the slider must be less than or equal to the difference between max and min.",
+            match=r"The step value of the slider must be less than or equal to the difference between max and min.",
         ):
             vm.Slider(min=0, max=10, step=11)
 

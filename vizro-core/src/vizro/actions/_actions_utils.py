@@ -102,7 +102,7 @@ def _apply_filter_interaction(
 
     Returns: filtered DataFrame.
     """
-    # The filter_interaction model actually contains the id we require in its _parent_model_id field.
+    # The filter_interaction model actually contains the id we require in its _parent_model field.
     # We could use that if we had the action_id available here. Alternatively we could explicitly pass the
     # input_component_id as a state and then use _get_triggered_model to look up the parent model. Both these methods
     # would mean we can remove modelID from the states, but given that filter_interaction will be removed it's not worth
@@ -122,7 +122,7 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     if value == NONE_OPTION:
         return None
     if isinstance(value, list) and len(value):
-        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item]
+        return [i for i in value if i != NONE_OPTION] or [None]
     return value
 
 

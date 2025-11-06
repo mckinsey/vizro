@@ -15,25 +15,25 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Container, VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch
-from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
+from vizro.models._components.form import DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._controls._controls_utils import (
+    SELECTORS,
+    _is_boolean_selector,
+    _is_categorical_selector,
+    _is_numerical_temporal_selector,
+    check_control_targets,
+    get_selector_default_value,
+    warn_missing_id_for_url_control,
+)
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
-# Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
-# with isinstance checks.
-# First entry in each tuple is the default selector for that column type.
-# MS: For mypy we need to do this anyway, see below - I have tried to make a function that takes the tuples and
-# converts them in order to reuse code, but I think it does not work
-SELECTORS = {
-    "numerical": (RangeSlider, Slider),
-    "categorical": (Dropdown, Checklist, RadioItems),
-    "temporal": (DatePicker,),
-    "boolean": (Switch,),
+DEFAULT_SELECTORS = {
+    "numerical": RangeSlider,
+    "categorical": Dropdown,
+    "temporal": DatePicker,
+    "boolean": Switch,
 }
-CategoricalSelectorType = Union[Dropdown, Checklist, RadioItems]
-NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
-BooleanSelectorType = Switch
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
@@ -77,6 +77,9 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
 class Filter(VizroBaseModel):
     """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
 
+    Abstract: Usage documentation
+        [How to use filters](../user-guides/filters.md)
+
     Examples:
         >>> print(repr(Filter(column="species")))
 
@@ -88,6 +91,7 @@ class Filter(VizroBaseModel):
         selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
         show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
             Useful for bookmarking or sharing dashboards with specific filter values pre-set.
+        visible (bool): Whether the filter should be visible. Defaults to `True`.
 
     """
 
@@ -105,6 +109,10 @@ class Filter(VizroBaseModel):
             "Whether the filter should be included in the URL query string. Defaults to `False`. "
             "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
         ),
+    )
+    visible: bool = Field(
+        default=True,
+        description="Whether the filter should be visible. Defaults to `True`.",
     )
 
     _dynamic: bool = PrivateAttr(False)
@@ -172,19 +180,19 @@ class Filter(VizroBaseModel):
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
 
-        if isinstance(selector, SELECTORS["categorical"]):
-            selector = cast(CategoricalSelectorType, selector)
+        if _is_categorical_selector(selector):
             selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif isinstance(selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            selector = cast(NumericalTemporalSelectorType, selector)
+        elif _is_numerical_temporal_selector(selector):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
 
-        # Wrap the selector in a Div so that the "guard" component can be added.
-        selector_call_obj = html.Div(children=[selector_call_obj])
-
-        # For dynamic filters, return the guard component (data=True) to prevent unexpected filter action firing.
-        selector_call_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True))
+        # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
+        selector_call_obj = html.Div(
+            children=[
+                selector_call_obj,
+                dcc.Store(id=f"{selector.id}_guard_actions_chain", data=True),
+            ]
+        )
 
         return selector_call_obj
 
@@ -222,7 +230,7 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
-        self.selector = self.selector or SELECTORS[self._column_type][0]()
+        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
         self.selector.title = self.selector.title or self.column.title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
@@ -237,7 +245,7 @@ class Filter(VizroBaseModel):
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
         # but should still count as manually set.
         if (
-            not isinstance(self.selector, SELECTORS["boolean"])
+            not _is_boolean_selector(self.selector)
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -249,18 +257,18 @@ class Filter(VizroBaseModel):
                     self.selector._dynamic = True
                     break
 
-        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            self.selector = cast(NumericalTemporalSelectorType, self.selector)
+        if _is_numerical_temporal_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
-            # Note that manually set self.selector.min/max = 0 are Falsey but should not be overwritten.
+            # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
                 self.selector.min = _min
             if self.selector.max is None:
                 self.selector.max = _max
-        elif isinstance(self.selector, SELECTORS["categorical"]):
-            # Categorical selector.
-            self.selector = cast(CategoricalSelectorType, self.selector)
+        elif _is_categorical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
+
+        # Set default value for the selector if not explicitly provided.
+        self.selector.value = get_selector_default_value(self.selector)
 
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (
@@ -293,14 +301,12 @@ class Filter(VizroBaseModel):
         # Wrap the selector in a Div so that the "guard" component can be added.
         selector_build_obj = html.Div(children=[selector.build()])
 
-        if self.show_in_url:
-            # Add the guard to the show_in_url filter selector in the build phase because clientside callback
-            # sync_url will be triggered and may adjust its value. Set it to False and let the sync_url clientside
-            # callback update it to True when needed. It'll happen when the filter value comes from the URL.
-            selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
+        # Add the guard component and set it to False. Let clientside callbacks to update it to True when needed.
+        # For example when the filter value comes from the URL or when reset button is clicked.
+        selector_build_obj.children.append(dcc.Store(id=f"{selector.id}_guard_actions_chain", data=False))
 
         if not self._dynamic:
-            return html.Div(id=self.id, children=selector_build_obj)
+            return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
         # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
         # Other components, such as the title, remain visible because of the configuration:
@@ -322,6 +328,7 @@ class Filter(VizroBaseModel):
             children=selector_build_obj,
             color="grey",
             overlay_style={"visibility": "visible"},
+            className="d-none" if not self.visible else "",
         )
 
     def _validate_targeted_data(
@@ -380,11 +387,12 @@ class Filter(VizroBaseModel):
         targeted_data: pd.DataFrame,
         current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
     ) -> Union[tuple[float, float], tuple[pd.Timestamp, pd.Timestamp]]:
-        # Try to convert the current value to a datetime object. If it fails (like for Slider), it will be left as is.
+        # Try to convert the current value to a datetime object. If it fails (like value=123), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
-        with suppress(ValueError):
-            current_value = pd.to_datetime(current_value, format="ISO8601")
+        if targeted_data.apply(is_datetime64_any_dtype).all():
+            with suppress(ValueError):
+                current_value = pd.to_datetime(current_value, format="ISO8601")
 
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
 
@@ -405,11 +413,12 @@ class Filter(VizroBaseModel):
         targeted_data: pd.DataFrame,
         current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
     ) -> list[Any]:
-        # Try to convert the current value to a datetime object. If it fails (like for Slider), it will be left as is.
+        # Try to convert the current value to a datetime object. If it fails (like value=123), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
-        with suppress(ValueError):
-            current_value = pd.to_datetime(current_value, format="ISO8601")
+        if targeted_data.apply(is_datetime64_any_dtype).all():
+            with suppress(ValueError):
+                current_value = pd.to_datetime(current_value, format="ISO8601")
 
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.

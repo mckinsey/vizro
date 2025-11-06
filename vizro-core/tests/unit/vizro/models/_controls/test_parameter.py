@@ -43,7 +43,7 @@ class TestParameterInstantiation:
                 multi=False,
                 value="lifeExp",
                 title="Choose x-axis",
-                description=vm.Tooltip(id="selector_tooltip_id", text="Test", icon="info"),
+                description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             ),
             show_in_url=True,
         )
@@ -52,13 +52,13 @@ class TestParameterInstantiation:
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.type == "dropdown"
         assert parameter.show_in_url is True
-
+        assert isinstance(parameter.selector.description, vm.Tooltip)
         assert parameter._action_triggers == {"__default__": "selector_id.value"}
         assert parameter._action_outputs == {
             "__default__": "selector_id.value",
             "selector": "parameter_id.children",
             "title": "selector_id_title.children",
-            "description": "selector_tooltip_id-text.children",
+            "description": "tooltip-id-text.children",
         }
         assert parameter._action_inputs == {
             "__default__": "selector_id.value",
@@ -67,7 +67,7 @@ class TestParameterInstantiation:
     def test_check_dot_notation_failed(self):
         with pytest.raises(
             ValueError,
-            match="Invalid target scatter_chart. "
+            match=r"Invalid target scatter_chart. "
             "Targets must be supplied in the form <target_component>.<target_argument>",
         ):
             Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
@@ -82,11 +82,11 @@ class TestParameterInstantiation:
             Parameter(targets=[target], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     def test_duplicate_parameter_target_failed(self):
-        with pytest.raises(ValueError, match="Duplicate parameter targets {'scatter_chart.x'} found."):
+        with pytest.raises(ValueError, match=r"Duplicate parameter targets {'scatter_chart.x'} found."):
             Parameter(targets=["scatter_chart.x", "scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     def test_duplicate_parameter_target_failed_two_params(self):
-        with pytest.raises(ValueError, match="Duplicate parameter targets {'scatter_chart.x'} found."):
+        with pytest.raises(ValueError, match=r"Duplicate parameter targets {'scatter_chart.x'} found."):
             Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
             Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
@@ -106,7 +106,7 @@ class TestParameterInstantiation:
 
 class TestPreBuildMethod:
     def test_parameter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control parameter_id should be defined within a Page object."):
+        with pytest.raises(ValueError, match=r"Control parameter_id should be defined within a Page object."):
             Parameter(
                 id="parameter_id",
                 targets=["scatter_chart.x"],
@@ -137,7 +137,7 @@ class TestPreBuildMethod:
     def test_targets_present_invalid(self):
         parameter = Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
         model_manager["test_page"].controls = [parameter]
-        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found within the test_page."):
+        with pytest.raises(ValueError, match=r"Target scatter_chart_invalid not found within the test_page."):
             parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
@@ -266,33 +266,15 @@ class TestParameterBuild:
     """Tests parameter build method."""
 
     @pytest.mark.parametrize(
-        "test_input",
+        "test_selector",
         [
             vm.Checklist(options=["lifeExp", "gdpPercap", "pop"]),
             vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"]),
             vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
         ],
     )
-    def test_build_parameter(self, test_input):
-        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input)
-        page = model_manager["test_page"]
-        page.controls = [parameter]
-        parameter.pre_build()
-        result = parameter.build()
-        expected = html.Div(id="parameter-id", children=html.Div(children=[test_input.build()]))
-
-        assert_component_equal(result, expected)
-
-    @pytest.mark.parametrize(
-        "test_input",
-        [
-            vm.Checklist(options=["lifeExp", "gdpPercap", "pop"]),
-            vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"]),
-            vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
-        ],
-    )
-    def test_show_in_url_build_parameter(self, test_input):
-        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_input, show_in_url=True)
+    def test_parameter_build(self, test_selector):
+        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_selector)
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
@@ -301,8 +283,29 @@ class TestParameterBuild:
         expected = html.Div(
             id="parameter-id",
             children=html.Div(
-                children=[test_input.build(), dcc.Store(id=f"{parameter.selector.id}_guard_actions_chain", data=False)]
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
             ),
+            hidden=False,
+        )
+
+        assert_component_equal(result, expected)
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_parameter_build_visible(self, visible):
+        test_selector = vm.Checklist(id="selector_id", options=["lifeExp", "gdpPercap", "pop"])
+        parameter = Parameter(id="parameter-id", targets=["scatter_chart.x"], selector=test_selector, visible=visible)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        parameter.pre_build()
+
+        result = parameter.build()
+        expected = html.Div(
+            id="parameter-id",
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
+            ),
+            hidden=not visible,
         )
 
         assert_component_equal(result, expected)

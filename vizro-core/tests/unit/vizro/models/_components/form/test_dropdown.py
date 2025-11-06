@@ -26,6 +26,7 @@ class TestDropdownInstantiation:
         assert dropdown.title == ""
         assert dropdown.description is None
         assert dropdown.actions == []
+        assert dropdown._action_triggers == {"__default__": f"{dropdown.id}.value"}
         assert dropdown._action_outputs == {"__default__": f"{dropdown.id}.value"}
         assert dropdown._action_inputs == {"__default__": f"{dropdown.id}.value"}
 
@@ -36,7 +37,7 @@ class TestDropdownInstantiation:
             value="A",
             multi=False,
             title="Title",
-            description="Test description",
+            description=Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert dropdown.id == "dropdown-id"
@@ -47,12 +48,13 @@ class TestDropdownInstantiation:
         assert dropdown.title == "Title"
         assert dropdown.actions == []
         assert isinstance(dropdown.description, Tooltip)
+        assert dropdown._action_triggers == {"__default__": "dropdown-id.value"}
         assert dropdown._action_outputs == {
-            "__default__": f"{dropdown.id}.value",
-            "title": f"{dropdown.id}_title.children",
-            "description": f"{dropdown.description.id}-text.children",
+            "__default__": "dropdown-id.value",
+            "title": "dropdown-id_title.children",
+            "description": "tooltip-id-text.children",
         }
-        assert dropdown._action_inputs == {"__default__": f"{dropdown.id}.value"}
+        assert dropdown._action_inputs == {"__default__": "dropdown-id.value"}
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -140,11 +142,11 @@ class TestDropdownInstantiation:
         ],
     )
     def test_create_dropdown_invalid_value(self, test_value, options):
-        with pytest.raises(ValidationError, match="Please provide a valid value from `options`."):
+        with pytest.raises(ValidationError, match=r"Please provide a valid value from `options`."):
             Dropdown(value=test_value, options=options)
 
     def test_create_dropdown_invalid_multi(self):
-        with pytest.raises(ValidationError, match="Please set multi=True if providing a list of default values."):
+        with pytest.raises(ValidationError, match=r"Please set multi=True if providing a list of default values."):
             Dropdown(value=[1, 2], multi=False, options=[1, 2, 3, 4, 5])
 
     def test_dropdown_trigger(self, identity_action_function):

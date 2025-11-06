@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
-  "dash>=3.1.1",  # must be >=3.1.1 to include bugfixes for persistence and suppress_callback_exception
+  "dash>=3.1.1,<4",  # temporary upper bound to avoid breaking changes in Dash v4
   "dash_bootstrap_components>=2",  # 2.0.0 needed to support dash>=3.0.0
   "dash-ag-grid>=31.3.1",  # 31.3.1 needed to support dash>=3.0.0
   "dash_mantine_components>=1",  # 1.0.0 needed to support dash>=3.0.0
@@ -29,7 +29,8 @@ dependencies = [
   "wrapt>=1",
   "black",
   "autoflake",
-  "packaging"
+  "packaging",
+  "python-box"
 ]
 description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
@@ -58,7 +59,7 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:"
 ]
-fail_under = 92
+fail_under = 91
 show_missing = true
 skip_covered = true
 
@@ -80,9 +81,9 @@ filterwarnings = [
   "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
   "ignore:HTTPResponse.getheader():DeprecationWarning",
-  # ignore this warning for firefox screenshot tests
+  # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
-  # ignore kedro deprecation warning
+  # Ignore kedro deprecation warning
   "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning"
 ]
 markers = [

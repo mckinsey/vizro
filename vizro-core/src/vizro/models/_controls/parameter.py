@@ -8,8 +8,13 @@ from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
-from vizro.models._controls._controls_utils import check_control_targets, warn_missing_id_for_url_control
+from vizro.models._controls._controls_utils import (
+    _is_categorical_selector,
+    _is_numerical_temporal_selector,
+    check_control_targets,
+    get_selector_default_value,
+    warn_missing_id_for_url_control,
+)
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID, SelectorType, _IdProperty
 
@@ -51,6 +56,9 @@ def check_duplicate_parameter_target(targets):
 class Parameter(VizroBaseModel):
     """Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].
 
+    Abstract: Usage documentation
+        [How to use parameters](../user-guides/parameters.md)
+
     Examples:
         >>> Parameter(targets=["scatter.x"], selector=Slider(min=0, max=1, default=0.8, title="Bubble opacity"))
 
@@ -61,6 +69,7 @@ class Parameter(VizroBaseModel):
             `"NONE"` into `None` to allow optional parameters.
         show_in_url (bool): Whether the parameter should be included in the URL query string. Defaults to `False`.
             Useful for bookmarking or sharing dashboards with specific parameter values pre-set.
+        visible (bool): Whether the parameter should be visible. Defaults to `True`.
 
     """
 
@@ -83,6 +92,10 @@ class Parameter(VizroBaseModel):
             "Whether the parameter should be included in the URL query string. Defaults to `False`. "
             "Useful for bookmarking or sharing dashboards with specific parameter values pre-set."
         ),
+    )
+    visible: bool = Field(
+        default=True,
+        description="Whether the parameter should be visible. Defaults to `True`.",
     )
 
     _selector_properties: set[str] = PrivateAttr(set())
@@ -123,10 +136,16 @@ class Parameter(VizroBaseModel):
     @_log_call
     def pre_build(self):
         check_control_targets(control=self)
-        self._check_numerical_and_temporal_selectors_values()
-        self._check_categorical_selectors_options()
-        self._set_selector_title()
-        self._set_actions()
+
+        if _is_numerical_temporal_selector(self.selector) and (self.selector.min is None or self.selector.max is None):
+            raise TypeError(f"{self.selector.type} requires the arguments 'min' and 'max' when used within Parameter.")
+        elif _is_categorical_selector(self.selector) and not self.selector.options:
+            raise TypeError(f"{self.selector.type} requires the argument 'options' when used within Parameter.")
+
+        self.selector.value = get_selector_default_value(self.selector)
+
+        if not self.selector.title:
+            self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
@@ -135,38 +154,9 @@ class Parameter(VizroBaseModel):
         if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
             self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
-    @_log_call
-    def build(self):
-        # Wrap the selector in a Div so that the "guard" component can be added.
-        selector_build_obj = html.Div(children=[self.selector.build()])
-
-        if self.show_in_url:
-            # Add the guard to the show_in_url parameter selector in the build phase because clientside callback
-            # sync_url will be triggered and may adjust its value. Set it to False and let the sync_url clientside
-            # callback update it to True when needed. It'll happen when the parameter value comes from the URL.
-            selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
-
-        return html.Div(id=self.id, children=selector_build_obj)
-
-    def _check_numerical_and_temporal_selectors_values(self):
-        if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):
-            if self.selector.min is None or self.selector.max is None:
-                raise TypeError(
-                    f"{self.selector.type} requires the arguments 'min' and 'max' when used within Parameter."
-                )
-
-    def _check_categorical_selectors_options(self):
-        if isinstance(self.selector, (Checklist, Dropdown, RadioItems)) and not self.selector.options:
-            raise TypeError(f"{self.selector.type} requires the argument 'options' when used within Parameter.")
-
-    def _set_selector_title(self):
-        if not self.selector.title:
-            self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
-
-    def _set_actions(self):
-        from vizro.models import Filter
-
         if not self.selector.actions:
+            from vizro.models import Filter
+
             page_dynamic_filters = [
                 filter
                 for filter in cast(
@@ -192,5 +182,15 @@ class Parameter(VizroBaseModel):
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
             # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
             self.targets.extend(list(filter_targets))
-
             self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+
+    @_log_call
+    def build(self):
+        # Wrap the selector in a Div so that the "guard" component can be added.
+        selector_build_obj = html.Div(children=[self.selector.build()])
+
+        # Add the guard component and set it to False. Let clientside callbacks to update it to True when needed.
+        # For example when the parameter value comes from the URL or when reset button is clicked.
+        selector_build_obj.children.append(dcc.Store(id=f"{self.selector.id}_guard_actions_chain", data=False))
+
+        return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)

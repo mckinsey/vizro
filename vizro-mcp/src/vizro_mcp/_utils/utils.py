@@ -7,7 +7,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -44,7 +44,7 @@ def convert_github_url_to_raw(path_or_url: str) -> str:
 
 
 def load_dataframe_by_format(
-    path_or_url: Union[str, Path], mime_type: Optional[str] = None
+    path_or_url: str | Path, mime_type: str | None = None
 ) -> tuple[pd.DataFrame, Literal["pd.read_csv", "pd.read_json", "pd.read_html", "pd.read_excel", "pd.read_parquet"]]:
     """Load a dataframe based on file format determined by MIME type or file extension."""
     file_path_str_lower = str(path_or_url).lower()
@@ -152,6 +152,9 @@ def get_python_code_and_preview_link(
         "from vizro import Vizro",
         "import pandas as pd",
         "from vizro.managers import data_manager",
+        "import vizro.figures as vf",
+        # TODO: Temporary workaround for Figure model support; required until vizro>=0.1.46
+        # Remove this import once minimum supported vizro version is >=0.1.46.
     ]
     custom_imports = [
         imp for custom_chart in custom_charts for imp in custom_chart.get_imports(vizro=True).split("\n") if imp.strip()

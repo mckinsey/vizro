@@ -29,7 +29,12 @@ class TestTabsInstantiation:
         assert tabs._action_outputs == {}
 
     def test_create_tabs_mandatory_and_optionsl(self, containers):
-        tabs = vm.Tabs(id="tabs-id", title="Title", description="Test description", tabs=containers)
+        tabs = vm.Tabs(
+            id="tabs-id",
+            title="Title",
+            tabs=containers,
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
+        )
 
         assert all(isinstance(tab, vm.Container) for tab in tabs.tabs) and len(tabs.tabs) == 2
         assert tabs.id == "tabs-id"
@@ -37,8 +42,8 @@ class TestTabsInstantiation:
         assert tabs.title == "Title"
         assert isinstance(tabs.description, vm.Tooltip)
         assert tabs._action_outputs == {
-            "title": f"{tabs.id}_title.children",
-            "description": f"{tabs.description.id}-text.children",
+            "title": "tabs-id_title.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_mandatory_tabs_missing(self):
@@ -46,16 +51,16 @@ class TestTabsInstantiation:
             vm.Tabs()
 
     def test_minimum_tabs_length(self):
-        with pytest.raises(ValidationError, match="List should have at least 1 item after validation."):
+        with pytest.raises(ValidationError, match=r"List should have at least 1 item after validation."):
             vm.Tabs(tabs=[])
 
     def test_incorrect_tabs_type(self):
-        with pytest.raises(ValidationError, match="Input should be a valid dictionary or instance of Container."):
+        with pytest.raises(ValidationError, match=r"Input should be a valid dictionary or instance of Container."):
             vm.Tabs(tabs=[vm.Button()])
 
     def test_tab_has_title(self):
         with pytest.raises(
-            ValidationError, match="`Container` must have a `title` explicitly set when used inside `Tabs`."
+            ValidationError, match=r"`Container` must have a `title` explicitly set when used inside `Tabs`."
         ):
             vm.Tabs(tabs=[vm.Container(components=[vm.Button()])])
 
