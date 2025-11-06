@@ -84,7 +84,7 @@ class Figure(VizroBaseModel):
             # This limitation is handled with this PR -> https://github.com/plotly/dash/pull/2888.
             # The PR is merged but is not released yet. Once it is released, we can try to refactor the following code.
             # In the meantime, we are adding an extra html.div here.
-            html.Div(id=self.id, className="figure-container-actions" if self.actions else "figure-container"),
+            html.Div(id=self.id, className="figure-container is-clickable" if self.actions else "figure-container"),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
