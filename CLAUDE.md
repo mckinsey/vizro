@@ -5,7 +5,7 @@ This is a monorepo containing multiple Vizro packages. The main packages are:
 - `vizro-core/`: The core Vizro dashboard framework
 - `vizro-ai/`: Framework for AI-assisted dashboard development
 - `vizro-mcp/`: Model Context Protocol server for AI-assisted dashboard development
-- `vizro-flow/`: Anthropic skills for end-to-end dashboard development (design and implementation)
+- `vizro-skills/`: Anthropic skills for end-to-end dashboard development (design and implementation)
 
 ## Development Setup (across all packages)
 

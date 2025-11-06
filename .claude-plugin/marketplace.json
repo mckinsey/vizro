@@ -10,13 +10,13 @@
   },
   "plugins": [
     {
-      "name": "vizro-flow",
+      "name": "vizro-e2e-flow",
       "description": "Complete dashboard workflow from design through implementation using Vizro framework. Includes dashboard-design for end-to-end dashboard design, wireframing, and chart selection, plus dashboard-implementation for building dashboards with Vizro MCP or Python.",
       "source": "./..",
       "strict": false,
       "skills": [
-        "./vizro-flow/skills/dashboard-design",
-        "./vizro-flow/skills/dashboard-implementation"
+        "./vizro-skills/dashboard-design",
+        "./vizro-skills/dashboard-implementation"
       ]
     }
   ]
