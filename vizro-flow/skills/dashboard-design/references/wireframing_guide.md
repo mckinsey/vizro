@@ -27,7 +27,7 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 |  |Region    |  +---------------------------------------------------------------------+|
 |  |[v]       |                                                                        |
 |  |          |  CONTAINER: Sales Analysis                                            |
-|  |Category  |  [Container Filters: Region ▼  Product ▼]                             |
+|  |Category  |  [Container Parameters: Metric ▼] [Container Filters: Region ▼]       |
 |  |[v]       |  +---------------------------------+  +-------------------------------+|
 |  |          |  |                                 |  |                               ||
 |  |          |  |  CHART: By Region               |  |  TABLE: Top Products          ||
@@ -53,21 +53,20 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 |📋|Analysis  |  +---------------------------------------------------------------------+|
 |⚙️|Settings  |  | TAB CONTENT: Overview                                              ||
 |  |          |  |                                                                     ||
-|  |----------|  |  PARAMETER: Metric Type [dropdown: Revenue | Profit | Volume]       ||
-|  |FILTERS:  |  |                                                                     ||
+|  |----------|  |  +-------------------------------+  +---------------------------+  ||
+|  |PARAMS:   |  |  |                               |  |                           |  ||
+|  |          |  |  |  CHART: Main Metric           |  |  CHART: Comparison        |  ||
+|  |Metric    |  |  |  [Area chart]                 |  |  [Bar chart]              |  ||
+|  |[v]       |  |  |  [↗ click: toggle series]     |  |  [hover: show values]     |  ||
 |  |          |  |  +-------------------------------+  +---------------------------+  ||
-|  |Date      |  |  |                               |  |                           |  ||
-|  |[v]       |  |  |  CHART: Main Metric           |  |  CHART: Comparison        |  ||
-|  |          |  |  |  [Area chart]                 |  |  [Bar chart]              |  ||
-|  |Status    |  |  |  [↗ click: toggle series]     |  |  [hover: show values]     |  ||
-|  |[v]       |  |  +-------------------------------+  +---------------------------+  ||
-|  |          |  |                                                                     ||
-|  |          |  |  CONTAINER: Detailed Breakdown                                      ||
-|  |          |  |  [Container Filters: Category ▼]                                    ||
+|  |----------|  |                                                                     ||
+|  |FILTERS:  |  |  CONTAINER: Detailed Breakdown                                      ||
+|  |          |  |  [Container Parameters: Bin Size ▼] [Container Filters: Category ▼] ||
+|  |Date      |  |  +----------------------------------------------------------------+  ||
+|  |[v]       |  |  |  CHART: Distribution [Histogram]                               |  ||
 |  |          |  |  +----------------------------------------------------------------+  ||
-|  |          |  |  |  CHART: Distribution [Histogram]                               |  ||
-|  |          |  |  +----------------------------------------------------------------+  ||
-|  |          |  +---------------------------------------------------------------------+|
+|  |Status    |  +---------------------------------------------------------------------+|
+|  |[v]       |                                                                        |
 +--+----------+------------------------------------------------------------------------+
 ```
 
@@ -76,7 +75,7 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 **Three-column layout**:
 
 - **Leftmost (icon nav)**: Navigation icons vertically stacked
-- **Middle (left panel)**: Dropdown navigation + global filters below separator
+- **Middle (left panel)**: Dropdown navigation + global parameters + global filters below separator
 - **Right (main content)**: Dashboard components in grid layout
 
 **Component types**:
@@ -84,11 +83,11 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 - **KPI**: Metric cards
 - **CHART**: Visualizations with type in brackets `[Line chart]`, `[Bar chart]`, `[Donut chart]`, etc.
 - **TABLE**: Data tables with features in brackets `[sortable columns]`, `[pagination]`
-- **CONTAINER**: Groups components, can have own filters above
+- **CONTAINER**: Groups components, can have own parameters and filters above
 - **TABS**: Multiple views with tab labels at top
 - **ACTIONS**: Buttons for export, drill-down, etc.
-- **FILTER**: In left panel (global) or above container (container-specific)
-- **PARAMETER**: Changes chart arguments (e.g., metric type, aggregation level)
+- **FILTER**: In left panel (global page filters) or above container (container-specific filters)
+- **PARAMETER**: In left panel (global page parameters) or above container (container-specific parameters). Changes chart arguments (e.g., metric type, aggregation level, bin size)
 
 **Interactions** (show with annotations):
 
@@ -96,14 +95,15 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 - `[hover: tooltip]` - Hovering shows information
 - `[↗ click: toggle series]` - Clicking toggles chart elements
 - `[sortable columns]` - Interactive table sorting
+- etc.
 
 ## Guidelines
 
-1. Three-column layout: icon nav | left panel (dropdown + filters) | main content
+1. Three-column layout: icon nav | left panel (dropdown + parameters + filters) | main content
 1. Label sections: KPI, CHART, TABLE, FILTER, PARAMETER, ACTIONS, CONTAINER, TABS
 1. Indicate chart types in brackets: `[Line chart]`, `[Bar chart]`, `[Histogram]`
 1. Show hierarchy through box sizes (larger = more important)
-1. Global filters in left panel, container filters above containers
+1. Global page parameters and filters in left panel, container-specific filters/parameters above containers
 1. Annotate interactions: `[↗ click: action]`, `[hover: behavior]`
 
 ## Optional: HTML Wireframe
@@ -114,13 +114,4 @@ After ASCII approval, create HTML wireframe for stakeholder browser preview:
 - 12-column grid in main content area
 - Grayscale only, placeholder boxes for charts
 
-## Implementation Mapping
-
-- **Icon nav** → Top-level page navigation
-- **Left panel dropdown** → Sub-navigation within section
-- **Global filters** (left panel) → Page-level data filtering
-- **Container filters** (above containers) → Section-specific data filtering
-- **Grid layout** → 12-column system (span-12 = full, span-6 = half, span-4 = third, etc.)
-- **Interactions** → Click handlers, hover states, navigation actions
-
-For implementation guidance, see Step 9 (Build Dashboard) in dashboard-design skill.
+For implementation guidance after wireframing is complete, see Step 9 (Build Dashboard) in dashboard-design skill.

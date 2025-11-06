@@ -164,8 +164,8 @@
 
 **Filter Placement**
 
-- Global filters: Top of dashboard
-- Section filters: Above relevant section
+- Global page filters: Side control panel
+- Container filters: Above relevant container
 - Chart-specific filters: Dropdown on chart header
 
 **Filter Types**
@@ -182,7 +182,7 @@
 - Auto-apply or "Apply" button based on complexity
 - Preserve state on navigation
 
-### Tooltips
+### KPI Cards
 
 **Content Structure**
 
@@ -202,8 +202,7 @@ Oct 2024
 
 **Best Practices**
 
-- Appear on hover, 200-300ms delay
-- Include metric name even if obvious
+- Include metric name
 - Add context (date, segment, etc.)
 - Show change/comparison when relevant
 - Max 3-4 lines of information
@@ -280,13 +279,6 @@ Oct 2024
 - Load below-fold charts on scroll
 - Lazy load drill-down data
 - Prioritize visible content
-
-**Error States**
-
-- Clear error message
-- Suggested action ("Refresh" or "Contact support")
-- Maintain layout (don't break design)
-- Log errors for debugging
 
 ## Accessibility
 
