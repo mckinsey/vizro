@@ -7,7 +7,7 @@ Build Vizro dashboards using Python configuration. This guide provides basic str
 ## Installation
 
 ```bash
-uv pip install vizro # ALWAYS into a uv venv! 
+uv pip install vizro # ALWAYS into a uv venv!
 # or
 uv add vizro
 ```
