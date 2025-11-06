@@ -12,11 +12,11 @@
     {
       "name": "vizro-flow",
       "description": "Complete dashboard workflow from design through implementation using Vizro framework. Includes dashboard-design for end-to-end dashboard design, wireframing, and chart selection, plus dashboard-implementation for building dashboards with Vizro MCP or Python.",
-      "source": "../vizro-flow",
+      "source": "./..",
       "strict": false,
       "skills": [
-        "./skills/dashboard-design",
-        "./skills/dashboard-implementation"
+        "./vizro-flow/skills/dashboard-design",
+        "./vizro-flow/skills/dashboard-implementation"
       ]
     }
   ]
