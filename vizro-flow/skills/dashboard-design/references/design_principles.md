@@ -164,7 +164,7 @@
 
 **Filter Placement**
 
-- Global page filters: Side control panel
+- **Global page filters: Left sidebar (recommended default)** - Always visible while scrolling, provides vertical space for 8-10+ filters, clear separation between controls and content. Collapsible to maximize chart space when not actively filtering. Consider alternative placements (top bar, top-right) only if there's a strong reason (e.g., 3-5 filters max, horizontal space at premium, executive dashboards with minimal filtering).
 - Container filters: Above relevant container
 - Chart-specific filters: Dropdown on chart header
 
@@ -181,6 +181,31 @@
 - Allow easy clearing ("Clear all")
 - Auto-apply or "Apply" button based on complexity
 - Preserve state on navigation
+
+### Parameters and Selectors
+
+Parameters are selector components that modify visualization properties or switch between different views, without filtering the underlying data.
+
+**Parameter Placement**
+
+- Global page parameters: Left sidebar alongside filters (with visual separation via heading)
+- Container parameters: Above relevant container
+
+**Parameter Types**
+
+- Chart type switching (bar → line → scatter)
+- Metric selection (revenue vs profit vs growth rate)
+- Aggregation level (daily → weekly → monthly)
+- Visualization parameters (number of bins, color scheme, axis scales)
+- View modes (table vs chart, stacked vs grouped)
+
+**Parameter Behavior**
+
+- Clearly distinguish from filters (use different visual treatment or section heading)
+- Use dropdown for 2-5 options
+- Use radio buttons or segmented control for binary/ternary choices
+- Label clearly with what aspect is being controlled (e.g., "Chart Type:", "Show as:")
+- Provide sensible defaults that work for most use cases
 
 ### KPI Cards
 

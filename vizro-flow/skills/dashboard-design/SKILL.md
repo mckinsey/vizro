@@ -58,7 +58,7 @@ The process spans from initial concept (understanding user needs, selecting metr
 
 ### 6. Design Interactions
 
-**Key pattern**: Three-level architecture: (1) Overview (3-7 KPIs), (2) Detail (tabs/sections), (3) Granular (drill-downs). Global filters at top, tooltips on hover with context.
+**Key pattern**: Three-level architecture: (1) Overview (3-7 KPIs), (2) Detail (tabs/sections), (3) Granular (drill-downs). Global filters in left sidebar (recommended default, unless there's a strong reason otherwise), tooltips on hover with context.
 
 **Consult** `references/design_principles.md` for progressive disclosure patterns, filter types and placement, tooltip formatting, and drill-down behaviors.
 

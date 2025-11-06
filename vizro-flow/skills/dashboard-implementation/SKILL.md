@@ -23,6 +23,7 @@ Should I use Vizro for this dashboard?
 │  What Vizro offers:
 │  ✓ Standard components (Graph, Table, Card, Figure)
 │  ✓ Filters (categorical, numerical, temporal) at page & container level
+│  ✓ Page-level filters in collapsible left sidebar (Vizro standard pattern)
 │  ✓ Basic actions (export, drill-down, cross-filtering)
 │  ✓ Multi-page navigation with automatic sidebar
 │  ✓ Layouts (Grid, Flex) and organization (Container, Tabs)
@@ -38,6 +39,11 @@ Should I use Vizro for this dashboard?
 │  (See references/python_quickstart.md for examples)
 │
 │  └─ NO → Do not use Vizro (requirements too complex)
+│  └─ YES → Continue
+│
+├─ Are global page filters designed for left sidebar placement?
+│  (Vizro ONLY supports left sidebar for page-level filters)
+│  └─ NO → Do not use Vizro (filter placement incompatible)
 │  └─ YES → ✓ Use Vizro → Continue to implementation path
 │
 └─ Implementation Path
