@@ -7,7 +7,7 @@ Build Vizro dashboards using Python configuration. This guide provides basic str
 ## Installation
 
 ```bash
-pip install vizro
+uv pip install vizro # ALWAYS into a uv venv! 
 # or
 uv add vizro
 ```
@@ -107,7 +107,7 @@ Vizro().build(dashboard).run()
 
 ## Implementation Checklist
 
-- [ ] Install Vizro: `pip install vizro` or `uv add vizro` (use virtual environment if available!)
+- [ ] Install Vizro: `uv pip install vizro` or `uv add vizro` (use virtual environment if available!)
 - [ ] Import required modules
 - [ ] Create pages with components (Graph, Table, Card, Figure)
 - [ ] Structure components in containers and tabs
