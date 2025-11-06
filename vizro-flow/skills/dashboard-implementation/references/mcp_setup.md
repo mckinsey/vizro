@@ -8,7 +8,7 @@ Vizro MCP (Model Context Protocol) provides enhanced AI assistance for building 
 
 **How to verify MCP is installed**:
 
-- Look for `mcp__vizro__*` tools in available tools list
+- Look for `mcp__vizro-mcp__*` tools in available tools list
 
 **If MCP available**: Skip installation and use MCP tools directly.
 
@@ -44,8 +44,8 @@ Add to your MCP settings file (Claude Desktop, Cursor, or VS Code):
 
 ## Post-Installation
 
-1. **Restart IDE/Claude Desktop** after adding MCP configuration
-1. **Verify** MCP tools are available: Look for `mcp__vizro__*` tools
+1. **May need to restart IDE/Claude Desktop** after adding MCP configuration
+1. **Verify** MCP tools are available: Look for `mcp__vizro-mcp__*` tools
 1. **Start building** with MCP assistance
 
 ## MCP Benefits
