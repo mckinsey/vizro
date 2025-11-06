@@ -1,0 +1,5 @@
+[project]
+authors = [{name = "Vizro Team"}]
+description = "(Anthropic) skills for end-to-end Vizro dashboard development"
+name = "vizro-skills"
+version = "0.0.1"
