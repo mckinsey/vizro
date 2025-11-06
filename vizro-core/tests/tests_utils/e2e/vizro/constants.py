@@ -271,6 +271,24 @@ SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET = "set-control-drill-through-fil
 SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID = "scatter-2-drill-through-filter-ag_grid-target-id"
 RADIOITEMS_DRILL_THROUGH_FILTER_AG_GRID_ID = "radioitems-drill-through-filter-ag_grid-id"
 
+ACTION_MODEL_FIELD_SHORTCUT_PAGE = "graph_aggrid-title_description_header_footer"
+ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID = "action_shortcut_graph_id"
+ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID = "action_shortcut_ag_grid_id"
+ACTION_MODEL_FIELD_BUTTON_ID = "trigger-figures-title-header-footer-button-id"
+ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT = "Click button to update me"
+ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT = "Button clicked 1 times."
+
+ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE = "ag_grid-underlying_id_shortcuts"
+ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID = "outer-aggrid-id"
+ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_CARD_ID = "card-shortcuts-id"
+ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_BUTTON_ID = "trigger-aggrid-id-button-id"
+
+ACTION_CONTROL_SHORTCUT_PAGE = "actions_default_property_controls_page"
+ACTION_CONTROL_SHORTCUT_GRAPH_ID = "scatter-default-properties-id"
+ACTION_CONTROL_SHORTCUT_FILTER_ID = "filter-default-properties"
+ACTION_CONTROL_SHORTCUT_PARAMETER_ID = "parameter-default-properties"
+
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names

@@ -6,7 +6,6 @@ import json
 import re
 import textwrap
 from dataclasses import dataclass
-from typing import Optional, Union
 from urllib.parse import quote, urlencode
 
 import requests
@@ -72,7 +71,7 @@ class PyCafeConfig:
     repo_name: str
     run_id: str
     commit_sha: str
-    pr_number: Optional[int] = None
+    pr_number: int | None = None
     pycafe_url: str = "https://py.cafe"
     vizro_raw_url: str = "https://raw.githubusercontent.com/mckinsey/vizro"
     vizro_version: str = "unknown"
@@ -133,7 +132,7 @@ def _fetch_directory_files(config: PyCafeConfig, directory_path: str) -> list[di
 def generate_link(
     config: PyCafeConfig,
     directory_path: str,
-    extra_requirements: Optional[list[str]] = None,
+    extra_requirements: list[str] | None = None,
     use_latest_release: bool = False,
 ) -> str:
     """Generate a PyCafe link for the example dashboard."""
@@ -182,7 +181,7 @@ def generate_link(
 
 
 def generate_comparison_links(
-    config: PyCafeConfig, directory_path: str, extra_requirements: Optional[list[str]] = None
+    config: PyCafeConfig, directory_path: str, extra_requirements: list[str] | None = None
 ) -> dict[str, str]:
     """Generate both commit and release links for comparison."""
     return {
@@ -204,7 +203,7 @@ def create_status_check(
     print(f"Status created for {context} with URL: {url}")  # noqa
 
 
-def get_example_directories() -> dict[str, Optional[list[str]]]:
+def get_example_directories() -> dict[str, list[str] | None]:
     """Return a dictionary of example directories and their requirements."""
     return {
         "vizro-core/examples/scratch_dev": None,
@@ -219,7 +218,7 @@ def get_example_directories() -> dict[str, Optional[list[str]]]:
     }
 
 
-def test_pycafe_link(url: str, wait_for_text: Union[str, bool], wait_for_locator: Union[str, bool]) -> int:
+def test_pycafe_link(url: str, wait_for_text: str | bool, wait_for_locator: str | bool) -> int:
     """Test if a PyCafe link loads and renders correctly.
 
     Return code is showing appropriate exit code.
