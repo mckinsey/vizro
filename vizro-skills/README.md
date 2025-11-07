@@ -13,7 +13,7 @@ Install using the plugin command with the mckinsey/vizro repository:
 
 ```
 /plugin marketplace add mckinsey/vizro
-/plugin install vizro-skills
+/plugin install vizro-e2e-flow
 ```
 
 ### Option 2: Upload Folders
