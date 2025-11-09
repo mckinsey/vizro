@@ -8,9 +8,14 @@
   },
   "homepage": "https://vizro.readthedocs.io",
   "repository": "https://github.com/mckinsey/vizro/vizro-e2e-flow-plugin",
-  "keywords": ["dashboard", "visualization", "design", "vizro", "data-viz", "mcp", "mcp-server"],
-  "agents": [
-    "./skills/dashboard-design",
-    "./skills/dashboard-implementation"
-  ]
+  "keywords": [
+    "dashboard",
+    "visualization",
+    "design",
+    "vizro",
+    "data-viz",
+    "mcp",
+    "mcp-server"
+  ],
+  "agents": ["./skills/dashboard-design", "./skills/dashboard-implementation"]
 }

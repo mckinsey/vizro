@@ -57,8 +57,6 @@ For more information about these skills:
 
 At the time of writing, this plugin is compatible with Anthropic products. However, as is often the case with genAI products, we expect this to work with other products in the future.
 
-
-
 ## Support
 
 For issues or questions about these skills, please file an issue in the repository.
