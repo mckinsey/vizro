@@ -1,0 +1,6 @@
+{
+  "vizro-mcp": {
+    "command": "uvx",
+    "args": ["vizro-mcp"]
+  }
+}
