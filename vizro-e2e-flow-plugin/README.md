@@ -1,24 +1,30 @@
-# Vizro Dashboard Skills
+# Vizro Flow Plugin
 
-Two complementary skills for designing and implementing data visualization dashboards:
+This folder contains a Claude Code plugin for end-to-end dashboard development. It includes two skills:
 
 - **dashboard-design**: End-to-end dashboard design workflow from concept through wireframing
 - **dashboard-implementation**: Vizro implementation guidance with MCP setup and Python quickstart
 
+and the configuration for the Vizro MCP for implementation support.
+
 ## Installation
 
-### Option 1: Install from Repository
+### Option 1: Install from repository as a plugin
 
-Install using the plugin command with the mckinsey/vizro repository:
+Install using the plugin command with the `mckinsey/vizro` repository:
 
 ```
 /plugin marketplace add mckinsey/vizro
 /plugin install vizro-e2e-flow
 ```
 
-### Option 2: Upload Folders
+This works well when using Claude Code. It automatically adds the Vizro MCP server for implementation support.
 
-Zip the individual skill folders (`dashboard-design/` and `dashboard-implementation/`) and upload them directly to Claude
+### Option 2: Upload skills folders
+
+Zip the individual skill folders (`/vizro-e2e-flow-plugin/skills/dashboard-design/` and `/vizro-e2e-flow-plugin/skills/dashboard-implementation/`) and upload them directly to Claude apps, e.g. Claude Desktop.
+
+Note that this doesn't automatically add the Vizro MCP server for implementation support. You need to [add it manually](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/first-dashboard-tutorial/).
 
 ## Usage
 
@@ -35,21 +41,23 @@ The skills work together for a complete dashboard workflow:
 1. **Implementation Phase**: Use `dashboard-implementation` skill for:
 
     - Deciding if Vizro is appropriate
-    - Installing and configuring Vizro MCP
-    - Building the dashboard with Python
+    - Checking if Vizro MCP is available
+    - Building the dashboard with either Vizro MCP or Python
+
+For more information about these skills:
+
+- See individual `SKILL.md` files in `skills/dashboard-design/` and `skills/dashboard-implementation/`
 
 ## Requirements
 
 - **dashboard-design**: No dependencies (pure design guidance)
-- **dashboard-implementation**: Python environment for Vizro implementation OR public datasets for PyCafe previews
+- **dashboard-implementation**: Python environment for local Vizro implementation OR public datasets for remote PyCafe previews. For any other implementation approach, a suitable technology stack and implementation guide is required.
 
-## Documentation
+## Compatibility
 
-For more information about these skills:
+At the time of writing, this plugin is compatible with Anthropic products. However, as is often the case with genAI products, we expect this to work with other products in the future.
 
-- See individual `SKILL.md` files in each skill directory
-- Reference files in `references/` folders provide detailed guidance
-- Vizro documentation: https://vizro.readthedocs.io
+
 
 ## Support
 

@@ -1,23 +1,16 @@
 {
-  "name": "vizro-skills",
+  "name": "vizro-marketplace",
   "owner": {
     "name": "Vizro Team",
     "email": "vizro@mckinsey.com"
   },
   "metadata": {
-    "description": "Vizro dashboard design and implementation skills",
-    "version": "0.0.1"
+    "description": "Vizro Marketplace for tooling and skills around dashboard design and implementation"
   },
   "plugins": [
     {
       "name": "vizro-e2e-flow",
-      "description": "Complete dashboard workflow from design through implementation using Vizro framework. Includes dashboard-design for end-to-end dashboard design, wireframing, and chart selection, plus dashboard-implementation for building dashboards with Vizro MCP or Python.",
-      "source": "./..",
-      "strict": false,
-      "skills": [
-        "./vizro-skills/dashboard-design",
-        "./vizro-skills/dashboard-implementation"
-      ]
+      "source": "./../vizro-e2e-flow-plugin"
     }
   ]
 }

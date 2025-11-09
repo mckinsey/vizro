@@ -1,0 +1,16 @@
+{
+  "name": "vizro-e2e-flow",
+  "version": "0.0.1",
+  "description": "Complete e2e dashboard workflow including skills for design, wireframe, chart selection and implementation advice. Also includes Vizro MCP for implementation support.",
+  "author": {
+    "name": "Vizro Team",
+    "email": "vizro@mckinsey.com"
+  },
+  "homepage": "https://vizro.readthedocs.io",
+  "repository": "https://github.com/mckinsey/vizro/vizro-e2e-flow-plugin",
+  "keywords": ["dashboard", "visualization", "design", "vizro", "data-viz", "mcp", "mcp-server"],
+  "agents": [
+    "./skills/dashboard-design",
+    "./skills/dashboard-implementation"
+  ]
+}
