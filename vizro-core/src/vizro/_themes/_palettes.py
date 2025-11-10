@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 from ._colors import colors
 
-qualitative_10 = [
+qualitative = [
     colors.cyan_01,
     colors.orange_02,
     colors.purple_03,
@@ -167,9 +167,12 @@ diverging_red_cyan = [
     colors.cyan_900,
 ]
 
-# Are the same for dark and light theme at the moment, but could be different in the future.
+# These are necessarily the same for dark and light themes.
+# For plotly express plots, some colors are taken from the template's palettes and stored in
+# fig.data rather than fig.layout. This means they cannot be changed consistently by post-fig
+# updates to fig.layout.template (e.g. in the clientside callback we currently use).
 palettes = SimpleNamespace(
-    qualitative_10=qualitative_10,
+    qualitative=qualitative,
     sequential_cyan=sequential_cyan,
     sequential_orange=sequential_orange,
     sequential_indigo=sequential_indigo,

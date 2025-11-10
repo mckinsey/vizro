@@ -57,7 +57,7 @@ def create_theme_overrides(extracted_values: dict[str, str]) -> go.layout.Templa
     GRID_COLOR = extracted_values["BS-BORDER-COLOR"]
     AXIS_COLOR = extracted_values["BS-TERTIARY-COLOR"]
 
-    theme_overrides = go.layout.Template(
+    return go.layout.Template(
         layout=go.Layout(
             annotationdefaults_font_color=FONT_COLOR_PRIMARY,
             coloraxis_colorbar_tickcolor=AXIS_COLOR,
@@ -100,7 +100,6 @@ def create_theme_overrides(extracted_values: dict[str, str]) -> go.layout.Templa
             waterfall=[go.Waterfall(textfont_color=FONT_COLOR_PRIMARY, connector_line_color=AXIS_COLOR)],
         ),
     )
-    return theme_overrides
 
 
 def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Template:

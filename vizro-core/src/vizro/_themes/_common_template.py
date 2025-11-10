@@ -8,9 +8,12 @@ from vizro._themes import colors, palettes
 def create_template_common() -> go.layout.Template:
     """Creates template with common values for dark and light theme.
 
+    This is a function rather than just a variable to avoid running unnecessary code on import.
+    It's only used to generate static vizro_dark/light.json files and not consumed directly at runtime.
+
     Returns: A plotly template object, see https://plotly.com/python/reference/layout/.
     """
-    common = go.layout.Template(
+    return go.layout.Template(
         layout=go.Layout(
             annotationdefaults_font_size=14,
             annotationdefaults_showarrow=False,
@@ -34,7 +37,7 @@ def create_template_common() -> go.layout.Template:
             colorscale_diverging=palettes.diverging_red_cyan,
             colorscale_sequential=palettes.sequential_cyan,
             colorscale_sequentialminus=palettes.sequential_red[::-1],
-            colorway=palettes.qualitative_10,
+            colorway=palettes.qualitative,
             font_family="Inter, sans-serif, Arial",
             font_size=14,
             legend_bgcolor=colors.transparent,
@@ -106,8 +109,8 @@ def create_template_common() -> go.layout.Template:
             # defined in the generate_plotly_templates.py script.
             waterfall=[
                 go.Waterfall(
-                    decreasing_marker_color=palettes.qualitative_10[1],
-                    increasing_marker_color=palettes.qualitative_10[0],
+                    decreasing_marker_color=palettes.qualitative[1],
+                    increasing_marker_color=palettes.qualitative[0],
                     totals_marker_color=colors.grey_400,
                     textposition="outside",
                     connector_line_width=1,
@@ -115,7 +118,6 @@ def create_template_common() -> go.layout.Template:
             ],
         ),
     )
-    return common
 
 
 dashboard_overrides = go.layout.Template(
