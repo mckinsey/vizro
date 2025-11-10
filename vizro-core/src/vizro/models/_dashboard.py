@@ -28,7 +28,7 @@ from typing_extensions import TypedDict
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
-from vizro._themes.template_dashboard_overrides import dashboard_overrides
+from vizro._themes._templates import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
