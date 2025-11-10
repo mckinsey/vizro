@@ -40,6 +40,10 @@ Click "Install" on the MCP configuration page:
 
 ![Install Vizro-MCP with uv](../../assets/images/install-vizro-mcp-vscode-uv.png)
 
+If the process appears to "hang", you should restart VS Code. You can check that Vizro-MCP is installed by navigating to Code > Settings > Profiles > MCP Servers where you'll see the Vizro-MCP server settings.
+
+![Show where to find MCP settings in VS Code](../../assets/images/show-mcp-under-profiles.gif)
+
 ### Using Docker
 
 Click the "Install" button below:
