@@ -12,7 +12,7 @@ from ._vizro import Vizro, _make_resource_spec
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
 
-base_path = Path(__file__).parent / "_themes"
+base_path = Path(__file__).parent / "themes"
 pio.templates["vizro_dark"] = json.loads((base_path / "vizro_dark.json").read_text())
 pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_text())
 

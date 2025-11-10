@@ -2,7 +2,7 @@
 
 from types import SimpleNamespace
 
-from ._colors import colors
+from .colors import colors
 
 qualitative = [
     colors.cyan,

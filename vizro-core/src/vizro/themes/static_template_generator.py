@@ -11,14 +11,14 @@ import plotly.io as pio
 from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 
-from vizro._themes._templates import create_template_common
+from vizro.themes.templates import create_template_common
 
 THEMES_FOLDER = Path(__file__).parent
 CSS_PATH = THEMES_FOLDER.parent / "static/css/vizro-bootstrap.min.css"
 VARIABLES = ["--bs-primary", "--bs-secondary", "--bs-tertiary-color", "--bs-border-color", "--bs-body-bg"]
 
 
-def _extract_last_two_occurrences(variable: str, css_content: str) -> tuple[Optional[str], Optional[str]]:
+def extract_last_two_occurrences(variable: str, css_content: str) -> tuple[Optional[str], Optional[str]]:
     """Extracts the last two occurrences of a variable from the CSS content.
 
     Within the `vizro-bootstrap.min.css` file, variables appear multiple times: initially from the default Bootstrap
@@ -37,7 +37,7 @@ def extract_bs_variables_from_css(variables: list[str], css_content: str) -> tup
     extracted_light = {}
 
     for variable in variables:
-        dark_value, light_value = _extract_last_two_occurrences(variable, css_content)
+        dark_value, light_value = extract_last_two_occurrences(variable, css_content)
         cleaned_variable = variable.replace("--", "").upper()
         if dark_value and light_value:
             extracted_dark[cleaned_variable] = dark_value

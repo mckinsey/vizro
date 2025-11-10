@@ -2,7 +2,7 @@
 
 import pandas as pd
 import plotly.graph_objects as go
-from vizro._themes import palettes
+from vizro.themes import palettes
 from vizro import Vizro
 
 import vizro.models as vm

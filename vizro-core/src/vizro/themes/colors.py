@@ -1,3 +1,5 @@
+"""Color Hex codes by Vizro."""
+
 from types import SimpleNamespace
 
 # Reference: See Figma file for DS color palettes

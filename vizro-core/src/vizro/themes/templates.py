@@ -2,7 +2,7 @@
 
 from plotly import graph_objects as go
 
-from vizro._themes import colors, palettes
+from vizro.themes import colors, palettes
 
 
 def create_template_common() -> go.layout.Template:
@@ -106,7 +106,7 @@ def create_template_common() -> go.layout.Template:
             # seem to be a way to set that default in px.
             pie=[go.Pie(textposition="auto", hole=0.5)],
             # Note theme-specific parts of the waterfall template are also
-            # defined in the _static_template_generator.py script.
+            # defined in the static_template_generator.py script.
             waterfall=[
                 go.Waterfall(
                     decreasing_marker_color=palettes.qualitative[1],
