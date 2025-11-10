@@ -11,7 +11,7 @@ import plotly.io as pio
 from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 
-from vizro._themes._common_template import create_template_common
+from vizro._themes._templates import create_template_common
 
 THEMES_FOLDER = Path(__file__).parent
 CSS_PATH = THEMES_FOLDER.parent / "static/css/vizro-bootstrap.min.css"

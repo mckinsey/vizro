@@ -106,7 +106,7 @@ def create_template_common() -> go.layout.Template:
             # seem to be a way to set that default in px.
             pie=[go.Pie(textposition="auto", hole=0.5)],
             # Note theme-specific parts of the waterfall template are also
-            # defined in the generate_plotly_templates.py script.
+            # defined in the _static_template_generator.py script.
             waterfall=[
                 go.Waterfall(
                     decreasing_marker_color=palettes.qualitative[1],
