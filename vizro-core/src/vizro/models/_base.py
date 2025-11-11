@@ -303,8 +303,8 @@ class VizroBaseModel(BaseModel):
 
             >>> print(
             ...     card._to_python(
-            ...         extra_imports={"from typing import Optional"},
-            ...         extra_callable_defs={"def test(foo: Optional[str]): return foo"},
+            ...         extra_imports={"import pandas as pd"},
+            ...         extra_callable_defs={"def test(data_frame): return pd.melt(foo)"},
             ...     )
             ... )
 

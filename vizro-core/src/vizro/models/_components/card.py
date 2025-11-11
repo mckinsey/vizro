@@ -26,9 +26,9 @@ class Card(VizroBaseModel):
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
             only. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon in the top-right corner of the Card.
+        description (Tooltip | None): Optional markdown string that adds an icon in the top-right corner of the Card.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the

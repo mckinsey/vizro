@@ -44,7 +44,7 @@ class AgGrid(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """

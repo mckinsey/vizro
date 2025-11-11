@@ -63,15 +63,15 @@ class Dropdown(VizroBaseModel):
     Args:
         type (Literal["dropdown"]): Defaults to `"dropdown"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (Optional[SingleValueType | MultiValueType]): See
+        value (SingleValueType | MultiValueType | None): See
             [`SingleValueType`][vizro.models.types.SingleValueType] and
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the

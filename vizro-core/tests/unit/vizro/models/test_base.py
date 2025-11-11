@@ -53,7 +53,7 @@ def Parent():
 
 @pytest.fixture()
 def ParentWithOptional():
-    # e.g. Filter.selector: Optional[SelectorType]
+    # e.g. Filter.selector: SelectorType | None
     class _ParentWithOptional(vm.VizroBaseModel):
         child: ChildType | None
 
@@ -109,7 +109,7 @@ class TestDiscriminatedUnion:
 
 
 class TestOptionalDiscriminatedUnion:
-    # Optional[ChildType] does not work correctly as a discriminated union - pydantic turns it into a regular union.
+    # ChildType | None does not work correctly as a discriminated union - pydantic turns it into a regular union.
     # Hence the validation error messages are not as expected. The tests of add_type pass because in practice a
     # discriminated union is not actually needed to achieve the desired behavior. The union is still a regular one
     # even after add_type.
@@ -324,7 +324,7 @@ def chart_dynamic():
     function_string = textwrap.dedent(
         """
         @capture("graph")
-        def chart_dynamic(data_frame, hover_data: Optional[list[str]] = None):
+        def chart_dynamic(data_frame, hover_data: list[str | None] = None):
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
         """
     )
@@ -409,12 +409,11 @@ expected_graph_with_callable = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.models.types import capture
-from typing import Optional
 
 
 ####### Function definitions ######
 @capture("graph")
-def chart(data_frame, hover_data: Optional[list[str]] = None):
+def chart(data_frame, hover_data: list[str | None] = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -468,7 +467,7 @@ model = vm.Graph(figure=chart_dynamic(data_frame="iris"))
 
 
 extra_callable = """@capture("graph")
-def extra(data_frame, hover_data: Optional[list[str]] = None):
+def extra(data_frame, hover_data: list[str | None] = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 """
 
@@ -481,7 +480,7 @@ from vizro.models.types import capture
 
 ####### Function definitions ######
 @capture("graph")
-def extra(data_frame, hover_data: Optional[list[str]] = None):
+def extra(data_frame, hover_data: list[str | None] = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -496,12 +495,11 @@ import vizro.models as vm
 import vizro.actions as va
 import vizro.figures as vf
 from vizro.models.types import capture
-from typing import Optional
 
 
 ####### Function definitions ######
 @capture("graph")
-def chart(data_frame, hover_data: Optional[list[str]] = None):
+def chart(data_frame, hover_data: list[str | None] = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -639,14 +637,14 @@ class TestPydanticPython:
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
         graph = vm.Graph(figure=chart(data_frame="iris"))
-        result = graph._to_python(extra_imports={"from typing import Optional", "import pandas as pd"})
+        result = graph._to_python(extra_imports={"import pandas as pd"})
         assert result == expected_graph_with_callable
 
     def test_to_python_two_captured_callable_charts(self, page_two_captured_callables):
         # Test if two captured callables are included. Note that the order in which they are included is not guaranteed.
         result = page_two_captured_callables._to_python()
-        assert "def chart(data_frame, hover_data: Optional[list[str]] = None):" in result
-        assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
+        assert "def chart(data_frame, hover_data: list[str | None] = None):" in result
+        assert "def chart2(data_frame, hover_data: list[str | None] = None):" in result
 
     def test_to_python_builtin_actions(self, page_builtin_actions):
         result = page_builtin_actions._to_python()
@@ -669,7 +667,7 @@ class TestPydanticPython:
 
     def test_to_python_complete_dashboard(self, complete_dashboard):
         # Test more complete and nested model
-        result = complete_dashboard._to_python(extra_imports={"from typing import Optional"})
+        result = complete_dashboard._to_python()
         assert result == expected_complete_dashboard
 
 

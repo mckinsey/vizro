@@ -25,9 +25,9 @@ class Button(VizroBaseModel):
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the button text.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the

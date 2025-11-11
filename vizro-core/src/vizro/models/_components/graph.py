@@ -45,10 +45,10 @@ class Graph(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the

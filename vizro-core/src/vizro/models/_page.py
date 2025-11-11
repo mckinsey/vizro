@@ -59,8 +59,8 @@ class Page(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Page`.
-        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        layout (LayoutType | None): Layout to place components in. Defaults to `None`.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
             tags. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
