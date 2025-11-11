@@ -32,9 +32,6 @@ jobs:
         # https://github.com/orgs/community/discussions/26253
         # https://github.com/actions/runner/issues/1985
         config:
-          - python-version: "3.9"
-            hatch-env: all.py3.9
-            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: all.py3.10
             os: ubuntu-latest
@@ -44,7 +41,13 @@ jobs:
           - python-version: "3.12"
             hatch-env: all.py3.12
             os: ubuntu-latest
-          - python-version: "3.9"
+          - python-version: "3.13"
+            hatch-env: all.py3.13
+            os: ubuntu-latest
+          - python-version: "3.14"
+            hatch-env: all.py3.14
+            os: ubuntu-latest
+          - python-version: "3.10"
             hatch-env: lower-bounds
             os: ubuntu-latest
             label: lower bounds
@@ -81,9 +84,6 @@ jobs:
         # https://github.com/orgs/community/discussions/26253
         # https://github.com/actions/runner/issues/1985
         config:
-          - python-version: "3.9"
-            hatch-env: all.py3.9
-            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: all.py3.10
             os: ubuntu-latest
@@ -93,7 +93,13 @@ jobs:
           - python-version: "3.12"
             hatch-env: all.py3.12
             os: ubuntu-latest
-          - python-version: "3.9"
+          - python-version: "3.13"
+            hatch-env: all.py3.13
+            os: ubuntu-latest
+          - python-version: "3.14"
+            hatch-env: all.py3.14
+            os: ubuntu-latest
+          - python-version: "3.10"
             hatch-env: lower-bounds
             os: ubuntu-latest
             label: lower bounds
