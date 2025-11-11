@@ -86,10 +86,11 @@ class TestButtonInstantiation:
 class TestBuildMethod:
     def test_button_build(self):
         result = vm.Button(id="button", text="Click me!").build()
+        expected_text = html.Span("Click me!", className="btn-text")
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span([None, "Click me!", None], className="btn-text"),
+                children=[None, expected_text, None],
                 id="button",
                 href="",
                 target="_top",
@@ -101,10 +102,11 @@ class TestBuildMethod:
     def test_button_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         result = vm.Button(id="button", extra={"color": "success", "outline": True, "href": "www.google.com"}).build()
+        expected_text = html.Span("Click me!", className="btn-text")
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span([None, "Click me!", None], className="btn-text"),
+                children=[None, expected_text, None],
                 id="button",
                 color="success",
                 outline=True,
@@ -116,12 +118,13 @@ class TestBuildMethod:
 
     def test_button_build_with_href(self):
         button = vm.Button(id="button_id", text="My text!", href="www.google.com").build()
+        expected_text = html.Span("My text!", className="btn-text")
 
         assert_component_equal(
             button,
             dbc.Button(
                 id="button_id",
-                children=html.Span([None, "My text!", None], className="btn-text"),
+                children=[None, expected_text, None],
                 href="www.google.com",
                 target="_top",
                 color="primary",
@@ -136,11 +139,12 @@ class TestBuildMethod:
     )
     def test_button_with_variant(self, variant, expected_color):
         result = vm.Button(variant=variant).build()
+        expected_text = html.Span("Click me!", className="btn-text")
 
         assert_component_equal(
             result,
             dbc.Button(
-                children=html.Span([None, "Click me!", None], className="btn-text"),
+                children=[None, expected_text, None],
                 href="",
                 target="_top",
                 color=expected_color,
@@ -157,6 +161,7 @@ class TestBuildMethod:
             description=vm.Tooltip(text="Test description", icon="info", id="info"),
         ).build()
 
+        expected_text = html.Span("Click me", className="btn-text")
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
@@ -170,7 +175,7 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span([None, "Click me", *expected_description], className="btn-text"),
+                children=[None, expected_text, *expected_description],
                 id="button",
                 href="",
                 target="_top",
@@ -187,11 +192,12 @@ class TestBuildMethod:
         button = vm.Button(id="button_id", icon=icon, text=text).build()
 
         expected_icon = html.Span(f"{icon}", id="button_id-icon", className="material-symbols-outlined tooltip-icon")
+        expected_text = html.Span(text, className="btn-text") if text else None
         assert_component_equal(
             button,
             dbc.Button(
                 id="button_id",
-                children=html.Span([expected_icon, text, None], className="btn-text"),
+                children=[expected_icon, expected_text, None],
                 target="_top",
                 href="",
                 color="primary",
@@ -222,7 +228,7 @@ class TestBuildMethod:
             button,
             dbc.Button(
                 id="button_id",
-                children=html.Span([expected_icon, "", *expected_description], className="btn-text"),
+                children=[expected_icon, None, *expected_description],
                 target="_top",
                 href="",
                 color="primary",

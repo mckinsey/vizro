@@ -124,10 +124,11 @@ class Button(VizroBaseModel):
             if self.icon
             else None,
         )
+        text = html.Span(self.text, className="btn-text") if self.text else None
 
         defaults = {
             "id": self.id,
-            "children": html.Span([*icon, self.text, *description], className="btn-text"),
+            "children": [*icon, text, *description],
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
