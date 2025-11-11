@@ -422,30 +422,23 @@ tab_1 = vm.Container(
     ],
 )
 
-tab_2 = vm.Container(
-    title="Tab II",
+page = vm.Page(
+    title="Example buttons",
+    layout=vm.Flex(direction="row"),
     components=[
-        vm.Graph(
-            figure=px.scatter(
-                gapminder_2007,
-                title="Graph 3",
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
+        vm.Button(text="Download", variant="plain"),
+        vm.Button(text="Download", icon="Download", variant="plain"),
+        vm.Button(text="", icon="Download", variant="plain"),
+        vm.Button(text="Download", variant="filled"),
+        vm.Button(text="Download", icon="Download", variant="filled"),
+        vm.Button(text="", icon="Download", variant="filled"),
+        vm.Button(text="Download", variant="outlined"),
+        vm.Button(text="Download", icon="Download", variant="outlined"),
+        vm.Button(text="", icon="Download", variant="outlined"),
     ],
 )
 
-tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls=[vm.Filter(column="continent")])
-
-
-# DASHBOARD -------------------------------------------------------------------
-dashboard = vm.Dashboard(
-    title="Charts",
-    pages=[graphs, continuous_color_scales, ag_grid, cards, figure, containers, collapsible_container, tabs, form],
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
