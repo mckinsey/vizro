@@ -4,7 +4,7 @@ Vizro has a default styling to help users with no design experience get started.
 
 - **[Configure the layout](layouts.md)**: Customize the arrangement of your components inside your Vizro dashboard.
 
-- **[Apply a theme](themes.md)**: Choose between a dark or light theme.
+- **[Apply themes and colors](themes.md)**: Choose between dark or light dashboard themes, use Vizro's Plotly templates for charts, and access carefully designed, colorblind-safe colors and palettes.
 
 - **[Manage assets](assets.md)**: Enhance your dashboard by adding images, scripts, and stylesheets to your assets folder.
 
