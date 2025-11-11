@@ -19,34 +19,50 @@ def _get_text_color(hex_color):
 def make_color_swatches(color_groups, cols, labels, show_labels_in_boxes=True, show_group_names=False):
     """Create color swatch visualization."""
     BOX_SIZE, GAP = 70, 0.15
-    
+
     groups = list(color_groups.keys())
     counts = [len(color_groups[g]) for g in groups]
-    
+
     # Generate coordinates
     xs = [i * (1 + GAP) for count in counts for i in range(count)]
     ys = [r * (1 + GAP) for r, count in enumerate(counts) for _ in range(count)]
 
     # Create figure with colored squares
-    fig = go.Figure(go.Scatter(
-        x=xs, y=ys, mode="markers",
-        marker={"symbol": "square", "size": BOX_SIZE, "color": cols, "line": {"width": 1, "color": "#ddd"}},
-        hoverinfo="skip",
-    ))
+    fig = go.Figure(
+        go.Scatter(
+            x=xs,
+            y=ys,
+            mode="markers",
+            marker={"symbol": "square", "size": BOX_SIZE, "color": cols, "line": {"width": 1, "color": "#ddd"}},
+            hoverinfo="skip",
+        )
+    )
 
     # Add labels inside boxes
     if show_labels_in_boxes:
         for x, y, label, col in zip(xs, ys, labels, cols):
-            fig.add_annotation(x=x, y=y, text=label, showarrow=False,
-                             font=dict(size=10, color=_get_text_color(col)),
-                             xanchor="center", yanchor="middle")
+            fig.add_annotation(
+                x=x,
+                y=y,
+                text=label,
+                showarrow=False,
+                font=dict(size=10, color=_get_text_color(col)),
+                xanchor="center",
+                yanchor="middle",
+            )
 
     # Add group names on side
     if show_group_names:
         for i, name in enumerate(groups):
-            fig.add_annotation(x=-0.6, y=i * (1 + GAP), text=name, showarrow=False,
-                             font=dict(size=20, color="black"),
-                             xanchor="right", yanchor="middle")
+            fig.add_annotation(
+                x=-0.6,
+                y=i * (1 + GAP),
+                text=name,
+                showarrow=False,
+                font=dict(size=20, color="black"),
+                xanchor="right",
+                yanchor="middle",
+            )
 
     # Configure layout
     left_margin = 220 if show_group_names else 10
@@ -74,7 +90,18 @@ def _save_image(fig, output_path):
 def generate_colors_image(output_path):
     """Generate colors reference image."""
     color_groups = {
-        "Qualitative": ["cyan", "orange", "dark_purple", "red", "teal", "amber", "green", "purple", "pink", "dark_green"],
+        "Qualitative": [
+            "cyan",
+            "orange",
+            "dark_purple",
+            "red",
+            "teal",
+            "amber",
+            "green",
+            "purple",
+            "pink",
+            "dark_green",
+        ],
         "Cyan": [f"cyan_{i}00" for i in range(1, 10)],
         "Orange": [f"orange_{i}00" for i in range(1, 10)],
         "Indigo": [f"indigo_{i}00" for i in range(1, 10)],
@@ -84,10 +111,10 @@ def generate_colors_image(output_path):
         "Grey": [f"grey_{i}00" for i in range(1, 10)],
         "Special": ["transparent", "white", "black"],
     }
-    
+
     labels = [name for group in color_groups.values() for name in group]
     cols = [getattr(colors, name) for name in labels]
-    
+
     fig = make_color_swatches(color_groups, cols, labels, show_labels_in_boxes=True, show_group_names=False)
     _save_image(fig, output_path)
 
@@ -97,7 +124,7 @@ def generate_palettes_image(output_path):
     palette_groups = {name: getattr(palettes, name) for name in vars(palettes)}
     labels = [f"{name}[{i}]" for name, palette in palette_groups.items() for i in range(len(palette))]
     cols = [color for palette in palette_groups.values() for color in palette]
-    
+
     fig = make_color_swatches(palette_groups, cols, labels, show_labels_in_boxes=False, show_group_names=True)
     _save_image(fig, output_path)
 
@@ -115,4 +142,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
