@@ -1,4 +1,3 @@
-
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.plotly.express as px

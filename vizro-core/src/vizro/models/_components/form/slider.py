@@ -50,9 +50,7 @@ class Slider(VizroBaseModel):
 
     type: Literal["slider"] = "slider"
     min: float | None = Field(default=None, description="Start value for slider.")
-    max: Annotated[
-        float | None, AfterValidator(validate_max), Field(default=None, description="End value for slider.")
-    ]
+    max: Annotated[float | None, AfterValidator(validate_max), Field(default=None, description="End value for slider.")]
     step: Annotated[
         float | None,
         AfterValidator(validate_step),

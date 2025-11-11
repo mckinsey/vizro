@@ -43,9 +43,7 @@ class RadioItems(VizroBaseModel):
 
     type: Literal["radio_items"] = "radio_items"
     options: OptionsType = []
-    value: Annotated[
-        SingleValueType | None, AfterValidator(validate_value), Field(default=None, validate_default=True)
-    ]
+    value: Annotated[SingleValueType | None, AfterValidator(validate_value), Field(default=None, validate_default=True)]
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.

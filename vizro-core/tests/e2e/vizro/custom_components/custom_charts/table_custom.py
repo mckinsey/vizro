@@ -1,4 +1,3 @@
-
 from dash import dash_table
 
 from vizro.models.types import capture

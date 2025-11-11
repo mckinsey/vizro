@@ -1,6 +1,5 @@
 """App configuration for dashboard."""
 
-
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from chart_groups import ALL_CHART_GROUP, CHART_GROUPS, ChartGroup, IncompletePage

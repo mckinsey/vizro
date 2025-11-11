@@ -106,9 +106,7 @@ def validate_step(step, info: ValidationInfo):
     return step
 
 
-def set_default_marks(
-    marks: dict[float, str] | None, info: ValidationInfo
-) -> dict[float | int, str] | None:
+def set_default_marks(marks: dict[float, str] | None, info: ValidationInfo) -> dict[float | int, str] | None:
     if not marks and info.data.get("step") is None:
         marks = None
 

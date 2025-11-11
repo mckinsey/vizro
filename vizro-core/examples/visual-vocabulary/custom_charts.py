@@ -1,6 +1,5 @@
 """Contains custom charts used inside the dashboard."""
 
-
 import pandas as pd
 import vizro.plotly.express as px
 from plotly import graph_objects as go

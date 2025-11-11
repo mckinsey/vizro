@@ -32,7 +32,7 @@ class Checklist(VizroBaseModel):
     Args:
         type (Literal["checklist"]): Defaults to `"checklist"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (MultiValueType | None): See [`MultiValueType`][ vizro.models.types.MultiValueType]. Defaults to 
+        value (MultiValueType | None): See [`MultiValueType`][ vizro.models.types.MultiValueType]. Defaults to
         `None`.
         title (str): Title to be displayed. Defaults to `""`.
         show_select_all (bool): Whether to display the 'Select All' option that allows users to select or
@@ -49,9 +49,7 @@ class Checklist(VizroBaseModel):
 
     type: Literal["checklist"] = "checklist"
     options: OptionsType = []
-    value: Annotated[
-        MultiValueType | None, AfterValidator(validate_value), Field(default=None, validate_default=True)
-    ]
+    value: Annotated[MultiValueType | None, AfterValidator(validate_value), Field(default=None, validate_default=True)]
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
