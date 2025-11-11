@@ -10,7 +10,7 @@ from collections import OrderedDict
 from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Protocol, TypeAlias, Union, cast, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs

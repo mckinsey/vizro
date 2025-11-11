@@ -1,7 +1,7 @@
 import logging
 import textwrap
 import uuid
-from typing import Annotated, Literal, Union
+from typing import Annotated, Literal
 
 import pandas as pd
 import plotly.graph_objects as go
