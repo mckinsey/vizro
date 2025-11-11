@@ -30,7 +30,7 @@
   gap: 0.5rem;
 }
 
-.btn .tooltip-icon {
+.btn .tooltip-icon, .form-label .tooltip-icon {
   color: inherit;
   font-size: 1rem;
 }
