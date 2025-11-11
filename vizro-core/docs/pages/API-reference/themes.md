@@ -1,7 +1,7 @@
 <!-- vale off -->
 # Themes
 
-API reference for Vizro's carefully designed, colorblind-safe color system and palettes. The `vizro.themes` module contains `colors` and `palettes` that can be used both inside and outside Vizro dashboards. The how-to guide on [themes](../user-guides/themes.md#vizro-colors-and-palettes) contains more information.
+The `vizro.themes` module provides `colors` and `palettes` that can be imported and used independently, without requiring a Vizro dashboard. These can be used directly in standalone Plotly charts, Jupyter notebooks, or any other visualization context. The how-to guide on [themes](../user-guides/themes.md#vizro-colors-and-palettes) contains more information.
 
 ::: vizro.themes
     options:

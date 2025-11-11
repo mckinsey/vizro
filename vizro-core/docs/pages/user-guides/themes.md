@@ -131,13 +131,13 @@ Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some 
 
 ??? note "Apply Vizro Bootstrap theme to charts and other components"
 
-    To apply the Vizro theme to plotly charts, refer to the above section [Vizro themes in plotly charts](#vizro-plotly-templates). This is possible with or without Vizro Bootstrap.
+    To apply the Vizro theme to Plotly charts, refer to the above section [Vizro themes in Plotly charts](#vizro-plotly-templates). This is possible with or without Vizro Bootstrap.
 
     If you want to style your entire Dash app with Vizro Bootstrap so that your Plotly figures automatically match, we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples in the [documentation about styling Plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
 
 ## Vizro Plotly templates
 
-You can also use our templates for plotly charts outside the dashboard. This is useful in a few contexts:
+You can also use our templates for Plotly charts outside the dashboard. This is useful in a few contexts:
 
 - Creation of standalone charts to be used independently of a Vizro dashboard.
 - Rapid development of charts for eventual use in a Vizro dashboard, for example in a Jupyter Notebook.
@@ -146,7 +146,7 @@ You can also use our templates for plotly charts outside the dashboard. This is 
 
     Using `import vizro.plotly.express as px` is equal to using `import plotly.express as px`, but with the added benefit of being able to integrate the resulting chart code into a Vizro dashboard. Vizro offers a minimal layer on top of Plotly's existing charting library, allowing you to seamlessly use all the existing charts and functionalities provided by plotly.express without any modifications.
 
-Our `vizro_dark` and `vizro_light` themes are automatically registered to `plotly.io.templates` when importing Vizro. Consult the plotly documentation for [more details on how templates work in plotly](https://plotly.com/python/templates/#theming-and-templates).
+Our `vizro_dark` and `vizro_light` themes are automatically registered to `plotly.io.templates` when importing Vizro. Consult the Plotly documentation for [more details on how templates work in plotly](https://plotly.com/python/templates/#theming-and-templates).
 
 By default, plots imported from `vizro.plotly.express` have the `vizro_dark` theme applied. This can be altered either globally or for individual plots.
 
@@ -213,6 +213,8 @@ Sequential colors are available in multiple families: cyan, orange, indigo, yell
         fig.show()
         ```
 
+**Color reference** ![Color reference](../../assets/user_guides/themes/colors.png)
+
 ### Palettes
 
 Pre-configured color palettes can be accessed through `vizro.themes.palettes`. These are ready-to-use color scales ideal for different data visualization needs:
@@ -223,7 +225,7 @@ Pre-configured color palettes can be accessed through `vizro.themes.palettes`. T
 
 !!! note "Default palettes in Vizro themes"
 
-    When using Vizro's `vizro_dark` or `vizro_light` themes in plotly charts, the `palettes.qualitative` is automatically applied to categorical data, and the `palettes.sequential_cyan` is used for all numerical sequences. You can override these defaults by explicitly specifying `color_discrete_sequence` or `color_continuous_scale` in your Plotly chart.
+    When using Vizro's `vizro_dark` or `vizro_light` themes in Plotly charts, the `palettes.qualitative` is automatically applied to categorical data, and the `palettes.sequential_cyan` is used for all numerical sequences. You can override these defaults by explicitly specifying `color_discrete_sequence` or `color_continuous_scale` in your Plotly chart.
 
 !!! example "Use Vizro palettes"
 
@@ -261,6 +263,8 @@ Pre-configured color palettes can be accessed through `vizro.themes.palettes`. T
         fig = px.imshow(data, color_continuous_scale=palettes.diverging_red_cyan, color_continuous_midpoint=0)
         fig.show()
         ```
+
+**Palette reference** ![Palette reference](../../assets/user_guides/themes/palettes.png)
 
 [bootstrapdark]: ../../assets/user_guides/themes/bootstrap_dark.png
 [bootstraplight]: ../../assets/user_guides/themes/bootstrap_light.png
