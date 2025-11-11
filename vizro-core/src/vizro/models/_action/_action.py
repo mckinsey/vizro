@@ -5,9 +5,9 @@ import logging
 import re
 import time
 import warnings
-from collections.abc import Collection, Iterable, Mapping
+from collections.abc import Callable, Collection, Iterable, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, cast
+from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component

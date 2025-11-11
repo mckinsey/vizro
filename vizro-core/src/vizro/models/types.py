@@ -5,12 +5,12 @@ from __future__ import annotations
 
 import functools
 import inspect
-import sys
 import warnings
 from collections import OrderedDict
+from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Callable, Literal, Protocol, Union, cast, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, TypeAlias, Union, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -29,11 +29,6 @@ from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
-
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    from typing_extensions import TypeAlias
 
 
 def _get_layout_discriminator(layout: Any) -> str | None:
@@ -641,9 +636,9 @@ _IdOrIdProperty: TypeAlias = ModelID | _IdProperty
 """Represents either a model ID or a string in the format 'component-id.component-property'."""
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
-SingleValueType = Union[StrictBool, float, str, date]
+SingleValueType = StrictBool | float | str | date
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType = Union[list[StrictBool], list[float], list[str], list[date]]
+MultiValueType = list[StrictBool] | list[float] | list[str] | list[date]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -654,7 +649,7 @@ class OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType = Union[list[StrictBool], list[float], list[str], list[date], list[OptionsDictType]]
+OptionsType = list[StrictBool] | list[float] | list[str] | list[date] | list[OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
@@ -693,7 +688,7 @@ or [`AgGrid`][vizro.models.AgGrid]."""
 
 # TODO: ideally description would have json_schema_input_type=Union[str, ModelID] because of the ID/title ambiguity,
 #  but this requires pydantic >= 2.9.
-NavPagesType = Union[list[ModelID], dict[str, list[ModelID]]]
+NavPagesType = list[ModelID] | dict[str, list[ModelID]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
@@ -716,7 +711,13 @@ LayoutType = Annotated[
 # In addition, `_filter` doesn't have a well defined schema due the Callables,
 # so if we were to include it, the JSONSchema would need to be defined.
 ActionType = Annotated[
-    Annotated["Action", Tag("action")] | Annotated["export_data", Tag("export_data")] | Annotated["filter_interaction", Tag("filter_interaction")] | Annotated["set_control", Tag("set_control")] | SkipJsonSchema[Annotated["_filter", Tag("_filter")]] | SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]] | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
+    Annotated["Action", Tag("action")]
+    | Annotated["export_data", Tag("export_data")]
+    | Annotated["filter_interaction", Tag("filter_interaction")]
+    | Annotated["set_control", Tag("set_control")]
+    | SkipJsonSchema[Annotated["_filter", Tag("_filter")]]
+    | SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]]
+    | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [

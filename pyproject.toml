@@ -88,9 +88,3 @@ convention = "google"
 
 [tool.ruff.lint.pylint]
 max-args = 6
-
-[tool.ruff.lint.pyupgrade]
-# Don't do PEP 604 rewrites (e.g. Union[str, int] -> str | int), even in files that import
-# `from __future__ import annotations`. This is needed since pydantic relies on the runtime behavior in Python 3.9.
-# When we drop Python 3.9 we can remove this setting.
-keep-runtime-typing = true

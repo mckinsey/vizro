@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from copy import deepcopy
-from typing import Any, Literal, TypedDict, Union, cast
+from typing import Any, Literal, TypedDict, cast
 
 import pandas as pd
 
@@ -21,7 +21,7 @@ from vizro.models.types import (
     SingleValueType,
 )
 
-ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
+ValidatedNoneValueType = SingleValueType | MultiValueType | None | list[None], list[SingleValueType]
 
 
 # TODO-AV2 A 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here

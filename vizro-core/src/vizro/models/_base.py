@@ -156,7 +156,7 @@ def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: no
     # in V2, and thus we are defining NEW behavior here. This works by using .values(), which extract values by
     # insertion order (since Python 3.7), thus the last added type will be the one that is kept.
     unique_types = tuple({t.model_fields["type"].default: t for t in all_types}.values())
-    return Union[unique_types]
+    return Union[unique_types]  # noqa: UP007
 
 
 def _add_type_to_annotated_union(union, new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
@@ -280,9 +280,7 @@ class VizroBaseModel(BaseModel):
         cls.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
         new_type.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
 
-    def _to_python(
-        self, extra_imports: set[str] | None = None, extra_callable_defs: set[str] | None = None
-    ) -> str:
+    def _to_python(self, extra_imports: set[str] | None = None, extra_callable_defs: set[str] | None = None) -> str:
         """Converts a Vizro model to the Python code that would create it.
 
         Args:
