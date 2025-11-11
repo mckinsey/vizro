@@ -260,7 +260,7 @@ class _BaseAction(VizroBaseModel):
             [Output(component_id='my_graph', component_property='figure', allow_duplicate=True)].
 
         Returns:
-            Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
+            list[Output] | dict[str, Output]: A list of Output objects if self.outputs is a list of strings,
             or a dictionary mapping keys to Output objects if self.outputs is a dictionary of strings.
         """
 
@@ -454,8 +454,8 @@ class Action(_BaseAction):
     # The type hint str here really means _IdOrIdProperty. We might change it in future for clearer API docs, but the
     # validation to check string format (presence of 0 or 1 . characters) does not need to be included in the
     # annotation. Options for good public API might be:
-    # Union[ModelID, str] - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
-    # Union[ModelID, IdProperty] - means making IdProperty public, which is ok but maybe overkill
+    # ModelID | str - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
+    # ModelID | IdProperty - means making IdProperty public, which is ok but maybe overkill
     inputs: Annotated[
         list[str],
         Field(

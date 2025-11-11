@@ -72,7 +72,7 @@ class Page(VizroBaseModel):
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title of the `Page`")
     layout: Annotated[LayoutType | None, AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
         Tooltip | None,

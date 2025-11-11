@@ -248,7 +248,7 @@ class _ResourceType(TypedDict, total=False):
     dev_only: bool
     # async is a Python keyword so would need to use alternative functional TypedDict syntax for this to work. Since we
     # don't use it anywhere we keep using this TypedDict class syntax and just don't define it here.
-    # async: bool Union[bool, Literal["eager", "lazy"]]
+    # async: bool | Literal["eager", "lazy"]
 
 
 def _make_resource_spec(path: Path) -> _ResourceType:

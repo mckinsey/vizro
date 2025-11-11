@@ -55,7 +55,7 @@ class Card(VizroBaseModel):
         "",
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
         Tooltip | None,

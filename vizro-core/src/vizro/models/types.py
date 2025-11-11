@@ -686,7 +686,7 @@ ComponentType = Annotated[
 [`Text`][vizro.models.Text], [`Tabs`][vizro.models.Tabs],
 or [`AgGrid`][vizro.models.AgGrid]."""
 
-# TODO: ideally description would have json_schema_input_type=Union[str, ModelID] because of the ID/title ambiguity,
+# TODO: ideally description would have json_schema_input_type=str | ModelID because of the ID/title ambiguity,
 #  but this requires pydantic >= 2.9.
 NavPagesType = list[ModelID] | dict[str, list[ModelID]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
@@ -723,14 +723,14 @@ ActionType = Annotated[
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
 
-# TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
+# TODO: ideally actions would have json_schema_input_type=list[ActionType] | ActionType attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
 ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_to_list), Field(default=[])]
 """List of actions that can be triggered by a component. Accepts either a single
 [`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType].
 Defaults to `[]`."""
 
-# TODO: ideally outputs would have json_schema_input_type=Union[list[str], dict[str, str], str] attached to
+# TODO: ideally outputs would have json_schema_input_type=list[str] | dict[str, str] | str attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
 OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_list), Field(default=[])]
 """List or dictionary of outputs modified by the action function. Accepts either a single string,

@@ -30,7 +30,7 @@ class DatePicker(VizroBaseModel):
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
         max (Optional[date]): End date for date picker. Defaults to `None`.
-        value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.
+        value (Optional[list[date] | date]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
@@ -62,7 +62,7 @@ class DatePicker(VizroBaseModel):
         AfterValidator(validate_date_picker_range),
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
         Tooltip | None,
