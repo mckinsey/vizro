@@ -1,3 +1,4 @@
+
 name: PyCafe Playground Links
 
 on:
@@ -10,7 +11,7 @@ defaults:
   run:
     working-directory: vizro-core
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
 
 jobs:
   create-status:

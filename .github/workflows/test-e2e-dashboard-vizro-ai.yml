@@ -22,8 +22,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
 
     steps:
       - uses: actions/checkout@v5
@@ -39,8 +39,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
 
     steps:
       - uses: actions/checkout@v5

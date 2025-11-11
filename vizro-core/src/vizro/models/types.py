@@ -1,8 +1,8 @@
 """Types used in pydantic fields."""
 
-# ruff: noqa: F821
 from __future__ import annotations
 
+# ruff: noqa: F821
 import functools
 import inspect
 import warnings
@@ -636,9 +636,9 @@ _IdOrIdProperty: TypeAlias = ModelID | _IdProperty
 """Represents either a model ID or a string in the format 'component-id.component-property'."""
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
-SingleValueType = StrictBool | float | str | date
+SingleValueType: TypeAlias = StrictBool | float | str | date
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType = list[StrictBool] | list[float] | list[str] | list[date]
+MultiValueType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -649,7 +649,7 @@ class OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType = list[StrictBool] | list[float] | list[str] | list[date] | list[OptionsDictType]
+OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
@@ -688,7 +688,7 @@ or [`AgGrid`][vizro.models.AgGrid]."""
 
 # TODO: ideally description would have json_schema_input_type=str | ModelID because of the ID/title ambiguity,
 #  but this requires pydantic >= 2.9.
-NavPagesType = list[ModelID] | dict[str, list[ModelID]]
+NavPagesType: TypeAlias = list[ModelID] | dict[str, list[ModelID]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
@@ -737,9 +737,9 @@ OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_l
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
 
-# Extra type groups used for mypy casting
-FigureWithFilterInteractionType = "Graph | Table | AgGrid"
-FigureType = "Graph | Table | AgGrid | Figure"
+# Extra type groups usd only for static type checking, not at runtime.
+FigureWithFilterInteractionType: TypeAlias = "Graph | Table | AgGrid"
+FigureType: TypeAlias = "Graph | Table | AgGrid | Figure"
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.

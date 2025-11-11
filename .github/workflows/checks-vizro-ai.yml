@@ -17,7 +17,7 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
 
 jobs:
   checks-vizro-ai:

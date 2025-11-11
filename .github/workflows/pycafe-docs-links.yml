@@ -9,7 +9,7 @@ on:
   workflow_dispatch: # helps to run this job manually from GitHub Actions UI
 
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
 
 jobs:
   create-status:

@@ -120,10 +120,10 @@ Tests are handled using [pytest](https://docs.pytest.org/) and arguments are pas
 hatch run test-unit --last-failed
 ```
 
-In CI, we test across multiple Python versions and also [check for code coverage](https://coverage.readthedocs.io/). If required, you can also run this locally. For example, to run unit tests with Python 3.10 and check for code coverage, you would run:
+In CI, we test across multiple Python versions and also [check for code coverage](https://coverage.readthedocs.io/). If required, you can also run this locally. For example, to run unit tests with Python 3.13 and check for code coverage, you would run:
 
 ```console
-hatch run all.py3.10:test-unit-coverage
+hatch run all.py3.13:test-unit-coverage
 ```
 
 In addition to running unit tests with code coverage, CI also performs the following checks:

@@ -48,8 +48,8 @@ jobs:
             hatch-env: lower-bounds
             os: ubuntu-latest
             label: lower bounds
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
             os: windows-latest
             label: Windows
         is_non_release_pr:
@@ -57,8 +57,8 @@ jobs:
         exclude:
           - is_non_release_pr: true
             config:
-              python-version: "3.12"
-              hatch-env: all.py3.12
+              python-version: "3.13"
+              hatch-env: all.py3.13
               os: windows-latest
               label: Windows
 
@@ -97,8 +97,8 @@ jobs:
             hatch-env: lower-bounds
             os: ubuntu-latest
             label: lower bounds
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
             os: windows-latest
             label: Windows
         is_non_release_pr:
@@ -106,8 +106,8 @@ jobs:
         exclude:
           - is_non_release_pr: true
             config:
-              python-version: "3.12"
-              hatch-env: all.py3.12
+              python-version: "3.13"
+              hatch-env: all.py3.13
               os: windows-latest
               label: Windows
 

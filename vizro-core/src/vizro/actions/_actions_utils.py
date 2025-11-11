@@ -21,7 +21,7 @@ from vizro.models.types import (
     SingleValueType,
 )
 
-ValidatedNoneValueType = SingleValueType | MultiValueType | None | list[None], list[SingleValueType]
+ValidatedNoneValueType = SingleValueType | MultiValueType | None | list[None] | list[SingleValueType]
 
 
 # TODO-AV2 A 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here

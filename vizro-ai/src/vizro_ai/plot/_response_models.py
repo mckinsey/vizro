@@ -60,7 +60,7 @@ def _exec_code(code: str, namespace: dict) -> dict:
     # TODO: ideally in future we properly handle process and namespace separation, or even Docke execution
     # TODO: this is also important as it can affect unit-tests influencing one another, which is really not good!
     ldict = {}
-    exec(code, namespace, ldict)  # nosec
+    exec(code, namespace, ldict)  # nosec # noqa: S102
     namespace.update(ldict)
     return namespace
 
@@ -107,9 +107,8 @@ def _test_execute_chart_code(data_frame: pd.DataFrame):
                 f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
                 f"alternatively try with a more powerful model."
             )
-        assert isinstance(fig, go.Figure), (
-            f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
-        )
+        if not isinstance(fig, go.Figure):
+            raise TypeError(f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}")
         return v
 
     return validator_code

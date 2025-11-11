@@ -1,7 +1,7 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -171,7 +171,7 @@ extra-dependencies = [
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
   "kedro==0.19.0"  # Includes kedro-datasets as a dependency.
 ]
-python = "3.9"
+python = "3.10"
 
 [publish.index]
 disable = true

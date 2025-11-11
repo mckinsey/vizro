@@ -23,7 +23,7 @@ from vizro.models.types import ModelID
 
 # As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
 # the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
-rd = random.Random(0)
+rd = random.Random(0)  # noqa: S311
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
 
@@ -146,7 +146,7 @@ def _extract_captured_callable_data_info() -> set[str]:
 
 def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
     args = get_args(union)
-    all_types = args + (new_type,)  # noqa: RUF005 #as long as we support Python 3.9, we can't use the new syntax
+    all_types = (*args, new_type)
     # The below removes duplicates by type, which would trigger a pydantic error (TypeError: Value 'xxx'
     # for discriminator 'type' mapped to multiple choices) otherwise.
     # We get the type value by accessing the type objects model_fields attribute, which is a dict of the fields

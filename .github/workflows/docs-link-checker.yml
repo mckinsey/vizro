@@ -12,7 +12,7 @@ on:
   workflow_dispatch: # Allow for running this manually.
 
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
 
 jobs:
   link-check:
