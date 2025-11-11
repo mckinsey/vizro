@@ -315,13 +315,10 @@ class Dashboard(VizroBaseModel):
         )
         reset_controls_button = dbc.Button(
             id=f"{page.id}_reset_button",
-            children=html.Span(
-                children=[
-                    html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                    dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
-                ],
-                className="btn-text",
-            ),
+            children=[
+                html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
+            ],
             class_name="btn-circular",
         )
         theme_switch = dbc.Switch(
