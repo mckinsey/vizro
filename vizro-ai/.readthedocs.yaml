@@ -11,9 +11,7 @@ build:
     python: "3.12"
 
   commands:
-    # Remove the `click` installation constraint once the
-    # https://github.com/pypa/hatch/issues/2050 is resolved.
-    - pip install hatch "click<8.3.0"
+    - pip install hatch
     - cd vizro-ai/ && hatch run docs:pip tree
     - cd vizro-ai/ && hatch run docs:build
     - mkdir --parents $READTHEDOCS_OUTPUT
