@@ -72,7 +72,7 @@ def ParentWithList():
 @pytest.fixture()
 def ParentWithForwardRef():
     class _ParentWithForwardRef(vm.VizroBaseModel):
-        child: Annotated[Union["ChildXForwardRef", "ChildYForwardRef"], Field(discriminator="type")]
+        child: Annotated["ChildXForwardRef | ChildYForwardRef", Field(discriminator="type")]
 
     # TODO: [MS] This is how I would update the forward refs, but we should double check
     ChildXForwardRef = ChildX
@@ -324,7 +324,7 @@ def chart_dynamic():
     function_string = textwrap.dedent(
         """
         @capture("graph")
-        def chart_dynamic(data_frame, hover_data: list[str | None] = None):
+        def chart_dynamic(data_frame, hover_data: list[str] | None = None):
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
         """
     )
@@ -413,7 +413,7 @@ from vizro.models.types import capture
 
 ####### Function definitions ######
 @capture("graph")
-def chart(data_frame, hover_data: list[str | None] = None):
+def chart(data_frame, hover_data: list[str] | None = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -467,7 +467,7 @@ model = vm.Graph(figure=chart_dynamic(data_frame="iris"))
 
 
 extra_callable = """@capture("graph")
-def extra(data_frame, hover_data: list[str | None] = None):
+def extra(data_frame, hover_data: list[str] | None = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 """
 
@@ -480,7 +480,7 @@ from vizro.models.types import capture
 
 ####### Function definitions ######
 @capture("graph")
-def extra(data_frame, hover_data: list[str | None] = None):
+def extra(data_frame, hover_data: list[str] | None = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -499,7 +499,7 @@ from vizro.models.types import capture
 
 ####### Function definitions ######
 @capture("graph")
-def chart(data_frame, hover_data: list[str | None] = None):
+def chart(data_frame, hover_data: list[str] | None = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -643,8 +643,8 @@ class TestPydanticPython:
     def test_to_python_two_captured_callable_charts(self, page_two_captured_callables):
         # Test if two captured callables are included. Note that the order in which they are included is not guaranteed.
         result = page_two_captured_callables._to_python()
-        assert "def chart(data_frame, hover_data: list[str | None] = None):" in result
-        assert "def chart2(data_frame, hover_data: list[str | None] = None):" in result
+        assert "def chart(data_frame, hover_data: list[str] | None = None):" in result
+        assert "def chart2(data_frame, hover_data: list[str] | None = None):" in result
 
     def test_to_python_builtin_actions(self, page_builtin_actions):
         result = page_builtin_actions._to_python()

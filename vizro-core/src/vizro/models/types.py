@@ -654,7 +654,7 @@ OptionsType = list[StrictBool] | list[float] | list[str] | list[date] | list[Opt
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union["Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider", "Switch"],
+    "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
@@ -662,19 +662,19 @@ SelectorType = Annotated[
 [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
 
 _FormComponentType = Annotated[
-    Union[SelectorType, "Button", "UserInput"],
+    "SelectorType | Button | UserInput",
     Field(discriminator="type", description="Components that can be used to receive user input within a form."),
 ]
 
 ControlType = Annotated[
-    Union["Filter", "Parameter"],
+    "Filter | Parameter",
     Field(discriminator="type", description="Control that affects components on the page."),
 ]
 """Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter] or
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Text", "Table", "Tabs"],
+    "AgGrid | Button | Card | Container | Figure | Graph | Text | Table | Tabs",
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
@@ -692,7 +692,7 @@ NavPagesType = list[ModelID] | dict[str, list[ModelID]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
-    Union["Accordion", "NavBar"], Field(discriminator="type", description="Component for rendering navigation.")
+    "Accordion | NavBar", Field(discriminator="type", description="Component for rendering navigation.")
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
@@ -738,8 +738,8 @@ a list of strings, or a dictionary mapping strings to strings. Each output can b
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
 
 # Extra type groups used for mypy casting
-FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
-FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
+FigureWithFilterInteractionType = "Graph | Table | AgGrid"
+FigureType = "Graph | Table | AgGrid | Figure"
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
