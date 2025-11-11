@@ -1,15 +1,20 @@
-"""Themes that can be used in and outside Vizro framework.
+"""Contains Vizro's carefully designed color system and palettes.
 
-vizro.themes.colors: Vizro colors
-vizro.themes.palettes: Vizro palettes (same for light and dark themes) includes sequential and diverging color scales.
+Attributes:
+    colors (SimpleNamespace): Individual color values (hex codes)
+    palettes (SimpleNamespace): Pre-configured color scales including:
 
-Example:
-```python
-from vizro.themes import colors, palettes
+        - qualitative: 10 distinct colors for categorical data
+        - sequential_*: Sequential color gradients for ordered data
+        - diverging_*: Diverging color scales for data with meaningful midpoints
 
-print(colors.cyan_100)
-print(palettes.qualitative)
-```
+Examples:
+    ```python
+    from vizro.themes import colors, palettes
+
+    print(colors.cyan_100)
+    print(palettes.qualitative)
+    ```
 """
 
 from .colors import colors

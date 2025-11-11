@@ -69,4 +69,4 @@ Within each of these categories, individual files are served in alphanumeric ord
 
 While the `assets` folder is perfect for adding your own files and [overriding specific styles via custom CSS](custom-css.md), you may also want to completely replace Vizro's default Bootstrap theme with a different one. For comprehensive theme changes, you can use the `external_stylesheets` argument to load third-party Bootstrap themes that will replace Vizro's default styling entirely.
 
-For detailed instructions on how to implement Bootstrap themes, see our guide on [themes](themes.md#custom-bootstrap-themes).
+For detailed instructions on how to implement Bootstrap themes, see our guide on [themes](themes.md#bootstrap-themes-in-vizro).

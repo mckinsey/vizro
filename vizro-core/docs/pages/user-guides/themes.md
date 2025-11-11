@@ -131,7 +131,7 @@ Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some 
 
 ??? note "Apply Vizro Bootstrap theme to charts and other components"
 
-    To apply the Vizro theme to plotly charts, refer to the above section [Vizro themes in plotly charts](#vizro-themes-in-plotly-charts). This is possible with or without Vizro Bootstrap.
+    To apply the Vizro theme to plotly charts, refer to the above section [Vizro themes in plotly charts](#vizro-plotly-templates). This is possible with or without Vizro Bootstrap.
 
     If you want to style your entire Dash app with Vizro Bootstrap and have your plotly figures automatically match then we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples of how to do this in their [documentation on styling plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
 
@@ -187,6 +187,8 @@ px.scatter_matrix(
 ## Vizro colors and palettes
 
 The `vizro.themes` module provides direct access to Vizro's color system. Each color has been carefully selected by our design team to ensure visual consistency, professional aesthetics, and accessibility. All color palettes are colorblind-safe, making your visualizations accessible to a wider audience.
+
+For a complete list of available colors and palettes, refer to the [API reference for themes](../API-reference/themes.md).
 
 ### Colors
 
@@ -259,8 +261,6 @@ Pre-configured color palettes can be accessed through `vizro.themes.palettes`. T
         fig = px.imshow(data, color_continuous_scale=palettes.diverging_red_cyan, color_continuous_midpoint=0)
         fig.show()
         ```
-
-For a complete list of available colors and palettes, refer to the [API reference for themes](../API-reference/themes.md).
 
 [bootstrapdark]: ../../assets/user_guides/themes/bootstrap_dark.png
 [bootstraplight]: ../../assets/user_guides/themes/bootstrap_light.png
