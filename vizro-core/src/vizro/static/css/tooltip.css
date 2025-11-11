@@ -35,6 +35,10 @@
   font-size: 1rem;
 }
 
+.form-label .tooltip-icon:hover {
+  color: var(--bs-primary);
+}
+
 .btn-link {
   text-decoration: none;
 }
