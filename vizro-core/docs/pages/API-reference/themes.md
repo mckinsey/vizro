@@ -10,12 +10,18 @@ API reference for Vizro's carefully designed, colorblind-safe color system and p
         - colors
         - palettes
 
-**Colors and Palettes**
+**Visual reference**
 
 Below is a visual reference of all available Vizro colors and palettes. Each color and palette is labeled with its access name, e.g. `colors.cyan_100` for individual colors or `palettes.sequential_cyan` for complete palettes.
 
-![Vizro color palette reference][color-palette-reference]
+**Colors**
 
-[color-palette-reference]: ../../assets/user_guides/themes/color-palette-reference.png
+![Color reference](../../assets/user_guides/themes/colors.png)
+
+**Palettes**
+
+![Palette reference](../../assets/user_guides/themes/palettes.png)
+
+
 
 <!-- vale on -->
