@@ -133,7 +133,7 @@ Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some 
 
     To apply the Vizro theme to plotly charts, refer to the above section [Vizro themes in plotly charts](#vizro-plotly-templates). This is possible with or without Vizro Bootstrap.
 
-    If you want to style your entire Dash app with Vizro Bootstrap and have your plotly figures automatically match then we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples of how to do this in their [documentation on styling plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
+    If you want to style your entire Dash app with Vizro Bootstrap so that your Plotly figures automatically match, we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples in the [documentation about styling Plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
 
 ## Vizro Plotly templates
 
