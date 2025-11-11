@@ -9,7 +9,6 @@ def test_import_colors_and_palettes():
     """Test colors/palettes can be imported and is a SimpleNamespace."""
     assert isinstance(palettes, SimpleNamespace)
     assert isinstance(colors, SimpleNamespace)
-    
 
 
 def test_access_color():
@@ -46,5 +45,3 @@ def test_access_default_sequential_palette():
         "#074C8C",
         "#003875",
     ]
-    
-
