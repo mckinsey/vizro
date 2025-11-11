@@ -12,7 +12,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "pandas",
@@ -84,4 +84,3 @@ src = ["src"]
 "examples/chart_by_vizro_ai.ipynb" = ["T201", "E501"]
 "examples/dashboard_by_vizro_ai.ipynb" = ["T201", "E402", "E501"]
 "examples/goodreads_tutorial/goodreads.ipynb" = ["T201", "E402", "E501", "W291", "F811"]
-
