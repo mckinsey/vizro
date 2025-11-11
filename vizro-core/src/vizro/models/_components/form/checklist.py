@@ -32,8 +32,8 @@ class Checklist(VizroBaseModel):
     Args:
         type (Literal["checklist"]): Defaults to `"checklist"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (MultiValueType | None): See [`MultiValueType`][ vizro.models.types.MultiValueType]. Defaults to
-        `None`.
+        value (MultiValueType | None): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to
+            `None`.
         title (str): Title to be displayed. Defaults to `""`.
         show_select_all (bool): Whether to display the 'Select All' option that allows users to select or
             deselect all available options with a single click. Defaults to `True`.
