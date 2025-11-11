@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional, cast
+from typing import Annotated, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -27,7 +27,7 @@ class Navigation(VizroBaseModel):
     """
 
     pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
-    nav_selector: Optional[NavSelectorType] = None
+    nav_selector: NavSelectorType | None = None
 
     @_log_call
     def pre_build(self):

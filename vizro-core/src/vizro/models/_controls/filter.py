@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import Any, Literal, Optional, Union, cast
+from typing import Any, Literal, cast
 
 import pandas as pd
 from dash import dcc, html
@@ -50,7 +50,7 @@ DISALLOWED_SELECTORS = {
 }
 
 
-def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> pd.Series:
+def _filter_between(series: pd.Series, value: list[float] | list[str]) -> pd.Series:
     if is_datetime64_any_dtype(series):
         # Each value will always have time 00:00:00. In order for the filter to include all times during
         # the end date value[1] we need to remove the time part of every value in series so that it's 00:00:00.
@@ -102,7 +102,7 @@ class Filter(VizroBaseModel):
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
     )
-    selector: Optional[SelectorType] = None
+    selector: SelectorType | None = None
     show_in_url: bool = Field(
         default=False,
         description=(
@@ -385,8 +385,8 @@ class Filter(VizroBaseModel):
     @staticmethod
     def _get_min_max(
         targeted_data: pd.DataFrame,
-        current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
-    ) -> Union[tuple[float, float], tuple[pd.Timestamp, pd.Timestamp]]:
+        current_value: SingleValueType | MultiValueType | None = None,
+    ) -> tuple[float, float] | tuple[pd.Timestamp, pd.Timestamp]:
         # Try to convert the current value to a datetime object. If it fails (like value=123), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
@@ -411,7 +411,7 @@ class Filter(VizroBaseModel):
     @staticmethod
     def _get_options(
         targeted_data: pd.DataFrame,
-        current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
+        current_value: SingleValueType | MultiValueType | None = None,
     ) -> list[Any]:
         # Try to convert the current value to a datetime object. If it fails (like value=123), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".

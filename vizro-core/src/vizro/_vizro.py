@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, TypedDict, Union, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 
 import dash
 import plotly.io as pio
@@ -87,7 +87,7 @@ class Vizro:
         data_manager.cache.init_app(self.dash.server)
 
     @staticmethod
-    def _has_bootstrap_css(external_stylesheets: list[Union[str, dict[str, str]]]) -> bool:
+    def _has_bootstrap_css(external_stylesheets: list[str | dict[str, str]]) -> bool:
         """Detect if Bootstrap CSS is present in external stylesheets.
 
         Args:
@@ -97,7 +97,7 @@ class Vizro:
             bool: True if Bootstrap CSS is detected, False otherwise
         """
 
-        def _get_url(stylesheet: Union[str, dict[str, str]]) -> str:
+        def _get_url(stylesheet: str | dict[str, str]) -> str:
             """Extract URL from stylesheet."""
             if isinstance(stylesheet, str):
                 return stylesheet

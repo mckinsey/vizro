@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated, Any, Literal, Optional, Union
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -45,12 +45,12 @@ class DatePicker(VizroBaseModel):
     """
 
     type: Literal["date_picker"] = "date_picker"
-    min: Optional[date] = Field(default=None, description="Start date for date picker.")
+    min: date | None = Field(default=None, description="Start date for date picker.")
     max: Annotated[
-        Optional[date], AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
+        date | None, AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
     ]
     value: Annotated[
-        Optional[Union[list[date], date]],
+        list[date] | date | None,
         # TODO[MS]: check here and similar if the early exit clause in below validator or similar is
         # necessary given we don't validate on default
         AfterValidator(validate_range_value),
@@ -65,7 +65,7 @@ class DatePicker(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

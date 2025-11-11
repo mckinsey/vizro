@@ -1,7 +1,7 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Annotated, Any, Literal, Optional, cast
+from typing import Annotated, Any, Literal, cast
 
 import pandas as pd
 from box import Box
@@ -79,7 +79,7 @@ class Graph(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

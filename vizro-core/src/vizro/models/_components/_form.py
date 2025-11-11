@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
@@ -25,7 +25,7 @@ class Form(VizroBaseModel):
     type: Literal["form"] = "form"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
-    layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    layout: Annotated[LayoutType | None, AfterValidator(set_layout), Field(default=None, validate_default=True)]
 
     @_log_call
     def pre_build(self):

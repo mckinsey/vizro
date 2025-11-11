@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -44,13 +44,13 @@ class RadioItems(VizroBaseModel):
     type: Literal["radio_items"] = "radio_items"
     options: OptionsType = []
     value: Annotated[
-        Optional[SingleValueType], AfterValidator(validate_value), Field(default=None, validate_default=True)
+        SingleValueType | None, AfterValidator(validate_value), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,

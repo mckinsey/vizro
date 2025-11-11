@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -49,22 +49,22 @@ class Slider(VizroBaseModel):
     """
 
     type: Literal["slider"] = "slider"
-    min: Optional[float] = Field(default=None, description="Start value for slider.")
+    min: float | None = Field(default=None, description="Start value for slider.")
     max: Annotated[
-        Optional[float], AfterValidator(validate_max), Field(default=None, description="End value for slider.")
+        float | None, AfterValidator(validate_max), Field(default=None, description="End value for slider.")
     ]
     step: Annotated[
-        Optional[float],
+        float | None,
         AfterValidator(validate_step),
         Field(default=None, description="Step-size for marks on slider."),
     ]
     marks: Annotated[
-        Optional[dict[float, str]],
+        dict[float, str] | None,
         AfterValidator(set_default_marks),
         Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
     value: Annotated[
-        Optional[float],
+        float | None,
         AfterValidator(validate_range_value),
         Field(default=None, description="Default value for slider."),
     ]
@@ -72,7 +72,7 @@ class Slider(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

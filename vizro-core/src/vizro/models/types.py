@@ -10,7 +10,7 @@ import warnings
 from collections import OrderedDict
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, cast, runtime_checkable
+from typing import Annotated, Any, Callable, Literal, Protocol, Union, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -36,7 +36,7 @@ else:
     from typing_extensions import TypeAlias
 
 
-def _get_layout_discriminator(layout: Any) -> Optional[str]:
+def _get_layout_discriminator(layout: Any) -> str | None:
     """Helper function for callable discriminator used for LayoutType."""
     # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
     # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
@@ -59,7 +59,7 @@ def _get_layout_discriminator(layout: Any) -> Optional[str]:
     return getattr(layout, "type", None)
 
 
-def _get_action_discriminator(action: Any) -> Optional[str]:
+def _get_action_discriminator(action: Any) -> str | None:
     """Helper function for callable discriminator used for ActionType."""
     # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
     # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
@@ -166,7 +166,7 @@ class CapturedCallable:
     or [custom figures](../user-guides/custom-figures.md).
     """
 
-    def __init__(self, function: Union[Callable[..., Any], str], /, *args: Any, **kwargs: Any):
+    def __init__(self, function: Callable[..., Any] | str, /, *args: Any, **kwargs: Any):
         """Creates a new `CapturedCallable` object that will be able to re-run `function`.
 
         Partially binds *args and **kwargs to the function call.
@@ -176,9 +176,9 @@ class CapturedCallable:
 
         """
         # Use this to declare the type of the attributes only once due to if clauses below.
-        self.__function: Union[Callable[..., Any], str]
-        self._mode: Optional[Literal["graph", "action", "table", "ag_grid", "figure"]]
-        self._model_example: Optional[str]
+        self.__function: Callable[..., Any] | str
+        self._mode: Literal["graph", "action", "table", "ag_grid", "figure"] | None
+        self._model_example: str | None
 
         if callable(function):
             # It is difficult to get positional-only and variadic positional arguments working at the same time as
@@ -298,7 +298,7 @@ class CapturedCallable:
     @classmethod
     def _validate_captured_callable(
         cls,
-        captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
+        captured_callable_config: dict[str, Any] | _SupportsCapturedCallable | CapturedCallable,
         json_schema_extra: JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
     ):
@@ -332,10 +332,10 @@ class CapturedCallable:
     @classmethod
     def _parse_json(
         cls,
-        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
+        captured_callable_config: _SupportsCapturedCallable | CapturedCallable | dict[str, Any],
         json_schema_extra: JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
-    ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
+    ) -> CapturedCallable | _SupportsCapturedCallable:
         """Parses captured_callable_config specification from JSON/YAML.
 
         If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
@@ -384,7 +384,7 @@ class CapturedCallable:
 
     @classmethod
     def _extract_from_attribute(
-        cls, captured_callable: Union[_SupportsCapturedCallable, CapturedCallable]
+        cls, captured_callable: _SupportsCapturedCallable | CapturedCallable
     ) -> CapturedCallable:
         """Extracts CapturedCallable from _SupportCapturedCallable (e.g. _DashboardReadyFigure).
 
@@ -424,7 +424,7 @@ class CapturedCallable:
 
     @staticmethod
     def _format_args(
-        args_for_repr: Optional[Union[list[Any], tuple[Any, ...]]] = None, arguments: Optional[dict[str, Any]] = None
+        args_for_repr: list[Any] | tuple[Any, ...] | None = None, arguments: dict[str, Any] | None = None
     ) -> str:
         """Format arguments for string representation."""
         return ", ".join(
@@ -637,7 +637,7 @@ _IdProperty: TypeAlias = str
 ModelID: TypeAlias = str
 """Represents a Vizro model ID."""
 
-_IdOrIdProperty: TypeAlias = Union[ModelID, _IdProperty]
+_IdOrIdProperty: TypeAlias = ModelID | _IdProperty
 """Represents either a model ID or a string in the format 'component-id.component-property'."""
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
@@ -703,7 +703,7 @@ NavSelectorType = Annotated[
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
 LayoutType = Annotated[
-    Union[Annotated["Grid", Tag("grid")], Annotated["Flex", Tag("flex")], Annotated["Layout", Tag("legacy_layout")]],
+    Annotated["Grid", Tag("grid")] | Annotated["Flex", Tag("flex")] | Annotated["Layout", Tag("legacy_layout")],
     Field(
         discriminator=Discriminator(_get_layout_discriminator),
         description="Type of layout to place components on the page.",
@@ -716,15 +716,7 @@ LayoutType = Annotated[
 # In addition, `_filter` doesn't have a well defined schema due the Callables,
 # so if we were to include it, the JSONSchema would need to be defined.
 ActionType = Annotated[
-    Union[
-        Annotated["Action", Tag("action")],
-        Annotated["export_data", Tag("export_data")],
-        Annotated["filter_interaction", Tag("filter_interaction")],
-        Annotated["set_control", Tag("set_control")],
-        SkipJsonSchema[Annotated["_filter", Tag("_filter")]],
-        SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]],
-        SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
-    ],
+    Annotated["Action", Tag("action")] | Annotated["export_data", Tag("export_data")] | Annotated["filter_interaction", Tag("filter_interaction")] | Annotated["set_control", Tag("set_control")] | SkipJsonSchema[Annotated["_filter", Tag("_filter")]] | SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]] | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
@@ -739,7 +731,7 @@ Defaults to `[]`."""
 
 # TODO: ideally outputs would have json_schema_input_type=Union[list[str], dict[str, str], str] attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
-OutputsType = Annotated[Union[list[str], dict[str, str]], BeforeValidator(_coerce_to_list), Field(default=[])]
+OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_list), Field(default=[])]
 """List or dictionary of outputs modified by the action function. Accepts either a single string,
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""

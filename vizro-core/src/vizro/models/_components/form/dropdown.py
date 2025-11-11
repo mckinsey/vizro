@@ -1,6 +1,6 @@
 import math
 from datetime import date
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -33,12 +33,12 @@ def validate_multi(multi, info: ValidationInfo):
     return multi
 
 
-def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
+def _get_list_of_labels(full_options: OptionsType) -> list[StrictBool] | list[float] | list[str] | list[date]:
     """Returns a list of labels from the selector options provided."""
     if all(isinstance(option, dict) for option in full_options):
         return [option["label"] for option in full_options]  # type: ignore[index]
     else:
-        return cast(Union[list[StrictBool], list[float], list[str], list[date]], full_options)
+        return cast(list[StrictBool] | list[float] | list[str] | list[date], full_options)
 
 
 def _calculate_option_height(full_options: OptionsType, char_count: int) -> int:
@@ -81,7 +81,7 @@ class Dropdown(VizroBaseModel):
     type: Literal["dropdown"] = "dropdown"
     options: OptionsType = []
     value: Annotated[
-        Optional[Union[SingleValueType, MultiValueType]],
+        SingleValueType | MultiValueType | None,
         AfterValidator(validate_value),
         Field(default=None, validate_default=True),
     ]
@@ -94,7 +94,7 @@ class Dropdown(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,

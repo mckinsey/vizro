@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
@@ -49,7 +49,7 @@ class Checklist(VizroBaseModel):
     type: Literal["checklist"] = "checklist"
     options: OptionsType = []
     value: Annotated[
-        Optional[MultiValueType], AfterValidator(validate_value), Field(default=None, validate_default=True)
+        MultiValueType | None, AfterValidator(validate_value), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
@@ -60,7 +60,7 @@ class Checklist(VizroBaseModel):
         "options with a single click.",
     )
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

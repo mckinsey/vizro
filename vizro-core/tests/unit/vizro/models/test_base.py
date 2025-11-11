@@ -1,7 +1,7 @@
 import logging
 import textwrap
 import uuid
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal, Union
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -38,7 +38,7 @@ class ChildWithForwardRef(vm.VizroBaseModel):
 
 
 # ChildType does not include ChildZ initially.
-ChildType = Annotated[Union[ChildX, ChildY], Field(discriminator="type")]
+ChildType = Annotated[ChildX | ChildY, Field(discriminator="type")]
 
 
 # These parent classes must be done as fixtures so that each test gets a fresh, unmodified copy of the class.
@@ -55,7 +55,7 @@ def Parent():
 def ParentWithOptional():
     # e.g. Filter.selector: Optional[SelectorType]
     class _ParentWithOptional(vm.VizroBaseModel):
-        child: Optional[ChildType]
+        child: ChildType | None
 
     return _ParentWithOptional
 
@@ -84,7 +84,7 @@ def ParentWithForwardRef():
 @pytest.fixture()
 def ParentWithNonDiscriminatedUnion():
     class _ParentWithNonDiscriminatedUnion(vm.VizroBaseModel):
-        child: Union[ChildX, ChildY]
+        child: ChildX | ChildY
 
     return _ParentWithNonDiscriminatedUnion
 
@@ -219,12 +219,12 @@ class Model(vm.VizroBaseModel):
 class ModelWithFieldSetting(vm.VizroBaseModel):
     type: Literal["exclude_model"] = "exclude_model"
     title: str = Field(description="Title to be displayed.")
-    foo: Optional[str] = Field(default=None, description="Foo field.", validate_default=True)
+    foo: str | None = Field(default=None, description="Foo field.", validate_default=True)
 
     # Set a field with regular validator
     @field_validator("foo")
     @classmethod
-    def set_foo(cls, foo: Optional[str]) -> str:
+    def set_foo(cls, foo: str | None) -> str:
         return foo or "long-random-thing"
 
 
@@ -303,11 +303,11 @@ def page_builtin_actions():
 @pytest.fixture
 def page_two_captured_callables():
     @capture("graph")
-    def chart(data_frame, hover_data: Optional[list[str]] = None):
+    def chart(data_frame, hover_data: list[str] | None = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     @capture("graph")
-    def chart2(data_frame, hover_data: Optional[list[str]] = None):
+    def chart2(data_frame, hover_data: list[str] | None = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     return vm.Page(
@@ -337,7 +337,7 @@ def chart_dynamic():
 @pytest.fixture
 def complete_dashboard():
     @capture("graph")
-    def chart(data_frame, hover_data: Optional[list[str]] = None):
+    def chart(data_frame, hover_data: list[str] | None = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     page = vm.Page(
@@ -635,7 +635,7 @@ class TestPydanticPython:
         # Test if captured callable is included correctly in output
         # Test if extra imports are included correctly in output (typing yes, pandas no)
         @capture("graph")
-        def chart(data_frame, hover_data: Optional[list[str]] = None):
+        def chart(data_frame, hover_data: list[str] | None = None):
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
         graph = vm.Graph(figure=chart(data_frame="iris"))

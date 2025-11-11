@@ -3,7 +3,7 @@ import logging
 import random
 import textwrap
 import uuid
-from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
+from typing import Annotated, Any, Union, cast, get_args, get_origin
 
 import autoflake
 import black
@@ -281,7 +281,7 @@ class VizroBaseModel(BaseModel):
         new_type.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
 
     def _to_python(
-        self, extra_imports: Optional[set[str]] = None, extra_callable_defs: Optional[set[str]] = None
+        self, extra_imports: set[str] | None = None, extra_callable_defs: set[str] | None = None
     ) -> str:
         """Converts a Vizro model to the Python code that would create it.
 

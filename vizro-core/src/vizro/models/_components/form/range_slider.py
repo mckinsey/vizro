@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -50,32 +50,27 @@ class RangeSlider(VizroBaseModel):
     """
 
     type: Literal["range_slider"] = "range_slider"
-    min: Optional[float] = Field(default=None, description="Start value for slider.")
-    max: Annotated[
-        Optional[float], AfterValidator(validate_max), Field(default=None, description="End value for slider.")
-    ]
+    min: float | None = Field(default=None, description="Start value for slider.")
+    max: Annotated[float | None, AfterValidator(validate_max), Field(default=None, description="End value for slider.")]
     step: Annotated[
-        Optional[float],
+        float | None,
         AfterValidator(validate_step),
         Field(default=None, description="Step-size for marks on slider."),
     ]
     marks: Annotated[
-        Optional[dict[float, str]],
+        dict[float, str] | None,
         AfterValidator(set_default_marks),
         Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for value field
-    value: Optional[  # type: ignore[valid-type]
-        Annotated[
-            conlist(float, min_length=2, max_length=2),
-            AfterValidator(validate_range_value),
-        ]
-    ] = Field(default=None)
+    value: Annotated[conlist(float, min_length=2, max_length=2), AfterValidator(validate_range_value)] | None = Field(
+        default=None
+    )
     title: str = Field(default="", description="Title to be displayed.")
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

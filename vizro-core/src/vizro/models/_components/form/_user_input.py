@@ -1,4 +1,4 @@
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -28,7 +28,7 @@ class UserInput(VizroBaseModel):
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
     title: str = Field(default="", description="Title to be displayed")
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

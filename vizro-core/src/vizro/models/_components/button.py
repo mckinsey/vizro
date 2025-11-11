@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional, Union
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -52,7 +52,7 @@ class Button(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         # AfterValidator(warn_description_without_title) is not needed here because either 'text' or 'icon' argument
         # is mandatory.
@@ -138,7 +138,7 @@ class Button(VizroBaseModel):
 
         return dbc.Button(**(defaults | self.extra))
 
-    def _build_description(self) -> list[Optional[Union[dbc.Tooltip, html.Span]]]:
+    def _build_description(self) -> list[dbc.Tooltip | html.Span | None]:
         """Conditionally returns the tooltip based on the provided `text` and `icon` arguments.
 
         If text='', the tooltip icon is omitted, and the tooltip text is shown when hovering over the button icon.

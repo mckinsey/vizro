@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
@@ -22,7 +22,7 @@ from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProper
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
-def set_variant(variant: Optional[Literal["plain", "filled", "outlined"]], info: ValidationInfo):
+def set_variant(variant: Literal["plain", "filled", "outlined"] | None, info: ValidationInfo):
     if variant is not None:
         return variant
     return "plain" if info.data["collapsed"] is None else "outlined"
@@ -64,15 +64,15 @@ class Container(VizroBaseModel):
         min_length=1,
     )
     title: str = Field(default="", description="Title of the `Container`")
-    layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    collapsed: Optional[bool] = Field(
+    layout: Annotated[LayoutType | None, AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    collapsed: bool | None = Field(
         default=None,
         description="Boolean flag that determines whether the container is collapsed on initial load. "
         "Set to `True` for a collapsed state, `False` for an expanded state. "
         "Defaults to `None`, meaning the container is not collapsible.",
     )
     variant: Annotated[
-        Optional[Literal["plain", "filled", "outlined"]],
+        Literal["plain", "filled", "outlined"] | None,
         AfterValidator(set_variant),
         Field(
             default=None,
@@ -84,7 +84,7 @@ class Container(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

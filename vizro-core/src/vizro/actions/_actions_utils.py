@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from copy import deepcopy
-from typing import Any, Literal, Optional, TypedDict, Union, cast
+from typing import Any, Literal, TypedDict, Union, cast
 
 import pandas as pd
 
@@ -43,7 +43,7 @@ class CallbackTriggerDict(TypedDict):
 
     id: ModelID
     property: Literal["clickData", "value", "n_clicks", "active_cell", "derived_viewport_data"]
-    value: Optional[Any]
+    value: Any | None
     str_id: str
     triggered: bool
 
@@ -118,7 +118,7 @@ def _apply_filter_interaction(
     return data_frame
 
 
-def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
+def _validate_selector_value_none(value: SingleValueType | MultiValueType) -> ValidatedNoneValueType:
     if value == NONE_OPTION:
         return None
     if isinstance(value, list) and len(value):
