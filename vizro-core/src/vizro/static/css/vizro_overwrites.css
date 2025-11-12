@@ -5,19 +5,21 @@ for a pure Dash app.
 All the HEX values starting with --text-code are taken from the Github code highlighting style. */
 
 :root {
+  --Dash-Spacing: 4px;
+  --Dash-Stroke-Strong: var(--bs-border-color);
+  --Dash-Stroke-Weak: var(--bs-border-color-translucent);
+  --Dash-Fill-Interactive-Strong: var(--bs-primary-text-emphasis);
+  --Dash-Fill-Weak: var(--bs-primary-bg-subtle);
+  --Dash-Fill-Inverse-Strong: var(--bs-secondary-bg);
   --Dash-Text-Primary: var(--bs-primary);
   --Dash-Text-Strong: var(--bs-primary-text-emphasis);
   --Dash-Text-Disabled: var(--bs-tertiary-color);
-  --Dash-Stroke-Strong: var(--bs-border-color);
-  --Dash-Stroke-Weak: var(--bs-border-color-translucent);
-  --Dash-Fill-Weak: var(--bs-primary-bg-subtle);
-  --Dash-Fill-Disabled: var(--bs-tertiary-color);
-  --Dash-Fill-Primary-Active: var(--bs-primary);
   --Dash-Fill-Primary-Hover: var(--bs-primary-text-emphasis);
-  --Dash-Fill-Interactive-Strong: var(--bs-primary-text-emphasis);
-  --Dash-Fill-Inverse-Strong: var(--bs-secondary-bg);
+  --Dash-Fill-Primary-Active: var(--bs-primary);
+  --Dash-Fill-Disabled: var(--bs-primary-bg-subtle);
+  --Dash-Shading-Strong: var(--bs-box-shadow);
+  --Dash-Shading-Weak: var(--bs-box-shadow-sm);
   --Dash-Border-Radius: var(--bs-border-radius);
-
 }
 
 [data-bs-theme="dark"] {
