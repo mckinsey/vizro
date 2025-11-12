@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from dash import dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, conlist, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -123,25 +123,6 @@ class RangeSlider(VizroBaseModel):
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, min, max):
-        output = [
-            Output(self.id, "value", allow_duplicate=True),
-            Output(f"{self.id}_start_value", "value"),
-            Output(f"{self.id}_end_value", "value"),
-        ]
-        inputs = [
-            Input(self.id, "value"),
-            Input(f"{self.id}_start_value", "value"),
-            Input(f"{self.id}_end_value", "value"),
-            State(self.id, "id"),
-        ]
-
-        clientside_callback(
-            ClientsideFunction(namespace="range_slider", function_name="update_range_slider_values"),
-            output=output,
-            inputs=inputs,
-            prevent_initial_call=True,
-        )
-
         current_value = self.value or [min, max]
 
         defaults = {
@@ -159,47 +140,12 @@ class RangeSlider(VizroBaseModel):
         description = self.description.build().children if self.description else [None]
         return html.Div(
             children=[
-                html.Div(
-                    children=[
-                        dbc.Label(
-                            children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
-                            html_for=self.id,
-                        )
-                        if self.title
-                        else None,
-                        html.Div(
-                            [
-                                dcc.Input(
-                                    id=f"{self.id}_start_value",
-                                    type="number",
-                                    placeholder="min",
-                                    min=min,
-                                    max=max,
-                                    step=self.step,
-                                    value=current_value[0],
-                                    persistence=True,
-                                    persistence_type="session",
-                                    className="slider-text-input-field",
-                                ),
-                                html.Span("-", className="slider-text-input-range-separator"),
-                                dcc.Input(
-                                    id=f"{self.id}_end_value",
-                                    type="number",
-                                    placeholder="max",
-                                    min=min,
-                                    max=max,
-                                    step=self.step,
-                                    value=current_value[1],
-                                    persistence=True,
-                                    persistence_type="session",
-                                    className="slider-text-input-field",
-                                ),
-                            ],
-                            className="slider-text-input-container",
-                        ),
-                    ],
-                    className="slider-label-input",
-                ),
+                dbc.Label(
+                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
+                    html_for=self.id,
+                )
+                if self.title
+                else None,
                 dcc.RangeSlider(**(defaults | self.extra)),
             ]
         )
