@@ -256,7 +256,7 @@ Although these services work in slightly different ways, there are some general 
     - Optional: set [advanced configuration](#advanced-dockerfile-configuration), for example to serve assets using a Content Delivery Network (CDN).
 1. Optional: configure further settings on your hosting provider, for example to make your dashboard private or to configure computing resources.
 
-The method for providing instructions on how to handle your app varies between hosting providers. For example, on Render there are [build and deploy commands](https://render.com/docs/deploys); on Heroku and Dash Enterprise there is a [Procfile](https://devcenter.heroku.com/articles/procfile). One common cross-platform way to configure an environment is using a Dockerfile. This is used by both Hugging Face and Ploomber Cloud among others. See the [section on Dockerfile](#dockerfile) for more information.
+The method for providing instructions on how to handle your app varies between hosting providers. For example, on Render there are [build and deploy commands](https://render.com/docs/deploys); on Heroku and Dash Enterprise there is a [Procfile](https://devcenter.heroku.com/articles/procfile). One common cross-platform way to configure an environment is using a Dockerfile. This is used by Hugging Face; see the [section on Dockerfile](#dockerfile) for more information.
 
 #### Dependencies
 
@@ -275,11 +275,11 @@ Although this process for handling dependencies is sufficient to get started wit
 gunicorn app:app --workers 4
 ```
 
-The Gunicorn documentation gives [commonly used arguments](https://docs.gunicorn.org/en/stable/run.html#commands) and advice for setting them. Other than `workers`, the most common argument to specify is `bind`, which makes your app accessible. This is often set as `--bind 0.0.0.0:<port>`. Your hosting provider needs to tell you what the correct port to use is. For example, on Hugging Face it is 7860 and on Ploomber Cloud it is 80.
+The Gunicorn documentation gives [commonly used arguments](https://docs.gunicorn.org/en/stable/run.html#commands) and advice for setting them. Other than `workers`, the most common argument to specify is `bind`, which makes your app accessible. This is often set as `--bind 0.0.0.0:<port>`. Your hosting provider needs to tell you what the correct port to use is. For example, on Hugging Face it is 7860.
 
 #### Dockerfile
 
-A [Dockerfile](https://docs.docker.com/build/concepts/dockerfile/) contains instructions to build a [container image](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/). You can think of it as a way to give in a single file all the instructions that your hosting provider needs to deploy your app. This includes both the [installation of dependencies](#dependencies) and [starting the app with Gunicorn](#gunicorn). A Dockerfile is used by many hosting providers, including Hugging Face and Ploomber Cloud.
+A [Dockerfile](https://docs.docker.com/build/concepts/dockerfile/) contains instructions to build a [container image](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/). You can think of it as a way to give in a single file all the instructions that your hosting provider needs to deploy your app. This includes both the [installation of dependencies](#dependencies) and [starting the app with Gunicorn](#gunicorn). A Dockerfile is used by many hosting providers, including Hugging Face.
 
 Here is an annotated [example Dockerfile](https://huggingface.co/spaces/vizro/demo-first-dashboard/blob/main/Dockerfile) that we use in our simple Hugging Face demo. It demonstrates the key Dockerfile instructions needed to deploy Vizro and should serve as a good starting point for your own Dockerfile.
 
