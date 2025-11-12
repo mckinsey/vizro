@@ -2,10 +2,9 @@
 
 import pandas as pd
 import plotly.graph_objects as go
-from vizro import Vizro
-
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models._components.form._text_area import TextArea
 from vizro.models._components.form._user_input import UserInput
