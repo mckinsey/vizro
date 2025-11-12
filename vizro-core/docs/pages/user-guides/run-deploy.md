@@ -144,7 +144,6 @@ The below table is a **TLDR** that provides an overview of the most common optio
 | Method                                         | Free Tier         | Some key features (not exhaustive)                                                                                                                                     | Requires                                                      |
 | ---------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | [Hugging Face](#deploy-to-hugging-face)        | :simple-ticktick: | Easy cloning of apps, Gallery features, easy access to HF model hub                                                                                                    | Hugging Face account                                          |
-| [Ploomber Cloud](#deploy-to-ploomber-cloud)    | :simple-ticktick: | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier                                                                   | Ploomber Account                                              |
 | [Dash Enterprise](#deploy-via-dash-enterprise) | :x:               | Enterprise deployment solution with many more features going above and beyond                                                                                          | Dash Enterprise subscription                                  |
 | [PyCafe](#deploy-via-pycafe)                   | :simple-ticktick: | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases | No requirements (in snippet mode), otherwise a PyCafe account |
 
@@ -172,10 +171,7 @@ That's it! Your app is now suitable for deployment to production.
 
     If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a backend that supports multiple processes.
 
-Now that your `app.py` file is ready, you need to choose a _hosting provider_. There are many services out there with different offerings, but for most users we recommend two in particular: [Hugging Face](https://huggingface.co/) and [Ploomber Cloud](https://docs.cloud.ploomber.io/). These both have a free tier with the possibility of paying more for extras, and they are both quick and easy to get started with. We give step-by-step instructions on how to use each:
-
-- [Deploy a Vizro dashboard to Hugging Face](#deploy-to-hugging-face)
-- [Deploy a Vizro dashboard to Ploomber Cloud](#deploy-to-ploomber-cloud)
+Now that your `app.py` file is ready, you need to choose a _hosting provider_. There are many services out there with different offerings, but for most users we recommend [Hugging Face](https://huggingface.co/). It has a free tier with the possibility of paying more for extras, and is quick and easy to get started with. We give step-by-step instructions on how to use it below.
 
 Enterprise users should look at our guidance for [deploying Vizro dashboards on Dash Enterprise](#deploy-via-dash-enterprise). We also discuss the [general principles for deploying a Vizro app](#general-principles-when-deploying-vizro-dashboards) that apply to all hosting providers.
 
