@@ -3,6 +3,23 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
 for a pure Dash app.
 
 All the HEX values starting with --text-code are taken from the Github code highlighting style. */
+
+:root {
+  --Dash-Text-Primary: var(--bs-primary);
+  --Dash-Text-Strong: var(--bs-primary-text-emphasis);
+  --Dash-Text-Disabled: var(--bs-tertiary-color);
+  --Dash-Stroke-Strong: var(--bs-border-color);
+  --Dash-Stroke-Weak: var(--bs-border-color-translucent);
+  --Dash-Fill-Weak: var(--bs-primary-bg-subtle);
+  --Dash-Fill-Disabled: var(--bs-tertiary-color);
+  --Dash-Fill-Primary-Active: var(--bs-primary);
+  --Dash-Fill-Primary-Hover: var(--bs-primary-text-emphasis);
+  --Dash-Fill-Interactive-Strong: var(--bs-primary-text-emphasis);
+  --Dash-Fill-Inverse-Strong: var(--bs-secondary-bg);
+  --Dash-Border-Radius: var(--bs-border-radius);
+
+}
+
 [data-bs-theme="dark"] {
   --left-side-bg: var(--bs-tertiary-bg);
   --right-side-bg-iterated: var(--bs-body-bg);
