@@ -1,14 +1,14 @@
 .dash-dropdown {
-  border-radius: var(--bs-border-radius);
   background: var(--bs-primary-bg-subtle);
   border: 0;
+  border-radius: var(--bs-border-radius);
   box-shadow: var(--bs-box-shadow-sm);
 }
 
 .dash-dropdown-search-container {
-  border-radius: var(--bs-border-radius);
-  border: 1px solid var(--bs-border-color);
   background: var(--bs-primary-bg-subtle);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
 }
 
 .dash-dropdown-search-container:focus-within {
@@ -16,19 +16,19 @@
 }
 
 .dash-dropdown-value > * {
-  background: var(--text-primary-inverted);
-  padding: 12px 8px;
   align-items: center;
+  background: var(--text-primary-inverted);
+  box-shadow: var(--bs-box-shadow);
+  color: var(--bs-primary);
   display: inline-flex;
   height: 24px;
-  color: var(--bs-primary);
-  box-shadow: var(--bs-box-shadow);
+  padding: 12px 8px;
 }
 
 .dash-dropdown-content {
-  border-radius: var(--bs-border-radius);
   background: var(--bs-primary-bg-subtle);
   border: 0;
+  border-radius: var(--bs-border-radius);
   box-shadow: var(--bs-box-shadow-sm);
 }
 
@@ -62,9 +62,9 @@
 }
 
 .dash-slider-thumb {
+  background-color: var(--text-primary-inverted);
   border-color: var(--bs-primary);
   border-width: 4px;
-  background-color: var(--text-primary-inverted);
   height: 8px;
   width: 8px;
 }
