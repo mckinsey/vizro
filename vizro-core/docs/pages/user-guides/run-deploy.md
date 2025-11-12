@@ -213,21 +213,6 @@ In addition to `app.py`, your Space contains a few other files:
 
     If you'd like to show your Vizro app off to the community then you can add it to our [Vizro dashboard community gallery](https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de). Notify us on GitHub in case you are interested.
 
-### Deploy to Ploomber Cloud
-
-[Ploomber Cloud](https://ploomber.io/) is a platform specifically built to deploy data visualization apps built using frameworks such as Vizro. Its free tier offers an easy deployment by drag and drop, the [Ploomber Cloud CLI](https://docs.cloud.ploomber.io/en/latest/user-guide/cli.html), or `git push`. Paid plans include features such as a custom domains, enterprise-grade authentication, user analytics and more powerful computing resources.
-
-The [Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html) contains detailed instructions on how to deploy Vizro on Ploomber Cloud. In short, the process is as follows:
-
-1. [Sign up for a Ploomber Cloud account](https://platform.ploomber.io/register).
-1. Modify the last line of your `app.py` to [expose the Vizro `app` object](#overview) as `app = Vizro().build(dashboard)`.
-1. Create a `requirements.txt` file to give your Python package dependencies. This should include `vizro` and `gunicorn`. See our [section on dependencies](#dependencies) for more information.
-1. Create a `Dockerfile` by copying the [example given in the Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html#application-setup). See our [section on Dockerfiles](#dockerfile) for more information.
-1. Compress your `app.py`, `requirements.txt` and `Dockerfile` into a single zip file.
-1. Upload the zip file to Ploomber Cloud.
-
-You can find a [similar guide on the Ploomber Cloud Blog](https://ploomber.io/blog/vizro-deploy).
-
 ### Deploy via Dash Enterprise
 
 Since a Vizro app is a Dash app under the hood, they can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps.
