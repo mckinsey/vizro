@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from importlib.metadata import version
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 def catalog_from_project(
-    project_path: Union[str, Path], env: Optional[str] = None, extra_params: Optional[dict[str, Any]] = None
+    project_path: str | Path, env: str | None = None, extra_params: dict[str, Any] | None = None
 ) -> CatalogProtocol:
     """Return the Kedro Data Catalog associated to a Kedro project.
 
@@ -42,7 +42,7 @@ def catalog_from_project(
         return session.load_context().catalog
 
 
-def pipelines_from_project(project_path: Union[str, Path]) -> dict[str, Pipeline]:
+def pipelines_from_project(project_path: str | Path) -> dict[str, Pipeline]:
     """Return the Kedro Pipelines associated to a Kedro project.
 
     Args:

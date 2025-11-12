@@ -1,6 +1,6 @@
 import warnings
 from collections.abc import Generator
-from typing import Any, Optional, Union
+from typing import Any
 
 from typing_extensions import TypeIs
 
@@ -29,11 +29,11 @@ SELECTORS: dict[str, tuple[type, ...]] = {
 
 
 # Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
-def _is_numerical_temporal_selector(x: object) -> TypeIs[Union[RangeSlider, Slider, DatePicker]]:
+def _is_numerical_temporal_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
     return isinstance(x, SELECTORS["numerical"] + SELECTORS["temporal"])
 
 
-def _is_categorical_selector(x: object) -> TypeIs[Union[Checklist, Dropdown, RadioItems]]:
+def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
     return isinstance(x, SELECTORS["categorical"])
 
 
@@ -54,7 +54,7 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
 #  This would make the following renaming logical: model_manager._get_models -> model_manager._get_model_children.
 #  These two new methods could have the same signature.
 #  Consider adding the parent_model_id to the VizroBaseModel and use that to find the parent model more easily.
-def _get_control_parent(control: ControlType) -> Optional[VizroBaseModel]:
+def _get_control_parent(control: ControlType) -> VizroBaseModel | None:
     """Get the parent model of a control."""
     # Return None if the control is not part of any page.
     if (page := model_manager._get_model_page(model=control)) is None:

@@ -1535,7 +1535,7 @@ df = pd.DataFrame({"text": text * 2})
 
 @capture("figure")
 def multiple_cards(
-        data_frame: pd.DataFrame, n_rows: Optional[int] = 1
+        data_frame: pd.DataFrame, n_rows: int = 1
 ) -> html.Div:
     texts = data_frame.head(n_rows)["text"]
     return html.Div(

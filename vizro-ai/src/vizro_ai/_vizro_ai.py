@@ -1,6 +1,5 @@
 import logging
 from functools import wraps
-from typing import Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -39,7 +38,7 @@ print(res.code_explanation)"""
 class VizroAI:
     """Vizro-AI main class."""
 
-    def __init__(self, model: Optional[Union[BaseChatModel, str]] = None):
+    def __init__(self, model: BaseChatModel | str | None = None):
         """Initialization of VizroAI.
 
         Args:
@@ -66,7 +65,7 @@ class VizroAI:
         return_elements: bool = False,
         validate_code: bool = True,
         _minimal_output: bool = False,
-    ) -> Union[go.Figure, ChartPlan]:
+    ) -> go.Figure | ChartPlan:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
         Args:
@@ -104,7 +103,7 @@ class VizroAI:
         dfs: list[pd.DataFrame],
         user_input: str,
         return_elements: bool = False,
-    ) -> Union[DashboardOutputs, vm.Dashboard]:
+    ) -> DashboardOutputs | vm.Dashboard:
         """Creates a Vizro dashboard using english descriptions.
 
         Args:

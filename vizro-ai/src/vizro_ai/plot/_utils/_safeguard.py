@@ -3,12 +3,11 @@
 import ast
 import builtins
 import re
-from typing import Union
 
 from ._constants import REDLISTED_CLASS_METHODS, REDLISTED_DATA_HANDLING, WHITELISTED_BUILTINS, WHITELISTED_PACKAGES
 
 
-def _check_imports(node: Union[ast.Import, ast.ImportFrom]):
+def _check_imports(node: ast.Import | ast.ImportFrom):
     """Check if imports are whitelisted."""
     if isinstance(node, ast.Import):
         module = node.names[0].name

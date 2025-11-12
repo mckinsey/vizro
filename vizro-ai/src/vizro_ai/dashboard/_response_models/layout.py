@@ -1,7 +1,6 @@
 """Layout plan model."""
 
 import logging
-from typing import Optional
 
 import vizro.models as vm
 from pydantic import BaseModel, Field, ValidationError
@@ -52,7 +51,7 @@ class LayoutPlan(BaseModel):
         """,
     )
 
-    def create(self, component_ids: list[str]) -> Optional[vm.Layout]:
+    def create(self, component_ids: list[str]) -> vm.Layout | None:
         """Create the layout."""
         if not self.layout_grid_template_areas:
             return None

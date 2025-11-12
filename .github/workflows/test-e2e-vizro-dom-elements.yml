@@ -14,7 +14,7 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
 
 jobs:
   test-e2e-vizro-dom-elements:
@@ -27,10 +27,10 @@ jobs:
         group: [1, 2, 3]
         label: [upper bounds, lower bounds]
         include:
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
             label: upper bounds
-          - python-version: "3.9"
+          - python-version: "3.10"
             hatch-env: lower-bounds
             label: lower bounds
 
@@ -42,10 +42,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # Remove the `click` installation constraint once the
-      # https://github.com/pypa/hatch/issues/2050 is resolved.
       - name: Install Hatch
-        run: pip install hatch "click<8.3.0"
+        run: pip install hatch
 
       - name: Install pixelmatch
         run: sudo npm install pixelmatch -g

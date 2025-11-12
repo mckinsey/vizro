@@ -1,7 +1,7 @@
 import logging
 import warnings
 from functools import wraps
-from typing import Any, Union
+from typing import Any
 
 from dash import html
 from dash.development.base_component import Component
@@ -13,7 +13,7 @@ from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 logger = logging.getLogger(__name__)
 
 
-def _all_hidden(components: Union[Component, list[Component]]):
+def _all_hidden(components: Component | list[Component]):
     """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
     if isinstance(components, Component):
         components = [components]

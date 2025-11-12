@@ -8,10 +8,11 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12"
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "pandas",
@@ -31,7 +32,7 @@ dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro_ai"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 anthropic = ["langchain-anthropic"]  # TODO: decide if we want to use this

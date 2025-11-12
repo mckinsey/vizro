@@ -7,8 +7,9 @@ import json
 import logging
 import os
 import warnings
+from collections.abc import Callable
 from functools import partial
-from typing import Any, Callable, Optional, Union
+from typing import Any
 
 import pandas as pd
 import wrapt
@@ -61,7 +62,7 @@ class _DynamicData:
 
     def __init__(self, load_data: pd_DataFrameCallable):
         self.__load_data: pd_DataFrameCallable = load_data
-        self.timeout: Optional[int] = None
+        self.timeout: int | None = None
         # We might also want a self.cache_arguments dictionary in future that allows user to customize more than just
         # timeout, but no rush to do this since other arguments are unlikely to be useful.
 
@@ -139,7 +140,7 @@ class DataManager:
     """
 
     def __init__(self):
-        self.__data: dict[DataSourceName, Union[_DynamicData, _StaticData]] = {}
+        self.__data: dict[DataSourceName, _DynamicData | _StaticData] = {}
         self._frozen_state = False
         self.cache = Cache(config={"CACHE_TYPE": "NullCache"})
         # In future, possibly we will accept just a config dict. Would need to work out whether to handle merging with
@@ -151,7 +152,7 @@ class DataManager:
         # _cache = property(fset=__set_cache)
 
     @_state_modifier
-    def __setitem__(self, name: DataSourceName, data: Union[pd.DataFrame, pd_DataFrameCallable]):
+    def __setitem__(self, name: DataSourceName, data: pd.DataFrame | pd_DataFrameCallable):
         """Adds `data` to the `DataManager` with key `name`."""
         if callable(data):
             # __qualname__ is required by flask-caching (even if we specify our own make_name) but
@@ -192,7 +193,7 @@ class DataManager:
                 f"Data source {name} must be a pandas DataFrame or function that returns a pandas DataFrame."
             )
 
-    def __getitem__(self, name: DataSourceName) -> Union[_DynamicData, _StaticData]:
+    def __getitem__(self, name: DataSourceName) -> _DynamicData | _StaticData:
         """Returns the `_DynamicData` or `_StaticData` object associated with `name`."""
         try:
             return self.__data[name]

@@ -1,5 +1,3 @@
-from typing import Optional, Union
-
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
@@ -42,7 +40,7 @@ DEFAULT_TEMPERATURE = 0
 model_to_vendor = {model: key for key, models in SUPPORTED_MODELS.items() for model in models}
 
 
-def _get_llm_model(model: Optional[Union[BaseChatModel, str]] = None) -> BaseChatModel:
+def _get_llm_model(model: BaseChatModel | str | None = None) -> BaseChatModel:
     """Fetches and initializes an instance of the LLM.
 
     Args:

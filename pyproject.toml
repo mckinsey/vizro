@@ -73,24 +73,21 @@ select = [
   "PD",  # pandas-vet for linting pandas code
   "UP",  # pyupgrade for upgrading syntax to new Python versions
   "PERF",  # perflint for performance anti-patterns
-  "FURB"  # refurb for reburbishing and modernizing
+  "FURB",  # refurb for reburbishing and modernizing
+  "S"  # flake8-bandit for security
 ]
 
 [tool.ruff.lint.per-file-ignores]
 # Tests can use magic values, assertions, and relative imports, ignore missing docstrings,
 # compare to empty string
-"**/tests/**" = ["PLR2004", "S101", "TID252", "D100", "D101", "D102", "D103", "PLC1901", "RUF012"]
+"**/tests/**" = ["PLR2004", "S", "TID252", "D100", "D101", "D102", "D103", "PLC1901", "RUF012"]
 # Ignore import violations in all __init__.py files
 "__init__.py" = ["E402", "F401"]
+# Ignore secutiy violations in tools.
+"tools/**" = ["S"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.ruff.lint.pylint]
 max-args = 6
-
-[tool.ruff.lint.pyupgrade]
-# Don't do PEP 604 rewrites (e.g. Union[str, int] -> str | int), even in files that import
-# `from __future__ import annotations`. This is needed since pydantic relies on the runtime behavior in Python 3.9.
-# When we drop Python 3.9 we can remove this setting.
-keep-runtime-typing = true

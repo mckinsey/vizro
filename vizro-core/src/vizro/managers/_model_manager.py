@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Collection, Generator, Iterable, Mapping
-from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
+from typing import TYPE_CHECKING, TypeVar, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
@@ -62,8 +62,8 @@ class ModelManager:
 
     def _get_models(
         self,
-        model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
-        root_model: Optional[VizroBaseModel] = None,
+        model_type: type[Model] | tuple[type[Model], ...] | type[FIGURE_MODELS] | None = None,
+        root_model: VizroBaseModel | None = None,
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 

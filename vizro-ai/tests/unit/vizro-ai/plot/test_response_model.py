@@ -172,7 +172,7 @@ def custom_chart(data_frame):
     fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
     return "foo"
         """,
-                ValueError,
+                TypeError,
                 "Expected chart code to return a plotly go.Figure object, but got",
             ),
         ],
