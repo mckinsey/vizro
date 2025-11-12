@@ -3,21 +3,22 @@
 from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
+from vizro.tables import dash_ag_grid
 
+gapminder = px.data.gapminder()
+gapminder_2007 = px.data.gapminder().query("year == 2007")
 page = vm.Page(
-    title="Example buttons",
-    layout=vm.Flex(direction="row"),
+    title="AG Grid",
     components=[
-        vm.Button(text="Download", variant="plain"),
-        vm.Button(text="Download", icon="Download", variant="plain"),
-        vm.Button(text="", icon="Download", variant="plain"),
-        vm.Button(text="Download", variant="filled"),
-        vm.Button(text="Download", icon="Download", variant="filled"),
-        vm.Button(text="", icon="Download", variant="filled"),
-        vm.Button(text="Download", variant="outlined"),
-        vm.Button(text="Download", icon="Download", variant="outlined"),
-        vm.Button(text="", icon="Download", variant="outlined"),
+        vm.AgGrid(
+            figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
+            title="Gapminder Data Insights",
+            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+        ),
+        # vm.Card(text="Placeholder")
     ],
+    layout=vm.Flex()
 )
 
 dashboard = vm.Dashboard(pages=[page])
