@@ -301,7 +301,7 @@ class TestDashboardBuild:
         dashboard = vm.Dashboard(pages=[page_1, page_2])
         dashboard.pre_build()
 
-        # Test application of template_dashboard_overrides.
+        # Test application of dashboard overwrites
         dashboard_vizro_dark = pio.templates["vizro_dark"]
         dashboard_vizro_dark.layout.update(
             geo_bgcolor="rgba(0, 0, 0, 0)",

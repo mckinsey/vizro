@@ -14,6 +14,9 @@ from vizro.models.types import ActionsType, _IdProperty
 class Button(VizroBaseModel):
     """Component provided to `Page` to trigger any defined `action` in `Page`.
 
+    Abstract: Usage documentation
+        [How to use buttons](../user-guides/button.md)
+
     Args:
         type (Literal["button"]): Defaults to `"button"`.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
@@ -121,10 +124,11 @@ class Button(VizroBaseModel):
             if self.icon
             else None,
         )
+        text = html.Span(self.text, className="btn-text") if self.text else None
 
         defaults = {
             "id": self.id,
-            "children": html.Span([*icon, self.text, *description], className="btn-text"),
+            "children": [*icon, text, *description],
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
