@@ -1,26 +1,20 @@
-"""Dev app to try things out."""
-
-from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
+from vizro import Vizro
 
-page = vm.Page(
-    title="Example buttons",
-    layout=vm.Flex(direction="row"),
+df = px.data.iris()
+
+page_1 = vm.Page(
+    title="BUG theme switch doesn't work with Flex layout",
+    layout=vm.Flex(),
     components=[
-        vm.Button(text="Download", variant="plain"),
-        vm.Button(text="Download", icon="Download", variant="plain"),
-        vm.Button(text="", icon="Download", variant="plain"),
-        vm.Button(text="Download", variant="filled"),
-        vm.Button(text="Download", icon="Download", variant="filled"),
-        vm.Button(text="", icon="Download", variant="filled"),
-        vm.Button(text="Download", variant="outlined"),
-        vm.Button(text="Download", icon="Download", variant="outlined"),
-        vm.Button(text="", icon="Download", variant="outlined"),
+        vm.Graph(figure=px.scatter(data_frame=df, x="sepal_width", y="sepal_length")),
+        vm.Graph(figure=px.scatter(data_frame=df.head(10), x="sepal_width", y="sepal_length")),
+        vm.Card(text="test"),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page_1])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
