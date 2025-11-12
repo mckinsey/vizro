@@ -7,10 +7,10 @@ from .colors import colors
 qualitative = [
     colors.cyan,
     colors.orange,
-    colors.dark_purple,
+    colors.indigo,
     colors.red,
     colors.teal,
-    colors.amber,
+    colors.yellow,
     colors.green,
     colors.purple,
     colors.pink,

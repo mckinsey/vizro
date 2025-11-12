@@ -94,10 +94,10 @@ def generate_colors_image(output_path):
         "Qualitative": [
             "cyan",
             "orange",
-            "dark_purple",
+            "indigo",
             "red",
             "teal",
-            "amber",
+            "yellow",
             "green",
             "purple",
             "pink",

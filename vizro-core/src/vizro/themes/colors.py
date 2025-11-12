@@ -7,10 +7,10 @@ colors = SimpleNamespace(
     # Qualitative
     cyan="#00B4FF",
     orange="#FF9222",
-    dark_purple="#3949AB",
+    indigo="#3949AB",
     red="#FF5267",
     teal="#08BDBA",
-    amber="#FDC935",
+    yellow="#FDC935",
     green="#689F38",
     purple="#976FD1",
     pink="#F781BF",
