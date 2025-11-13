@@ -1,4 +1,4 @@
-"""Built-in table functions, typically aliased as `vt` using `import vizro.tables as vt`.
+"""Built-in table functions.
 
 Abstract: Usage documentation
     [How to use tables](../user-guides/table.md)

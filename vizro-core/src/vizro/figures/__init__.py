@@ -1,4 +1,4 @@
-"""Built-in figure functions, typically aliased as `vf` using `import vizro.figures as vf`.
+"""Built-in figure functions.
 
 Abstract: Usage documentation
     [How to use figures](../user-guides/figure.md)

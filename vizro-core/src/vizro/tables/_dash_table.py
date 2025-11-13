@@ -26,9 +26,9 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataT
     Example:
         ```python
         import vizro.models as vm
-        import vizro.tables as vt
+        from vizro.tables import dash_data_table
 
-        table = vm.Table(figure=vt.dash_data_table(...))
+        table = vm.Table(figure=dash_data_table(...))
         ```
     """
     defaults = {

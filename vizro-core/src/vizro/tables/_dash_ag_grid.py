@@ -65,9 +65,9 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
     Example:
         ```python
         import vizro.models as vm
-        import vizro.tables as vt
+        from vizro.tables import dash_ag_grid
 
-        ag_grid = vm.AgGrid(figure=vt.dash_ag_grid(...))
+        ag_grid = vm.AgGrid(figure=dash_ag_grid(...))
         ```
     """
     defaults = {

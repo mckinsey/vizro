@@ -9,7 +9,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import dash_table, dcc, get_asset_url, html
 from vizro import Vizro
-from vizro.actions import export_data
+import vizro.actions as va
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
@@ -277,7 +277,7 @@ button = vm.Page(
         ),
         vm.Button(
             text="Export data",
-            actions=export_data(),
+            actions=va.export_data(),
         ),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
@@ -504,7 +504,7 @@ tooltip = vm.Page(
         ),
         vm.Button(
             text="Export data",
-            actions=export_data(),
+            actions=va.export_data(),
             description="""
                 Use this button to export the filtered data from the Iris dataset.
             """,
@@ -878,7 +878,7 @@ export_data_action = vm.Page(
     components=[
         vm.Graph(figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species")),
         vm.Graph(figure=px.histogram(iris, x="petal_length", color="species")),
-        vm.Button(text="Export data", actions=export_data()),
+        vm.Button(text="Export data", actions=va.export_data()),
     ],
     controls=[vm.Filter(column="species")],
 )

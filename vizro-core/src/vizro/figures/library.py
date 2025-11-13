@@ -57,9 +57,9 @@ def kpi_card(
     Example:
         ```python
         import vizro.models as vm
-        import vizro.figures as vf
+        from vizro.figures import kpi_card
 
-        figure = vm.Figure(figure=vf.kpi_card(...))
+        figure = vm.Figure(figure=kpi_card(...))
         ```
     """
     title = title or f"{agg_func} {value_column}".title()
@@ -132,9 +132,9 @@ def kpi_card_reference(  # noqa: PLR0913
     Example:
         ```python
         import vizro.models as vm
-        import vizro.figures as vf
+        from vizro.figures import kpi_card_reference
 
-        figure = vm.Figure(figure=vf.kpi_card_reference(...))
+        figure = vm.Figure(figure=kpi_card_reference(...))
         ```
     """
     title = title or f"{agg_func} {value_column}".title()
