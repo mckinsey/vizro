@@ -10,7 +10,7 @@ from vizro.models._models_utils import _log_call
 
 
 class Flex(VizroBaseModel):
-    """Flex Container to place chart/components on the [`Page`][vizro.models.Page].
+    """Flex layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].
 
     Abstract: Usage documentation
         [How to use the Flex layout](../user-guides/layouts.md#flex-layout)

@@ -19,7 +19,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class DatePicker(VizroBaseModel):
-    """Temporal single/range option selector `DatePicker`.
+    """Temporal single/range option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 

@@ -9,7 +9,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import export_data
 from vizro.models import Action, Button, VizroBaseModel
-from vizro.models.types import CapturedCallable, _coerce_to_list, capture, validate_captured_callable
+from vizro.models.types import CapturedCallable, _coerce_to_list, capture, _validate_captured_callable
 
 
 def positional_only_function(a, /):
@@ -162,7 +162,7 @@ def invalid_decorated_graph_function():
 class ModelWithAction(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
     function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "action", "import_path": __name__})
-    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("function", mode="before")(_validate_captured_callable)
 
 
 class ModelWithActionDifferentImportPath(VizroBaseModel):
@@ -170,19 +170,19 @@ class ModelWithActionDifferentImportPath(VizroBaseModel):
     function: SkipJsonSchema[CapturedCallable] = Field(
         json_schema_extra={"mode": "action", "import_path": "different_import_path"}
     )
-    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("function", mode="before")(_validate_captured_callable)
 
 
 class ModelWithGraph(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
     function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "graph", "import_path": __name__})
-    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("function", mode="before")(_validate_captured_callable)
 
 
 class ModelWithInvalidModule(VizroBaseModel):
     # The import_path doesn't exist. This lets us also simulate importing the function from a different module.
     function: CapturedCallable = Field(json_schema_extra={"mode": "graph", "import_path": "invalid.module"})
-    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("function", mode="before")(_validate_captured_callable)
 
 
 class TestModelFieldPython:

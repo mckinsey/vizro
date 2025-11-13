@@ -20,7 +20,7 @@ def coerce_pages_type(pages: Any) -> dict[Any, Any]:
 
 
 class Accordion(VizroBaseModel):
-    """Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].
+    """Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation].
 
     Abstract: Usage documentation
         [How to use an accordion](../user-guides/navigation.md/#group-pages)

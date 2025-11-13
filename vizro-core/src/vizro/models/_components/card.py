@@ -12,7 +12,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Card(VizroBaseModel):
-    """Creates a card based on Markdown syntax.
+    """Card based on Markdown syntax.
 
     Abstract: Usage documentation
         [How to use cards](../user-guides/card.md)

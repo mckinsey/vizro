@@ -22,7 +22,7 @@ def coerce_pages_type(pages: Any) -> Any:
 
 
 class NavBar(VizroBaseModel):
-    """Navigation bar to be used as a nav_selector for `Navigation`.
+    """Navigation bar to be used as a `nav_selector` for `Navigation`.
 
     Abstract: Usage documentation
         [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)

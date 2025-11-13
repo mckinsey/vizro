@@ -5,12 +5,12 @@ from typing import Any, Optional, Union
 
 from pydantic import TypeAdapter, ValidationInfo
 
-from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, _OptionsDictType, OptionsType, SingleValueType
 
 
 def get_dict_options_and_default(
     options: OptionsType, multi: bool
-) -> tuple[list[OptionsDictType], Union[SingleValueType, MultiValueType]]:
+) -> tuple[list[_OptionsDictType], Union[SingleValueType, MultiValueType]]:
     """Gets list of full options and default value based on user input type of `options`."""
     # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
     dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]  # type: ignore[typeddict-item]
@@ -38,7 +38,7 @@ def validate_options_dict(cls, data: Any) -> Any:
 
     for option in data["options"]:
         if isinstance(option, dict):
-            TypeAdapter(OptionsDictType).validate_python(option)
+            TypeAdapter(_OptionsDictType).validate_python(option)
     return data
 
 

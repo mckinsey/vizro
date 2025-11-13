@@ -17,7 +17,7 @@ from vizro.models.types import ActionsType, OptionsType, SingleValueType, _IdPro
 
 
 class RadioItems(VizroBaseModel):
-    """Categorical single-option selector `RadioItems`.
+    """Categorical single-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].

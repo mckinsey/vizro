@@ -83,7 +83,7 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
 
 
 class Dashboard(VizroBaseModel):
-    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
+    """Dashboard that is supplied to [`Vizro.build`][vizro.Vizro.build].
 
     Abstract: Usage documentation
         [How to create a dashboard](../user-guides/dashboard.md)

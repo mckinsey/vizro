@@ -12,7 +12,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Button(VizroBaseModel):
-    """Component provided to `Page` to trigger any defined `action` in `Page`.
+    """Button that can trigger actions or navigate.
 
     Abstract: Usage documentation
         [How to use buttons](../user-guides/button.md)

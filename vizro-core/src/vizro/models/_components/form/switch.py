@@ -12,7 +12,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Switch(VizroBaseModel):
-    """Boolean single-option selector `Switch`.
+    """Boolean single-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 

@@ -22,7 +22,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Slider(VizroBaseModel):
-    """Numeric single-option selector `Slider`.
+    """Numeric single-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].

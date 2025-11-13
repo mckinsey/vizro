@@ -22,7 +22,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class RangeSlider(VizroBaseModel):
-    """Numeric multi-option selector `RangeSlider`.
+    """Numeric multi-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].

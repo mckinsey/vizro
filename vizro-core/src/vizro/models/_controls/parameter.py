@@ -54,7 +54,7 @@ def check_duplicate_parameter_target(targets):
 
 
 class Parameter(VizroBaseModel):
-    """Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].
+    """Alter the arguments supplied to any `targets`.
 
     Abstract: Usage documentation
         [How to use parameters](../user-guides/parameters.md)
