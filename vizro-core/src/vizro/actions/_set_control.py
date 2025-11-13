@@ -168,19 +168,46 @@ class set_control(_AbstractAction):
                 )
             self._same_page = False
 
-    def function(self, _trigger):
+    def function(self, _trigger, _vizro_controls_store):
+        from vizro.models import Checklist
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
-        if self._same_page:
-            # Returning a single element value works for both single and multi select selectors.
-            return value
+        # Lookup original control value in store.
+        original_value = _vizro_controls_store[self.control]["originalValue"]
 
-        page_path = model_manager._get_model_page(model_manager[self.control]).path
-        url_query_params = f"?{self.control}={_encode_to_base64(value)}"
-        return get_relative_path(page_path), url_query_params
+        # TODO NOW PP: Check whether this works
+        # For now I ignore the case it could be on a different page. Not sure what we should do in that case:
+        # reset control and move to another page or just do nothing? Probably treat the same as if it's same page.
+        if value is None:
+            # TODO NOW PP: What if button sets None?
+            # Uses signal from _get_value_from_trigger but could maybe just be done here.
+            print(f"reset control {self.control} to {original_value}")
+            if self._same_page:
+                return original_value
+            return self._get_cross_page_return_value(value=original_value)
+
+        # TODO NOW PP: Check button as a source. See how it handles [], None, 123, [1,2,3] as output.
+        selector = model_manager[self.control].selector
+        is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
+        if is_multi:
+            if not isinstance(value, list):
+                value = [value]
+            value = sorted(set(value))
+        else:
+            if isinstance(value, list):
+                value = value[0]
+
+        if self._same_page:
+            return value
+        return self._get_cross_page_return_value(value=value)
 
     @property
     def outputs(self):  # type: ignore[override]
         if self._same_page:
             return self.control
         return ["vizro_url.pathname", "vizro_url.search"]
+
+    def _get_cross_page_return_value(self, value):
+        page_path = model_manager._get_model_page(model_manager[self.control]).path
+        url_query_params = f"?{self.control}={_encode_to_base64(value)}"
+        return get_relative_path(page_path), url_query_params
