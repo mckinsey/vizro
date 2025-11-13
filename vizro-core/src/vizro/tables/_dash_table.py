@@ -14,21 +14,22 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataT
     """Standard `dash.dash_table.DataTable` with sensible defaults to be used in [`Table`][vizro.models.Table].
 
     Abstract: Usage documentation
-        [How to use tables](../user-guides/table.md)
+        [How to use Dash DataTable](../user-guides/table.md#dash-datatable)
 
     Args:
         data_frame: DataFrame containing the data to be displayed.
-        kwargs: Additional keyword arguments to be passed to the `dash_table.DataTable` component.
+        **kwargs: Additional keyword arguments to be passed to the `dash_table.DataTable` component.
 
     Returns:
         A `dash.dash_table.DataTable` component with sensible defaults.
 
-    Examples:
-        Wrap inside `vm.Table` to use as a component inside `vm.Page` or `vm.Container`.
-        >>> import vizro.models as vm
-        >>> from vizro.table import dash_data_table
-        >>> vm.Page(title="Page", components=[vm.Table(figure=dash_data_table(...))])
+    Example:
+        ```python
+        import vizro.models as vm
+        import vizro.tables as vt
 
+        table = vm.Table(figure=vt.dash_data_table(...))
+        ```
     """
     defaults = {
         "columns": [{"name": col, "id": col} for col in data_frame.columns],

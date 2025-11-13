@@ -1,4 +1,8 @@
-"""Contains KPI card functions."""
+"""Built-in figure functions, typically aliased as `vf` using `import vizro.figures as vf`.
+
+Abstract: Usage documentation
+    [How to use figures](../user-guides/figure.md)
+"""
 
 from vizro.models.types import capture
 
