@@ -37,10 +37,14 @@ def image_assertion(func):
 
 
 @image_assertion
-def test_kpi_indicators_page(dash_br):
+def test_kpi_indicators_page_theme_switch(dash_br):
     page_select(dash_br, page_name=cnst.KPI_INDICATORS_PAGE, graph_check=False)
+
     # check if first kpi card have correct value
     dash_br.wait_for_text_to_equal(kpi_card_path(), "67434")
+
+    # switch theme to dark (delay is needed to fully load the layout)
+    dash_br.multiple_click(theme_toggle_path(), 1, delay=1.5)
 
 
 @image_assertion
