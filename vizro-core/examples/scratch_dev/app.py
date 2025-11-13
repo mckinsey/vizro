@@ -15,16 +15,20 @@ import dash
 # TODO NOW PP:
 #  DONE: PoC
 #  DONE: Move implementation to vm.Graph and va.set_control
-#  0. See other TODOs NOW PP.
 #  1. Add support for area charts via `vizroSelectedData.data` dcc.Store
-#  2. Handle empty selection and (box select on nothing) and reseting selection (double click on the same point)
+#  DONE: 2. Handle empty selection and (box select on nothing) and resetting selection (double click on the same point)
+#    2.1. Do same for AgGrid a
+#    2.2. Add more examples in scratch
 #  3. Test with other graph.set_control.value syntax like "customdata[0]"
-#  4. See how to handle different control types (same and different page(add more drill-through examples))
-#  5. See how to handle resetting drill-through
+#  4. See how to handle different control types (same and different page)
+#    4.1. Add more drill-through examples in scratch
+#  DONE 5. See how to handle resetting drill-through
 #  6. See whether to return values[-1] instead of values[0] when many points selected but a single-select control is targeted.
-#  7. hrt + hrl
-#  8. Add more unit tests
-#  9. Add more e2e tests
+#  7. Test with Button(None, [], 123, [1,2,3], "123")
+#    7.1. Add more example in scratch
+#  8. hrt + hrl
+#  9. Add more unit tests
+#  10. Add more e2e tests
 
 
 page_1 = vm.Page(
