@@ -1,7 +1,6 @@
 # Models
 
 <!-- vale off -->
-API reference for all [`pydantic`](https://docs.pydantic.dev/latest/) models used.
 
 ::: vizro.models
     options:

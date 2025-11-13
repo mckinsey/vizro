@@ -75,16 +75,12 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
 
 
 class Filter(VizroBaseModel):
-    """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
+    """Filter the data supplied to `targets`.
 
     Abstract: Usage documentation
         [How to use filters](../user-guides/filters.md)
 
-    Examples:
-        >>> print(repr(Filter(column="species")))
-
     Args:
-        type (Literal["filter"]): Defaults to `"filter"`.
         column (str): Column of `DataFrame` to filter.
         targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
             on the page that use `column`. Defaults to `[]`.

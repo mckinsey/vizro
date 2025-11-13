@@ -10,13 +10,12 @@ from vizro.models._models_utils import _log_call
 
 
 class Flex(VizroBaseModel):
-    """Flex Container to place chart/components on the [`Page`][vizro.models.Page].
+    """Flex layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].
 
     Abstract: Usage documentation
         [How to use the Flex layout](../user-guides/layouts.md#flex-layout)
 
     Args:
-        type (Literal["flex"]): Defaults to `"flex"`.
         direction (Literal["row", "column"]): Sets the direction of the flex items inside the container. Options are
             `row` or `column`. Defaults to `column`.
         gap (str): Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.

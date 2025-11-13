@@ -12,7 +12,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Switch(VizroBaseModel):
-    """Boolean single-option selector `Switch`.
+    """Boolean single-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
@@ -20,7 +20,6 @@ class Switch(VizroBaseModel):
         [How to use boolean selectors](../user-guides/selectors.md/#boolean-selectors)
 
     Args:
-        type (Literal["switch"]): Defaults to `"switch"`.
         value (bool): Initial state of the switch. When `True`, the switch is "on".
             When `False`, the switch is "off". Defaults to `False`.
         title (str): Title/Label to be displayed to the right of the switch. Defaults to `""`.

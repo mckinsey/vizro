@@ -166,13 +166,12 @@ def _get_grid_lines(grid: list[list[int]]) -> tuple[list[ColRowGridLines], list[
 
 
 class Grid(VizroBaseModel):
-    """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
+    """Grid layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].
 
     Abstract: Usage documentation
         [How to use the Grid layout](../user-guides/layouts.md#grid-layout)
 
     Args:
-        type (Literal["grid"]): Defaults to `"grid"`.
         grid (list[list[int]]): Grid specification to arrange components on screen.
         row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
         col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.

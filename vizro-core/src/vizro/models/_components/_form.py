@@ -16,7 +16,6 @@ class Form(VizroBaseModel):
     """Container for all form components to be provided to [`Page`][vizro.models.Page].
 
     Args:
-        type (Literal["form"]): Defaults to `"form"`.
         components (list[FormComponentType]): List of components used in the form.
         layout (Optional[LayoutType]): Defaults to `None`.
 

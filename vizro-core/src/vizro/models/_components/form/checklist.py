@@ -21,16 +21,14 @@ from vizro.models.types import ActionsType, MultiValueType, OptionsType, _IdProp
 
 
 class Checklist(VizroBaseModel):
-    """Categorical multi-option selector `Checklist`.
+    """Categorical multi-option selector.
 
-    Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter].
+    Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
         [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
 
     Args:
-        type (Literal["checklist"]): Defaults to `"checklist"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.

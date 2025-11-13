@@ -25,7 +25,7 @@ from vizro.models.types import (
     OutputsType,
     _IdOrIdProperty,
     _IdProperty,
-    validate_captured_callable,
+    _validate_captured_callable,
 )
 
 logger = logging.getLogger(__name__)
@@ -420,7 +420,7 @@ class _BaseAction(VizroBaseModel):
 
 
 class Action(_BaseAction):
-    """Custom action to be inserted into `actions` of relevant component.
+    """Custom action to be inserted into `actions` of source component.
 
     Abstract: Usage documentation
         [How to create custom actions](../user-guides/custom-actions.md)
@@ -503,7 +503,7 @@ class Action(_BaseAction):
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy
 
-    _validate_function = field_validator("function", mode="before")(validate_captured_callable)
+    _validate_function = field_validator("function", mode="before")(_validate_captured_callable)
 
     @property
     def _parameters(self) -> set[str]:

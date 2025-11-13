@@ -12,13 +12,12 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Button(VizroBaseModel):
-    """Component provided to `Page` to trigger any defined `action` in `Page`.
+    """Button that can trigger actions or navigate.
 
     Abstract: Usage documentation
         [How to use buttons](../user-guides/button.md)
 
     Args:
-        type (Literal["button"]): Defaults to `"button"`.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
