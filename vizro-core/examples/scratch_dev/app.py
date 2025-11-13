@@ -15,6 +15,7 @@ import dash
 # TODO NOW PP:
 #  DONE: PoC
 #  DONE: Move implementation to vm.Graph and va.set_control
+#  0. Check when graph->sc->graph->sc->graph are chained.
 #  1. Add support for area charts via `vizroSelectedData.data` dcc.Store
 #  DONE: 2. Handle empty selection and (box select on nothing) and resetting selection (double click on the same point)
 #    2.1. Do same for AgGrid a
