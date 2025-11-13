@@ -18,7 +18,6 @@ class Button(VizroBaseModel):
         [How to use buttons](../user-guides/button.md)
 
     Args:
-        type (Literal["button"]): Defaults to `"button"`.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.

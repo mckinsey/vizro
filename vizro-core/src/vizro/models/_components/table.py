@@ -30,7 +30,6 @@ class Table(VizroBaseModel):
         [How to use tables](../user-guides/table.md)
 
     Args:
-        type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
         title (str): Title of the `Table`. Defaults to `""`.
         header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.

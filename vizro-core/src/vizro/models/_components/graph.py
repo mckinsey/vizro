@@ -35,7 +35,6 @@ class Graph(VizroBaseModel):
         [How to use graphs](../user-guides/graph.md)
 
     Args:
-        type (Literal["graph"]): Defaults to `"graph"`.
         figure (CapturedCallable): Function that returns a graph. Either use
             [`vizro.plotly.express`](../user-guides/graph.md) or see
             [`CapturedCallable`][vizro.models.types.CapturedCallable].

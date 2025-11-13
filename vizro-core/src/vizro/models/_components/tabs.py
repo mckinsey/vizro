@@ -28,7 +28,6 @@ class Tabs(VizroBaseModel):
         [How to use tabs](../user-guides/tabs.md)
 
     Args:
-        type (Literal["tabs"]): Defaults to `"tabs"`.
         tabs (list[Container]): See [`Container`][vizro.models.Container].
         title (str): Title displayed above Tabs. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.

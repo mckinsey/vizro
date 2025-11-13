@@ -31,7 +31,6 @@ class RangeSlider(VizroBaseModel):
         [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)
 
     Args:
-        type (Literal["range_slider"]): Defaults to `"range_slider"`.
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.

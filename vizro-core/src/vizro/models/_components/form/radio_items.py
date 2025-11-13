@@ -26,7 +26,6 @@ class RadioItems(VizroBaseModel):
         [How to use categorical selectors](../user-guides/selectors.md/#categorical-selectors)
 
     Args:
-        type (Literal["radio_items"]): Defaults to `"radio_items"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].
             Defaults to `None`.

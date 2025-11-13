@@ -27,7 +27,6 @@ class DatePicker(VizroBaseModel):
         [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
 
     Args:
-        type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
         max (Optional[date]): End date for date picker. Defaults to `None`.
         value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.

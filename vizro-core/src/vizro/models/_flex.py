@@ -16,7 +16,6 @@ class Flex(VizroBaseModel):
         [How to use the Flex layout](../user-guides/layouts.md#flex-layout)
 
     Args:
-        type (Literal["flex"]): Defaults to `"flex"`.
         direction (Literal["row", "column"]): Sets the direction of the flex items inside the container. Options are
             `row` or `column`. Defaults to `column`.
         gap (str): Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.

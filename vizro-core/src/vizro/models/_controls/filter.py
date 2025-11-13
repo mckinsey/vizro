@@ -81,7 +81,6 @@ class Filter(VizroBaseModel):
         [How to use filters](../user-guides/filters.md)
 
     Args:
-        type (Literal["filter"]): Defaults to `"filter"`.
         column (str): Column of `DataFrame` to filter.
         targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
             on the page that use `column`. Defaults to `[]`.

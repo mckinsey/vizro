@@ -61,7 +61,6 @@ class Dropdown(VizroBaseModel):
         [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
 
     Args:
-        type (Literal["dropdown"]): Defaults to `"dropdown"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[Union[SingleValueType, MultiValueType]]): See
             [`SingleValueType`][vizro.models.types.SingleValueType] and
