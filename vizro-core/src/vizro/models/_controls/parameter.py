@@ -62,6 +62,7 @@ class Parameter(VizroBaseModel):
     Example:
         ```python
         import vizro.models as vm
+
         vm.Parameter(targets=["scatter.x"], selector=vm.Slider(min=0, max=1, default=0.8, title="Bubble opacity"))
         ```
 

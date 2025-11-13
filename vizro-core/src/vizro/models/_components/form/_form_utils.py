@@ -5,7 +5,7 @@ from typing import Any, Optional, Union
 
 from pydantic import TypeAdapter, ValidationInfo
 
-from vizro.models.types import MultiValueType, _OptionsDictType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, OptionsType, SingleValueType, _OptionsDictType
 
 
 def get_dict_options_and_default(

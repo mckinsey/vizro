@@ -9,7 +9,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import export_data
 from vizro.models import Action, Button, VizroBaseModel
-from vizro.models.types import CapturedCallable, _coerce_to_list, capture, _validate_captured_callable
+from vizro.models.types import CapturedCallable, _coerce_to_list, _validate_captured_callable, capture
 
 
 def positional_only_function(a, /):

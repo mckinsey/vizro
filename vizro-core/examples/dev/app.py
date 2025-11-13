@@ -5,11 +5,11 @@ from typing import Literal, Optional
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
+import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash import dash_table, dcc, get_asset_url, html
 from vizro import Vizro
-import vizro.actions as va
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
