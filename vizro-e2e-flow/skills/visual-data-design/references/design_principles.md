@@ -24,6 +24,51 @@
 - Align elements to grid for visual harmony
 - Group related metrics within grid sections
 
+### Vizro Layout Implementation
+
+**Preventing crowded components** - two approaches:
+
+**Option 1: Flex Layout (Automatic Spacing)**
+- Use `vm.Flex()` at page or container level
+- Automatically distributes components with proper spacing
+- Best for: Simple pages with sequential components
+- No manual grid configuration needed
+- Example: `vm.Page(title="Dashboard", layout=vm.Flex(), components=[...])`
+
+**Option 2: Grid Layout with Row Height Control**
+- Use `vm.Grid()` with `row_min_height` parameter for fine-grained control
+- Example: `vm.Grid(grid=[[0, 1], [2, 2]], row_min_height="500px")`
+- Provides precise control over component spacing and scroll behavior
+- Best for: Complex layouts requiring structured arrangement
+- Recommended: Set `row_min_height` high enough so components can render properly
+
+**Grid Configuration Details**:
+- Grid provided as `list[list[int]]` where each sub-list is a row
+- Integers correspond to component indices (must be consecutive starting from 0)
+- Components span rectangular areas defined by their repeated index
+- Use `*[[...]] * n` to repeat rows for taller components
+- Example for varying heights:
+  ```python
+  vm.Grid(
+      row_min_height="55px",
+      grid=[
+          [0, 0, 0, 0, 0, 0],              # Full-width header (1 row)
+          *[[1, 1, 1, 1, 1, 1]] * 2,       # Full-width chart (2 rows)
+          *[[2, 2, 2, 3, 3, 3]] * 5,       # Two components side-by-side (5 rows)
+      ]
+  )
+  ```
+- Actual component height = `row_min_height * rows_spanned`
+- Larger grids (e.g., 6 or 12 columns) enable more precise positioning
+
+**Nested Layout Pattern**
+- Use Flex at page level for automatic flow
+- Use Grid inside containers for structured sections
+- Example: `vm.Page(layout=vm.Flex(), components=[vm.Graph(...), vm.Container(layout=vm.Grid(...), components=[...])])`
+- Provides flexibility where needed, structure where required
+
+**Reference**: https://vizro.readthedocs.io/en/latest/pages/user-guides/layouts/
+
 ### Size and Emphasis
 
 **Typography Hierarchy**
@@ -50,33 +95,64 @@
 
 ## Color Strategy
 
+### Vizro Default Colors (Recommended)
+
+**Primary approach: Let Vizro handle colors automatically**
+
+Vizro provides built-in color palettes optimized for light/dark themes and colorblind accessibility. **For standard charts (scatter, line, bar, pie, etc.), do NOT specify colors** - Vizro automatically applies appropriate colors.
+
+**Vizro Core Color Palette** (when colors must be specified):
+
+```python
+vizro_colors = [
+    "#00b4ff",  # Bright blue
+    "#ff9222",  # Orange
+    "#3949ab",  # Deep blue
+    "#ff5267",  # Pink/red
+    "#08bdba",  # Teal
+    "#fdc935",  # Yellow
+    "#689f38",  # Green
+    "#976fd1",  # Purple
+    "#f781bf",  # Light pink
+    "#52733e"   # Olive
+]
+```
+
+### When to Specify Colors
+
+**Color selection guidelines**:
+- Pick colors from the Vizro core palette above
+- Or derive shades from 1core colors
+- Use "gray" for neutral elements (backgrounds, borders, inactive states)
+- Maintain consistency across dashboard
+
 ### Color Palette Structure
 
 **3-Color Maximum Rule**
 
-- Primary color: Main brand/emphasis color
-- Secondary color: Supporting/comparative data
-- Accent color: Alerts, highlights, CTAs
-- Neutrals: Grays for text, backgrounds, borders
+- Primary: Pick from Vizro core colors (e.g., "#00b4ff")
+- Secondary: Pick complementary from core colors (e.g., "#ff9222")
+- Accent: Pick for emphasis (e.g., "#ff5267")
+- Neutral: Use "gray" for backgrounds, borders
 
 **Sequential Color Scales**
 
 - Use for continuous data (light to dark single hue)
+- Derive from one Vizro core color
 - Minimum 3 steps, maximum 7 steps
 - Ensure sufficient contrast between steps
-- Example: Light blue → Medium blue → Dark blue
 
 **Diverging Color Scales**
 
 - Use for data with meaningful midpoint
-- Two contrasting hues meeting at neutral
-- Example: Red (negative) ← Gray (neutral) → Green (positive)
+- Two Vizro colors meeting at neutral
+- Example: "#ff5267" (negative) ← "gray" (neutral) → "#689f38" (positive)
 
 **Categorical Colors**
 
-- Distinct hues for unrelated categories
-- Maximum 6-8 distinct colors
-- Use same color consistently for same entity across charts
+- Let Vizro handle automatically for standard charts
+- If custom: pick from Vizro core palette
+- Use same color consistently for same entity
 
 ### Color Accessibility
 
@@ -91,33 +167,17 @@
 
 - Never use color alone to convey information
 - Supplement with patterns, icons, or labels
-- Avoid red/green as sole differentiator
-- Test with color blindness simulator
-- Use tools: ColorOracle, Coblis, Adobe Color
+- Vizro default palettes are colorblind-safe
 
-**Semantic Color Usage**
+**Semantic Color Usage** (from Vizro core palette):
 
-- Red: Negative, error, critical, down
-- Green: Positive, success, good, up
-- Yellow/Orange: Warning, caution, moderate
-- Blue: Neutral, informational, stable
-- Gray: Inactive, disabled, background
+- Positive/success: "#689f38" (green)
+- Warning/caution: "#ff9222" (orange)
+- Error/negative: "#ff5267" (pink/red)
+- Neutral/info: "#00b4ff" or "#3949ab" (blue)
+- Inactive/disabled: "gray"
 
 ## Typography
-
-### Font Selection
-
-**Sans-Serif for Dashboards**
-
-- Better readability at small sizes
-- Clean, modern appearance
-- Examples: Inter, Roboto, Open Sans, Lato
-
-**Font Pairing**
-
-- Same font family with different weights (preferred)
-- Maximum 2 font families total
-- Distinct enough to create hierarchy
 
 ### Text Formatting
 
@@ -135,13 +195,6 @@
 - Sentence case (not Title Case or UPPERCASE)
 - No periods at end of labels
 - Truncate with ellipsis if necessary (max 20 chars)
-
-**Line Height and Spacing**
-
-- Body text: 1.4-1.6 line height
-- Labels: 1.2-1.3 line height
-- Tight spacing for data tables: 1.1-1.2
-- Letter spacing: -0.01em to 0.01em (subtle adjustments)
 
 ## Interaction Design
 
@@ -175,13 +228,6 @@
 - Multi-select: Dropdown with checkboxes (> 3 options)
 - Search: For large lists (> 20 items)
 
-**Filter Behavior**
-
-- Show applied filters prominently
-- Allow easy clearing ("Clear all")
-- Auto-apply or "Apply" button based on complexity
-- Preserve state on navigation
-
 ### Parameters and Selectors
 
 Parameters are selector components that modify visualization properties or switch between different views, without filtering the underlying data.
@@ -209,28 +255,67 @@ Parameters are selector components that modify visualization properties or switc
 
 ### KPI Cards
 
+**Vizro Built-in KPI Cards**
+
+Vizro provides two built-in KPI card functions:
+- `kpi_card()`: Display a single metric value with optional formatting and icons
+- `kpi_card_reference()`: Display a metric with comparison to reference value (shows delta and direction)
+
+**Implementation**: Use `from vizro.figures import kpi_card, kpi_card_reference`
+
 **Content Structure**
 
 ```
-[Metric Label]: [Value]
-[Contextual Information]
-[Comparison or Change] (optional)
+[Title/Metric Label]
+[Value] with formatting
+[Icon] (optional)
+[Reference comparison] (for kpi_card_reference only)
 ```
 
-**Example**:
+**Design Considerations**
 
-```
-Revenue: $1.2M
-Oct 2024
-↑ 15% vs last month
-```
+- **Title**: Short metric name (e.g., "Average Bill", "Revenue")
+- **Value formatting**: Use `value_format` parameter (e.g., `"${value:.2f}"`, `"{value:.1f}%"`)
+- **Icons**: Use `icon` parameter for visual identification (e.g., `"Shopping Cart"`, `"TrendingUp"`)
+- **Aggregation**: Specify `agg_func` if needed (e.g., `"sum"`, `"mean"`, `"median"`)
+- **Reference comparison**: Use `kpi_card_reference()` to show change vs. baseline
+- **Color direction**: Use `reverse_color=True` when lower is better (e.g., cost, error rate)
 
 **Best Practices**
 
-- Include metric name
-- Add context (date, segment, etc.)
-- Show change/comparison when relevant
-- Max 3-4 lines of information
+- Keep titles concise (2-4 words)
+- Use consistent formatting across all KPI cards
+- Choose appropriate aggregation function for the metric
+- Use icons sparingly for key metrics only
+- Use `kpi_card_reference()` when comparison is important
+- Use Vizro's automatic color handling (green=positive, red=negative)
+- Set `reverse_color=True` for metrics where decrease is positive
+
+**Example Usage**:
+
+```python
+from vizro.figures import kpi_card, kpi_card_reference
+
+# Simple KPI with value
+kpi_card(
+    data_frame=df,
+    value_column="revenue",
+    title="Total Revenue",
+    value_format="${value:,.0f}"
+)
+
+# KPI with reference comparison
+kpi_card_reference(
+    data_frame=df,
+    value_column="revenue",
+    reference_column="previous_revenue",
+    title="Revenue vs Last Month",
+    value_format="${value:,.0f}",
+    reference_format="{delta:+.1f}% vs last month"
+)
+```
+
+**Reference**: https://vizro.readthedocs.io/en/latest/pages/user-guides/figure/#key-performance-indicator-kpi-cards
 
 ## Chart-Specific Guidelines
 
@@ -274,18 +359,39 @@ Oct 2024
 
 ### Chart Titles and Subtitles
 
+**Vizro Implementation**
+
+In Vizro, chart titles are specified in the `vm.Graph` component, NOT in the plotly code:
+
+```python
+# ✅ CORRECT
+vm.Graph(
+    figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
+    title="Relationships between Sepal Width and Sepal Length",  # Title goes here
+    header="Additional context or description",  # Optional header for more context
+    footer="SOURCE: **Data source**"  # Optional footer for attribution
+)
+
+# ❌ WRONG - Don't put title in plotly code
+vm.Graph(
+    figure=px.scatter(iris, x="width", y="length", title="Title")  # Don't do this
+)
+```
+
 **Title Structure**
 
 - Sentence case
 - Action-oriented when possible ("Revenue increased 15%")
 - Or descriptive ("Monthly Revenue Trend")
 - No period at end
+- Specify in `vm.Graph(title=...)` parameter
 
-**Subtitle Usage**
+**Additional Context with Header/Footer**
 
-- Additional context (date range, segment, notes)
-- Smaller, lighter text
-- Example: "Last 12 months | All regions"
+- `header`: Additional context, methodology, or description
+- `footer`: Data source attribution or timestamps
+- Both support markdown formatting
+- Example: `footer="SOURCE: **Plotly iris data set, 2024**"`
 
 ## Performance and Loading
 
@@ -370,7 +476,6 @@ ranging from $1M to $1.5M, with an overall increase of 20%"
 - [ ] Filters apply in < 500ms
 - [ ] Dashboard works with slow connections
 - [ ] No memory leaks on long sessions
-- [ ] Lazy loading implemented for below-fold content
 
 ## Advanced Considerations
 

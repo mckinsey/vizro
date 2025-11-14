@@ -22,9 +22,10 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 |  |FILTERS:  |                                                                        |
 |  |          |  +---------------------------------------------------------------------+|
 |  |Year      |  |                                                                     ||
-|  |[v]       |  |  CHART: Revenue Trend [Line chart]                                  ||
+|  |[v]       |  |  CHART: Revenue Trend [Timeseries Line - Full Width]                ||
 |  |          |  |  [hover: tooltip | ↗ click: drill to detail]                       ||
 |  |Region    |  +---------------------------------------------------------------------+|
+|  |          |  NOTE: Full-width ONLY for timeseries line charts                     |
 |  |[v]       |                                                                        |
 |  |          |  CONTAINER: Sales Analysis                                            |
 |  |Category  |  [Container Parameters: Metric ▼] [Container Filters: Region ▼]       |
@@ -105,6 +106,7 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 1. Show hierarchy through box sizes (larger = more important)
 1. Global page parameters and filters in left panel, container-specific filters/parameters above containers
 1. Annotate interactions: `[↗ click: action]`, `[hover: behavior]`
+1. **Full-width charts**: Use ONLY for timeseries line charts (e.g., `[Timeseries Line - Full Width]`). Most charts should be side-by-side (2-3 per row)
 
 ## Optional: HTML Wireframe
 

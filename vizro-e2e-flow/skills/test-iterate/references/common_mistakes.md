@@ -213,34 +213,6 @@ Section margins: 48px
 - What's their technical skill level?
 - What's their time constraint?
 
-### 9. Slow Performance
-
-**Problem**
-
-- Long loading times (>3 seconds)
-- Janky chart animations
-- Unresponsive filters
-- Page crashes with large data
-- No loading states
-
-**Solution**
-
-- Implement lazy loading
-- Paginate or aggregate large datasets
-- Show skeleton screens while loading
-- Optimize queries and caching
-- Progressive enhancement
-- Set data limits (max rows)
-
-**Performance Budget**
-
-```
-Initial load: < 2 seconds
-Filter response: < 500ms
-Chart render: < 300ms
-Smooth animations: 60fps
-```
-
 ## Subtle Issues
 
 ### Truncated Y-Axis on Bar Charts
@@ -266,12 +238,6 @@ Smooth animations: 60fps
 **Problem**: Colors or patterns without legend
 
 **Solution**: Always include legend or direct labels for multi-series charts
-
-### Overwhelming Animations
-
-**Problem**: Excessive or slow chart animations distract
-
-**Solution**: Subtle, fast animations (< 300ms) or disable entirely
 
 ### Non-Actionable Metrics
 
@@ -304,18 +270,6 @@ Smooth animations: 60fps
 **Solution**: Follow WCAG guidelines; test with accessibility tools
 
 ## Anti-Patterns to Avoid
-
-### The "Dashboard of Dashboards"
-
-**Problem**: Too many dashboards linked together **Solution**: Consolidate or create clear navigation hierarchy
-
-### The "Everything Animated"
-
-**Problem**: Every element has animation **Solution**: Animate only state changes, keep it subtle
-
-### The "PDF Report Replication"
-
-**Problem**: Static, non-interactive digital version of printed report **Solution**: Leverage interactivity: filters, drill-downs, tooltips
 
 ### The "Hidden Value"
 
