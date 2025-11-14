@@ -35,6 +35,7 @@ Tier 3: Component-level Interactions
 **Navigation patterns**:
 
 **Progressive Disclosure**:
+
 ```
 Overview (high-level KPIs)
     ↓ Click/Select
@@ -44,6 +45,7 @@ Granular Analysis (individual records)
 ```
 
 **Parallel Exploration**:
+
 ```
 Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 (All tabs at same level, different perspectives)
@@ -54,6 +56,7 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 ### 2. Design Layout Grids
 
 **Vizro Mandatory Structure**:
+
 ```
 +--+------------+------------------------------------------------------------------------+
 |  |NAV MENU    |                    MAIN CONTENT AREA                                   |
@@ -67,6 +70,7 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 ```
 
 **Vizro layout principles**:
+
 - ✅ **DO**: Place navigation + page level filters/params in left panel
 - ✅ **DO**: Add container-level filters ABOVE container in main area
 - ✅ **DO**: Use 2-3 charts maximum per row (side-by-side)
@@ -82,11 +86,13 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 - ❌ **DON'T**: Force all content to fit without scrolling
 
 **Chart aspect ratios**:
+
 - Primary charts: 16:9 (wide format)
 - Secondary charts: 4:3 (balanced)
 - Gauges/Status: 1:1 (square)
 
 **Full-width chart usage** (use sparingly):
+
 - **ONLY for timeseries line charts** with continuous temporal data
 - Example: Daily/hourly revenue trends, system performance over time
 - Most charts should be arranged side-by-side (2-3 per row)
@@ -94,6 +100,7 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 **Standard layout patterns**:
 
 **Pattern 1: Executive Overview (Vizro Standard)**
+
 ```
 +--+----------+------------------------------------------------------------------------+
 |🏠|Dashboard |                                                                        |
@@ -120,9 +127,11 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 |  |[v]       |                                                                        |
 +--+----------+------------------------------------------------------------------------+
 ```
+
 **Key features**: Left nav + page level filters (Date, Region, Category), Container has its own filters (Metric, Time Granularity), Interactive elements noted, **Full-width chart ONLY for timeseries line chart**
 
 **Pattern 2: Analytics Deep-Dive (Multi-Container)**
+
 ```
 +--+----------+------------------------------------------------------------------------+
 |🏠|Analytics |                                                                        |
@@ -156,9 +165,11 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 |  |          |  +---------------------------------------------------------------------+|
 +--+----------+------------------------------------------------------------------------+
 ```
+
 **Key features**: Multiple containers, each with own filter set, Container-level actions (Export, Refresh), Full-width table with AgGrid features
 
 **Pattern 3: Operational Monitoring (Real-time)**
+
 ```
 +--+----------+------------------------------------------------------------------------+
 |🏠|Monitor   |                                                                        |
@@ -191,9 +202,11 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 |  |[v]       |  +---------------------------------------------------------------------+|
 +--+----------+------------------------------------------------------------------------+
 ```
+
 **Key features**: Parameters for refresh/time (left panel), Status indicators in KPI cards, Auto-refresh functionality, Color-coded table rows
 
 **Pattern 4: Comparison Dashboard**
+
 ```
 +--+----------+------------------------------------------------------------------------+
 |🏠|Compare   |                                                                        |
@@ -229,9 +242,11 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 |  |          |  +---------------------------------------------------------------------+|
 +--+----------+------------------------------------------------------------------------+
 ```
+
 **Key features**: Period comparison controls, Variance visualization, Side-by-side breakdown views
 
 **Pattern 5: Customer Analytics**
+
 ```
 +--+----------+------------------------------------------------------------------------+
 |🏠|Customers |                                                                        |
@@ -267,9 +282,11 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 |  |          |  +---------------------------------------------------------------------+|
 +--+----------+------------------------------------------------------------------------+
 ```
+
 **Key features**: Segmentation and cohort analysis, RFM scatter plot, Customer action buttons
 
 **Pattern 6: Long-Form Report (Scroll-friendly)**
+
 ```
 +--+----------+------------------------------------------------------------------------+
 |🏠|Reports   |                                                                        |
@@ -326,6 +343,7 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 |  |          |  +---------------------------------------------------------------------+|
 +--+----------+------------------------------------------------------------------------+
 ```
+
 **Key features**: Multiple sections with scroll, Export/schedule actions, Appendix section for documentation
 
 **Deliverable**: Layout templates for each page type.
@@ -333,11 +351,13 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 ### 3. Design Filter Strategy
 
 **Vizro filter constraints**:
+
 - Page-level filters: ONLY in left sidebar (collapsible)
 - Container-level filters: Within component area
 - Page level filters: Must be implemented as page-level on each page
 
 **Filter placement decision tree**:
+
 ```
 Is this filter needed across multiple visualizations?
 ├─ YES → Page-level filter (left sidebar)
@@ -348,35 +368,39 @@ Is this filter needed across multiple visualizations?
 
 **Filter types by use case**:
 
-| Filter Type | Use Case | Placement | Example |
-|------------|----------|-----------|---------|
-| Date Range | Time period selection | Page-level | Last 30/60/90 days |
-| Categorical | Segment selection | Page-level | Region, Product, Customer Type |
-| Numerical | Range selection | Container-level | Price range, Score threshold |
-| Search | Text matching | Page or Container | Customer name, Product ID |
-| Multi-select | Multiple options | Page-level | Select multiple regions |
+| Filter Type  | Use Case              | Placement         | Example                        |
+| ------------ | --------------------- | ----------------- | ------------------------------ |
+| Date Range   | Time period selection | Page-level        | Last 30/60/90 days             |
+| Categorical  | Segment selection     | Page-level        | Region, Product, Customer Type |
+| Numerical    | Range selection       | Container-level   | Price range, Score threshold   |
+| Search       | Text matching         | Page or Container | Customer name, Product ID      |
+| Multi-select | Multiple options      | Page-level        | Select multiple regions        |
 
 **Deliverable**: Filter specification document with placement and behavior.
 
 ### 4. Define Interaction Patterns
 
 **Click interactions**:
+
 - Single click: Select/highlight
 - Double click: Drill-down
 - Right click: Context menu (if applicable)
 
 **Hover behaviors**:
+
 - Show tooltip with details
 - Highlight related data
 - Display trend mini-chart
 
 **Cross-filtering**:
+
 ```
 User clicks on Chart A → Filters apply to Chart B, C, D
 Example: Click "North Region" in map → All charts filter to North
 ```
 
 **Drill-down paths**:
+
 ```
 Level 1: Annual Summary
     ↓ Click on Q3
@@ -396,6 +420,7 @@ Level 4: Hourly data for Sept 15
 **Step 1: ASCII Wireframes** (Rapid iteration)
 
 Example for executive dashboard:
+
 ```
 
 
@@ -405,6 +430,7 @@ Legend: [F] = Filter  [▼] = Dropdown  [B] = Button
 **Step 2: HTML Wireframe** (After approval)
 
 Create simple HTML mockup with:
+
 - Basic layout structure
 - Placeholder components
 - Interactive elements (non-functional)
@@ -416,51 +442,57 @@ Create simple HTML mockup with:
 **Must follow these Vizro patterns**:
 
 1. **Page Navigation**: Automatic sidebar (left) for multi-page apps
-2. **Page Filters**: MUST be in collapsible left sidebar
-3. **Layouts**: Use Grid or Flex layout (no absolute positioning)
-4. **Components**: Limited to Graph, Table, Card, Figure
-5. **Containers**: Can use Tabs for organizing content
-6. **Actions**: Export, filter, and parameter actions only
-7. **Theme**: Light/dark toggle available by default
+1. **Page Filters**: MUST be in collapsible left sidebar
+1. **Layouts**: Use Grid or Flex layout (no absolute positioning)
+1. **Components**: Limited to Graph, Table, Card, Figure
+1. **Containers**: Can use Tabs for organizing content
+1. **Actions**: Export, filter, and parameter actions only
+1. **Theme**: Light/dark toggle available by default
 
 ## Deliverables Checklist
 
 ### Required Outputs
 
 1. **Navigation Flow Diagram**
-   - All navigation paths
-   - Breadcrumb structure
-   - Back/forward behavior
 
-2. **Layout Templates**
-   - Grid specifications for each page type
-   - Component placement rules
+    - All navigation paths
+    - Breadcrumb structure
+    - Back/forward behavior
 
-3. **Filter Specifications**
-   - Complete list of filters
-   - Placement (page vs container)
-   - Default values and behaviors
+1. **Layout Templates**
 
-4. **Interaction Matrix**
+    - Grid specifications for each page type
+    - Component placement rules
 
-   | Component | Click | Hover | Drag | Keyboard |
-   |-----------|-------|-------|------|----------|
-   | Chart A   | ...   | ...   | ...  | ...      |
-   | Table B   | ...   | ...   | ...  | ...      |
+1. **Filter Specifications**
 
-5. **Wireframes**
-   - ASCII diagrams for all unique pages
-   - HTML wireframe for primary pages
-   - Annotations for interactions
+    - Complete list of filters
+    - Placement (page vs container)
+    - Default values and behaviors
 
-6. **User Flow Documentation**
-   - Step-by-step workflows
-   - Decision points
-   - Error states and edge cases
+1. **Interaction Matrix**
+
+    | Component | Click | Hover | Drag | Keyboard |
+    | --------- | ----- | ----- | ---- | -------- |
+    | Chart A   | ...   | ...   | ...  | ...      |
+    | Table B   | ...   | ...   | ...  | ...      |
+
+1. **Wireframes**
+
+    - ASCII diagrams for all unique pages
+    - HTML wireframe for primary pages
+    - Annotations for interactions
+
+1. **User Flow Documentation**
+
+    - Step-by-step workflows
+    - Decision points
+    - Error states and edge cases
 
 ## Common UX Patterns
 
 ### Search-Filter-Analyze Pattern
+
 ```
 1. Search/Filter (narrow dataset)
 2. View Results (see matches)
@@ -469,6 +501,7 @@ Create simple HTML mockup with:
 ```
 
 ### Overview-Detail Pattern
+
 ```
 1. Overview (all data aggregated)
 2. Filter (select subset)
@@ -477,6 +510,7 @@ Create simple HTML mockup with:
 ```
 
 ### Compare-Contrast Pattern
+
 ```
 1. Select Items (choose 2+ items)
 2. Side-by-side View (see differences)
@@ -503,18 +537,18 @@ Before proceeding to Visual Design:
 Once Interaction/UX Design is complete:
 
 1. Proceed to **visual-data-design** skill for visual treatment
-2. Share wireframes with development team
-3. Create interactive prototype if needed
-4. Document any technical constraints discovered
+1. Share wireframes with development team
+1. Create interactive prototype if needed
+1. Document any technical constraints discovered
 
 ## Tips for Success
 
 1. **Test early with paper prototypes** - Quick sketches reveal issues fast
-2. **Follow platform conventions** - Use Vizro's standard patterns
-3. **Design for the 80%** - Optimize for common use cases
-4. **Progressive disclosure** - Don't show everything at once
-5. **Consistent patterns** - Same action = same result everywhere
-6. **Plan for errors** - Design helpful error states
+1. **Follow platform conventions** - Use Vizro's standard patterns
+1. **Design for the 80%** - Optimize for common use cases
+1. **Progressive disclosure** - Don't show everything at once
+1. **Consistent patterns** - Same action = same result everywhere
+1. **Plan for errors** - Design helpful error states
 
 ## References for Further Reading
 

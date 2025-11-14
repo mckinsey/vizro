@@ -48,16 +48,16 @@ What am I trying to show?
 
 **Chart type guidelines**:
 
-| Chart Type | Best For | Avoid When | Max Data Points |
-|------------|----------|------------|-----------------|
-| Line | Trends over time | < 5 data points | 100-200 per line |
-| Bar | Comparing categories | > 20 categories | 10-15 bars |
-| Pie/Donut | Part-to-whole (%) | > 5 slices | 5 slices max |
-| Scatter | Correlation | < 20 points | 500-1000 |
-| Heatmap | Patterns in matrix | < 5×5 grid | 50×50 |
-| AgGrid | Exact values, sorting/filtering | Pattern finding | Unlimited (paginated) |
-| Card/KPI | Single metric | Comparisons | 1 value |
-| Map | Geographic data | Non-geographic | Depends on zoom |
+| Chart Type | Best For                        | Avoid When      | Max Data Points       |
+| ---------- | ------------------------------- | --------------- | --------------------- |
+| Line       | Trends over time                | < 5 data points | 100-200 per line      |
+| Bar        | Comparing categories            | > 20 categories | 10-15 bars            |
+| Pie/Donut  | Part-to-whole (%)               | > 5 slices      | 5 slices max          |
+| Scatter    | Correlation                     | < 20 points     | 500-1000              |
+| Heatmap    | Patterns in matrix              | < 5×5 grid      | 50×50                 |
+| AgGrid     | Exact values, sorting/filtering | Pattern finding | Unlimited (paginated) |
+| Card/KPI   | Single metric                   | Comparisons     | 1 value               |
+| Map        | Geographic data                 | Non-geographic  | Depends on zoom       |
 
 **Deliverable**: Chart type specification for each data visualization.
 
@@ -90,13 +90,14 @@ Level 4: Background Information (Smallest, low contrast)
 **Visual hierarchy techniques**:
 
 1. **Size**: Larger = more important
-2. **Color**: Bright/saturated = attention-grabbing
-3. **Position**: Top-left = first viewed (F-pattern)
-4. **Contrast**: High contrast = emphasis
-5. **White space**: More space = more importance
-6. **Typography**: Bold/larger = higher priority
+1. **Color**: Bright/saturated = attention-grabbing
+1. **Position**: Top-left = first viewed (F-pattern)
+1. **Contrast**: High contrast = emphasis
+1. **White space**: More space = more importance
+1. **Typography**: Bold/larger = higher priority
 
 **Example hierarchy application**:
+
 ```
 ┌─────────────────────────────────┐
 │ PRIMARY KPI (72px, bold)        │  ← Level 1
@@ -117,6 +118,7 @@ Updated: 2:45 PM (12px, gray)        ← Level 4
 ### 3. Define Color Strategy
 
 **Vizro theme options**:
+
 - `vizro_dark`
 - `vizro_light`
 - Both themes are colorblind-safe by default
@@ -139,7 +141,7 @@ vizro_colors = [
     "#689f38",  # Green
     "#976fd1",  # Purple
     "#f781bf",  # Light pink
-    "#52733e"   # Olive
+    "#52733e",  # Olive
 ]
 
 # Use "gray" for neutral elements (backgrounds, borders, inactive states)
@@ -147,16 +149,17 @@ vizro_colors = [
 
 **Color usage guidelines**:
 
-| Use Case | Color Choice | Example |
-|----------|--------------|---------|
-| Standard charts | Auto (no color specified) | Scatter, line, bar |
-| Positive change | "#689f38" (green) | ↑ 12% profit |
-| Negative change | "#ff5267" (pink/red) | ↓ 5% sales |
-| Neutral/inactive | "gray" | Disabled state |
-| Target/goal line | "gray" (dashed) | Budget line |
-| Custom components | Pick from core palette | when necessary |
+| Use Case          | Color Choice              | Example            |
+| ----------------- | ------------------------- | ------------------ |
+| Standard charts   | Auto (no color specified) | Scatter, line, bar |
+| Positive change   | "#689f38" (green)         | ↑ 12% profit       |
+| Negative change   | "#ff5267" (pink/red)      | ↓ 5% sales         |
+| Neutral/inactive  | "gray"                    | Disabled state     |
+| Target/goal line  | "gray" (dashed)           | Budget line        |
+| Custom components | Pick from core palette    | when necessary     |
 
 **Semantic color patterns**:
+
 ```python
 # Success/positive
 success_color = "#689f38"  # Green from core palette
@@ -165,13 +168,14 @@ success_color = "#689f38"  # Green from core palette
 warning_color = "#ff9222"  # Orange from core palette
 
 # Error/negative
-error_color = "#ff5267"   # Pink/red from core palette
+error_color = "#ff5267"  # Pink/red from core palette
 
 # Neutral/inactive
 neutral_color = "gray"
 ```
 
 **Accessibility requirements**:
+
 - Text contrast: Minimum 4.5:1 (WCAG AA)
 - Large text: Minimum 3:1
 - Interactive elements: Minimum 3:1
@@ -195,11 +199,13 @@ Footnotes: 9-10px, regular
 ```
 
 **Font recommendations**:
+
 - Primary: System fonts (faster loading)
 - Fallback stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
 - Monospace (for numbers): "SF Mono", Monaco, Consolas, "Courier New", monospace
 
 **Number formatting**:
+
 - Use consistent decimal places
 - Add thousands separators (1,234,567)
 - Use abbreviations for large numbers (1.2M, 3.4B)
@@ -227,12 +233,14 @@ Footnotes: 9-10px, regular
 ```
 
 **Annotation guidelines**:
+
 - Add context to unusual spikes/drops
 - Label important thresholds
 - Include data freshness indicators
 - Provide calculation methods (hover/tooltip)
 
 **Example annotated chart**:
+
 ```
 Revenue Trend │
    $3M ──────│──────────────── Target
@@ -254,13 +262,14 @@ Revenue Trend │
 **Progression from wireframe to visual design**:
 
 1. **Apply color palette** to wireframe elements
-2. **Add real data** to replace placeholders
-3. **Apply typography** system
-4. **Include visual polish** (shadows, borders, icons)
-5. **Add micro-interactions** specs (hover states)
-6. **Create dark/light** theme versions
+1. **Add real data** to replace placeholders
+1. **Apply typography** system
+1. **Include visual polish** (shadows, borders, icons)
+1. **Add micro-interactions** specs (hover states)
+1. **Create dark/light** theme versions
 
 **Visual design checklist**:
+
 ```
 □ Brand colors applied consistently
 □ Visual hierarchy clear at a glance
@@ -279,6 +288,7 @@ Revenue Trend │
 ## Vizro-Specific Visual Considerations
 
 **Vizro built-in features**:
+
 - Automatic theme switching (light/dark)
 - Consistent component styling
 - Responsive design built-in
@@ -294,14 +304,17 @@ uv run python scripts/list_vizro_models.py
 ```
 
 Or directly in Python:
+
 ```python
 import vizro.models as vm
+
 print(vm.__all__)
 ```
 
 This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`, `Container`, `Tabs`, `Filter`, `Parameter`, `Dropdown`, `Button`, and more.
 
 **Common component categories**:
+
 - **Layout**: `Dashboard`, `Page`, `Container`, `Tabs`, `Accordion`, `Grid`, `Flex`
 - **Visualization**: `Graph`, `Figure`, `AgGrid`, `Card`, `Text`
 - **Controls**: `Filter`, `Parameter`, `Dropdown`, `Checklist`, `RadioItems`, `Slider`, `RangeSlider`, `DatePicker`, `Switch`
@@ -310,12 +323,14 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 **Important**: Always use `vm.AgGrid` for tables (not `vm.Table` or `go.Table`). AgGrid provides better UX with sorting, filtering, and pagination.
 
 **Layout strategies for proper spacing**:
+
 - Use `vm.Flex()` for automatic spacing between components (simplest approach)
 - Use `vm.Grid()` with `row_min_height` parameter (e.g., `row_min_height="500px"`) to control scroll behavior and prevent crowded components
 - Combine approaches: Use Flex at page level, Grid inside containers for structured sections
 - Recommended `row_min_height`: Set high enough so components can render properly without being crowded
 
 **Customization options**:
+
 - Custom CSS via `assets/` folder
 - Theme configuration
 - Chart styling via Plotly
@@ -327,46 +342,52 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 ### Required Outputs
 
 1. **Chart Specifications**
-   ```
-   Page: Sales Overview
-   Component 1: Revenue Trend
-   - Chart Type: Line chart
-   - X-axis: Date (monthly)
-   - Y-axis: Revenue ($)
-   - Title: "Revenue Trend" (in vm.Graph, not plotly)
-   - Color: Auto (use Vizro defaults)
-   - Annotations: Q3 target line (gray, dashed)
-   - Header/Footer: Optional context or source attribution
-   ```
 
-2. **Visual Hierarchy Guide**
-   - Element sizes and weights
-   - Reading order diagram
-   - Emphasis techniques used
+    ```
+    Page: Sales Overview
+    Component 1: Revenue Trend
+    - Chart Type: Line chart
+    - X-axis: Date (monthly)
+    - Y-axis: Revenue ($)
+    - Title: "Revenue Trend" (in vm.Graph, not plotly)
+    - Color: Auto (use Vizro defaults)
+    - Annotations: Q3 target line (gray, dashed)
+    - Header/Footer: Optional context or source attribution
+    ```
 
-3. **Color Palette Document**
-   - Primary, semantic, and data colors
-   - Hex codes and RGB values
-   - Usage guidelines
-   - Accessibility notes
+1. **Visual Hierarchy Guide**
 
-4. **Typography System**
-   - Font stack
-   - Size scale
-   - Weight variations
-   - Line height specs
+    - Element sizes and weights
+    - Reading order diagram
+    - Emphasis techniques used
 
-5. **Visual Mockups**
-   - High-fidelity designs
-   - Light and dark themes
-   - Responsive versions
-   - Interactive states
+1. **Color Palette Document**
 
-6. **Component Library**
-   - Reusable visual elements
-   - Chart templates
-   - Icon set
-   - Button styles
+    - Primary, semantic, and data colors
+    - Hex codes and RGB values
+    - Usage guidelines
+    - Accessibility notes
+
+1. **Typography System**
+
+    - Font stack
+    - Size scale
+    - Weight variations
+    - Line height specs
+
+1. **Visual Mockups**
+
+    - High-fidelity designs
+    - Light and dark themes
+    - Responsive versions
+    - Interactive states
+
+1. **Component Library**
+
+    - Reusable visual elements
+    - Chart templates
+    - Icon set
+    - Button styles
 
 ## Common Visual Patterns
 
@@ -384,6 +405,7 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 ```
 
 **Design considerations**:
+
 - Title: Short metric name (2-4 words)
 - Value: Formatted with `value_format` parameter
 - Comparison: Automatic with `kpi_card_reference()` (green=positive, red=negative)
@@ -402,7 +424,7 @@ vm.Graph(
     figure=px.scatter(df, x="width", y="length", color="species"),
     title="Relationships between Sepal Width and Sepal Length",
     header="Additional context or description here",
-    footer="SOURCE: **Data source, 2024**"
+    footer="SOURCE: **Data source, 2024**",
 )
 
 # ❌ WRONG - Don't put title in plotly code
@@ -412,6 +434,7 @@ vm.Graph(
 ```
 
 **Visual structure**:
+
 ```
 Title | Subtitle for context
 [Visualization Area]
@@ -419,6 +442,7 @@ Title | Subtitle for context
 ```
 
 ### Alert Visual Treatment
+
 ```
 ⚠️ WARNING (amber background)
 ━━━━━━━━━━━━━━━━━━━━━━
@@ -445,24 +469,25 @@ Before proceeding to Development:
 Once Visual Design is complete:
 
 1. Proceed to **development-implementation** skill
-2. Create design handoff documentation
-3. Export assets (icons, images, logos)
-4. Prepare style guide for developers
+1. Create design handoff documentation
+1. Export assets (icons, images, logos)
+1. Prepare style guide for developers
 
 ## Tips for Success
 
 1. **Less is more** - Avoid chartjunk and decoration
-2. **Consistency matters** - Same thing looks the same everywhere
-3. **Data ink ratio** - Maximize data, minimize non-data ink
-4. **Test with real data** - Lorem ipsum hides issues
-5. **Consider colorblindness** - 8% of men are colorblind
-6. **Mobile first** - Design for smallest screen first
-7. **Performance impacts** - Complex visuals slow dashboards
-8. **Iterate based on feedback** - First design is rarely perfect
+1. **Consistency matters** - Same thing looks the same everywhere
+1. **Data ink ratio** - Maximize data, minimize non-data ink
+1. **Test with real data** - Lorem ipsum hides issues
+1. **Consider colorblindness** - 8% of men are colorblind
+1. **Mobile first** - Design for smallest screen first
+1. **Performance impacts** - Complex visuals slow dashboards
+1. **Iterate based on feedback** - First design is rarely perfect
 
 ## Anti-Patterns to Avoid
 
 ### Never Do This:
+
 - 3D charts (distort perception)
 - Pie charts with >5 slices
 - Dual Y-axes (confusing)

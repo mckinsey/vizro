@@ -29,6 +29,7 @@
 **Preventing crowded components** - two approaches:
 
 **Option 1: Flex Layout (Automatic Spacing)**
+
 - Use `vm.Flex()` at page or container level
 - Automatically distributes components with proper spacing
 - Best for: Simple pages with sequential components
@@ -36,6 +37,7 @@
 - Example: `vm.Page(title="Dashboard", layout=vm.Flex(), components=[...])`
 
 **Option 2: Grid Layout with Row Height Control**
+
 - Use `vm.Grid()` with `row_min_height` parameter for fine-grained control
 - Example: `vm.Grid(grid=[[0, 1], [2, 2]], row_min_height="500px")`
 - Provides precise control over component spacing and scroll behavior
@@ -43,25 +45,27 @@
 - Recommended: Set `row_min_height` high enough so components can render properly
 
 **Grid Configuration Details**:
+
 - Grid provided as `list[list[int]]` where each sub-list is a row
 - Integers correspond to component indices (must be consecutive starting from 0)
 - Components span rectangular areas defined by their repeated index
 - Use `*[[...]] * n` to repeat rows for taller components
 - Example for varying heights:
-  ```python
-  vm.Grid(
-      row_min_height="55px",
-      grid=[
-          [0, 0, 0, 0, 0, 0],              # Full-width header (1 row)
-          *[[1, 1, 1, 1, 1, 1]] * 2,       # Full-width chart (2 rows)
-          *[[2, 2, 2, 3, 3, 3]] * 5,       # Two components side-by-side (5 rows)
-      ]
-  )
-  ```
+    ```python
+    vm.Grid(
+        row_min_height="55px",
+        grid=[
+            [0, 0, 0, 0, 0, 0],  # Full-width header (1 row)
+            *[[1, 1, 1, 1, 1, 1]] * 2,  # Full-width chart (2 rows)
+            *[[2, 2, 2, 3, 3, 3]] * 5,  # Two components side-by-side (5 rows)
+        ],
+    )
+    ```
 - Actual component height = `row_min_height * rows_spanned`
 - Larger grids (e.g., 6 or 12 columns) enable more precise positioning
 
 **Nested Layout Pattern**
+
 - Use Flex at page level for automatic flow
 - Use Grid inside containers for structured sections
 - Example: `vm.Page(layout=vm.Flex(), components=[vm.Graph(...), vm.Container(layout=vm.Grid(...), components=[...])])`
@@ -114,13 +118,14 @@ vizro_colors = [
     "#689f38",  # Green
     "#976fd1",  # Purple
     "#f781bf",  # Light pink
-    "#52733e"   # Olive
+    "#52733e",  # Olive
 ]
 ```
 
 ### When to Specify Colors
 
 **Color selection guidelines**:
+
 - Pick colors from the Vizro core palette above
 - Or derive shades from 1core colors
 - Use "gray" for neutral elements (backgrounds, borders, inactive states)
@@ -258,6 +263,7 @@ Parameters are selector components that modify visualization properties or switc
 **Vizro Built-in KPI Cards**
 
 Vizro provides two built-in KPI card functions:
+
 - `kpi_card()`: Display a single metric value with optional formatting and icons
 - `kpi_card_reference()`: Display a metric with comparison to reference value (shows delta and direction)
 
@@ -297,12 +303,7 @@ Vizro provides two built-in KPI card functions:
 from vizro.figures import kpi_card, kpi_card_reference
 
 # Simple KPI with value
-kpi_card(
-    data_frame=df,
-    value_column="revenue",
-    title="Total Revenue",
-    value_format="${value:,.0f}"
-)
+kpi_card(data_frame=df, value_column="revenue", title="Total Revenue", value_format="${value:,.0f}")
 
 # KPI with reference comparison
 kpi_card_reference(
@@ -311,7 +312,7 @@ kpi_card_reference(
     reference_column="previous_revenue",
     title="Revenue vs Last Month",
     value_format="${value:,.0f}",
-    reference_format="{delta:+.1f}% vs last month"
+    reference_format="{delta:+.1f}% vs last month",
 )
 ```
 
@@ -369,7 +370,7 @@ vm.Graph(
     figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
     title="Relationships between Sepal Width and Sepal Length",  # Title goes here
     header="Additional context or description",  # Optional header for more context
-    footer="SOURCE: **Data source**"  # Optional footer for attribution
+    footer="SOURCE: **Data source**",  # Optional footer for attribution
 )
 
 # ❌ WRONG - Don't put title in plotly code

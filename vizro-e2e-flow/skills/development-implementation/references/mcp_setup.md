@@ -27,12 +27,14 @@ claude mcp add --transport stdio vizro-mcp -- uvx vizro-mcp
 ```
 
 **Understanding the `--` parameter**: The `--` (double dash) separates Claude's CLI flags from the command that runs the MCP server:
+
 - Everything **before** `--`: Claude options (like `--env`, `--scope`, `--transport`)
 - Everything **after** `--`: The actual command to run (`uvx vizro-mcp`)
 
 This prevents conflicts between Claude's flags and the server's flags.
 
 **Note**: If `uvx` is not in your PATH, use the full path:
+
 ```bash
 claude mcp add --transport stdio vizro-mcp -- /usr/local/bin/uvx vizro-mcp
 ```
@@ -48,13 +50,16 @@ Add to your MCP settings file:
   "mcpServers": {
     "vizro-mcp": {
       "command": "uvx",
-      "args": ["vizro-mcp"]
+      "args": [
+        "vizro-mcp"
+      ]
     }
   }
 }
 ```
 
 **Quick install links**:
+
 - Cursor: [Install with UVX](https://cursor.com/en/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)
 - VS Code: [Install with UVX](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)
 
@@ -70,17 +75,21 @@ The vizro-e2e-flow plugin includes an additional MCP server for testing. If you 
 ### Playwright MCP (For UI Testing)
 
 **Claude Code**:
+
 ```bash
 claude mcp add --transport stdio playwright -- npx @playwright/mcp@latest
 ```
 
 **Other clients**: Add to MCP settings:
+
 ```json
 {
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": ["@playwright/mcp@latest"]
+      "args": [
+        "@playwright/mcp@latest"
+      ]
     }
   }
 }
