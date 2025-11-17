@@ -7,7 +7,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -44,7 +44,7 @@ def convert_github_url_to_raw(path_or_url: str) -> str:
 
 
 def load_dataframe_by_format(
-    path_or_url: Union[str, Path], mime_type: Optional[str] = None
+    path_or_url: str | Path, mime_type: str | None = None
 ) -> tuple[pd.DataFrame, Literal["pd.read_csv", "pd.read_json", "pd.read_html", "pd.read_excel", "pd.read_parquet"]]:
     """Load a dataframe based on file format determined by MIME type or file extension."""
     file_path_str_lower = str(path_or_url).lower()

@@ -1,6 +1,6 @@
 import pytest
 
-from vizro._themes.generate_plotly_templates import _extract_last_two_occurrences, extract_bs_variables_from_css
+from vizro._themes._static_template_generator import _extract_last_two_occurrences, extract_bs_variables_from_css
 
 
 @pytest.fixture

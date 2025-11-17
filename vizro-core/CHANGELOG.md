@@ -11,6 +11,40 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.48'></a>
+
+# 0.1.48 — 2025-11-14
+
+## Fixed
+
+- Fix graph rendering bug in flex layouts. ([#1487](https://github.com/mckinsey/vizro/pull/1487))
+
+<a id='changelog-0.1.47'></a>
+
+# 0.1.47 — 2025-10-29
+
+## Added
+
+- Allow hiding `Filter` and `Parameter` by setting `visible=False`. ([#1428](https://github.com/mckinsey/vizro/pull/1428))
+
+- Add a reset button by default, allowing users to restore all page controls to their default values. ([#1437](https://github.com/mckinsey/vizro/pull/1437))
+
+- Add support for `header`, `description` and `footer` in `Card` for more flexible styling. See our user guide on [Cards](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#add-header-and-footer) for an example. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+
+- Make `Card` clickable to trigger actions (e.g. clicking the `Card` to filter another chart). See our user guide on [Actions](<(https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#trigger-an-action-with-a-card)>) for an example. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+
+- Make `Figure` clickable to trigger actions (e.g. clicking the `kpi_card` to filter another chart). ([#1439](https://github.com/mckinsey/vizro/pull/1439))
+
+- `Card` can be the source of a `set_control` action. ([#1443](https://github.com/mckinsey/vizro/pull/1443))
+
+- `Figure` can be the source of a `set_control` action. ([#1439](https://github.com/mckinsey/vizro/pull/1439))
+
+- `Button` can be the source of a `set_control` action. ([#1441](https://github.com/mckinsey/vizro/pull/1441))
+
+## Fixed
+
+- Fix dynamic filters to correctly handle year values (e.g. 1995).([#1450](https://github.com/mckinsey/vizro/pull/1450))
+
 <a id='changelog-0.1.46'></a>
 
 # 0.1.46 — 2025-09-23
