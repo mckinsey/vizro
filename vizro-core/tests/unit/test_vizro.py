@@ -52,11 +52,11 @@ class TestVizroResources:
     @pytest.mark.parametrize(
         "serve_locally, resource_key, resource_value",
         [
-            (True, "relative_package_path", "static/js/models/slider.js"),
+            (True, "relative_package_path", "static/js/models/page.js"),
             (
                 False,
                 "external_url",
-                f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/static/js/models/slider.min.js",
+                f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/static/js/models/page.min.js",
             ),
         ],
     )

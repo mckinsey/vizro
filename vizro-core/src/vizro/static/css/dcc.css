@@ -1,3 +1,4 @@
+/* DROPDOWN  ------------------------------------------------------------ */
 .dash-dropdown {
   background: var(--bs-primary-bg-subtle);
   border: 0;
@@ -44,7 +45,7 @@
   border-top: 1px solid var(--bs-border-color)
 }
 
-/* SLIDER */
+/* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */
 .dash-slider-track {
   height: 2px;
 }
