@@ -22,8 +22,9 @@
   box-shadow: var(--bs-box-shadow);
   color: var(--bs-primary);
   display: inline-flex;
+  font-size: 14px;
   height: 24px;
-  padding: 12px 8px;
+  padding: 4px 8px;
 }
 
 .dash-dropdown-content {
@@ -31,18 +32,50 @@
   border: 0;
   border-radius: var(--bs-border-radius);
   box-shadow: var(--bs-box-shadow-sm);
+  padding-bottom: 4px;
 }
 
 .dash-options-list-option-checkbox {
   border-radius: var(--bs-border-radius);
+
+  /* accent-color: var(--bs-primary-bg-subtle); */
 }
 
 .dash-options-list-option-text {
   color: var(--bs-body-color);
 }
 
+/* Hide commas between selected options in multi-select dropdowns */
+.dash-dropdown-value:has(span + span) {
+  display: flex;
+  font-size: 0;
+  gap: 4px;
+}
+
+.dash-dropdown-value-count {
+  background: var(--text-primary-inverted);
+  padding: 4px 8px;
+}
+
+.dash-dropdown-clear {
+  height: 8px;
+  width: 8px;
+}
+
+.dash-dropdown-trigger {
+  padding: 0 8px;
+}
+
 .dash-dropdown-option {
-  border-top: 1px solid var(--bs-border-color)
+  height: 32px;
+  padding: 6px 8px;
+}
+
+.dash-dropdown-actions {
+    border-bottom: 1px solid var(--bs-border-color);
+    display: flex;
+    gap: 16px;
+    padding: 8px;
 }
 
 /* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */
