@@ -1,18 +1,34 @@
+import pandas as pd
+
 import vizro.plotly.express as px
 import vizro.models as vm
+import vizro.actions as va
 from vizro import Vizro
+from dash import dcc
+from vizro.models.types import capture
+
 
 df = px.data.iris()
 
+
+@capture("action")
+def download_data():
+    return dcc.send_data_frame(df.to_csv, "mydf.csv")
+
+
+@capture("graph")
+def custom_bar(data_frame):
+    return px.bar(data_frame, x="species", y="sepal_width")
+
+
 page_1 = vm.Page(
-    title="BUG theme switch doesn't work with Flex layout",
-    layout=vm.Flex(),
+    title="Vizro download",
     components=[
-        vm.Graph(figure=px.scatter(data_frame=df, x="sepal_width", y="sepal_length")),
-        vm.Graph(figure=px.scatter(data_frame=df.head(10), x="sepal_width", y="sepal_length")),
-        vm.Card(text="test"),
+        vm.Graph(figure=custom_bar(df)),
+        vm.Button(text="Download data", actions=vm.Action(function=download_data(), outputs=["vizro_download"])),
     ],
 )
+
 
 dashboard = vm.Dashboard(pages=[page_1])
 
