@@ -1,20 +1,18 @@
-import vizro.plotly.express as px
-import vizro.models as vm
 from vizro import Vizro
+import vizro.models as vm
+from typing import Literal
+from dash import html
+import dash_bootstrap_components as dbc
 
-df = px.data.iris()
 
-page_1 = vm.Page(
-    title="BUG theme switch doesn't work with Flex layout",
-    layout=vm.Flex(),
-    components=[
-        vm.Graph(figure=px.scatter(data_frame=df, x="sepal_width", y="sepal_length")),
-        vm.Graph(figure=px.scatter(data_frame=df.head(10), x="sepal_width", y="sepal_length")),
-        vm.Card(text="test"),
-    ],
-)
+class CustomDashboard(vm.Dashboard):
+    type: Literal["custom_dashboard"] = "custom_dashboard"
 
-dashboard = vm.Dashboard(pages=[page_1])
+    @staticmethod
+    def custom_header():
+        return [html.Div("Good morning, Li! ☕"), dbc.Badge("Tuesday", color="primary")]
 
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+
+page = vm.Page(title="Page Title", components=[vm.Card(text="""# Placeholder""")])
+dashboard = CustomDashboard(pages=[page], title="Dashboard with custom header")
+Vizro().build(dashboard).run()
