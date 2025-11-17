@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, Self, TypedDict, Union, cast, Any
+from typing import TYPE_CHECKING, Any, Self, TypedDict, Union, cast
 
 import dash
 import plotly.io as pio
