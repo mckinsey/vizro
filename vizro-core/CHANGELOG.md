@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.48'></a>
+
+# 0.1.48 — 2025-11-14
+
+## Fixed
+
+- Fix graph rendering bug in flex layouts. ([#1487](https://github.com/mckinsey/vizro/pull/1487))
+
 <a id='changelog-0.1.47'></a>
 
 # 0.1.47 — 2025-10-29
