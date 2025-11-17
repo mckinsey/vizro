@@ -18,6 +18,8 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataT
 
     Args:
         data_frame: DataFrame containing the data to be displayed.
+
+    Keyword Arguments:
         **kwargs: Additional keyword arguments to be passed to the `dash_table.DataTable` component.
 
     Returns:

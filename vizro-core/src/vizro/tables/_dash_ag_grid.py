@@ -57,7 +57,9 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
 
     Args:
         data_frame: DataFrame containing the data to be displayed.
-        kwargs: Additional keyword arguments to be passed to the `dash_ag_grid.AgGrid` component.
+
+    Keyword Arguments:
+        **kwargs: Additional keyword arguments to be passed to the `dash_ag_grid.AgGrid` component.
 
     Returns:
         A `dash_ag_grid.AgGrid` component with sensible defaults.

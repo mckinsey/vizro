@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, Self, TypedDict, Union, cast
+from typing import TYPE_CHECKING, Self, TypedDict, Union, cast, Any
 
 import dash
 import plotly.io as pio
@@ -30,13 +30,13 @@ if TYPE_CHECKING:
 class Vizro:
     """Vizro app."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any):
         """Initialize a Vizro app.
 
         Abstract: Usage documentation
             [How to run or deploy a dashboard](../user-guides/run-deploy.md/#advanced-dockerfile-configuration)
 
-        Parameters:
+        Keyword Arguments:
             **kwargs: Arbitrary keyword arguments passed through to `Dash`, for example `assets_folder`,
                 `url_base_pathname`. See [Dash documentation](https://dash.plotly.com/reference#dash.dash) for all
                 possible arguments.
@@ -154,10 +154,10 @@ class Vizro:
             self.dash.title = dashboard.title
         return self
 
-    def run(self, **kwargs):  # if type annotated, mkdocstring stops seeing the class
+    def run(self, **kwargs: Any):
         """Runs the dashboard locally using the Flask development server.
 
-        Parameters:
+        Keyword Arguments:
             **kwargs: Arbitrary positional arguments passed through to `Dash.run`, for example `debug`,
                 `port`. See [Dash documentation](https://dash.plotly.com/reference#app.run) for all possible
                 arguments
