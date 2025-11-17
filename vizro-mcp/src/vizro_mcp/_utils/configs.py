@@ -1,7 +1,7 @@
 """Pre-set configs for the Vizro MCP."""
 
 from dataclasses import dataclass
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 
 @dataclass
@@ -10,7 +10,7 @@ class DFMetaData:
     file_path_or_url: str
     file_location_type: Literal["local", "remote"]
     read_function_string: Literal["pd.read_csv", "pd.read_json", "pd.read_html", "pd.read_parquet", "pd.read_excel"]
-    column_names_types: Optional[dict[str, str]] = None
+    column_names_types: dict[str, str] | None = None
 
 
 @dataclass

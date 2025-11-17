@@ -109,7 +109,7 @@ Any attempt at a high-level explanation must rely on an oversimplification that 
 
 All are great entry points to the world of data apps. If you prefer a top-down scripting style, then Streamlit is a powerful approach. If you prefer full control and customization over callbacks and layouts, then Dash is a powerful approach. If you prefer a configuration approach with in-built best practices, and the potential for customization and scalability through Dash, then Vizro is a powerful approach.
 
-For a more detailed comparison, it may help to read introductory articles about [Dash](https://medium.com/plotly/introducing-dash-5ecf7191b503), [Streamlit](https://blog.streamlit.io/streamlit-101-python-data-app/) and [Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db), to see how each tool serves a distinct purpose.
+For a more detailed comparison, it may help to read introductory articles about [Dash](https://medium.com/plotly/introducing-dash-5ecf7191b503), [Streamlit](https://docs.streamlit.io/get-started/fundamentals) and [Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db), to see how each tool serves a distinct purpose.
 
 ## How does Vizro compare with Python packages and business intelligence (BI) tools?
 

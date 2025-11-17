@@ -28,7 +28,7 @@ from typing_extensions import TypedDict
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
-from vizro._themes.template_dashboard_overrides import dashboard_overrides
+from vizro._themes._templates import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
@@ -315,13 +315,10 @@ class Dashboard(VizroBaseModel):
         )
         reset_controls_button = dbc.Button(
             id=f"{page.id}_reset_button",
-            children=html.Span(
-                children=[
-                    html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                    dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
-                ],
-                className="btn-text",
-            ),
+            children=[
+                html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
+            ],
             class_name="btn-circular",
         )
         theme_switch = dbc.Switch(
@@ -351,17 +348,11 @@ class Dashboard(VizroBaseModel):
 
         # Show reset button with the icon in the control panel when both page controls and control panel exist.
         if has_page_controls and not _all_hidden(control_panel):
+            icon = html.Span("reset_settings", className="material-symbols-outlined tooltip-icon")
+            text = html.Span("Reset controls", className="btn-text")
+
             control_panel.children.append(
-                dbc.Button(
-                    id=f"{page.id}_reset_button",
-                    children=html.Span(
-                        children=[
-                            html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                            "Reset controls",
-                        ],
-                        className="btn-text",
-                    ),
-                )
+                dbc.Button(id=f"{page.id}_reset_button", children=[icon, text]),
             )
 
         nav_control_panel_content = [nav_panel, control_panel]
