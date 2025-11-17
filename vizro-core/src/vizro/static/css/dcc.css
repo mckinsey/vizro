@@ -99,6 +99,19 @@
   background-color: var(--text-primary-inverted);
   border-color: var(--bs-primary);
   border-width: 4px;
-  height: 8px;
-  width: 8px;
+  height: 12px;
+  width: 12px;
+}
+
+.dash-slider-mark {
+  color: var(--bs-body-color);
+}
+
+.dash-slider-mark::before {
+  /* background: var(--Dash-Fill-Disabled); */
+  background: none;
+  border-radius: 50%;
+  height: 5px;
+  margin-bottom: 14px;
+  width: 5px;
 }
