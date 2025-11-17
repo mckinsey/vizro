@@ -299,9 +299,7 @@ class Graph(VizroBaseModel):
                 )
             ),
             "config": {
-                "autosizable": True,
                 "frameMargins": 0,
-                "responsive": True,
                 "modeBarButtonsToRemove": ["toImage"],
             },
         }
