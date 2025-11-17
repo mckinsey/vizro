@@ -5,13 +5,14 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, Any, Self, TypedDict, Union, cast
+from typing import TYPE_CHECKING, Any, TypedDict, Union, cast
 
 import dash
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 from packaging.version import parse
+from typing_extensions import Self
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
