@@ -62,6 +62,11 @@ All the HEX values starting with --text-code are taken from the Github code high
   padding: 0.75rem;
 }
 
+.card-wrapper .card,
+.card-wrapper-actions .card {
+  padding: 0;
+}
+
 .card .nav-link {
   height: 100%;
 }

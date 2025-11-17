@@ -84,7 +84,9 @@ filterwarnings = [
   # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
   # Ignore kedro deprecation warning
-  "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning"
+  "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning",
+  # Ignore dash_data_table deprecation warning
+  "ignore:(?s).*The dash_table.DataTable will be removed from the builtin dash components in a future major version:DeprecationWarning"
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"
