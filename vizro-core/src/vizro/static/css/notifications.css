@@ -2,6 +2,7 @@
   background: var(--text-primary);
   box-shadow: var(--bs-box-shadow);
   padding: 12px 8px;
+  margin-top: 16px;
 }
 
 .alert-info {

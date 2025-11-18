@@ -76,7 +76,7 @@ page_1 = vm.Page(
                     message="Check out this new feature!",
                     title="New Feature",
                     variant="success",
-                    icon="celebration",  # Custom Google Material icon
+                    icon="celebration", 
                 )
             ],
         ),
