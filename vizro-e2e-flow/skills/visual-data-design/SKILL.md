@@ -59,6 +59,17 @@ What am I trying to show?
 | Card/KPI | Single metric | Comparisons | 1 value |
 | Map | Geographic data | Non-geographic | Depends on zoom |
 
+**When to use Vizro custom charts**:
+
+Use custom charts (with `@capture("graph")` decorator) when:
+- You need post-update calls (`update_layout`, `update_xaxes`, `update_traces`)
+- You need simple data manipulation (aggregation, filtering) right before visualization
+- Standard `plotly.express` charts don't provide the required customization
+- You want to add reference lines, annotations, or custom interactions
+- You're creating complex visualizations with `plotly.graph_objects.Figure()`
+
+Note: Custom chart implementation is covered in the **development-implementation** skill.
+
 **Deliverable**: Chart type specification for each data visualization.
 
 ### 2. Establish Visual Hierarchy
@@ -358,8 +369,6 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 
 5. **Visual Mockups**
    - High-fidelity designs
-   - Light and dark themes
-   - Responsive versions
    - Interactive states
 
 6. **Component Library**
@@ -454,11 +463,9 @@ Once Visual Design is complete:
 1. **Less is more** - Avoid chartjunk and decoration
 2. **Consistency matters** - Same thing looks the same everywhere
 3. **Data ink ratio** - Maximize data, minimize non-data ink
-4. **Test with real data** - Lorem ipsum hides issues
-5. **Consider colorblindness** - 8% of men are colorblind
-6. **Mobile first** - Design for smallest screen first
-7. **Performance impacts** - Complex visuals slow dashboards
-8. **Iterate based on feedback** - First design is rarely perfect
+4. **Consider colorblindness** - 8% of men are colorblind
+5. **Mobile first** - Design for smallest screen first
+6. **Performance impacts** - Certain visuals slow dashboards (scatter with big data)
 
 ## Anti-Patterns to Avoid
 

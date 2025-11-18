@@ -276,7 +276,7 @@ Vizro provides two built-in KPI card functions:
 
 - **Title**: Short metric name (e.g., "Average Bill", "Revenue")
 - **Value formatting**: Use `value_format` parameter (e.g., `"${value:.2f}"`, `"{value:.1f}%"`)
-- **Icons**: Use `icon` parameter for visual identification (e.g., `"Shopping Cart"`, `"TrendingUp"`)
+- **Icons**: Use `icon` parameter for visual identification (e.g., `"shopping_cart"`, `"trending_up"`). Use icons from Google Material Icons library.
 - **Aggregation**: Specify `agg_func` if needed (e.g., `"sum"`, `"mean"`, `"median"`)
 - **Reference comparison**: Use `kpi_card_reference()` to show change vs. baseline
 - **Color direction**: Use `reverse_color=True` when lower is better (e.g., cost, error rate)
@@ -393,61 +393,6 @@ vm.Graph(
 - Both support markdown formatting
 - Example: `footer="SOURCE: **Plotly iris data set, 2024**"`
 
-## Performance and Loading
-
-### Loading States
-
-**Skeleton Screens**
-
-- Show layout structure while loading
-- Gray rectangles in place of charts
-- Maintains visual hierarchy
-- Better than spinners for perceived performance
-
-**Progressive Loading**
-
-- Load critical KPIs first
-- Load below-fold charts on scroll
-- Lazy load drill-down data
-- Prioritize visible content
-
-## Accessibility
-
-### Screen Reader Support
-
-**ARIA Labels**
-
-- All interactive elements need labels
-- Chart summaries in aria-label
-- Data tables with proper headers
-- Form fields with associated labels
-
-**Example Chart Label**:
-
-```html
-aria-label="Line chart showing revenue trend from Jan to Dec 2024,
-ranging from $1M to $1.5M, with an overall increase of 20%"
-```
-
-### Keyboard Navigation
-
-**Requirements**
-
-- All interactive elements focusable (tabindex)
-- Visible focus indicators
-- Logical tab order (left-to-right, top-to-bottom)
-- Escape key closes modals/dropdowns
-- Arrow keys for navigation within components
-
-### Focus States
-
-**Visual Indicators**
-
-- 2-3px outline or border
-- High contrast color (often blue)
-- Clear but not overwhelming
-- Never remove outlines without replacement
-
 ## Testing and Validation
 
 ### Usability Checklist
@@ -458,24 +403,6 @@ ranging from $1M to $1.5M, with an overall increase of 20%"
 - [ ] Are all charts appropriately sized (not too small)?
 - [ ] Is the color usage consistent across all charts?
 - [ ] Do all tooltips provide useful information?
-- [ ] Have you tested with actual data (not lorem ipsum)?
-
-### Accessibility Checklist
-
-- [ ] All text meets contrast requirements (4.5:1 minimum)
-- [ ] All interactive elements keyboard accessible
-- [ ] Color is not the only means of conveying information
-- [ ] All images and charts have appropriate alt text or ARIA labels
-- [ ] Dashboard usable at 200% zoom
-- [ ] Tested with screen reader (NVDA or JAWS)
-
-### Performance Checklist
-
-- [ ] Initial load time < 3 seconds
-- [ ] Charts render smoothly (no jank)
-- [ ] Filters apply in < 500ms
-- [ ] Dashboard works with slow connections
-- [ ] No memory leaks on long sessions
 
 ## Advanced Considerations
 
@@ -487,25 +414,3 @@ Balance information and clarity:
 - Low density for executive/casual users
 - Use sparklines for inline trends
 - Aggregate when >20 data points
-
-### Real-Time Updates
-
-Consider update frequency:
-
-- Financial markets: Seconds
-- Operational metrics: Minutes
-- Business metrics: Hours/daily
-- Strategic KPIs: Weekly/monthly
-
-Match refresh rate to decision frequency.
-
-### Error and Empty States
-
-Design for edge cases:
-
-- No data available: Helpful message + action
-- Error loading: Clear error + retry option
-- Filters return no results: Suggest alternatives
-- Missing permissions: Explain limitation
-
-Maintain layout integrity in all states.

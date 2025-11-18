@@ -235,7 +235,7 @@ revenue_kpi = vm.Figure(
         value_column="revenue",
         title="Total Revenue",
         value_format="${value:,.0f}",
-        icon="TrendingUp"
+        icon="trending_up" # use icons from Google Material Icons library
     )
 )
 
@@ -264,23 +264,204 @@ cost_kpi = vm.Figure(
 )
 ```
 
-**Custom chart components** (when Vizro built-ins don't fit):
+**Custom chart components** - Create advanced visuals with Vizro's `@capture("graph")` decorator:
+
+Vizro custom charts enable advanced customization and simple data manipulation right before visualization. Use them when standard `plotly.express` charts don't provide enough control.
+
+**When to use custom charts**:
+
+Use the `@capture("graph")` decorator if your plotly chart needs:
+- Post-update calls: `update_layout`, `update_xaxes`, `update_traces`, etc.
+- Simple data manipulation: aggregation, filtering, or transformation before visualization
+- Custom `plotly.graph_objects.Figure()` with manual traces via `add_trace`
+- Reference lines, annotations, or custom styling not available in `plotly.express`
+
+**Steps to create a custom chart**:
+
+1. Define a function that returns a `go.Figure()`
+2. Decorate it with `@capture("graph")`
+3. Function must accept a `data_frame` argument (type: `pandas.DataFrame`)
+4. All data should derive from the `data_frame` argument
+5. Pass your function to the `figure` argument of `vm.Graph`
+
+**Minimal example**:
 ```python
+from vizro.models.types import capture
+import pandas as pd
 import plotly.graph_objects as go
 
-def create_custom_chart(df):
-    """Create custom visualization using Plotly
+@capture("graph")
+def minimal_example(data_frame: pd.DataFrame = None):
+    return go.Figure()
+```
 
-    Note: Let Vizro handle colors automatically when possible.
-    Only specify colors for semantic indicators using Vizro core colors.
+**Example 1: Enhanced scatter with reference line**
+
+This example shows how to enhance a `plotly.express` chart with a parametrized reference line:
+
+```python
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro.models.types import capture
+
+@capture("graph")
+def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None):
+    """Scatter chart with horizontal reference line
+
+    Args:
+        data_frame: Input DataFrame (automatically filtered by Vizro)
+        x, y: Column names for axes
+        color, size: Optional encoding columns
+        hline: Y-value for reference line (can be parametrized)
+    """
+    fig = px.scatter(data_frame=data_frame, x=x, y=y, color=color, size=size)
+    if hline is not None:
+        fig.add_hline(y=hline, line_color="gray", line_dash="dash")
+    return fig
+
+# Usage in dashboard with Parameter control
+page = vm.Page(
+    title="Custom Chart Example",
+    components=[
+        vm.Graph(
+            id="enhanced_scatter",
+            figure=scatter_with_line(
+                data_frame=df,  # or "iris" if using data_manager
+                x="sepal_length",
+                y="sepal_width",
+                color="species",
+                size="petal_width",
+                hline=3  # Default value
+            ),
+            title="Sepal Dimensions",  # Title in vm.Graph, not plotly
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["enhanced_scatter.hline"],
+            selector=vm.Slider(min=2, max=5, step=0.5, value=3, title="Reference Line"),
+        ),
+    ],
+)
+```
+
+**Example 2: Waterfall chart with data manipulation**
+
+This example shows creating a custom chart type using `go.Figure()`:
+
+```python
+import pandas as pd
+import plotly.graph_objects as go
+from vizro.models.types import capture
+
+@capture("graph")
+def waterfall(data_frame, measure, x, y, text, title=None):
+    """Custom waterfall chart with Vizro styling
+
+    Args:
+        data_frame: Input DataFrame
+        measure: Column with "relative" or "total" values
+        x: Category column
+        y: Value column
+        text: Display text column
+        title: Optional chart title (prefer vm.Graph title instead)
     """
     fig = go.Figure()
 
-    # Add your custom chart logic here
-    # Avoid specifying color_discrete_sequence unless necessary
+    fig.add_trace(
+        go.Waterfall(
+            measure=data_frame[measure],
+            x=data_frame[x],
+            y=data_frame[y],
+            text=data_frame[text],
+            # Use Vizro core colors for semantic meaning
+            decreasing={"marker": {"color": "#ff5267"}},  # Red for negative
+            increasing={"marker": {"color": "#08bdba"}},  # Teal for positive
+            totals={"marker": {"color": "#00b4ff"}},      # Blue for totals
+        )
+    )
+
+    if title:
+        fig.update_layout(title=title)
 
     return fig
+
+# Usage
+page = vm.Page(
+    title="Financial Analysis",
+    components=[
+        vm.Graph(
+            figure=waterfall(
+                data_frame=financial_df,
+                measure="measure",
+                x="category",
+                y="value",
+                text="text"
+            ),
+            title="Profit Breakdown",  # Prefer title here
+        ),
+    ],
+    controls=[
+        vm.Filter(column="category", selector=vm.Dropdown(title="Categories")),
+    ],
+)
 ```
+
+**Example 3: Chart with data aggregation**
+
+Use custom charts to perform simple data manipulation before visualization:
+
+```python
+@capture("graph")
+def aggregated_bar(data_frame, category, value, agg_func="sum"):
+    """Bar chart with built-in aggregation
+
+    Args:
+        data_frame: Input DataFrame (already filtered by Vizro)
+        category: Column to group by
+        value: Column to aggregate
+        agg_func: Aggregation function ("sum", "mean", "count")
+    """
+    # Aggregate data
+    if agg_func == "sum":
+        agg_df = data_frame.groupby(category)[value].sum().reset_index()
+    elif agg_func == "mean":
+        agg_df = data_frame.groupby(category)[value].mean().reset_index()
+    else:
+        agg_df = data_frame.groupby(category)[value].count().reset_index()
+
+    # Create chart with aggregated data
+    fig = px.bar(agg_df, x=category, y=value)
+    return fig
+
+# Usage with Parameter to control aggregation
+vm.Graph(
+    id="agg_chart",
+    figure=aggregated_bar(data_frame=df, category="region", value="sales", agg_func="sum")
+)
+
+# Add Parameter to let users change aggregation
+vm.Parameter(
+    targets=["agg_chart.agg_func"],
+    selector=vm.RadioItems(
+        options=["sum", "mean", "count"],
+        value="sum",
+        title="Aggregation"
+    )
+)
+```
+
+**Important notes**:
+
+- Custom charts automatically work with Filters and Parameters without extra configuration
+- The `data_frame` argument receives data **after** filters and parameters are applied
+- For data transformations, consider using Filters, Parameters, or data loading functions instead
+- Let Vizro handle colors automatically unless you need semantic color coding
+- When specifying colors, use Vizro core colors: `["#00b4ff", "#ff9222", "#3949ab", "#ff5267", "#08bdba", "#fdc935", "#689f38", "#976fd1", "#f781bf", "#52733e"]`
+- Chart titles should be in `vm.Graph(title=...)`, not in plotly code
+- Custom charts can be cross-filtering sources/targets like any other graph
+
+**Reference**: https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-charts/
 
 **Component library checklist**:
 - [ ] KPI cards

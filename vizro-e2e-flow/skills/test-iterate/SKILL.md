@@ -9,7 +9,7 @@ description: Stage 5 of Vizro dashboard development. USE AFTER completing develo
 
 Test & Iterate validates that your dashboard works correctly before sharing with stakeholders. This is a basic smoke test to catch obvious issues.
 
-**Key Focus**: Verify the dashboard launches, has no errors, navigation works, controls function, and layout looks reasonable.
+**Key Focus**: Verify the dashboard launches, has no errors, navigation of each page works, controls function, and layout looks reasonable.
 
 **Out of Scope**: Performance testing, usability studies, deployment preparation, and production monitoring.
 
@@ -17,7 +17,7 @@ Test & Iterate validates that your dashboard works correctly before sharing with
 
 ### Overview
 
-For testing, we **strongly recommend** using Playwright MCP server that enables AI-assisted browser automation. This tool allows Claude to directly test your dashboard by interacting with the UI and checking for issues.
+For testing, use Playwright MCP server that enables AI-assisted browser automation. This tool allows Claude to directly test your dashboard by interacting with the UI and checking for issues.
 
 **Good news**: Playwright MCP is **pre-configured** with the vizro-e2e-flow plugin! It's automatically available when you install this plugin - no additional setup required.
 
@@ -176,7 +176,3 @@ Your dashboard is ready when:
 ### MCP-Based Testing (Recommended)
 **Note**: Playwright MCP is pre-configured with the vizro-e2e-flow plugin
 - Playwright MCP: https://github.com/microsoft/playwright-mcp
-
-### Traditional Testing Tools
-- Vizro Testing Guide: https://vizro.readthedocs.io/en/stable/pages/user-guides/testing/
-- Selenium WebDriver: https://selenium-python.readthedocs.io/
