@@ -8,67 +8,151 @@ import pytest
 from kedro.config import OmegaConfigLoader
 from packaging.version import parse
 
-from vizro.integrations.kedro import datasets_from_catalog
+from vizro.integrations.kedro import datasets_from_catalog, catalog_from_project, pipelines_from_project
 
-LEGACY_KEDRO = parse(version("kedro")) < parse("1.0.0")
-
-if not LEGACY_KEDRO:
+# KedroDataCatalog was experimental in kedro<1 and became the new DataCatalog in Kedro 1.0.0.
+# Before 1.0.0, we need to support both the old DataCatalog and then new KedroDataCatalog
+# Kedro projects are created with the following commands and the
+# dummy_confusion_matrix removed since it's matplotlib.MatplotlibWriter that needs an extra dependency:
+# kedro new --name=kedro_1-0-0_project --tools=none --example=yes --telemetry=no
+if parse(version("kedro")) >= parse("1.0.0"):
     from kedro.io import DataCatalog
 
+    kedro_project_path = Path(__file__).parent / "kedro-1-0-0-project"
     data_catalog_classes = [DataCatalog]
 else:
-    # KedroDataCatalog only exists and hence can only be tested against in kedro<1.
-    # We could also still test against DataCatalog, but that would require filtering the deprecation warnings.
-    # Since there is no development expected on DataCatalog before deprecation, we might as well only test
-    # KedroDataCatalog
-    from kedro.io import KedroDataCatalog
+    from kedro.io import DataCatalog as LegacyDataCatalog, KedroDataCatalog as DataCatalog
 
-    data_catalog_classes = [KedroDataCatalog]
+    kedro_project_path = Path(__file__).parent / "kedro-0-19-12-project"
+    data_catalog_classes = [DataCatalog, LegacyDataCatalog]
 
 
+# Fetch catalog from catalog.yml that does not live in a real project. This gives us a way to
+# test dataset factories. We test both new and legacy DataCatalog classes for kedro < 1.0.0.
 @pytest.fixture(params=data_catalog_classes)
-def catalog(request):
-    catalog_class = request.param
-    conf_loader = OmegaConfigLoader(conf_source=str(Path(__file__).parent))
-    return catalog_class.from_config(conf_loader["catalog"])
+def catalog_no_project(request):
+    data_catalog_class = request.param
+    source = Path(__file__).parent / "not-kedro-project"
+    conf_loader = OmegaConfigLoader(source)
+    return data_catalog_class.from_config(conf_loader["catalog"])
 
 
-def test_datasets_from_catalog(catalog, mocker):
-    datasets = datasets_from_catalog(catalog)
-    assert datasets == {"pandas_excel": mocker.ANY, "pandas_parquet": mocker.ANY}
+class TestCatalogFromProject:
+    def test_save_on_close(self):
+        with pytest.raises(ValueError, match="`catalog_from_project` cannot run with `save_on_close=True`."):
+            catalog_from_project(save_on_close=True)
 
-    # Make sure that dataset_name is bound early to the data loading function.
-    mocker.patch.object(catalog, "load")
-    for dataset_name, dataset_loader in datasets.items():
-        dataset_loader()
-        catalog.load.assert_called_with(dataset_name)
+    def test_invalid_project_path(self, monkeypatch):
+        # Error raised by Kedro when invalid project_path supplied.
+        with pytest.raises(RuntimeError, match="Could not find the project configuration file 'pyproject.toml'"):
+            catalog_from_project(project_path=kedro_project_path.parent)
 
-
-def test_datasets_from_catalog_with_pipeline(catalog, mocker):
-    pipeline = kp.pipeline(
+    # When no project_path is supplied explicitly, catalog_from_projects infers it automatically.
+    @pytest.mark.parametrize(
+        "cwd, project_path",
         [
-            kp.node(
-                func=lambda *args: None,
-                inputs=[
-                    "pandas_excel",
-                    "something#csv",
-                    "something_else#csv",
-                    "not_dataframe",
-                    "not_in_catalog",
-                    "parameters",
-                    "params:z",
-                ],
-                outputs=None,
-            ),
-        ]
+            (None, kedro_project_path),  # cwd doesn't matter if project_path given explicitly.
+            (kedro_project_path, None),  # project_path inferred automatically if at root of project.
+            (kedro_project_path / "conf", None),  # project_path inferred automatically if inside project.
+        ],
     )
+    def test_catalog_from_project(self, monkeypatch, cwd, project_path):
+        if cwd is not None:
+            monkeypatch.chdir(cwd)
+        # Filter out parameters that are added by Kedro context and we don't care about.
+        dataset_names = {
+            dataset_name
+            for dataset_name in catalog_from_project(project_path)
+            if not (dataset_name.startswith("params:") or dataset_name == "parameters")
+        }
+        assert dataset_names == {
+            "companies",
+            "model_input_table",
+            "preprocessed_companies",
+            "preprocessed_shuttles",
+            "regressor",
+            "reviews",
+            "shuttle_passenger_capacity_plot_exp",
+            "shuttle_passenger_capacity_plot_go",
+            "shuttles",
+        }
 
-    datasets = datasets_from_catalog(catalog, pipeline=pipeline)
-    expected_dataset_names = {"pandas_excel", "pandas_parquet", "something#csv", "something_else#csv"}
-    assert datasets == dict.fromkeys(expected_dataset_names, mocker.ANY)
 
-    # Make sure that dataset_name is bound early to the data loading function.
-    mocker.patch.object(catalog, "load")
-    for dataset_name, dataset_loader in datasets.items():
-        dataset_loader()
-        catalog.load.assert_called_with(dataset_name)
+class TestPipelinesFromProject:
+    @pytest.mark.parametrize(
+        "cwd, project_path",
+        [
+            (None, kedro_project_path),  # cwd doesn't matter if project_path given explicitly.
+            (kedro_project_path, None),  # project_path inferred automatically if at root of project.
+            (kedro_project_path / "conf", None),  # project_path inferred automatically if inside project.
+        ],
+    )
+    def test_pipelines_from_project(self, monkeypatch, cwd, project_path):
+        if cwd is not None:
+            monkeypatch.chdir(cwd)
+        assert set(pipelines_from_project(project_path)) == {"__default__", "data_processing"}
+
+
+class TestDatasetsFromCatalog:
+    def test_catalog_no_pipeline(self, catalog_no_project, mocker):
+        datasets = datasets_from_catalog(catalog_no_project)
+        assert set(datasets) == {"pandas_excel", "pandas_parquet"}
+
+        # Make sure that dataset_name is bound early to the data loading function.
+        mocker.patch.object(catalog_no_project, "release")
+        mocker.patch.object(catalog_no_project, "load")
+        for dataset_name, dataset_loader in datasets.items():
+            dataset_loader()
+            catalog_no_project.release.assert_called_with(dataset_name)
+            catalog_no_project.load.assert_called_with(dataset_name)
+
+    # A bit of an integration test on a real project.
+    def test_catalog_project_no_pipeline(self, mocker):
+        catalog = catalog_from_project(kedro_project_path)
+        datasets = datasets_from_catalog(catalog)
+        assert set(datasets) == {
+            "companies",
+            "model_input_table",
+            "preprocessed_companies",
+            "preprocessed_shuttles",
+            "reviews",
+            "shuttles",
+        }
+
+        # Make sure that dataset_name is bound early to the data loading function.
+        mocker.patch.object(catalog, "release")
+        mocker.patch.object(catalog, "load")
+        for dataset_name, dataset_loader in datasets.items():
+            dataset_loader()
+            catalog.release.assert_called_with(dataset_name)
+            catalog.load.assert_called_with(dataset_name)
+
+    def test_catalog_with_pipeline(self, catalog_no_project, mocker):
+        pipeline = kp.pipeline(
+            [
+                kp.node(
+                    func=lambda *args: None,
+                    inputs=[
+                        "pandas_excel",
+                        "something#csv",
+                        "something_else#csv",
+                        "not_dataframe",
+                        "not_in_catalog",
+                        "parameters",
+                        "params:z",
+                    ],
+                    outputs=None,
+                ),
+            ]
+        )
+
+        datasets = datasets_from_catalog(catalog_no_project, pipeline=pipeline)
+        assert set(datasets) == {"pandas_excel", "pandas_parquet", "something#csv", "something_else#csv"}
+
+        # Make sure that dataset_name is bound early to the data loading function.
+        mocker.patch.object(catalog_no_project, "release")
+        mocker.patch.object(catalog_no_project, "load")
+        for dataset_name, dataset_loader in datasets.items():
+            dataset_loader()
+            catalog_no_project.release.assert_called_with(dataset_name)
+            catalog_no_project.load.assert_called_with(dataset_name)

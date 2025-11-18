@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from importlib.metadata import version
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
@@ -10,14 +10,14 @@ from kedro.pipeline import Pipeline
 from packaging.version import parse
 
 # find_kedro_project was made public in 1.0.0.
-if parse(version("kedro")) >= parse("1"):
+if parse(version("kedro")) >= parse("1.0.0"):
     from kedro.utils import find_kedro_project
 else:
     from kedro.utils import _find_kedro_project as find_kedro_project
 
-from kedro.io import DataCatalog
-
 from vizro.managers._data_manager import pd_DataFrameCallable
+
+from kedro.io import DataCatalog
 
 
 def _infer_project_path(project_path) -> Union[str, Path]:
@@ -44,11 +44,10 @@ def catalog_from_project(project_path: Optional[Union[str, Path]] = None, **kwar
         >>> from vizro.integrations import kedro as kedro_integration
         >>> catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
     """
-    # Add tests, API docs, check narrative docs, then done
+
+    # todo: API docs, check narrative docs, then done
     if kwargs.get("save_on_close"):
-        # TODO: test
         raise ValueError("`catalog_from_project` cannot run with `save_on_close=True`.")
-    # TODO: test whole funciton
     project_path = _infer_project_path(project_path)
     bootstrap_project(project_path)
     with KedroSession.create(project_path=project_path, save_on_close=False, **kwargs) as session:
@@ -76,6 +75,39 @@ def pipelines_from_project(project_path: Optional[Union[str, Path]] = None) -> d
     return pipelines
 
 
+def _legacy_datasets_from_catalog(catalog: DataCatalog, pipeline: Pipeline = None) -> dict[str, pd_DataFrameCallable]:
+    # The old version of datasets_from_catalog from before https://github.com/mckinsey/vizro/pull/1493.
+    # This is used when catalog is an old DataCatalog rather than the new KedroDataCatalog (only possible in kedro <
+    # 1.0.0).
+    # This doesn't include things added to the catalog at run time but that is ok for our purposes.
+    config_resolver = catalog.config_resolver
+    kedro_datasets = config_resolver.config.copy()
+
+    if pipeline:
+        # Go through all dataset names that weren't in catalog and try to resolve them. Those that cannot be
+        # resolved give an empty dictionary and are ignored.
+        for dataset_name in set(pipeline.datasets()) - set(kedro_datasets):
+            if dataset_config := config_resolver.resolve_pattern(dataset_name):
+                kedro_datasets[dataset_name] = dataset_config
+
+    def _catalog_release_load(dataset_name: str):
+        # release is needed to clear the Kedro load version cache so that the dashboard always fetches the most recent
+        # version rather than being stuck on the same version as when the app started.
+        catalog.release(dataset_name)
+        return catalog.load(dataset_name)
+
+    vizro_data_sources = {}
+
+    for dataset_name, dataset_config in kedro_datasets.items():
+        # "type" key always exists because we filtered out patterns that resolve to empty dictionary above.
+        if "pandas" in dataset_config["type"]:
+            # We need to bind dataset_name=dataset_name early to avoid dataset_name late-binding to the last value in
+            # the for loop.
+            vizro_data_sources[dataset_name] = lambda dataset_name=dataset_name: _catalog_release_load(dataset_name)
+
+    return vizro_data_sources
+
+
 # Technically on Kedro the DATA_CATALOG_CLASS is constrained to implement the more general CatalogProtocol rather than
 # DataCatalog (the default value for kedro>=1), which was called KedroDataCatalog < 1. Here we rely on it being
 # DataCatalog rather than any implementation of CatalogProtocol, since DataCatalog provides the very useful filter
@@ -97,6 +129,11 @@ def datasets_from_catalog(catalog: DataCatalog, *, pipeline: Pipeline = None) ->
         >>> from vizro.integrations import kedro as kedro_integration
         >>> dataset_loaders = kedro_integration.datasets_from_catalog(catalog)
     """
+    # Legacy methods are only relevant for the case that catalog is the old DataCatalog that doesn't support
+    # filter.
+    if parse(version("kedro")) < parse("1.0.0") and not hasattr(catalog, "filter"):
+        return _legacy_datasets_from_catalog(catalog, pipeline)
+
     if pipeline:
         # Resolve dataset factory patterns, i.e. datasets that are used in pipeline but not explicitly defined in the
         # catalog. After this, subsequent catalog.filter calls contain the resolved dataset patterns too.
@@ -109,11 +146,9 @@ def datasets_from_catalog(catalog: DataCatalog, *, pipeline: Pipeline = None) ->
         catalog.release(dataset_name)
         return catalog.load(dataset_name)
 
-    vizro_data_sources = {}
-
-    for dataset_name in catalog.filter(type_regex="pandas"):
-        # We need to bind dataset_name=dataset_name early to avoid dataset_name late-binding to the last value in
-        # the for loop.
-        vizro_data_sources[dataset_name] = lambda dataset_name=dataset_name: _catalog_release_load(dataset_name)
-
-    return vizro_data_sources
+    # We need to bind dataset_name=dataset_name early to avoid dataset_name late-binding to the last value in
+    # the for loop.
+    return {
+        dataset_name: lambda dataset_name=dataset_name: _catalog_release_load(dataset_name)
+        for dataset_name in catalog.filter(type_regex="pandas")
+    }
