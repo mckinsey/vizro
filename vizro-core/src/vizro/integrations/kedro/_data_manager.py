@@ -9,8 +9,10 @@ from kedro.framework.startup import bootstrap_project
 from kedro.pipeline import Pipeline
 from packaging.version import parse
 
-# find_kedro_project was made public in 1.0.0.
-if parse(version("kedro")) >= parse("1.0.0"):
+# find_kedro_project was not public until 1.0.0.
+LEGACY_KEDRO = parse(version("kedro")) < parse("1.0.0")
+
+if not LEGACY_KEDRO:
     from kedro.utils import find_kedro_project
 else:
     from kedro.utils import _find_kedro_project as find_kedro_project
@@ -77,8 +79,7 @@ def pipelines_from_project(project_path: Optional[Union[str, Path]] = None) -> d
 
 def _legacy_datasets_from_catalog(catalog: DataCatalog, pipeline: Pipeline = None) -> dict[str, pd_DataFrameCallable]:
     # The old version of datasets_from_catalog from before https://github.com/mckinsey/vizro/pull/1493.
-    # This is used when catalog is an old DataCatalog rather than the new KedroDataCatalog (only possible in kedro <
-    # 1.0.0).
+    # This is used when catalog for Kedro < 1.0.0.
     # This doesn't include things added to the catalog at run time but that is ok for our purposes.
     config_resolver = catalog.config_resolver
     kedro_datasets = config_resolver.config.copy()
@@ -129,9 +130,9 @@ def datasets_from_catalog(catalog: DataCatalog, *, pipeline: Pipeline = None) ->
         >>> from vizro.integrations import kedro as kedro_integration
         >>> dataset_loaders = kedro_integration.datasets_from_catalog(catalog)
     """
-    # Legacy methods are only relevant for the case that catalog is the old DataCatalog that doesn't support
-    # filter.
-    if parse(version("kedro")) < parse("1.0.0") and not hasattr(catalog, "filter"):
+    # Legacy function is technically only necessary for kedro<1 with old DataCatalog that doesn't support filter, but
+    # we use it for the kedro<1 with KedroDataCatalog case too for simplicity.
+    if LEGACY_KEDRO:
         return _legacy_datasets_from_catalog(catalog, pipeline)
 
     if pipeline:

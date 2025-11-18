@@ -12,10 +12,17 @@ from vizro.integrations.kedro import datasets_from_catalog, catalog_from_project
 
 # KedroDataCatalog was experimental in kedro<1 and became the new DataCatalog in Kedro 1.0.0.
 # Before 1.0.0, we need to support both the old DataCatalog and then new KedroDataCatalog
-# Kedro projects are created with the following commands and the
-# dummy_confusion_matrix removed since it's matplotlib.MatplotlibWriter that needs an extra dependency:
-# kedro new --name=kedro_1-0-0_project --tools=none --example=yes --telemetry=no
-if parse(version("kedro")) >= parse("1.0.0"):
+# Kedro projects are created with the following command. Note you can't just do `kedro new --example` or it will not
+# use the starter of the right version.
+# kedro new --name=kedro_<version>_project --starter=spaceflights-pandas --telemetry=no --checkout==<version>h
+# Then remove:
+#  * dummy_confusion_matrix entry in catalog.yml because it has different dependencies for different
+#    Kedro versions.
+#  * Kedro project tests directory so pytest doesn't get confused.
+
+LEGACY_KEDRO = parse(version("kedro")) < parse("1.0.0")
+
+if not LEGACY_KEDRO:
     from kedro.io import DataCatalog
 
     kedro_project_path = Path(__file__).parent / "kedro-1-0-0-project"
@@ -60,11 +67,21 @@ class TestCatalogFromProject:
         if cwd is not None:
             monkeypatch.chdir(cwd)
         # Filter out parameters that are added by Kedro context and we don't care about.
-        dataset_names = {
-            dataset_name
-            for dataset_name in catalog_from_project(project_path)
-            if not (dataset_name.startswith("params:") or dataset_name == "parameters")
-        }
+        catalog = catalog_from_project(project_path)
+        if not LEGACY_KEDRO:
+            dataset_names = {
+                dataset_name
+                for dataset_name in catalog
+                if not (dataset_name.startswith("params:") or dataset_name == "parameters")
+            }
+        else:
+            # catalog itself is not iterable: need to use catalog.list.
+            dataset_names = {
+                dataset_name
+                for dataset_name in catalog.list()
+                if not (dataset_name.startswith("params:") or dataset_name == "parameters")
+            }
+
         assert dataset_names == {
             "companies",
             "model_input_table",
@@ -90,7 +107,12 @@ class TestPipelinesFromProject:
     def test_pipelines_from_project(self, monkeypatch, cwd, project_path):
         if cwd is not None:
             monkeypatch.chdir(cwd)
-        assert set(pipelines_from_project(project_path)) == {"__default__", "data_processing"}
+        assert set(pipelines_from_project(project_path)) == {
+            "__default__",
+            "data_science",
+            "data_processing",
+            "reporting",
+        }
 
 
 class TestDatasetsFromCatalog:
