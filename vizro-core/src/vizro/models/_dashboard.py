@@ -206,8 +206,11 @@ class Dashboard(VizroBaseModel):
         # children=[layout] as a list rather than children=layout, so that app.dash.layout.children.append works to
         # easily add things to the Dash layout. In future we might have a neater function for patching components into
         # the Dash layout in which case this could change.
+        # NotificationContainer must be a direct child of MantineProvider to enable DMC's notification system.
+        # Actions output to "notification-container.sendNotifications" to display notifications. For more info see:
+        # https://www.dash-mantine-components.com/components/notification
         return dmc.MantineProvider(
-            children=[layout],
+            children=[dmc.NotificationContainer(position="top-right", limit=10, id="notification-container"), layout],
             # Use the `theme` to style all Mantine components with a Vizro theme. For more info see https://www.dash-mantine-components.com/components/mantineprovider
             theme={"primaryColor": "gray"},
         )

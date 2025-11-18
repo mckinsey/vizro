@@ -721,14 +721,16 @@ ActionType = Annotated[
         Annotated["export_data", Tag("export_data")],
         Annotated["filter_interaction", Tag("filter_interaction")],
         Annotated["set_control", Tag("set_control")],
+        Annotated["show_notification", Tag("show_notification")],
         SkipJsonSchema[Annotated["_filter", Tag("_filter")]],
         SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]],
         SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
     ],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
-"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
-`filter_interaction`][vizro.models.filter_interaction]."""
+"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data],
+[`filter_interaction`][vizro.models.filter_interaction], [`set_control`][vizro.models.set_control], or
+[`show_notification`][vizro.models.show_notification]."""
 
 # TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
