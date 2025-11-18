@@ -210,7 +210,10 @@ class Dashboard(VizroBaseModel):
         # Actions output to "notification-container.sendNotifications" to display notifications. For more info see:
         # https://www.dash-mantine-components.com/components/notification
         return dmc.MantineProvider(
-            children=[dmc.NotificationContainer(position="top-right", limit=10, id="notification-container"), layout],
+            children=[
+                dmc.NotificationContainer(position="bottom-right", limit=10, id="notification-container"),
+                layout,
+            ],
             # Use the `theme` to style all Mantine components with a Vizro theme. For more info see https://www.dash-mantine-components.com/components/mantineprovider
             theme={"primaryColor": "gray"},
         )

@@ -1,0 +1,59 @@
+.alert-info, .alert-success, .alert-warning, .alert-error {
+  background: var(--text-primary);
+  box-shadow: var(--bs-box-shadow);
+  padding: 12px 8px;
+}
+
+.alert-info {
+  border-left: 4px solid var(--bs-info);
+}
+
+.alert-success {
+  border-left: 4px solid var(--bs-success);
+}
+
+.alert-warning {
+  border-left: 4px solid var(--bs-warning);
+}
+
+.alert-error {
+  border-left: 4px solid var(--bs-danger);
+}
+
+.alert-info .material-symbols-outlined {
+  color: var(--bs-info);
+}
+
+.alert-success .material-symbols-outlined {
+  color: var(--bs-success);
+}
+
+.alert-warning .material-symbols-outlined {
+  color: var(--bs-warning);
+}
+
+.alert-error .material-symbols-outlined {
+  color: var(--bs-danger);
+}
+
+.mantine-Notification-description {
+  color: var(--text-secondary-inverted);
+}
+
+.mantine-Notification-title {
+  color: var(--text-primary-inverted);
+  font-weight: 600;
+}
+
+.mantine-Notification-icon {
+  background: none;
+}
+
+.mantine-Notification-closeButton {
+  background: none;
+  color: var(--text-secondary-inverted);
+  &:hover {
+    background: none;
+    color: var(--text-primary-inverted);
+  }
+}

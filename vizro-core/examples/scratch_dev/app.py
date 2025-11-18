@@ -15,7 +15,7 @@ page_1 = vm.Page(
                 va.show_notification(
                     message="Operation completed successfully!",
                     title="Success",
-                    kind="success",
+                    variant="success",
                 )
             ],
         ),
@@ -25,8 +25,7 @@ page_1 = vm.Page(
                 va.show_notification(
                     message="Please review this warning message.",
                     title="Warning",
-                    kind="warning",
-                    auto_close=5000,
+                    variant="warning",
                 )
             ],
         ),
@@ -36,8 +35,7 @@ page_1 = vm.Page(
                 va.show_notification(
                     message="An error occurred during the operation.",
                     title="Error",
-                    kind="error",
-                    auto_close=6000,
+                    variant="error",
                 )
             ],
         ),
@@ -47,7 +45,7 @@ page_1 = vm.Page(
                 va.show_notification(
                     message="Here's some useful information for you.",
                     title="Info",
-                    kind="info",
+                    variant="info",
                 )
             ],
         ),
@@ -57,7 +55,7 @@ page_1 = vm.Page(
                 va.show_notification(
                     message="This notification will stay until you close it manually.",
                     title="Persistent",
-                    kind="info",
+                    variant="info",
                     auto_close=False,
                 )
             ],
@@ -67,7 +65,7 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="A simple notification without a title.",
-                    kind="info",
+                    variant="info",
                 )
             ],
         ),
@@ -77,7 +75,7 @@ page_1 = vm.Page(
                 va.show_notification(
                     message="Check out this new feature!",
                     title="New Feature",
-                    kind="success",
+                    variant="success",
                     icon="celebration",  # Custom Google Material icon
                 )
             ],
@@ -88,9 +86,8 @@ page_1 = vm.Page(
                 va.show_notification(
                     message="Processing your request...",
                     title="Loading",
-                    kind="info",
+                    variant="info",
                     loading=True,
-                    auto_close=False,
                 )
             ],
         ),
