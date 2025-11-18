@@ -18,7 +18,7 @@ page = vm.Page(
         ),
         # vm.Card(text="Placeholder")
     ],
-    layout=vm.Flex()
+    # layout=vm.Flex()
 )
 
 dashboard = vm.Dashboard(pages=[page])
