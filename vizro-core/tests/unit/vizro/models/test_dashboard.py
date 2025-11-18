@@ -335,6 +335,7 @@ class TestDashboardBuild:
 
         expected_dashboard_container = dmc.MantineProvider(
             children=[
+                dmc.NotificationContainer(position="bottom-right", limit=10, id="notification-container"),
                 html.Div(
                     id="dashboard-container",
                     children=[
