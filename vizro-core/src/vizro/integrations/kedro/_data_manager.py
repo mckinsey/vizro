@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from importlib.metadata import version
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import Any, Optional, Union
 
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
@@ -15,9 +15,9 @@ if parse(version("kedro")) >= parse("1"):
 else:
     from kedro.utils import _find_kedro_project as find_kedro_project
 
-from vizro.managers._data_manager import pd_DataFrameCallable
-
 from kedro.io import DataCatalog
+
+from vizro.managers._data_manager import pd_DataFrameCallable
 
 
 def _infer_project_path(project_path) -> Union[str, Path]:
@@ -44,7 +44,6 @@ def catalog_from_project(project_path: Optional[Union[str, Path]] = None, **kwar
         >>> from vizro.integrations import kedro as kedro_integration
         >>> catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
     """
-
     # Add tests, API docs, check narrative docs, then done
     if kwargs.get("save_on_close"):
         # TODO: test
