@@ -52,6 +52,7 @@
 .mantine-Notification-closeButton {
   background: none;
   color: var(--text-secondary-inverted);
+
   &:hover {
     background: none;
     color: var(--text-primary-inverted);
