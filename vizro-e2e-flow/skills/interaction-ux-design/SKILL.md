@@ -11,6 +11,35 @@ Interaction Design translates the Information Architecture into user-friendly na
 
 **Key Focus**: Decide how users navigate and explore data — the layout logic, flow between overview and detail, and placement of filters and controls.
 
+## OUTPUT PRESERVATION NOTICE
+Your outputs from this stage are BINDING CONTRACTS for later stages.
+
+## REQUIRED OUTPUT: spec/2_interaction_ux.yaml
+
+Create a specification file documenting layout and interaction decisions:
+
+```yaml
+# spec/2_interaction_ux.yaml
+pages:
+  - name: string  # Must match stage 1
+    layout_type: "grid" or "flex"
+    grid_pattern: list[list[int]] if grid  # e.g., [[0,1], [2,3]]
+
+    containers:
+      - name: string
+        has_own_filters: boolean
+
+    filter_placement:
+      page_level: list[string]  # Left sidebar
+      container_level: list[string]  # Inside containers
+```
+
+Save this file BEFORE proceeding to visual-data-design.
+
+## BINDING IMPLEMENTATION CONTRACT
+
+This wireframe creates a contract for development-implementation stage to follow.
+
 ## Process Workflow
 
 ### 1. Define Navigation Structure

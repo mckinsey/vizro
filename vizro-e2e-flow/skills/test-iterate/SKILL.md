@@ -13,6 +13,46 @@ Test & Iterate validates that your dashboard works correctly before sharing with
 
 **Out of Scope**: Performance testing, usability studies, deployment preparation, and production monitoring.
 
+## MANDATORY: Design Compliance Validation
+
+**BEFORE ANY OTHER TESTING**, validate that the implementation matches the design specifications:
+
+```python
+# Load specs from previous stages
+# Compare running dashboard against specs
+# Document any discrepancies
+```
+
+## DESIGN COMPLIANCE CHECKLIST
+
+Compare the running dashboard against design specifications:
+
+### Visual Design Compliance
+
+
+### Layout Compliance (from wireframes)
+
+
+### Information Architecture Compliance
+
+
+## REQUIRED OUTPUT: spec/5_validation_report.yaml
+
+Create a validation report documenting test results:
+
+```yaml
+# spec/5_validation_report.yaml
+design_compliance:
+  matches_specs: boolean
+  deviations: list[string]
+
+functional_tests:
+  all_passed: boolean
+  issues_found: list[string]
+
+dashboard_ready: boolean
+```
+
 ## MCP-Based Testing (Recommended)
 
 ### Overview

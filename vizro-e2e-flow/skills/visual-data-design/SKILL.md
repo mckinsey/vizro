@@ -11,6 +11,29 @@ Visual Design transforms wireframes into polished, professional dashboards that 
 
 **Key Focus**: Translate analytical goals into clear and engaging visuals. Choose chart types, establish hierarchy, and apply consistent visual language.
 
+## OUTPUT PRESERVATION NOTICE
+Your outputs from this stage are BINDING CONTRACTS for implementation.
+
+## REQUIRED OUTPUT: spec/3_visual_design.yaml
+
+Create a specification file defining visual implementation requirements:
+
+```yaml
+# spec/3_visual_design.yaml
+charts_needing_custom_implementation:
+  - name: string
+    reason: "has_reference_line" or "has_annotations" or "needs_data_processing"
+
+components_needing_colors:
+  - name: string
+    reason: string
+    color_choice: list[string]
+
+```
+
+Save this file BEFORE proceeding to development-implementation.
+
+
 ## Process Workflow
 
 ### 1. Select Chart Types
@@ -193,22 +216,9 @@ neutral_color = "gray"
 
 ### 4. Design Typography System
 
-**Vizro typography hierarchy**:
+**Vizro typography hierarchy**: Leverage Vizro default
 
-```
-Dashboard Title: 24-28px, bold
-Page Title: 20-24px, semibold
-Section Header: 16-18px, semibold
-Chart Title: 14-16px, medium
-Body Text: 12-14px, regular
-Labels: 10-12px, regular
-Footnotes: 9-10px, regular
-```
-
-**Font recommendations**:
-- Primary: System fonts (faster loading)
-- Fallback stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
-- Monospace (for numbers): "SF Mono", Monaco, Consolas, "Courier New", monospace
+**Font recommendations**: Leverage Vizro default
 
 **Number formatting**:
 - Use consistent decimal places
@@ -217,7 +227,7 @@ Footnotes: 9-10px, regular
 - Align numbers right in tables
 - Use monospace for better alignment
 
-**Deliverable**: Typography specifications with sizes and weights.
+**Deliverable**: Typography specifications.
 
 ### 5. Apply Data Storytelling Principles
 

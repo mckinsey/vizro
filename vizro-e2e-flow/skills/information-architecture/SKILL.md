@@ -11,6 +11,35 @@ Information Architecture (IA) is the foundational stage of dashboard development
 
 **Key Focus**: Define the overall information structure — what analytical questions each page answers, and how insights are grouped across pages or tabs.
 
+## OUTPUT PRESERVATION NOTICE
+Your outputs from this stage are BINDING CONTRACTS for later stages:
+- Page structure → MUST be implemented exactly in development
+- KPI definitions → MUST appear in visual design
+- Data groupings → MUST be preserved in layouts
+- Analytical questions → MUST drive interaction patterns
+
+## REQUIRED OUTPUT: spec/1_information_architecture.yaml
+
+Create a structured specification file with your dashboard's information architecture:
+
+```yaml
+# spec/1_information_architecture.yaml
+dashboard:
+  name: string
+  purpose: string
+
+pages:
+  - name: string
+    purpose: string
+    kpis: list[string]
+
+data_sources:
+  - name: string
+    type: string
+```
+
+Save this file BEFORE proceeding to the next stage.
+
 ## Process Workflow
 
 ### 1. Understand Business Context
