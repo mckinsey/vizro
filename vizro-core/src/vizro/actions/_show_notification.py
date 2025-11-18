@@ -92,14 +92,15 @@ class show_notification(_AbstractAction):
         if not _trigger:
             return no_update
 
-        # Get the variant-specific config
+        # Get variant-specific configuration variables
         class_name = VARIANT_CONFIG[self.variant]["className"]
         icon_name = self.icon if self.icon else VARIANT_CONFIG[self.variant]["icon"]
+        title = self.title if self.title else self.variant.capitalize()
 
         return [
             {
                 "id": self.id,
-                "title": self.title,
+                "title": title,
                 "message": self.message,
                 "className": class_name,
                 "icon": html.Span(icon_name, className="material-symbols-outlined"),

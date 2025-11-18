@@ -10,7 +10,8 @@ page_1 = vm.Page(
     layout=vm.Flex(direction="row"),
     components=[
         vm.Button(
-            text="✅ Success Notification",
+            icon="check_circle",
+            text="Success Notification",
             actions=[
                 va.show_notification(
                     message="Operation completed successfully!",
@@ -20,7 +21,8 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
-            text="⚠️ Warning Notification",
+            icon="warning",
+            text="Warning Notification",
             actions=[
                 va.show_notification(
                     message="Please review this warning message.",
@@ -30,7 +32,8 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
-            text="❌ Error Notification",
+            text="Error Notification",
+            icon="error",
             actions=[
                 va.show_notification(
                     message="An error occurred during the operation.",
@@ -40,7 +43,8 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
-            text="ℹ️ Info Notification",
+            text="Info Notification",
+            icon="info",
             actions=[
                 va.show_notification(
                     message="Here's some useful information for you.",
@@ -50,7 +54,8 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
-            text="🔔 No Auto-Close",
+            text="No Auto-Close",
+            icon="close",
             actions=[
                 va.show_notification(
                     message="This notification will stay until you close it manually.",
@@ -61,7 +66,8 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
-            text="📊 Simple Message (no title)",
+            text="Simple Message (no title)",
+            icon="info",
             actions=[
                 va.show_notification(
                     message="A simple notification without a title.",
@@ -70,24 +76,27 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
-            text="🎉 Custom Icon",
+            text="Custom Icon",
+            icon="celebration",
             actions=[
                 va.show_notification(
                     message="Check out this new feature!",
                     title="New Feature",
                     variant="success",
-                    icon="celebration", 
+                    icon="celebration",
                 )
             ],
         ),
         vm.Button(
-            text="⏳ Loading Notification",
+            text="Loading Notification",
+            icon="timer",
             actions=[
                 va.show_notification(
                     message="Processing your request...",
                     title="Loading",
                     variant="info",
                     loading=True,
+                    auto_close=False,
                 )
             ],
         ),

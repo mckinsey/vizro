@@ -1,8 +1,10 @@
 .alert-info, .alert-success, .alert-warning, .alert-error {
+  align-items: flex-start;
   background: var(--text-primary);
   box-shadow: var(--bs-box-shadow);
-  padding: 12px 8px;
+  display: flex;
   margin-top: 16px;
+  padding: 12px 8px;
 }
 
 .alert-info {
@@ -48,13 +50,22 @@
 
 .mantine-Notification-icon {
   background: none;
+  margin-inline-end: 8px;
 }
 
 .mantine-Notification-closeButton {
   background: none;
   color: var(--text-secondary-inverted);
+
   &:hover {
     background: none;
     color: var(--text-primary-inverted);
   }
+}
+
+.mantine-Notification-loader {
+  --loader-size: 24px !important;
+  --loader-color: var(--text-secondary-inverted);
+
+  margin-inline-end: 8px;
 }
