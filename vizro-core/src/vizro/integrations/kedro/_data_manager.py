@@ -9,98 +9,100 @@ from kedro.framework.startup import bootstrap_project
 from kedro.pipeline import Pipeline
 from packaging.version import parse
 
+# find_kedro_project was made public in 1.0.0.
+if parse(version("kedro")) >= parse("1"):
+    from kedro.utils import find_kedro_project
+else:
+    from kedro.utils import _find_kedro_project as find_kedro_project
+
 from vizro.managers._data_manager import pd_DataFrameCallable
 
-if TYPE_CHECKING:
-    from kedro.io import CatalogProtocol
+from kedro.io import DataCatalog
 
 
-def catalog_from_project(
-    project_path: Union[str, Path], env: Optional[str] = None, extra_params: Optional[dict[str, Any]] = None
-) -> CatalogProtocol:
-    """Return the Kedro Data Catalog associated to a Kedro project.
+def _infer_project_path(project_path) -> Union[str, Path]:
+    # Follows same logic as done interally in Kedro: if project_path not explicitly specified, try to find a Kedro
+    # project above this point in the directory tree, and if that fails then use current working directory. If
+    # project_path is not valid then bootstrap_project will raise an error.
+    return project_path or find_kedro_project(Path.cwd()) or Path.cwd()
+
+
+def catalog_from_project(project_path: Optional[Union[str, Path]] = None, **kwargs: Any) -> DataCatalog:
+    """Fetches the Kedro Data Catalog for a Kedro project.
 
     Args:
-        project_path: Path to the Kedro project root directory.
-        env: Kedro configuration environment to be used. Defaults to "local".
-        extra_params: Optional dictionary containing extra project parameters
-            for underlying KedroContext. If specified, will update (and therefore
-            take precedence over) the parameters retrieved from the project
-            configuration.
+        project_path: Path to the Kedro project root directory. If not specified then attempts to find a Kedro project
+            in the current directory or above.
+
+    Other Args:
+        **kwargs: Keyword arguments to pass to `KedroSession.create`, for example `env`.
 
     Returns:
-         A Kedro Data Catalog.
+         Kedro Data Catalog.
 
     Examples:
         >>> from vizro.integrations import kedro as kedro_integration
         >>> catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
     """
+
+    # Add tests, API docs, check narrative docs, then done
+    if kwargs.get("save_on_close"):
+        # TODO: test
+        raise ValueError("`catalog_from_project` cannot run with `save_on_close=True`.")
+    # TODO: test whole funciton
+    project_path = _infer_project_path(project_path)
     bootstrap_project(project_path)
-    with KedroSession.create(
-        project_path=project_path, env=env, save_on_close=False, extra_params=extra_params
-    ) as session:
+    with KedroSession.create(project_path=project_path, save_on_close=False, **kwargs) as session:
         return session.load_context().catalog
 
 
-def pipelines_from_project(project_path: Union[str, Path]) -> dict[str, Pipeline]:
-    """Return the Kedro Pipelines associated to a Kedro project.
+def pipelines_from_project(project_path: Optional[Union[str, Path]] = None) -> dict[str, Pipeline]:
+    """Fetches Kedro pipelines for a Kedro project.
 
     Args:
-        project_path: Path to the Kedro project root directory.
+        project_path: Path to the Kedro project root directory. If not specified then attempts to find a Kedro project
+            in the current directory or above.
 
     Returns:
-         A dictionary mapping pipeline names to Kedro Pipelines.
+         Mapping of pipeline names to pipelines.
 
     Examples:
         >>> from vizro.integrations import kedro as kedro_integration
         >>> pipelines = kedro_integration.pipelines_from_project("/path/to/kedro/project")
     """
+    project_path = _infer_project_path(project_path)
     bootstrap_project(project_path)
     from kedro.framework.project import pipelines
 
     return pipelines
 
 
-def _legacy_datasets_from_catalog(catalog: CatalogProtocol) -> dict[str, pd_DataFrameCallable]:
-    # The old version of datasets_from_catalog from before https://github.com/mckinsey/vizro/pull/1001.
-    # This does not support dataset factories.
-    # We keep this version to maintain backwards compatibility with 0.19.0 <= kedro < 0.19.9.
-    # Note the pipeline argument does not exist.
-    datasets = {}
-    for name in catalog.list():
-        dataset = catalog._get_dataset(name, suggest=False)
-        if "pandas" in dataset.__module__:
-            datasets[name] = dataset.load
-    return datasets
-
-
-def datasets_from_catalog(catalog: CatalogProtocol, *, pipeline: Pipeline = None) -> dict[str, pd_DataFrameCallable]:
-    """Return the Kedro Dataset loading functions associated to a Kedro Data Catalog.
+# Technically on Kedro the DATA_CATALOG_CLASS is constrained to implement the more general CatalogProtocol rather than
+# DataCatalog (the default value for kedro>=1), which was called KedroDataCatalog < 1. Here we rely on it being
+# DataCatalog rather than any implementation of CatalogProtocol, since DataCatalog provides the very useful filter
+# method.
+# Note there's also CatalogCommandsMixin that is implemented automatically when DATA_CATALOG_CLASS is DataCatalog (but
+# not a subclass). We don't use any methods from this.
+def datasets_from_catalog(catalog: DataCatalog, *, pipeline: Pipeline = None) -> dict[str, pd_DataFrameCallable]:
+    """Fetches Kedro Dataset loading functions for a Kedro Data Catalog.
 
     Args:
-        catalog: Path to the Kedro project root directory.
+        catalog: Kedro Data Catalog.
         pipeline: Optional Kedro pipeline. If specified, the factory-based Kedro datasets it defines are returned.
 
     Returns:
-         A dictionary mapping dataset names to Kedro Dataset loading functions.
+         Mapping of dataset names to dataset loading functions that can be used in the Vizro data manager.
 
+    # TODO: update examples
     Examples:
         >>> from vizro.integrations import kedro as kedro_integration
         >>> dataset_loaders = kedro_integration.datasets_from_catalog(catalog)
     """
-    if parse(version("kedro")) < parse("0.19.9"):
-        return _legacy_datasets_from_catalog(catalog)
-
-    # This doesn't include things added to the catalog at run time but that is ok for our purposes.
-    config_resolver = catalog.config_resolver
-    kedro_datasets = config_resolver.config.copy()
-
     if pipeline:
-        # Go through all dataset names that weren't in catalog and try to resolve them. Those that cannot be
-        # resolved give an empty dictionary and are ignored.
-        for dataset_name in set(pipeline.datasets()) - set(kedro_datasets):
-            if dataset_config := config_resolver.resolve_pattern(dataset_name):
-                kedro_datasets[dataset_name] = dataset_config
+        # Resolve dataset factory patterns, i.e. datasets that are used in pipeline but not explicitly defined in the
+        # catalog. After this, subsequent catalog.filter calls contain the resolved dataset patterns too.
+        for dataset_name in set(pipeline.datasets()) - set(catalog.filter()):
+            catalog.get(dataset_name)
 
     def _catalog_release_load(dataset_name: str):
         # release is needed to clear the Kedro load version cache so that the dashboard always fetches the most recent
@@ -110,11 +112,9 @@ def datasets_from_catalog(catalog: CatalogProtocol, *, pipeline: Pipeline = None
 
     vizro_data_sources = {}
 
-    for dataset_name, dataset_config in kedro_datasets.items():
-        # "type" key always exists because we filtered out patterns that resolve to empty dictionary above.
-        if "pandas" in dataset_config["type"]:
-            # We need to bind dataset_name=dataset_name early to avoid dataset_name late-binding to the last value in
-            # the for loop.
-            vizro_data_sources[dataset_name] = lambda dataset_name=dataset_name: _catalog_release_load(dataset_name)
+    for dataset_name in catalog.filter(type_regex="pandas"):
+        # We need to bind dataset_name=dataset_name early to avoid dataset_name late-binding to the last value in
+        # the for loop.
+        vizro_data_sources[dataset_name] = lambda dataset_name=dataset_name: _catalog_release_load(dataset_name)
 
     return vizro_data_sources
