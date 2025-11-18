@@ -116,14 +116,20 @@ class AgGrid(VizroBaseModel):
         }
 
     def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
-        """Value is the name of the column. There is only one row selected, so we just look at trigger[0]."""
-        # In case the selectedRows is empty (e.g. when the user unselects the row), trigger is an empty list.
-        # This works for both multi=True and multi=False selectors.
+        """Extract values from the trigger that represents selected dag.AgGrid rows. Value is the name of the column.
+
+        Returns:
+          - list of values (one per point) or None if no points selected (signals reset).
+        Raises:
+          - ValueError if `value` column name can't be found.
+        """
+
+        # Returning None signals a reset of control to its original value.
         if not trigger:
-            return []
+            return None
 
         try:
-            return trigger[0][value]
+            return [row[value] for row in trigger]
         except KeyError:
             raise ValueError(
                 f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
