@@ -1,6 +1,6 @@
 .alert-info, .alert-success, .alert-warning, .alert-error {
   align-items: flex-start;
-  background: var(--text-primary);
+  background: var(--surfaces-bg-card-inverted);
   box-shadow: var(--bs-box-shadow);
   display: flex;
   margin-top: 16px;

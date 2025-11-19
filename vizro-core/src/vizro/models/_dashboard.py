@@ -211,7 +211,7 @@ class Dashboard(VizroBaseModel):
         # https://www.dash-mantine-components.com/components/notification
         return dmc.MantineProvider(
             children=[
-                dmc.NotificationContainer(position="bottom-right", limit=10, id="notification-container"),
+                dmc.NotificationContainer(position="top-right", limit=10, id="notification-container"),
                 layout,
             ],
             # Change global mantine settings here. For component specific styling, see Card example below.

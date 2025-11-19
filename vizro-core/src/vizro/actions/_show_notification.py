@@ -80,8 +80,6 @@ class show_notification(_AbstractAction):
     message: str = Field(
         description="Main notification message text.",
     )
-    # L: We could add another variant "plain" that doesn't have a default icon and color. Do you think that's usful?
-    # For me it's fine, if it defaults to the info variant.
     variant: Literal["info", "success", "warning", "error"] = Field(
         default="info",
         description="Semantic variant that determines color and default icon.",
