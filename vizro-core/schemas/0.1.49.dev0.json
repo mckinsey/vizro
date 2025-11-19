@@ -2383,7 +2383,7 @@
     },
     "show_notification": {
       "additionalProperties": false,
-      "description": "Shows a notification message using Dash Mantine Components notification system.\n\nThis action displays a notification that can be triggered by buttons, cards, figures, or other interactive\ncomponents. Notifications support auto-dismissal, semantic variants (info, success, warning, error), and\ncan show loading states or be updated dynamically.\n\nArgs:\n    title (Optional[str]): Optional title for the notification. Defaults to `None`.\n    message (str): Main notification message text.\n    variant (Literal[\"info\", \"success\", \"warning\", \"error\"]): Notification variant that\n        determines default color and icon. Defaults to `\"info\"`.\n    icon (Union[str, bool, None]): Optional icon name from [Google Material Icons](https://fonts.google.com/icons).\n        If not provided, a default icon based on the variant is used. Ignored if `loading=True`. Defaults to `None`.\n    auto_close (Union[bool, int]): Duration in milliseconds before auto-closing. Set to `False` to disable\n        auto-close. Defaults to `4000`.\n    action (Literal[\"show\", \"update\"]): Action to perform: 'show' adds new notification,\n        'update' updates existing one(requires matching `notification_id`). Defaults to `\"show\"`.\n    notification_id (Optional[str]): Needs to be provided to update existing notifications with action='update'.\n        Defaults to `None`.\n    loading (bool): Show loading spinner instead of icon. Useful for operations in progress. Defaults to `False`.\n\nExample: Button triggering success notification\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(\n        text=\"Save\",\n        actions=[\n            va.show_notification(\n                message=\"Operation completed successfully!\",\n                variant=\"success\",\n                title=\"Success\",\n            )\n        ],\n    )\n    ```",
+      "description": "Shows a notification message using Dash Mantine Components notification system.\n\nThis action displays notifications triggered by buttons, cards, figures, or other interactive components.\nNotifications support auto-dismissal, semantic variants, loading states, and dynamic updates.\n\nArgs:\n    title (Optional[str]): Notification title. Defaults to capitalized variant name if not provided.\n    message (str): Main notification message text.\n    variant (Literal[\"info\", \"success\", \"warning\", \"error\"]): Semantic variant that determines color and\n        default icon. Defaults to `\"info\"`.\n    icon (Optional[str]): Icon name from [Google Material Icons](https://fonts.google.com/icons).\n        Defaults to variant-specific icon. Ignored if `loading=True`.\n    auto_close (Union[bool, int]): Auto-close duration in milliseconds. Set to `False` to disable.\n        Defaults to `4000`.\n    action (Literal[\"show\", \"update\"]): Action type. `\"show\"` displays new notification, `\"update\"` modifies\n        existing notification (requires matching `notification_id`). Defaults to `\"show\"`.\n    notification_id (Optional[str]): Notification identifier for updates. Multiple actions can share the same\n        `notification_id` to update a single notification.\n    loading (bool): Show loading spinner instead of icon. Defaults to `False`.\n\nExample: Button triggering success notification\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(\n        text=\"Save\",\n        actions=[\n            va.show_notification(\n                message=\"Operation completed successfully!\",\n                variant=\"success\",\n                title=\"Success\",\n            )\n        ],\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2406,7 +2406,7 @@
             }
           ],
           "default": null,
-          "description": "Optional title for the notification.",
+          "description": "Notification title. Defaults to capitalized variant name if not provided.",
           "title": "Title"
         },
         "message": {
@@ -2416,7 +2416,7 @@
         },
         "variant": {
           "default": "info",
-          "description": "Notification variant that determines default color and icon.",
+          "description": "Semantic variant that determines color and default icon.",
           "enum": ["info", "success", "warning", "error"],
           "title": "Variant",
           "type": "string"
@@ -2431,7 +2431,7 @@
             }
           ],
           "default": null,
-          "description": "Optional icon name from [Google Material Icons](https://fonts.google.com/icons).\n            If not provided, a default icon based on the variant is used. Ignored if `loading=True`.",
+          "description": "Icon name from Google Material Icons. Defaults to variant-specific icon. Ignored if loading=True.",
           "title": "Icon"
         },
         "auto_close": {
@@ -2444,12 +2444,12 @@
             }
           ],
           "default": 4000,
-          "description": "Duration in milliseconds before auto-closing. Set to False to disable auto-close.",
+          "description": "Auto-close duration in milliseconds. Set to False to disable.",
           "title": "Auto Close"
         },
         "action": {
           "default": "show",
-          "description": "Action to perform: 'show' adds new notification, 'update' updates existing one.",
+          "description": "Action type. `\"show\"` displays new notification, `\"update\"` modifies\n            existing notification (requires matching `notification_id`).",
           "enum": ["show", "update"],
           "title": "Action",
           "type": "string"
@@ -2464,7 +2464,7 @@
             }
           ],
           "default": null,
-          "description": "Needs to be provided to update existing notifications with action='update'.",
+          "description": "Notification identifier for updates. Multiple actions can share the same \n            `notification_id` to update a single notification.",
           "title": "Notification Id"
         },
         "loading": {

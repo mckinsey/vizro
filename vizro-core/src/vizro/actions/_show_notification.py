@@ -19,24 +19,23 @@ VARIANT_CONFIG = {
 class show_notification(_AbstractAction):
     """Shows a notification message using Dash Mantine Components notification system.
 
-    This action displays a notification that can be triggered by buttons, cards, figures, or other interactive
-    components. Notifications support auto-dismissal, semantic variants (info, success, warning, error), and
-    can show loading states or be updated dynamically.
+    This action displays notifications triggered by buttons, cards, figures, or other interactive components.
+    Notifications support auto-dismissal, semantic variants, loading states, and dynamic updates.
 
     Args:
-        title (Optional[str]): Optional title for the notification. Defaults to `None`.
+        title (Optional[str]): Notification title. Defaults to capitalized variant name if not provided.
         message (str): Main notification message text.
-        variant (Literal["info", "success", "warning", "error"]): Notification variant that
-            determines default color and icon. Defaults to `"info"`.
-        icon (Union[str, bool, None]): Optional icon name from [Google Material Icons](https://fonts.google.com/icons).
-            If not provided, a default icon based on the variant is used. Ignored if `loading=True`. Defaults to `None`.
-        auto_close (Union[bool, int]): Duration in milliseconds before auto-closing. Set to `False` to disable
-            auto-close. Defaults to `4000`.
-        action (Literal["show", "update"]): Action to perform: 'show' adds new notification,
-            'update' updates existing one(requires matching `notification_id`). Defaults to `"show"`.
-        notification_id (Optional[str]): Needs to be provided to update existing notifications with action='update'.
-            Defaults to `None`.
-        loading (bool): Show loading spinner instead of icon. Useful for operations in progress. Defaults to `False`.
+        variant (Literal["info", "success", "warning", "error"]): Semantic variant that determines color and
+            default icon. Defaults to `"info"`.
+        icon (Optional[str]): Icon name from [Google Material Icons](https://fonts.google.com/icons).
+            Defaults to variant-specific icon. Ignored if `loading=True`.
+        auto_close (Union[bool, int]): Auto-close duration in milliseconds. Set to `False` to disable.
+            Defaults to `4000`.
+        action (Literal["show", "update"]): Action type. `"show"` displays new notification, `"update"` modifies
+            existing notification (requires matching `notification_id`). Defaults to `"show"`.
+        notification_id (Optional[str]): Notification identifier for updates. Multiple actions can share the same
+            `notification_id` to update a single notification.
+        loading (bool): Show loading spinner instead of icon. Defaults to `False`.
 
     Example: Button triggering success notification
         ```python
@@ -57,28 +56,33 @@ class show_notification(_AbstractAction):
     """
 
     type: Literal["show_notification"] = "show_notification"
-    title: Optional[str] = Field(default=None, description="Optional title for the notification.")
-    message: str = Field(description="Main notification message text.")
+    title: Optional[str] = Field(
+        default=None,
+        description="Notification title. Defaults to capitalized variant name if not provided.",
+    )
+    message: str = Field(
+        description="Main notification message text.",
+    )
     # L: We could add another variant "plain" that doesn't have a default icon and color. Do you think that's usful?
     # For me it's fine, if it defaults to the info variant.
     variant: Literal["info", "success", "warning", "error"] = Field(
         default="info",
-        description="Notification variant that determines default color and icon.",
+        description="Semantic variant that determines color and default icon.",
     )
     # L: We could remove icon if we don't want to expose too many arguments, but I do think it's useful to have.
     # Same for auto_close, action, and loading.
     icon: Optional[str] = Field(
         default=None,
-        description="""Optional icon name from [Google Material Icons](https://fonts.google.com/icons).
-            If not provided, a default icon based on the variant is used. Ignored if `loading=True`.""",
+        description="Icon name from Google Material Icons. Defaults to variant-specific icon. Ignored if loading=True.",
     )
     auto_close: Union[bool, int] = Field(
         default=4000,
-        description="Duration in milliseconds before auto-closing. Set to False to disable auto-close.",
+        description="Auto-close duration in milliseconds. Set to False to disable.",
     )
     action: Literal["show", "update"] = Field(
         default="show",
-        description="Action to perform: 'show' adds new notification, 'update' updates existing one.",
+        description="""Action type. `"show"` displays new notification, `"update"` modifies
+            existing notification (requires matching `notification_id`).""",
     )
     # L: We need an extra field 'notification_id' to enable updating existing notifications.
     # Given that `id` can't be duplicated across the app, we use this field to update existing notifications.
@@ -86,7 +90,8 @@ class show_notification(_AbstractAction):
     # ids can be the same?
     notification_id: Optional[str] = Field(
         default=None,
-        description="Needs to be provided to update existing notifications with action='update'.",
+        description="""Notification identifier for updates. Multiple actions can share the same
+            `notification_id` to update a single notification.""",
     )
     loading: bool = Field(
         default=False,
