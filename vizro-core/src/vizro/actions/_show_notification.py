@@ -104,6 +104,11 @@ class show_notification(_AbstractAction):
     @_log_call
     def function(self, _trigger):
         """Creates and returns a notification configuration for DMC NotificationContainer."""
+        # L: Currently a notification is only shown if the action is triggered by a button or other interactive component.
+        # So if the action is not triggered, we return no_update to avoid showing a notification. However, do we think there
+        # will be use-cases where we want to show a notification without a button or other interactive component?
+        # If so, we could add a new argument that lets users display notifications on page load (?). On the other hand,
+        # we already have lots of arguments, so it might be too much.
         if not _trigger:
             return no_update
 
