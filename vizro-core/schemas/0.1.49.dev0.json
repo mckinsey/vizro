@@ -2464,7 +2464,7 @@
             }
           ],
           "default": null,
-          "description": "Notification identifier for updates. Multiple actions can share the same \n            `notification_id` to update a single notification.",
+          "description": "Notification identifier for updates. Multiple actions can share the same\n            `notification_id` to update a single notification.",
           "title": "Notification Id"
         },
         "loading": {
