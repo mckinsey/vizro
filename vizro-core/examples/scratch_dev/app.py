@@ -1,131 +1,20 @@
-"""Dev app to try things out."""
-
-import pandas as pd
-from vizro import Vizro
+import vizro.plotly.express as px
 import vizro.models as vm
-from vizro.actions import set_control
-from vizro.figures import kpi_card, kpi_card_reference
+from vizro import Vizro
 
-kpi_df = pd.DataFrame(
-    [[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]],
-    columns=["Actual", "Reference", "Category"],
-)
+df = px.data.iris()
 
-kpi_indicators_page = vm.Page(
-    title="Page",
-    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
+page_1 = vm.Page(
+    title="BUG theme switch doesn't work with Flex layout",
+    layout=vm.Flex(),
     components=[
-        # Style 1: Value Only
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                title="Value I",
-                agg_func="sum",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                title="Value II",
-                agg_func="mean",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                title="Value III",
-                agg_func="median",
-            )
-        ),
-        # Style 2: Value and reference value
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Reference",
-                reference_column="Actual",
-                title="Ref. Value II",
-                agg_func="sum",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Actual",
-                reference_column="Reference",
-                title="Ref. Value I",
-                agg_func="sum",
-            )
-        ),
-        vm.Figure(
-            id="kpi-card-reverse-coloring",
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Actual",
-                reference_column="Reference",
-                title="Ref. Value III",
-                agg_func="median",
-                icon="Shopping Cart",
-            ),
-        ),
-        # Style 3: Value and icon
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                icon="Shopping Cart",
-                title="Icon I",
-                agg_func="sum",
-                value_format="${value:.2f}",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                icon="Payment",
-                title="Icon II",
-                agg_func="mean",
-                value_format="{value:.0f}€",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=kpi_df,
-                value_column="Actual",
-                icon="Monitoring",
-                title="Icon III",
-                agg_func="median",
-            ),
-            actions=set_control(control="kpi_filter", value="B"),
-        ),
-        # Style 4: Reference value and reverse coloring
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Actual",
-                reference_column="Reference",
-                title="Ref. Value (pos-reverse)",
-                reverse_color=True,
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=kpi_df,
-                value_column="Reference",
-                reference_column="Actual",
-                title="Ref. Value (neg-reverse)",
-                reverse_color=True,
-            ),
-            actions=set_control(control="kpi_filter", value="C"),
-        ),
+        vm.Graph(figure=px.scatter(data_frame=df, x="sepal_width", y="sepal_length")),
+        vm.Graph(figure=px.scatter(data_frame=df.head(10), x="sepal_width", y="sepal_length")),
+        vm.Card(text="test"),
     ],
-    controls=[vm.Filter(id="kpi_filter", column="Category", selector=vm.Dropdown(multi=False))],
 )
 
-dashboard = vm.Dashboard(pages=[kpi_indicators_page])
+dashboard = vm.Dashboard(pages=[page_1])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
