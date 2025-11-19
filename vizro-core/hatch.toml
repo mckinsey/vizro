@@ -164,7 +164,7 @@ extra-dependencies = [
   "dash==3.1.1",
   "dash-bootstrap-components==2.0.0",
   "dash-ag-grid==31.3.1",
-  "dash-mantine-components==1.0.0",
+  "dash-mantine-components==2.0.0",
   "plotly==5.24.0",
   "pydantic==2.7.0",
   "pandas==2.0.0",
