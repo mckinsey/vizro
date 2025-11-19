@@ -3,12 +3,13 @@
 This folder contains a Claude Code plugin for end-to-end dashboard development through a comprehensive 5-stage workflow:
 
 1. **information-architecture**: Define the overall information structure, analytical questions, and KPI organization
-2. **interaction-ux-design**: Design navigation, layouts, filter placement, and create wireframes
-3. **visual-data-design**: Select chart types, establish visual hierarchy, and apply design principles
-4. **development-implementation**: Build the dashboard with Vizro, integrate data, and optimize performance
-5. **test-iterate**: Validate correctness, usability, and performance through systematic testing
+1. **interaction-ux-design**: Design navigation, layouts, filter placement, and create wireframes
+1. **visual-data-design**: Select chart types, establish visual hierarchy, and apply design principles
+1. **development-implementation**: Build the dashboard with Vizro, integrate data, and optimize performance
+1. **test-iterate**: Validate correctness, usability, and performance through systematic testing
 
 The plugin includes pre-configured MCP servers for a seamless workflow:
+
 - **Vizro MCP**: Dashboard implementation support
 - **Playwright MCP**: Browser automation for functional testing
 
@@ -28,6 +29,7 @@ This works well when using Claude Code. It automatically configures both MCP ser
 ### Option 2: Upload skills folders
 
 Zip the individual skill folders and upload them directly to Claude apps, e.g. Claude Desktop:
+
 - `/vizro-e2e-flow/skills/information-architecture/`
 - `/vizro-e2e-flow/skills/interaction-ux-design/`
 - `/vizro-e2e-flow/skills/visual-data-design/`
@@ -41,31 +43,37 @@ Zip the individual skill folders and upload them directly to Claude apps, e.g. C
 The skills can be used individually or as a complete 5-stage workflow:
 
 1. **Stage 1 - Information Architecture**: Use `information-architecture` skill to:
+
     - Define analytical questions and business context
     - Inventory data sources and map KPIs
     - Design page structure and information flow
 
-2. **Stage 2 - Interaction/UX Design**: Use `interaction-ux-design` skill to:
+1. **Stage 2 - Interaction/UX Design**: Use `interaction-ux-design` skill to:
+
     - Design navigation structure and layout grids
     - Define filter strategy and interaction patterns
     - Create wireframes (ASCII and HTML)
 
-3. **Stage 3 - Visual/Data Design**: Use `visual-data-design` skill to:
+1. **Stage 3 - Visual/Data Design**: Use `visual-data-design` skill to:
+
     - Select appropriate chart types
     - Establish visual hierarchy and color strategy
     - Create high-fidelity visual mockups
 
-4. **Stage 4 - Development/Implementation**: Use `development-implementation` skill to:
+1. **Stage 4 - Development/Implementation**: Use `development-implementation` skill to:
+
     - Decide if Vizro is appropriate
     - Set up MCP or Python implementation
     - Build, test, and optimize the dashboard
 
-5. **Stage 5 - Test & Iterate**: Use `test-iterate` skill to:
+1. **Stage 5 - Test & Iterate**: Use `test-iterate` skill to:
+
     - Validate data accuracy and functionality
     - Conduct usability and performance testing
     - Monitor and iterate based on feedback
 
 **Flexible Entry Points:**
+
 - Full development: Start at Stage 1
 - Have wireframes? Start at Stage 3
 - Have designs? Start at Stage 4
@@ -78,9 +86,9 @@ For more information, see individual `SKILL.md` files in each skill folder
 - **Stages 1-3** (Information Architecture, UX Design, Visual Design): No technical dependencies - pure design guidance
 - **Stage 4** (Development/Implementation): Python environment for local Vizro implementation OR public datasets for remote PyCafe previews
 - **Stage 5** (Test & Iterate):
-  - **Included with plugin**: Playwright MCP for AI-assisted UI testing
-  - **Requirements for MCP**: Node.js (for Playwright MCP)
-  - **Alternative**: Testing tools (pytest, selenium) for manual test script writing
+    - **Included with plugin**: Playwright MCP for AI-assisted UI testing
+    - **Requirements for MCP**: Node.js (for Playwright MCP)
+    - **Alternative**: Testing tools (pytest, selenium) for manual test script writing
 
 ## Compatibility
 

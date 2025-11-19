@@ -72,6 +72,7 @@ For testing, use Playwright MCP server that enables AI-assisted browser automati
 **Manual setup** (if needed): See `references/mcp_setup.md` in the development-implementation skill for installation instructions.
 
 **Use for**:
+
 - Testing page navigation
 - Clicking filters and controls
 - Verifying interactive elements work
@@ -84,6 +85,7 @@ For testing, use Playwright MCP server that enables AI-assisted browser automati
 ### Testing Without MCP
 
 The vizro-e2e-flow plugin includes Playwright MCP pre-configured. If for some reason MCP is not available, you can fall back to:
+
 - **Manual testing**: Open the dashboard and manually test
 - **Browser DevTools**: Use F12 to check console errors manually
 - **Python scripts**: Write Selenium/Playwright automation scripts
@@ -97,17 +99,20 @@ However, MCP-based testing is **significantly faster** for basic validation.
 Run through these basic checks to validate your dashboard:
 
 **1. Launch Check**
+
 - [ ] Dashboard starts without errors
 - [ ] URL loads successfully
 - [ ] No startup errors in console
 
 **2. Page Navigation**
+
 - [ ] All pages load correctly
 - [ ] Navigation between pages works
 - [ ] No broken links or 404 errors
 - [ ] Browser back/forward buttons work
 
 **3. Controls and Interactions**
+
 - [ ] Filters can be opened and selections made
 - [ ] Filter selections update visualizations
 - [ ] Dropdowns, radio buttons, sliders work
@@ -115,11 +120,13 @@ Run through these basic checks to validate your dashboard:
 - [ ] Any export buttons function
 
 **4. Console Errors**
+
 - [ ] No JavaScript errors in console
 - [ ] No failed network requests
 - [ ] No warnings about missing data
 
 **5. Layout Check (via Screenshots)**
+
 - [ ] Overall layout looks correct (not overlapping/broken)
 - [ ] Charts are visible and rendered
 - [ ] Text is readable (not cut off)
@@ -143,11 +150,12 @@ Run through these basic checks to validate your dashboard:
 ```
 
 Claude will use the MCP tools to:
+
 1. Open your dashboard in a browser
-2. Navigate and interact with elements
-3. Check console for errors
-4. Capture screenshots
-5. Report any issues found
+1. Navigate and interact with elements
+1. Check console for errors
+1. Capture screenshots
+1. Report any issues found
 
 ## Test Results
 
@@ -156,6 +164,7 @@ Claude will use the MCP tools to:
 After testing, create a simple list of issues to address:
 
 **Issue Report Format**:
+
 ```
 ✅ Working Correctly:
 - Dashboard launches successfully
@@ -177,11 +186,13 @@ After testing, create a simple list of issues to address:
 Present your findings to the development team and discuss which issues need fixing:
 
 **Quick Discussion**:
+
 - Show the issue list
 - Show screenshots highlighting layout problems
 - Ask: "Which of these should we fix before considering the dashboard complete?"
 
 **Common Quick Fixes**:
+
 - Console errors → Usually data loading or missing error handling
 - Broken controls → Check component IDs and callback connections
 - Layout issues → Adjust container sizing or chart dimensions
@@ -192,9 +203,9 @@ Present your findings to the development team and discuss which issues need fixi
 After developers fix issues:
 
 1. **Retest** the specific items that were broken
-2. **Quick smoke test** to ensure fixes didn't break anything else
-3. **Update issue list** with current status
-4. **Repeat** until no critical issues remain
+1. **Quick smoke test** to ensure fixes didn't break anything else
+1. **Update issue list** with current status
+1. **Repeat** until no critical issues remain
 
 **When to Stop**: When the dashboard launches cleanly, navigation works, core controls function, and there are no console errors.
 
@@ -214,5 +225,7 @@ Your dashboard is ready when:
 ## References
 
 ### MCP-Based Testing (Recommended)
+
 **Note**: Playwright MCP is pre-configured with the vizro-e2e-flow plugin
+
 - Playwright MCP: https://github.com/microsoft/playwright-mcp
