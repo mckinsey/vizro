@@ -34,8 +34,10 @@ class show_notification(_AbstractAction):
         auto_close (Union[bool, int]): Duration in milliseconds before auto-closing. Set to `False` to disable
             auto-close. Defaults to `4000`.
         action (Literal["show", "update"]): Action to perform. `"show"` adds a new notification or queues it if
-            limit is reached. `"update"` updates a previously shown notification (requires matching `id`).
+            limit is reached. `"update"` updates a previously shown notification (requires matching `notification_id`).
             Defaults to `"show"`.
+        notification_id (Optional[str]): ID for the notification in DMC. Used to update existing notifications with
+            `action="update"`. Defaults to `None`.
         loading (bool): Show loading spinner instead of icon. Useful for operations in progress. Defaults to `False`.
 
     Example: Button triggering success notification
@@ -59,11 +61,13 @@ class show_notification(_AbstractAction):
     type: Literal["show_notification"] = "show_notification"
     title: Optional[str] = Field(default=None, description="Optional title for the notification.")
     message: str = Field(description="Main notification message text.")
+    # L: We could add another variant "plain" that doesn't have a default icon and color. Do you think that's usful?
+    # For me it's fine, if it defaults to the info variant.
     variant: Literal["info", "success", "warning", "error"] = Field(
         default="info",
         description="Notification variant that determines default color and icon.",
     )
-    # LQ: We could remove icon if we don't want to expose too many arguments, but I do think it's useful to have.
+    # L: We could remove icon if we don't want to expose too many arguments, but I do think it's useful to have.
     # Same for auto_close, action, and loading.
     icon: Union[str, bool, None] = Field(
         default=None,
@@ -77,10 +81,21 @@ class show_notification(_AbstractAction):
         default="show",
         description="Action to perform: 'show' adds new notification, 'update' updates existing one.",
     )
+    # L: We need an extra field 'notification_id' to enable updating existing notifications.
+    # Given that `id` can't be duplicated across the app, we use this field to update existing notifications.
+    # See scratch dev app for an example. Or is there a way how I can just use `ìd` ? and the action
+    # ids can be the same?
+    notification_id: Optional[str] = Field(
+        default=None,
+        description="""ID for the notification in DMC. Used to update existing notifications with action='update'.
+        Defaults to the action's id.""",
+    )
     loading: bool = Field(
         default=False,
         description="Show loading spinner instead of icon.",
     )
+    # L: There is another argument called color that can be used to set the color of the notification.
+    # but I didn't add it here, because I think the variant is more intuitive, though more restrictive.
 
     @property
     def outputs(self) -> list[_IdOrIdProperty]:  # type: ignore[override]
@@ -99,7 +114,7 @@ class show_notification(_AbstractAction):
 
         return [
             {
-                "id": self.id,
+                "id": self.notification_id,
                 "title": title,
                 "message": self.message,
                 "className": class_name,

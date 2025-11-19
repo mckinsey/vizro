@@ -88,15 +88,29 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
-            text="Loading Notification",
-            icon="timer",
+            text="1. Show Loading",
+            icon="hourglass_empty",
             actions=[
                 va.show_notification(
+                    notification_id="update-demo",
                     message="Processing your request...",
-                    title="Loading",
+                    title="Processing",
                     variant="info",
                     loading=True,
                     auto_close=False,
+                )
+            ],
+        ),
+        vm.Button(
+            text="2. Update to Complete",
+            icon="done",
+            actions=[
+                va.show_notification(
+                    notification_id="update-demo",
+                    message="Your request has been processed successfully!",
+                    title="Complete",
+                    variant="success",
+                    action="update",
                 )
             ],
         ),

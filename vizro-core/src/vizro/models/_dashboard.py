@@ -214,8 +214,22 @@ class Dashboard(VizroBaseModel):
                 dmc.NotificationContainer(position="bottom-right", limit=10, id="notification-container"),
                 layout,
             ],
-            # Use the `theme` to style all Mantine components with a Vizro theme. For more info see https://www.dash-mantine-components.com/components/mantineprovider
-            theme={"primaryColor": "gray"},
+            # Change global mantine settings here. For component specific styling, see Card example below.
+            # Reference: https://www.dash-mantine-components.com/theme-object
+            theme={
+                "primaryColor": "gray",
+                "defaultRadius": 0,
+                "components": {
+                    "Card": {
+                        "styles": {
+                            "root": {
+                                "backgroundColor": "var(--surfaces-bg-card)",
+                                "boxShadow": "var(--bs-box-shadow)",
+                            }
+                        }
+                    },
+                },
+            },
         )
 
     def _validate_logos(self):
