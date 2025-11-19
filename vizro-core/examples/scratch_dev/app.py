@@ -66,11 +66,11 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
-            text="Simple Message (no title)",
+            text="Simple Message (default title)",
             icon="info",
             actions=[
                 va.show_notification(
-                    message="A simple notification without a title.",
+                    message="A simple notification with default title and variant.",
                     variant="info",
                 )
             ],
