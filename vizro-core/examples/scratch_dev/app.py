@@ -12,7 +12,7 @@ page_1 = vm.Page(
         va.show_notification(
             message="Welcome to the notification demo! Click on the buttons to see different notification types.",
             title="Welcome",
-            icon="handshake",
+            icon="Waving Hand",
             auto_close=False,
         )
     ],

@@ -1,10 +1,10 @@
-from typing import Literal, Optional, Union
+from typing import Annotated, Literal, Optional, Union
 
 from dash import html, no_update
-from pydantic import Field
+from pydantic import AfterValidator, Field
 
 from vizro.actions._abstract_action import _AbstractAction
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models.types import _IdOrIdProperty
 
 # Mapping of notification types to their corresponding colors and default icons (Google Material Icons)
@@ -27,7 +27,7 @@ class show_notification(_AbstractAction):
         message (str): Main notification message text.
         variant (Literal["info", "success", "warning", "error"]): Semantic variant that determines color and
             default icon. Defaults to `"info"`.
-        icon (Optional[str]): Icon name from [Google Material Icons](https://fonts.google.com/icons).
+        icon (str): Icon name from [Google Material Icons](https://fonts.google.com/icons).
             Defaults to variant-specific icon. Ignored if `loading=True`.
         auto_close (Union[bool, int]): Auto-close duration in milliseconds. Set to `False` to disable.
             Defaults to `4000`.
@@ -88,10 +88,15 @@ class show_notification(_AbstractAction):
     )
     # L: We could remove icon if we don't want to expose too many arguments, but I do think it's useful to have.
     # Same for auto_close, action, and loading.
-    icon: Optional[str] = Field(
-        default=None,
-        description="Icon name from Google Material Icons. Defaults to variant-specific icon. Ignored if loading=True.",
-    )
+    icon: Annotated[
+        str,
+        AfterValidator(validate_icon),
+        Field(
+            default="",
+            description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
+                Ignored if `loading=True""",
+        ),
+    ]
     auto_close: Union[bool, int] = Field(
         default=4000,
         description="Auto-close duration in milliseconds. Set to False to disable.",
