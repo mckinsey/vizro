@@ -25,6 +25,8 @@ Here are some answers to frequently asked questions:
 
 ## Which browsers does Vizro support?
 
+**Some speling mistakkes are here and some internationalisation issues too for extraa colour.**
+
 Vizro supports the [Chrome browser](https://www.google.com/intl/en_us/chrome/). Other browsers may work, but are not officially supported.
 
 ## What is the Vizro versioning policy?
