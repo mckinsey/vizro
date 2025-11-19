@@ -37,7 +37,7 @@ class show_notification(_AbstractAction):
             `notification_id` to update a single notification.
         loading (bool): Show loading spinner instead of icon. Defaults to `False`.
 
-    Example: Button triggering success notification
+    Example: Button triggering notification
         ```python
         import vizro.actions as va
         import vizro.models as vm
@@ -48,9 +48,26 @@ class show_notification(_AbstractAction):
                 va.show_notification(
                     message="Operation completed successfully!",
                     variant="success",
-                    title="Success",
                 )
             ],
+        )
+        ```
+
+    Example: Notification on page load
+        ```python
+        import vizro.actions as va
+        import vizro.models as vm
+
+        page = vm.Page(
+            title="My Dashboard",
+            actions=[
+                va.show_notification(
+                    message="Welcome! Data was last updated 2 hours ago.",
+                    variant="info",
+                    auto_close=8000,
+                )
+            ],
+            components=[...],
         )
         ```
     """
@@ -107,12 +124,14 @@ class show_notification(_AbstractAction):
     @_log_call
     def function(self, _trigger):
         """Creates and returns a notification configuration for DMC NotificationContainer."""
-        # L: Currently a notification is only shown if the action is triggered by a button or
-        # other interactive component. So if the action is not triggered, we return no_update
-        # to avoid showing a notification. However, do we think there will be use-cases where
-        # we want to show a notification on page load?
-        # On the other hand, we already have lots of arguments, so it might be too much.
-        if not _trigger:
+        # L: Is there a better to do this? Essentially, what I want is to cover two use cases:
+        # 1. Show a notification on page load (should be shown on page load without having to click on anything)
+        # 2. Show a notification when the action is triggered by a button or other
+        # interactive component (should not be shown on page load)
+        from vizro.models import Page
+
+        is_page_action = isinstance(self._parent_model, Page)
+        if not is_page_action and (_trigger is None or _trigger == 0):
             return no_update
 
         # Get variant-specific configuration variables

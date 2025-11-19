@@ -8,6 +8,14 @@ df = px.data.iris()
 page_1 = vm.Page(
     title="Test dmc notification system",
     layout=vm.Flex(direction="row"),
+    actions=[
+        va.show_notification(
+            message="Welcome to the notification demo! Click on the buttons to see different notification types.",
+            title="Welcome",
+            icon="handshake",
+            auto_close=False,
+        )
+    ],
     components=[
         vm.Button(
             icon="check_circle",
