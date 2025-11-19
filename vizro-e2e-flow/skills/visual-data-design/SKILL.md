@@ -12,6 +12,7 @@ Visual Design transforms wireframes into polished, professional dashboards that 
 **Key Focus**: Translate analytical goals into clear and engaging visuals. Choose chart types, establish hierarchy, and apply consistent visual language.
 
 ## OUTPUT PRESERVATION NOTICE
+
 Your outputs from this stage are BINDING CONTRACTS for implementation.
 
 ## REQUIRED OUTPUT: spec/3_visual_design.yaml
@@ -32,7 +33,6 @@ components_needing_colors:
 ```
 
 Save this file BEFORE proceeding to development-implementation.
-
 
 ## Process Workflow
 
@@ -71,20 +71,21 @@ What am I trying to show?
 
 **Chart type guidelines**:
 
-| Chart Type | Best For | Avoid When | Max Data Points |
-|------------|----------|------------|-----------------|
-| Line | Trends over time | < 5 data points | 100-200 per line |
-| Bar | Comparing categories | > 20 categories | 10-15 bars |
-| Pie/Donut | Part-to-whole (%) | > 5 slices | 5 slices max |
-| Scatter | Correlation | < 20 points | 500-1000 |
-| Heatmap | Patterns in matrix | < 5×5 grid | 50×50 |
-| AgGrid | Exact values, sorting/filtering | Pattern finding | Unlimited (paginated) |
-| Card/KPI | Single metric | Comparisons | 1 value |
-| Map | Geographic data | Non-geographic | Depends on zoom |
+| Chart Type | Best For                        | Avoid When      | Max Data Points       |
+| ---------- | ------------------------------- | --------------- | --------------------- |
+| Line       | Trends over time                | < 5 data points | 100-200 per line      |
+| Bar        | Comparing categories            | > 20 categories | 10-15 bars            |
+| Pie/Donut  | Part-to-whole (%)               | > 5 slices      | 5 slices max          |
+| Scatter    | Correlation                     | < 20 points     | 500-1000              |
+| Heatmap    | Patterns in matrix              | < 5×5 grid      | 50×50                 |
+| AgGrid     | Exact values, sorting/filtering | Pattern finding | Unlimited (paginated) |
+| Card/KPI   | Single metric                   | Comparisons     | 1 value               |
+| Map        | Geographic data                 | Non-geographic  | Depends on zoom       |
 
 **When to use Vizro custom charts**:
 
 Use custom charts (with `@capture("graph")` decorator) when:
+
 - You need post-update calls (`update_layout`, `update_xaxes`, `update_traces`)
 - You need simple data manipulation (aggregation, filtering) right before visualization
 - Standard `plotly.express` charts don't provide the required customization
@@ -395,9 +396,10 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
     - Weight variations
     - Line height specs
 
-5. **Visual Mockups**
-   - High-fidelity designs
-   - Interactive states
+1. **Visual Mockups**
+
+    - High-fidelity designs
+    - Interactive states
 
 1. **Component Library**
 
@@ -493,11 +495,11 @@ Once Visual Design is complete:
 ## Tips for Success
 
 1. **Less is more** - Avoid chartjunk and decoration
-2. **Consistency matters** - Same thing looks the same everywhere
-3. **Data ink ratio** - Maximize data, minimize non-data ink
-4. **Consider colorblindness** - 8% of men are colorblind
-5. **Mobile first** - Design for smallest screen first
-6. **Performance impacts** - Certain visuals slow dashboards (scatter with big data)
+1. **Consistency matters** - Same thing looks the same everywhere
+1. **Data ink ratio** - Maximize data, minimize non-data ink
+1. **Consider colorblindness** - 8% of men are colorblind
+1. **Mobile first** - Design for smallest screen first
+1. **Performance impacts** - Certain visuals slow dashboards (scatter with big data)
 
 ## Anti-Patterns to Avoid
 

@@ -29,12 +29,9 @@ Compare the running dashboard against design specifications:
 
 ### Visual Design Compliance
 
-
 ### Layout Compliance (from wireframes)
 
-
 ### Information Architecture Compliance
-
 
 ## REQUIRED OUTPUT: spec/5_validation_report.yaml
 

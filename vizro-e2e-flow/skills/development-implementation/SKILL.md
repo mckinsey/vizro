@@ -22,7 +22,6 @@ Use the provided specification loader script:
 python scripts/load_specs.py
 ```
 
-
 ## Pre-Implementation Checklist
 
 Before starting development, ensure you have:
@@ -255,7 +254,7 @@ revenue_kpi = vm.Figure(
         value_column="revenue",
         title="Total Revenue",
         value_format="${value:,.0f}",
-        icon="trending_up" # use icons from Google Material Icons library
+        icon="trending_up",  # use icons from Google Material Icons library
     )
 )
 
@@ -291,6 +290,7 @@ Vizro custom charts enable advanced customization and simple data manipulation r
 **When to use custom charts**:
 
 Use the `@capture("graph")` decorator if your plotly chart needs:
+
 - Post-update calls: `update_layout`, `update_xaxes`, `update_traces`, etc.
 - Simple data manipulation: aggregation, filtering, or transformation before visualization
 - Custom `plotly.graph_objects.Figure()` with manual traces via `add_trace`
@@ -299,16 +299,18 @@ Use the `@capture("graph")` decorator if your plotly chart needs:
 **Steps to create a custom chart**:
 
 1. Define a function that returns a `go.Figure()`
-2. Decorate it with `@capture("graph")`
-3. Function must accept a `data_frame` argument (type: `pandas.DataFrame`)
-4. All data should derive from the `data_frame` argument
-5. Pass your function to the `figure` argument of `vm.Graph`
+1. Decorate it with `@capture("graph")`
+1. Function must accept a `data_frame` argument (type: `pandas.DataFrame`)
+1. All data should derive from the `data_frame` argument
+1. Pass your function to the `figure` argument of `vm.Graph`
 
 **Minimal example**:
+
 ```python
 from vizro.models.types import capture
 import pandas as pd
 import plotly.graph_objects as go
+
 
 @capture("graph")
 def minimal_example(data_frame: pd.DataFrame = None):
@@ -323,6 +325,7 @@ This example shows how to enhance a `plotly.express` chart with a parametrized r
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.models.types import capture
+
 
 @capture("graph")
 def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None):
@@ -339,6 +342,7 @@ def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None):
         fig.add_hline(y=hline, line_color="gray", line_dash="dash")
     return fig
 
+
 # Usage in dashboard with Parameter control
 page = vm.Page(
     title="Custom Chart Example",
@@ -351,7 +355,7 @@ page = vm.Page(
                 y="sepal_width",
                 color="species",
                 size="petal_width",
-                hline=3  # Default value
+                hline=3,  # Default value
             ),
             title="Sepal Dimensions",  # Title in vm.Graph, not plotly
         ),
@@ -373,6 +377,7 @@ This example shows creating a custom chart type using `go.Figure()`:
 import pandas as pd
 import plotly.graph_objects as go
 from vizro.models.types import capture
+
 
 @capture("graph")
 def waterfall(data_frame, measure, x, y, text, title=None):
@@ -397,7 +402,7 @@ def waterfall(data_frame, measure, x, y, text, title=None):
             # Use Vizro core colors for semantic meaning
             decreasing={"marker": {"color": "#ff5267"}},  # Red for negative
             increasing={"marker": {"color": "#08bdba"}},  # Teal for positive
-            totals={"marker": {"color": "#00b4ff"}},      # Blue for totals
+            totals={"marker": {"color": "#00b4ff"}},  # Blue for totals
         )
     )
 
@@ -406,18 +411,13 @@ def waterfall(data_frame, measure, x, y, text, title=None):
 
     return fig
 
+
 # Usage
 page = vm.Page(
     title="Financial Analysis",
     components=[
         vm.Graph(
-            figure=waterfall(
-                data_frame=financial_df,
-                measure="measure",
-                x="category",
-                y="value",
-                text="text"
-            ),
+            figure=waterfall(data_frame=financial_df, measure="measure", x="category", y="value", text="text"),
             title="Profit Breakdown",  # Prefer title here
         ),
     ],
@@ -454,20 +454,14 @@ def aggregated_bar(data_frame, category, value, agg_func="sum"):
     fig = px.bar(agg_df, x=category, y=value)
     return fig
 
+
 # Usage with Parameter to control aggregation
-vm.Graph(
-    id="agg_chart",
-    figure=aggregated_bar(data_frame=df, category="region", value="sales", agg_func="sum")
-)
+vm.Graph(id="agg_chart", figure=aggregated_bar(data_frame=df, category="region", value="sales", agg_func="sum"))
 
 # Add Parameter to let users change aggregation
 vm.Parameter(
     targets=["agg_chart.agg_func"],
-    selector=vm.RadioItems(
-        options=["sum", "mean", "count"],
-        value="sum",
-        title="Aggregation"
-    )
+    selector=vm.RadioItems(options=["sum", "mean", "count"], value="sum", title="Aggregation"),
 )
 ```
 
@@ -718,16 +712,18 @@ implementation_complete: boolean
     - Component library
     - Configuration files
 
-2. **Specification Compliance**
-   - spec/4_implementation_checklist.yaml
-   - spec/4_implementation_report.yaml
-   - Validation log showing all checks passed
+1. **Specification Compliance**
 
-3. **Documentation**
-   - README with setup instructions
-   - API documentation
-   - Configuration guide
-   - Deployment instructions
+    - spec/4_implementation_checklist.yaml
+    - spec/4_implementation_report.yaml
+    - Validation log showing all checks passed
+
+1. **Documentation**
+
+    - README with setup instructions
+    - API documentation
+    - Configuration guide
+    - Deployment instructions
 
 ## Common Implementation Patterns
 

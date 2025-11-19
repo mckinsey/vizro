@@ -12,7 +12,9 @@ Information Architecture (IA) is the foundational stage of dashboard development
 **Key Focus**: Define the overall information structure — what analytical questions each page answers, and how insights are grouped across pages or tabs.
 
 ## OUTPUT PRESERVATION NOTICE
+
 Your outputs from this stage are BINDING CONTRACTS for later stages:
+
 - Page structure → MUST be implemented exactly in development
 - KPI definitions → MUST appear in visual design
 - Data groupings → MUST be preserved in layouts

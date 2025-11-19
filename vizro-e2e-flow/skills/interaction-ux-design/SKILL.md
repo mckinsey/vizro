@@ -12,6 +12,7 @@ Interaction Design translates the Information Architecture into user-friendly na
 **Key Focus**: Decide how users navigate and explore data — the layout logic, flow between overview and detail, and placement of filters and controls.
 
 ## OUTPUT PRESERVATION NOTICE
+
 Your outputs from this stage are BINDING CONTRACTS for later stages.
 
 ## REQUIRED OUTPUT: spec/2_interaction_ux.yaml
