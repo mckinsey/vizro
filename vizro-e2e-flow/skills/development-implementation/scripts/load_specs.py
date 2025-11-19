@@ -1,17 +1,20 @@
-"""Specification Loader for Vizro Dashboard Development
+"""Specification Loader for Vizro Dashboard Development.
 
 This script loads and validates all specification files from previous development stages.
 It MUST be run before any implementation to ensure designs are followed correctly.
 """
 
+import logging
 from pathlib import Path
 from typing import Any
 
 import yaml
 
+logger = logging.getLogger(__name__)
 
-def load_specifications(spec_dir: Path = None) -> dict[str, Any]:
-    """Load ALL specs from previous stages - THIS IS MANDATORY
+
+def load_specifications(spec_dir: Path | None = None) -> dict[str, Any]:
+    """Load ALL specs from previous stages - THIS IS MANDATORY.
 
     Args:
         spec_dir: Path to the spec directory. Defaults to 'spec' in current directory.
@@ -32,20 +35,21 @@ def load_specifications(spec_dir: Path = None) -> dict[str, Any]:
         if file_path.exists():
             with open(file_path) as f:
                 specs[spec_file] = yaml.safe_load(f)
-            print(f"✓ Loaded {spec_file}")
+            logger.info("✓ Loaded %s", spec_file)
         else:
-            print(f"⚠ Warning: {spec_file} not found")
+            logger.warning("⚠ Warning: %s not found", spec_file)
 
     return specs
 
 
 def main():
-    """Main function to load specs and generate implementation checklist"""
-    print("Loading specifications from previous stages...")
+    """Main function to load specs and generate implementation checklist."""
+    logging.basicConfig(level=logging.INFO)
+    logger.info("Loading specifications from previous stages...")
     specs = load_specifications()
 
     if not specs:
-        print("❌ No specifications found! Please complete previous stages first.")
+        logger.error("❌ No specifications found! Please complete previous stages first.")
         return
 
     return specs
