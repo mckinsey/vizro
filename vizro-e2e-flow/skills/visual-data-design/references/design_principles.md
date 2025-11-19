@@ -26,7 +26,7 @@
 
 ### Vizro Layout Implementation
 
-**Preventing crowded components** - two approaches:
+**Preventing crowded components** - three approaches:
 
 **Option 1: Flex Layout (Automatic Spacing)**
 
@@ -64,38 +64,41 @@
 - Actual component height = `row_min_height * rows_spanned`
 - Larger grids (e.g., 6 or 12 columns) enable more precise positioning
 
-**Nested Layout Pattern**
+**Option 3: Nested Layout Pattern**
 
-- Use Flex at page level for automatic flow
+- Use Flex at page level for vertically automatic flow
 - Use Grid inside containers for structured sections
-- Example: `vm.Page(layout=vm.Flex(), components=[vm.Graph(...), vm.Container(layout=vm.Grid(...), components=[...])])`
+- Example: `vm.Page(layout=vm.Flex(), components=[vm.Graph(...), vm.Container(layout=vm.Grid(grid=[[0, 1]]), components=[vm.Graph(...), vm.Graph(...)])])`
 - Provides flexibility where needed, structure where required
 
 **Reference**: https://vizro.readthedocs.io/en/latest/pages/user-guides/layouts/
 
-### Size and Emphasis
+### Container Visual Styling
 
-**Typography Hierarchy**
+Containers help visually distinguish sections and create clear information hierarchy:
 
-- Primary metrics: 32-48px bold
-- Secondary metrics: 20-28px medium
-- Labels: 12-16px regular
-- Supporting text: 10-14px regular
+**When to style containers**:
 
-**Visual Weight Distribution**
+- Separate distinct content areas (e.g., metrics vs. analysis vs. data table)
+- Emphasize important sections (e.g., alerts, key insights)
+- Create visual breathing room between unrelated content
+- Guide user attention through the page
 
-- Largest elements = most important
-- Use size to create 3-4 distinct levels
-- Consistent weight for similar importance
+**Visual styling options**:
 
-### White Space
+- **Borders**: Subtle borders to define boundaries without heavy visual weight
+- **Background colors**: Light tints to differentiate sections (use sparingly)
+- **Spacing**: Increased padding/margins around container content
+- **Titles**: Clear section headers to label grouped content
 
-**Critical for Readability**
+**Best practices**:
 
-- Minimum 16px between unrelated elements
-- 24-32px between sections
-- Generous padding around charts (16-24px minimum)
-- Empty space guides eye and reduces cognitive load
+- Use subtle styling (avoid heavy borders or bright backgrounds)
+- Maintain consistency (same style for similar containers)
+- Don't over-style (not every container needs visual distinction)
+- Consider theme support (styling should work in light and dark modes)
+
+**Reference**: https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#styled-containers
 
 ## Color Strategy
 

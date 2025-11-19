@@ -295,13 +295,13 @@ Revenue Trend │
 □ Brand colors applied consistently
 □ Visual hierarchy clear at a glance
 □ Charts appropriate for data types
-□ Text readable at target resolution
-□ Sufficient color contrast (WCAG AA)
-□ Consistent spacing (8px grid)
+□ Text readable at target resolution (Vizro built-in)
+□ Sufficient color contrast (WCAG AA)(Vizro built-in)
+□ Consistent spacing (8px grid)(Vizro built-in)
 □ Icons meaningful and consistent
-□ Loading states designed
-□ Empty states designed
-□ Error states designed
+□ Loading states designed (Vizro built-in)
+□ Empty states designed (Vizro built-in)
+□ Error states designed (Vizro built-in)
 ```
 
 **Deliverable**: High-fidelity mockups for all pages.

@@ -528,6 +528,62 @@ vm.AgGrid(id="custom_ag_grid", figure=my_custom_aggrid(data_frame=df, chosen_col
     - Use `"gray"` for neutral elements
     - Success/positive: `"#689f38"`, Warning: `"#ff9222"`, Error/negative: `"#ff5267"`
 
+**Using Containers to organize components**:
+
+Containers group related components into sections with optional titles, filters, and styling:
+
+```python
+import vizro.models as vm
+
+page = vm.Page(
+    title="Analytics Dashboard",
+    components=[
+        # Top-level KPIs (no container)
+        vm.Graph(figure=revenue_kpi),
+        vm.Graph(figure=orders_kpi),
+        # Container 1: Sales Analysis
+        vm.Container(
+            title="Sales Analysis",
+            components=[
+                vm.Graph(figure=sales_chart),
+                vm.Graph(figure=regional_breakdown),
+            ],
+            controls=[
+                vm.Filter(column="region"),  # Affects only this container
+            ],
+            variant="filled",
+        ),
+        # Container 2: Customer Metrics
+        vm.Container(
+            title="Customer Metrics",
+            components=[
+                vm.Graph(figure=customer_chart),
+                vm.AgGrid(figure=customer_table),
+            ],
+            controls=[
+                vm.Filter(column="segment"),  # Affects only this container
+            ],
+            variant="outlined",
+        ),
+    ],
+    controls=[
+        vm.Filter(column="date"),  # Page-level filter (affects all components)
+    ],
+)
+```
+
+**When to use containers**:
+
+- Group related components into logical sections
+- Add section titles for clarity
+- Apply filters/parameters to specific sections only
+- Create visual separation with custom layouts or styling
+- Control spacing differently for each section
+
+**Container controls**: Filters and parameters inside containers affect only that container's components (not the whole page).
+
+**Reference**: https://vizro.readthedocs.io/en/stable/pages/user-guides/container/
+
 **Deliverable**: Reusable component library.
 
 ### 3. Implement Interactivity
@@ -639,7 +695,7 @@ page = vm.Page(
 - Base `row_min_height` is multiplied by number of rows a component spans
 - Larger grids (e.g., 6 columns vs 2) provide finer positioning control
 - Components automatically span their entire grid area
-- Use empty cells (by skipping indices) to create spacing
+- Use empty cells (by using -1) to create spacing
 
 **Nested Layouts** (Flex at page level, Grid inside containers):
 
@@ -751,12 +807,7 @@ Before proceeding to Test & Iterate:
 
 ## Next Steps
 
-Once Development is complete:
-
-1. Proceed to **test-iterate** skill for validation
-1. Deploy to staging environment
-1. Conduct user acceptance testing
-1. Prepare for production release
+Once Development is complete, proceed to **test-iterate** skill for validation
 
 ## Troubleshooting Guide
 
@@ -773,4 +824,3 @@ Once Development is complete:
 - Vizro Documentation: https://vizro.readthedocs.io/
 - Vizro Examples: https://vizro.readthedocs.io/en/stable/pages/examples/
 - Plotly Documentation: https://plotly.com/python/
-- Deployment Guide: https://vizro.readthedocs.io/en/stable/pages/user-guides/deployment/

@@ -85,7 +85,7 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 
 ### 2. Design Layout Grids
 
-**Vizro Mandatory Structure**:
+**Vizro Mandatory Structure (Three-Column Dashboard Structure)**:
 
 ```
 +--+------------+------------------------------------------------------------------------+
@@ -114,6 +114,18 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 - ❌ **DON'T**: Use full-width for non-timeseries charts
 - ❌ **DON'T**: Use narrow tables when many columns exist
 - ❌ **DON'T**: Force all content to fit without scrolling
+
+**When to use Containers**:
+
+Use `Container` to organize and group related components:
+
+- **Logical grouping**: Split page into subsections (e.g., "Sales Analysis", "Customer Metrics")
+- **Section titles**: Add clear titles to distinguish different content areas
+- **Scoped controls**: Apply filters/parameters to specific sections only
+- **Visual distinction**: Add borders or background colors to separate sections
+- **Custom spacing**: Different row/column spacing within each container
+
+**Container controls**: Filters and parameters inside containers affect only that container's components (built-in Vizro feature).
 
 **Chart aspect ratios**:
 
