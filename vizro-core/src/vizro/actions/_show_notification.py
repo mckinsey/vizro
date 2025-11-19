@@ -114,7 +114,7 @@ class show_notification(_AbstractAction):
 
         return [
             {
-                "id": self.notification_id,
+                "id": self.notification_id or self.id,
                 "title": title,
                 "message": self.message,
                 "className": class_name,
