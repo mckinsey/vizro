@@ -29,15 +29,13 @@ class show_notification(_AbstractAction):
         variant (Literal["info", "success", "warning", "error"]): Notification variant that
             determines default color and icon. Defaults to `"info"`.
         icon (Union[str, bool, None]): Optional icon name from [Google Material Icons](https://fonts.google.com/icons).
-            If not provided, a default icon based on the variant is used. Set to `False` to disable icon.
-            Ignored if `loading=True`. Defaults to `None`.
+            If not provided, a default icon based on the variant is used. Ignored if `loading=True`. Defaults to `None`.
         auto_close (Union[bool, int]): Duration in milliseconds before auto-closing. Set to `False` to disable
             auto-close. Defaults to `4000`.
-        action (Literal["show", "update"]): Action to perform. `"show"` adds a new notification or queues it if
-            limit is reached. `"update"` updates a previously shown notification (requires matching `notification_id`).
-            Defaults to `"show"`.
-        notification_id (Optional[str]): ID for the notification in DMC. Used to update existing notifications with
-            `action="update"`. Defaults to `None`.
+        action (Literal["show", "update"]): Action to perform: 'show' adds new notification,
+            'update' updates existing one(requires matching `notification_id`). Defaults to `"show"`.
+        notification_id (Optional[str]): Needs to be provided to update existing notifications with action='update'.
+            Defaults to `None`.
         loading (bool): Show loading spinner instead of icon. Useful for operations in progress. Defaults to `False`.
 
     Example: Button triggering success notification
@@ -69,9 +67,10 @@ class show_notification(_AbstractAction):
     )
     # L: We could remove icon if we don't want to expose too many arguments, but I do think it's useful to have.
     # Same for auto_close, action, and loading.
-    icon: Union[str, bool, None] = Field(
+    icon: Optional[str] = Field(
         default=None,
-        description="Icon name from DashIconify, or False to disable icon. Uses type default if None.",
+        description="""Optional icon name from [Google Material Icons](https://fonts.google.com/icons).
+            If not provided, a default icon based on the variant is used. Ignored if `loading=True`.""",
     )
     auto_close: Union[bool, int] = Field(
         default=4000,
@@ -87,8 +86,7 @@ class show_notification(_AbstractAction):
     # ids can be the same?
     notification_id: Optional[str] = Field(
         default=None,
-        description="""ID for the notification in DMC. Used to update existing notifications with action='update'.
-        Defaults to the action's id.""",
+        description="Needs to be provided to update existing notifications with action='update'.",
     )
     loading: bool = Field(
         default=False,
@@ -104,11 +102,11 @@ class show_notification(_AbstractAction):
     @_log_call
     def function(self, _trigger):
         """Creates and returns a notification configuration for DMC NotificationContainer."""
-        # L: Currently a notification is only shown if the action is triggered by a button or other interactive component.
-        # So if the action is not triggered, we return no_update to avoid showing a notification. However, do we think there
-        # will be use-cases where we want to show a notification without a button or other interactive component?
-        # If so, we could add a new argument that lets users display notifications on page load (?). On the other hand,
-        # we already have lots of arguments, so it might be too much.
+        # L: Currently a notification is only shown if the action is triggered by a button or
+        # other interactive component. So if the action is not triggered, we return no_update
+        # to avoid showing a notification. However, do we think there will be use-cases where
+        # we want to show a notification on page load?
+        # On the other hand, we already have lots of arguments, so it might be too much.
         if not _trigger:
             return no_update
 
