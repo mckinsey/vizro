@@ -502,9 +502,60 @@ You can update an existing notification by using `action="update"` and providing
 
 ### Notification on page load
 
-TODO: Get this working
+Notifications can be triggered automatically when a page loads by adding them to the [page's](pages.md) `actions` argument. This is useful for notifications that should appear on page load without requiring user interaction with a component, such as welcome messages.
 
-Notifications can be triggered automatically when a page loads by adding them to the [page's `actions` argument](pages.md). This is useful for notifications that should appear on page load without requiring user interaction with a component, such as welcome messages.
+!!! example "Notification on page load"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="Dashboard with welcome message",
+            components=[
+                vm.Graph(figure=px.histogram(df, x="sepal_length")),
+            ],
+            actions=[
+                va.show_notification(
+                    message="Welcome! Data was last updated 2 hours ago.",
+                    auto_close=False,
+                    icon="waving hand"
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - type: graph
+                figure:
+                  _target_: histogram
+                  x: sepal_length
+            actions:
+              - type: show_notification
+                message: Welcome! Data was last updated 2 hours ago.
+                auto_close: false
+                icon: waving hand
+            title: Dashboard with welcome message
+        ```
+
+    === "Result"
+
+        [![PageLoadNotification]][pageloadnotification]
 
 [autoclosenotification]: ../../assets/user_guides/notification_actions/auto_close_notification.gif
 [basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
@@ -512,4 +563,5 @@ Notifications can be triggered automatically when a page loads by adding them to
 [exportnotification]: ../../assets/user_guides/notification_actions/export_notification.gif
 [loadingnotification]: ../../assets/user_guides/notification_actions/loading_notification.gif
 [notificationvariants]: ../../assets/user_guides/notification_actions/notification_variants.gif
+[pageloadnotification]: ../../assets/user_guides/notification_actions/page_load_notification.png
 [updatenotification]: ../../assets/user_guides/notification_actions/update_notification.gif
