@@ -149,7 +149,11 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
+            # L: This was the only workaround I found to have the `show_notification` action work on page load.
+            # We need to prepend _on_page_load to any existing user-provided actions rather than replacing them.
+            self.actions = [
+                _on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)
+            ] + self.actions
 
         controls = cast(
             Iterable[ControlType],
