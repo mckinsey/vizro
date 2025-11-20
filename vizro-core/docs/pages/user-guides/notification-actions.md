@@ -298,7 +298,135 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
         [![AutoCloseNotification]][autoclosenotification]
 
+
+### Loading state
+
+Use `loading=True` to display a loading spinner instead of a static icon. This is useful for indicating that a long-running operation is in progress. It's recommended to also set `auto_close=False` so the notification remains visible until the operation completes.
+
+!!! example "Loading notification"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.actions as va
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Loading notification",
+            components=[
+                vm.Button(
+                    text="Start loading",
+                    actions=[
+                        va.show_notification(
+                            message="Processing your request...",
+                            loading=True,
+                            auto_close=False,
+                        )
+                    ],
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - type: button
+                text: Start loading
+                actions:
+                  - type: show_notification
+                    message: Processing your request...
+                    loading: true
+                    auto_close: false
+            title: Loading notification
+        ```
+
+    === "Result"
+
+        [![LoadingNotification]][loadingnotification]
+
+
+### Combine with other actions
+
+Notifications can be combined with other actions to provide user feedback. For example, you can display a success notification after [exporting data](data-actions.md#export-data) to confirm the action completed.
+
+!!! example "Notification with export"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="Export with notification",
+            layout=vm.Flex(),
+            components=[
+                vm.Graph(figure=px.histogram(df, x="sepal_length")),
+                vm.Button(
+                    text="Export data",
+                    actions=[
+                        va.export_data(),
+                        va.show_notification(
+                            message="Data exported successfully!",
+                            variant="success",
+                            icon="download",
+                        ),
+                    ],
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - type: graph
+                figure:
+                  _target_: histogram
+                  x: sepal_length
+              - type: button
+                text: Export data
+                actions:
+                  - type: export_data
+                  - type: show_notification
+                    message: Data exported successfully!
+                    variant: success
+                    icon: download
+            title: Export with notification
+            layout:
+              type: flex
+        ```
+
+    === "Result"
+
+        [![ExportNotification]][exportnotification]
+
+
+
+
 [autoclosenotification]: ../../assets/user_guides/notification_actions/auto_close_notification.gif
 [basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
 [customnotification]: ../../assets/user_guides/notification_actions/custom_notification.png
 [notificationvariants]: ../../assets/user_guides/notification_actions/notification_variants.gif
+[loadingnotification]: ../../assets/user_guides/notification_actions/loading_notification.gif
+[exportnotification]: ../../assets/user_guides/notification_actions/export_notification.gif
