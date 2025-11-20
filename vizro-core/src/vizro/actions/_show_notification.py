@@ -32,9 +32,9 @@ class show_notification(_AbstractAction):
             Defaults to variant-specific icon. Ignored if `variant="progress"`.
         auto_close (Union[bool, int]): Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Defaults to `4000`.
-        notification_id (Optional[str]): Notification identifier for updates. Multiple actions can share the same 
+        notification_id (Optional[str]): Notification identifier for updates. Multiple actions can share the same
             `notification_id` to update a single notification.
-        action (Literal["show", "update"]): Action type. Use `"show"` to display a new notification or `"update"` 
+        action (Literal["show", "update"]): Action type. Use `"show"` to display a new notification or `"update"`
             to modify an existing notification with matching `notification_id`. Defaults to `"show"`.
 
     Example: Button triggering notification
@@ -83,14 +83,14 @@ class show_notification(_AbstractAction):
     )
     notification_id: Optional[str] = Field(
         default="",
-        description="""Notification identifier for updates. Multiple actions can share the same `notification_id` 
+        description="""Notification identifier for updates. Multiple actions can share the same `notification_id`
             to update a single notification.""",
     )
-    # L: We do need this argument and can't make it depend on notification_id because both actions will have 
+    # L: We do need this argument and can't make it depend on notification_id because both actions will have
     # notification id provided. But one needs to have action 'update' and the other 'show'.
     action: Literal["show", "update"] = Field(
         default="show",
-        description="""Action type. Use `"show"` to display a new notification or `"update"` to modify an existing 
+        description="""Action type. Use `"show"` to display a new notification or `"update"` to modify an existing
             notification with matching `notification_id`.""",
     )
 
