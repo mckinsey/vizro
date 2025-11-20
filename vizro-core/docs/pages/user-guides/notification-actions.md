@@ -109,6 +109,10 @@ Each variant has its own color scheme and default icon (except `"progress"` whic
                     text="Error",
                     actions=[va.show_notification(message="Something went wrong", variant="error")],
                 ),
+                vm.Button(
+                    text="Progress",
+                    actions=[va.show_notification(message="Processing...", variant="progress", auto_close=False)],
+                ),
             ],
         )
 
@@ -147,6 +151,13 @@ Each variant has its own color scheme and default icon (except `"progress"` whic
                   - type: show_notification
                     message: Something went wrong
                     variant: error
+              - type: button
+                text: Progress
+                actions:
+                  - type: show_notification
+                    message: Processing...
+                    variant: progress
+                    auto_close: false
             title: Notification variants
             layout:
               type: flex
@@ -299,9 +310,9 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
         [![AutoCloseNotification]][autoclosenotification]
 
-### Combine with other actions
+### Chain with other actions
 
-Notifications can be combined with other actions to provide user feedback. For example, you can display a success notification after [exporting data](data-actions.md#export-data) to confirm the action completed.
+Notifications can be chained with other actions to provide user feedback. For example, you can display a success notification after [exporting data](data-actions.md#export-data) to confirm the action completed. [Actions in the `actions` list run sequentially](actions.md#multiple-actions), and the notification will display after the export action completes, regardless of whether the export succeeded or failed. Future versions will support conditional notifications based on action outcomes.
 
 !!! example "Notification with export"
 
