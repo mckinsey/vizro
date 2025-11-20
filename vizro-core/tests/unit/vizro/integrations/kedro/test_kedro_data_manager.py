@@ -47,12 +47,12 @@ def catalog_no_project(request):
 
 class TestCatalogFromProject:
     def test_save_on_close(self):
-        with pytest.raises(ValueError, match="`catalog_from_project` cannot run with `save_on_close=True`."):
+        with pytest.raises(ValueError, match="`catalog_from_project` cannot run with `save_on_close=False`"):
             catalog_from_project(save_on_close=True)
 
     def test_invalid_project_path(self, monkeypatch):
         # Error raised by Kedro when invalid project_path supplied.
-        with pytest.raises(RuntimeError, match="Could not find the project configuration file 'pyproject.toml'"):
+        with pytest.raises(RuntimeError, match=r"Could not find the project configuration file 'pyproject.toml'"):
             catalog_from_project(project_path=kedro_project_path.parent)
 
     # When no project_path is supplied explicitly, catalog_from_projects infers it automatically.

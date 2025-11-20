@@ -6,8 +6,11 @@ from typing import Any, Optional, Union
 
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
+from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from packaging.version import parse
+
+from vizro.managers._data_manager import pd_DataFrameCallable
 
 # find_kedro_project was not public until 1.0.0.
 LEGACY_KEDRO = parse(version("kedro")) < parse("1.0.0")
@@ -17,12 +20,8 @@ if not LEGACY_KEDRO:
 else:
     from kedro.utils import _find_kedro_project as find_kedro_project
 
-from kedro.io import DataCatalog
 
-from vizro.managers._data_manager import pd_DataFrameCallable
-
-
-def _infer_project_path(project_path: Union[str, Path]) -> Union[str, Path]:
+def _infer_project_path(project_path: Optional[Union[str, Path]]) -> Union[str, Path]:
     # Follows same logic as done internally in Kedro: if project_path not explicitly specified, try to find a Kedro
     # project above this point in the directory tree, and if that fails then use current working directory. If
     # project_path is not valid then bootstrap_project will then raise an error.
