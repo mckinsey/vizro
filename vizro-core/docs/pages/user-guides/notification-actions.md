@@ -298,60 +298,6 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
         [![AutoCloseNotification]][autoclosenotification]
 
-### Loading state
-
-Use `loading=True` to display a loading spinner instead of a static icon. This is useful for indicating that a long-running operation is in progress. It's recommended to also set `auto_close=False` so the notification remains visible until the operation completes.
-
-!!! example "Loading notification"
-
-    === "app.py"
-
-        ```{.python pycafe-link}
-        import vizro.actions as va
-        import vizro.models as vm
-        from vizro import Vizro
-
-        page = vm.Page(
-            title="Loading notification",
-            components=[
-                vm.Button(
-                    text="Start loading",
-                    actions=[
-                        va.show_notification(
-                            message="Processing your request...",
-                            loading=True,
-                            auto_close=False,
-                        )
-                    ],
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: button
-                text: Start loading
-                actions:
-                  - type: show_notification
-                    message: Processing your request...
-                    loading: true
-                    auto_close: false
-            title: Loading notification
-        ```
-
-    === "Result"
-
-        [![LoadingNotification]][loadingnotification]
-
 ### Combine with other actions
 
 Notifications can be combined with other actions to provide user feedback. For example, you can display a success notification after [exporting data](data-actions.md#export-data) to confirm the action completed.
@@ -418,6 +364,117 @@ Notifications can be combined with other actions to provide user feedback. For e
     === "Result"
 
         [![ExportNotification]][exportnotification]
+
+### Notification on page load
+
+Notifications can be triggered automatically when a page loads by adding them to the [page's](pages.md) `actions` argument. This is useful for notifications that should appear on page load without requiring user interaction with a component, such as welcome messages.
+
+!!! example "Notification on page load"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="Dashboard with welcome message",
+            components=[
+                vm.Graph(figure=px.histogram(df, x="sepal_length")),
+            ],
+            actions=[
+                va.show_notification(
+                    message="Welcome! Data was last updated 2 hours ago.",
+                    auto_close=False,
+                    icon="waving hand"
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - type: graph
+                figure:
+                  _target_: histogram
+                  x: sepal_length
+            actions:
+              - type: show_notification
+                message: Welcome! Data was last updated 2 hours ago.
+                auto_close: false
+                icon: waving hand
+            title: Dashboard with welcome message
+        ```
+
+    === "Result"
+
+        [![PageLoadNotification]][pageloadnotification]
+
+### Loading state
+
+Use `loading=True` to display a loading spinner instead of a static icon. This is useful for indicating that a long-running operation is in progress. It's recommended to also set `auto_close=False` so the notification remains visible until the operation completes.
+
+!!! example "Loading notification"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.actions as va
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Loading notification",
+            components=[
+                vm.Button(
+                    text="Start loading",
+                    actions=[
+                        va.show_notification(
+                            message="Processing your request...",
+                            loading=True,
+                            auto_close=False,
+                        )
+                    ],
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - type: button
+                text: Start loading
+                actions:
+                  - type: show_notification
+                    message: Processing your request...
+                    loading: true
+                    auto_close: false
+            title: Loading notification
+        ```
+
+    === "Result"
+
+        [![LoadingNotification]][loadingnotification]
 
 ### Update existing notification
 
@@ -499,63 +556,6 @@ You can update an existing notification by using `action="update"` and providing
     === "Result"
 
         [![UpdateNotification]][updatenotification]
-
-### Notification on page load
-
-Notifications can be triggered automatically when a page loads by adding them to the [page's](pages.md) `actions` argument. This is useful for notifications that should appear on page load without requiring user interaction with a component, such as welcome messages.
-
-!!! example "Notification on page load"
-
-    === "app.py"
-
-        ```{.python pycafe-link}
-        import vizro.actions as va
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-
-        df = px.data.iris()
-
-        page = vm.Page(
-            title="Dashboard with welcome message",
-            components=[
-                vm.Graph(figure=px.histogram(df, x="sepal_length")),
-            ],
-            actions=[
-                va.show_notification(
-                    message="Welcome! Data was last updated 2 hours ago.",
-                    auto_close=False,
-                    icon="waving hand"
-                )
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: graph
-                figure:
-                  _target_: histogram
-                  x: sepal_length
-            actions:
-              - type: show_notification
-                message: Welcome! Data was last updated 2 hours ago.
-                auto_close: false
-                icon: waving hand
-            title: Dashboard with welcome message
-        ```
-
-    === "Result"
-
-        [![PageLoadNotification]][pageloadnotification]
 
 [autoclosenotification]: ../../assets/user_guides/notification_actions/auto_close_notification.gif
 [basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
