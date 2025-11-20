@@ -15,7 +15,6 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="Operation completed successfully!",
-                    title="Success",
                     variant="success",
                 )
             ],
@@ -26,7 +25,6 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="Please review this warning message.",
-                    title="Warning",
                     variant="warning",
                 )
             ],
@@ -37,7 +35,6 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="An error occurred during the operation.",
-                    title="Error",
                     variant="error",
                 )
             ],
@@ -48,7 +45,6 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="Here's some useful information for you.",
-                    title="Info",
                     variant="info",
                 )
             ],
