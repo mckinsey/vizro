@@ -47,7 +47,7 @@ def catalog_no_project(request):
 
 class TestCatalogFromProject:
     def test_save_on_close(self):
-        with pytest.raises(ValueError, match="`catalog_from_project` cannot run with `save_on_close=False`"):
+        with pytest.raises(ValueError, match="`catalog_from_project` always runs with `save_on_close=False`"):
             catalog_from_project(save_on_close=True)
 
     def test_invalid_project_path(self, monkeypatch):
@@ -83,7 +83,7 @@ class TestCatalogFromProject:
                 if not (dataset_name.startswith("params:") or dataset_name == "parameters")
             }
 
-        assert dataset_names == {
+        expected = {
             "companies",
             "model_input_table",
             "preprocessed_companies",
@@ -94,6 +94,12 @@ class TestCatalogFromProject:
             "shuttle_passenger_capacity_plot_go",
             "shuttles",
         }
+
+        if LEGACY_KEDRO:
+            # Legacy kedro project doesn't have reporting pipeline.
+            expected -= {"shuttle_passenger_capacity_plot_exp", "shuttle_passenger_capacity_plot_go"}
+
+        assert dataset_names == expected
 
 
 class TestPipelinesFromProject:
@@ -108,12 +114,18 @@ class TestPipelinesFromProject:
     def test_pipelines_from_project(self, monkeypatch, cwd, project_path):
         if cwd is not None:
             monkeypatch.chdir(cwd)
-        assert set(pipelines_from_project(project_path)) == {
+
+        expected = {
             "__default__",
             "data_science",
             "data_processing",
             "reporting",
         }
+        if LEGACY_KEDRO:
+            # Legacy kedro project doesn't have reporting pipeline.
+            expected -= {"reporting"}
+
+        assert set(pipelines_from_project(project_path)) == expected
 
 
 class TestDatasetsFromCatalog:
