@@ -35,9 +35,11 @@ dependencies = [
   "gunicorn",
   "pixelmatch",
   "playwright",
-  "seaborn",  # For test of kedro integration on real project.
-  "scikit-learn",  # For test of kedro integration on real project.
-  "kedro-datasets[pandas-csvdataset, pandas-exceldataset, pandas-parquetdataset, plotly-plotlydataset, plotly-jsondataset]"  # For test of kedro integration on real project.
+  # seaborn and scikit-learn are needed for tests of kedro integration on real project.
+  # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
+  # we want to be testing the latest.
+  "seaborn",
+  "scikit-learn",
 ]
 features = ["kedro"]
 installer = "uv"
