@@ -212,7 +212,6 @@ By default, notifications use the capitalized variant name as the title (e.g., "
 
         [![CustomNotification]][customnotification]
 
-
 ### Auto-close duration
 
 By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You can customize this duration or disable auto-close entirely. Set `auto_close=False` for important messages that require user acknowledgment.
@@ -299,13 +298,7 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
         [![AutoCloseNotification]][autoclosenotification]
 
-
-
-
-
-[basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
-[notificationvariants]: ../../assets/user_guides/notification_actions/notification_variants.gif
-[customnotification]: ../../assets/user_guides/notification_actions/custom_notification.png
 [autoclosenotification]: ../../assets/user_guides/notification_actions/auto_close_notification.gif
-
-
+[basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
+[customnotification]: ../../assets/user_guides/notification_actions/custom_notification.png
+[notificationvariants]: ../../assets/user_guides/notification_actions/notification_variants.gif
