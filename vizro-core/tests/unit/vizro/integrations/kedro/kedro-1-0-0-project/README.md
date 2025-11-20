@@ -12,10 +12,10 @@ Take a look at the [Kedro documentation](https://docs.kedro.org) to get started.
 
 In order to get the best out of the template:
 
-- Don't remove any lines from the `.gitignore` file we provide
-- Make sure your results can be reproduced by following a [data engineering convention](https://docs.kedro.org/en/stable/faq/faq.html#what-is-data-engineering-convention)
-- Don't commit data to your repository
-- Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
+* Don't remove any lines from the `.gitignore` file we provide
+* Make sure your results can be reproduced by following a [data engineering convention](https://docs.kedro.org/en/stable/faq/faq.html#what-is-data-engineering-convention)
+* Don't commit data to your repository
+* Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
 
 ## How to install dependencies
 
@@ -58,7 +58,6 @@ To see and update the dependency requirements for your project use `requirements
 > Jupyter, JupyterLab, and IPython are already included in the project requirements by default, so once you have run `pip install -r requirements.txt` you will not need to take any extra steps before you use them.
 
 ### Jupyter
-
 To use Jupyter notebooks in your Kedro project, you need to install Jupyter:
 
 ```
@@ -72,7 +71,6 @@ kedro jupyter notebook
 ```
 
 ### JupyterLab
-
 To use JupyterLab, you need to install it:
 
 ```
@@ -86,7 +84,6 @@ kedro jupyter lab
 ```
 
 ### IPython
-
 And if you want to run an IPython session:
 
 ```
@@ -94,7 +91,6 @@ kedro ipython
 ```
 
 ### How to ignore notebook output cells in `git`
-
 To automatically strip out all output cell contents before committing to `git`, you can use tools like [`nbstripout`](https://github.com/kynan/nbstripout). For example, you can add a hook in `.git/config` with `nbstripout --install`. This will run `nbstripout` before anything is committed to `git`.
 
 > *Note:* Your output cells will be retained locally.

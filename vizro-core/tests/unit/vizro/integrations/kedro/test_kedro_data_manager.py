@@ -14,7 +14,7 @@ from vizro.integrations.kedro import catalog_from_project, datasets_from_catalog
 # Before 1.0.0, we need to support both the old DataCatalog and then new KedroDataCatalog
 # Kedro projects are created with the following command. Note you can't just do `kedro new --example` or it will not
 # use the starter of the right version.
-# kedro new --name=kedro_<version>_project --starter=spaceflights-pandas --telemetry=no --checkout==<version>h
+# kedro new --name=kedro_<version>_project --starter=spaceflights-pandas --telemetry=no --checkout <version>h
 # Then remove:
 #  * dummy_confusion_matrix entry in catalog.yml because it has different dependencies for different
 #    Kedro versions.

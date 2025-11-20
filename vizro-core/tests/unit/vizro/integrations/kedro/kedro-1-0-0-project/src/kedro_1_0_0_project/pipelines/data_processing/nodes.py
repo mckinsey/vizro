@@ -22,7 +22,6 @@ def preprocess_companies(companies: pd.DataFrame) -> pd.DataFrame:
 
     Args:
         companies: Raw data.
-
     Returns:
         Preprocessed data, with `company_rating` converted to a float and
         `iata_approved` converted to boolean.
@@ -37,7 +36,6 @@ def preprocess_shuttles(shuttles: pd.DataFrame) -> pd.DataFrame:
 
     Args:
         shuttles: Raw data.
-
     Returns:
         Preprocessed data, with `price` converted to a float and `d_check_complete`,
         `moon_clearance_complete` converted to boolean.
@@ -48,20 +46,23 @@ def preprocess_shuttles(shuttles: pd.DataFrame) -> pd.DataFrame:
     return shuttles
 
 
-def create_model_input_table(shuttles: pd.DataFrame, companies: pd.DataFrame, reviews: pd.DataFrame) -> pd.DataFrame:
+def create_model_input_table(
+    shuttles: pd.DataFrame, companies: pd.DataFrame, reviews: pd.DataFrame
+) -> pd.DataFrame:
     """Combines all data to create a model input table.
 
     Args:
         shuttles: Preprocessed data for shuttles.
         companies: Preprocessed data for companies.
         reviews: Raw data for reviews.
-
     Returns:
         Model input table.
 
     """
     rated_shuttles = shuttles.merge(reviews, left_on="id", right_on="shuttle_id")
     rated_shuttles = rated_shuttles.drop("id", axis=1)
-    model_input_table = rated_shuttles.merge(companies, left_on="company_id", right_on="id")
+    model_input_table = rated_shuttles.merge(
+        companies, left_on="company_id", right_on="id"
+    )
     model_input_table = model_input_table.dropna()
     return model_input_table
