@@ -48,16 +48,13 @@ class TestShowNotificationInstantiation:
         assert notification.outputs == ["notification-container.sendNotifications"]
 
 
-
 @pytest.mark.usefixtures("managers_one_page_one_button")
 class TestShowNotificationFunction:
     """Tests show_notification function behavior."""
 
     def test_button_triggered_default_notification(self):
         """Test notification triggered by button with default parameters."""
-        model_manager["button_one"].actions = [
-            show_notification(id="test_notification", message="Info message")
-        ]
+        model_manager["button_one"].actions = [show_notification(id="test_notification", message="Info message")]
         action = model_manager["test_notification"]
         result = action.function(_trigger=1)
 
@@ -84,7 +81,7 @@ class TestShowNotificationFunction:
             notification_id="custom_id",
             loading=True,
         )
-        
+
         model_manager["button_one"].actions = [custom_notification]
         action = model_manager["custom_notification"]
         result = action.function(_trigger=1)
@@ -95,7 +92,7 @@ class TestShowNotificationFunction:
         assert result[0]["message"] == "Test message"
         assert result[0]["className"] == "alert-success"
         assert_component_equal(result[0]["icon"], html.Span("star", className="material-symbols-outlined"))
-        assert result[0]["autoClose"] == False
+        assert result[0]["autoClose"] is False
         assert result[0]["action"] == "update"
         assert result[0]["loading"] is True
 
