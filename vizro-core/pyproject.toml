@@ -41,8 +41,8 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.19.0,<1.0",  # remove once we have tested the released Kedro 1.0
-  "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
+  "kedro>=0.19.9",
+  "kedro-datasets"
 ]
 
 [project.urls]
@@ -84,7 +84,7 @@ filterwarnings = [
   # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
   # Ignore kedro deprecation warning
-  "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning",
+  "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`:kedro.KedroDeprecationWarning",
   # Ignore dash_data_table deprecation warning
   "ignore:(?s).*The dash_table.DataTable will be removed from the builtin dash components in a future major version:DeprecationWarning"
 ]
