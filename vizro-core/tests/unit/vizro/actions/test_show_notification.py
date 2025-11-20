@@ -19,18 +19,6 @@ def managers_one_page_one_button():
     Vizro._pre_build()
 
 
-@pytest.fixture
-def managers_one_page_with_notification_action():
-    """Instantiates a page with a notification action on page load."""
-    vm.Page(
-        id="page_two",
-        title="Test Page",
-        components=[vm.Card(text="Placeholder")],
-        actions=[show_notification(id="page_notification", message="Page successfully loaded!")],
-    )
-    Vizro._pre_build()
-
-
 class TestShowNotificationInstantiation:
     """Tests show_notification instantiation."""
 
@@ -43,8 +31,7 @@ class TestShowNotificationInstantiation:
         assert notification.icon == ""
         assert notification.auto_close == 4000
         assert notification.action == "show"
-        assert notification.notification_id is None
-        assert notification.loading is False
+        assert notification.notification_id == ""
         assert notification.outputs == ["notification-container.sendNotifications"]
 
 
@@ -79,7 +66,6 @@ class TestShowNotificationFunction:
             auto_close=False,
             action="update",
             notification_id="custom_id",
-            loading=True,
         )
 
         model_manager["button_one"].actions = [custom_notification]
@@ -94,18 +80,20 @@ class TestShowNotificationFunction:
         assert_component_equal(result[0]["icon"], html.Span("star", className="material-symbols-outlined"))
         assert result[0]["autoClose"] is False
         assert result[0]["action"] == "update"
-        assert result[0]["loading"] is True
+        assert result[0]["loading"] is False
 
     @pytest.mark.parametrize(
-        "variant,expected_class,expected_icon",
+        "variant,expected_class,expected_icon,expected_loading",
         [
-            ("info", "alert-info", "info"),
-            ("success", "alert-success", "check_circle"),
-            ("warning", "alert-warning", "warning"),
-            ("error", "alert-error", "error"),
+            ("info", "alert-info", "info", False),
+            ("success", "alert-success", "check_circle", False),
+            ("warning", "alert-warning", "warning", False),
+            ("error", "alert-error", "error", False),
+            # The icon will just be ignored from dmc if loading is True.
+            ("progress", "alert-info", "info", True),
         ],
     )
-    def test_notification_variants(self, variant, expected_class, expected_icon):
+    def test_notification_variants(self, variant, expected_class, expected_icon, expected_loading):
         """Test all notification variants use correct defaults."""
         model_manager["button_one"].actions = [
             show_notification(id="test_notification", message=f"{variant} message", variant=variant)
@@ -116,6 +104,7 @@ class TestShowNotificationFunction:
         assert result[0]["title"] == variant.capitalize()
         assert result[0]["className"] == expected_class
         assert_component_equal(result[0]["icon"], html.Span(expected_icon, className="material-symbols-outlined"))
+        assert result[0]["loading"] is expected_loading
 
     def test_button_not_triggered_returns_no_update(self):
         """Test that notification returns no_update when button is not triggered."""
@@ -126,12 +115,3 @@ class TestShowNotificationFunction:
 
         assert result_none == no_update
         assert result_zero == no_update
-
-    @pytest.mark.usefixtures("managers_one_page_with_notification_action")
-    def test_page_action_on_load(self):
-        """Test that page action shows notification on page load."""
-        action = model_manager["page_notification"]
-        result = action.function(_trigger=None)
-
-        assert result != no_update
-        assert result[0]["message"] == "Page successfully loaded!"

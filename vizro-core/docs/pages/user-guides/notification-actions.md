@@ -70,14 +70,15 @@ When you click the button, a notification appears on the top right. Since only t
 
 ### Notification variants
 
-The `variant` argument controls the visual style and semantic meaning of the notification. Four variants are available:
+The `variant` argument controls the visual style and semantic meaning of the notification. Five variants are available:
 
 - `"info"` (default): For general informational messages
 - `"success"`: For successful operations
 - `"warning"`: For warnings or cautionary messages
 - `"error"`: For errors or critical issues
+- `"progress"`: For loading states - displays a spinner instead of an icon. Useful for indicating long-running operations. It's recommended to also set `auto_close=False` so the notification remains visible until the operation completes.
 
-Each variant has its own color scheme and default icon.
+Each variant has its own color scheme and default icon (except `"progress"` which shows a loading spinner).
 
 !!! example "Notification variants"
 
@@ -365,117 +366,6 @@ Notifications can be combined with other actions to provide user feedback. For e
 
         [![ExportNotification]][exportnotification]
 
-### Notification on page load
-
-Notifications can be triggered automatically when a page loads by adding them to the [page's](pages.md) `actions` argument. This is useful for notifications that should appear on page load without requiring user interaction with a component, such as welcome messages.
-
-!!! example "Notification on page load"
-
-    === "app.py"
-
-        ```{.python pycafe-link}
-        import vizro.actions as va
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-
-        df = px.data.iris()
-
-        page = vm.Page(
-            title="Dashboard with welcome message",
-            components=[
-                vm.Graph(figure=px.histogram(df, x="sepal_length")),
-            ],
-            actions=[
-                va.show_notification(
-                    message="Welcome! Data was last updated 2 hours ago.",
-                    auto_close=False,
-                    icon="waving hand"
-                )
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: graph
-                figure:
-                  _target_: histogram
-                  x: sepal_length
-            actions:
-              - type: show_notification
-                message: Welcome! Data was last updated 2 hours ago.
-                auto_close: false
-                icon: waving hand
-            title: Dashboard with welcome message
-        ```
-
-    === "Result"
-
-        [![PageLoadNotification]][pageloadnotification]
-
-### Loading state
-
-Use `loading=True` to display a loading spinner instead of a static icon. This is useful for indicating that a long-running operation is in progress. It's recommended to also set `auto_close=False` so the notification remains visible until the operation completes.
-
-!!! example "Loading notification"
-
-    === "app.py"
-
-        ```{.python pycafe-link}
-        import vizro.actions as va
-        import vizro.models as vm
-        from vizro import Vizro
-
-        page = vm.Page(
-            title="Loading notification",
-            components=[
-                vm.Button(
-                    text="Start loading",
-                    actions=[
-                        va.show_notification(
-                            message="Processing your request...",
-                            loading=True,
-                            auto_close=False,
-                        )
-                    ],
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: button
-                text: Start loading
-                actions:
-                  - type: show_notification
-                    message: Processing your request...
-                    loading: true
-                    auto_close: false
-            title: Loading notification
-        ```
-
-    === "Result"
-
-        [![LoadingNotification]][loadingnotification]
-
 ### Update existing notification
 
 You can update an existing notification by using `action="update"` and providing a matching `notification_id`. This is useful for showing progress updates or state changes for the same logical operation without creating multiple notifications.
@@ -499,7 +389,7 @@ You can update an existing notification by using `action="update"` and providing
                         va.show_notification(
                             notification_id="process_status",
                             message="Processing started...",
-                            loading=True,
+                            variant="progress",
                             auto_close=False,
                         )
                     ],
@@ -536,7 +426,7 @@ You can update an existing notification by using `action="update"` and providing
                   - type: show_notification
                     notification_id: process_status
                     message: Processing started...
-                    loading: true
+                    variant: progress
                     auto_close: false
               - type: button
                 text: Complete process
@@ -561,7 +451,5 @@ You can update an existing notification by using `action="update"` and providing
 [basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
 [customnotification]: ../../assets/user_guides/notification_actions/custom_notification.png
 [exportnotification]: ../../assets/user_guides/notification_actions/export_notification.gif
-[loadingnotification]: ../../assets/user_guides/notification_actions/loading_notification.gif
 [notificationvariants]: ../../assets/user_guides/notification_actions/notification_variants.gif
-[pageloadnotification]: ../../assets/user_guides/notification_actions/page_load_notification.png
 [updatenotification]: ../../assets/user_guides/notification_actions/update_notification.gif
