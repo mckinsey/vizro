@@ -125,7 +125,21 @@ page_1 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1])
+
+page_two = vm.Page(
+    title="Dashboard with welcome message",
+    components=[
+        vm.Graph(figure=px.histogram(df, x="sepal_length")),
+    ],
+    actions=[
+        va.show_notification(
+            message="Welcome! Data was last updated 2 hours ago.",
+            auto_close=False,
+        )
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_two])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
