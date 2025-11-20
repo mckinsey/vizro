@@ -131,8 +131,10 @@ class Graph(VizroBaseModel):
           2) Otherwise treat `value` as a Box lookup (e.g. "x", "customdata[0]").
 
         Notes:
-          - Enables dot-style (e.g. value="customdata[0]") access to nested dict values (box_dots=True).
           - Allows camelCase and snake_case value keys interchangeably (camel_killer_box=True).
+          - Enables dot-style (e.g. value="customdata[0]") access to nested dict values (box_dots=True).
+          - Automatically creates missing keys as empty boxes instead of raising errors (default_box=True). This is done
+            to avoid exceptions when the `trigger` has a key with a dot in it.
 
         Returns:
           - list of values (one per point) or None if no points selected (signals reset).
@@ -143,7 +145,8 @@ class Graph(VizroBaseModel):
         if not (trigger or {}).get("points"):
             return None
 
-        trigger_box = BoxList(trigger["points"], camel_killer_box=True, box_dots=True)
+        # TODO NOW PP: Handle default_box=True. It causes that the value will always be found. INVESTIGATE!
+        trigger_box = BoxList(trigger["points"], camel_killer_box=True, box_dots=True, default_box=True)
 
         lookup_keys = []
         with suppress(KeyError, ValueError):
@@ -159,16 +162,20 @@ class Graph(VizroBaseModel):
         lookup_keys.append(value)
 
         for key in lookup_keys:
-            with suppress(KeyError, TypeError):
+            # This suppresses issues like KeyError, NameError, IndexError, TypeError.
+            with suppress(Exception):
+                # TODO PP NOW: use walrus operator.
                 return [
-                    point[key]
+                    point[key][0]
                     # If resolved item is a list, flatten it to single value to skip returning nested object.
-                    if not isinstance(point[key], list)
-                    else point[key][0]
+                    # TODO NOW PP: add reason point[key] == Box() -> to skip if key doesn't exist.
+                    if isinstance(point[key], (list, Box))
+                    else point[key]
                     for point in trigger_box
                 ]
 
         # TODO: See why the exception message doesn't show.
+        # TODO: Should we return None and raise a warning instead?
         # If we reach here, none of the lookup keys worked.
         raise ValueError(
             f"Couldn't find value `{value}` in trigger for `set_control` action. "

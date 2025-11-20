@@ -12,6 +12,7 @@ function update_graph_actions_trigger_prop(clickData, selectedData, figure) {
 
   // Charts like: pie, area, line, funnel_area, density_heatmap, line_polar, treemap, parallel_coordinates do not support selectedData
   // For those type of charts we need take clickData and propagate to their actions_trigger store.
+  // There's no other way to differentiate false clickData from bar chart and real clickData from pie chart.
   const isChartLineMode = figure?.data?.[0]?.mode === 'lines';
   const clickDataChartTypes = ['pie', 'funnelarea', 'histogram2d', 'treemap'];
   const chartType = figure?.data?.[0]?.type;

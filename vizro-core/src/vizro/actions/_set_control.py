@@ -178,10 +178,9 @@ class set_control(_AbstractAction):
             if value is None:
                 value = _vizro_controls_store[self.control]["originalValue"]
 
-            # Normalise retuned value based on target selector type
+            # Normalize returned value based on target selector type.
             selector = model_manager[self.control].selector
             is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
-
             if is_multi:
                 value = sorted(set(value)) if isinstance(value, list) else [value]
             else:
