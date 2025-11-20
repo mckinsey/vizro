@@ -212,6 +212,7 @@ plugins:
       handlers:
         python:
           options:
+            show_bases: false
             show_source: false #currently doesn't show source at correct level, and not for pydantic models
             docstring_style: google
             merge_init_into_class: true

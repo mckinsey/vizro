@@ -34,7 +34,12 @@ dependencies = [
   "pyhamcrest",
   "gunicorn",
   "pixelmatch",
-  "playwright"
+  "playwright",
+  # seaborn and scikit-learn are needed for tests of kedro integration on real project.
+  # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
+  # we want to be testing the latest.
+  "seaborn",
+  "scikit-learn"
 ]
 features = ["kedro"]
 installer = "uv"
@@ -169,7 +174,7 @@ extra-dependencies = [
   "pydantic==2.7.0",
   "pandas==2.0.0",
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
-  "kedro==0.19.0"  # Includes kedro-datasets as a dependency.
+  "kedro==0.19.9"
 ]
 python = "3.9"
 

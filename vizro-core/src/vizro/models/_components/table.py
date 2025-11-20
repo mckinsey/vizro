@@ -18,7 +18,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, validate_captured_callable
+from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, _validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,6 @@ class Table(VizroBaseModel):
         [How to use tables](../user-guides/table.md)
 
     Args:
-        type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
         title (str): Title of the `Table`. Defaults to `""`.
         header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.
@@ -78,7 +77,7 @@ class Table(VizroBaseModel):
     actions: ActionsType = []
 
     _inner_component_id: str = PrivateAttr()
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

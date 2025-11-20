@@ -4,12 +4,12 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-
+<!--
 ### Highlights ✨
 
-- Add `show_notification` action to display configurable alerts/notification messages. Notifications can be triggered by clicking buttons, on page load, or through other interactions. Choose from four notification types (info, success, warning, error), customize the display duration or icons, or update existing notifications. See the user guide on XXX for more details. ([#1496](https://github.com/mckinsey/vizro/pull/1496))
+- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
+-->
 <!--
 ### Removed
 

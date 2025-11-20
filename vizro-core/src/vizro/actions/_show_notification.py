@@ -81,6 +81,7 @@ class show_notification(_AbstractAction):
         description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. """,
     )
+    # P/A: To check whether we can remove this argument.
     notification_id: Optional[str] = Field(
         default="",
         description="""Notification identifier for updates. Multiple actions can share the same `notification_id`
