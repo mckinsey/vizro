@@ -1,6 +1,6 @@
 import pytest
 
-from vizro._themes._static_template_generator import _extract_last_two_occurrences, extract_bs_variables_from_css
+from vizro.themes.static_template_generator import extract_bs_variables_from_css, extract_last_two_occurrences
 
 
 @pytest.fixture
@@ -33,7 +33,7 @@ def css_content():
     ],
 )
 def test_extract_last_two_occurrences(variable, css_content, expected):
-    result_dark, result_light = _extract_last_two_occurrences(variable, css_content)
+    result_dark, result_light = extract_last_two_occurrences(variable, css_content)
     assert (result_dark, result_light) == expected
 
 
