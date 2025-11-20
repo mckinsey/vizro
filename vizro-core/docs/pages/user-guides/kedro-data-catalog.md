@@ -12,7 +12,7 @@ If you already have Kedro installed then you do not need to install any extra de
 pip install vizro[kedro]
 ```
 
-Vizro is currently compatible with `kedro>=0.19.12` (including `kedro>=1.0.0`) and works with dataset factories for `kedro>=0.19.9`.
+Vizro is currently compatible with `kedro>=0.19.9` (including `kedro>=1.0.0`).
 
 ## Create a Kedro Data Catalog
 

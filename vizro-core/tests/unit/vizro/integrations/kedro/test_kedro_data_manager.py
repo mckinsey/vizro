@@ -31,7 +31,7 @@ else:
     from kedro.io import DataCatalog as LegacyDataCatalog
     from kedro.io import KedroDataCatalog as DataCatalog
 
-    kedro_project_path = Path(__file__).parent / "kedro-0-19-12-project"
+    kedro_project_path = Path(__file__).parent / "kedro-0-19-9-project"
     data_catalog_classes = [DataCatalog, LegacyDataCatalog]
 
 
