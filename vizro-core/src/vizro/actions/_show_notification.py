@@ -13,6 +13,7 @@ VARIANT_CONFIG = {
     "success": {"className": "alert-success", "icon": "check_circle"},
     "warning": {"className": "alert-warning", "icon": "warning"},
     "error": {"className": "alert-error", "icon": "error"},
+    "progress": {"className": "alert-info", "icon": "info"},
 }
 
 
@@ -25,17 +26,16 @@ class show_notification(_AbstractAction):
     Args:
         title (Optional[str]): Notification title. Defaults to capitalized variant name if not provided.
         message (str): Main notification message text.
-        variant (Literal["info", "success", "warning", "error"]): Semantic variant that determines color and
-            default icon. Defaults to `"info"`.
+        variant (Literal["info", "success", "warning", "error", "progress"]): Semantic variant that determines color and
+            default icon. Use `"progress"` to display a loading spinner instead of an icon. Defaults to "info".
         icon (str): Icon name from [Google Material Icons](https://fonts.google.com/icons).
-            Defaults to variant-specific icon. Ignored if `loading=True`.
-        auto_close (Union[bool, int]): Auto-close duration in milliseconds. Set to `False` to disable.
-            Defaults to `4000`.
-        action (Literal["show", "update"]): Action type. `"show"` displays new notification, `"update"` modifies
-            existing notification (requires matching `notification_id`). Defaults to `"show"`.
-        notification_id (Optional[str]): Notification identifier for updates. Multiple actions can share the same
+            Defaults to variant-specific icon. Ignored if `variant="progress"`.
+        auto_close (Union[bool, int]): Auto-close duration in milliseconds. Set to `False` to keep the notification
+            open until the user closes it manually. Defaults to `4000`.
+        notification_id (Optional[str]): Notification identifier for updates. Multiple actions can share the same 
             `notification_id` to update a single notification.
-        loading (bool): Show loading spinner instead of icon. Defaults to `False`.
+        action (Literal["show", "update"]): Action type. Use `"show"` to display a new notification or `"update"` 
+            to modify an existing notification with matching `notification_id`. Defaults to `"show"`.
 
     Example: Button triggering notification
         ```python
@@ -52,24 +52,6 @@ class show_notification(_AbstractAction):
             ],
         )
         ```
-
-    Example: Notification on page load
-        ```python
-        import vizro.actions as va
-        import vizro.models as vm
-
-        page = vm.Page(
-            title="My Dashboard",
-            actions=[
-                va.show_notification(
-                    message="Welcome! Data was last updated 2 hours ago.",
-                    variant="info",
-                    auto_close=8000,
-                )
-            ],
-            components=[...],
-        )
-        ```
     """
 
     type: Literal["show_notification"] = "show_notification"
@@ -80,45 +62,37 @@ class show_notification(_AbstractAction):
     message: str = Field(
         description="Main notification message text.",
     )
-    variant: Literal["info", "success", "warning", "error"] = Field(
+    variant: Literal["info", "success", "warning", "error", "progress"] = Field(
         default="info",
-        description="Semantic variant that determines color and default icon.",
+        description="""Semantic variant that determines color and default icon / loading state.
+        If `progress`, the notification will show a loading spinner instead of an icon.""",
     )
-    # L: We could remove icon if we don't want to expose too many arguments, but I do think it's useful to have.
-    # Same for auto_close, action, and loading.
     icon: Annotated[
         str,
         AfterValidator(validate_icon),
         Field(
             default="",
             description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
-                Ignored if `loading=True""",
+                Ignored if `variant="progress"`""",
         ),
     ]
     auto_close: Union[bool, int] = Field(
         default=4000,
-        description="Auto-close duration in milliseconds. Set to False to disable.",
+        description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
+            open until the user closes it manually. """,
     )
+    notification_id: Optional[str] = Field(
+        default="",
+        description="""Notification identifier for updates. Multiple actions can share the same `notification_id` 
+            to update a single notification.""",
+    )
+    # L: We do need this argument and can't make it depend on notification_id because both actions will have 
+    # notification id provided. But one needs to have action 'update' and the other 'show'.
     action: Literal["show", "update"] = Field(
         default="show",
-        description="""Action type. `"show"` displays new notification, `"update"` modifies
-            existing notification (requires matching `notification_id`).""",
+        description="""Action type. Use `"show"` to display a new notification or `"update"` to modify an existing 
+            notification with matching `notification_id`.""",
     )
-    # L: We need an extra field 'notification_id' to enable updating existing notifications.
-    # Given that `id` can't be duplicated across the app, we use this field to update existing notifications.
-    # See scratch dev app for an example. Or is there a way how I can just use `ìd` ? and the action
-    # ids can be the same?
-    notification_id: Optional[str] = Field(
-        default=None,
-        description="""Notification identifier for updates. Multiple actions can share the same
-            `notification_id` to update a single notification.""",
-    )
-    loading: bool = Field(
-        default=False,
-        description="Show loading spinner instead of icon.",
-    )
-    # L: There is another argument called color that can be used to set the color of the notification.
-    # but I didn't add it here, because I think the variant is more intuitive, though more restrictive.
 
     @property
     def outputs(self) -> list[_IdOrIdProperty]:  # type: ignore[override]
@@ -127,18 +101,7 @@ class show_notification(_AbstractAction):
     @_log_call
     def function(self, _trigger):
         """Creates and returns a notification configuration for DMC NotificationContainer."""
-        # L: Is there a better to do this? Essentially, what I want is to cover two use cases:
-        # 1. Show a notification on page load (should be shown on page load without having to click on anything)
-        # 2. Show a notification when the action is triggered by a button or other
-        # interactive component (should not be shown on page load)
-        from vizro.models import Page
-
-        parent_model = getattr(self, "_parent_model", None)
-        is_page_action = parent_model is not None and isinstance(parent_model, Page)
-
-        # For non-page actions (e.g., button actions), don't show notification on initial render
-        # For page actions, always show the notification when the page loads
-        if not is_page_action and (_trigger is None or _trigger == 0):
+        if _trigger is None or _trigger == 0:
             return no_update
 
         # Get variant-specific configuration variables
@@ -155,6 +118,6 @@ class show_notification(_AbstractAction):
                 "icon": html.Span(icon_name, className="material-symbols-outlined"),
                 "autoClose": self.auto_close,
                 "action": self.action,
-                "loading": self.loading,
+                "loading": self.variant == "progress",
             }
         ]
