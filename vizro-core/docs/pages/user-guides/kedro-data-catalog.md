@@ -12,7 +12,7 @@ If you already have Kedro installed then you do not need to install any extra de
 pip install vizro[kedro]
 ```
 
-Vizro is currently compatible with `kedro>=0.19.0` and works with dataset factories for `kedro>=0.19.9`.
+Vizro is currently compatible with `kedro>=0.19.12` (including `kedro>=1.0.0`) and works with dataset factories for `kedro>=0.19.9`.
 
 ## Create a Kedro Data Catalog
 
@@ -64,7 +64,7 @@ As [shown below](#use-datasets-from-the-kedro-data-catalog), the best way to use
 
 ## Use datasets from the Kedro Data Catalog
 
-Vizro provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/catalog-data/data_catalog/) in the module [`vizro.integrations.kedro`](../API-reference/kedro-integration.md). These functions support both the original `DataCatalog` and the more recently introduced `KedroDataCatalog`. Given a Kedro `catalog`, the general pattern to add datasets to the Vizro data manager is:
+Vizro provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/catalog-data/data_catalog/) in the module [`vizro.integrations.kedro`](../API-reference/kedro-integration.md). Given a Kedro `catalog`, the general pattern to add datasets to the Vizro data manager is:
 
 ```python
 from vizro.integrations import kedro as kedro_integration
@@ -87,7 +87,7 @@ The `catalog` variable may have been created in a number of different ways:
 1. Kedro project path. Vizro exposes a helper function [`catalog_from_project`](../API-reference/kedro-integration.md#vizro.integrations.kedro.catalog_from_project) to generate a `catalog` given the path to a Kedro project.
 1. [Kedro Jupyter session](https://docs.kedro.org/en/stable/integrations-and-plugins/notebooks_and_ipython/kedro_and_notebooks/). This automatically exposes `catalog`.
 
-The full code for these different cases is given below.
+The full code for these different cases is given below. If you have a full Kedro project then it is recommended to put your `app.py` file somewhere inside the Kedro project so that your `catalog` is automatically discovered. However, it is also possible to run a Vizro app that uses a Kedro project at an arbitrary path.
 
 !!! example "Import a Kedro Data Catalog into the Vizro data manager"
 
@@ -107,7 +107,7 @@ The full code for these different cases is given below.
             data_manager[dataset_name] = dataset_loader
         ```
 
-        1. Kedro's experimental `KedroDataCatalog` would also work.
+        1. For `kedro<1.0.0`, Kedro's experimental `KedroDataCatalog` would also work.
         1. This [loads and parses configuration in `catalog.yaml`](https://docs.kedro.org/en/stable/configure/advanced_configuration/#advanced-configuration-without-a-full-kedro-project). The argument `conf_source="."` specifies that `catalog.yaml` is found in the same directory as `app.py` or a subdirectory beneath this level. In a more complex setup, this could include [configuration environments](https://docs.kedro.org/en/stable/configure/configuration_basics/#configuration-environments), for example to organize configuration for development and production data sources.
         1. If you have [credentials](https://docs.kedro.org/en/stable/configure/credentials/) then these can be injected with `DataCatalog.from_config(conf_loader["catalog"], conf_loader["credentials"])`.
 
@@ -117,13 +117,15 @@ The full code for these different cases is given below.
         from vizro.integrations import kedro as kedro_integration
         from vizro.managers import data_manager
 
-        project_path = "/path/to/kedro/project"
+        project_path = "/path/to/kedro/project" # (1)!
         catalog = kedro_integration.catalog_from_project(project_path)
 
 
         for dataset_name, dataset_loader in kedro_integration.datasets_from_catalog(catalog).items():
             data_manager[dataset_name] = dataset_loader
         ```
+
+        1. `project_path` is an optional argument. If it is not specified then `catalog_from_project` attempts to find a Kedro project in the current directory or above. Hence if your `app.py` file lives somewhere inside the Kedro project, you do not need to specify `project_path`. 
 
     === "app.ipynb (Kedro Jupyter session)"
 
@@ -161,7 +163,7 @@ The full code for these different cases is given below.
         from vizro.managers import data_manager
 
 
-        project_path = "/path/to/kedro/project"
+        project_path = "/path/to/kedro/project" # (1)!
         catalog = kedro_integration.catalog_from_project(project_path)
         pipelines = kedro_integration.pipelines_from_project(project_path)
 
@@ -170,6 +172,8 @@ The full code for these different cases is given below.
         ).items():
             data_manager[dataset_name] = dataset_loader
         ```
+
+        1. `project_path` is an optional argument. If it is not specified then `catalog_from_project` and `pipelines_from_project` attempt to find a Kedro project in the current directory or above. Hence if your `app.py` file lives somewhere inside the Kedro project, you do not need to specify `project_path`.
 
     === "app.ipynb (Kedro Jupyter session)"
 

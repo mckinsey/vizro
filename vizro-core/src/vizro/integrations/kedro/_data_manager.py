@@ -22,15 +22,15 @@ from vizro.managers._data_manager import pd_DataFrameCallable
 from kedro.io import DataCatalog
 
 
-def _infer_project_path(project_path) -> Union[str, Path]:
-    # Follows same logic as done interally in Kedro: if project_path not explicitly specified, try to find a Kedro
+def _infer_project_path(project_path: Union[str, Path]) -> Union[str, Path]:
+    # Follows same logic as done internally in Kedro: if project_path not explicitly specified, try to find a Kedro
     # project above this point in the directory tree, and if that fails then use current working directory. If
-    # project_path is not valid then bootstrap_project will raise an error.
+    # project_path is not valid then bootstrap_project will then raise an error.
     return project_path or find_kedro_project(Path.cwd()) or Path.cwd()
 
 
 def catalog_from_project(project_path: Optional[Union[str, Path]] = None, **kwargs: Any) -> DataCatalog:
-    """Fetches the Kedro Data Catalog for a Kedro project.
+    """Fetches a Kedro project's Data Catalog.
 
     Args:
         project_path: Path to the Kedro project root directory. If not specified then attempts to find a Kedro project
@@ -42,14 +42,18 @@ def catalog_from_project(project_path: Optional[Union[str, Path]] = None, **kwar
     Returns:
          Kedro Data Catalog.
 
-    Examples:
-        >>> from vizro.integrations import kedro as kedro_integration
-        >>> catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
+    Example:
+        ```python
+        from vizro.integrations import kedro as kedro_integration
+
+        catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
+        ```
     """
 
-    # todo: API docs, check narrative docs, then done
     if kwargs.get("save_on_close"):
-        raise ValueError("`catalog_from_project` cannot run with `save_on_close=True`.")
+        raise ValueError(
+            "`catalog_from_project` always runs with `save_on_close=False`; this argument cannot be specified manually."
+        )
     project_path = _infer_project_path(project_path)
     bootstrap_project(project_path)
     with KedroSession.create(project_path=project_path, save_on_close=False, **kwargs) as session:
@@ -57,7 +61,7 @@ def catalog_from_project(project_path: Optional[Union[str, Path]] = None, **kwar
 
 
 def pipelines_from_project(project_path: Optional[Union[str, Path]] = None) -> dict[str, Pipeline]:
-    """Fetches Kedro pipelines for a Kedro project.
+    """Fetches a Kedro project's pipelines.
 
     Args:
         project_path: Path to the Kedro project root directory. If not specified then attempts to find a Kedro project
@@ -66,9 +70,12 @@ def pipelines_from_project(project_path: Optional[Union[str, Path]] = None) -> d
     Returns:
          Mapping of pipeline names to pipelines.
 
-    Examples:
-        >>> from vizro.integrations import kedro as kedro_integration
-        >>> pipelines = kedro_integration.pipelines_from_project("/path/to/kedro/project")
+    Example:
+        ```python
+        from vizro.integrations import kedro as kedro_integration
+
+        pipelines = kedro_integration.pipelines_from_project("/path/to/kedro/project")
+        ```
     """
     project_path = _infer_project_path(project_path)
     bootstrap_project(project_path)
@@ -78,8 +85,8 @@ def pipelines_from_project(project_path: Optional[Union[str, Path]] = None) -> d
 
 
 def _legacy_datasets_from_catalog(catalog: DataCatalog, pipeline: Pipeline = None) -> dict[str, pd_DataFrameCallable]:
-    # The old version of datasets_from_catalog from before https://github.com/mckinsey/vizro/pull/1493.
-    # This is used when catalog for Kedro < 1.0.0.
+    # The old version of datasets_from_catalog from before https://github.com/mckinsey/vizro/pull/1493,
+    # used for kedro<1.
     # This doesn't include things added to the catalog at run time but that is ok for our purposes.
     config_resolver = catalog.config_resolver
     kedro_datasets = config_resolver.config.copy()
@@ -110,25 +117,29 @@ def _legacy_datasets_from_catalog(catalog: DataCatalog, pipeline: Pipeline = Non
 
 
 # Technically on Kedro the DATA_CATALOG_CLASS is constrained to implement the more general CatalogProtocol rather than
-# DataCatalog (the default value for kedro>=1), which was called KedroDataCatalog < 1. Here we rely on it being
-# DataCatalog rather than any implementation of CatalogProtocol, since DataCatalog provides the very useful filter
-# method.
+# DataCatalog (the default value for kedro>=1), which was called KedroDataCatalog in kedro<1. Here we actually rely on
+# it being DataCatalog rather than any implementation of CatalogProtocol, since DataCatalog provides the very useful
+# filter method.
 # Note there's also CatalogCommandsMixin that is implemented automatically when DATA_CATALOG_CLASS is DataCatalog (but
 # not a subclass). We don't use any methods from this.
 def datasets_from_catalog(catalog: DataCatalog, *, pipeline: Pipeline = None) -> dict[str, pd_DataFrameCallable]:
-    """Fetches Kedro Dataset loading functions for a Kedro Data Catalog.
+    """Fetches a Kedro Data Catalog's pandas dataset loading functions to use in the Vizro data manager.
 
     Args:
         catalog: Kedro Data Catalog.
-        pipeline: Optional Kedro pipeline. If specified, the factory-based Kedro datasets it defines are returned.
+        pipeline: Optional Kedro pipeline. If specified, the factory-based Kedro datasets it defines are also returned.
 
     Returns:
          Mapping of dataset names to dataset loading functions that can be used in the Vizro data manager.
 
-    # TODO: update examples
-    Examples:
-        >>> from vizro.integrations import kedro as kedro_integration
-        >>> dataset_loaders = kedro_integration.datasets_from_catalog(catalog)
+    Example:
+        ```python
+        from vizro.integrations import kedro as kedro_integration
+        from vizro.managers import data_manager
+
+        for dataset_name, dataset_loader in kedro_integration.datasets_from_catalog(catalog).items():
+            data_manager[dataset_name] = dataset_loader
+        ```
     """
     # Legacy function is technically only necessary for kedro<1 with old DataCatalog that doesn't support filter, but
     # we use it for the kedro<1 with KedroDataCatalog case too for simplicity.
