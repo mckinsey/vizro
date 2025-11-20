@@ -117,7 +117,7 @@ The full code for these different cases is given below. If you have a full Kedro
         from vizro.integrations import kedro as kedro_integration
         from vizro.managers import data_manager
 
-        project_path = "/path/to/kedro/project" # (1)!
+        project_path = "/path/to/kedro/project"  # (1)!
         catalog = kedro_integration.catalog_from_project(project_path)
 
 
@@ -125,7 +125,7 @@ The full code for these different cases is given below. If you have a full Kedro
             data_manager[dataset_name] = dataset_loader
         ```
 
-        1. `project_path` is an optional argument. If it is not specified then `catalog_from_project` attempts to find a Kedro project in the current directory or above. Hence if your `app.py` file lives somewhere inside the Kedro project, you do not need to specify `project_path`. 
+        1. `project_path` is an optional argument. If it is not specified then `catalog_from_project` attempts to find a Kedro project in the current directory or above. Hence if your `app.py` file lives somewhere inside the Kedro project, you do not need to specify `project_path`.
 
     === "app.ipynb (Kedro Jupyter session)"
 
@@ -163,7 +163,7 @@ The full code for these different cases is given below.
         from vizro.managers import data_manager
 
 
-        project_path = "/path/to/kedro/project" # (1)!
+        project_path = "/path/to/kedro/project"  # (1)!
         catalog = kedro_integration.catalog_from_project(project_path)
         pipelines = kedro_integration.pipelines_from_project(project_path)
 

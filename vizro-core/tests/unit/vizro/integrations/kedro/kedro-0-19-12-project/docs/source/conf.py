@@ -20,6 +20,7 @@
 import re
 
 from kedro.framework.cli.utils import find_stylesheets
+
 from kedro_0_19_12_project import __version__ as release
 
 # -- Project information -----------------------------------------------------

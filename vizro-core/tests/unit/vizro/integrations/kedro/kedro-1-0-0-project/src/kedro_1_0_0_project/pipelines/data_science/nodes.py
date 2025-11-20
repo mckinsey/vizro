@@ -12,6 +12,7 @@ def split_data(data: pd.DataFrame, parameters: dict) -> tuple:
     Args:
         data: Data containing features and target.
         parameters: Parameters defined in parameters/data_science.yml.
+
     Returns:
         Split data.
     """
@@ -38,9 +39,7 @@ def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> LinearRegression:
     return regressor
 
 
-def evaluate_model(
-    regressor: LinearRegression, X_test: pd.DataFrame, y_test: pd.Series
-) -> dict[str, float]:
+def evaluate_model(regressor: LinearRegression, X_test: pd.DataFrame, y_test: pd.Series) -> dict[str, float]:
     """Calculates and logs the coefficient of determination.
 
     Args:

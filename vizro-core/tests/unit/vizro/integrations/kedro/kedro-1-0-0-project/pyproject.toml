@@ -1,30 +1,30 @@
 [build-system]
-requires = [ "setuptools",]
 build-backend = "setuptools.build_meta"
+requires = ["setuptools"]
 
 [project]
-requires-python = ">=3.9"
+dependencies = ["ipython>=8.10", "jupyterlab>=3.0", "notebook", "kedro[jupyter]~=1.0.0", "kedro-datasets[pandas-csvdataset, pandas-exceldataset, pandas-parquetdataset, plotly-plotlydataset, plotly-jsondataset, matplotlib-matplotlibwriter]>=3.0", "kedro-viz>=6.7.0", "scikit-learn~=1.5.1", "seaborn~=0.12.1"]
+dynamic = ["version"]
 name = "kedro_1_0_0_project"
 readme = "README.md"
-dynamic = [ "version",]
-dependencies = [ "ipython>=8.10", "jupyterlab>=3.0", "notebook", "kedro[jupyter]~=1.0.0", "kedro-datasets[pandas-csvdataset, pandas-exceldataset, pandas-parquetdataset, plotly-plotlydataset, plotly-jsondataset, matplotlib-matplotlibwriter]>=3.0", "kedro-viz>=6.7.0", "scikit-learn~=1.5.1", "seaborn~=0.12.1",]
+requires-python = ">=3.9"
+
+[project.entry-points."kedro.hooks"]
 
 [project.scripts]
 kedro-1-0-0-project = "kedro_1_0_0_project.__main__:main"
 
 [tool.kedro]
+example_pipeline = "True"
+kedro_init_version = "1.0.0"
 package_name = "kedro_1_0_0_project"
 project_name = "kedro_1-0-0_project"
-kedro_init_version = "1.0.0"
-tools = "['None']"
-example_pipeline = "True"
 source_dir = "src"
-
-[project.entry-points."kedro.hooks"]
+tools = "['None']"
 
 [tool.setuptools.dynamic.version]
 attr = "kedro_1_0_0_project.__version__"
 
 [tool.setuptools.packages.find]
-where = [ "src",]
 namespaces = false
+where = ["src"]

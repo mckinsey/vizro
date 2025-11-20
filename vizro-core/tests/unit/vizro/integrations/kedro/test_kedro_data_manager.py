@@ -8,7 +8,7 @@ import pytest
 from kedro.config import OmegaConfigLoader
 from packaging.version import parse
 
-from vizro.integrations.kedro import datasets_from_catalog, catalog_from_project, pipelines_from_project
+from vizro.integrations.kedro import catalog_from_project, datasets_from_catalog, pipelines_from_project
 
 # KedroDataCatalog was experimental in kedro<1 and became the new DataCatalog in Kedro 1.0.0.
 # Before 1.0.0, we need to support both the old DataCatalog and then new KedroDataCatalog
@@ -28,7 +28,8 @@ if not LEGACY_KEDRO:
     kedro_project_path = Path(__file__).parent / "kedro-1-0-0-project"
     data_catalog_classes = [DataCatalog]
 else:
-    from kedro.io import DataCatalog as LegacyDataCatalog, KedroDataCatalog as DataCatalog
+    from kedro.io import DataCatalog as LegacyDataCatalog
+    from kedro.io import KedroDataCatalog as DataCatalog
 
     kedro_project_path = Path(__file__).parent / "kedro-0-19-12-project"
     data_catalog_classes = [DataCatalog, LegacyDataCatalog]

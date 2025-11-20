@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from importlib.metadata import version
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import Any, Optional, Union
 
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
@@ -17,9 +17,9 @@ if not LEGACY_KEDRO:
 else:
     from kedro.utils import _find_kedro_project as find_kedro_project
 
-from vizro.managers._data_manager import pd_DataFrameCallable
-
 from kedro.io import DataCatalog
+
+from vizro.managers._data_manager import pd_DataFrameCallable
 
 
 def _infer_project_path(project_path: Union[str, Path]) -> Union[str, Path]:
@@ -49,7 +49,6 @@ def catalog_from_project(project_path: Optional[Union[str, Path]] = None, **kwar
         catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
         ```
     """
-
     if kwargs.get("save_on_close"):
         raise ValueError(
             "`catalog_from_project` always runs with `save_on_close=False`; this argument cannot be specified manually."

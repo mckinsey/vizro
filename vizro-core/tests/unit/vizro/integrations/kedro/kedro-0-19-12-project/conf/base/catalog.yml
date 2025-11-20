@@ -89,7 +89,6 @@ shuttle_passenger_capacity_plot_go:
   type: plotly.JSONDataset
   filepath: data/08_reporting/shuttle_passenger_capacity_plot_go.json
   versioned: true
-
 #dummy_confusion_matrix:
 #  type: matplotlib.MatplotlibWriter
 #  filepath: data/08_reporting/dummy_confusion_matrix.png
