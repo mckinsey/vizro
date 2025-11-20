@@ -1,6 +1,6 @@
 import pytest
 from asserts import assert_component_equal
-from dash import html, no_update
+from dash import dcc, html, no_update
 
 import vizro.models as vm
 from vizro import Vizro
@@ -48,7 +48,9 @@ class TestShowNotificationFunction:
         assert len(result) == 1
         assert result[0]["id"] == "test_notification"
         assert result[0]["title"] == "Info"
-        assert result[0]["message"] == "Info message"
+        assert_component_equal(
+            result[0]["message"], dcc.Markdown(children="Info message", dangerously_allow_html=False)
+        )
         assert result[0]["className"] == "alert-info"
         assert_component_equal(result[0]["icon"], html.Span("info", className="material-symbols-outlined"))
         assert result[0]["autoClose"] == 4000
@@ -75,7 +77,9 @@ class TestShowNotificationFunction:
         assert len(result) == 1
         assert result[0]["id"] == "custom_id"
         assert result[0]["title"] == "Custom Title"
-        assert result[0]["message"] == "Test message"
+        assert_component_equal(
+            result[0]["message"], dcc.Markdown(children="Test message", dangerously_allow_html=False)
+        )
         assert result[0]["className"] == "alert-success"
         assert_component_equal(result[0]["icon"], html.Span("star", className="material-symbols-outlined"))
         assert result[0]["autoClose"] is False
