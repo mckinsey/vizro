@@ -168,6 +168,7 @@ class Graph(VizroBaseModel):
                     for point in trigger_box
                 ]
 
+        # TODO: See why the exception message doesn't show.
         # If we reach here, none of the lookup keys worked.
         raise ValueError(
             f"Couldn't find value `{value}` in trigger for `set_control` action. "
@@ -307,13 +308,11 @@ class Graph(VizroBaseModel):
 
         clientside_callback(
             ClientsideFunction(namespace="graph", function_name="update_graph_actions_trigger_prop"),
-            output=[
-                Output(f"{self.id}_actions_trigger", "data")
-            ],
-            inputs=[
-                Input(self.id, "clickData"),
-                Input(self.id, "selectedData"),
-            ],
+            Output(f"{self.id}_actions_trigger", "data"),
+            Input(self.id, "clickData"),
+            Input(self.id, "selectedData"),
+            # TODO AM OQ: Very weird that setting the State in the inputs=[...] causes callback to be triggered by it.
+            State(self.id, "figure"),
             prevent_initial_call=True,
         )
 

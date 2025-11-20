@@ -191,6 +191,9 @@ class set_control(_AbstractAction):
                         # TODO AM OQ: Should we log something here?
                         return no_update
                     return no_update, no_update
+                # TODO AM OQ: See whether to return values[-1] instead of values[0] when many points selected but a
+                #  single-select control is targeted. Maybe we can do no_update here as well as nothing guarantees
+                #  the order of selected points and sometimes can change and sometimes not. I think value[0] is fine.
                 value = value[0] if isinstance(value, list) else value
 
             if self._same_page:
