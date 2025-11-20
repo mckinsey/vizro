@@ -19,7 +19,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, validate_captured_callable
+from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, _validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -30,13 +30,12 @@ DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div()
 
 
 class AgGrid(VizroBaseModel):
-    """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
+    """Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.
 
     Abstract: Usage documentation
         [How to use an AgGrid](../user-guides/table.md/#ag-grid)
 
     Args:
-        type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
         figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
         title (str): Title of the `AgGrid`. Defaults to `""`.
         header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.
@@ -83,7 +82,7 @@ class AgGrid(VizroBaseModel):
     ]
     actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

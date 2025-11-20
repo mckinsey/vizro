@@ -12,13 +12,12 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Card(VizroBaseModel):
-    """Creates a card based on Markdown syntax.
+    """Card based on Markdown syntax.
 
     Abstract: Usage documentation
         [How to use cards](../user-guides/card.md)
 
     Args:
-        type (Literal["card"]): Defaults to `"card"`.
         text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
         header (str): Markdown text positioned above the card text. Follows the CommonMark specification.
             Ideal for adding supplementary information. Defaults to `""`.
