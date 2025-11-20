@@ -69,7 +69,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
         import vizro.models as vm
         from vizro.tables import dash_ag_grid
 
-        ag_grid = vm.AgGrid(figure=dash_ag_grid(...))
+        vm.AgGrid(figure=dash_ag_grid(...))
         ```
     """
     defaults = {

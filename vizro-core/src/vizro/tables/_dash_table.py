@@ -30,7 +30,7 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataT
         import vizro.models as vm
         from vizro.tables import dash_data_table
 
-        table = vm.Table(figure=dash_data_table(...))
+        vm.Table(figure=dash_data_table(...))
         ```
     """
     defaults = {

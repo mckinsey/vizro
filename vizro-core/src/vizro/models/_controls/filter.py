@@ -89,6 +89,12 @@ class Filter(VizroBaseModel):
             Useful for bookmarking or sharing dashboards with specific filter values pre-set.
         visible (bool): Whether the filter should be visible. Defaults to `True`.
 
+    Example:
+        ```python
+        import vizro.models as vm
+
+        vm.Filter(column="species")
+        ```
     """
 
     type: Literal["filter"] = "filter"
