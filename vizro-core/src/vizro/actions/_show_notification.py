@@ -132,9 +132,10 @@ class show_notification(_AbstractAction):
         # 2. Show a notification when the action is triggered by a button or other
         # interactive component (should not be shown on page load)
         from vizro.models import Page
+
         parent_model = getattr(self, "_parent_model", None)
         is_page_action = parent_model is not None and isinstance(parent_model, Page)
-        
+
         # For non-page actions (e.g., button actions), don't show notification on initial render
         # For page actions, always show the notification when the page loads
         if not is_page_action and (_trigger is None or _trigger == 0):
