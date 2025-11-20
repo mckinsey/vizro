@@ -84,6 +84,17 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
+            text="Markdown with Link",
+            icon="link",
+            actions=[
+                va.show_notification(
+                    message="Visit the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) for more details!",
+                    title="Learn More",
+                    auto_close=False,
+                )
+            ],
+        ),
+        vm.Button(
             text="1. Show Loading",
             icon="hourglass_empty",
             actions=[

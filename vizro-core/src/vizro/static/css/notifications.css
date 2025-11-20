@@ -39,8 +39,16 @@
   color: var(--bs-danger);
 }
 
-.mantine-Notification-description {
+.mantine-Notification-description p {
   color: var(--text-secondary-inverted);
+}
+
+.mantine-Notification-description p:last-child {
+  margin-bottom: 0;
+}
+
+.mantine-Notification-description a:hover {
+  color: var(--text-primary-inverted);
 }
 
 .mantine-Notification-title {
