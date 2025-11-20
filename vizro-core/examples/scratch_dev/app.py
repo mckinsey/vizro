@@ -8,14 +8,6 @@ df = px.data.iris()
 page_1 = vm.Page(
     title="Test dmc notification system",
     layout=vm.Flex(),
-    actions=[
-        va.show_notification(
-            message="Welcome to the notification demo! Click on the buttons to see different notification types.",
-            title="Welcome",
-            icon="Waving Hand",
-            auto_close=False,
-        )
-    ],
     components=[
         vm.Button(
             icon="check_circle",
@@ -23,7 +15,6 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="Operation completed successfully!",
-                    title="Success",
                     variant="success",
                 )
             ],
@@ -34,7 +25,6 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="Please review this warning message.",
-                    title="Warning",
                     variant="warning",
                 )
             ],
@@ -45,7 +35,6 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="An error occurred during the operation.",
-                    title="Error",
                     variant="error",
                 )
             ],
@@ -56,7 +45,6 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     message="Here's some useful information for you.",
-                    title="Info",
                     variant="info",
                 )
             ],
@@ -103,8 +91,7 @@ page_1 = vm.Page(
                     notification_id="update-demo",
                     message="Processing your request...",
                     title="Processing",
-                    variant="info",
-                    loading=True,
+                    variant="progress",
                     auto_close=False,
                 )
             ],
@@ -130,12 +117,6 @@ page_two = vm.Page(
     title="Dashboard with welcome message",
     components=[
         vm.Graph(figure=px.histogram(df, x="sepal_length")),
-    ],
-    actions=[
-        va.show_notification(
-            message="Welcome! Data was last updated 2 hours ago.",
-            auto_close=False,
-        )
     ],
 )
 
