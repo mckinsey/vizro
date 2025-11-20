@@ -1,6 +1,6 @@
 from typing import Annotated, Literal, Optional, Union
 
-from dash import html, no_update
+from dash import dcc, html, no_update
 from pydantic import AfterValidator, Field
 
 from vizro.actions._abstract_action import _AbstractAction
@@ -25,7 +25,7 @@ class show_notification(_AbstractAction):
 
     Args:
         title (Optional[str]): Notification title. Defaults to capitalized variant name if not provided.
-        message (str): Main notification message text.
+        message (str): Markdown string for the main notification message text. Follows the CommonMark specification.
         variant (Literal["info", "success", "warning", "error", "progress"]): Semantic variant that determines color and
             default icon. Use `"progress"` to display a loading spinner instead of an icon. Defaults to "info".
         icon (str): Icon name from [Google Material Icons](https://fonts.google.com/icons).
@@ -60,7 +60,7 @@ class show_notification(_AbstractAction):
         description="Notification title. Defaults to capitalized variant name if not provided.",
     )
     message: str = Field(
-        description="Main notification message text.",
+        description="Markdown string for the main notification message text. Follows the CommonMark specification.",
     )
     variant: Literal["info", "success", "warning", "error", "progress"] = Field(
         default="info",
@@ -81,7 +81,7 @@ class show_notification(_AbstractAction):
         description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. """,
     )
-    # P/A: To check whether we can remove this argument.
+    # P/A: To check whether we can remove this and just use self.id. Currently we get duplicated id errors.
     notification_id: Optional[str] = Field(
         default="",
         description="""Notification identifier for updates. Multiple actions can share the same `notification_id`
@@ -114,7 +114,7 @@ class show_notification(_AbstractAction):
             {
                 "id": self.notification_id or self.id,
                 "title": title,
-                "message": self.message,
+                "message": dcc.Markdown(children=self.message, dangerously_allow_html=False),
                 "className": class_name,
                 "icon": html.Span(icon_name, className="material-symbols-outlined"),
                 "autoClose": self.auto_close,
