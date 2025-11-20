@@ -15,4 +15,6 @@ class CustomDashboard(vm.Dashboard):
 
 page = vm.Page(title="Page Title", components=[vm.Card(text="""# Placeholder""")])
 dashboard = CustomDashboard(pages=[page], title="Dashboard with custom header")
-Vizro().build(dashboard).run()
+
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()
