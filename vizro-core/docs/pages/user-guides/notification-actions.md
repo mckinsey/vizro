@@ -298,7 +298,6 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
         [![AutoCloseNotification]][autoclosenotification]
 
-
 ### Loading state
 
 Use `loading=True` to display a loading spinner instead of a static icon. This is useful for indicating that a long-running operation is in progress. It's recommended to also set `auto_close=False` so the notification remains visible until the operation completes.
@@ -352,7 +351,6 @@ Use `loading=True` to display a loading spinner instead of a static icon. This i
     === "Result"
 
         [![LoadingNotification]][loadingnotification]
-
 
 ### Combine with other actions
 
@@ -421,12 +419,97 @@ Notifications can be combined with other actions to provide user feedback. For e
 
         [![ExportNotification]][exportnotification]
 
+### Update existing notification
 
+You can update an existing notification by using `action="update"` and providing a matching `notification_id`. This is useful for showing progress updates or state changes for the same logical operation without creating multiple notifications.
 
+!!! example "Update notification"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.actions as va
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Update notification example",
+            layout=vm.Flex(direction="row"),
+            components=[
+                vm.Button(
+                    text="Start process",
+                    actions=[
+                        va.show_notification(
+                            notification_id="process_status",
+                            message="Processing started...",
+                            loading=True,
+                            auto_close=False,
+                        )
+                    ],
+                ),
+                vm.Button(
+                    text="Complete process",
+                    actions=[
+                        va.show_notification(
+                            notification_id="process_status",
+                            action="update",
+                            title="Complete",
+                            message="Processing finished successfully!",
+                            variant="success",
+                        )
+                    ],
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - type: button
+                text: Start process
+                actions:
+                  - type: show_notification
+                    notification_id: process_status
+                    message: Processing started...
+                    loading: true
+                    auto_close: false
+              - type: button
+                text: Complete process
+                actions:
+                  - type: show_notification
+                    notification_id: process_status
+                    action: update
+                    title: Complete
+                    message: Processing finished successfully!
+                    variant: success
+            title: Update notification example
+            layout:
+              type: flex
+              direction: row
+        ```
+
+    === "Result"
+
+        [![UpdateNotification]][updatenotification]
+
+### Notification on page load
+
+TODO: Get this working
+
+Notifications can be triggered automatically when a page loads by adding them to the [page's `actions` argument](pages.md). This is useful for notifications that should appear on page load without requiring user interaction with a component, such as welcome messages.
 
 [autoclosenotification]: ../../assets/user_guides/notification_actions/auto_close_notification.gif
 [basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
 [customnotification]: ../../assets/user_guides/notification_actions/custom_notification.png
-[notificationvariants]: ../../assets/user_guides/notification_actions/notification_variants.gif
-[loadingnotification]: ../../assets/user_guides/notification_actions/loading_notification.gif
 [exportnotification]: ../../assets/user_guides/notification_actions/export_notification.gif
+[loadingnotification]: ../../assets/user_guides/notification_actions/loading_notification.gif
+[notificationvariants]: ../../assets/user_guides/notification_actions/notification_variants.gif
+[updatenotification]: ../../assets/user_guides/notification_actions/update_notification.gif
