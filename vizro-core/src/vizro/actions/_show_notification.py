@@ -1,6 +1,6 @@
 from typing import Annotated, Literal, Optional, Union
 
-from dash import dcc, html, no_update
+from dash import dcc, html
 from pydantic import AfterValidator, Field
 
 from vizro.actions._abstract_action import _AbstractAction
@@ -100,11 +100,8 @@ class show_notification(_AbstractAction):
         return ["notification-container.sendNotifications"]
 
     @_log_call
-    def function(self, _trigger):
+    def function(self):
         """Creates and returns a notification configuration for DMC NotificationContainer."""
-        if _trigger is None or _trigger == 0:
-            return no_update
-
         # Get variant-specific configuration variables
         class_name = VARIANT_CONFIG[self.variant]["className"]
         icon_name = self.icon if self.icon else VARIANT_CONFIG[self.variant]["icon"]
