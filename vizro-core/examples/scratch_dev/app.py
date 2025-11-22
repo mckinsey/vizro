@@ -128,6 +128,16 @@ page_two = vm.Page(
     title="Dashboard with welcome message",
     components=[
         vm.Graph(figure=px.histogram(df, x="sepal_length")),
+        vm.Button(
+            icon="check_circle",
+            text="Success Notification",
+            actions=[
+                va.show_notification(
+                    message="Operation completed successfully!",
+                    variant="success",
+                )
+            ],
+        ),
     ],
 )
 
