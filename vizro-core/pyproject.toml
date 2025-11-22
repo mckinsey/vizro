@@ -18,7 +18,7 @@ dependencies = [
   "dash>=3.1.1,<4",  # temporary upper bound to avoid breaking changes in Dash v4
   "dash_bootstrap_components>=2",  # 2.0.0 needed to support dash>=3.0.0
   "dash-ag-grid>=31.3.1",  # 31.3.1 needed to support dash>=3.0.0
-  "dash_mantine_components>=1",  # 1.0.0 needed to support dash>=3.0.0
+  "dash_mantine_components>=2.0.0",  # 2.0.0 needed to support dmc.NotificationContainer
   "pandas>=2",
   "plotly>=5.24.0",
   # Must be <= the version in pre-commit mypy hook, sync manually

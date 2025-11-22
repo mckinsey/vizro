@@ -1,20 +1,147 @@
-from vizro import Vizro
+import vizro.plotly.express as px
 import vizro.models as vm
-from typing import Literal
-from dash import html
-import dash_bootstrap_components as dbc
+import vizro.actions as va
+from vizro import Vizro
+
+df = px.data.iris()
+
+page_1 = vm.Page(
+    title="Test dmc notification system",
+    layout=vm.Flex(),
+    components=[
+        vm.Button(
+            icon="check_circle",
+            text="Success Notification",
+            actions=[
+                va.show_notification(
+                    message="Operation completed successfully!",
+                    variant="success",
+                )
+            ],
+        ),
+        vm.Button(
+            icon="warning",
+            text="Warning Notification",
+            actions=[
+                va.show_notification(
+                    message="Please review this warning message.",
+                    variant="warning",
+                )
+            ],
+        ),
+        vm.Button(
+            text="Error Notification",
+            icon="error",
+            actions=[
+                va.show_notification(
+                    message="An error occurred during the operation.",
+                    variant="error",
+                )
+            ],
+        ),
+        vm.Button(
+            text="Info Notification",
+            icon="info",
+            actions=[
+                va.show_notification(
+                    message="Here's some useful information for you.",
+                    variant="info",
+                )
+            ],
+        ),
+        vm.Button(
+            text="No Auto-Close",
+            icon="close",
+            actions=[
+                va.show_notification(
+                    message="This notification will stay until you close it manually.",
+                    title="Persistent",
+                    variant="info",
+                    auto_close=False,
+                )
+            ],
+        ),
+        vm.Button(
+            text="Simple Message (default title)",
+            icon="info",
+            actions=[
+                va.show_notification(
+                    message="A simple notification with default title and variant.",
+                    variant="info",
+                )
+            ],
+        ),
+        vm.Button(
+            text="Custom Icon",
+            icon="celebration",
+            actions=[
+                va.show_notification(
+                    message="Check out this new feature!",
+                    title="New Feature",
+                    variant="success",
+                    icon="celebration",
+                )
+            ],
+        ),
+        vm.Button(
+            text="Markdown with Link",
+            icon="link",
+            actions=[
+                va.show_notification(
+                    message="Visit the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) for more details!",
+                    title="Learn More",
+                    auto_close=False,
+                )
+            ],
+        ),
+        vm.Button(
+            text="1. Show Loading",
+            icon="hourglass_empty",
+            actions=[
+                va.show_notification(
+                    notification_id="update-demo",
+                    message="Processing your request...",
+                    title="Processing",
+                    variant="progress",
+                    auto_close=False,
+                )
+            ],
+        ),
+        vm.Button(
+            text="2. Update to Complete",
+            icon="done",
+            actions=[
+                va.show_notification(
+                    notification_id="update-demo",
+                    message="Your request has been processed successfully!",
+                    title="Complete",
+                    variant="success",
+                    action="update",
+                )
+            ],
+        ),
+    ],
+)
 
 
-class CustomDashboard(vm.Dashboard):
-    type: Literal["custom_dashboard"] = "custom_dashboard"
+page_two = vm.Page(
+    title="Dashboard with welcome message",
+    components=[
+        vm.Graph(figure=px.histogram(df, x="sepal_length")),
+        vm.Button(
+            icon="check_circle",
+            text="Success Notification",
+            actions=[
+                va.show_notification(
+                    message="Operation completed successfully!",
+                    variant="success",
+                )
+            ],
+        ),
+    ],
+)
 
-    @staticmethod
-    def custom_header():
-        return [html.Div("Good morning, Li! ☕"), dbc.Badge("Tuesday", color="primary")]
-
-
-page = vm.Page(title="Page Title", components=[vm.Card(text="""# Placeholder""")])
-dashboard = CustomDashboard(pages=[page], title="Dashboard with custom header")
+dashboard = vm.Dashboard(pages=[page_1, page_two])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
