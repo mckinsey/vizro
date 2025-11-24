@@ -1,19 +1,19 @@
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal
 
-from dash import dcc, html, no_update
+from dash import dcc, html
 from pydantic import AfterValidator, Field
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models.types import _IdOrIdProperty
 
-# Mapping of notification types to their corresponding colors and default icons (Google Material Icons)
+# Mapping of notification types to their corresponding colors, default icons, and auto-close behavior
 VARIANT_CONFIG = {
-    "info": {"className": "alert-info", "icon": "info"},
-    "success": {"className": "alert-success", "icon": "check_circle"},
-    "warning": {"className": "alert-warning", "icon": "warning"},
-    "error": {"className": "alert-error", "icon": "error"},
-    "progress": {"className": "alert-info", "icon": "info"},
+    "info": {"className": "alert-info", "icon": "info", "auto_close": 4000},
+    "success": {"className": "alert-success", "icon": "check_circle", "auto_close": 4000},
+    "warning": {"className": "alert-warning", "icon": "warning", "auto_close": 4000},
+    "error": {"className": "alert-error", "icon": "error", "auto_close": 4000},
+    "progress": {"className": "alert-info", "icon": "info", "auto_close": False},
 }
 
 
@@ -31,7 +31,8 @@ class show_notification(_AbstractAction):
         icon (str): Icon name from [Google Material Icons](https://fonts.google.com/icons).
             Defaults to variant-specific icon. Ignored if `variant="progress"`.
         auto_close (Union[bool, int]): Auto-close duration in milliseconds. Set to `False` to keep the notification
-            open until the user closes it manually. Defaults to `4000`.
+            open until the user closes it manually. Default value depends on variant: `4000` for
+            info/success/warning/error, `False` for progress.
         notification_id (Optional[str]): Notification identifier for updates. Multiple actions can share the same
             `notification_id` to update a single notification.
         action (Literal["show", "update"]): Action type. Use `"show"` to display a new notification or `"update"`
@@ -55,7 +56,7 @@ class show_notification(_AbstractAction):
     """
 
     type: Literal["show_notification"] = "show_notification"
-    title: Optional[str] = Field(
+    title: str | None = Field(
         default=None,
         description="Notification title. Defaults to capitalized variant name if not provided.",
     )
@@ -76,13 +77,14 @@ class show_notification(_AbstractAction):
                 Ignored if `variant="progress"`""",
         ),
     ]
-    auto_close: Union[bool, int] = Field(
+    auto_close: bool | int = Field(
         default=4000,
         description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
-            open until the user closes it manually. """,
+            open until the user closes it manually. Default value depends on variant: `4000` for
+            info/success/warning/error, `False` for progress.""",
     )
     # P/A: To check whether we can remove this and just use self.id. Currently we get duplicated id errors.
-    notification_id: Optional[str] = Field(
+    notification_id: str | None = Field(
         default="",
         description="""Notification identifier for updates. Multiple actions can share the same `notification_id`
             to update a single notification.""",
@@ -100,15 +102,13 @@ class show_notification(_AbstractAction):
         return ["notification-container.sendNotifications"]
 
     @_log_call
-    def function(self, _trigger):
+    def function(self):
         """Creates and returns a notification configuration for DMC NotificationContainer."""
-        if _trigger is None or _trigger == 0:
-            return no_update
-
         # Get variant-specific configuration variables
         class_name = VARIANT_CONFIG[self.variant]["className"]
         icon_name = self.icon if self.icon else VARIANT_CONFIG[self.variant]["icon"]
         title = self.title if self.title else self.variant.capitalize()
+        auto_close = self.auto_close if self.auto_close else VARIANT_CONFIG[self.variant]["auto_close"]
 
         return [
             {
@@ -117,7 +117,7 @@ class show_notification(_AbstractAction):
                 "message": dcc.Markdown(children=self.message, dangerously_allow_html=False),
                 "className": class_name,
                 "icon": html.Span(icon_name, className="material-symbols-outlined"),
-                "autoClose": self.auto_close,
+                "autoClose": auto_close,
                 "action": self.action,
                 "loading": self.variant == "progress",
             }

@@ -1,4 +1,4 @@
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -17,7 +17,7 @@ class TextArea(VizroBaseModel):
 
     Args:
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
@@ -27,7 +27,7 @@ class TextArea(VizroBaseModel):
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
     title: str = Field(default="", description="Title to be displayed")
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

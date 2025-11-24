@@ -8,11 +8,11 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13"
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "dash>=3.1.1,<4",  # temporary upper bound to avoid breaking changes in Dash v4
@@ -37,7 +37,7 @@ dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 kedro = [
@@ -83,10 +83,14 @@ filterwarnings = [
   "ignore:HTTPResponse.getheader():DeprecationWarning",
   # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
-  # Ignore kedro deprecation warning
-  "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`:kedro.KedroDeprecationWarning",
   # Ignore dash_data_table deprecation warning
-  "ignore:(?s).*The dash_table.DataTable will be removed from the builtin dash components in a future major version:DeprecationWarning"
+  "ignore:(?s).*The dash_table.DataTable will be removed from the builtin dash components in a future major version:DeprecationWarning",
+  # Ignore Dash's use of deprecated method (due to be removed in Python 3.16).
+  "ignore:'asyncio.iscoroutinefunction' is deprecated:DeprecationWarning",
+  # Ignore kedro warnings. Note you can't use kedro.*Warning as categories here since pytest would then import kedro#
+  # and trigger the 3.14 error before it can be ignored.
+  "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`",
+  "ignore:Kedro is not yet fully compatible with this Python version."
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"

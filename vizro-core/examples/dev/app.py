@@ -1,6 +1,6 @@
 """Example app to show all features of Vizro."""
 
-from typing import Literal, Optional
+from typing import Literal
 
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -950,7 +950,7 @@ custom_charts = vm.Page(
 
 # CUSTOM TABLE ------------------------------------------------------------------
 @capture("table")
-def my_custom_table(data_frame=None, chosen_columns: Optional[list[str]] = None):
+def my_custom_table(data_frame=None, chosen_columns: list[str] | None = None):
     """Custom table with added logic to filter on chosen columns."""
     columns = [{"name": i, "id": i} for i in chosen_columns]
     defaults = {
@@ -1055,7 +1055,7 @@ custom_components = vm.Page(
 
 # CUSTOM FIGURE ----------------------------------------------------------------
 @capture("figure")  # (1)!
-def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div:
+def multiple_cards(data_frame: pd.DataFrame, n_rows: int | None = 1) -> html.Div:
     """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
 
     Args:

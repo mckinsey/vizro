@@ -153,6 +153,7 @@ plugins:
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
       base_url: https://vizro.readthedocs.io/en/0.1.48/
+      full_output: llms-full.txt
       sections:
         "TUTORIALS":
           - pages/tutorials/quickstart-tutorial.md: "A quickstart dashboard tutorial"

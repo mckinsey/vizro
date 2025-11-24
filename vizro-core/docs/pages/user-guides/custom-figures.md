@@ -35,9 +35,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="15-34 51"}
-        from typing import Optional
-
+        ```{.python pycafe-link hl_lines="13-32 49"}
         import dash_bootstrap_components as dbc
         import pandas as pd
         import vizro.models as vm
@@ -57,8 +55,8 @@ For instance, to make a KPI card with the icon positioned on the right side of t
             *,
             value_format: str = "{value}",
             agg_func: str = "sum",
-            title: Optional[str] = None,
-            icon: Optional[str] = None,
+            title: str | None,
+            icon: str | None,
         ) -> dbc.Card:  # (2)!
             title = title or f"{agg_func} {value_column}".title()
             value = data_frame[value_column].agg(agg_func)
@@ -220,9 +218,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
 
     === "app.py"
 
-        ```py hl_lines="22-38 43"
-        from typing import Optional
-
+        ```py hl_lines="20-36 41"
         import dash_bootstrap_components as dbc
         import pandas as pd
         import vizro.models as vm
@@ -243,7 +239,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
 
 
         @capture("figure")  # (1)!
-        def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div:  # (2)!
+        def multiple_cards(data_frame: pd.DataFrame, n_rows: int = 1) -> html.Div:  # (2)!
             """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
 
             Args:
