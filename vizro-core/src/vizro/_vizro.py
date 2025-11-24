@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, Any, TypedDict, Union, cast
+from typing import TYPE_CHECKING, Any, TypedDict, cast
 
 import dash
 import plotly.io as pio
@@ -95,7 +95,7 @@ class Vizro:
         data_manager.cache.init_app(self.dash.server)
 
     @staticmethod
-    def _has_bootstrap_css(external_stylesheets: list[Union[str, dict[str, str]]]) -> bool:
+    def _has_bootstrap_css(external_stylesheets: list[str | dict[str, str]]) -> bool:
         """Detect if Bootstrap CSS is present in external stylesheets.
 
         Args:
@@ -105,7 +105,7 @@ class Vizro:
             bool: True if Bootstrap CSS is detected, False otherwise
         """
 
-        def _get_url(stylesheet: Union[str, dict[str, str]]) -> str:
+        def _get_url(stylesheet: str | dict[str, str]) -> str:
             """Extract URL from stylesheet."""
             if isinstance(stylesheet, str):
                 return stylesheet
@@ -268,7 +268,7 @@ class _ResourceType(TypedDict, total=False):
     dev_only: bool
     # async is a Python keyword so would need to use alternative functional TypedDict syntax for this to work. Since we
     # don't use it anywhere we keep using this TypedDict class syntax and just don't define it here.
-    # async: bool Union[bool, Literal["eager", "lazy"]]
+    # async: bool | Literal["eager", "lazy"]
 
 
 def _make_resource_spec(path: Path) -> _ResourceType:
