@@ -3,6 +3,11 @@
 [[envs.all.matrix]]
 python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
+[envs."all.py3.14"]
+# Make sys.warnoptions non-empty so that Kedro doesn't turn its Python 3.14 warning into an error.
+# This means we can ignore it like others in tool.pytest.ini_options.filterwarnings.
+env-vars = { PYTHONWARNINGS = "default" }
+
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true

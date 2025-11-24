@@ -74,7 +74,7 @@ addopts = [
   "--import-mode=importlib"
 ]
 filterwarnings = [
-  "error",
+   "error",
   # Ignore until pandas 3 is released:
   "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
   # Ignore warning when using the fig.layout.title inside examples:
@@ -83,10 +83,14 @@ filterwarnings = [
   "ignore:HTTPResponse.getheader():DeprecationWarning",
   # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
-  # Ignore kedro deprecation warning
-  "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`:kedro.KedroDeprecationWarning",
   # Ignore dash_data_table deprecation warning
-  "ignore:(?s).*The dash_table.DataTable will be removed from the builtin dash components in a future major version:DeprecationWarning"
+  "ignore:(?s).*The dash_table.DataTable will be removed from the builtin dash components in a future major version:DeprecationWarning",
+  # Ignore Dash's use of deprecated method (due to be removed in Python 3.16).
+  "ignore:'asyncio.iscoroutinefunction' is deprecated:DeprecationWarning",
+  # Ignore kedro warnings. Note you can't use kedro.*Warning as categories here since pytest would then import kedro#
+  # and trigger the 3.14 error before it can be ignored.
+  "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`",
+  "ignore:Kedro is not yet fully compatible with this Python version.",
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"
@@ -104,3 +108,4 @@ src = ["src"]
 "**/models/**" = ["RUF012"]
 # Ignore missing docstrings in visual-vocabulary examples to keep them succinct.
 "examples/visual-vocabulary/pages/examples/**" = ["D100", "D103"]
+
