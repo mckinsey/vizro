@@ -1,4 +1,4 @@
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal
 
 from dash import dcc, html
 from pydantic import AfterValidator, Field
@@ -56,7 +56,7 @@ class show_notification(_AbstractAction):
     """
 
     type: Literal["show_notification"] = "show_notification"
-    title: Optional[str] = Field(
+    title: str | None = Field(
         default=None,
         description="Notification title. Defaults to capitalized variant name if not provided.",
     )
@@ -77,14 +77,14 @@ class show_notification(_AbstractAction):
                 Ignored if `variant="progress"`""",
         ),
     ]
-    auto_close: Union[bool, int] = Field(
+    auto_close: bool | int = Field(
         default=4000,
         description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
             info/success/warning/error, `False` for progress.""",
     )
     # P/A: To check whether we can remove this and just use self.id. Currently we get duplicated id errors.
-    notification_id: Optional[str] = Field(
+    notification_id: str | None = Field(
         default="",
         description="""Notification identifier for updates. Multiple actions can share the same `notification_id`
             to update a single notification.""",
