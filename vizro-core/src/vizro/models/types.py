@@ -1,16 +1,16 @@
 """Types used in pydantic fields."""
 
-# ruff: noqa: F821
 from __future__ import annotations
 
+# ruff: noqa: F821
 import functools
 import inspect
-import sys
 import warnings
 from collections import OrderedDict
+from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, cast, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -30,13 +30,8 @@ from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    from typing_extensions import TypeAlias
 
-
-def _get_layout_discriminator(layout: Any) -> Optional[str]:
+def _get_layout_discriminator(layout: Any) -> str | None:
     """Helper function for callable discriminator used for LayoutType."""
     # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
     # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
@@ -59,7 +54,7 @@ def _get_layout_discriminator(layout: Any) -> Optional[str]:
     return getattr(layout, "type", None)
 
 
-def _get_action_discriminator(action: Any) -> Optional[str]:
+def _get_action_discriminator(action: Any) -> str | None:
     """Helper function for callable discriminator used for ActionType."""
     # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
     # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
@@ -155,7 +150,7 @@ class CapturedCallable:
     through the [`capture`][vizro.models.types.capture] decorator.
     """
 
-    def __init__(self, function: Union[Callable[..., Any], str], /, *args: Any, **kwargs: Any):
+    def __init__(self, function: Callable[..., Any] | str, /, *args: Any, **kwargs: Any):
         """Creates a new `CapturedCallable` object that will be able to re-run `function`.
 
         Partially binds *args and **kwargs to the function call.
@@ -165,9 +160,9 @@ class CapturedCallable:
 
         """
         # Use this to declare the type of the attributes only once due to if clauses below.
-        self.__function: Union[Callable[..., Any], str]
-        self._mode: Optional[Literal["graph", "action", "table", "ag_grid", "figure"]]
-        self._model_example: Optional[str]
+        self.__function: Callable[..., Any] | str
+        self._mode: Literal["graph", "action", "table", "ag_grid", "figure"] | None
+        self._model_example: str | None
 
         if callable(function):
             # It is difficult to get positional-only and variadic positional arguments working at the same time as
@@ -625,14 +620,14 @@ _IdProperty: TypeAlias = str
 ModelID: TypeAlias = str
 """Represents a Vizro model ID."""
 
-_IdOrIdProperty: TypeAlias = Union[ModelID, _IdProperty]
+_IdOrIdProperty: TypeAlias = ModelID | _IdProperty
 """Represents either a model ID or a string in the format 'component-id.component-property'."""
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
-SingleValueType = Union[StrictBool, float, str, date]
-"""Permissible value types for single-value selectors."""
-MultiValueType = Union[list[StrictBool], list[float], list[str], list[date]]
-"""Permissible value types for multi-value selectors."""
+SingleValueType: TypeAlias = StrictBool | float | str | date
+"""Permissible value types for single-value selectors. Values are displayed as default."""
+MultiValueType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date]
+"""Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
 class _OptionsDictType(TypedDict):
@@ -642,12 +637,12 @@ class _OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType = Union[list[StrictBool], list[float], list[str], list[date], list[_OptionsDictType]]
+OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[_OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union["Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider", "Switch"],
+    "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
@@ -655,19 +650,19 @@ SelectorType = Annotated[
 [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
 
 _FormComponentType = Annotated[
-    Union[SelectorType, "Button", "UserInput"],
+    "SelectorType | Button | UserInput",
     Field(discriminator="type", description="Components that can be used to receive user input within a form."),
 ]
 
 ControlType = Annotated[
-    Union["Filter", "Parameter"],
+    "Filter | Parameter",
     Field(discriminator="type", description="Control that affects components on the page."),
 ]
 """Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter] or
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Text", "Table", "Tabs"],
+    "AgGrid | Button | Card | Container | Figure | Graph | Text | Table | Tabs",
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
@@ -679,19 +674,19 @@ ComponentType = Annotated[
 [`Text`][vizro.models.Text], [`Tabs`][vizro.models.Tabs],
 or [`AgGrid`][vizro.models.AgGrid]."""
 
-# TODO: ideally description would have json_schema_input_type=Union[str, ModelID] because of the ID/title ambiguity,
+# TODO: ideally description would have json_schema_input_type=str | ModelID because of the ID/title ambiguity,
 #  but this requires pydantic >= 2.9.
-NavPagesType = Union[list[ModelID], dict[str, list[ModelID]]]
+NavPagesType: TypeAlias = list[ModelID] | dict[str, list[ModelID]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
-    Union["Accordion", "NavBar"], Field(discriminator="type", description="Component for rendering navigation.")
+    "Accordion | NavBar", Field(discriminator="type", description="Component for rendering navigation.")
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
 LayoutType = Annotated[
-    Union[Annotated["Grid", Tag("grid")], Annotated["Flex", Tag("flex")], Annotated["Layout", Tag("legacy_layout")]],
+    Annotated["Grid", Tag("grid")] | Annotated["Flex", Tag("flex")] | Annotated["Layout", Tag("legacy_layout")],
     Field(
         discriminator=Discriminator(_get_layout_discriminator),
         description="Type of layout to place components on the page.",
@@ -704,37 +699,35 @@ LayoutType = Annotated[
 # In addition, `_filter` doesn't have a well defined schema due the Callables,
 # so if we were to include it, the JSONSchema would need to be defined.
 ActionType = Annotated[
-    Union[
-        Annotated["Action", Tag("action")],
-        Annotated["export_data", Tag("export_data")],
-        Annotated["filter_interaction", Tag("filter_interaction")],
-        Annotated["set_control", Tag("set_control")],
-        SkipJsonSchema[Annotated["_filter", Tag("_filter")]],
-        SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]],
-        SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
-    ],
+    Annotated["Action", Tag("action")]
+    | Annotated["export_data", Tag("export_data")]
+    | Annotated["filter_interaction", Tag("filter_interaction")]
+    | Annotated["set_control", Tag("set_control")]
+    | SkipJsonSchema[Annotated["_filter", Tag("_filter")]]
+    | SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]]
+    | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
 
-# TODO: ideally actions would have json_schema_input_type=Union[list[ActionType], ActionType] attached to
+# TODO: ideally actions would have json_schema_input_type=list[ActionType] | ActionType attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
 ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_to_list), Field(default=[])]
 """List of actions that can be triggered by a component. Accepts either a single
 [`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType].
 Defaults to `[]`."""
 
-# TODO: ideally outputs would have json_schema_input_type=Union[list[str], dict[str, str], str] attached to
+# TODO: ideally outputs would have json_schema_input_type=list[str] | dict[str, str] | str attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
-OutputsType = Annotated[Union[list[str], dict[str, str]], BeforeValidator(_coerce_to_list), Field(default=[])]
+OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_list), Field(default=[])]
 """List or dictionary of outputs modified by the action function. Accepts either a single string,
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
 
-# Extra type groups used for mypy casting
-FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
-FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
+# Extra type groups used only for static type checking, not at runtime.
+FigureWithFilterInteractionType: TypeAlias = "Graph | Table | AgGrid"
+FigureType: TypeAlias = "Graph | Table | AgGrid | Figure"
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.

@@ -1,7 +1,5 @@
 """Contains unwrapped KPI card functions (suitable to use in pure Dash app)."""
 
-from typing import Optional
-
 import dash_bootstrap_components as dbc
 import numpy as np
 import pandas as pd
@@ -18,8 +16,8 @@ def kpi_card(
     *,
     value_format: str = "{value}",
     agg_func: str = "sum",
-    title: Optional[str] = None,
-    icon: Optional[str] = None,
+    title: str | None = None,
+    icon: str | None = None,
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value.
 
@@ -83,8 +81,8 @@ def kpi_card_reference(  # noqa: PLR0913
     value_format: str = "{value}",
     reference_format: str = "{delta_relative:+.1%} vs. reference ({reference})",
     agg_func: str = "sum",
-    title: Optional[str] = None,
-    icon: Optional[str] = None,
+    title: str | None = None,
+    icon: str | None = None,
     reverse_color: bool = False,
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value in comparison to a reference value.

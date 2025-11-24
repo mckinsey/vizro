@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -27,13 +27,13 @@ class RadioItems(VizroBaseModel):
 
     Args:
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].
+        value (SingleValueType | None): See [`SingleValueType`][vizro.models.types.SingleValueType].
             Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -42,14 +42,12 @@ class RadioItems(VizroBaseModel):
 
     type: Literal["radio_items"] = "radio_items"
     options: OptionsType = []
-    value: Annotated[
-        Optional[SingleValueType], AfterValidator(validate_value), Field(default=None, validate_default=True)
-    ]
+    value: Annotated[SingleValueType | None, AfterValidator(validate_value), Field(default=None, validate_default=True)]
     title: str = Field(default="", description="Title to be displayed")
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
