@@ -172,7 +172,7 @@ class Page(VizroBaseModel):
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
                 *selector_outputs,
                 *selector_guard_outputs,
-                Input(f"{self.id}_reset_button", "n_clicks"),
+                Input("reset-button", "n_clicks"),
                 State("vizro_controls_store", "data"),
                 State(self.id, "id"),  # Assigned to outermost Div in Dashboard._make_page_layout.
                 prevent_initial_call=True,
