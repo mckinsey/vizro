@@ -329,10 +329,10 @@ class Dashboard(VizroBaseModel):
             children=html.Div(id="action-progress-indicator-placeholder"),
         )
         reset_controls_button = dbc.Button(
-            id=f"{page.id}_reset_button",
+            id="reset-button",
             children=[
                 html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
+                dbc.Tooltip(children="Reset all page controls", target="reset-button"),
             ],
             class_name="btn-circular",
         )
@@ -367,7 +367,7 @@ class Dashboard(VizroBaseModel):
             text = html.Span("Reset controls", className="btn-text")
 
             control_panel.children.append(
-                dbc.Button(id=f"{page.id}_reset_button", children=[icon, text]),
+                dbc.Button(id="reset-button", children=[icon, text]),
             )
 
         nav_control_panel_content = [nav_panel, control_panel]
