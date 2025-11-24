@@ -87,17 +87,18 @@ class TestShowNotificationFunction:
         assert result[0]["loading"] is False
 
     @pytest.mark.parametrize(
-        "variant,expected_class,expected_icon,expected_loading",
+        "variant,expected_class,expected_icon,expected_loading,expected_auto_close",
         [
-            ("info", "alert-info", "info", False),
-            ("success", "alert-success", "check_circle", False),
-            ("warning", "alert-warning", "warning", False),
-            ("error", "alert-error", "error", False),
+            ("info", "alert-info", "info", False, 4000),
+            ("success", "alert-success", "check_circle", False, 4000),
+            ("warning", "alert-warning", "warning", False, 4000),
+            ("error", "alert-error", "error", False, 4000),
             # The icon will just be ignored from dmc if loading is True.
-            ("progress", "alert-info", "info", True),
+            # Progress variant has auto_close=False by default
+            ("progress", "alert-info", "info", True, False),
         ],
     )
-    def test_notification_variants(self, variant, expected_class, expected_icon, expected_loading):
+    def test_notification_variants(self, variant, expected_class, expected_icon, expected_loading, expected_auto_close):
         """Test all notification variants use correct defaults."""
         model_manager["button_one"].actions = [
             show_notification(id="test_notification", message=f"{variant} message", variant=variant)
@@ -109,3 +110,4 @@ class TestShowNotificationFunction:
         assert result[0]["className"] == expected_class
         assert_component_equal(result[0]["icon"], html.Span(expected_icon, className="material-symbols-outlined"))
         assert result[0]["loading"] is expected_loading
+        assert result[0]["autoClose"] == expected_auto_close

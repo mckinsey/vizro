@@ -80,7 +80,7 @@ The `variant` argument controls the visual style and semantic meaning of the not
 - `"success"`: For successful operations
 - `"warning"`: For warnings or cautionary messages
 - `"error"`: For errors or critical issues
-- `"progress"`: For loading states - displays a spinner instead of an icon. Useful for indicating long-running operations. It's recommended to also set `auto_close=False` so the notification remains visible until the operation completes.
+- `"progress"`: For loading states - displays a spinner instead of an icon. Useful for indicating long-running operations. This variant automatically has `auto_close=False` so the notification remains visible until the operation completes or is updated.
 
 Each variant has its own color scheme and default icon (except `"progress"` which shows a loading spinner).
 
@@ -115,7 +115,7 @@ Each variant has its own color scheme and default icon (except `"progress"` whic
                 ),
                 vm.Button(
                     text="Progress",
-                    actions=[va.show_notification(message="Processing...", variant="progress", auto_close=False)],
+                    actions=[va.show_notification(message="Processing...", variant="progress")],
                 ),
             ],
         )
@@ -161,7 +161,6 @@ Each variant has its own color scheme and default icon (except `"progress"` whic
                   - type: show_notification
                     message: Processing...
                     variant: progress
-                    auto_close: false
             title: Notification variants
             layout:
               type: flex
@@ -415,7 +414,6 @@ You can update an existing notification by using `action="update"` and providing
                             notification_id="process_status",
                             message="Processing started...",
                             variant="progress",
-                            auto_close=False,
                         )
                     ],
                 ),
@@ -452,7 +450,6 @@ You can update an existing notification by using `action="update"` and providing
                     notification_id: process_status
                     message: Processing started...
                     variant: progress
-                    auto_close: false
               - type: button
                 text: Complete process
                 actions:
