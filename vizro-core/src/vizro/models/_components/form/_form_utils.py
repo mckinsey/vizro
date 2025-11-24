@@ -1,7 +1,7 @@
 """Helper functions for models inside form folder."""
 
 from datetime import date
-from typing import Any, Optional, Union
+from typing import Any
 
 from pydantic import TypeAdapter, ValidationInfo
 
@@ -10,7 +10,7 @@ from vizro.models.types import MultiValueType, OptionsType, SingleValueType, _Op
 
 def get_dict_options_and_default(
     options: OptionsType, multi: bool
-) -> tuple[list[_OptionsDictType], Union[SingleValueType, MultiValueType]]:
+) -> tuple[list[_OptionsDictType], SingleValueType | MultiValueType]:
     """Gets list of full options and default value based on user input type of `options`."""
     # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
     dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]  # type: ignore[typeddict-item]

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from importlib.metadata import version
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
@@ -21,7 +21,7 @@ else:
     from kedro.utils import _find_kedro_project as find_kedro_project
 
 
-def _infer_project_path(project_path: Optional[Union[str, Path]]) -> Union[str, Path]:
+def _infer_project_path(project_path: str | Path | None) -> str | Path:
     # Follows same logic as done internally in Kedro: if project_path not explicitly specified, try to find a Kedro
     # project above this point in the directory tree, and if that fails then use current working directory. If
     # project_path is not valid then bootstrap_project will then raise an error.
@@ -58,7 +58,7 @@ def catalog_from_project(project_path: str | Path | None, **kwargs: Any) -> Data
         return session.load_context().catalog
 
 
-def pipelines_from_project(project_path: Optional[Union[str, Path]] = None) -> dict[str, Pipeline]:
+def pipelines_from_project(project_path: str | Path | None = None) -> dict[str, Pipeline]:
     """Fetches a Kedro project's pipelines.
 
     Args:
