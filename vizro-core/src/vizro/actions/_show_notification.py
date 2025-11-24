@@ -108,7 +108,7 @@ class show_notification(_AbstractAction):
         class_name = VARIANT_CONFIG[self.variant]["className"]
         icon_name = self.icon if self.icon else VARIANT_CONFIG[self.variant]["icon"]
         title = self.title if self.title else self.variant.capitalize()
-        auto_close = self.auto_close if self.auto_close else VARIANT_CONFIG[self.variant]["auto_close"]
+        auto_close = self.auto_close if self.auto_close is not None else VARIANT_CONFIG[self.variant]["auto_close"]
 
         return [
             {

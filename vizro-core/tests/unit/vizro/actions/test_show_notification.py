@@ -29,7 +29,7 @@ class TestShowNotificationInstantiation:
         assert notification.message == "Test message"
         assert notification.variant == "info"
         assert notification.icon == ""
-        assert notification.auto_close == 4000
+        assert notification.auto_close is None
         assert notification.action == "show"
         assert notification.notification_id == ""
         assert notification.outputs == ["notification-container.sendNotifications"]
