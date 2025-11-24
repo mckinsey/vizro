@@ -1,5 +1,5 @@
 import re
-from typing import Annotated, Any, Literal, NamedTuple, Optional
+from typing import Annotated, Any, Literal, NamedTuple
 
 import numpy as np
 from dash import html
@@ -206,7 +206,7 @@ class Grid(VizroBaseModel):
         description="Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
         pattern=re.compile(r"^\d+(px|rem|em|%)$"),
     )
-    _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
+    _component_grid_lines: list[ColRowGridLines] | None = PrivateAttr()
 
     def model_post_init(self, context: Any) -> None:
         self._component_grid_lines = _get_grid_lines(self.grid)[0]

@@ -1,7 +1,7 @@
 """Controls plan model."""
 
 import logging
-from typing import Any, Optional, get_args
+from typing import Any, get_args
 
 import pandas as pd
 import vizro.models as vm
@@ -118,7 +118,7 @@ class ControlPlan(BaseModel):
         """,
     )
 
-    def create(self, model, controllable_components, all_df_metadata) -> Optional[vm.Filter]:
+    def create(self, model, controllable_components, all_df_metadata) -> vm.Filter | None:
         """Create the control."""
         filter_prompt = f"""
         Create a filter from the following instructions: <{self.control_description}>. Do not make up
