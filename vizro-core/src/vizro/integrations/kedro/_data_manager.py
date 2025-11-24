@@ -28,7 +28,7 @@ def _infer_project_path(project_path: str | Path | None) -> str | Path:
     return project_path or find_kedro_project(Path.cwd()) or Path.cwd()
 
 
-def catalog_from_project(project_path: str | Path | None, **kwargs: Any) -> DataCatalog:
+def catalog_from_project(project_path: str | Path | None = None, **kwargs: Any) -> DataCatalog:
     """Fetches a Kedro project's Data Catalog.
 
     Args:
