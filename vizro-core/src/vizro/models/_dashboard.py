@@ -5,7 +5,7 @@ import logging
 from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, Union, cast
+from typing import TYPE_CHECKING, Annotated, Literal, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -73,7 +73,7 @@ _OuterPageContentType = TypedDict(
 )
 
 
-def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
+def set_navigation_pages(navigation: Navigation | None, info: ValidationInfo) -> Navigation | None:
     if "pages" not in info.data:
         return navigation
 
@@ -94,7 +94,7 @@ class Dashboard(VizroBaseModel):
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
         title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
             tags. Defaults to `None`.
 
@@ -105,13 +105,13 @@ class Dashboard(VizroBaseModel):
         default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
     navigation: Annotated[
-        Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
+        Navigation | None, AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -503,7 +503,7 @@ class Dashboard(VizroBaseModel):
                     # Return path as posix so image source comes out correctly on Windows.
                     return path.relative_to(assets_folder).as_posix()
 
-    def custom_header(self) -> Union[Component, list[Component]]:
+    def custom_header(self) -> Component | list[Component]:
         """Adds custom content that will appear to the left of the theme switch.
 
         Returns:

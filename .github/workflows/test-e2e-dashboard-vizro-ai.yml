@@ -22,8 +22,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
 
     steps:
       - uses: actions/checkout@v5
@@ -39,8 +39,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
 
     steps:
       - uses: actions/checkout@v5
@@ -49,10 +49,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.config.python-version }}
-      # Remove the `click` installation constraint once the
-      # https://github.com/pypa/hatch/issues/2050 is resolved.
       - name: Install Hatch
-        run: pip install hatch "click<8.3.0"
+        run: pip install hatch
 
       - name: Show dependency tree
         run: hatch run ${{ matrix.config.hatch-env }}:pip tree

@@ -1,7 +1,12 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+[envs."all.py3.14"]
+# Make sys.warnoptions non-empty so that Kedro doesn't turn its Python 3.14 warning into an error.
+# This means we can ignore it like others in tool.pytest.ini_options.filterwarnings.
+env-vars = {PYTHONWARNINGS = "default"}
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -11,9 +16,6 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 
 [envs.default]
 dependencies = [
-  # Remove the `click` installation constraint once the
-  # https://github.com/pypa/hatch/issues/2050 is resolved.
-  "click<8.3.0",
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
@@ -111,9 +113,6 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  # Remove the `click` installation constraint once the
-  # https://github.com/pypa/hatch/issues/2050 is resolved.
-  "click<8.3.0",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
@@ -176,7 +175,7 @@ extra-dependencies = [
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
   "kedro==0.19.9"
 ]
-python = "3.9"
+python = "3.10"
 
 [publish.index]
 disable = true

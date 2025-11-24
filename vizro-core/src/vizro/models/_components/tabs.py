@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Literal, Optional
+from typing import TYPE_CHECKING, Annotated, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -30,7 +30,7 @@ class Tabs(VizroBaseModel):
     Args:
         tabs (list[Container]): See [`Container`][vizro.models.Container].
         title (str): Title displayed above Tabs. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
 
     """
@@ -40,7 +40,7 @@ class Tabs(VizroBaseModel):
     tabs: conlist(Annotated[Container, AfterValidator(validate_tab_has_title)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(default="", description="Title displayed above Tabs.")
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

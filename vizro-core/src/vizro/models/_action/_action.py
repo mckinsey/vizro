@@ -5,9 +5,9 @@ import logging
 import re
 import time
 import warnings
-from collections.abc import Collection, Iterable, Mapping
+from collections.abc import Callable, Collection, Iterable, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
+from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
@@ -204,7 +204,7 @@ class _BaseAction(VizroBaseModel):
             ) from exc
 
     @property
-    def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
+    def _transformed_inputs(self) -> list[State] | dict[str, State | ControlsStates]:
         """Creates Dash States given the user-specified runtime arguments and built in ones.
 
         Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
@@ -251,7 +251,7 @@ class _BaseAction(VizroBaseModel):
         return builtin_args | runtime_args
 
     @property
-    def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
+    def _transformed_outputs(self) -> list[Output] | dict[str, Output]:
         """Creates Dash Output objects from string specifications in self.outputs.
 
         Converts self._validated_outputs (list of strings or dictionary of strings where each string is in the
@@ -260,7 +260,7 @@ class _BaseAction(VizroBaseModel):
             [Output(component_id='my_graph', component_property='figure', allow_duplicate=True)].
 
         Returns:
-            Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
+            list[Output] | dict[str, Output]: A list of Output objects if self.outputs is a list of strings,
             or a dictionary mapping keys to Output objects if self.outputs is a dictionary of strings.
         """
 
@@ -285,8 +285,8 @@ class _BaseAction(VizroBaseModel):
 
     def _action_callback_function(
         self,
-        inputs: Union[dict[str, Any], list[Any]],
-        outputs: Union[dict[str, Output], list[Output], Output, None],
+        inputs: dict[str, Any] | list[Any],
+        outputs: dict[str, Output] | list[Output] | Output | None,
     ) -> Any:
         logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
         if logger.isEnabledFor(logging.DEBUG):
@@ -378,7 +378,7 @@ class _BaseAction(VizroBaseModel):
             trigger = Input(*self._trigger.split("."))
 
         callback_inputs = {"external": external_callback_inputs, "internal": {"trigger": trigger}}
-        callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
+        callback_outputs: dict[str, list[Output] | dict[str, Output]] = {
             "internal": {
                 "action_finished": Output(f"{self.id}_finished", "data"),
                 "action_progress_indicator": Output(
@@ -405,7 +405,7 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
-        def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
+        def action_callback(external: list[Any] | dict[str, Any], internal: dict[str, Any]) -> dict[str, Any]:
             external_return = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             return_value = {
                 "internal": {
@@ -445,7 +445,7 @@ class Action(_BaseAction):
     # actions.function in _make_actions_chain. It's done as a forward ref here to avoid circular imports and resolved
     # with Dashboard.model_rebuild() later.
     function: Annotated[  # type: ignore[misc, assignment]
-        SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
+        SkipJsonSchema[CapturedCallable | export_data | filter_interaction],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
     # inputs is deprecated and must only be used when _legacy = True. We don't use deprecated=True here because it only
@@ -454,8 +454,8 @@ class Action(_BaseAction):
     # The type hint str here really means _IdOrIdProperty. We might change it in future for clearer API docs, but the
     # validation to check string format (presence of 0 or 1 . characters) does not need to be included in the
     # annotation. Options for good public API might be:
-    # Union[ModelID, str] - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
-    # Union[ModelID, IdProperty] - means making IdProperty public, which is ok but maybe overkill
+    # ModelID | str - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
+    # ModelID | IdProperty - means making IdProperty public, which is ok but maybe overkill
     inputs: Annotated[
         list[str],
         Field(
