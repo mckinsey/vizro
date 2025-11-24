@@ -2,7 +2,7 @@
 
 import logging
 import operator
-from typing import Annotated, Optional
+from typing import Annotated
 
 import pandas as pd
 import vizro.models as vm
@@ -63,9 +63,9 @@ class GraphState(BaseModel):
     messages: list[BaseMessage]
     dfs: Annotated[list[pd.DataFrame], BeforeValidator(_validate_dfs)]
     all_df_metadata: AllDfMetadata
-    dashboard_plan: Optional[DashboardPlan] = None
+    dashboard_plan: DashboardPlan | None = None
     pages: Annotated[list, operator.add]
-    dashboard: Optional[type(vm.Dashboard)] = None
+    dashboard: type(vm.Dashboard) | None = None
     custom_charts_code: Annotated[list, operator.add]
     custom_charts_imports: Annotated[list, operator.add]
 
@@ -156,7 +156,7 @@ class BuildPageState(BaseModel):
     """
 
     all_df_metadata: AllDfMetadata
-    page_plan: Optional[PagePlan] = None
+    page_plan: PagePlan | None = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True)  # this is due to pandas df
 

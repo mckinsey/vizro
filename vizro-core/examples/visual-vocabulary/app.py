@@ -1,7 +1,5 @@
 """App configuration for dashboard."""
 
-from typing import Union
-
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from chart_groups import ALL_CHART_GROUP, CHART_GROUPS, ChartGroup, IncompletePage
@@ -9,7 +7,7 @@ from dash import get_asset_url, html
 from vizro import Vizro
 
 
-def make_chart_card(page: Union[vm.Page, IncompletePage]) -> vm.Card:
+def make_chart_card(page: vm.Page | IncompletePage) -> vm.Card:
     """Makes a card with svg icon, linked to the right page if page is complete.
 
     Args:
@@ -62,7 +60,7 @@ def make_homepage_container(chart_group: ChartGroup) -> vm.Container:
     )
 
 
-def _remove_duplicates(pages: list[Union[vm.Page, IncompletePage]]) -> list[Union[vm.Page, IncompletePage]]:
+def _remove_duplicates(pages: list[vm.Page | IncompletePage]) -> list[vm.Page | IncompletePage]:
     # Deduplicate pages that have the same title. Using reversed means that the page that is kept is the first one
     # in the dashboard. This will be the one that the card on the homepage links to.
     return list({page.title: page for page in reversed(pages)}.values())
