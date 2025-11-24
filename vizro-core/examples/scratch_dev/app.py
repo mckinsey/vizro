@@ -50,6 +50,16 @@ page_1 = vm.Page(
             ],
         ),
         vm.Button(
+            text="Loading Notification",
+            icon="hourglass_empty",
+            actions=[
+                va.show_notification(
+                    message="Processing your request...",
+                    variant="progress",
+                )
+            ],
+        ),
+        vm.Button(
             text="No Auto-Close",
             icon="close",
             actions=[
@@ -103,7 +113,6 @@ page_1 = vm.Page(
                     message="Processing your request...",
                     title="Processing",
                     variant="progress",
-                    auto_close=False,
                 )
             ],
         ),
