@@ -77,8 +77,8 @@ class show_notification(_AbstractAction):
                 Ignored if `variant="progress"`""",
         ),
     ]
-    auto_close: bool | int = Field(
-        default=4000,
+    auto_close: bool | int | None = Field(
+        default=None,
         description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
             info/success/warning/error, `False` for progress.""",
