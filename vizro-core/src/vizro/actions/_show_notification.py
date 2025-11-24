@@ -100,7 +100,7 @@ class show_notification(_AbstractAction):
         return ["notification-container.sendNotifications"]
 
     @_log_call
-    def function(self):
+    def function(self, _trigger):
         """Creates and returns a notification configuration for DMC NotificationContainer."""
         # Get variant-specific configuration variables
         class_name = VARIANT_CONFIG[self.variant]["className"]

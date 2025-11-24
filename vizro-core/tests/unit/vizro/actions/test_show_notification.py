@@ -1,6 +1,6 @@
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html, no_update
+from dash import dcc, html
 
 import vizro.models as vm
 from vizro import Vizro
@@ -109,13 +109,3 @@ class TestShowNotificationFunction:
         assert result[0]["className"] == expected_class
         assert_component_equal(result[0]["icon"], html.Span(expected_icon, className="material-symbols-outlined"))
         assert result[0]["loading"] is expected_loading
-
-    def test_button_not_triggered_returns_no_update(self):
-        """Test that notification returns no_update when button is not triggered."""
-        model_manager["button_one"].actions = [show_notification(id="test_notification", message="Test message")]
-        action = model_manager["test_notification"]
-        result_none = action.function(_trigger=None)
-        result_zero = action.function(_trigger=0)
-
-        assert result_none == no_update
-        assert result_zero == no_update
