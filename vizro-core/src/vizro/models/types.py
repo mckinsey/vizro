@@ -725,7 +725,7 @@ OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_l
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
 
-# Extra type groups usd only for static type checking, not at runtime.
+# Extra type groups used only for static type checking, not at runtime.
 FigureWithFilterInteractionType: TypeAlias = "Graph | Table | AgGrid"
 FigureType: TypeAlias = "Graph | Table | AgGrid | Figure"
 
