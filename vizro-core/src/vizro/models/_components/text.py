@@ -10,13 +10,12 @@ from vizro.models.types import _IdProperty
 
 
 class Text(VizroBaseModel):
-    """Creates a text component based on Markdown syntax.
+    """Text based on Markdown syntax.
 
     Abstract: Usage documentation
         [How to add text to your page](../user-guides/text.md)
 
     Args:
-        type (Literal["text"]): Defaults to `"text"`.
         text (str): Markdown string to create text that should adhere to the CommonMark Spec.
         extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Markdown` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.

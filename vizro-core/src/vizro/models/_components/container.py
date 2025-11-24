@@ -35,7 +35,6 @@ class Container(VizroBaseModel):
         [How to use containers](../user-guides/container.md)
 
     Args:
-        type (Literal["container"]): Defaults to `"container"`.
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Container`. Defaults to `""`.

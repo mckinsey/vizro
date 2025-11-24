@@ -21,7 +21,7 @@ def test_reset_controls_tooltip(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
     # hover over reset controls icon and wait for the tooltip appear
-    hover_over_element_by_xpath_selenium(dash_br, "//*[contains(@id, '_reset_button')]")
+    hover_over_element_by_xpath_selenium(dash_br, "//*[contains(@id, 'reset-button')]")
     dash_br.wait_for_text_to_equal(".tooltip-inner", "Reset all page controls")
 
 
@@ -50,7 +50,7 @@ def test_reset_controls_header(dash_br):
     dash_br.multiple_click(switch_path_using_filter_control_id(filter_control_id=cnst.SWITCH_INSIDE_CONTAINERS), 1)
 
     # click reset controls icon
-    dash_br.multiple_click("button[id$='_reset_button']", 1, delay=0.1)
+    dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
 
     # check all controls were reset
     # dropdown
@@ -114,7 +114,7 @@ def test_reset_controls_page(dash_br):
     )
 
     # click reset controls button
-    dash_br.multiple_click("button[id$='_reset_button']", 1, delay=0.1)
+    dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
 
     # check all controls were reset
     # dropdown

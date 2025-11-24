@@ -107,14 +107,14 @@ class _SupportsCapturedCallable(Protocol):
     _captured_callable: CapturedCallable
 
 
-class JsonSchemaExtraType(TypedDict):
+class _JsonSchemaExtraType(TypedDict):
     """Type that specifies the extra information needed to parse a CapturedCallable from JSON/YAML."""
 
     import_path: str
     mode: str
 
 
-def validate_captured_callable(cls, value: Any, info: ValidationInfo):
+def _validate_captured_callable(cls, value: Any, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
     # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
     # vm.Action(function=export_data(...)) work.
@@ -132,7 +132,7 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
 
     # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
     # to get deprecated in V3
-    json_schema_extra: JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra
+    json_schema_extra: _JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra
     return CapturedCallable._validate_captured_callable(
         captured_callable_config=value,
         json_schema_extra=json_schema_extra,
@@ -147,18 +147,7 @@ class CapturedCallable:
     """Stores a captured function call to use in a dashboard.
 
     Users do not need to instantiate this class directly. Instances are instead generated automatically
-    through the [`capture`][vizro.models.types.capture] decorator. Some of the functionality is similar to
-    `functools.partial`.
-
-    Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
-    Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md), [Actions](../user-guides/actions.md)
-    or [Figures](../user-guides/figure.md) to see available choices.
-
-    (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
-    custom charts](../user-guides/custom-charts.md),
-    [custom tables](../user-guides/custom-tables.md),
-    [custom actions](../user-guides/custom-actions.md),
-    or [custom figures](../user-guides/custom-figures.md).
+    through the [`capture`][vizro.models.types.capture] decorator.
     """
 
     def __init__(self, function: Callable[..., Any] | str, /, *args: Any, **kwargs: Any):
@@ -293,8 +282,8 @@ class CapturedCallable:
     @classmethod
     def _validate_captured_callable(
         cls,
-        captured_callable_config: dict[str, Any] | _SupportsCapturedCallable | CapturedCallable,
-        json_schema_extra: JsonSchemaExtraType,
+        captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
+        json_schema_extra: _JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
     ):
         value = cls._parse_json(
@@ -315,10 +304,10 @@ class CapturedCallable:
     @classmethod
     def __get_pydantic_core_schema__(cls, source: Any, handler: Any) -> cs.core_schema.CoreSchema:
         """Core validation, which boils down to checking if it is a custom type."""
-        return cs.core_schema.no_info_plain_validator_function(cls.core_validation)
+        return cs.core_schema.no_info_plain_validator_function(cls._core_validation)
 
     @staticmethod
-    def core_validation(value: Any):
+    def _core_validation(value: Any):
         """Core validation logic."""
         if not isinstance(value, CapturedCallable):
             raise ValueError(f"Expected CapturedCallable, got {type(value)}")
@@ -327,10 +316,10 @@ class CapturedCallable:
     @classmethod
     def _parse_json(
         cls,
-        captured_callable_config: _SupportsCapturedCallable | CapturedCallable | dict[str, Any],
-        json_schema_extra: JsonSchemaExtraType,
+        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
+        json_schema_extra: _JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
-    ) -> CapturedCallable | _SupportsCapturedCallable:
+    ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
 
         If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
@@ -379,7 +368,7 @@ class CapturedCallable:
 
     @classmethod
     def _extract_from_attribute(
-        cls, captured_callable: _SupportsCapturedCallable | CapturedCallable
+        cls, captured_callable: Union[_SupportsCapturedCallable, CapturedCallable]
     ) -> CapturedCallable:
         """Extracts CapturedCallable from _SupportCapturedCallable (e.g. _DashboardReadyFigure).
 
@@ -391,7 +380,7 @@ class CapturedCallable:
 
     @classmethod
     def _check_type(
-        cls, captured_callable: CapturedCallable, json_schema_extra: JsonSchemaExtraType
+        cls, captured_callable: CapturedCallable, json_schema_extra: _JsonSchemaExtraType
     ) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
         from vizro.actions import export_data, filter_interaction
@@ -419,7 +408,7 @@ class CapturedCallable:
 
     @staticmethod
     def _format_args(
-        args_for_repr: list[Any] | tuple[Any, ...] | None = None, arguments: dict[str, Any] | None = None
+        args_for_repr: Optional[Union[list[Any], tuple[Any, ...]]] = None, arguments: Optional[dict[str, Any]] = None
     ) -> str:
         """Format arguments for string representation."""
         return ", ".join(
@@ -479,42 +468,41 @@ def _pio_templates_default():
 
 
 class capture:
-    """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
+    """Captures a function call to create a custom [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
-    This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically, it should be used as a function decorator. There are five possible modes: `"graph"`, `"table"`,
-    `"ag_grid"`, `"figure"` and `"action"`.
+    Abstract: Usage documentation
+        [How to create custom actions](../user-guides/custom-actions.md),
+        [How to create custom charts](../user-guides/custom-charts.md),
+        [How to create custom tables](../user-guides/custom-tables.md),
+        [How to create figures](../user-guides/custom-figures.md).
 
     Args:
-        mode: The mode of the captured callable. Valid modes are `"graph"`, `"table"`, `"ag_grid"`,
-            `"figure"` and `"action"`.
+        mode: The mode of the captured callable.
 
-    Examples:
-        >>> @capture("graph")
-        >>> def graph_function():
-        >>>     ...
-        >>> @capture("table")
-        >>> def table_function():
-        >>>     ...
-        >>> @capture("ag_grid")
-        >>> def ag_grid_function():
-        >>>     ...
-        >>> @capture("figure")
-        >>> def figure_function():
-        >>>     ...
-        >>> @capture("action")
-        >>> def action_function():
-        >>>     ...
+    Example:
+        ```python
+        from vizro.models.types import capture
 
-    For further help on the use of `@capture("graph")`, you can refer to the guide on
-    [custom graphs](../user-guides/custom-charts.md).
-    For further help on the use of `@capture("table")` or `@capture("ag_grid")`, you can refer to the guide on
-    [custom tables](../user-guides/custom-tables.md).
-    For further help on the use of `@capture("figure")`, you can refer to the guide on
-    [figures](../user-guides/figure.md).
-    For further help on the use of `@capture("action")`, you can refer to the guide on
-    [custom actions](../user-guides/custom-actions.md).
 
+        @capture("action")
+        def action_function(): ...
+
+
+        @capture("graph")
+        def graph_function(): ...
+
+
+        @capture("table")
+        def table_function(): ...
+
+
+        @capture("ag_grid")
+        def ag_grid_function(): ...
+
+
+        @capture("figure")
+        def figure_function(): ...
+        ```
     """
 
     def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure"]):
@@ -642,14 +630,14 @@ MultiValueType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[da
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
-class OptionsDictType(TypedDict):
+class _OptionsDictType(TypedDict):
     """Permissible sub-type for OptionsType. Needs to be in the format of {"label": XXX, "value": XXX}."""
 
     label: str
     value: SingleValueType
 
 
-OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[OptionsDictType]
+OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[_OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).

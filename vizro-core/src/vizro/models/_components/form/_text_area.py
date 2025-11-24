@@ -16,7 +16,6 @@ class TextArea(VizroBaseModel):
     Based on the underlying [`dcc.TextArea`](https://dash.plotly.com/dash-core-components/textarea).
 
     Args:
-        type (Literal["text_area"]): Defaults to `"text_area"`.
         title (str): Title to be displayed. Defaults to `""`.
         description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.

@@ -52,7 +52,7 @@ def _calculate_option_height(full_options: OptionsType, char_count: int) -> int:
 
 
 class Dropdown(VizroBaseModel):
-    """Categorical single/multi-option selector `Dropdown`.
+    """Categorical single/multi-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
@@ -61,7 +61,6 @@ class Dropdown(VizroBaseModel):
         [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
 
     Args:
-        type (Literal["dropdown"]): Defaults to `"dropdown"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (SingleValueType | MultiValueType | None): See
             [`SingleValueType`][vizro.models.types.SingleValueType] and
