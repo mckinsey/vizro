@@ -51,7 +51,6 @@ as it may result in unexpected layouts.
   align-content: flex-start;
 }
 
-
 .flex-item .dash-graph {
   min-width: 450px;
 }

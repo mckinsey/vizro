@@ -23,6 +23,15 @@ page = vm.Page(
             id="scatter_chart2", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", width=300)
         ),
         vm.Graph(id="hist_chart2", figure=px.histogram(df, x="sepal_width", color="species", width=300)),
+        vm.Graph(
+            id="hist_chart1",
+            title="title onetwothree",
+            figure=px.histogram(df, x="sepal_width", color="species", width=300),
+        ),
+        vm.Graph(
+            id="scatter_chart12", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", width=300)
+        ),
+        vm.Graph(id="hist_chart12", figure=px.histogram(df, x="sepal_width", color="species", width=300)),
     ],
     controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
 )
