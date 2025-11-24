@@ -35,7 +35,11 @@ dependencies = [
   "gunicorn",
   "pixelmatch",
   "playwright",
-  "kaleido"
+  # seaborn and scikit-learn are needed for tests of kedro integration on real project.
+  # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
+  # we want to be testing the latest.
+  "seaborn",
+  "scikit-learn"
 ]
 features = ["kedro"]
 installer = "uv"
@@ -46,7 +50,6 @@ PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml
 [envs.default.scripts]
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
-generate-color-images = "python tools/generate_theme_images.py"
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
@@ -63,10 +66,10 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 schema = ["python schemas/generate.py", '- pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 schema-check = ["python schemas/generate.py --check"]
 templates = [
-  "python src/vizro/themes/static_template_generator.py",
-  '- pre-commit run --files src/vizro/themes/vizro_dark.json src/vizro/_themes/vizro_light.json > /dev/null'
+  "python src/vizro/_themes/_static_template_generator.py",
+  '- pre-commit run --files src/vizro/_themes/vizro_dark.json src/vizro/_themes/vizro_light.json > /dev/null'
 ]
-templates-check = ["python src/vizro/themes/static_template_generator.py --check"]
+templates-check = ["python src/vizro/_themes/_static_template_generator.py --check"]
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
@@ -171,7 +174,7 @@ extra-dependencies = [
   "pydantic==2.7.0",
   "pandas==2.0.0",
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
-  "kedro==0.19.0"  # Includes kedro-datasets as a dependency.
+  "kedro==0.19.9"
 ]
 python = "3.9"
 

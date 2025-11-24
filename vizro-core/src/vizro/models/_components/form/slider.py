@@ -22,7 +22,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Slider(VizroBaseModel):
-    """Numeric single-option selector `Slider`.
+    """Numeric single-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
@@ -31,7 +31,6 @@ class Slider(VizroBaseModel):
         [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)
 
     Args:
-        type (Literal["range_slider"]): Defaults to `"range_slider"`.
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.

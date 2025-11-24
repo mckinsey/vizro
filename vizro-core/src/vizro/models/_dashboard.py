@@ -83,7 +83,7 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
 
 
 class Dashboard(VizroBaseModel):
-    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
+    """Dashboard that is supplied to [`Vizro.build`][vizro.Vizro.build].
 
     Abstract: Usage documentation
         [How to create a dashboard](../user-guides/dashboard.md)
@@ -329,10 +329,10 @@ class Dashboard(VizroBaseModel):
             children=html.Div(id="action-progress-indicator-placeholder"),
         )
         reset_controls_button = dbc.Button(
-            id=f"{page.id}_reset_button",
+            id="reset-button",
             children=[
                 html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
+                dbc.Tooltip(children="Reset all page controls", target="reset-button"),
             ],
             class_name="btn-circular",
         )
@@ -367,7 +367,7 @@ class Dashboard(VizroBaseModel):
             text = html.Span("Reset controls", className="btn-text")
 
             control_panel.children.append(
-                dbc.Button(id=f"{page.id}_reset_button", children=[icon, text]),
+                dbc.Button(id="reset-button", children=[icon, text]),
             )
 
         nav_control_panel_content = [nav_panel, control_panel]
@@ -504,10 +504,20 @@ class Dashboard(VizroBaseModel):
                     # Return path as posix so image source comes out correctly on Windows.
                     return path.relative_to(assets_folder).as_posix()
 
-    @staticmethod
-    def custom_header() -> Union[Component, list[Component]]:
-        """Returns a Dash component or list of components for the dashboard header's custom content area.
+    def custom_header(self) -> Union[Component, list[Component]]:
+        """Adds custom content that will appear to the left of the theme switch.
 
-        Override this method in your subclass to add custom content that will appear to the left of the theme switch.
+        Returns:
+             A Dash component of list of components for the dashboard header's custom content area.
+
+        Example:
+            ```python
+            import vizro.models as vm
+
+
+            class CustomDashboard(vm.Dashboard):
+                def custom_header(self):
+                    return [html.Div("Hello!"), dbc.Badge("Tuesday")]
+            ```
         """
         return []

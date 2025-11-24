@@ -14,7 +14,7 @@ from vizro.models.types import NavPagesType, NavSelectorType
 
 
 class Navigation(VizroBaseModel):
-    """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
+    """Navigation to arrange hierarchy of [`Pages`][vizro.models.Page].
 
     Abstract: Usage documentation
         [How to customize the navigation](../user-guides/navigation.md)
