@@ -2434,9 +2434,12 @@
             },
             {
               "type": "integer"
+            },
+            {
+              "type": "null"
             }
           ],
-          "default": 4000,
+          "default": null,
           "description": "Auto-close duration in milliseconds. Set to `False` to keep the notification\n            open until the user closes it manually. Default value depends on variant: `4000` for\n            info/success/warning/error, `False` for progress.",
           "title": "Auto Close"
         },
