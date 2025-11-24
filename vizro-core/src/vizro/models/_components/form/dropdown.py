@@ -259,4 +259,5 @@ class Dropdown(VizroBaseModel):
                 State(self.id, "options"),
             ],
             prevent_initial_call="initial_duplicate",
+            hidden=True,
         )
