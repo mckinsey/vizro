@@ -1,17 +1,17 @@
 # How to use actions to show notifications
 
-This guide shows you how to display notifications/alerts in your dashboard to provide feedback to users about their actions or the state of the application.
+This guide shows you how to display notifications and alerts in your dashboard to provide feedback to users about their interactions with the UI or the state of the application.
 
 ## Show notification
 
-The [`show_notification`][vizro.actions.show_notification] action displays a temporary message to the user. Notifications are useful for:
+The [`show_notification`][vizro.actions.show_notification] action displays a temporary message to the user. Notifications are useful to:
 
-- Confirming that an action completed successfully
-- Alerting users to warnings or errors
-- Providing informational messages
-- Showing loading states during long-running operations
+- Confirm that an action completed successfully
+- Alert users to warnings or errors
+- Provide informational messages
+- Show loading states during long-running operations
 
-Notifications appear at the top-right of the screen and are customizable with options for styling (variants and icons), timing (auto-close duration), behavior (loading states and updates), and more.
+Notifications appear at the top-right of the screen and are customizable with options for styling (variants and icons), timing (auto-close duration), content (title and message), and behavior (loading states and updates).
 
 !!! note "Under the hood"
 
@@ -230,7 +230,17 @@ By default, notifications use the capitalized variant name as the title (e.g., "
 
 ### Auto-close duration
 
-By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You can customize this duration or disable auto-close entirely. Set `auto_close=False` for important messages that require user acknowledgment.
+By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You can customize this duration or disable auto-close entirely.
+
+!!! tip "When to disable auto-close"
+
+    Use `auto_close=False` sparingly - only for critical situations where users must take action:
+
+    - Errors requiring immediate attention
+    - Security warnings or permission requests
+    - Confirmations before irreversible operations
+
+    For everything else (informational messages, success confirmations, general warnings), let notifications auto-dismiss. Manual dismissal disrupts workflow and can worsen the user experience when overused, so only use it when truly necessary. Ask yourself: **"Is this important enough to interrupt their task?"**
 
 !!! example "Auto-close settings"
 
