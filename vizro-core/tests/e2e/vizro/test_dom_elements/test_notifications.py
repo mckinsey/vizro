@@ -1,3 +1,5 @@
+import time
+
 import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.navigation import accordion_select, page_select
@@ -92,6 +94,7 @@ def test_progress_update_notification(dash_br):
     dash_br.wait_for_text_to_equal(
         f'#{cnst.UPDATE_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.UPDATE_NOTIFICATION_MESSAGE
     )
+    time.sleep(5)  # timeout for checking if notification does not auto close
     dash_br.multiple_click(f'#{cnst.UPDATE_NOTIFICATION_ID} button[class*="Notification-closeButton"]', 1)
     dash_br.wait_for_no_elements(f"#{cnst.UPDATE_NOTIFICATION_ID}")
 
@@ -115,3 +118,33 @@ def test_auto_close_notification(dash_br):
         cnst.AUTO_CLOSE_NOTIFICATION_MESSAGE,
     )
     dash_br.wait_for_no_elements(f"#{cnst.AUTO_CLOSE_NOTIFICATION_ID}", timeout=10)
+
+
+def test_notifications_limit(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.CUSTOM_NOTIFICATION_BUTTON), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.PROGRESS_NOTIFICATION_BUTTON), 1)
+
+    time.sleep(5)  # timeout for checking if notification does not auto close
+    dash_br.wait_for_no_elements(f"#{cnst.PROGRESS_NOTIFICATION_ID}")
+
+    dash_br.multiple_click(f'#{cnst.SUCCESS_NOTIFICATION_ID} button[class*="Notification-closeButton"]', 1)
+    dash_br.wait_for_element(f"#{cnst.PROGRESS_NOTIFICATION_ID}")
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    page_select(dash_br, page_name=cnst.ACTION_CONTROL_SHORTCUT_PAGE)
+
+    time.sleep(5)  # timeout for checking if notification does not auto close
+    dash_br.wait_for_no_elements(f"#{cnst.SUCCESS_NOTIFICATION_ID}")
+
+    dash_br.multiple_click(f'#{cnst.WARNING_NOTIFICATION_ID} button[class*="Notification-closeButton"]', 1)
+    dash_br.wait_for_element(f"#{cnst.SUCCESS_NOTIFICATION_ID}")

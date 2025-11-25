@@ -332,9 +332,7 @@ UPDATE_NOTIFICATION_MESSAGE = "Your operation has been updated successfully."
 LINK_NOTIFICATION_BUTTON = "link-notification-button"
 LINK_NOTIFICATION_ID = "link-notification"
 LINK_NOTIFICATION_TITLE = "Learn More"
-LINK_NOTIFICATION_MESSAGE = (
-    "This is a notification with a link to [Filters page](http://127.0.0.1:5002/filters-page-tabs--containers)."
-)
+LINK_NOTIFICATION_MESSAGE = f"This is a notification with a link to [Filters page]({FILTERS_PAGE_PATH})."
 AUTO_CLOSE_NOTIFICATION_BUTTON = "auto-close-notification-button"
 AUTO_CLOSE_NOTIFICATION_ID = "auto-close-notification"
 AUTO_CLOSE_NOTIFICATION_TITLE = "Auto-Close"
