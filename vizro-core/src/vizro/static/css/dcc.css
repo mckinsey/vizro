@@ -35,6 +35,8 @@
   padding-bottom: 4px;
 }
 
+
+/* Need to use this wrapper dash-options-list-option-wrapper */
 .dash-options-list-option-checkbox {
   border-radius: var(--bs-border-radius);
 
@@ -45,14 +47,10 @@
   color: var(--bs-body-color);
 }
 
-/* Hide commas between selected options in multi-select dropdowns 
-.dash-dropdown-value:has(span + span) {
-  display: flex;
-  font-size: 0;
-  gap: 4px;
+/* Hide commas */
+.dash-dropdown-value-item:not(:first-child)::before {
+  content: none;
 }
-*/
-
 
 .dash-dropdown-value-count {
   background: var(--text-primary-inverted);
