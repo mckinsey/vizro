@@ -9,7 +9,6 @@ from pydantic import ValidationError
 from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
-from vizro.models._components.form._form_utils import get_dict_options_and_default
 
 
 class TestDropdownInstantiation:
@@ -158,70 +157,7 @@ class TestDropdownInstantiation:
 class TestDropdownBuild:
     """Tests model build method."""
 
-    @pytest.mark.parametrize(
-        "value, options, expected_select_all_value, expected_value, expected_options",
-        [
-            (
-                ["A"],
-                ["A", "B", "C"],
-                False,
-                ["A"],
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
-            ),
-            (
-                ["A", "B", "C"],
-                ["A", "B", "C"],
-                True,
-                ["A", "B", "C"],
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
-            ),
-            (
-                None,
-                ["A", "B", "C"],
-                True,
-                ["A", "B", "C"],
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
-            ),
-        ],
-    )
-    def test_dropdown_with_all_option(
-        self, value, options, expected_select_all_value, expected_value, expected_options
-    ):
-        dropdown = Dropdown(value=value, options=options, title="Title", id="dropdown_id").build()
-        expected_dropdown = html.Div(
-            [
-                dbc.Label([html.Span("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
-                dcc.Dropdown(
-                    id="dropdown_id",
-                    options=[
-                        {
-                            "label": dbc.Checkbox(
-                                id="dropdown_id_select_all",
-                                value=expected_select_all_value,
-                                label="Select All",
-                                persistence=True,
-                                persistence_type="session",
-                                className="dropdown-select-all",
-                            ),
-                            "value": "__SELECT_ALL",
-                        },
-                        *expected_options,
-                    ],
-                    optionHeight=32,
-                    value=expected_value,
-                    multi=True,
-                    clearable=True,
-                    placeholder="Select option",
-                    persistence=True,
-                    persistence_type="session",
-                    className="dropdown",
-                ),
-            ]
-        )
-
-        assert_component_equal(dropdown, expected_dropdown)
-
-    def test_dropdown_without_all_option(self):
+    def test_dropdown_build(self):
         dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
         expected_dropdown = html.Div(
             [
@@ -229,7 +165,6 @@ class TestDropdownBuild:
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
-                    optionHeight=32,
                     value="A",
                     multi=False,
                     clearable=False,
@@ -237,87 +172,6 @@ class TestDropdownBuild:
                     persistence=True,
                     persistence_type="session",
                     className="dropdown",
-                ),
-            ]
-        )
-
-        assert_component_equal(dropdown, expected_dropdown)
-
-    @pytest.mark.parametrize(
-        "options, option_height",
-        [
-            (["A", "B", "C"], 32),
-            ([10.0, 20.0, 30.0], 32),
-            (["A" * 24, "B", "C"], 32),
-            (["A" * 25, "B", "C"], 56),
-            (["A" * 48, "B", "C"], 56),
-            (["A" * 49, "B", "C"], 80),
-            ([{"label": "A" * 24, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 32),
-            ([{"label": "A" * 25, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
-            ([{"label": "A" * 48, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
-            ([{"label": "A" * 49, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
-        ],
-    )
-    def test_dropdown_option_height(self, options, option_height):
-        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
-        dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
-
-        expected_dropdown = html.Div(
-            [
-                None,
-                dcc.Dropdown(
-                    id="dropdown_id",
-                    options=dict_options,
-                    optionHeight=option_height,
-                    multi=False,
-                    value=default_value,
-                    clearable=False,
-                    persistence=True,
-                    persistence_type="session",
-                    placeholder="Select option",
-                    className="dropdown",
-                ),
-            ]
-        )
-
-        assert_component_equal(dropdown, expected_dropdown)
-
-    @pytest.mark.parametrize(
-        "options, option_height",
-        [
-            (["A", "B", "C"], 32),
-            ([10.0, 20.0, 30.0], 32),
-            (["A" * 15, "B", "C"], 32),
-            (["A" * 30, "B", "C"], 56),
-            (["A" * 31, "B", "C"], 80),
-            (["A" * 60, "B", "C"], 104),
-            (["A" * 61, "B", "C"], 128),
-            ([{"label": "A" * 30, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
-            ([{"label": "A" * 31, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
-            ([{"label": "A" * 60, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 104),
-            ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 128),
-        ],
-    )
-    def test_dropdown_in_container_option_height(self, options, option_height):
-        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
-        dropdown = Dropdown(id="dropdown_id", multi=False, options=options)
-        dropdown._in_container = True
-        dropdown = dropdown.build()
-
-        expected_dropdown = html.Div(
-            [
-                None,
-                dcc.Dropdown(
-                    id="dropdown_id",
-                    options=dict_options,
-                    optionHeight=option_height,
-                    multi=False,
-                    value=default_value,
-                    persistence=True,
-                    persistence_type="session",
-                    placeholder="Select option",
-                    className="dropdown",
-                    clearable=False,
                 ),
             ]
         )
@@ -333,7 +187,6 @@ class TestDropdownBuild:
             multi=False,
             extra={
                 "clearable": True,
-                "optionHeight": 150,
                 "id": "overridden_id",
             },
         ).build()
@@ -354,7 +207,6 @@ class TestDropdownBuild:
                     placeholder="Select option",
                     className="dropdown",
                     clearable=True,
-                    optionHeight=150,
                 ),
             ]
         )
@@ -393,7 +245,6 @@ class TestDropdownBuild:
                         {"label": "B", "value": "B"},
                         {"label": "C", "value": "C"},
                     ],
-                    optionHeight=32,
                     value="A",
                     multi=False,
                     clearable=False,
