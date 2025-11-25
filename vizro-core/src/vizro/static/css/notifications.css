@@ -78,6 +78,7 @@
   margin-inline-end: 8px;
 }
 
-#notification-container {
+
+#notification-container[data-position="top-right"] {
   padding-top: 30px;
 }

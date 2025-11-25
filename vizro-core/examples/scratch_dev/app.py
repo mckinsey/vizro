@@ -148,6 +148,7 @@ page_1 = vm.Page(
 page_two = vm.Page(
     id="page-two",
     title="Page Two",
+    controls=[vm.Filter(column="species")],
     components=[
         vm.Graph(figure=px.histogram(df, x="sepal_length")),
         vm.Button(
