@@ -1,5 +1,3 @@
-"""Color Hex codes by Vizro."""
-
 from types import SimpleNamespace
 
 # Reference: See Figma file for DS color palettes
@@ -70,15 +68,15 @@ colors = SimpleNamespace(
     red_700="#B22F36",
     red_800="#981822",
     red_900="#7D000F",
-    grey_100="#F5F6F6",
-    grey_200="#D7D8DA",
-    grey_300="#BABBBF",
-    grey_400="#9D9FA5",
-    grey_500="#82848B",
-    grey_600="#676972",
-    grey_700="#4E505B",
-    grey_800="#363844",
-    grey_900="#1F222E",
+    gray_100="#F5F6F6",
+    gray_200="#D7D8DA",
+    gray_300="#BABBBF",
+    gray_400="#9D9FA5",
+    gray_500="#82848B",
+    gray_600="#676972",
+    gray_700="#4E505B",
+    gray_800="#363844",
+    gray_900="#1F222E",
     # Special colors
     transparent="rgba(0, 0, 0, 0)",
     white="#ffffff",

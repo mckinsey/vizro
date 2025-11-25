@@ -1,6 +1,6 @@
 import pytest
 
-from vizro.themes.static_template_generator import extract_bs_variables_from_css, extract_last_two_occurrences
+from vizro.themes._static_template_generator import extract_bs_variables_from_css, extract_last_two_occurrences
 
 
 @pytest.fixture

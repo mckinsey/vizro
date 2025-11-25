@@ -68,10 +68,10 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 schema = ["python schemas/generate.py", '- pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 schema-check = ["python schemas/generate.py --check"]
 templates = [
-  "python src/vizro/_themes/_static_template_generator.py",
-  '- pre-commit run --files src/vizro/_themes/vizro_dark.json src/vizro/_themes/vizro_light.json > /dev/null'
+  "python src/vizro/themes/_static_template_generator.py",
+  '- pre-commit run --files src/vizro/themes/vizro_dark.json src/vizro/themes/vizro_light.json > /dev/null'
 ]
-templates-check = ["python src/vizro/_themes/_static_template_generator.py --check"]
+templates-check = ["python src/vizro/themes/_static_template_generator.py --check"]
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.

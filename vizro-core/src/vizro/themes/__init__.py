@@ -17,7 +17,7 @@ Examples:
     ```
 """
 
-from .colors import colors
-from .palettes import palettes
+from ._colors import colors
+from ._palettes import palettes
 
 __all__ = ["colors", "palettes"]

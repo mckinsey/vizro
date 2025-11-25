@@ -36,7 +36,7 @@ from vizro.models._models_utils import _all_hidden, _log_call, warn_description_
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ControlType
-from vizro.themes.templates import dashboard_overrides
+from vizro.themes._templates import dashboard_overrides
 
 if TYPE_CHECKING:
     from vizro.models import Page

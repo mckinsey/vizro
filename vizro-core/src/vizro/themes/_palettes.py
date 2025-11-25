@@ -1,8 +1,6 @@
-"""Color palettes by Vizro."""
-
 from types import SimpleNamespace
 
-from .colors import colors
+from ._colors import colors
 
 qualitative = [
     colors.cyan,
@@ -89,16 +87,16 @@ sequential_red = [
     colors.red_900,
 ]
 
-sequential_grey = [
-    colors.grey_100,
-    colors.grey_200,
-    colors.grey_300,
-    colors.grey_400,
-    colors.grey_500,
-    colors.grey_600,
-    colors.grey_700,
-    colors.grey_800,
-    colors.grey_900,
+sequential_gray = [
+    colors.gray_100,
+    colors.gray_200,
+    colors.gray_300,
+    colors.gray_400,
+    colors.gray_500,
+    colors.gray_600,
+    colors.gray_700,
+    colors.gray_800,
+    colors.gray_900,
 ]
 
 diverging_indigo_orange = [
@@ -111,7 +109,7 @@ diverging_indigo_orange = [
     colors.indigo_300,
     colors.indigo_200,
     colors.indigo_100,
-    colors.grey_100,
+    colors.gray_100,
     colors.orange_100,
     colors.orange_200,
     colors.orange_300,
@@ -133,7 +131,7 @@ diverging_orange_teal = [
     colors.orange_300,
     colors.orange_200,
     colors.orange_100,
-    colors.grey_100,
+    colors.gray_100,
     colors.teal_100,
     colors.teal_200,
     colors.teal_300,
@@ -155,7 +153,7 @@ diverging_red_cyan = [
     colors.red_300,
     colors.red_200,
     colors.red_100,
-    colors.grey_100,
+    colors.gray_100,
     colors.cyan_100,
     colors.cyan_200,
     colors.cyan_300,
@@ -179,7 +177,7 @@ palettes = SimpleNamespace(
     sequential_yellow=sequential_yellow,
     sequential_teal=sequential_teal,
     sequential_red=sequential_red,
-    sequential_grey=sequential_grey,
+    sequential_gray=sequential_gray,
     diverging_indigo_orange=diverging_indigo_orange,
     diverging_orange_teal=diverging_orange_teal,
     diverging_red_cyan=diverging_red_cyan,
