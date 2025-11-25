@@ -390,18 +390,21 @@ def test_reset_controls_page(dash_br):
 
 @image_assertion
 def test_notifications_page(dash_br):
+    """Testing static notifications page."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
     )
 
+    # Trigger multiple notifications
     dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
     dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
     dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
     dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
     dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
 
+    # Check that the last notification is displayed
     dash_br.wait_for_text_to_equal(
         f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
     )
@@ -409,23 +412,27 @@ def test_notifications_page(dash_br):
 
 @image_assertion
 def test_notifications_page_switch_theme(dash_br):
+    """Testing static notifications page with theme switch."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
     )
 
-    dash_br.multiple_click(theme_toggle_path(), 1)
-
+    # Trigger multiple notifications
     dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
     dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
     dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
     dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
     dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
 
+    # Check that the last notification is displayed
     dash_br.wait_for_text_to_equal(
         f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
     )
+
+    # Switch theme to dark
+    dash_br.multiple_click(theme_toggle_path(), 1)
 
 
 @pytest.mark.mobile_screenshots
@@ -461,14 +468,17 @@ def test_filter_interactions_dark_theme_page(dash_br_driver):
 )
 @image_assertion
 def test_notifications_page_mobile(dash_br_driver):
+    """Testing static notifications page on mobile."""
     graph_load_waiter(dash_br_driver)
 
+    # Trigger multiple notifications
     dash_br_driver.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
     dash_br_driver.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
     dash_br_driver.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
     dash_br_driver.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
     dash_br_driver.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
 
+    # Check that the last notification is displayed
     dash_br_driver.wait_for_text_to_equal(
         f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
     )
