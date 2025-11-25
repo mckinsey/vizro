@@ -1,5 +1,4 @@
 import pytest
-
 from generate_templates import extract_bs_variables_from_css, extract_last_two_occurrences
 
 

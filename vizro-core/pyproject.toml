@@ -97,11 +97,11 @@ markers = [
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = [
-    "tests/e2e/vizro/dashboards/default",
-    "tests/e2e/vizro/dashboards/yaml",
-    "tests/tests_utils",
-    "tests/e2e/vizro/custom_components",
-    "tools",
+  "tests/e2e/vizro/dashboards/default",
+  "tests/e2e/vizro/dashboards/yaml",
+  "tests/tests_utils",
+  "tests/e2e/vizro/custom_components",
+  "tools"
 ]
 
 [tool.ruff]

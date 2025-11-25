@@ -10,12 +10,9 @@ import plotly.io as pio
 from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 
+import vizro
 from vizro.themes import colors, palettes
 
-import importlib.util
-from pathlib import Path
-
-import vizro
 VIZRO_SRC_PATH = Path(vizro.__file__).parent
 
 THEMES_FOLDER = VIZRO_SRC_PATH / "themes"

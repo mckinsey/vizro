@@ -45,6 +45,7 @@ dependencies = [
 ]
 features = ["kedro"]
 installer = "uv"
+
 [envs.default.scripts]
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
