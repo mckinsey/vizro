@@ -37,6 +37,8 @@ pages:
 
 Save this file BEFORE proceeding to visual-data-design.
 
+**IMPORTANT: Do not use emojis in dashboard design and implementations. Emojis in this guide are for documentation only and must not appear in actual dashboard code, titles, labels, or content.**
+
 ## BINDING IMPLEMENTATION CONTRACT
 
 This wireframe creates a contract for development-implementation stage to follow.

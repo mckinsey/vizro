@@ -123,7 +123,7 @@ project/
 **Step 2: Install dependencies**
 
 ```bash
-pip install vizro pandas plotly
+pip install vizro
 # Additional: pip install gunicorn for deployment
 ```
 
