@@ -16,6 +16,7 @@
   border-color: var(--bs-focus-ring-color);
 }
 
+/* Dropdown tags */
 .dash-dropdown-value > * {
   align-items: center;
   background: var(--text-primary-inverted);
@@ -27,6 +28,7 @@
   padding: 4px 8px;
 }
 
+/* Dropdown menu */
 .dash-dropdown-content {
   background: var(--bs-primary-bg-subtle);
   border: 0;
@@ -36,11 +38,18 @@
 }
 
 
-/* Need to use this wrapper dash-options-list-option-wrapper */
-.dash-options-list-option-checkbox {
-  border-radius: var(--bs-border-radius);
 
-  /* accent-color: var(--bs-primary-bg-subtle); */
+
+
+
+/* Dropdown Checkboxes */
+
+/* TODO: Try styling checkboxes when rc3 is out */
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox {
+  accent-color: var(--bs-primary-bg-subtle);
+  border-color: var(--bs-secondary);
+  border-radius: var(--bs-border-radius);
+  outline-color: var(--bs-secondary);
 }
 
 .dash-options-list-option-text {
