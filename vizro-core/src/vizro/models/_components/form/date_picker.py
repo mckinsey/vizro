@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated, Any, Literal, Optional, Union
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -19,7 +19,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class DatePicker(VizroBaseModel):
-    """Temporal single/range option selector `DatePicker`.
+    """Temporal single/range option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
@@ -27,17 +27,16 @@ class DatePicker(VizroBaseModel):
         [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
 
     Args:
-        type (Literal["date_picker"]): Defaults to `"date_picker"`.
-        min (Optional[date]): Start date for date picker. Defaults to `None`.
-        max (Optional[date]): End date for date picker. Defaults to `None`.
-        value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.
+        min (date | None): Start date for date picker. Defaults to `None`.
+        max (date | None): End date for date picker. Defaults to `None`.
+        value (list[date] | date | None): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
 
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
             any defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -45,12 +44,12 @@ class DatePicker(VizroBaseModel):
     """
 
     type: Literal["date_picker"] = "date_picker"
-    min: Optional[date] = Field(default=None, description="Start date for date picker.")
+    min: date | None = Field(default=None, description="Start date for date picker.")
     max: Annotated[
-        Optional[date], AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
+        date | None, AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
     ]
     value: Annotated[
-        Optional[Union[list[date], date]],
+        list[date] | date | None,
         # TODO[MS]: check here and similar if the early exit clause in below validator or similar is
         # necessary given we don't validate on default
         AfterValidator(validate_range_value),
@@ -62,10 +61,10 @@ class DatePicker(VizroBaseModel):
         AfterValidator(validate_date_picker_range),
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
