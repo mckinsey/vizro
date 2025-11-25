@@ -77,3 +77,7 @@
 
   margin-inline-end: 8px;
 }
+
+#notification-container {
+  padding-top: 30px;
+}

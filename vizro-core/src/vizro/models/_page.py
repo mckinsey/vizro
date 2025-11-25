@@ -236,7 +236,10 @@ class Page(VizroBaseModel):
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),
-                dmc.NotificationContainer(position="top-right", id="notification-container"),
+                dmc.NotificationContainer(
+                    position="top-right",
+                    id="notification-container",
+                ),
             ]
         )
 
