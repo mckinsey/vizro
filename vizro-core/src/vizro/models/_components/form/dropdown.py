@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional, Union
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
@@ -61,7 +61,7 @@ class Dropdown(VizroBaseModel):
     type: Literal["dropdown"] = "dropdown"
     options: OptionsType = []
     value: Annotated[
-        Optional[Union[SingleValueType, MultiValueType]],
+        SingleValueType | MultiValueType | None,
         AfterValidator(validate_value),
         Field(default=None, validate_default=True),
     ]
@@ -74,7 +74,7 @@ class Dropdown(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
