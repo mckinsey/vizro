@@ -128,6 +128,7 @@ class RangeSlider(VizroBaseModel):
             "value": current_value,
             "persistence": True,
             "persistence_type": "session",
+            "dots": True,
             "className": "slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
         }
 
