@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
@@ -30,14 +30,15 @@ class Checklist(VizroBaseModel):
 
     Args:
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
+        value (MultiValueType | None): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to
+            `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        show_select_all (Optional[bool]): Whether to display the 'Select All' option that allows users to select or
+        show_select_all (bool): Whether to display the 'Select All' option that allows users to select or
             deselect all available options with a single click. Defaults to `True`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -46,11 +47,9 @@ class Checklist(VizroBaseModel):
 
     type: Literal["checklist"] = "checklist"
     options: OptionsType = []
-    value: Annotated[
-        Optional[MultiValueType], AfterValidator(validate_value), Field(default=None, validate_default=True)
-    ]
+    value: Annotated[MultiValueType | None, AfterValidator(validate_value), Field(default=None, validate_default=True)]
     title: str = Field(default="", description="Title to be displayed")
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     show_select_all: bool = Field(
         default=True,
@@ -58,7 +57,7 @@ class Checklist(VizroBaseModel):
         "options with a single click.",
     )
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
@@ -22,7 +22,7 @@ from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProper
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
-def set_variant(variant: Optional[Literal["plain", "filled", "outlined"]], info: ValidationInfo):
+def set_variant(variant: Literal["plain", "filled", "outlined"] | None, info: ValidationInfo):
     if variant is not None:
         return variant
     return "plain" if info.data["collapsed"] is None else "outlined"
@@ -38,16 +38,16 @@ class Container(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Container`. Defaults to `""`.
-        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
-        collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.
+        layout (LayoutType | None): Layout to place components in. Defaults to `None`.
+        collapsed (bool | None): Boolean flag that determines whether the container is collapsed on initial load.
             Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the
             container is not collapsible.
-        variant (Optional[Literal["plain", "filled", "outlined"]]): Predefined styles to choose from. Options are
+        variant (Literal["plain", "filled", "outlined"] | None): Predefined styles to choose from. Options are
             `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/layout/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -63,15 +63,15 @@ class Container(VizroBaseModel):
         min_length=1,
     )
     title: str = Field(default="", description="Title of the `Container`")
-    layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    collapsed: Optional[bool] = Field(
+    layout: Annotated[LayoutType | None, AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    collapsed: bool | None = Field(
         default=None,
         description="Boolean flag that determines whether the container is collapsed on initial load. "
         "Set to `True` for a collapsed state, `False` for an expanded state. "
         "Defaults to `None`, meaning the container is not collapsible.",
     )
     variant: Annotated[
-        Optional[Literal["plain", "filled", "outlined"]],
+        Literal["plain", "filled", "outlined"] | None,
         AfterValidator(set_variant),
         Field(
             default=None,
@@ -80,10 +80,10 @@ class Container(VizroBaseModel):
             validate_default=True,
         ),
     ]
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

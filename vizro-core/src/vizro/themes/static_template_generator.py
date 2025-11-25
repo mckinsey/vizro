@@ -5,7 +5,6 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Optional
 
 import plotly.io as pio
 from plotly import graph_objects as go
@@ -18,7 +17,7 @@ CSS_PATH = THEMES_FOLDER.parent / "static/css/vizro-bootstrap.min.css"
 VARIABLES = ["--bs-primary", "--bs-secondary", "--bs-tertiary-color", "--bs-border-color", "--bs-body-bg"]
 
 
-def extract_last_two_occurrences(variable: str, css_content: str) -> tuple[Optional[str], Optional[str]]:
+def extract_last_two_occurrences(variable: str, css_content: str) -> tuple[str | None, str | None]:
     """Extracts the last two occurrences of a variable from the CSS content.
 
     Within the `vizro-bootstrap.min.css` file, variables appear multiple times: initially from the default Bootstrap

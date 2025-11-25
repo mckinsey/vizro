@@ -1,7 +1,7 @@
 """Code powering the plot command."""
 
 import logging
-from typing import Annotated, Optional, Union
+from typing import Annotated
 
 import autoflake
 import black
@@ -60,7 +60,7 @@ def _exec_code(code: str, namespace: dict) -> dict:
     # TODO: ideally in future we properly handle process and namespace separation, or even Docke execution
     # TODO: this is also important as it can affect unit-tests influencing one another, which is really not good!
     ldict = {}
-    exec(code, namespace, ldict)  # nosec
+    exec(code, namespace, ldict)  # nosec # noqa: S102
     namespace.update(ldict)
     return namespace
 
@@ -107,9 +107,8 @@ def _test_execute_chart_code(data_frame: pd.DataFrame):
                 f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
                 f"alternatively try with a more powerful model."
             )
-        assert isinstance(fig, go.Figure), (
-            f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
-        )
+        if not isinstance(fig, go.Figure):
+            raise TypeError(f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}")
         return v
 
     return validator_code
@@ -157,7 +156,7 @@ class BaseChartPlan(BaseModel):
             imports = [imp for imp in imports if "vizro" not in imp]
         return "\n".join(imports) + "\n"
 
-    def _get_chart_code(self, chart_name: Optional[str] = None, vizro: bool = False):
+    def _get_chart_code(self, chart_name: str | None = None, vizro: bool = False):
         chart_code = self.chart_code
         if vizro:
             chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"@capture('graph')\ndef {CUSTOM_CHART_NAME}")
@@ -165,7 +164,7 @@ class BaseChartPlan(BaseModel):
             chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"def {chart_name}")
         return chart_code
 
-    def _get_complete_code(self, chart_name: Optional[str] = None, vizro: bool = False, lint: bool = True):
+    def _get_complete_code(self, chart_name: str | None = None, vizro: bool = False, lint: bool = True):
         chart_name = chart_name or CUSTOM_CHART_NAME
         imports = self._get_imports(vizro=vizro)
         chart_code = self._get_chart_code(chart_name=chart_name, vizro=vizro)
@@ -180,7 +179,7 @@ class BaseChartPlan(BaseModel):
 
         return unformatted_code
 
-    def get_fig_object(self, data_frame: Union[pd.DataFrame, str], chart_name: Optional[str] = None, vizro=True):
+    def get_fig_object(self, data_frame: pd.DataFrame | str, chart_name: str | None = None, vizro=True):
         """Execute code to obtain the plotly go.Figure object. Be sure to check code to be executed before running.
 
         Args:

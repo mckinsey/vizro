@@ -2,7 +2,7 @@
 
 <div align="center" markdown="1">
 
-[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro_ai.svg)](https://badge.fury.io/py/vizro_ai) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
+[![Python version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmckinsey%2Fvizro%2Frefs%2Fheads%2Fmain%2Fvizro-ai%2Fpyproject.toml)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro_ai.svg)](https://badge.fury.io/py/vizro_ai) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
 <picture>
   <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
