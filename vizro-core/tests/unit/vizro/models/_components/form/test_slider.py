@@ -24,6 +24,7 @@ def expected_slider():
                 included=False,
                 persistence=True,
                 persistence_type="session",
+                dots=True,
                 className="slider-track-with-marks",
             ),
         ]
@@ -45,6 +46,7 @@ def expected_slider_extra():
                 included=False,
                 persistence=True,
                 persistence_type="session",
+                dots=True,
                 className="slider-track-with-marks",
                 tooltip={"placement": "bottom", "always_visible": True},
             ),
@@ -79,6 +81,7 @@ def expected_slider_with_description():
                 included=False,
                 persistence=True,
                 persistence_type="session",
+                dots=True,
                 className="slider-track-with-marks",
             ),
         ]

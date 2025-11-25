@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
@@ -131,7 +131,7 @@ class Dropdown(VizroBaseModel):
 
         value = self.value if self.value is not None else default_value
         if self.multi and not isinstance(value, list):
-            value = [value]
+            value = cast(MultiValueType, [value])
 
         description = self.description.build().children if self.description else [None]
         defaults = {
