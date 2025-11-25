@@ -16,8 +16,10 @@ dependencies = [
   "pytest-mock",
   "pytest-rerunfailures",
   "pytest-split",
-  "jupyter"
+  "jupyter",
+  "pre-commit"
 ]
+features = ["mcp"]
 installer = "uv"
 
 [envs.default.scripts]

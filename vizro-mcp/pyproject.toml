@@ -14,19 +14,29 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14"
 ]
+# Core dependencies - no MCP framework required
 dependencies = [
   "httpx>=0.28.1",
-  "mcp[cli]>=1.6.0",
   "vizro>=0.1.46",
-  "click>=8.1.7",
   "pandas[html,parquet,excel]"
 ]
-description = "MCP server to help create Vizro dashboards and charts"
+description = "Core validation library and MCP server for Vizro dashboards and charts"
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro-mcp"
 readme = "README.md"
 requires-python = ">=3.10"
+
+[project.optional-dependencies]
+# Full installation with all features
+all = [
+  "vizro-mcp[mcp]"
+]
+# MCP server functionality - install with: pip install vizro-mcp[mcp]
+mcp = [
+  "mcp[cli]>=1.6.0",
+  "click>=8.1.7"
+]
 
 [project.scripts]
 "vizro-mcp" = "vizro_mcp:main"
@@ -58,3 +68,7 @@ filterwarnings = [
   "error"
 ]
 pythonpath = ["src"]
+
+[tool.ruff.lint.per-file-ignores]
+# Examples use print statements and may have simpler docstrings
+"examples/**" = ["T201", "D103"]
