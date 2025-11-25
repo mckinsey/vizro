@@ -96,7 +96,13 @@ markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
-pythonpath = ["tests/tests_utils", "tests/e2e/vizro/custom_components"]
+pythonpath = [
+    "tests/e2e/vizro/dashboards/default",
+    "tests/e2e/vizro/dashboards/yaml",
+    "tests/tests_utils",
+    "tests/e2e/vizro/custom_components",
+    "tools",
+]
 
 [tool.ruff]
 extend = "../pyproject.toml"

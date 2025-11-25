@@ -12,8 +12,14 @@ from plotly.utils import PlotlyJSONEncoder
 
 from vizro.themes import colors, palettes
 
-THEMES_FOLDER = Path(__file__).parent
-CSS_PATH = THEMES_FOLDER.parent / "static/css/vizro-bootstrap.min.css"
+import importlib.util
+from pathlib import Path
+
+import vizro
+VIZRO_SRC_PATH = Path(vizro.__file__).parent
+
+THEMES_FOLDER = VIZRO_SRC_PATH / "themes"
+CSS_PATH = VIZRO_SRC_PATH / "static" / "css" / "vizro-bootstrap.min.css"
 VARIABLES = ["--bs-primary", "--bs-secondary", "--bs-tertiary-color", "--bs-border-color", "--bs-body-bg"]
 
 
@@ -115,7 +121,7 @@ def create_template_common() -> go.layout.Template:
             # seem to be a way to set that default in px.
             pie=[go.Pie(textposition="auto", hole=0.5)],
             # Note theme-specific parts of the waterfall template are also
-            # defined in the _static_template_generator.py script.
+            # defined in this script.
             waterfall=[
                 go.Waterfall(
                     decreasing_marker_color=palettes.qualitative[1],
