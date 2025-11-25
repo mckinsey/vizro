@@ -46,6 +46,10 @@ dependencies = [
 features = ["kedro"]
 installer = "uv"
 
+[envs.default.env-vars]
+# PYTHONPATH needed for gunicorn processes in e2e tests to import dashboard modules (pytest pythonpath in pyproject.toml only affects pytest)
+PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
+
 [envs.default.scripts]
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.

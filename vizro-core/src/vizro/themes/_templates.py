@@ -1,5 +1,3 @@
-"""Dashboard-specific template overrides."""
-
 from plotly import graph_objects as go
 
 from vizro.themes import colors
