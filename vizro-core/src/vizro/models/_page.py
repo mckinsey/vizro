@@ -239,7 +239,6 @@ class Page(VizroBaseModel):
                 dmc.NotificationContainer(
                     position="top-right",
                     id="notification-container",
-                    style={"top": "40px"},  # Move below theme-switch
                 ),
             ]
         )
