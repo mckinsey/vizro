@@ -129,12 +129,26 @@ page_1 = vm.Page(
                 )
             ],
         ),
+        vm.Button(
+            text="Show Navigation Notification",
+            icon="arrow_forward",
+            actions=[
+                va.show_notification(
+                    message="Click [here](/page-two) to go to **Page 2** and explore more features!",
+                    title="Ready to explore?",
+                    variant="info",
+                    auto_close=False,
+                )
+            ],
+        ),
     ],
 )
 
 
 page_two = vm.Page(
-    title="Dashboard with welcome message",
+    id="page-two",
+    title="Page Two",
+    controls=[vm.Filter(column="species")],
     components=[
         vm.Graph(figure=px.histogram(df, x="sepal_length")),
         vm.Button(

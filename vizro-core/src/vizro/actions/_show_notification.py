@@ -77,8 +77,8 @@ class show_notification(_AbstractAction):
                 Ignored if `variant="progress"`""",
         ),
     ]
-    auto_close: bool | int = Field(
-        default=4000,
+    auto_close: bool | int | None = Field(
+        default=None,
         description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
             info/success/warning/error, `False` for progress.""",
@@ -108,7 +108,7 @@ class show_notification(_AbstractAction):
         class_name = VARIANT_CONFIG[self.variant]["className"]
         icon_name = self.icon if self.icon else VARIANT_CONFIG[self.variant]["icon"]
         title = self.title if self.title else self.variant.capitalize()
-        auto_close = self.auto_close if self.auto_close else VARIANT_CONFIG[self.variant]["auto_close"]
+        auto_close = self.auto_close if self.auto_close is not None else VARIANT_CONFIG[self.variant]["auto_close"]
 
         return [
             {
