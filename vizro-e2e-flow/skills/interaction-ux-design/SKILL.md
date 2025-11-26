@@ -108,7 +108,7 @@ Tab 1: View A ←→ Tab 2: View B ←→ Tab 3: View C
 - ✅ **DO**: Keep KPI cards small (unless single critical metric)
 - ✅ **DO**: Assign full width to tables with 6+ columns
 - ✅ **DO**: Assign full width ONLY to timeseries line charts
-- ✅ **DO**: Enable long pages (scroll) when 8+ components
+- ✅ **DO**: Enable long pages (scroll) when 6+ components
 - ✅ **DO**: Show interaction hints: [hover: tooltip], [click: drill-down]
 - ❌ **DON'T**: Put filters in main area unless in a container
 - ❌ **DON'T**: Create more than 3 columns of charts
@@ -409,15 +409,6 @@ Is this filter needed across multiple visualizations?
     └─ Affects only specific component
 ```
 
-**Filter types by use case**:
-
-| Filter Type  | Use Case              | Placement         | Example                        |
-| ------------ | --------------------- | ----------------- | ------------------------------ |
-| Date Picker   | Time period selection | Page-level        | Last 30/60/90 days             |
-| Categorical  | Segment selection     | Page-level        | Region, Product, Customer Type |
-| Numerical    | Range selection       | Container-level   | Price range, Score threshold   |
-| Multi-select | Multiple options      | Page-level        | Select multiple regions        |
-
 **Deliverable**: Filter specification document with placement and behavior.
 
 ### 4. Define Interaction Patterns
@@ -476,8 +467,6 @@ Legend: [F] = Filter  [▼] = Dropdown  [B] = Button
 1. **Navigation Flow Diagram**
 
     - All navigation paths
-    - Breadcrumb structure
-    - Back/forward behavior
 
 1. **Layout Templates**
 
@@ -489,13 +478,6 @@ Legend: [F] = Filter  [▼] = Dropdown  [B] = Button
     - Complete list of filters
     - Placement (page vs container)
     - Default values and behaviors
-
-1. **Interaction Matrix**
-
-    | Component | Click | Hover | Drag | Keyboard |
-    | --------- | ----- | ----- | ---- | -------- |
-    | Chart A   | ...   | ...   | ...  | ...      |
-    | Table B   | ...   | ...   | ...  | ...      |
 
 1. **Wireframes**
 
@@ -540,12 +522,11 @@ Legend: [F] = Filter  [▼] = Dropdown  [B] = Button
 
 Before proceeding to Visual Design:
 
-- [ ] All user workflows are mapped and tested
+- [ ] All user workflows are mapped
 - [ ] Navigation requires maximum 3 clicks to any information
 - [ ] Filter placement follows Vizro constraints
 - [ ] Layouts work on target screen sizes
 - [ ] Wireframes approved by stakeholders
-- [ ] Interaction patterns are consistent throughout
 
 ## Next Steps
 
@@ -553,7 +534,6 @@ Once Interaction/UX Design is complete:
 
 1. Proceed to **visual-data-design** skill for visual treatment
 1. Share wireframes with development team
-1. Document any technical constraints discovered
 
 ## Tips for Success
 
@@ -561,8 +541,6 @@ Once Interaction/UX Design is complete:
 1. **Follow platform conventions** - Use Vizro's standard patterns
 1. **Design for the 80%** - Optimize for common use cases
 1. **Progressive disclosure** - Don't show everything at once
-1. **Consistent patterns** - Same action = same result everywhere
-1. **Plan for errors** - Design helpful error states
 
 ## References for Further Reading
 

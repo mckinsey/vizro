@@ -97,7 +97,6 @@ project/
 
 ```bash
 pip install vizro
-# Additional: pip install gunicorn for deployment
 ```
 
 **Step 3: Create basic dashboard structure**
@@ -812,7 +811,6 @@ Once Development is complete, proceed to **test-iterate** skill for validation
 | ------------------ | -------------------- | ------------------------------------------------------------------ |
 | Slow initial load  | Large datasets       | Implement pagination and avoid expensive charts like scatter chart |
 | Filter not working | Column type mismatch | Ensure correct data types                                          |
-| Style not applied  | CSS specificity      | Use !important or increase specificity                             |
 
 ## Resources
 

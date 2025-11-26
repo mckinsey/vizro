@@ -205,9 +205,6 @@ neutral_color = "gray"
 
 **Accessibility requirements**:
 
-- Text contrast: Minimum 4.5:1 (WCAG AA)
-- Large text: Minimum 3:1
-- Interactive elements: Minimum 3:1
 - Never use color alone to convey information
 - Vizro default palettes are colorblind-safe
 
@@ -272,32 +269,6 @@ Revenue Trend │
 
 **Deliverable**: Data storytelling guidelines with annotation standards.
 
-### 6. Create Visual Mockups
-
-**Progression from wireframe to visual design**:
-
-1. **Apply color palette** to wireframe elements
-1. **Add real data** to replace placeholders
-1. **Apply typography** system
-1. **Include visual polish** (shadows, borders, icons)
-1. **Add micro-interactions** specs (hover states)
-
-**Visual design checklist**:
-
-```
-□ Brand colors applied consistently
-□ Visual hierarchy clear at a glance
-□ Charts appropriate for data types
-□ Text readable at target resolution (Vizro built-in)
-□ Sufficient color contrast (WCAG AA)(Vizro built-in)
-□ Consistent spacing (8px grid)(Vizro built-in)
-□ Icons meaningful and consistent
-□ Loading states designed (Vizro built-in)
-□ Empty states designed (Vizro built-in)
-□ Error states designed (Vizro built-in)
-```
-
-**Deliverable**: High-fidelity mockups for all pages.
 
 ## Vizro-Specific Visual Considerations
 
@@ -347,7 +318,6 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 - Custom CSS via `assets/` folder
 - Chart styling via Plotly
 - Custom color scales
-- Logo and branding
 
 ## Deliverables Checklist
 
@@ -380,17 +350,6 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
     - Usage guidelines
     - Accessibility notes
 
-1. **Typography System**
-
-    - Font stack
-    - Size scale
-    - Weight variations
-    - Line height specs
-
-1. **Visual Mockups**
-
-    - High-fidelity designs
-    - Interactive states
 
 1. **Component Library**
 
@@ -407,7 +366,7 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 
 ```
 ┌────────────────────────────┐
-│ Title (14px, medium)       │
+│ Title                      │
 │ $1.2M (large, bold)        │
 │ ↑ 15% vs last month (auto) │
 │ [Icon] (optional)          │
@@ -451,15 +410,6 @@ Title | Subtitle for context
 ↓ Data as of: timestamp
 ```
 
-### Alert Visual Treatment
-
-```
-⚠️ WARNING (amber background)
-━━━━━━━━━━━━━━━━━━━━━━
-Message text here
-[Action Button]
-```
-
 ## Validation Checklist
 
 Before proceeding to Development:
@@ -467,20 +417,16 @@ Before proceeding to Development:
 - [ ] Visual design aligns with brand guidelines
 - [ ] All charts appropriate for their data types
 - [ ] Color usage is consistent and meaningful
-- [ ] Text is readable at all sizes
 - [ ] Contrast ratios meet WCAG AA standards
 - [ ] Visual hierarchy guides eye movement correctly
 - [ ] Data stories are clear without explanation
-- [ ] Mockups approved by stakeholders
 
 ## Next Steps
 
 Once Visual Design is complete:
 
-1. Proceed to **development-implementation** skill
 1. Create design handoff documentation
-1. Export assets (icons, images, logos)
-1. Prepare style guide for developers
+1. Proceed to **development-implementation** skill
 
 ## Tips for Success
 
@@ -488,7 +434,6 @@ Once Visual Design is complete:
 1. **Consistency matters** - Same thing looks the same everywhere
 1. **Data ink ratio** - Maximize data, minimize non-data ink
 1. **Consider colorblindness** - 8% of men are colorblind
-1. **Mobile first** - Design for smallest screen first
 1. **Performance impacts** - Certain visuals slow dashboards (scatter with big data)
 
 ## Anti-Patterns to Avoid
