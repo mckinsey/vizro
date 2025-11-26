@@ -31,7 +31,7 @@ def create_template_common() -> go.layout.Template:
             annotationdefaults_showarrow=False,
             bargroupgap=0.1,
             # coloraxis_autocolorscale = False as otherwise users cannot customize
-            # via `color_continous_scale`
+            # via `color_continuous_scale`. See https://github.com/plotly/plotly.py/issues/5433
             coloraxis_autocolorscale=False,
             coloraxis_colorbar_outlinewidth=0,
             coloraxis_colorbar_showticklabels=True,
