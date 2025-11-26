@@ -105,7 +105,7 @@ Containers help visually distinguish sections and create clear information hiera
 
 **Primary approach: Let Vizro handle colors automatically**
 
-Vizro provides built-in color palettes optimized for light/dark themes and colorblind accessibility. **For standard charts (scatter, line, bar, pie, etc.), do NOT specify colors** - Vizro automatically applies appropriate colors.
+Vizro provides built-in color palettes that are colorblind-accessible. **For standard charts (scatter, line, bar, pie, etc.), do NOT specify colors** - Vizro automatically applies appropriate colors.
 
 **Vizro Core Color Palette** (when colors must be specified):
 

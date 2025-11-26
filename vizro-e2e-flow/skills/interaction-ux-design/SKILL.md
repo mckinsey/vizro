@@ -52,8 +52,7 @@ This wireframe creates a contract for development-implementation stage to follow
 ```
 Tier 1: Global Navigation
 ├── Multi-page sidebar (automatic in Vizro)
-├── Page selection
-└── Settings/preferences (theme toggle)
+└── Page selection
 
 Tier 2: Page-level Controls
 └── Page filters or parameters (left collapsible sidebar - Vizro requirement)
@@ -469,7 +468,6 @@ Legend: [F] = Filter  [▼] = Dropdown  [B] = Button
 1. **Components**: Limited to Graph, Table, Card, Figure
 1. **Containers**: Can use Tabs for organizing content
 1. **Actions**: Export, filter, and parameter actions only
-1. **Theme**: Light/dark toggle available by default
 
 ## Deliverables Checklist
 

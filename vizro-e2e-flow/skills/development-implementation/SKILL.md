@@ -55,7 +55,6 @@ Should I use Vizro for this dashboard?
 │  ✓ Page-level filters in left sidebar
 │  ✓ Basic actions (export, drill-down, cross-filter)
 │  ✓ Multi-page navigation
-│  ✓ Professional themes (light/dark)
 │  ✓ Plotly Express/Graph Objects charts
 │
 │  ✗ CRUD operations
@@ -518,7 +517,7 @@ vm.AgGrid(id="custom_ag_grid", figure=my_custom_aggrid(data_frame=df, chosen_col
 
 **Color best practices**:
 
-- **Standard charts**: Do NOT specify colors - let Vizro apply theme colors automatically
+- **Standard charts**: Do NOT specify colors - let Vizro apply colors automatically
 - **Custom components**: Use Vizro core colors when needed:
     - Pick 2-3 from: `["#00b4ff", "#ff9222", "#3949ab", "#ff5267", "#08bdba", "#fdc935", "#689f38", "#976fd1", "#f781bf", "#52733e"]`
     - Use `"gray"` for neutral elements

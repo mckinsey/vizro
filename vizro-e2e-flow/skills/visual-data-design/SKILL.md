@@ -152,15 +152,9 @@ Updated: 2:45 PM (12px, gray)        ← Level 4
 
 ### 3. Define Color Strategy
 
-**Vizro theme options**:
-
-- `vizro_dark`
-- `vizro_light`
-- Both themes are colorblind-safe by default
-
 **IMPORTANT: Use Vizro defaults for data visualizations**
 
-Vizro provides automatic color palettes that work beautifully across light/dark themes. **Do NOT specify colors in standard charts** (scatter, line, bar, etc.) - let Vizro handle it automatically.
+Vizro provides automatic color palettes that are colorblind-accessible. **Do NOT specify colors in standard charts** (scatter, line, bar, etc.) - let Vizro handle it automatically.
 
 **Vizro core color palette** (use when colors must be specified):
 
@@ -287,7 +281,6 @@ Revenue Trend │
 1. **Apply typography** system
 1. **Include visual polish** (shadows, borders, icons)
 1. **Add micro-interactions** specs (hover states)
-1. **Create dark/light** theme versions
 
 **Visual design checklist**:
 
@@ -310,7 +303,6 @@ Revenue Trend │
 
 **Vizro built-in features**:
 
-- Automatic theme switching (light/dark)
 - Consistent component styling
 - Responsive design built-in
 - Colorblind-safe palettes
@@ -353,7 +345,6 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 **Customization options**:
 
 - Custom CSS via `assets/` folder
-- Theme configuration
 - Chart styling via Plotly
 - Custom color scales
 - Logo and branding
@@ -429,7 +420,7 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 - Value: Formatted with `value_format` parameter
 - Comparison: Automatic with `kpi_card_reference()` (green=positive, red=negative)
 - Icon: Optional visual identifier
-- Color: Automatic theme handling (use `reverse_color=True` when lower is better)
+- Color: Automatic color handling (use `reverse_color=True` when lower is better)
 
 See `references/design_principles.md` for implementation details.
 
@@ -481,7 +472,6 @@ Before proceeding to Development:
 - [ ] Visual hierarchy guides eye movement correctly
 - [ ] Data stories are clear without explanation
 - [ ] Mockups approved by stakeholders
-- [ ] Design works in both light/dark themes
 
 ## Next Steps
 
@@ -516,7 +506,6 @@ Once Visual Design is complete:
 
 ## References
 
-- Vizro Theming: https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-themes/
 - Plotly Styling: https://plotly.com/python/styling-plotly-express/
 - Color Palettes: https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-colors/
 - WCAG Guidelines: https://www.w3.org/WAI/WCAG21/quickref/
