@@ -4,6 +4,7 @@ Actions control how your app responds to user input such as clicking a button or
 
 - [Handle data](data-actions.md), for example to export data.
 - [Graph and table interactions](graph-table-actions.md), for example to cross-filter.
+- [Show notifications](notification-actions.md), for example to provide user feedback.
 
 A complete list of built-in actions in given in the [API documentation][vizro.actions]. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
 
