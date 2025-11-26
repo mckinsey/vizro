@@ -15,9 +15,6 @@ installer = "uv"
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
 
 [envs.default]
-# Pin to Python 3.13 to avoid Kedro compatibility issues on Python 3.14.
-# Developers can still test with Python 3.14 using: hatch run all.py3.14:test-unit
-python = "3.13"
 dependencies = [
   "devtools[pygments]",
   "coverage[toml]>=6.5",
@@ -48,6 +45,9 @@ dependencies = [
 ]
 features = ["kedro"]
 installer = "uv"
+# Pin to Python 3.13 to avoid Kedro compatibility issues on Python 3.14.
+# Developers can still test with Python 3.14 using: hatch run all.py3.14:test-unit
+python = "3.13"
 
 [envs.default.env-vars]
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
