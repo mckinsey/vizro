@@ -334,6 +334,7 @@ class Dashboard(VizroBaseModel):
                 html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(children="Reset all page controls", target="reset-button"),
             ],
+            color="link",
             class_name="btn-circular",
         )
         theme_switch = dbc.Switch(
@@ -367,7 +368,7 @@ class Dashboard(VizroBaseModel):
             text = html.Span("Reset controls", className="btn-text")
 
             control_panel.children.append(
-                dbc.Button(id="reset-button", children=[icon, text]),
+                dbc.Button(id="reset-button", children=[icon, text], color="link"),
             )
 
         nav_control_panel_content = [nav_panel, control_panel]
