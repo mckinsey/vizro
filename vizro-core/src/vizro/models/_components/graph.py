@@ -236,7 +236,7 @@ class Graph(VizroBaseModel):
         # Determine if a title is present
         has_title = bool(fig.layout.title.text)
 
-        # TODO: Check whether we should increase margins for all chart types in template_dashboard_overrides.py instead
+        # TODO: Check whether we should increase margins for all chart types in dashboard_overrides instead
         if any(isinstance(plotly_obj, go.Parcoords) for plotly_obj in fig.data):
             # Avoid hidden labels in Parcoords figures by increasing margins compared to dashboard defaults
             fig.update_layout(
