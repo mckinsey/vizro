@@ -15,6 +15,9 @@ installer = "uv"
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
 
 [envs.default]
+# Pin to Python 3.13 to avoid Kedro compatibility issues on Python 3.14.
+# Developers can still test with Python 3.14 using: hatch run all.py3.14:test-unit
+python = "3.13"
 dependencies = [
   "devtools[pygments]",
   "coverage[toml]>=6.5",
