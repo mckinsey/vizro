@@ -107,13 +107,3 @@ Create low-fidelity dashboard wireframes using ASCII diagrams for rapid iteratio
 1. Global page parameters and filters in left panel, container-specific filters/parameters above containers
 1. Annotate interactions: `[↗ click: action]`, `[hover: behavior]`
 1. **Full-width charts**: Use ONLY for timeseries line charts (e.g., `[Timeseries Line - Full Width]`). Most charts should be side-by-side (2-3 per row)
-
-## Optional: HTML Wireframe
-
-After ASCII approval, create HTML wireframe for stakeholder browser preview:
-
-- Three-column flexbox layout (60px icon nav + 220px left panel + flex:1 main)
-- 12-column grid in main content area
-- Grayscale only, placeholder boxes for charts
-
-For implementation guidance after wireframing is complete, see Step 9 (Build Dashboard) in dashboard-design skill.

@@ -345,10 +345,10 @@ This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`
 
 **Layout strategies for proper spacing**:
 
-- Use `vm.Flex()` for automatic spacing between components (simplest approach)
-- Use `vm.Grid()` with `row_min_height` parameter (e.g., `row_min_height="500px"`) to control scroll behavior and prevent crowded components
 - Combine approaches: Use Flex at page level, Grid inside containers for structured sections
-- Recommended `row_min_height`: Set high enough so components can render properly without being crowded
+- Use `vm.Grid()` with `row_min_height` parameter (e.g., `row_min_height="300px"`) to control scroll behavior and prevent crowded components.
+- Use `vm.Flex()` for automatic spacing between components (simplest approach)
+- Whenever Grid is used, set `row_min_height` high enough so components can render properly without being crowded
 
 **Customization options**:
 

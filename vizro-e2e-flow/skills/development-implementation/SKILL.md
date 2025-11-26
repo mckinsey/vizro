@@ -11,16 +11,22 @@ Development/Implementation transforms approved designs into functional Vizro das
 
 **Key Focus**: Build the working dashboard using Vizro. Integrate data, implement interactivity, ensure performance, and create reusable components.
 
-## ⚠️ MANDATORY FIRST STEP: Load and Validate Specs
+**⚠️ IMPORTANT**: This stage is an EXECUTION stage, not a design stage. The previous 3 stages (Information Architecture, Interaction/UX Design, Visual Design) have already made all design decisions. Your job is to IMPLEMENT those decisions faithfully, not to redesign or "improve" upon them.
 
-**STOP! Do NOT write any code until you have loaded and validated ALL specification files from previous stages.**
+## ⚠️ CRITICAL: STRICT SPEC COMPLIANCE REQUIRED
 
-Use the provided specification loader script:
+**STOP! This stage is a STRICT IMPLEMENTATION of previous stage outputs. You are NOT designing - you are TRANSLATING approved specifications into code.**
 
-```bash
-# Run the specification loader to validate all requirements
-python scripts/load_specs.py
-```
+### The Contract Files (MUST READ BEFORE ANY CODE)
+
+You MUST load and follow these specification files EXACTLY:
+
+| File | Contains | Must Follow |
+|------|----------|-------------|
+| `spec/1_information_architecture.yaml` | Pages, KPIs, data structure | Page titles, component purposes |
+| `spec/2_interaction_ux.yaml` | Filters, controls, navigation | Filter placements, control types |
+| `spec/wireframes.md` | **LAYOUT SPECIFICATIONS** | **Grid positions, component sizes, spacing** |
+| `spec/3_visual_design.yaml` | Chart types, colors, styling | Exact chart types, visual hierarchy |
 
 ## Pre-Implementation Checklist
 
@@ -62,45 +68,13 @@ Should I use Vizro for this dashboard?
 │  └─ YES → Continue with Vizro
 │
 └─ Implementation Path:
-   ├─ Option 1: MCP-based (Fastest)
-   │  └─ Check for mcp__vizro__* tools
-   │     └─ Available? Use MCP workflow
-   │     └─ Not available? Install or use Option 2
-   │
-   └─ Option 2: Python-based (Manual)
-      └─ Follow Python implementation guide
+   └─ MCP-based (Recommended)
+      └─ Check for mcp__vizro__* tools
+         └─ Available? Use MCP workflow
+         └─ Not available? Install or ask users to install
 ```
 
 ## Implementation Workflows
-
-### Workflow A: MCP-Based Implementation (Recommended)
-
-**Step 1: Check MCP availability**
-
-```bash
-# Check if MCP tools are available
-# Look for mcp__vizro__* in tool list
-```
-
-**Step 2: Install MCP if needed**
-
-```bash
-# Install Vizro MCP server
-# See references/mcp_setup.md for details
-```
-
-**Step 3: Generate dashboard with MCP**
-
-```python
-# Use MCP tools to:
-# 1. Create dashboard configuration
-# 2. Validate structure
-# 3. Run dashboard
-```
-
-**Deliverable**: Working dashboard via MCP tools.
-
-### Workflow B: Python Implementation (Manual)
 
 **Step 1: Set up project structure**
 
@@ -159,11 +133,33 @@ dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()
 ```
 
+**Step 4: Check MCP availability**
+
+```bash
+# Check if MCP tools are available
+# Look for mcp__vizro__* in tool list
+```
+
+**Step 5: Install MCP if needed**
+
+```bash
+# Install Vizro MCP server
+# See references/mcp_setup.md for details
+```
+
+**Step 6: Generate dashboard with MCP**
+
+```python
+# Use MCP tools to:
+# 1. Create dashboard configuration (IMPORTANT: strickly respect the spec/)
+# 2. Validate structure
+# 3. Update python code based on validated output
+```
+
 **Important Vizro patterns**:
 
 - **Chart titles**: Specify in `vm.Graph(title=...)`, NOT in plotly code
 - **Colors**: Let Vizro handle automatically, don't specify in plotly unless necessary
-- **Context**: Use `header` and `footer` parameters for additional information
 
 **Deliverable**: Python-based Vizro dashboard.
 

@@ -414,54 +414,40 @@ Is this filter needed across multiple visualizations?
 
 | Filter Type  | Use Case              | Placement         | Example                        |
 | ------------ | --------------------- | ----------------- | ------------------------------ |
-| Date Range   | Time period selection | Page-level        | Last 30/60/90 days             |
+| Date Picker   | Time period selection | Page-level        | Last 30/60/90 days             |
 | Categorical  | Segment selection     | Page-level        | Region, Product, Customer Type |
 | Numerical    | Range selection       | Container-level   | Price range, Score threshold   |
-| Search       | Text matching         | Page or Container | Customer name, Product ID      |
 | Multi-select | Multiple options      | Page-level        | Select multiple regions        |
 
 **Deliverable**: Filter specification document with placement and behavior.
 
 ### 4. Define Interaction Patterns
 
-**Click interactions**:
-
-- Single click: Select/highlight
-- Double click: Drill-down
-- Right click: Context menu (if applicable)
-
 **Hover behaviors**:
 
 - Show tooltip with details
 - Highlight related data
-- Display trend mini-chart
 
-**Cross-filtering**:
+**Cross-filtering** (Powered by Vizro Action):
 
 ```
 User clicks on Chart A → Filters apply to Chart B, C, D
 Example: Click "North Region" in map → All charts filter to North
 ```
 
-**Drill-down paths**:
+**Drill-down paths** (Powered by Vizro Action):
 
 ```
 Level 1: Annual Summary
     ↓ Click on Q3
 Level 2: Q3 Breakdown by Month
-    ↓ Click on September
-Level 3: September Daily Detail
-    ↓ Click on Sept 15
-Level 4: Hourly data for Sept 15
 ```
 
 **Deliverable**: Interaction specification with all behaviors documented.
 
 ### 5. Create Wireframes
 
-**Two-step wireframing process**:
-
-**Step 1: ASCII Wireframes** (Rapid iteration)
+**ASCII Wireframes** (Rapid iteration)
 
 Example for executive dashboard:
 
@@ -471,15 +457,7 @@ Example for executive dashboard:
 Legend: [F] = Filter  [▼] = Dropdown  [B] = Button
 ```
 
-**Step 2: HTML Wireframe** (After approval)
-
-Create simple HTML mockup with:
-
-- Basic layout structure
-- Placeholder components
-- Interactive elements (non-functional)
-
-**Deliverable**: ASCII wireframes for quick review, HTML wireframe for final approval.
+**Deliverable**: ASCII wireframes for all unique pages with interaction annotations.
 
 ## Vizro-Specific Constraints
 
@@ -524,14 +502,12 @@ Create simple HTML mockup with:
 1. **Wireframes**
 
     - ASCII diagrams for all unique pages
-    - HTML wireframe for primary pages
     - Annotations for interactions
 
 1. **User Flow Documentation**
 
     - Step-by-step workflows
     - Decision points
-    - Error states and edge cases
 
 ## Common UX Patterns
 
@@ -572,9 +548,6 @@ Before proceeding to Visual Design:
 - [ ] Layouts work on target screen sizes
 - [ ] Wireframes approved by stakeholders
 - [ ] Interaction patterns are consistent throughout
-- [ ] Error states and empty states designed
-- [ ] Loading states considered
-- [ ] Accessibility requirements met (keyboard navigation)
 
 ## Next Steps
 
@@ -582,7 +555,6 @@ Once Interaction/UX Design is complete:
 
 1. Proceed to **visual-data-design** skill for visual treatment
 1. Share wireframes with development team
-1. Create interactive prototype if needed
 1. Document any technical constraints discovered
 
 ## Tips for Success

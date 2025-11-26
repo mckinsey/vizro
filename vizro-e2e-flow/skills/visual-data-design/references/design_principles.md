@@ -28,13 +28,12 @@
 
 **Preventing crowded components** - three approaches:
 
-**Option 1: Flex Layout (Automatic Spacing)**
+**Option 1: Nested Layout Pattern**
 
-- Use `vm.Flex()` at page or container level
-- Automatically distributes components with proper spacing
-- Best for: Simple pages with sequential components
-- No manual grid configuration needed
-- Example: `vm.Page(title="Dashboard", layout=vm.Flex(), components=[...])`
+- Use Flex at page level for vertically automatic flow
+- Use Grid inside containers for structured sections
+- Example: `vm.Page(layout=vm.Flex(), components=[vm.Graph(...), vm.Container(layout=vm.Grid(grid=[[0, 0, 1]]), components=[vm.Graph(...), vm.Graph(...)])])`
+- Provides flexibility where needed, structure where required
 
 **Option 2: Grid Layout with Row Height Control**
 
@@ -42,7 +41,7 @@
 - Example: `vm.Grid(grid=[[0, 1], [2, 2]], row_min_height="500px")`
 - Provides precise control over component spacing and scroll behavior
 - Best for: Complex layouts requiring structured arrangement
-- Recommended: Set `row_min_height` high enough so components can render properly
+- IMPORTANT: Set `row_min_height` high enough so components can render properly
 
 **Grid Configuration Details**:
 
@@ -64,12 +63,14 @@
 - Actual component height = `row_min_height * rows_spanned`
 - Larger grids (e.g., 6 or 12 columns) enable more precise positioning
 
-**Option 3: Nested Layout Pattern**
+**Option 3: Flex Layout (Automatic Spacing)**
 
-- Use Flex at page level for vertically automatic flow
-- Use Grid inside containers for structured sections
-- Example: `vm.Page(layout=vm.Flex(), components=[vm.Graph(...), vm.Container(layout=vm.Grid(grid=[[0, 1]]), components=[vm.Graph(...), vm.Graph(...)])])`
-- Provides flexibility where needed, structure where required
+- Use `vm.Flex()` at page level
+- Automatically distributes components with proper spacing
+- Best for: Extremely simple pages with sequential components
+- No manual grid configuration needed
+- Example: `vm.Page(title="Dashboard", layout=vm.Flex(), components=[...])`
+
 
 **Reference**: https://vizro.readthedocs.io/en/latest/pages/user-guides/layouts/
 
@@ -86,17 +87,15 @@ Containers help visually distinguish sections and create clear information hiera
 
 **Visual styling options**:
 
-- **Borders**: Subtle borders to define boundaries without heavy visual weight
-- **Background colors**: Light tints to differentiate sections (use sparingly)
-- **Spacing**: Increased padding/margins around container content
+- **variant parameter** for visual distinction:
+  - `variant="plain"` (default): No visual styling, just logical grouping
+  - `variant="filled"`: Background fill to emphasize sections
+  - `variant="outlined"`: Border around container (recommended for major sections)
 - **Titles**: Clear section headers to label grouped content
 
 **Best practices**:
 
-- Use subtle styling (avoid heavy borders or bright backgrounds)
-- Maintain consistency (same style for similar containers)
 - Don't over-style (not every container needs visual distinction)
-- Consider theme support (styling should work in light and dark modes)
 
 **Reference**: https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#styled-containers
 
