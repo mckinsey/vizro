@@ -3,6 +3,7 @@ import time
 from collections import Counter
 
 import e2e.vizro.constants as cnst
+import pytest
 from e2e.vizro.paths import (
     categorical_components_value_name_path,
     categorical_components_value_path,
@@ -36,20 +37,30 @@ def browser_console_warnings_checker(log_level, log_levels):
     )
 
 
-def check_graph_is_loaded(driver, graph_id):
-    """Waiting for graph to start reloading."""
-    driver.wait_for_element(f"div[id='{graph_id}'][data-dash-is-loading='true']")
-    graph_load_waiter(driver)
-
-
-def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
-    """Waiting for graph to start reloading for pure selenium."""
-    WebDriverWait(driver, timeout).until(
-        expected_conditions.presence_of_element_located(
-            (By.CSS_SELECTOR, f"div[id='{graph_id}'][data-dash-is-loading='true']")
+def check_graph_is_loaded(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
+    """Waiting for graph to reload."""
+    try:
+        WebDriverWait(driver.driver, timeout, poll_frequency=0.05).until(
+            expected_conditions.presence_of_element_located(
+                (By.CSS_SELECTOR, f"div[id='{graph_id}'][data-dash-is-loading='true']")
+            )
         )
-    )
-    graph_load_waiter_selenium(driver, graph_id, timeout)
+        graph_load_waiter(driver)
+    except Exception as e:
+        pytest.fail(f"Graph failed to load: {e}", pytrace=False)
+
+
+def check_graph_is_loaded_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
+    """Waiting for graph to reload for pure selenium."""
+    try:
+        WebDriverWait(driver, timeout, poll_frequency=0.05).until(
+            expected_conditions.presence_of_element_located(
+                (By.CSS_SELECTOR, f"div[id='{graph_id}'][data-dash-is-loading='true']")
+            )
+        )
+        graph_load_waiter_selenium(driver, graph_id, timeout)
+    except Exception as e:
+        pytest.fail(f"Graph failed to load: {e}", pytrace=False)
 
 
 def check_graph_is_empty(driver, graph_id):
