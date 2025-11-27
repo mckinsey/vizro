@@ -76,7 +76,7 @@ class TestContainerInstantiation:
 
 
 class TestContainerPreBuildMethod:
-    def test_controls_have_in_container_set(self, standard_px_chart):
+    def test_controls_have_in_container_set(self, standard_px_chart, mock_control_wrapper_class):
         # This test needs to setup a whole page so that we can define filters and parameters even though we only care
         # about them being inside a vm.Container.
         vm.Page(
@@ -88,6 +88,8 @@ class TestContainerPreBuildMethod:
                         vm.Filter(id="filter_dropdown", column="continent"),
                         vm.Filter(id="filter_radio_items", column="continent", selector=vm.RadioItems()),
                         vm.Filter(id="filter_checklist", column="continent", selector=vm.Checklist()),
+                        # Wrapped filter to test that _in_container is correctly propagated to the selector:
+                        mock_control_wrapper_class(control=vm.Filter(id="filter_wrapped", column="continent")),
                         # Test filter that doesn't have _in_container property to make sure it doesn't crash:
                         vm.Filter(id="filter_slider", column="lifeExp"),
                         vm.Parameter(
@@ -105,6 +107,14 @@ class TestContainerPreBuildMethod:
                             targets=["graph.custom_data"],
                             selector=vm.Checklist(options=["country", "continent"]),
                         ),
+                        # Wrapped parameter to test that _in_container is correctly propagated to the selector:
+                        mock_control_wrapper_class(
+                            control=vm.Parameter(
+                                id="parameter_wrapped",
+                                targets=["graph.size"],
+                                selector=vm.Checklist(options=["pop", "lifeExp"]),
+                            )
+                        ),
                         # Test parameter that doesn't have _in_container property to make sure it doesn't crash:
                         vm.Parameter(
                             id="parameter_slider",
@@ -120,9 +130,11 @@ class TestContainerPreBuildMethod:
         assert model_manager["filter_dropdown"].selector._in_container
         assert model_manager["filter_radio_items"].selector._in_container
         assert model_manager["filter_checklist"].selector._in_container
+        assert model_manager["filter_wrapped"].selector._in_container
         assert model_manager["parameter_dropdown"].selector._in_container
         assert model_manager["parameter_radio_items"].selector._in_container
         assert model_manager["parameter_checklist"].selector._in_container
+        assert model_manager["parameter_wrapped"].selector._in_container
 
 
 class TestContainerBuildMethod:

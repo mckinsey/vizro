@@ -1,61 +1,95 @@
-"""Dev app to try things out."""
+"""There are 8 cases that should be covered:
+* Page
+=== components
+1. ------ Filter -> vm.Page
+2. ------ Filter in ControlGroup -> vm.Page
 
+=== controls
+3. ------ Filter -> vm.Page
+4. ------ Filter in ControlGroup -> vm.Page
+
+* Container
+=== components
+5. ------ Filter -> vm.Container
+6. ------ Filter in ControlGroup -> vm.Container
+
+===--- controls
+7. ------ Filter -> vm.Container
+8. ------ Filter in ControlGroup -> vm.Container
+"""
+
+from typing import List, Literal
+
+from dash import html
+
+import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-import vizro.models as vm
-from vizro.actions import export_data
+from vizro.models.types import ControlType
 
-df = px.data.iris()
+df_gapminder = px.data.gapminder()
 
-page_one = vm.Page(
-    title="Page 1",
+
+class ControlGroup(vm.VizroBaseModel):
+    """Container to group controls."""
+
+    type: Literal["control_group"] = "control_group"
+    title: str
+    controls: list[ControlType] = []
+
+    def build(self):
+        return html.Div(
+            [html.H4(self.title), html.Hr()] + [control.build() for control in self.controls],
+            className="control_group_container",
+        )
+
+
+vm.Page.add_type("controls", ControlGroup)
+vm.Page.add_type("components", ControlGroup)
+vm.Page.add_type("components", vm.Filter)
+
+vm.Container.add_type("controls", ControlGroup)
+vm.Container.add_type("components", ControlGroup)
+vm.Container.add_type("components", vm.Filter)
+
+page = vm.Page(
     layout=vm.Flex(),
+    title="Page:",
     components=[
-        vm.Container(
-            title="Button Styles",
-            layout=vm.Flex(direction="row"),
-            components=[
-                vm.Button(text="Primary", variant="filled"),
-                vm.Button(text="Primary", icon="Download", variant="filled"),
-                vm.Button(text="", icon="Download", variant="filled"),
-                vm.Button(text="Secondary", variant="outlined"),
-                vm.Button(text="Secondary", icon="Download", variant="outlined"),
-                vm.Button(text="", icon="Download", variant="outlined"),
-                vm.Button(text="Tertiary", variant="plain"),
-                vm.Button(text="Tertiary", icon="Download", variant="plain"),
-                vm.Button(text="", icon="Download", variant="plain"),
-            ],
+        vm.Filter(id="page_components", column="country"),
+        ControlGroup(
+            title="page_components_group",
+            controls=[vm.Filter(id="page_components_group", column="continent")],
         ),
         vm.Container(
-            title="Controls",
+            title="Container:",
+            components=[
+                vm.Filter(id="container_components", column="country"),
+                ControlGroup(
+                    title="container_components_group",
+                    controls=[vm.Filter(id="container_components_group", column="continent")],
+                ),
+                vm.Graph(id="scatter", figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop")),
+            ],
             controls=[
-                vm.Filter(column="species"),
-                vm.Filter(column="petal_length"),
-                vm.Filter(column="sepal_width"),
-            ],
-            components=[
-                vm.Graph(title="Graph Title", figure=px.histogram(df, x="sepal_width", color="species")),
-                vm.Button(text="Export Data", actions=export_data()),
+                vm.Filter(id="container_controls", column="country"),
+                ControlGroup(
+                    title="container_controls_group",
+                    controls=[vm.Filter(id="container_controls_group", column="continent")],
+                ),
             ],
         ),
-    ],
-)
-
-
-page_two = vm.Page(
-    title="Page 2",
-    components=[
-        vm.Graph(title="Graph Title", figure=px.histogram(df, x="sepal_width", color="species")),
-        vm.Button(text="Export Data", actions=export_data()),
     ],
     controls=[
-        vm.Filter(column="species"),
-        vm.Filter(column="petal_length"),
-        vm.Filter(column="sepal_width"),
+        vm.Filter(id="page_controls", column="continent"),
+        ControlGroup(
+            title="page_controls_group",
+            controls=[
+                vm.Filter(id="page_controls_group", column="country"),
+            ],
+        ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_one, page_two])
-
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+dashboard = vm.Dashboard(pages=[page])
+Vizro().build(dashboard).run()

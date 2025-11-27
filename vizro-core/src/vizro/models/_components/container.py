@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, Literal
+from collections.abc import Iterable
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
@@ -8,6 +9,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist, model_vali
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
+from vizro.managers import model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
@@ -122,9 +124,13 @@ class Container(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise
-        # control.selector might not be set.
-        for control in self.controls:
+        from vizro.models import Filter, Parameter
+
+        # Mark controls under this container as `_in_container`. Note this relies on the fact that filters are pre-built
+        # upfront in Vizro._pre_build. Otherwise, control.selector might not be set.
+        for control in cast(
+            Iterable[ControlType], model_manager._get_models(model_type=(Filter, Parameter), root_model=self)
+        ):
             control.selector._in_container = True
 
     @_log_call

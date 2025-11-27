@@ -54,24 +54,23 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
 #  This would make the following renaming logical: model_manager._get_models -> model_manager._get_model_children.
 #  These two new methods could have the same signature.
 #  Consider adding the parent_model_id to the VizroBaseModel and use that to find the parent model more easily.
-def _get_control_parent(control: ControlType) -> VizroBaseModel | None:
-    """Get the parent model of a control."""
+def get_control_parent(control: ControlType) -> VizroBaseModel | None:
+    """Get the parent vm.Container or vm.Page model of a given control."""
     # Return None if the control is not part of any page.
     if (page := model_manager._get_model_page(model=control)) is None:
         return None
 
-    # Return the Page if the control is its direct child.
-    if control in page.controls:
-        return page
+    # Return the Container if the control is part of a Container.
+    for container in model_manager._get_models(model_type=Container, root_model=page):
+        if control in model_manager._get_models(model_type=type(control), root_model=container):
+            return container
 
-    # Otherwise, return the Container that contains the control.
-    page_containers = model_manager._get_models(model_type=Container, root_model=page)
-
-    return next(container for container in page_containers if control in container.controls)
+    # Otherwise, return the Page.
+    return page
 
 
 def check_control_targets(control: ControlType) -> None:
-    if (root_model := _get_control_parent(control=control)) is None:
+    if (root_model := get_control_parent(control=control)) is None:
         raise ValueError(f"Control {control.id} should be defined within a Page object.")
 
     _validate_targets(targets=control.targets, root_model=root_model)
