@@ -18,7 +18,7 @@
 8. ------ Filter in ControlGroup -> vm.Container
 """
 
-from typing import List, Literal
+from typing import Literal
 
 from dash import html
 
