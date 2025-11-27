@@ -55,12 +55,12 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
 #  These two new methods could have the same signature.
 #  Consider adding the parent_model_id to the VizroBaseModel and use that to find the parent model more easily.
 def get_control_parent(control: ControlType) -> VizroBaseModel | None:
-    """Get the parent vm.Container or vm.Page model of a given control."""
+    """Get the nearest ancestor Container or Page for the given control."""
     # Return None if the control is not part of any page.
     if (page := model_manager._get_model_page(model=control)) is None:
         return None
 
-    # Return the Container if the control is part of a Container.
+    # Return the Container if the control is nested inside it.
     for container in model_manager._get_models(model_type=Container, root_model=page):
         if control in model_manager._get_models(model_type=type(control), root_model=container):
             return container
