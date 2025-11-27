@@ -180,15 +180,3 @@
   color: var(--text-primary-inverted);
   text-decoration-line: underline;
 }
-
-/* new added code*/
-.grid-item .ag-theme-quartz-dark .ag-header {
-    position: fixed;
-    width: auto;
-    display: table;
-    z-index: 99;
-    background-color: var(--bs-body-bg);
-}
-.grid-item  .ag-theme-quartz-dark .ag-root-wrapper {
-     border: none !important;
-}

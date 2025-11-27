@@ -16,9 +16,11 @@ page = vm.Page(
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
             footer="""SOURCE: **Plotly gapminder data set, 2024**""",
         ),
-        # vm.Card(text="Placeholder")
+        vm.AgGrid(
+            figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
+            title="Gapminder Data Insights 2",
+        ),
     ],
-    # layout=vm.Flex()
 )
 
 dashboard = vm.Dashboard(pages=[page])
