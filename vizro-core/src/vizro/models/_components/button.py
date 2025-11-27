@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional, Union
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -12,22 +12,21 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Button(VizroBaseModel):
-    """Component provided to `Page` to trigger any defined `action` in `Page`.
+    """Button that can trigger actions or navigate.
 
     Abstract: Usage documentation
         [How to use buttons](../user-guides/button.md)
 
     Args:
-        type (Literal["button"]): Defaults to `"button"`.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the button text.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -49,10 +48,10 @@ class Button(VizroBaseModel):
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `filled`.",
     )
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         # AfterValidator(warn_description_without_title) is not needed here because either 'text' or 'icon' argument
         # is mandatory.
@@ -139,7 +138,7 @@ class Button(VizroBaseModel):
 
         return dbc.Button(**(defaults | self.extra))
 
-    def _build_description(self) -> list[Optional[Union[dbc.Tooltip, html.Span]]]:
+    def _build_description(self) -> list[dbc.Tooltip | html.Span | None]:
         """Conditionally returns the tooltip based on the provided `text` and `icon` arguments.
 
         If text='', the tooltip icon is omitted, and the tooltip text is shown when hovering over the button icon.

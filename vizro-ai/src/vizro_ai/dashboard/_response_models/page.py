@@ -3,7 +3,7 @@
 import logging
 import re
 from collections import Counter
-from typing import Annotated, Optional, Union
+from typing import Annotated
 
 import vizro.models as vm
 from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationInfo
@@ -64,7 +64,7 @@ class PagePlan(BaseModel):
         Field(description="List of components. Must contain at least one component."),
     ]
     controls_plan: list[ControlPlan] = Field([], description="Controls of the page.")
-    layout_plan: Optional[LayoutPlan] = Field(default=None, description="Layout of components on the page.")
+    layout_plan: LayoutPlan | None = Field(default=None, description="Layout of components on the page.")
     unsupported_specs: Annotated[
         list[str],
         AfterValidator(_check_unsupported_specs),
@@ -77,7 +77,7 @@ class PagePlan(BaseModel):
         ),
     ]
 
-    _components: list[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
+    _components: list[vm.Card | vm.AgGrid | vm.Figure] = PrivateAttr()
     _controls: list[vm.Filter] = PrivateAttr()
     _layout: vm.Layout = PrivateAttr()
     _components_code: dict = PrivateAttr()
@@ -176,7 +176,7 @@ class PagePlan(BaseModel):
 
         return controls
 
-    def create(self, model, all_df_metadata) -> tuple[Union[vm.Page, None], Optional[str], Optional[str]]:
+    def create(self, model, all_df_metadata) -> tuple[vm.Page | None, str | None, str | None]:
         """Create the page."""
         page_desc = f"Building page: {self.title}"
         logger.info(page_desc)

@@ -1,7 +1,5 @@
 """Contains custom charts used inside the dashboard."""
 
-from typing import Union
-
 import pandas as pd
 import vizro.plotly.express as px
 from plotly import graph_objects as go
@@ -91,9 +89,9 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
 @capture("graph")
 def column_and_line(
     data_frame: pd.DataFrame,
-    x: Union[str, pd.Series, list[str], list[pd.Series]],
-    y_column: Union[str, pd.Series, list[str], list[pd.Series]],
-    y_line: Union[str, pd.Series, list[str], list[pd.Series]],
+    x: str | pd.Series | list[str] | list[pd.Series],
+    y_column: str | pd.Series | list[str] | list[pd.Series],
+    y_line: str | pd.Series | list[str] | list[pd.Series],
 ) -> go.Figure:
     """Creates a combined column and line chart based on px.bar and px.line.
 

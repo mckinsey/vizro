@@ -1,3 +1,6 @@
+# Exclude Kedro projects used in tests.
+exclude: vizro-core/tests/unit/vizro/integrations/kedro/kedro-.+-project
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0

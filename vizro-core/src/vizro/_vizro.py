@@ -5,13 +5,14 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, TypedDict, Union, cast
+from typing import TYPE_CHECKING, Any, TypedDict, cast
 
 import dash
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 from packaging.version import parse
+from typing_extensions import Self
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
@@ -28,12 +29,19 @@ if TYPE_CHECKING:
 
 
 class Vizro:
-    """The main class of the `vizro` package."""
+    """Vizro app."""
 
-    def __init__(self, **kwargs):
-        """Initializes Dash app, stored in `self.dash`: `**kwargs` is passed through to `Dash.__init__`."""
-        # e.g. `assets_folder`, `url_base_pathname`
-        # See [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
+    def __init__(self, **kwargs: Any):
+        """Initialize a Vizro app.
+
+        Abstract: Usage documentation
+            [How to run or deploy a dashboard](../user-guides/run-deploy.md/#advanced-dockerfile-configuration)
+
+        Keyword Arguments:
+            **kwargs: Arbitrary keyword arguments passed through to `Dash`, for example `assets_folder`,
+                `url_base_pathname`. See [Dash documentation](https://dash.plotly.com/reference#dash.dash) for all
+                possible arguments.
+        """
         # Set suppress_callback_exceptions=True for the following reasons:
         # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
         #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
@@ -87,7 +95,7 @@ class Vizro:
         data_manager.cache.init_app(self.dash.server)
 
     @staticmethod
-    def _has_bootstrap_css(external_stylesheets: list[Union[str, dict[str, str]]]) -> bool:
+    def _has_bootstrap_css(external_stylesheets: list[str | dict[str, str]]) -> bool:
         """Detect if Bootstrap CSS is present in external stylesheets.
 
         Args:
@@ -97,7 +105,7 @@ class Vizro:
             bool: True if Bootstrap CSS is detected, False otherwise
         """
 
-        def _get_url(stylesheet: Union[str, dict[str, str]]) -> str:
+        def _get_url(stylesheet: str | dict[str, str]) -> str:
             """Extract URL from stylesheet."""
             if isinstance(stylesheet, str):
                 return stylesheet
@@ -105,14 +113,17 @@ class Vizro:
 
         return any("bootstrap" in _get_url(stylesheet).lower() for stylesheet in external_stylesheets)
 
-    def build(self, dashboard: Dashboard):
+    def build(self, dashboard: Dashboard) -> Self:
         """Builds the `dashboard`.
 
+        Abstract: Usage documentation
+            [How to create a dashboard](../user-guides/dashboard.md)
+
         Args:
-            dashboard (Dashboard): [`Dashboard`][vizro.models.Dashboard] object.
+            dashboard (Dashboard): configured dashboard model.
 
         Returns:
-            self: Vizro app
+            Built Vizro app.
 
         """
         # Set global chart template to vizro_light or vizro_dark.
@@ -144,8 +155,17 @@ class Vizro:
             self.dash.title = dashboard.title
         return self
 
-    def run(self, *args, **kwargs):  # if type annotated, mkdocstring stops seeing the class
-        """Runs the dashboard and passes `args` and `kwargs` through to `Dash.run`."""
+    def run(self, **kwargs: Any):
+        """Runs the dashboard locally using the Flask development server.
+
+        Keyword Arguments:
+            **kwargs: Arbitrary positional arguments passed through to `Dash.run`, for example `debug`,
+                `port`. See [Dash documentation](https://dash.plotly.com/reference#app.run) for all possible
+                arguments
+
+        Abstract: Usage documentation
+            [How to develop in Python script](../user-guides/run-deploy.md#develop-in-python-script)
+        """
         data_manager._frozen_state = True
         model_manager._frozen_state = True
 
@@ -173,7 +193,7 @@ Provide a valid import path for these in your dashboard configuration."""
                 "`RedisCache`."
             )
 
-        self.dash.run(*args, **kwargs)
+        self.dash.run(**kwargs)
 
     @staticmethod
     def _pre_build():
@@ -248,7 +268,7 @@ class _ResourceType(TypedDict, total=False):
     dev_only: bool
     # async is a Python keyword so would need to use alternative functional TypedDict syntax for this to work. Since we
     # don't use it anywhere we keep using this TypedDict class syntax and just don't define it here.
-    # async: bool Union[bool, Literal["eager", "lazy"]]
+    # async: bool | Literal["eager", "lazy"]
 
 
 def _make_resource_spec(path: Path) -> _ResourceType:
