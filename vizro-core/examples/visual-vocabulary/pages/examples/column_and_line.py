@@ -1,5 +1,3 @@
-from typing import Union
-
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.plotly.express as px
@@ -10,9 +8,9 @@ from vizro.models.types import capture
 @capture("graph")
 def column_and_line(
     data_frame: pd.DataFrame,
-    x: Union[str, pd.Series, list[str], list[pd.Series]],
-    y_column: Union[str, pd.Series, list[str], list[pd.Series]],
-    y_line: Union[str, pd.Series, list[str], list[pd.Series]],
+    x: str | pd.Series | list[str] | list[pd.Series],
+    y_column: str | pd.Series | list[str] | list[pd.Series],
+    y_line: str | pd.Series | list[str] | list[pd.Series],
 ) -> go.Figure:
     bar = px.bar(data_frame, x=x, y=y_column)
     fig = make_subplots(figure=bar, specs=[[{"secondary_y": True}]])

@@ -1,3 +1,5 @@
+"""Vizro [pydantic](https://docs.pydantic.dev/) models, typically aliased as `vm` using `import vizro.models as vm`."""
+
 # Keep these imports at the top to avoid circular imports since they're used in other models.
 from ._base import VizroBaseModel  # noqa: I001
 from ._tooltip import Tooltip

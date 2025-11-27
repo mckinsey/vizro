@@ -354,7 +354,20 @@ class TestDashboardBuild:
                     ],
                 )
             ],
-            theme={"primaryColor": "gray"},
+            theme={
+                "primaryColor": "gray",
+                "defaultRadius": 0,
+                "components": {
+                    "Card": {
+                        "styles": {
+                            "root": {
+                                "backgroundColor": "var(--surfaces-bg-card)",
+                                "boxShadow": "var(--bs-box-shadow)",
+                            }
+                        }
+                    },
+                },
+            },
         )
         assert_component_equal(dashboard.build(), expected_dashboard_container)
 

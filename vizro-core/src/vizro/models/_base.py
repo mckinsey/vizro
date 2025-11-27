@@ -3,7 +3,7 @@ import logging
 import random
 import textwrap
 import uuid
-from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
+from typing import Annotated, Any, Union, cast, get_args, get_origin
 
 import autoflake
 import black
@@ -23,7 +23,7 @@ from vizro.models.types import ModelID
 
 # As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
 # the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
-rd = random.Random(0)
+rd = random.Random(0)  # noqa: S311
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
 
@@ -146,7 +146,7 @@ def _extract_captured_callable_data_info() -> set[str]:
 
 def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
     args = get_args(union)
-    all_types = args + (new_type,)  # noqa: RUF005 #as long as we support Python 3.9, we can't use the new syntax
+    all_types = (*args, new_type)
     # The below removes duplicates by type, which would trigger a pydantic error (TypeError: Value 'xxx'
     # for discriminator 'type' mapped to multiple choices) otherwise.
     # We get the type value by accessing the type objects model_fields attribute, which is a dict of the fields
@@ -156,7 +156,7 @@ def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: no
     # in V2, and thus we are defining NEW behavior here. This works by using .values(), which extract values by
     # insertion order (since Python 3.7), thus the last added type will be the one that is kept.
     unique_types = tuple({t.model_fields["type"].default: t for t in all_types}.values())
-    return Union[unique_types]
+    return Union[unique_types]  # noqa: UP007
 
 
 def _add_type_to_annotated_union(union, new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
@@ -208,10 +208,10 @@ def _add_type_to_annotated_union_if_found(
 
 
 class VizroBaseModel(BaseModel):
-    """All models that are registered to the model manager should inherit from this class.
+    """All Vizro models inherit from this class.
 
     Abstract: Usage documentation
-        See some exemplary usage in the guide on [custom components](../user-guides/custom-components.md).
+        [Custom components](../user-guides/custom-components.md)
 
     Args:
         id (ModelID): ID to identify model. Must be unique throughout the whole dashboard.
@@ -280,9 +280,7 @@ class VizroBaseModel(BaseModel):
         cls.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
         new_type.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
 
-    def _to_python(
-        self, extra_imports: Optional[set[str]] = None, extra_callable_defs: Optional[set[str]] = None
-    ) -> str:
+    def _to_python(self, extra_imports: set[str] | None = None, extra_callable_defs: set[str] | None = None) -> str:
         """Converts a Vizro model to the Python code that would create it.
 
         Args:
@@ -305,8 +303,8 @@ class VizroBaseModel(BaseModel):
 
             >>> print(
             ...     card._to_python(
-            ...         extra_imports={"from typing import Optional"},
-            ...         extra_callable_defs={"def test(foo: Optional[str]): return foo"},
+            ...         extra_imports={"import pandas as pd"},
+            ...         extra_callable_defs={"def test(data_frame): return pd.melt(foo)"},
             ...     )
             ... )
 
