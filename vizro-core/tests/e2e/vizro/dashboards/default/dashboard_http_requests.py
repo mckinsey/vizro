@@ -46,6 +46,12 @@ def my_custom_action(t: int):
     sleep(t)
 
 
+df_list = [px.data.iris()]
+for i in range(1, 24000):
+    df_list.append(px.data.iris())  # noqa PERF401
+iris = pd.concat(df_list)
+
+
 page_without_chart = vm.Page(
     title=cnst.PAGE_WITHOUT_CHART,
     components=[
@@ -57,6 +63,14 @@ page_without_chart = vm.Page(
                     outputs=f"{cnst.PAGE_WITHOUT_CHART}_button.text",
                 )
             ],
+        ),
+        vm.Graph(
+            figure=px.histogram(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="sepal_width",
+            ),
         ),
     ],
 )

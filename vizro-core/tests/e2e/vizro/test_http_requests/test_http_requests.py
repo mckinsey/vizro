@@ -1,3 +1,5 @@
+import pytest
+
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_http_requests_count
 from playwright.sync_api import sync_playwright
@@ -48,6 +50,41 @@ def http_requests(func):
                 browser.close()
 
     return wrapper
+
+
+@pytest.mark.performance
+def test_time():
+    """Simple test to measure request timings."""
+    with sync_playwright() as p:
+        # selecting the Chromium browser engine which starts a new browser instance
+        browser = p.chromium.launch()
+        # creating browser context - clean, isolated browser profile
+        context = browser.new_context(viewport={"width": 1920, "height": 1080})
+        # creating a new page inside the context
+        page = context.new_page()
+
+        # Note: http_requests_paths keeps updating dynamically during the test.
+        # This works because Python passes the list by reference, so both the decorator
+        # and the test see the same list object in memory. Every new HTTP request triggers
+        # the attached on_request listener, which appends to this shared list in real time.
+        # The http_requests_paths is freshly created for each test run.
+        http_requests_paths = []
+
+        def on_request(request):
+            if any(r in request.url for r in ["_dash-update-component"]):
+                # if "on_page_load_action" in request.post_data_json["output"]:
+                timing = request.timing
+                # print(f"Request {request.url} — timing: {timing}")
+                print(f"Request {request.url} — timing: {timing['responseEnd'] - timing['requestStart']}")  # noqa E501
+                print(f"Request output: {request.post_data_json['output']}")  # noqa E501
+                http_requests_paths.append(request.url.split("/")[3])
+
+        page.on("requestfinished", on_request)
+
+        page.goto("http://127.0.0.1:5002/")
+
+        page.wait_for_load_state("networkidle")
+        browser.close()
 
 
 @http_requests

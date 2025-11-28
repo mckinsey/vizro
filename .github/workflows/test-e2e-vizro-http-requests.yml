@@ -36,7 +36,7 @@ jobs:
           hatch run playwright install --with-deps chromium
       - name: Run tests
         run: |
-          hatch run test-e2e-vizro-http-requests
+          hatch run test-e2e-vizro-http-requests -m performance
 
       - name: Create artifacts
         uses: actions/upload-artifact@v5
