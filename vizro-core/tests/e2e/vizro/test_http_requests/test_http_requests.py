@@ -1,6 +1,5 @@
-import pytest
-
 import e2e.vizro.constants as cnst
+import pytest
 from e2e.vizro.checkers import check_http_requests_count
 from playwright.sync_api import sync_playwright
 

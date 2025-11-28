@@ -94,7 +94,7 @@ filterwarnings = [
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots",
-  "performance: marks tests as performance tests",
+  "performance: marks tests as performance tests"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils", "tests/e2e/vizro/custom_components"]
