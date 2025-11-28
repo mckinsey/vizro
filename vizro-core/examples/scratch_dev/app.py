@@ -1,61 +1,77 @@
-"""Dev app to try things out."""
-
-import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
-from vizro.actions import export_data
+from typing import Literal
+from dash import html
+import dash_bootstrap_components as dbc
+from vizro.tables import dash_ag_grid
+import vizro.plotly.express as px
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.figures import kpi_card
+from vizro.tables import dash_ag_grid, dash_data_table
 
-df = px.data.iris()
+gapminder = px.data.gapminder()
+iris = px.data.iris()
+tips = px.data.tips()
 
-page_one = vm.Page(
-    title="Page 1",
+# WORKS FINE - CAN BE ADDED TO STATIC CSS
+page0 = vm.Page(
+    title="Sticky headers - grid ",
+    components=[
+        vm.AgGrid(figure=dash_ag_grid(data_frame=gapminder)),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="petal_length"), title="Title"),
+        vm.AgGrid(figure=dash_ag_grid(data_frame=iris)),
+    ],
+    layout=vm.Grid(grid=[[0, 1], [2, 2]]),
+)
+
+# WORKS FINE WITH CUSTOM CSS - CAN BE ADDED AS DOCS EXAMPLES WITH CAVEAT
+page01 = vm.Page(
+    title="Sticky headers - flex",
     layout=vm.Flex(),
     components=[
-        vm.Container(
-            title="Button Styles",
-            layout=vm.Flex(direction="row"),
-            components=[
-                vm.Button(text="Primary", variant="filled"),
-                vm.Button(text="Primary", icon="Download", variant="filled"),
-                vm.Button(text="", icon="Download", variant="filled"),
-                vm.Button(text="Secondary", variant="outlined"),
-                vm.Button(text="Secondary", icon="Download", variant="outlined"),
-                vm.Button(text="", icon="Download", variant="outlined"),
-                vm.Button(text="Tertiary", variant="plain"),
-                vm.Button(text="Tertiary", icon="Download", variant="plain"),
-                vm.Button(text="", icon="Download", variant="plain"),
-            ],
-        ),
-        vm.Container(
-            title="Controls",
-            controls=[
-                vm.Filter(column="species"),
-                vm.Filter(column="petal_length"),
-                vm.Filter(column="sepal_width"),
-            ],
-            components=[
-                vm.Graph(title="Graph Title", figure=px.histogram(df, x="sepal_width", color="species")),
-                vm.Button(text="Export Data", actions=export_data()),
-            ],
-        ),
+        vm.AgGrid(figure=dash_ag_grid(data_frame=gapminder), id="my-grid"),
+        vm.Button(text="Button"),
     ],
 )
 
 
-page_two = vm.Page(
-    title="Page 2",
+# DOES NOT WORK AS TOO MANY AGGRIDS ARE ON ONE SCREEN WITH HEADERS THAT NEED TO BE
+# POSITIONED DIFFERENTLY, SO MENTION THIS IN THE DOCS AS CAVEAT
+page11 = vm.Page(
+    title="Flex - default - aggrid",
+    layout=vm.Flex(),
     components=[
-        vm.Graph(title="Graph Title", figure=px.histogram(df, x="sepal_width", color="species")),
-        vm.Button(text="Export Data", actions=export_data()),
-    ],
-    controls=[
-        vm.Filter(column="species"),
-        vm.Filter(column="petal_length"),
-        vm.Filter(column="sepal_width"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.AgGrid(figure=dash_ag_grid(iris)),
+        vm.AgGrid(figure=dash_ag_grid(gapminder)),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_one, page_two])
+
+# THIS WORKS AGAIN, AS ALL HEADERS ARE ON THE SAME LEVEL - ADD TO DOCS
+page13 = vm.Page(
+    title="Flex - row - aggrid",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.AgGrid(figure=dash_ag_grid(iris)),
+        vm.AgGrid(figure=dash_ag_grid(gapminder)),
+    ],
+)
+
+
+dashboard = vm.Dashboard(
+    pages=[
+        page0,
+        page01,
+        page11,
+        page13,
+    ],
+    title="Test out Flex/Grid",
+)
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
