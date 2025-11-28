@@ -50,3 +50,7 @@ as it may result in unexpected layouts.
 .container-fluid .flex-row {
   align-content: flex-start;
 }
+
+.flex-item .dash-graph {
+  min-width: 450px;
+}
