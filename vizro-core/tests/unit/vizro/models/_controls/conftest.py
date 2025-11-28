@@ -66,12 +66,15 @@ def managers_one_page_container_controls_invalid(gapminder):
                 ],
                 controls=[
                     vm.Filter(
-                        id="container_filter_2", column="continent", selector=vm.Checklist(), targets=["bar_chart"]
+                        id="container_filter", column="continent", selector=vm.Checklist(), targets=["bar_chart"]
+                    ),
+                    vm.Parameter(
+                        id="container_parameter",
+                        targets=["bar_chart.x"],
+                        selector=vm.Checklist(options=["lifeExp", "pop"]),
                     ),
                 ],
             ),
-            vm.Container(
-                title="", components=[vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap"))]
-            ),
+            vm.Container(components=[vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap"))]),
         ],
     )
