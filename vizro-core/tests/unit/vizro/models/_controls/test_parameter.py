@@ -106,7 +106,9 @@ class TestParameterInstantiation:
 
 class TestPreBuildMethod:
     def test_parameter_not_in_page(self):
-        with pytest.raises(ValueError, match=r"Control parameter_id should be defined within a Page object."):
+        with pytest.raises(
+            ValueError, match=r"Control parameter_id should be defined within a Page.controls or Container.controls."
+        ):
             Parameter(
                 id="parameter_id",
                 targets=["scatter_chart.x"],

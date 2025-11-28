@@ -83,7 +83,25 @@ class TestContainerPreBuildMethod:
             title="Test page",
             components=[
                 vm.Container(
-                    components=[vm.Graph(id="graph", figure=standard_px_chart)],
+                    components=[
+                        vm.Graph(id="graph", figure=standard_px_chart),
+                        # Test nested container to make sure _in_container is propagated correctly:
+                        vm.Container(
+                            components=[vm.Graph(id="graph_in_container", figure=standard_px_chart)],
+                            controls=[
+                                mock_control_wrapper_class(
+                                    control=vm.Filter(id="filter_wrapped_in_container", column="continent"),
+                                ),
+                                mock_control_wrapper_class(
+                                    control=vm.Parameter(
+                                        id="parameter_wrapped_in_container",
+                                        targets=["graph_in_container.size"],
+                                        selector=vm.Checklist(options=["pop", "lifeExp"]),
+                                    )
+                                ),
+                            ],
+                        ),
+                    ],
                     controls=[
                         vm.Filter(id="filter_dropdown", column="continent"),
                         vm.Filter(id="filter_radio_items", column="continent", selector=vm.RadioItems()),
@@ -131,10 +149,12 @@ class TestContainerPreBuildMethod:
         assert model_manager["filter_radio_items"].selector._in_container
         assert model_manager["filter_checklist"].selector._in_container
         assert model_manager["filter_wrapped"].selector._in_container
+        assert model_manager["filter_wrapped_in_container"].selector._in_container
         assert model_manager["parameter_dropdown"].selector._in_container
         assert model_manager["parameter_radio_items"].selector._in_container
         assert model_manager["parameter_checklist"].selector._in_container
         assert model_manager["parameter_wrapped"].selector._in_container
+        assert model_manager["parameter_wrapped_in_container"].selector._in_container
 
 
 class TestContainerBuildMethod:

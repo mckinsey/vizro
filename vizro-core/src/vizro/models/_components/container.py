@@ -129,7 +129,7 @@ class Container(VizroBaseModel):
         # Mark controls under this container as `_in_container`. Note this relies on the fact that filters are pre-built
         # upfront in Vizro._pre_build. Otherwise, control.selector might not be set.
         for control in cast(
-            Iterable[ControlType], model_manager._get_models(model_type=(Filter, Parameter), root_model=self)
+            Iterable[ControlType], model_manager._get_models(model_type=(Filter, Parameter), root_model=self.controls)
         ):
             control.selector._in_container = True
 

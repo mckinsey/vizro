@@ -624,7 +624,9 @@ class TestFilterCall:
 
 class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match=r"Control filter_id should be defined within a Page object."):
+        with pytest.raises(
+            ValueError, match=r"Control filter_id should be defined within a Page.controls or Container.controls."
+        ):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
 
     def test_targets_default_valid(self, managers_column_only_exists_in_some):

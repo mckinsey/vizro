@@ -1,23 +1,3 @@
-"""There are 8 cases that should be covered:
-* Page
-=== components
-1. ------ Filter -> vm.Page
-2. ------ Filter in ControlGroup -> vm.Page
-
-=== controls
-3. ------ Filter -> vm.Page
-4. ------ Filter in ControlGroup -> vm.Page
-
-* Container
-=== components
-5. ------ Filter -> vm.Container
-6. ------ Filter in ControlGroup -> vm.Container
-
-===--- controls
-7. ------ Filter -> vm.Container
-8. ------ Filter in ControlGroup -> vm.Container
-"""
-
 from typing import Literal
 
 from dash import html
@@ -56,20 +36,41 @@ page = vm.Page(
     layout=vm.Flex(),
     title="Page:",
     components=[
-        vm.Filter(id="page_components", column="country"),
-        ControlGroup(
-            title="page_components_group",
-            controls=[vm.Filter(id="page_components_group", column="continent")],
-        ),
+        # vm.Filter(id="page_components", column="country"),  # -> EXCEPTION
+        # ControlGroup(  # -> EXCEPTION
+        #     title="page_components_group",
+        #     controls=[vm.Filter(id="page_components_group", column="continent")],
+        # ),
         vm.Container(
             title="Container:",
             components=[
-                vm.Filter(id="container_components", column="country"),
-                ControlGroup(
-                    title="container_components_group",
-                    controls=[vm.Filter(id="container_components_group", column="continent")],
-                ),
-                vm.Graph(id="scatter", figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop")),
+                # vm.Filter(id="container_components", column="country"),  # -> EXCEPTION
+                # ControlGroup(  # -> EXCEPTION
+                #     title="container_components_group",
+                #     controls=[vm.Filter(id="container_components_group", column="continent")],
+                # ),
+                vm.Container(
+                    components=[
+                        vm.Container(
+                            title="Nested Container:",
+                            components=[
+                                # vm.Filter(id="nested_container_components", column="country"),  # -> EXCEPTION
+                                # ControlGroup(  # -> EXCEPTION
+                                #     title="nested_container_components_group",
+                                #     controls=[vm.Filter(id="nested_container_components_group", column="continent")],
+                                # ),
+                                vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop")),
+                            ],
+                            controls=[
+                                vm.Filter(id="nested_container_controls", column="country"),
+                                ControlGroup(
+                                    title="nested_container_controls_group",
+                                    controls=[vm.Filter(id="nested_container_controls_group", column="continent")],
+                                ),
+                            ],
+                        )
+                    ]
+                )
             ],
             controls=[
                 vm.Filter(id="container_controls", column="country"),
