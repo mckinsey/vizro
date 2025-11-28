@@ -72,4 +72,5 @@ dashboard = vm.Dashboard(
 )
 
 
-Vizro().build(dashboard).run()
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()

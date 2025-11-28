@@ -422,7 +422,7 @@ If the available arguments are not sufficient, there is always the option to [cr
 
 #### Add sticky headers inside a Flex layout
 
-AG Grid provides sticky headers by default when used in a Grid layout. To achieve the same behaviour within a Flex layout, you must add the below CSS to your custom CSS file in your local `assets` folder.
+AG Grid provides sticky headers by default when used in a Grid layout. To achieve the same behavior within a Flex layout, you must add this CSS to your custom CSS file within your local `assets` folder.
 
 ```css
 .ag-header {
