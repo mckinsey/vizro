@@ -1,16 +1,16 @@
 """Helper functions for models inside form folder."""
 
 from datetime import date
-from typing import Any, Optional, Union
+from typing import Any
 
 from pydantic import TypeAdapter, ValidationInfo
 
-from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, OptionsType, SingleValueType, _OptionsDictType
 
 
 def get_dict_options_and_default(
     options: OptionsType, multi: bool
-) -> tuple[list[OptionsDictType], Union[SingleValueType, MultiValueType]]:
+) -> tuple[list[_OptionsDictType], SingleValueType | MultiValueType]:
     """Gets list of full options and default value based on user input type of `options`."""
     # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
     dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]  # type: ignore[typeddict-item]
@@ -22,7 +22,7 @@ def get_dict_options_and_default(
 
 
 # Utils for validators
-def is_value_contained(value: Union[SingleValueType, MultiValueType], options: OptionsType):
+def is_value_contained(value: SingleValueType | MultiValueType, options: OptionsType):
     """Checks if value is contained in a list."""
     if isinstance(value, list):
         return all(item in options for item in value)
@@ -38,7 +38,7 @@ def validate_options_dict(cls, data: Any) -> Any:
 
     for option in data["options"]:
         if isinstance(option, dict):
-            TypeAdapter(OptionsDictType).validate_python(option)
+            TypeAdapter(_OptionsDictType).validate_python(option)
     return data
 
 
@@ -106,9 +106,7 @@ def validate_step(step, info: ValidationInfo):
     return step
 
 
-def set_default_marks(
-    marks: Optional[dict[float, str]], info: ValidationInfo
-) -> Optional[dict[Union[float, int], str]]:
+def set_default_marks(marks: dict[float, str] | None, info: ValidationInfo) -> dict[float | int, str] | None:
     if not marks and info.data.get("step") is None:
         marks = None
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from collections import defaultdict
 from itertools import chain
-from typing import Optional
 
 import dash_bootstrap_components as dbc
 from typing_extensions import TypedDict
@@ -24,7 +23,7 @@ _EMPTY_PAGES_ERROR_MSG = "Ensure this value has at least 1 item."
 def _resolve_page_reference(
     page_ref: str,
     title_to_ids: dict[str, list[ModelID]],
-) -> Optional[ModelID]:
+) -> ModelID | None:
     """Resolve a page reference (ID or title) to a page ID."""
     # First check if it's a valid page ID
     page_ids = chain.from_iterable(title_to_ids.values())

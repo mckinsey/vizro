@@ -5,7 +5,7 @@ import logging
 from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, Union, cast
+from typing import TYPE_CHECKING, Annotated, Literal, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -73,7 +73,7 @@ _OuterPageContentType = TypedDict(
 )
 
 
-def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
+def set_navigation_pages(navigation: Navigation | None, info: ValidationInfo) -> Navigation | None:
     if "pages" not in info.data:
         return navigation
 
@@ -83,7 +83,7 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
 
 
 class Dashboard(VizroBaseModel):
-    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
+    """Dashboard that is supplied to [`Vizro.build`][vizro.Vizro.build].
 
     Abstract: Usage documentation
         [How to create a dashboard](../user-guides/dashboard.md)
@@ -94,7 +94,7 @@ class Dashboard(VizroBaseModel):
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
         title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
             tags. Defaults to `None`.
 
@@ -105,13 +105,13 @@ class Dashboard(VizroBaseModel):
         default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
     navigation: Annotated[
-        Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
+        Navigation | None, AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -329,11 +329,12 @@ class Dashboard(VizroBaseModel):
             children=html.Div(id="action-progress-indicator-placeholder"),
         )
         reset_controls_button = dbc.Button(
-            id=f"{page.id}_reset_button",
+            id="reset-button",
             children=[
                 html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                dbc.Tooltip(children="Reset all page controls", target=f"{page.id}_reset_button"),
+                dbc.Tooltip(children="Reset all page controls", target="reset-button"),
             ],
+            color="link",
             class_name="btn-circular",
         )
         theme_switch = dbc.Switch(
@@ -367,7 +368,7 @@ class Dashboard(VizroBaseModel):
             text = html.Span("Reset controls", className="btn-text")
 
             control_panel.children.append(
-                dbc.Button(id=f"{page.id}_reset_button", children=[icon, text]),
+                dbc.Button(id="reset-button", children=[icon, text], color="link"),
             )
 
         nav_control_panel_content = [nav_panel, control_panel]
@@ -504,10 +505,20 @@ class Dashboard(VizroBaseModel):
                     # Return path as posix so image source comes out correctly on Windows.
                     return path.relative_to(assets_folder).as_posix()
 
-    @staticmethod
-    def custom_header() -> Union[Component, list[Component]]:
-        """Returns a Dash component or list of components for the dashboard header's custom content area.
+    def custom_header(self) -> Component | list[Component]:
+        """Adds custom content that will appear to the left of the theme switch.
 
-        Override this method in your subclass to add custom content that will appear to the left of the theme switch.
+        Returns:
+             A Dash component of list of components for the dashboard header's custom content area.
+
+        Example:
+            ```python
+            import vizro.models as vm
+
+
+            class CustomDashboard(vm.Dashboard):
+                def custom_header(self):
+                    return [html.Div("Hello!"), dbc.Badge("Tuesday")]
+            ```
         """
         return []

@@ -1,7 +1,5 @@
 """Contains unwrapped KPI card functions (suitable to use in pure Dash app)."""
 
-from typing import Optional
-
 import dash_bootstrap_components as dbc
 import numpy as np
 import pandas as pd
@@ -18,13 +16,13 @@ def kpi_card(
     *,
     value_format: str = "{value}",
     agg_func: str = "sum",
-    title: Optional[str] = None,
-    icon: Optional[str] = None,
+    title: str | None = None,
+    icon: str | None = None,
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value.
 
-    !!!warning
-        Note that the format string provided to `value_format` is being evaluated, so ensure that only trusted
+    !!! warning
+        The format string provided to `value_format` is evaluated, so ensure that only trusted
         user input is provided to prevent potential security risks.
 
     Args:
@@ -54,12 +52,13 @@ def kpi_card(
     Returns:
          A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value.
 
-    Examples:
-        Wrap inside `vm.Figure` to use as a component inside `vm.Page` or `vm.Container`.
-        >>> import vizro.models as vm
-        >>> from vizro.figures import kpi_card
-        >>> vm.Page(title="Page", components=[vm.Figure(figure=kpi_card(...))])
+    Example:
+        ```python
+        import vizro.models as vm
+        from vizro.figures import kpi_card
 
+        vm.Figure(figure=kpi_card(...))
+        ```
     """
     title = title or f"{agg_func} {value_column}".title()
     value = data_frame[value_column].agg(agg_func)
@@ -82,14 +81,14 @@ def kpi_card_reference(  # noqa: PLR0913
     value_format: str = "{value}",
     reference_format: str = "{delta_relative:+.1%} vs. reference ({reference})",
     agg_func: str = "sum",
-    title: Optional[str] = None,
-    icon: Optional[str] = None,
+    title: str | None = None,
+    icon: str | None = None,
     reverse_color: bool = False,
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value in comparison to a reference value.
 
-    !!!warning
-        Note that the format string provided to `value_format` and `reference_format` is being evaluated, so ensure that
+    !!! warning
+        The format string provided to `value_format` and `reference_format` is evaluated, so ensure that
         only trusted user input is provided to prevent potential security risks.
 
     Args:
@@ -125,17 +124,16 @@ def kpi_card_reference(  # noqa: PLR0913
             negatively (e.g., red). If `True`, the colors will be inverted: a positive delta will be colored
             negatively (e.g., red) and a negative delta positively (e.g., blue).
 
-
-
     Returns:
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
 
-    Examples:
-        Wrap inside `vm.Figure` to use as a component inside `vm.Page` or `vm.Container`.
-        >>> import vizro.models as vm
-        >>> from vizro.figures import kpi_card_reference
-        >>> vm.Page(title="Page", components=[vm.Figure(figure=kpi_card_reference(...))])
+    Example:
+        ```python
+        import vizro.models as vm
+        from vizro.figures import kpi_card_reference
 
+        vm.Figure(figure=kpi_card_reference(...))
+        ```
     """
     title = title or f"{agg_func} {value_column}".title()
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)

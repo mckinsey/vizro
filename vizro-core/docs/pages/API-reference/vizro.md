@@ -1,10 +1,10 @@
 # Vizro
 
 <!-- vale off -->
-::: vizro
+::: vizro.Vizro
     options:
-      merge_init_into_class: false
       docstring_options:
-        ignore_init_summary: false
-
+        ignore_init_summary: true
+      merge_init_into_class: true
+      members: [build, run]
 <!-- vale on -->
