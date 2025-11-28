@@ -20,9 +20,10 @@ page0 = vm.Page(
     title="Sticky headers - grid ",
     components=[
         vm.AgGrid(figure=dash_ag_grid(data_frame=gapminder)),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="petal_length"), title="Title"),
         vm.AgGrid(figure=dash_ag_grid(data_frame=iris)),
-        vm.AgGrid(figure=dash_ag_grid(data_frame=tips)),
     ],
+    layout=vm.Grid(grid=[[0, 1], [2, 2]]),
 )
 
 # WORKS FINE WITH CUSTOM CSS - CAN BE ADDED AS DOCS EXAMPLES WITH CAVEAT

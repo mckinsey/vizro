@@ -183,6 +183,7 @@
 
 .grid-item .ag-header {
   position: fixed !important;
+  width: fit-content;
   z-index: 1;
 }
 
