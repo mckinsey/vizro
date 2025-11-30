@@ -6,6 +6,7 @@ from vizro.models.types import capture
 # Note iris data
 data_manager["iris"] = px.data.iris().select_dtypes("number")
 
+
 # Chart definition
 @capture("graph")
 def correlation_heatmap(data_frame):
@@ -15,6 +16,7 @@ def correlation_heatmap(data_frame):
         aspect="auto",
         color_continuous_scale=["#0a0814", "#1a1442", "#2d2463"],
     )
+
 
 # Page definition
 page = vm.Page(

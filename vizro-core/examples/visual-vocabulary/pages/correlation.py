@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import column_and_line_factory, connected_scatter_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import bubble, scatter, scatter_matrix, correlation_matrix
+from pages.examples import bubble, correlation_matrix, scatter, scatter_matrix
 
 scatter_page = vm.Page(
     title="Scatter",
@@ -133,15 +133,15 @@ correlation_matrix_page = vm.Page(
         vm.Card(
             text="""
             #### What is a correlation matrix?
-            A correlation matrix includes the numerical correlation values of pairwise variables and the numbers are in the range -1 to 1. 
-            A correlation coefficient of 1 indicates a completely positive correlation, 0 indicates no linear correlation 
+            A correlation matrix includes the numerical correlation values of pairwise variables and the numbers are in the range -1 to 1.
+            A correlation coefficient of 1 indicates a completely positive correlation, 0 indicates no linear correlation
             and -1 indicates a completely negative correlation.
-            
+
             &nbsp;
-            
+
             #### When should I use it?
-            Correlation matrices are implemented for evaluating correlations among variables in datasets with a multitude of variables, 
-            such as for financial datasets to metrics, and to note multicollinearity and select the more correlated variables 
+            Correlation matrices are implemented for evaluating correlations among variables in datasets with a multitude of variables,
+            such as for financial datasets to metrics, and to note multicollinearity and select the more correlated variables
             for additional data visualisations.
             """
         ),
@@ -162,4 +162,11 @@ correlation_matrix_page = vm.Page(
 )
 column_and_line_page = column_and_line_factory("correlation")
 
-pages = [scatter_page, connected_scatter_page, scatter_matrix_page, bubble_page, column_and_line_page, correlation_matrix_page]
+pages = [
+    scatter_page,
+    connected_scatter_page,
+    scatter_matrix_page,
+    bubble_page,
+    column_and_line_page,
+    correlation_matrix_page,
+]
