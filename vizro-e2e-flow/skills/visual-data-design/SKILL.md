@@ -5,19 +5,13 @@ description: Stage 3 of Vizro dashboard development. USE AFTER completing intera
 
 # Visual & Data Design for Vizro Dashboards
 
-## Overview
-
-Visual Design transforms wireframes into polished, professional dashboards that effectively communicate data insights. This stage focuses on chart selection, visual hierarchy, color strategy, typography, and ensuring clear data storytelling through thoughtful visual choices.
-
-**Key Focus**: Translate analytical goals into clear and engaging visuals. Choose chart types, establish hierarchy, and apply consistent visual language.
+**Key Focus**: Choose chart types, establish visual hierarchy, and define color strategy.
 
 ## OUTPUT PRESERVATION NOTICE
 
 Your outputs from this stage are BINDING CONTRACTS for implementation.
 
 ## REQUIRED OUTPUT: spec/3_visual_design.yaml
-
-Create a specification file defining visual implementation requirements:
 
 ```yaml
 # spec/3_visual_design.yaml
@@ -29,137 +23,34 @@ components_needing_colors:
   - name: string
     reason: string
     color_choice: list[string]
-
 ```
 
 Save this file BEFORE proceeding to development-implementation.
 
-## Process Workflow
+## Chart Selection
 
-### 1. Select Chart Types
+For detailed guidance, see:
+- `references/chart_selection_guide.md` - Chart type decision trees
+- `references/common_mistakes.md` - Anti-patterns to avoid
 
-**Chart selection decision tree**:
+## When to Use Custom Charts
 
-```
-What am I trying to show?
-│
-├─ COMPARISON
-│  ├─ Among items → Bar Chart (horizontal/vertical)
-│  ├─ Over time → Line Chart (continuous) or Column Chart (discrete)
-│  └─ Correlation → Scatter Plot
-│
-├─ COMPOSITION
-│  ├─ Part-to-whole (static) → Pie/Donut (≤5 parts) or Stacked Bar
-│  ├─ Part-to-whole (time) → Stacked Area or 100% Stacked Bar
-│  └─ Components → Waterfall or Stacked Bar
-│
-├─ DISTRIBUTION
-│  ├─ Single variable → Histogram or Box Plot
-│  ├─ Two variables → Scatter Plot
-│  └─ Three variables → Bubble Chart
-│
-├─ RELATIONSHIP
-│  ├─ Two variables → Scatter Plot
-│  ├─ Three variables → Bubble Chart
-│  └─ Many variables → Heatmap or Parallel Coordinates
-│
-└─ TREND
-   ├─ Over time → Line Chart
-   ├─ With confidence → Line with confidence bands
-   └─ Multiple series → Multi-line or Small Multiples
-```
+Use custom charts with `@capture("graph")` decorator when:
 
-**Chart type guidelines**:
+- You need `update_layout`, `update_xaxes`, `update_traces` calls
+- You need data manipulation before visualization
+- You want reference lines, annotations, or custom interactions
+- Standard `plotly.express` doesn't provide required customization
 
-| Chart Type | Best For                        | Avoid When      | Max Data Points       |
-| ---------- | ------------------------------- | --------------- | --------------------- |
-| Line       | Trends over time                | < 5 data points | 100-200 per line      |
-| Bar        | Comparing categories            | > 20 categories | 10-15 bars            |
-| Pie/Donut  | Part-to-whole (%)               | > 5 slices      | 5 slices max          |
-| Scatter    | Correlation                     | < 20 points     | 500-1000              |
-| Heatmap    | Patterns in matrix              | < 5×5 grid      | 50×50                 |
-| AgGrid     | Exact values, sorting/filtering | Pattern finding | Unlimited (paginated) |
-| Card/KPI   | Single metric                   | Comparisons     | 1 value               |
-| Map        | Geographic data                 | Non-geographic  | Depends on zoom       |
+Implementation details are in **development-implementation** skill.
 
-**When to use Vizro custom charts**:
+## Vizro Color Strategy
 
-Use custom charts (with `@capture("graph")` decorator) when:
+**IMPORTANT: Use Vizro defaults for standard charts** - do NOT specify colors in scatter, line, bar, etc.
 
-- You need post-update calls (`update_layout`, `update_xaxes`, `update_traces`)
-- You need simple data manipulation (aggregation, filtering) right before visualization
-- Standard `plotly.express` charts don't provide the required customization
-- You want to add reference lines, annotations, or custom interactions
-- You're creating complex visualizations with `plotly.graph_objects.Figure()`
-
-Note: Custom chart implementation is covered in the **development-implementation** skill.
-
-**Deliverable**: Chart type specification for each data visualization.
-
-### 2. Establish Visual Hierarchy
-
-**Hierarchy levels** (in order of emphasis):
-
-```
-Level 1: Primary Focus (Largest, boldest, top-left)
-├─ Critical KPIs
-├─ Alert states
-└─ Primary message
-
-Level 2: Secondary Information (Medium size, strong contrast)
-├─ Supporting metrics
-├─ Main visualizations
-└─ Important filters
-
-Level 3: Supporting Details (Smaller, moderate contrast)
-├─ Context information
-├─ Secondary charts
-└─ Supplementary data
-
-Level 4: Background Information (Smallest, low contrast)
-├─ Metadata
-├─ Timestamps
-└─ Reference information
-```
-
-**Visual hierarchy techniques**:
-
-1. **Size**: Larger = more important
-1. **Color**: Bright/saturated = attention-grabbing
-1. **Position**: Top-left = first viewed (F-pattern)
-1. **Contrast**: High contrast = emphasis
-1. **White space**: More space = more importance
-1. **Typography**: Bold/larger = higher priority
-
-**Example hierarchy application**:
-
-```
-┌─────────────────────────────────┐
-│ PRIMARY KPI (72px, bold)        │  ← Level 1
-│ $2.5M Revenue                   │
-│ ↑ 12% (36px, green)             │  ← Level 2
-├─────────────────────────────────┤
-│ Trend Chart (main focus)        │  ← Level 2
-│                                 │
-├──────────┬──────────────────────┤
-│ Secondary│ Details Table        │  ← Level 3
-│ Metrics  │ (smaller font)       │
-└──────────┴──────────────────────┘
-Updated: 2:45 PM (12px, gray)        ← Level 4
-```
-
-**Deliverable**: Visual hierarchy guide with size, color, and position specs.
-
-### 3. Define Color Strategy
-
-**IMPORTANT: Use Vizro defaults for data visualizations**
-
-Vizro provides automatic color palettes that are colorblind-accessible. **Do NOT specify colors in standard charts** (scatter, line, bar, etc.) - let Vizro handle it automatically.
-
-**Vizro core color palette** (use when colors must be specified):
+**Vizro core palette** (use only when colors must be specified):
 
 ```python
-# Pick 2-3 colors from this list:
 vizro_colors = [
     "#00b4ff",  # Bright blue
     "#ff9222",  # Orange
@@ -173,284 +64,62 @@ vizro_colors = [
     "#52733e",  # Olive
 ]
 
-# Use "gray" for neutral elements (backgrounds, borders, inactive states)
+# Semantic colors
+success_color = "#689f38"   # Green - positive
+warning_color = "#ff9222"   # Orange - caution
+error_color = "#ff5267"     # Pink/red - negative
+neutral_color = "gray"      # Neutral/inactive
 ```
 
-**Color usage guidelines**:
+## Vizro Components
 
-| Use Case          | Color Choice              | Example            |
-| ----------------- | ------------------------- | ------------------ |
-| Standard charts   | Auto (no color specified) | Scatter, line, bar |
-| Positive change   | "#689f38" (green)         | ↑ 12% profit       |
-| Negative change   | "#ff5267" (pink/red)      | ↓ 5% sales         |
-| Neutral/inactive  | "gray"                    | Disabled state     |
-| Target/goal line  | "gray" (dashed)           | Budget line        |
-| Custom components | Pick from core palette    | when necessary     |
+**Available**: `Dashboard`, `Page`, `Container`, `Tabs`, `Graph`, `Figure`, `AgGrid`, `Card`, `Filter`, `Parameter`, `Button`
 
-**Semantic color patterns**:
+**Important**: Always use `vm.AgGrid` for tables (not `vm.Table` or `go.Table`).
+
+## Layout Strategies
+
+**Optimal Grid Strategy**:
+- **8 or 12 columns** with `row_min_height="140px"`
+- 8 columns for standard layouts, 12 columns for finer control
+- **KPI cards**: 2-3 columns × 1 row (140px height)
+- **Charts**: minimum 3-4 columns × 3 rows (420px height)
+
+**When to use Flex**: Only for very simple pages where automatic spacing is acceptable.
+
+See `references/design_principles.md` for detailed layout patterns and visual hierarchy guidance.
+
+## KPI Card Pattern
+
+Use Vizro built-in KPI cards (`kpi_card`, `kpi_card_reference` from `vizro.figures`):
+
+- `value_format` for formatting (e.g., `"${value:,.0f}"`)
+- `kpi_card_reference()` for comparison with automatic green/red coloring
+- `reverse_color=True` when lower is better (costs, errors)
+
+## Chart Title Pattern
+
+**Important**: Titles go in `vm.Graph`, NOT in plotly code:
 
 ```python
-# Success/positive
-success_color = "#689f38"  # Green from core palette
-
-# Warning/caution
-warning_color = "#ff9222"  # Orange from core palette
-
-# Error/negative
-error_color = "#ff5267"  # Pink/red from core palette
-
-# Neutral/inactive
-neutral_color = "gray"
-```
-
-**Accessibility requirements**:
-
-- Never use color alone to convey information
-- Vizro default palettes are colorblind-safe
-
-**Deliverable**: Color strategy document specifying when to use defaults vs. custom colors.
-
-### 4. Design Typography System
-
-**Vizro typography hierarchy**: Leverage Vizro default
-
-**Font recommendations**: Leverage Vizro default
-
-**Number formatting**:
-
-- Use consistent decimal places
-- Add thousands separators (1,234,567)
-- Use abbreviations for large numbers (1.2M, 3.4B)
-- Align numbers right in tables
-- Use monospace for better alignment
-
-**Deliverable**: Typography specifications.
-
-### 5. Apply Data Storytelling Principles
-
-**Visual narrative structure**:
-
-```
-1. Context (What's the situation?)
-   └─ Reference lines, benchmarks, targets
-
-2. Focus (What's important?)
-   └─ Highlight key data points, use color/size
-
-3. Insight (What does it mean?)
-   └─ Annotations, callouts, trend indicators
-
-4. Action (What should I do?)
-   └─ Clear next steps, links to details
-```
-
-**Annotation guidelines**:
-
-- Add context to unusual spikes/drops
-- Label important thresholds
-- Include data freshness indicators
-- Provide calculation methods (hover/tooltip)
-
-**Example annotated chart**:
-
-```
-Revenue Trend │
-   $3M ──────│──────────────── Target
-             │     ↓ Holiday spike
-   $2M ──────│────/\──────────
-             │   /  \
-   $1M ──────│──/────\────────
-             │ /      \
-      └──────┴────────────────
-         J F M A M J J A S O N D
-
-   Note: 15% increase after campaign launch (May)
-```
-
-**Deliverable**: Data storytelling guidelines with annotation standards.
-
-
-## Vizro-Specific Visual Considerations
-
-**Vizro built-in features**:
-
-- Consistent component styling
-- Responsive design built-in
-- Colorblind-safe palettes
-- Professional chart defaults
-
-**Available Vizro Components**:
-
-To see all available Vizro models for your installed version, run:
-
-```bash
-uv run python scripts/list_vizro_models.py
-```
-
-Or directly in Python:
-
-```python
-import vizro.models as vm
-
-print(vm.__all__)
-```
-
-This will show components like: `Dashboard`, `Page`, `Graph`, `Figure`, `AgGrid`, `Container`, `Tabs`, `Filter`, `Parameter`, `Dropdown`, `Button`, and more.
-
-**Common component categories**:
-
-- **Layout**: `Dashboard`, `Page`, `Container`, `Tabs`, `Accordion`, `Grid`, `Flex`
-- **Visualization**: `Graph`, `Figure`, `AgGrid`, `Card`, `Text`
-- **Controls**: `Filter`, `Parameter`, `Dropdown`, `Checklist`, `RadioItems`, `Slider`, `RangeSlider`, `DatePicker`, `Switch`
-- **Actions**: `Button`, `Action`, `Tooltip`
-
-**Important**: Always use `vm.AgGrid` for tables (not `vm.Table` or `go.Table`). AgGrid provides better UX with sorting, filtering, and pagination.
-
-**Layout strategies for proper spacing**:
-
-- Combine approaches: Use Flex at page level, Grid inside containers for structured sections
-- Use `vm.Grid()` with `row_min_height` parameter (e.g., `row_min_height="300px"`) to control scroll behavior and prevent crowded components.
-- Use `vm.Flex()` for automatic spacing between components (simplest approach)
-- Whenever Grid is used, set `row_min_height` high enough so components can render properly without being crowded
-
-**Customization options**:
-
-- Custom CSS via `assets/` folder
-- Chart styling via Plotly
-- Custom color scales
-
-## Deliverables Checklist
-
-### Required Outputs
-
-1. **Chart Specifications**
-
-    ```
-    Page: Sales Overview
-    Component 1: Revenue Trend
-    - Chart Type: Line chart
-    - X-axis: Date (monthly)
-    - Y-axis: Revenue ($)
-    - Title: "Revenue Trend" (in vm.Graph, not plotly)
-    - Color: Auto (use Vizro defaults)
-    - Annotations: Q3 target line (gray, dashed)
-    - Header/Footer: Optional context or source attribution
-    ```
-
-1. **Visual Hierarchy Guide**
-
-    - Element sizes and weights
-    - Reading order diagram
-    - Emphasis techniques used
-
-1. **Color Palette Document**
-
-    - Primary, semantic, and data colors
-    - Hex codes and RGB values
-    - Usage guidelines
-    - Accessibility notes
-
-
-1. **Component Library**
-
-    - Reusable visual elements
-    - Chart templates
-    - Icon set
-    - Button styles
-
-## Common Visual Patterns
-
-### KPI Card Design
-
-**Use Vizro built-in KPI cards** (`kpi_card` and `kpi_card_reference` from `vizro.figures`):
-
-```
-┌────────────────────────────┐
-│ Title                      │
-│ $1.2M (large, bold)        │
-│ ↑ 15% vs last month (auto) │
-│ [Icon] (optional)          │
-└────────────────────────────┘
-```
-
-**Design considerations**:
-
-- Title: Short metric name (2-4 words)
-- Value: Formatted with `value_format` parameter
-- Comparison: Automatic with `kpi_card_reference()` (green=positive, red=negative)
-- Icon: Optional visual identifier
-- Color: Automatic color handling (use `reverse_color=True` when lower is better)
-
-See `references/design_principles.md` for implementation details.
-
-### Chart Title Pattern
-
-**Important**: In Vizro, chart titles are specified in the `vm.Graph` component, NOT in the plotly code itself.
-
-```python
-# ✅ CORRECT - Title in vm.Graph
+# ✅ CORRECT
 vm.Graph(
     figure=px.scatter(df, x="width", y="length", color="species"),
-    title="Relationships between Sepal Width and Sepal Length",
-    header="Additional context or description here",
-    footer="SOURCE: **Data source, 2024**",
+    title="Chart Title Here",
+    header="Additional context",
+    footer="SOURCE: **Data source**",
 )
 
-# ❌ WRONG - Don't put title in plotly code
-vm.Graph(
-    figure=px.scatter(df, x="width", y="length", title="Title here")  # Don't do this
-)
-```
-
-**Visual structure**:
-
-```
-Title | Subtitle for context
-[Visualization Area]
-↓ Data as of: timestamp
+# ❌ WRONG - Don't put title in plotly
+vm.Graph(figure=px.scatter(df, x="width", y="length", title="Title"))
 ```
 
 ## Validation Checklist
 
-Before proceeding to Development:
-
-- [ ] Visual design aligns with brand guidelines
 - [ ] All charts appropriate for their data types
-- [ ] Color usage is consistent and meaningful
-- [ ] Contrast ratios meet WCAG AA standards
-- [ ] Visual hierarchy guides eye movement correctly
-- [ ] Data stories are clear without explanation
+- [ ] Color usage is consistent
+- [ ] Custom chart needs are documented in spec
 
-## Next Steps
+## Next Step
 
-Once Visual Design is complete:
-
-1. Create design handoff documentation
-1. Proceed to **development-implementation** skill
-
-## Tips for Success
-
-1. **Less is more** - Avoid chartjunk and decoration
-1. **Consistency matters** - Same thing looks the same everywhere
-1. **Data ink ratio** - Maximize data, minimize non-data ink
-1. **Consider colorblindness** - 8% of men are colorblind
-1. **Performance impacts** - Certain visuals slow dashboards (scatter with big data)
-
-## Anti-Patterns to Avoid
-
-### Never Do This:
-
-- 3D charts (distort perception)
-- Pie charts with >5 slices
-- Dual Y-axes (confusing)
-- Red/green only (colorblind issue)
-- Truncated Y-axis (misleading)
-- Decorative backgrounds (distraction)
-- Too many colors (visual noise)
-- Inconsistent scales (comparison issues)
-
-## References
-
-- Plotly Styling: https://plotly.com/python/styling-plotly-express/
-- Color Palettes: https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-colors/
-- WCAG Guidelines: https://www.w3.org/WAI/WCAG21/quickref/
+Proceed to **development-implementation** skill.

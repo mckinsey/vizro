@@ -5,184 +5,76 @@ description: Stage 4 of Vizro dashboard development. USE AFTER completing visual
 
 # Development & Implementation for Vizro Dashboards
 
-## Overview
+**Key Focus**: Build the working dashboard. Integrate data, implement interactivity, create reusable components.
 
-Development/Implementation transforms approved designs into functional Vizro dashboards. This stage covers the technical build process, including data integration, component development, interactivity implementation, and deployment preparation.
+**⚠️ IMPORTANT**: This is an EXECUTION stage. Implement spec files exactly - do not redesign.
 
-**Key Focus**: Build the working dashboard using Vizro. Integrate data, implement interactivity, ensure performance, and create reusable components.
+## Contract Files (MUST READ FIRST)
 
-**⚠️ IMPORTANT**: This stage is an EXECUTION stage, not a design stage. The previous 3 stages (Information Architecture, Interaction/UX Design, Visual Design) have already made all design decisions. Your job is to IMPLEMENT those decisions faithfully, not to redesign or "improve" upon them.
+| File | Contains |
+|------|----------|
+| `spec/1_information_architecture.yaml` | Pages, KPIs, data structure |
+| `spec/2_interaction_ux.yaml` | Filters, controls, navigation |
+| `spec/3_visual_design.yaml` | Chart types, colors, styling |
 
-## ⚠️ CRITICAL: STRICT SPEC COMPLIANCE REQUIRED
+## Getting Started
 
-**STOP! This stage is a STRICT IMPLEMENTATION of previous stage outputs. You are NOT designing - you are TRANSLATING approved specifications into code.**
+- See `references/python_quickstart.md` for complete setup and code examples
+- See `references/mcp_setup.md` for MCP server setup
 
-### The Contract Files (MUST READ BEFORE ANY CODE)
+## Implementation Workflow
 
-You MUST load and follow these specification files EXACTLY:
+**IMPORTANT: Use Vizro MCP tools to build dashboards**
 
-| File | Contains | Must Follow |
-|------|----------|-------------|
-| `spec/1_information_architecture.yaml` | Pages, KPIs, data structure | Page titles, component purposes |
-| `spec/2_interaction_ux.yaml` | Filters, controls, navigation | Filter placements, control types |
-| `spec/wireframes.md` | **LAYOUT SPECIFICATIONS** | **Grid positions, component sizes, spacing** |
-| `spec/3_visual_design.yaml` | Chart types, colors, styling | Exact chart types, visual hierarchy |
+**Step 1: Check MCP availability**
 
-## Pre-Implementation Checklist
+Verify MCP tools are available by looking for `mcp__plugin_vizro-e2e-flow_vizro-mcp__*` tools in your tool list.
 
-Before starting development, ensure you have:
+**Step 2: Install MCP if needed**
 
-- [ ] Loaded ALL specification files from stages 1-3
-- [ ] Generated implementation checklist from specs
-- [ ] Approved visual mockups from Stage 3
-- [ ] Data source access confirmed
-- [ ] Python environment with Vizro installed
-- [ ] Understanding of deployment target
-- [ ] Performance requirements defined
+If MCP tools aren't available, see `references/mcp_setup.md` for installation instructions.
 
-## Technology Decision Tree
+**Step 3: Use MCP to generate dashboard**
 
-```
-Should I use Vizro for this dashboard?
-│
-├─ Python Required?
-│  └─ NO → Use alternative (Tableau, Power BI, etc.)
-│  └─ YES → Continue
-│
-├─ Check Vizro Capabilities:
-│  ✓ Standard components (Graph, AgGrid, Card, Figure)
-│  ✓ Filters (categorical, numerical, temporal)
-│  ✓ Page-level filters in left sidebar
-│  ✓ Basic actions (export, drill-down, cross-filter)
-│  ✓ Multi-page navigation
-│  ✓ Plotly Express/Graph Objects charts
-│
-│  ✗ CRUD operations
-│  ✗ Real-time streaming
-│  ✗ Complex custom workflows
-│  ✗ Non-standard filter placement
-│
-│  Requirements fit?
-│  └─ NO → Consider Dash or custom solution
-│  └─ YES → Continue with Vizro
-│
-└─ Implementation Path:
-   └─ MCP-based (Recommended)
-      └─ Check for mcp__vizro__* tools
-         └─ Available? Use MCP workflow
-         └─ Not available? Install or ask users to install
-```
+Use the MCP tools to:
+1. Load and analyze your data with `load_and_analyze_data`
+2. Get the JSON schema for the specified Vizro model with `get_model_json_schema`
+3. Create dashboard configuration (IMPORTANT: strictly respect `spec/` files from stages 1-3) and validate configuration with `validate_dashboard_config`
+4. Get Python code from validated output
 
-## Implementation Workflows
+The MCP workflow ensures your implementation matches the approved specs and follows Vizro best practices.
 
-**Step 1: Set up project structure**
-
-```
-project/
-├── app.py                 # Main application
-├── requirements.txt       # Dependencies
-├── data/
-│   └── processing.py     # Data pipeline
-├── components/
-│   ├── charts.py         # Reusable charts
-│   └── cards.py          # KPI cards
-├── assets/
-│   ├── style.css         # Custom styles
-│   └── logo.png          # Branding
-└── config/
-    └── settings.py       # Configuration
-```
-
-**Step 2: Install dependencies**
-
-```bash
-pip install vizro
-```
-
-**Step 3: Create basic dashboard structure**
+## Basic Dashboard Structure (for reference)
 
 ```python
 import vizro.models as vm
 from vizro import Vizro
-import plotly.express as px
+import vizro.plotly.express as px
 from vizro.tables import dash_ag_grid
-import pandas as pd
 
-# Load data
 df = pd.read_csv("data/sales.csv")
 
-# Create page with components
 page = vm.Page(
     title="Sales Dashboard",
     components=[
         vm.Graph(
-            figure=px.line(df, x="date", y="revenue"),  # No color, no title in plotly
-            title="Revenue Trend",  # Title goes in vm.Graph, not in px.line()
-            header="Monthly revenue tracking for all regions",
-            footer="SOURCE: **Sales database**",
+            figure=px.line(df, x="date", y="revenue"),
+            title="Revenue Trend",  # Title in vm.Graph, not plotly
         ),
         vm.AgGrid(figure=dash_ag_grid(df), title="Sales Details"),
     ],
     controls=[vm.Filter(column="region"), vm.Filter(column="product")],
 )
 
-# Create and run dashboard
 dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()
 ```
 
-**Step 4: Check MCP availability**
+## Data Integration
 
-```bash
-# Check if MCP tools are available
-# Look for mcp__vizro__* in tool list
-```
-
-**Step 5: Install MCP if needed**
-
-```bash
-# Install Vizro MCP server
-# See references/mcp_setup.md for details
-```
-
-**Step 6: Generate dashboard with MCP**
+**Static data** (simplest - loaded once):
 
 ```python
-# Use MCP tools to:
-# 1. Create dashboard configuration (IMPORTANT: strickly respect the spec/)
-# 2. Validate structure
-# 3. Update python code based on validated output
-```
-
-**Important Vizro patterns**:
-
-- **Chart titles**: Specify in `vm.Graph(title=...)`, NOT in plotly code
-- **Colors**: Let Vizro handle automatically, don't specify in plotly unless necessary
-
-**Deliverable**: Python-based Vizro dashboard.
-
-## Core Development Tasks
-
-### 1. Data Integration with Vizro Data Manager
-
-Vizro uses a **Data Manager** to handle dashboard data efficiently. Choose between static or dynamic data based on your requirements.
-
-**Quick decision guide**:
-
-```
-Need data to refresh while running?
-├─ No → Use Static Data (simplest)
-│   └─ Supply directly: df = pd.read_csv("data.csv")
-└─ Yes → Use Dynamic Data (function)
-    └─ Add to data manager with caching
-```
-
-**Static data** (simplest - data loaded once):
-
-```python
-import pandas as pd
-import vizro.plotly.express as px
-
 sales = pd.read_csv("sales.csv")
 vm.Graph(figure=px.line(sales, x="date", y="revenue"))
 ```
@@ -193,627 +85,175 @@ vm.Graph(figure=px.line(sales, x="date", y="revenue"))
 from vizro.managers import data_manager
 from flask_caching import Cache
 
-# Enable caching
 data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache"})
 
-
-# Define loading function
 def load_sales_data():
     return pd.read_csv("sales.csv")
 
-
-# Add to data manager (function, not function call!)
-data_manager["sales"] = load_sales_data
-
-# Reference by name
-vm.Graph(figure=px.line("sales", x="date", y="revenue"))
+data_manager["sales"] = load_sales_data  # Function, not call!
+vm.Graph(figure=px.line("sales", x="date", y="revenue"))  # Reference by name
 ```
 
-**Key optimization tips**:
+See `references/data_manager.md` for cache configuration and advanced patterns.
 
-- Use static data if refresh not needed
-- Enable caching for dynamic data (FileSystemCache or RedisCache in production)
-- Pre-aggregate data in loading function
-- Use appropriate pandas data types (`category` for strings)
-
-**For comprehensive details**, see `references/data_manager.md`:
-
-- Static vs dynamic data comparison
-- Cache configuration and timeouts
-- Parametrized data loading
-- Dynamic filters
-- Kedro Data Catalog integration
-- Common patterns (database, API, multiple files)
-
-**Deliverable**: Vizro data manager configuration with appropriate caching strategy.
-
-### 2. Component Development
-
-**Use Vizro built-in components** when possible for consistency and maintainability.
-
-**KPI Cards with Vizro**:
+## KPI Cards
 
 ```python
 from vizro.figures import kpi_card, kpi_card_reference
-import pandas as pd
-import vizro.models as vm
 
-# Prepare data
-df = pd.DataFrame({"revenue": [1200000], "previous_revenue": [1000000]})
+# Simple KPI
+vm.Figure(figure=kpi_card(
+    data_frame=df,
+    value_column="revenue",
+    title="Total Revenue",
+    value_format="${value:,.0f}",
+    icon="trending_up",
+))
 
-# Simple KPI card
-revenue_kpi = vm.Figure(
-    figure=kpi_card(
-        data_frame=df,
-        value_column="revenue",
-        title="Total Revenue",
-        value_format="${value:,.0f}",
-        icon="trending_up",  # use icons from Google Material Icons library
-    )
-)
-
-# KPI card with reference comparison (automatic color handling)
-revenue_comparison = vm.Figure(
-    figure=kpi_card_reference(
-        data_frame=df,
-        value_column="revenue",
-        reference_column="previous_revenue",
-        title="Revenue vs Last Month",
-        value_format="${value:,.0f}",
-        reference_format="{delta:+.1f}% vs previous ({reference:,.0f})",
-    )
-)
-
-# For metrics where lower is better (e.g., costs, errors)
-cost_kpi = vm.Figure(
-    figure=kpi_card_reference(
-        data_frame=df,
-        value_column="costs",
-        reference_column="previous_costs",
-        title="Operating Costs",
-        reverse_color=True,  # Green when decrease, red when increase
-        value_format="${value:,.0f}",
-    )
-)
+# KPI with reference comparison
+vm.Figure(figure=kpi_card_reference(
+    data_frame=df,
+    value_column="revenue",
+    reference_column="previous_revenue",
+    title="Revenue vs Last Month",
+    value_format="${value:,.0f}",
+    reverse_color=True,  # Use when lower is better
+))
 ```
 
-**Custom chart components** - Create advanced visuals with Vizro's `@capture("graph")` decorator:
+## Custom Charts
 
-Vizro custom charts enable advanced customization and simple data manipulation right before visualization. Use them when standard `plotly.express` charts don't provide enough control.
-
-**When to use custom charts**:
-
-Use the `@capture("graph")` decorator if your plotly chart needs:
-
-- Post-update calls: `update_layout`, `update_xaxes`, `update_traces`, etc.
-- Simple data manipulation: aggregation, filtering, or transformation before visualization
-- Custom `plotly.graph_objects.Figure()` with manual traces via `add_trace`
-- Reference lines, annotations, or custom styling not available in `plotly.express`
-
-**Steps to create a custom chart**:
-
-1. Define a function that returns a `go.Figure()`
-1. Decorate it with `@capture("graph")`
-1. Function must accept a `data_frame` argument (type: `pandas.DataFrame`)
-1. All data should derive from the `data_frame` argument
-1. Pass your function to the `figure` argument of `vm.Graph`
-
-**Minimal example**:
+Use `@capture("graph")` for charts needing `update_layout`, reference lines, or data manipulation:
 
 ```python
 from vizro.models.types import capture
-import pandas as pd
-import plotly.graph_objects as go
-
-
-@capture("graph")
-def minimal_example(data_frame: pd.DataFrame = None):
-    return go.Figure()
-```
-
-**Example 1: Enhanced scatter with reference line**
-
-This example shows how to enhance a `plotly.express` chart with a parametrized reference line:
-
-```python
-import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.models.types import capture
-
 
 @capture("graph")
-def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None):
-    """Scatter chart with horizontal reference line
-
-    Args:
-        data_frame: Input DataFrame (automatically filtered by Vizro)
-        x, y: Column names for axes
-        color, size: Optional encoding columns
-        hline: Y-value for reference line (can be parametrized)
-    """
-    fig = px.scatter(data_frame=data_frame, x=x, y=y, color=color, size=size)
+def scatter_with_line(data_frame, x, y, color=None, hline=None):
+    fig = px.scatter(data_frame=data_frame, x=x, y=y, color=color)
     if hline is not None:
         fig.add_hline(y=hline, line_color="gray", line_dash="dash")
     return fig
 
-
-# Usage in dashboard with Parameter control
-page = vm.Page(
-    title="Custom Chart Example",
-    components=[
-        vm.Graph(
-            id="enhanced_scatter",
-            figure=scatter_with_line(
-                data_frame=df,  # or "iris" if using data_manager
-                x="sepal_length",
-                y="sepal_width",
-                color="species",
-                size="petal_width",
-                hline=3,  # Default value
-            ),
-            title="Sepal Dimensions",  # Title in vm.Graph, not plotly
-        ),
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["enhanced_scatter.hline"],
-            selector=vm.Slider(min=2, max=5, step=0.5, value=3, title="Reference Line"),
-        ),
-    ],
+# Usage with Parameter control
+vm.Graph(
+    id="chart",
+    figure=scatter_with_line(data_frame=df, x="x", y="y", hline=3),
+    title="Chart Title",
 )
-```
-
-**Example 2: Waterfall chart with data manipulation**
-
-This example shows creating a custom chart type using `go.Figure()`:
-
-```python
-import pandas as pd
-import plotly.graph_objects as go
-from vizro.models.types import capture
-
-
-@capture("graph")
-def waterfall(data_frame, measure, x, y, text, title=None):
-    """Custom waterfall chart with Vizro styling
-
-    Args:
-        data_frame: Input DataFrame
-        measure: Column with "relative" or "total" values
-        x: Category column
-        y: Value column
-        text: Display text column
-        title: Optional chart title (prefer vm.Graph title instead)
-    """
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Waterfall(
-            measure=data_frame[measure],
-            x=data_frame[x],
-            y=data_frame[y],
-            text=data_frame[text],
-            # Use Vizro core colors for semantic meaning
-            decreasing={"marker": {"color": "#ff5267"}},  # Red for negative
-            increasing={"marker": {"color": "#08bdba"}},  # Teal for positive
-            totals={"marker": {"color": "#00b4ff"}},  # Blue for totals
-        )
-    )
-
-    if title:
-        fig.update_layout(title=title)
-
-    return fig
-
-
-# Usage
-page = vm.Page(
-    title="Financial Analysis",
-    components=[
-        vm.Graph(
-            figure=waterfall(data_frame=financial_df, measure="measure", x="category", y="value", text="text"),
-            title="Profit Breakdown",  # Prefer title here
-        ),
-    ],
-    controls=[
-        vm.Filter(column="category", selector=vm.Dropdown(title="Categories")),
-    ],
-)
-```
-
-**Example 3: Chart with data aggregation**
-
-Use custom charts to perform simple data manipulation before visualization:
-
-```python
-@capture("graph")
-def aggregated_bar(data_frame, category, value, agg_func="sum"):
-    """Bar chart with built-in aggregation
-
-    Args:
-        data_frame: Input DataFrame (already filtered by Vizro)
-        category: Column to group by
-        value: Column to aggregate
-        agg_func: Aggregation function ("sum", "mean", "count")
-    """
-    # Aggregate data
-    if agg_func == "sum":
-        agg_df = data_frame.groupby(category)[value].sum().reset_index()
-    elif agg_func == "mean":
-        agg_df = data_frame.groupby(category)[value].mean().reset_index()
-    else:
-        agg_df = data_frame.groupby(category)[value].count().reset_index()
-
-    # Create chart with aggregated data
-    fig = px.bar(agg_df, x=category, y=value)
-    return fig
-
-
-# Usage with Parameter to control aggregation
-vm.Graph(id="agg_chart", figure=aggregated_bar(data_frame=df, category="region", value="sales", agg_func="sum"))
-
-# Add Parameter to let users change aggregation
 vm.Parameter(
-    targets=["agg_chart.agg_func"],
-    selector=vm.RadioItems(options=["sum", "mean", "count"], value="sum", title="Aggregation"),
+    targets=["chart.hline"],
+    selector=vm.Slider(min=0, max=10, value=3, title="Reference Line"),
 )
 ```
 
-**Important notes**:
+**Key rules**:
+- Function must accept `data_frame` argument
+- Must return `go.Figure()`
+- Chart titles in `vm.Graph(title=...)`, not plotly
+- Let Vizro handle colors unless semantic coloring needed
 
-- Custom charts automatically work with Filters and Parameters without extra configuration
-- The `data_frame` argument receives data **after** filters and parameters are applied
-- For data transformations, consider using Filters, Parameters, or data loading functions instead
-- Let Vizro handle colors automatically unless you need semantic color coding
-- When specifying colors, use Vizro core colors: `["#00b4ff", "#ff9222", "#3949ab", "#ff5267", "#08bdba", "#fdc935", "#689f38", "#976fd1", "#f781bf", "#52733e"]`
-- Chart titles should be in `vm.Graph(title=...)`, not in plotly code
-- Custom charts can be cross-filtering sources/targets like any other graph
+## Tables
 
-**Reference**: https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-charts/
-
-**Component library checklist**:
-
-- [ ] KPI cards
-- [ ] Standard charts (line, bar, pie)
-- [ ] AgGrid tables with sorting/filtering
-- [ ] Filters and controls
-- [ ] Custom layouts
-
-**Table best practices**:
-
-- **Always use `vm.AgGrid`** with `dash_ag_grid()` for tables (not `vm.Table` or `go.Table`)
-- AgGrid provides sorting, filtering, pagination, and better UX
-- For custom tables with dynamic columns or advanced features, use `@capture("ag_grid")` decorator:
+Always use `vm.AgGrid` with `dash_ag_grid()`:
 
 ```python
-from dash_ag_grid import AgGrid
-from vizro.models.types import capture
-
-
-@capture("ag_grid")
-def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
-    defaults = {
-        "className": "ag-theme-quartz-dark ag-theme-vizro",
-        "defaultColDef": {
-            "resizable": True,
-            "sortable": True,
-            "filter": True,
-            "filterParams": {"buttons": ["apply", "reset"], "closeOnApply": True},
-            "flex": 1,
-            "minWidth": 70,
-        },
-    }
-    return AgGrid(
-        columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"), **defaults
-    )
-
-
-# Use with Parameter to allow column selection
-vm.AgGrid(id="custom_ag_grid", figure=my_custom_aggrid(data_frame=df, chosen_columns=["col1", "col2"]))
+from vizro.tables import dash_ag_grid
+vm.AgGrid(figure=dash_ag_grid(df), title="Data Table")
 ```
 
-- Reference: https://vizro.readthedocs.io/en/latest/pages/user-guides/table/
+## Containers
 
-**Color best practices**:
-
-- **Standard charts**: Do NOT specify colors - let Vizro apply colors automatically
-- **Custom components**: Use Vizro core colors when needed:
-    - Pick 2-3 from: `["#00b4ff", "#ff9222", "#3949ab", "#ff5267", "#08bdba", "#fdc935", "#689f38", "#976fd1", "#f781bf", "#52733e"]`
-    - Use `"gray"` for neutral elements
-    - Success/positive: `"#689f38"`, Warning: `"#ff9222"`, Error/negative: `"#ff5267"`
-
-**Using Containers to organize components**:
-
-Containers group related components into sections with optional titles, filters, and styling:
+Group components with scoped filters:
 
 ```python
-import vizro.models as vm
-
-page = vm.Page(
-    title="Analytics Dashboard",
-    components=[
-        # Top-level KPIs (no container)
-        vm.Graph(figure=revenue_kpi),
-        vm.Graph(figure=orders_kpi),
-        # Container 1: Sales Analysis
-        vm.Container(
-            title="Sales Analysis",
-            components=[
-                vm.Graph(figure=sales_chart),
-                vm.Graph(figure=regional_breakdown),
-            ],
-            controls=[
-                vm.Filter(column="region"),  # Affects only this container
-            ],
-            variant="filled",
-        ),
-        # Container 2: Customer Metrics
-        vm.Container(
-            title="Customer Metrics",
-            components=[
-                vm.Graph(figure=customer_chart),
-                vm.AgGrid(figure=customer_table),
-            ],
-            controls=[
-                vm.Filter(column="segment"),  # Affects only this container
-            ],
-            variant="outlined",
-        ),
-    ],
-    controls=[
-        vm.Filter(column="date"),  # Page-level filter (affects all components)
-    ],
+vm.Container(
+    title="Sales Analysis",
+    components=[vm.Graph(figure=chart1), vm.Graph(figure=chart2)],
+    controls=[vm.Filter(column="region")],  # Affects only this container
+    variant="outlined",  # or "filled", "plain"
 )
 ```
 
-**When to use containers**:
+## Layouts
 
-- Group related components into logical sections
-- Add section titles for clarity
-- Apply filters/parameters to specific sections only
-- Create visual separation with custom layouts or styling
-- Control spacing differently for each section
+**Optimal Grid Strategy** (recommended):
 
-**Container controls**: Filters and parameters inside containers affect only that container's components (not the whole page).
-
-**Reference**: https://vizro.readthedocs.io/en/stable/pages/user-guides/container/
-
-**Deliverable**: Reusable component library.
-
-### 3. Implement Interactivity
-
-**Cross-filtering implementation**:
+Use **8 or 12 columns** with `row_min_height="140px"`
 
 ```python
-# Using Vizro actions
-import vizro.models as vm
-
-page = vm.Page(
-    title="Interactive Dashboard",
-    components=[
-        vm.Graph(id="chart-1", ...),
-        vm.Graph(id="chart-2", ...),
-    ],
-    actions=[
-        vm.Action(
-            function="filter_interaction",
-            inputs=["chart-1.clickData"],
-            outputs=["chart-2.figure"]
-        )
-    ]
-)
-```
-
-**Interaction types to implement**:
-
-- [ ] Hover tooltips
-- [ ] Click to filter
-- [ ] Drill-down navigation
-- [ ] Export functionality
-- [ ] Parameter controls
-
-**Deliverable**: Interactive features implementation.
-
-### 4. Configure Layout for Proper Spacing
-
-**Two approaches to prevent crowded components**:
-
-**Option 1: Flex Layout** (automatic spacing)
-
-```python
-page = vm.Page(
-    title="Dashboard",
-    layout=vm.Flex(),  # Automatically adds spacing between components
-    components=[vm.Graph(figure=chart1), vm.Graph(figure=chart2), vm.AgGrid(figure=table)],
-)
-```
-
-**Option 2: Grid Layout with Row Height Control** (fine-grained control)
-
-Grid layout provides precise control over component arrangement. Each component is assigned an index (0, 1, 2...) and positioned in the grid.
-
-**Basic grid configuration**:
-
-```python
-page = vm.Page(
+# 8-column grid (recommended for most dashboards)
+vm.Page(
     title="Dashboard",
     layout=vm.Grid(
-        grid=[[0, 1], [0, 2]],  # Component 0 spans 2 rows, 1 and 2 in separate cells
-        row_min_height="500px",  # Ensures sufficient height per row
+        grid=[[0, 0, 1, 1, 2, 2, 3, 3],      # Row 1: 4 KPI cards (2 cols each)
+              [4, 4, 6, 6, 6, 7, 7, 7],       # Row 2-4: 2 KPIs + 2 charts
+              [5, 5, 6, 6, 6, 7, 7, 7],       # Charts are 3 cols × 3 rows
+              [-1, -1, 6, 6, 6, 7, 7, 7],     # Use -1 for spacing
+              [8, 8, 8, 8, 8, 8, 8, 8],       # Rows 5-8: Full-width table
+              [8, 8, 8, 8, 8, 8, 8, 8],
+              [8, 8, 8, 8, 8, 8, 8, 8],
+              [8, 8, 8, 8, 8, 8, 8, 8]],
+        row_min_height="140px"
     ),
-    components=[
-        vm.Graph(figure=chart1),  # Position 0 (left column, spans rows 1-2)
-        vm.Graph(figure=chart2),  # Position 1 (top-right)
-        vm.AgGrid(figure=table),  # Position 2 (bottom-right)
-    ],
+    components=[kpi1, kpi2, kpi3, kpi4, kpi5, kpi6, chart1, chart2, table]
 )
-```
 
-**Grid configuration rules**:
-
-- Grid provided as `list[list[int]]` (e.g., `[[0, 1], [0, 2]]`)
-- Integers must be consecutive starting from 0
-- Integers correspond to component index in the components list
-- Each sub-list = one grid row
-- Each element in sub-list = one grid column
-- Components span rectangular areas only
-- Can use arbitrarily large grids for granular control
-
-**Advanced grid with varying row heights**:
-
-```python
-page = vm.Page(
-    title="Complex Dashboard",
-    layout=vm.Grid(
-        row_min_height="55px",  # Base row height
-        grid=[
-            [0, 0, 0, 0, 0, 0],  # Row 1: Component 0 spans full width
-            *[[1, 1, 1, 1, 1, 1]] * 2,  # Rows 2-3: Component 1 (2 rows tall)
-            *[[2, 2, 2, 2, 2, 2]] * 2,  # Rows 4-5: Component 2 (2 rows tall)
-            *[[3, 3, 3, 4, 4, 4]] * 5,  # Rows 6-10: Components 3 & 4 side-by-side (5 rows tall)
-        ],
-    ),
-    components=[
-        vm.Graph(figure=header_chart),  # 0: Full-width header (1 row)
-        vm.Graph(figure=chart1),  # 1: Full-width chart (2 rows)
-        vm.Graph(figure=chart2),  # 2: Full-width chart (2 rows)
-        vm.Graph(figure=chart3),  # 3: Left half (5 rows)
-        vm.AgGrid(figure=table),  # 4: Right half (5 rows)
-    ],
-)
-```
-
-**Grid layout tips**:
-
-- Use `*[[...]] * n` to repeat rows for taller components
-- Base `row_min_height` is multiplied by number of rows a component spans
-- Larger grids (e.g., 6 columns vs 2) provide finer positioning control
-- Components automatically span their entire grid area
-- Use empty cells (by using -1) to create spacing
-
-**Nested Layouts** (Flex at page level, Grid inside containers):
-
-```python
-page = vm.Page(
+# 12-column grid (for more complex layouts)
+vm.Page(
     title="Dashboard",
-    layout=vm.Flex(),  # Page-level: automatic flow
-    components=[
-        vm.Graph(figure=header_chart),
-        vm.Container(
-            title="Analysis Section",
-            layout=vm.Grid(
-                grid=[[0, 1, 2], [3, 3, 3]],  # Structured grid inside container
-                row_min_height="400px",
-            ),
-            components=[
-                vm.Graph(figure=chart1),
-                vm.Graph(figure=chart2),
-                vm.Graph(figure=chart3),
-                vm.AgGrid(figure=table),
-            ],
-        ),
-    ],
+    layout=vm.Grid(
+        grid=[[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3],      # 4 KPI cards (3 cols each)
+              [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],       # 3 charts side-by-side (4 cols each)
+              [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],
+              [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6]],
+        row_min_height="140px"
+    ),
+    components=[kpi1, kpi2, kpi3, kpi4, chart1, chart2, chart3]
 )
 ```
 
-**Layout best practices**:
+**Component sizing guidelines**:
+- **KPI cards**: 2-3 columns × 1 row (140px)
+- **Charts**: minimum 3-4 columns × 3 rows (420px)
+- **Tables**: full width, adjust rows as needed
+- **Empty cells**: use `-1` for spacing
 
-- Use `vm.Flex()` for simple pages with automatic spacing
-- Use `vm.Grid()` with `row_min_height` for precise control and scroll behavior
-- For fine-grained control: Use larger grids (6-12 columns) with varying row heights
-- Nest layouts: Flex at page level, Grid inside containers for structured sections
-- Set `row_min_height` so components inside grid can take enough space for proper rendering
-- Component actual height = `row_min_height * rows_spanned`
-- Reference: https://vizro.readthedocs.io/en/latest/pages/user-guides/layouts/
+**Grid rules**:
+- Use 8 columns for standard layouts, 12 columns for finer control
+- Indices must be consecutive from 0 (skip -1)
+- Each sub-list = one row
+- Component height = `row_min_height × rows_spanned`
 
-**Deliverable**: Page layouts with proper component spacing.
-
-## Deployment Preparation
-
-### Local Development
-
-```bash
-# Development server
-uv run python app.py
-# Access at http://localhost:8050
-```
-
-## REQUIRED OUTPUT: spec/4_implementation_report.yaml
-
-After completing implementation, create a report documenting what was built:
-
-```yaml
-# spec/4_implementation_report.yaml
-spec_compliance:
-  followed_specs: boolean
-  deviations: list[string]  # Any necessary changes from specs
-
-implementation_complete: boolean
-```
-
-## Deliverables Checklist
-
-### Required Outputs
-
-1. **Source Code**
-
-    - Main application file
-    - Data processing modules
-    - Component library
-    - Configuration files
-
-1. **Specification Compliance**
-
-    - spec/4_implementation_checklist.yaml
-    - spec/4_implementation_report.yaml
-    - Validation log showing all checks passed
-
-1. **Documentation**
-
-    - README with setup instructions
-    - API documentation
-    - Configuration guide
-    - Deployment instructions
-
-## Common Implementation Patterns
-
-### Multi-Page Navigation
+## Multi-Page Navigation
 
 ```python
 dashboard = vm.Dashboard(
     pages=[
         vm.Page(title="Overview", ...),
         vm.Page(title="Details", ...),
-        vm.Page(title="Analysis", ...)
     ],
-    navigation=vm.Navigation(
-        nav_selector=vm.NavBar()  # or vm.NavPanel()
-    )
+    navigation=vm.Navigation(nav_selector=vm.NavBar())
 )
 ```
 
-## Validation Checklist
+## REQUIRED OUTPUT: spec/4_implementation_report.yaml
 
-Before proceeding to Test & Iterate:
+```yaml
+spec_compliance:
+  followed_specs: boolean
+  deviations: list[string]
+implementation_complete: boolean
+```
 
-- [ ] All pages implemented per design
-- [ ] Documentation complete
+## Run Dashboard
 
-## Next Steps
+```bash
+uv run python app.py
+# Access at http://localhost:8050
+```
 
-Once Development is complete, proceed to **test-iterate** skill for validation
+## Next Step
 
-## Troubleshooting Guide
-
-### Common Issues and Solutions
-
-| Issue              | Cause                | Solution                                                           |
-| ------------------ | -------------------- | ------------------------------------------------------------------ |
-| Slow initial load  | Large datasets       | Implement pagination and avoid expensive charts like scatter chart |
-| Filter not working | Column type mismatch | Ensure correct data types                                          |
-
-## Resources
-
-- Vizro Documentation: https://vizro.readthedocs.io/
-- Vizro Examples: https://vizro.readthedocs.io/en/stable/pages/examples/
-- Plotly Documentation: https://plotly.com/python/
+Proceed to **test-iterate** skill.
