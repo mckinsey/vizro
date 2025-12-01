@@ -26,7 +26,7 @@ jobs:
             hatch-env: all.py3.13
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Passed fork step
         run: echo "Success!"
@@ -43,7 +43,7 @@ jobs:
             hatch-env: all.py3.13
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python ${{ matrix.config.python-version }}
         uses: actions/setup-python@v6
@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download All Artifacts
         uses: actions/download-artifact@v6
