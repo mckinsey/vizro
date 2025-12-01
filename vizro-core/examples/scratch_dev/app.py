@@ -1,15 +1,8 @@
-from vizro import Vizro
 import vizro.models as vm
-from typing import Literal
-from dash import html
-import dash_bootstrap_components as dbc
+import vizro.plotly.express as px
+from vizro import Vizro
+
 from vizro.tables import dash_ag_grid
-import vizro.plotly.express as px
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.figures import kpi_card
-from vizro.tables import dash_ag_grid, dash_data_table
 
 gapminder = px.data.gapminder()
 iris = px.data.iris()
