@@ -38,11 +38,11 @@ Save this file BEFORE proceeding to the next stage.
 ## Process
 
 1. **Understand business context**: What problems are we solving? Who are the users? What decisions do they make?
-2. **Define analytical questions**: What questions does each page answer?
-3. **Inventory data sources**: What data is available? What's the refresh frequency?
-4. **Select KPIs**: Limit to 5-7 primary KPIs per dashboard
-5. **Design page structure**: Organize by role, topic, process, or time
-6. **Map information flow**: Define navigation paths (overview → detail → granular)
+1. **Define analytical questions**: What questions does each page answer?
+1. **Inventory data sources**: What data is available? What's the refresh frequency?
+1. **Select KPIs**: Limit to 5-7 primary KPIs per dashboard
+1. **Design page structure**: Organize by role, topic, process, or time
+1. **Map information flow**: Define navigation paths (overview → detail → granular)
 
 ## Validation Checklist
 

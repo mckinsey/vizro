@@ -71,7 +71,6 @@
 - No manual grid configuration needed
 - Example: `vm.Page(title="Dashboard", layout=vm.Flex(), components=[...])`
 
-
 **Reference**: https://vizro.readthedocs.io/en/latest/pages/user-guides/layouts/
 
 ### Container Visual Styling
@@ -88,9 +87,9 @@ Containers help visually distinguish sections and create clear information hiera
 **Visual styling options**:
 
 - **variant parameter** for visual distinction:
-  - `variant="plain"` (default): No visual styling, just logical grouping
-  - `variant="filled"`: Background fill to emphasize sections
-  - `variant="outlined"`: Border around container (recommended for major sections)
+    - `variant="plain"` (default): No visual styling, just logical grouping
+    - `variant="filled"`: Background fill to emphasize sections
+    - `variant="outlined"`: Border around container (recommended for major sections)
 - **Titles**: Clear section headers to label grouped content
 
 **Best practices**:

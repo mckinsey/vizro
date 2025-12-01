@@ -30,6 +30,7 @@ Save this file BEFORE proceeding to development-implementation.
 ## Chart Selection
 
 For detailed guidance, see:
+
 - `references/chart_selection_guide.md` - Chart type decision trees
 - `references/common_mistakes.md` - Anti-patterns to avoid
 
@@ -65,10 +66,10 @@ vizro_colors = [
 ]
 
 # Semantic colors
-success_color = "#689f38"   # Green - positive
-warning_color = "#ff9222"   # Orange - caution
-error_color = "#ff5267"     # Pink/red - negative
-neutral_color = "gray"      # Neutral/inactive
+success_color = "#689f38"  # Green - positive
+warning_color = "#ff9222"  # Orange - caution
+error_color = "#ff5267"  # Pink/red - negative
+neutral_color = "gray"  # Neutral/inactive
 ```
 
 ## Vizro Components
@@ -80,6 +81,7 @@ neutral_color = "gray"      # Neutral/inactive
 ## Layout Strategies
 
 **Optimal Grid Strategy**:
+
 - **8 or 12 columns** with `row_min_height="140px"`
 - 8 columns for standard layouts, 12 columns for finer control
 - **KPI cards**: 2-3 columns × 1 row (140px height)

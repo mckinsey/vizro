@@ -66,16 +66,19 @@ Tier 3: Component-level Interactions
 ## Vizro Optimal Layout Strategy
 
 **Standard grid configuration**:
+
 - **8 or 12 columns** for granular control
 - **row_min_height="140px"** for consistent sizing
 
 **Component sizing**:
+
 - **KPI cards**: 2-3 columns × 1 row (140px) - optimal size
 - **Charts**: minimum 3-4 columns × 3 rows (420px) - ensures proper rendering
 - **Tables**: full width, rows based on content
 - **Empty cells**: use `-1` for intentional spacing
 
 **Layout principles**:
+
 - ✅ **DO**: Place page-level filters/params in left sidebar
 - ✅ **DO**: Add container-level filters ABOVE container in main area
 - ✅ **DO**: Give charts at least 3 columns × 3 rows
@@ -108,17 +111,17 @@ Is this filter needed across multiple visualizations?
 ## Vizro-Specific Constraints
 
 1. **Page Navigation**: Automatic sidebar (left) for multi-page apps
-2. **Page Filters**: MUST be in collapsible left sidebar
-3. **Layouts**: Use Grid or Flex layout (no absolute positioning)
-4. **Components**: Limited to Graph, Table, Card, Figure
-5. **Containers**: Can use Tabs for organizing content
-6. **Actions**: Export, filter, and parameter actions only
+1. **Page Filters**: MUST be in collapsible left sidebar
+1. **Layouts**: Use Grid or Flex layout (no absolute positioning)
+1. **Components**: Limited to Graph, Table, Card, Figure
+1. **Containers**: Can use Tabs for organizing content
+1. **Actions**: Export, filter, and parameter actions only
 
 ## Deliverables
 
 1. **Layout specification** for each page (grid pattern or flex)
-2. **Filter placement** (page-level vs container-level)
-3. **ASCII wireframes** for unique pages with interaction annotations
+1. **Filter placement** (page-level vs container-level)
+1. **ASCII wireframes** for unique pages with interaction annotations
 
 See `references/wireframing_guide.md` for detailed wireframing patterns and examples.
 

@@ -36,9 +36,9 @@ dashboard_ready: boolean
 ## Testing Checklist
 
 1. **Launch**: Dashboard starts, URL loads, no startup errors
-2. **Navigation**: All pages load, no broken links
-3. **Controls**: Filters update visualizations, dropdowns/sliders work
-4. **Console**: No JavaScript errors or failed callbacks
+1. **Navigation**: All pages load, no broken links
+1. **Controls**: Filters update visualizations, dropdowns/sliders work
+1. **Console**: No JavaScript errors or failed callbacks
 
 ## Done When
 
