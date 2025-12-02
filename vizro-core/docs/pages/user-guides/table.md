@@ -437,7 +437,7 @@ AG Grid provides sticky headers by default when used in a Grid layout. To achiev
 
 !!! note
 
-    This approach works best when there is only one `AgGrid` on the screen, or when all `AgGrid` tables are in the same row. Otherwise, all headers will stack on top of one another.
+    This approach works best when there is only one `AgGrid` on top of the screen, or when all `AgGrid` tables are in the same row. Otherwise, all headers will stack on top of one another.
 
 ## Dash DataTable
 
