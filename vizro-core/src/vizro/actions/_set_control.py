@@ -170,39 +170,36 @@ class set_control(_AbstractAction):
             self._same_page = False
 
     def function(self, _trigger, _vizro_controls_store):
-        try:
-            from vizro.models import Checklist
-            value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
+        from vizro.models import Checklist
+        value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
-            # If value is None then reset control to original value.
-            if value is None:
-                value = _vizro_controls_store[self.control]["originalValue"]
+        # If value is None then reset control to original value.
+        if value is None:
+            value = _vizro_controls_store[self.control]["originalValue"]
 
-            # Normalize returned value based on target selector type.
-            selector = model_manager[self.control].selector
-            is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
-            if is_multi:
-                value = sorted(set(value)) if isinstance(value, list) else [value]
-            else:
-                if value == []:
-                    # Single-value selector cannot be set to empty list.
-                    if self._same_page:
-                        # TODO AM OQ: Should we log something here?
-                        return no_update
-                    return no_update, no_update
-                # TODO AM OQ: See whether to return values[-1] instead of values[0] when many points selected but a
-                #  single-select control is targeted. Maybe we can do no_update here as well as nothing guarantees
-                #  the order of selected points and sometimes can change and sometimes not. I think value[0] is fine.
-                value = value[0] if isinstance(value, list) else value
+        # Normalize returned value based on target selector type.
+        selector = model_manager[self.control].selector
+        is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
+        if is_multi:
+            value = sorted(set(value)) if isinstance(value, list) else [value]
+        else:
+            if value == []:
+                # Single-value selector cannot be set to empty list.
+                if self._same_page:
+                    # TODO AM OQ: Should we log something here?
+                    return no_update
+                return no_update, no_update
+            # TODO AM OQ: See whether to return values[-1] instead of values[0] when many points selected but a
+            #  single-select control is targeted. Maybe we can do no_update here as well as nothing guarantees
+            #  the order of selected points and sometimes can change and sometimes not. I think value[0] is fine.
+            value = value[0] if isinstance(value, list) else value
 
-            if self._same_page:
-                return value
+        if self._same_page:
+            return value
 
-            page_path = model_manager._get_model_page(model_manager[self.control]).path
-            url_query_params = f"?{self.control}={_encode_to_base64(value)}"
-            return get_relative_path(page_path), url_query_params
-        except Exception:
-            raise PreventUpdate
+        page_path = model_manager._get_model_page(model_manager[self.control]).path
+        url_query_params = f"?{self.control}={_encode_to_base64(value)}"
+        return get_relative_path(page_path), url_query_params
 
     @property
     def outputs(self):  # type: ignore[override]

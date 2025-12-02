@@ -11,15 +11,14 @@ from vizro.tables import dash_ag_grid
 from typing import Any
 from box import Box
 import dash
+from vizro.models.types import capture
 
 # TODO NOW PP:
-#  6. Add and test all possible charts.
-#  7. Solve TODOs
-#  8. hrt + hrl
-#  8. Test custom_data=["x"]
+#  8. hrt + hrl + hrc + hrd
+#  8. Manually test custom_data=["x"], custom_data="incorrect", custom_data=["customdata[0]], custom_data=["customdata[0]incorrect]
 #  9. Add more unit tests
 #  10. Add more e2e tests
-#  11. Explain what charts don't support selectedData so I made a custom solution for them.
+#  11. Explain which charts are not supporting selectedData so I made a custom solution for them.
 
 
 # TODO AM OQ: I handled single-select controls like this:
@@ -70,6 +69,13 @@ def _create_set_control_actions(prefix: str, value=None):
     ]
 
 
+@capture("graph")
+def bar_with_clickmode_event(data_frame, **kwargs):
+    fig = px.bar(data_frame, **kwargs)
+    fig.update_layout(clickmode="event")
+    return fig
+
+
 pre = "p1_"
 page_1 = vm.Page(
     title="set_control via selectedData",
@@ -78,10 +84,16 @@ page_1 = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.Container(
-                    title="Bar",
+                    title="Bar with default clickmode and clickmode='event'",
                     components=[
                         vm.Graph(
                             figure=px.bar(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+                            actions=_create_set_control_actions(prefix=pre),
+                        ),
+                        vm.Graph(
+                            figure=bar_with_clickmode_event(
+                                px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                     ]
@@ -95,11 +107,11 @@ page_1 = vm.Page(
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=px.box(px.data.iris(), x="species", y="sepal_length", custom_data=["species"]),
+                            figure=px.box(px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=px.violin(px.data.iris(), x="species", y="sepal_length", custom_data=["species"]),
+                            figure=px.violin(px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                     ]

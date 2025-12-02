@@ -145,12 +145,11 @@ class Graph(VizroBaseModel):
         if not (trigger or {}).get("points"):
             return None
 
-        # TODO NOW PP: Handle default_box=True. It causes that the value will always be found. INVESTIGATE!
         trigger_box = BoxList(trigger["points"], camel_killer_box=True, box_dots=True, default_box=True)
 
         lookup_keys = []
         with suppress(KeyError, ValueError):
-            # First try to treat value as a column name. Unfortunately the customdata returned in the trigger does
+            # First try to treat value as a column name. Unfortunately, the customdata returned in the trigger does
             # not contain column names (it's just a list) so we must look it up in the called function's `custom_data`
             # to find its numerical index in this list. This only works if a custom_data was provided in the graph
             # function call.
@@ -162,20 +161,19 @@ class Graph(VizroBaseModel):
         lookup_keys.append(value)
 
         for key in lookup_keys:
-            # This suppresses issues like KeyError, NameError, IndexError, TypeError.
+            # Safely attempt to extract values by each lookup key from each point. Any lookup-related errors that could
+            # occur by accessing the Box (missing key, wrong type, etc.) are ignored, and we move on to the next key.
             with suppress(Exception):
-                # TODO PP NOW: use walrus operator.
-                return [
-                    point[key][0]
-                    # If resolved item is a list, flatten it to single value to skip returning nested object.
-                    # TODO NOW PP: add reason point[key] == Box() -> to skip if key doesn't exist.
-                    if isinstance(point[key], (list, Box))
-                    else point[key]
-                    for point in trigger_box
-                ]
+                # Skip Box instances as these represent missing keys when due to the `default_box=True`.
+                if any(isinstance(point[key], Box) for point in trigger_box):
+                    continue
 
-        # TODO: See why the exception message doesn't show.
-        # TODO: Should we return None and raise a warning instead?
+            return [
+                # If value is a list, flatten it to single value to skip returning nested object.
+                val[0] if isinstance((val := point[key]), list) else val
+                for point in trigger_box
+            ]
+
         # If we reach here, none of the lookup keys worked.
         raise ValueError(
             f"Couldn't find value `{value}` in trigger for `set_control` action. "
@@ -320,6 +318,7 @@ class Graph(VizroBaseModel):
             Input(self.id, "selectedData"),
             # TODO AM OQ: Very weird that setting the State in the inputs=[...] causes callback to be triggered by it.
             State(self.id, "figure"),
+            State(self.id, "id"),
             prevent_initial_call=True,
         )
 
