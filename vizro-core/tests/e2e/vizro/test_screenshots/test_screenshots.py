@@ -4,7 +4,7 @@ import time
 import pytest
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
-from e2e.vizro.checkers import check_graph_color, check_theme_color
+from e2e.vizro.checkers import check_graph_color, check_graph_is_loaded, check_theme_color
 from e2e.vizro.navigation import (
     accordion_select,
     click_element_by_xpath_selenium,
@@ -61,6 +61,26 @@ def test_ag_grid_page(dash_br):
     )
     # check if column 'country' is available
     dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='country']")
+
+
+@image_assertion
+def test_ag_grid_sticky_headers(dash_br):
+    """Test sticky headers are visible after scrolling down ag_grid table."""
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
+    )
+    # check if column 'country' is available
+    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div:nth-of-type(1) div[col-id='country']")
+
+    # scroll down to the 20th row
+    dash_br.multiple_click(
+        f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div[class='ag-center-cols-container'] "
+        f"div:nth-of-type(20) div[col-id='country']",
+        1,
+    )
+    check_graph_is_loaded(dash_br, cnst.LINE_AG_GRID_INTERACTIONS_ID)
 
 
 @image_assertion
