@@ -4,11 +4,11 @@
   width: 300px;
 }
 
-.ag-header {
+.flex-item .ag-header {
   position: fixed !important;
   z-index: 1;
 }
 
-.ag-body {
+.flex-item .ag-body {
   top: 40px;
 }
