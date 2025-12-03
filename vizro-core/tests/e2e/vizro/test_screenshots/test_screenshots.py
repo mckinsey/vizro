@@ -4,7 +4,7 @@ import time
 import pytest
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
-from e2e.vizro.checkers import check_graph_color, check_graph_is_loaded, check_theme_color
+from e2e.vizro.checkers import check_graph_color, check_theme_color
 from e2e.vizro.navigation import (
     accordion_select,
     click_element_by_xpath_selenium,
