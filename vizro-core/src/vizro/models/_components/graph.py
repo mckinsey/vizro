@@ -316,7 +316,6 @@ class Graph(VizroBaseModel):
             Output(f"{self.id}_actions_trigger", "data"),
             Input(self.id, "clickData"),
             Input(self.id, "selectedData"),
-            # TODO AM OQ: Very weird that setting the State in the inputs=[...] causes callback to be triggered by it.
             State(self.id, "figure"),
             State(self.id, "id"),
             prevent_initial_call=True,

@@ -13,23 +13,6 @@ from box import Box
 import dash
 from vizro.models.types import capture
 
-# TODO NOW PP:
-#  8. hrt + hrl + hrc + hrd
-#  8. Manually test custom_data=["x"], custom_data="incorrect", custom_data=["customdata[0]], custom_data=["customdata[0]incorrect]
-#  9. Add more unit tests
-#  10. Add more e2e tests
-#  11. Explain which charts are not supporting selectedData so I made a custom solution for them.
-
-
-# TODO AM OQ: I handled single-select controls like this:
-#  1. Graph/AgGrid setting None or [] is treated as None -> reset control
-#  2. Figure/Button/Card setting None -> reset control
-#  3. Figure/Button/Card setting []
-#     3.1. to multi-select control: sets [] (as expected)
-#     3.2. to single-select control: no_update
-#  4. Very soon we'll enable set_control filter -> filter. In that case how Checklist=[] -> RadioItems would be treated?
-#     I think the same as 3 (do no_update). Is that ok? Why don't we treat graph/ag-grid empty selection the same way??
-
 
 def _create_filters(prefix: str):
     return [
@@ -76,6 +59,11 @@ def bar_with_clickmode_event(data_frame, **kwargs):
     return fig
 
 
+@capture("figure")
+def text_as_figure(data_frame, text):
+    return vm.Text(text=f"Selected countries: {str(text)}").build()
+
+
 pre = "p1_"
 page_1 = vm.Page(
     title="set_control via selectedData",
@@ -84,36 +72,54 @@ page_1 = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.Container(
-                    title="Bar with default clickmode and clickmode='event'",
+                    title="Bar, Scatter, Histogram",
+                    layout=vm.Grid(grid=[[0, 1, 2]]),
                     components=[
                         vm.Graph(
                             figure=px.bar(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=bar_with_clickmode_event(
-                                px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
-                            ),
+                            figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", size="petal_length",
+                                              color="species", custom_data=["species"]),
                             actions=_create_set_control_actions(prefix=pre),
+                        ),
+                        vm.Graph(
+                            figure=px.histogram(px.data.iris(), x="species", color="sepal_length"),
+                            actions=_create_set_control_actions(prefix=pre, value="x"),
                         ),
                     ]
                 ),
                 vm.Container(
-                    title="Scatter(bubble), Box, Violin",
-                    layout=vm.Grid(grid=[[0, 1, 2]]),
+                    title="Choropleth",
+                    layout=vm.Grid(grid=[[0], [0], [0], [1]]),
                     components=[
                         vm.Graph(
-                            figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", size="petal_length", color="species", custom_data=["species"]),
-                            actions=_create_set_control_actions(prefix=pre),
+                            id=f"{pre}choropleth",
+                            figure=px.choropleth(
+                                data_frame=px.data.gapminder().query("year==2007"),
+                                locations="iso_alpha",
+                                color="lifeExp",
+                                hover_name="country",
+                                custom_data=["country"]
+                            ),
+                            actions=va.set_control(
+                                control=f"{pre}parameter_1", value="country"),
                         ),
-                        vm.Graph(
-                            figure=px.box(px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]),
-                            actions=_create_set_control_actions(prefix=pre),
-                        ),
-                        vm.Graph(
-                            figure=px.violin(px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]),
-                            actions=_create_set_control_actions(prefix=pre),
-                        ),
+                        vm.Figure(
+                            id="selected_countries_text",
+                            figure=text_as_figure(px.data.gapminder(), text="Selected countries: None")
+                        )
+                    ],
+                    controls=[
+                        vm.Parameter(
+                            id=f"{pre}parameter_1",
+                            targets=["selected_countries_text.text"],
+                            selector=vm.Dropdown(
+                                options=px.data.gapminder().query("year==2007")["country"].unique().tolist()
+                            ),
+                            visible=False
+                        )
                     ]
                 )
             ]
@@ -131,7 +137,31 @@ page_2 = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.Container(
-                    title="Common charts",
+                    title="Bar, Box, Violin",
+                    layout=vm.Grid(grid=[[0, 1, 2]]),
+                    components=[
+                        vm.Graph(
+                            title="Bar with explicitly clickmode='event' set",
+                            figure=bar_with_clickmode_event(
+                                px.data.iris(), x="sepal_width", y="sepal_length", color="species",
+                                custom_data=["species"]
+                            ),
+                            actions=_create_set_control_actions(prefix=pre),
+                        ),
+                        vm.Graph(
+                            title="Box without selection enabled",
+                            figure=px.box(px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]),
+                            actions=_create_set_control_actions(prefix=pre),
+                        ),
+                        vm.Graph(
+                            title="Violin without selection enabled",
+                            figure=px.violin(px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]),
+                            actions=_create_set_control_actions(prefix=pre),
+                        ),
+                    ]
+                ),
+                vm.Container(
+                    title="Area, Pie, Line, Funnel_Area",
                     layout=vm.Grid(grid=[[0, 1], [2, 3]]),
                     components=[
                         vm.Graph(
@@ -153,7 +183,7 @@ page_2 = vm.Page(
                     ]
                 ),
                 vm.Container(
-                    title="Rare charts",
+                    title="Density Heatmap, Line Polar, Treemap, Parallel Coordinates",
                     layout=vm.Grid(grid=[[0, 1], [2, 3]]),
                     components=[
                         vm.Graph(
@@ -333,7 +363,10 @@ page_8 = vm.Page(
     components=[
         vm.Graph(
             id=f"{pre}graph_1",
-            figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+            figure=px.scatter(
+                px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"],
+                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+            ),
             actions=va.set_control(control=f"{pre}filter_1", value="customdata[0]"),
         ),
     ],
