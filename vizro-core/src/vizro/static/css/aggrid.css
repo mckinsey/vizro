@@ -181,12 +181,8 @@
   text-decoration-line: underline;
 }
 
-.grid-item .ag-header {
-  position: fixed !important;
-  width: fit-content;
-  z-index: 1;
-}
-
-.grid-item .ag-body {
-  top: 40px;
+.grid-item .ag-header-container {
+  position: sticky !important;
+  top: 0;
+  z-index: 10;
 }
