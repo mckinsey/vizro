@@ -80,7 +80,6 @@ def test_ag_grid_sticky_headers(dash_br):
         f"div:nth-of-type(20) div[col-id='country']",
         1,
     )
-    check_graph_is_loaded(dash_br, cnst.LINE_AG_GRID_INTERACTIONS_ID)
 
 
 @image_assertion
