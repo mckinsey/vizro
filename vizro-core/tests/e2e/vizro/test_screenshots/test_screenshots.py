@@ -64,6 +64,25 @@ def test_ag_grid_page(dash_br):
 
 
 @image_assertion
+def test_ag_grid_sticky_headers(dash_br):
+    """Test sticky headers are visible after scrolling down ag_grid table."""
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
+    )
+    # check if column 'country' is available
+    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div:nth-of-type(1) div[col-id='country']")
+
+    # scroll down to the 20th row
+    dash_br.multiple_click(
+        f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div[class='ag-center-cols-container'] "
+        f"div:nth-of-type(20) div[col-id='country']",
+        1,
+    )
+
+
+@image_assertion
 def test_table_page(dash_br):
     accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
     page_select(
