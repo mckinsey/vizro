@@ -38,7 +38,8 @@ function update_graph_actions_trigger_prop(clickData, selectedData, figure, figu
   }
 
   // Ignore "clickData" event for "event+select" mode for charts that support selectedData.
-  // This is a workaround for a Plotly issue where "event+select" is set but clickData is the only thing that's updated.
+  // This is a workaround for a Plotly issue where "event+select" is set,
+  // and clickData changes but selectedData and graph's highlight stays unaffected.
   if (!isSelectedDataTriggered) {
     return dash_clientside.no_update;
   }
