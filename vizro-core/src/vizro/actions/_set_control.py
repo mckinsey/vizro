@@ -185,9 +185,7 @@ class set_control(_AbstractAction):
         else:
             if value == []:
                 # Single-value selector cannot be set to empty list.
-                if self._same_page:
-                    return no_update
-                return no_update, no_update
+                return no_update if self._same_page else (no_update, no_update)
             value = value[0] if isinstance(value, list) else value
 
         if self._same_page:
