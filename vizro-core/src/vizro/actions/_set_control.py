@@ -181,7 +181,7 @@ class set_control(_AbstractAction):
         selector = cast(ControlType, model_manager[self.control]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
         if is_multi:
-            value = sorted(set(value)) if isinstance(value, list) else [value]  # type: ignore[type-var]
+            value = value if isinstance(value, list) else [value]
         else:
             if value == []:
                 # Single-value selector cannot be set to empty list.

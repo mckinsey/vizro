@@ -4,7 +4,7 @@ from typing import Annotated, Literal
 import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
@@ -19,7 +19,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, _validate_captured_callable
+from vizro.models.types import ActionsType, CapturedCallable, MultiValueType, _IdProperty, _validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +114,7 @@ class AgGrid(VizroBaseModel):
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
-    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
+    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> MultiValueType | None:
         """Extract values from the trigger that represents selected dag.AgGrid rows. Value is the name of the column.
 
         Returns:
@@ -128,7 +128,7 @@ class AgGrid(VizroBaseModel):
             return None
 
         try:
-            return [row[value] for row in trigger]
+            return sorted({row[value] for row in trigger})
         except KeyError:
             raise ValueError(
                 f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "

@@ -18,12 +18,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Add multi-selection support (e.g., AgGrid rows, Graph points) that can now drive multi-select controls via `set_control` actions. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+- Support multi-selection (e.g. Graph points, AgGrid rows) that can now target multi-select controls via `set_control` actions. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
 
 ### Changed
 
 - Set `clickmode="event+select"` as the default for all `plotly.express` charts, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
-- Set `dashGridOptions.rowSelection.multi = "multiRow"` by default for `dash_ag_grid`. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+- Enable multi-row selection for `dash_ag_grid`. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
 
 <!--
 ### Deprecated

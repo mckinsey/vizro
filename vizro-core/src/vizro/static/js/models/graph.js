@@ -41,7 +41,7 @@ function update_graph_actions_trigger_prop(
   );
 
   // Return clickData if:
-  // 1. graph is not selectable or
+  // 1. Graph is not selectable or
   // 2. clickmode is not "event+select" (default value is overwritten) and clickData is triggered.
   if (!isGraphSelectable || (!isClickmodeEventSelect && isClickDataTriggered)) {
     return clickData;

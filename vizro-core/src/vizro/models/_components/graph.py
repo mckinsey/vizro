@@ -23,7 +23,14 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, ModelID, _IdProperty, _validate_captured_callable
+from vizro.models.types import (
+    ActionsType,
+    CapturedCallable,
+    ModelID,
+    MultiValueType,
+    _IdProperty,
+    _validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -122,7 +129,7 @@ class Graph(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
-    def _get_value_from_trigger(self, value: str, trigger: dict[str, list[JsonValue]]) -> JsonValue:
+    def _get_value_from_trigger(self, value: str, trigger: dict[str, list[JsonValue]]) -> MultiValueType | None:
         """Extract values from the trigger that represents clicked or selected Plotly graph points.
 
         Priority:
@@ -168,11 +175,13 @@ class Graph(VizroBaseModel):
                 if any(isinstance(point[key], Box) for point in trigger_box):
                     continue
 
-            return [
-                # If value is a list, flatten it to single value to skip returning nested object.
-                val[0] if isinstance((val := point[key]), list) else val
-                for point in trigger_box
-            ]
+            return sorted(
+                {
+                    # If value is a list, flatten it to single value to skip returning nested object.
+                    val[0] if isinstance((val := point[key]), list) else val
+                    for point in trigger_box
+                }
+            )
 
         # If we reach here, none of the lookup keys worked.
         raise ValueError(
