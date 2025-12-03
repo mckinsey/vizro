@@ -137,6 +137,7 @@ class Graph(VizroBaseModel):
 
         Returns:
           - list of values (one per point) or None if no points selected (signals reset).
+
         Raises:
           - ValueError if `value` can't be found.
         """
