@@ -5,7 +5,6 @@ import json
 from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path, no_update
-from dash.exceptions import PreventUpdate
 from pydantic import Field, JsonValue
 
 from vizro.actions._abstract_action import _AbstractAction
@@ -171,6 +170,7 @@ class set_control(_AbstractAction):
 
     def function(self, _trigger, _vizro_controls_store):
         from vizro.models import Checklist
+
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
         # If value is None then reset control to original value.
@@ -178,10 +178,10 @@ class set_control(_AbstractAction):
             value = _vizro_controls_store[self.control]["originalValue"]
 
         # Normalize returned value based on target selector type.
-        selector = model_manager[self.control].selector
+        selector = cast(ControlType, model_manager[self.control]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
         if is_multi:
-            value = sorted(set(value)) if isinstance(value, list) else [value]
+            value = sorted(set(value)) if isinstance(value, list) else [value]  # type: ignore[type-var]
         else:
             if value == []:
                 # Single-value selector cannot be set to empty list.

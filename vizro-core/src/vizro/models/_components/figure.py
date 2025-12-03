@@ -1,7 +1,7 @@
 from typing import Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, field_validator, JsonValue, model_validator
+from pydantic import AfterValidator, Field, JsonValue, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers import data_manager

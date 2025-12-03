@@ -119,10 +119,10 @@ class AgGrid(VizroBaseModel):
 
         Returns:
           - list of values (one per point) or None if no points selected (signals reset).
+
         Raises:
           - ValueError if `value` column name can't be found.
         """
-
         # Returning None signals a reset of control to its original value.
         if not trigger:
             return None

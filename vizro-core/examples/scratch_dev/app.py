@@ -39,7 +39,7 @@ def _create_filters(prefix: str):
             column="species",
             targets=[f"{prefix}table"],
             selector=vm.Dropdown(value="virginica", multi=False),
-        )
+        ),
     ]
 
 
@@ -76,19 +76,31 @@ page_1 = vm.Page(
                     layout=vm.Grid(grid=[[0, 1, 2]]),
                     components=[
                         vm.Graph(
-                            figure=px.bar(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+                            figure=px.bar(
+                                px.data.iris(),
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                custom_data=["species"],
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", size="petal_length",
-                                              color="species", custom_data=["species"]),
+                            figure=px.scatter(
+                                px.data.iris(),
+                                x="sepal_width",
+                                y="sepal_length",
+                                size="petal_length",
+                                color="species",
+                                custom_data=["species"],
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
                             figure=px.histogram(px.data.iris(), x="species", color="sepal_length"),
                             actions=_create_set_control_actions(prefix=pre, value="x"),
                         ),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Choropleth",
@@ -101,15 +113,14 @@ page_1 = vm.Page(
                                 locations="iso_alpha",
                                 color="lifeExp",
                                 hover_name="country",
-                                custom_data=["country"]
+                                custom_data=["country"],
                             ),
-                            actions=va.set_control(
-                                control=f"{pre}parameter_1", value="country"),
+                            actions=va.set_control(control=f"{pre}parameter_1", value="country"),
                         ),
                         vm.Figure(
                             id="selected_countries_text",
-                            figure=text_as_figure(px.data.gapminder(), text="Selected countries: None")
-                        )
+                            figure=text_as_figure(px.data.gapminder(), text="Selected countries: None"),
+                        ),
                     ],
                     controls=[
                         vm.Parameter(
@@ -118,15 +129,15 @@ page_1 = vm.Page(
                             selector=vm.Dropdown(
                                 options=px.data.gapminder().query("year==2007")["country"].unique().tolist()
                             ),
-                            visible=False
+                            visible=False,
                         )
-                    ]
-                )
+                    ],
+                ),
             ]
         ),
         vm.AgGrid(id=f"{pre}table", figure=dash_ag_grid(px.data.iris())),
     ],
-    controls=_create_filters(prefix=pre)
+    controls=_create_filters(prefix=pre),
 )
 
 pre = "p2_"
@@ -143,44 +154,67 @@ page_2 = vm.Page(
                         vm.Graph(
                             title="Bar with explicitly clickmode='event' set",
                             figure=bar_with_clickmode_event(
-                                px.data.iris(), x="sepal_width", y="sepal_length", color="species",
-                                custom_data=["species"]
+                                px.data.iris(),
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                custom_data=["species"],
                             ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
                             title="Box without selection enabled",
-                            figure=px.box(px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]),
+                            figure=px.box(
+                                px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
                             title="Violin without selection enabled",
-                            figure=px.violin(px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]),
+                            figure=px.violin(
+                                px.data.iris(), x="species", y="sepal_length", color="species", custom_data=["species"]
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Area, Pie, Line, Funnel_Area",
                     layout=vm.Grid(grid=[[0, 1], [2, 3]]),
                     components=[
                         vm.Graph(
-                            figure=px.area(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+                            figure=px.area(
+                                px.data.iris(),
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                custom_data=["species"],
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=px.pie(px.data.iris(), names="species", values="sepal_length", custom_data=["species"]),
+                            figure=px.pie(
+                                px.data.iris(), names="species", values="sepal_length", custom_data=["species"]
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=px.line(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+                            figure=px.line(
+                                px.data.iris(),
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                custom_data=["species"],
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=px.funnel_area(px.data.iris(), names="species", values="sepal_length", custom_data=["species"]),
+                            figure=px.funnel_area(
+                                px.data.iris(), names="species", values="sepal_length", custom_data=["species"]
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 vm.Container(
                     title="Density Heatmap, Line Polar, Treemap, Parallel Coordinates",
@@ -192,25 +226,37 @@ page_2 = vm.Page(
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=px.line_polar(px.data.iris(), r="sepal_length", theta="species", color="species", custom_data=["species"]),
+                            figure=px.line_polar(
+                                px.data.iris(),
+                                r="sepal_length",
+                                theta="species",
+                                color="species",
+                                custom_data=["species"],
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
-                            figure=px.treemap(px.data.iris(), path=["species"], values="sepal_length", custom_data=["species"]),
+                            figure=px.treemap(
+                                px.data.iris(), path=["species"], values="sepal_length", custom_data=["species"]
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
                         vm.Graph(
                             title="IMPORTANT: Does not support custom_data nor clickData :D",
-                            figure=px.parallel_coordinates(px.data.iris(), color="sepal_length", dimensions=["sepal_width", "sepal_length", "petal_width", "petal_length"]),
+                            figure=px.parallel_coordinates(
+                                px.data.iris(),
+                                color="sepal_length",
+                                dimensions=["sepal_width", "sepal_length", "petal_width", "petal_length"],
+                            ),
                             actions=_create_set_control_actions(prefix=pre),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
             ]
         ),
         vm.AgGrid(id=f"{pre}table", figure=dash_ag_grid(px.data.iris())),
     ],
-    controls=_create_filters(prefix=pre)
+    controls=_create_filters(prefix=pre),
 )
 
 pre = "p3_"
@@ -223,7 +269,7 @@ page_3 = vm.Page(
         ),
         vm.AgGrid(id=f"{pre}table", figure=dash_ag_grid(px.data.iris())),
     ],
-    controls=_create_filters(prefix=pre)
+    controls=_create_filters(prefix=pre),
 )
 
 pre = "p4_"
@@ -237,7 +283,7 @@ page_4 = vm.Page(
                 va.set_control(control=f"{pre}filter_2", value=None),
                 va.set_control(control=f"{pre}filter_3", value=None),
                 va.set_control(control=f"{pre}filter_4", value=None),
-            ]
+            ],
         ),
         vm.Button(
             text="Set []",
@@ -246,7 +292,7 @@ page_4 = vm.Page(
                 va.set_control(control=f"{pre}filter_2", value=[]),
                 va.set_control(control=f"{pre}filter_3", value=[]),
                 va.set_control(control=f"{pre}filter_4", value=[]),
-            ]
+            ],
         ),
         vm.Card(
             text="Set 'versicolor'",
@@ -272,8 +318,9 @@ page_5 = vm.Page(
             layout=vm.Flex(),
             components=[
                 vm.Graph(
-                    figure=px.bar(px.data.iris(), x="sepal_width", y="sepal_length", color="species",
-                                  custom_data=["species"]),
+                    figure=px.bar(
+                        px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+                    ),
                     actions=va.set_control(control=f"{pre_target}filter_1", value="species"),
                 ),
                 vm.Button(
@@ -292,15 +339,16 @@ page_5 = vm.Page(
                     text="""Set [['setosa', 'versicolor']]""",
                     actions=va.set_control(control=f"{pre_target}filter_1", value=["setosa", "versicolor"]),
                 ),
-            ]
+            ],
         ),
         vm.Container(
             title="Set single-select",
             layout=vm.Flex(),
             components=[
                 vm.Graph(
-                    figure=px.bar(px.data.iris(), x="sepal_width", y="sepal_length", color="species",
-                                  custom_data=["species"]),
+                    figure=px.bar(
+                        px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+                    ),
                     actions=va.set_control(control=f"{pre_target}filter_2", value="species"),
                 ),
                 vm.Button(
@@ -319,10 +367,9 @@ page_5 = vm.Page(
                     text="""Set [['setosa', 'versicolor']]""",
                     actions=va.set_control(control=f"{pre_target}filter_2", value=["setosa", "versicolor"]),
                 ),
-            ]
-        )
+            ],
+        ),
     ],
-
 )
 page_6 = vm.Page(
     title="Drill-through target page",
@@ -330,17 +377,13 @@ page_6 = vm.Page(
         vm.AgGrid(figure=dash_ag_grid(px.data.iris())),
     ],
     controls=[
-        vm.Filter(
-            id=f"{pre_target}filter_1",
-            column="species",
-            show_in_url=True
-        ),
+        vm.Filter(id=f"{pre_target}filter_1", column="species", show_in_url=True),
         vm.Filter(
             id=f"{pre_target}filter_2",
             column="species",
             show_in_url=True,
             selector=vm.Dropdown(multi=False),
-        )
+        ),
     ],
 )
 
@@ -350,8 +393,10 @@ page_7 = vm.Page(
     title="Old filter_interaction",
     components=[
         vm.Graph(
-            figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            actions=va.filter_interaction(targets=[f"{pre}table"])
+            figure=px.scatter(
+                px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+            ),
+            actions=va.filter_interaction(targets=[f"{pre}table"]),
         ),
         vm.AgGrid(id=f"{pre}table", figure=dash_ag_grid(px.data.iris())),
     ],
@@ -364,8 +409,12 @@ page_8 = vm.Page(
         vm.Graph(
             id=f"{pre}graph_1",
             figure=px.scatter(
-                px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"],
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+                px.data.iris(),
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                custom_data=["species"],
+                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
             ),
             actions=va.set_control(control=f"{pre}filter_1", value="customdata[0]"),
         ),
@@ -375,7 +424,7 @@ page_8 = vm.Page(
             id=f"{pre}filter_1",
             column="species",
         )
-    ]
+    ],
 )
 
 

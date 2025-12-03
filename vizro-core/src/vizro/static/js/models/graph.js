@@ -12,23 +12,33 @@
  * @param {string}      figureId      DOM id of the graph container used to check for modebar options.
  * @returns {Object|null}             One of clickData, selectedData, or dash_clientside.no_update.
  */
-function update_graph_actions_trigger_prop(clickData, selectedData, figure, figureId) {
+function update_graph_actions_trigger_prop(
+  clickData,
+  selectedData,
+  figure,
+  figureId,
+) {
   // Check whether graph supports selection by looking for "Box Select" option in the graph's modebar in chart's header.
-  const isGraphSelectable = !!document.getElementById(figureId).querySelector('[data-title="Box Select"]');
+  const isGraphSelectable = !!document
+    .getElementById(figureId)
+    .querySelector('[data-title="Box Select"]');
 
   // Extract the "clickmode" setting from the figure layout or default template.
   // figure.layout.clickmode can be defined if user has explicitly set it with figure.update_layout(clickmode=...).
   // figure.layout.template.layout.clickmode can be defined if user has overwritten the default template's clickmode.
   // By default, Vizro sets figure.layout.template.layout.clickmode to "event+select".
-  const isClickmodeEventSelect = (
-    figure?.layout?.clickmode ??
-    figure?.layout?.template?.layout?.clickmode
-  ) === "event+select";
+  const isClickmodeEventSelect =
+    (figure?.layout?.clickmode ??
+      figure?.layout?.template?.layout?.clickmode) === "event+select";
 
   // Extract trigger IDs.
   const triggeredIds = dash_clientside.callback_context.triggered;
-  const isClickDataTriggered = triggeredIds.some(t => t.prop_id.includes("clickData"));
-  const isSelectedDataTriggered = triggeredIds.some(t => t.prop_id.includes("selectedData"));
+  const isClickDataTriggered = triggeredIds.some((t) =>
+    t.prop_id.includes("clickData"),
+  );
+  const isSelectedDataTriggered = triggeredIds.some((t) =>
+    t.prop_id.includes("selectedData"),
+  );
 
   // Return clickData if:
   // 1. graph is not selectable or
