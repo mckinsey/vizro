@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html
@@ -12,13 +12,12 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Card(VizroBaseModel):
-    """Creates a card based on Markdown syntax.
+    """Card based on Markdown syntax.
 
     Abstract: Usage documentation
         [How to use cards](../user-guides/card.md)
 
     Args:
-        type (Literal["card"]): Defaults to `"card"`.
         text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
         header (str): Markdown text positioned above the card text. Follows the CommonMark specification.
             Ideal for adding supplementary information. Defaults to `""`.
@@ -26,9 +25,9 @@ class Card(VizroBaseModel):
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
             only. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon in the top-right corner of the Card.
+        description (Tooltip | None): Optional markdown string that adds an icon in the top-right corner of the Card.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -55,10 +54,10 @@ class Card(VizroBaseModel):
         "",
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,

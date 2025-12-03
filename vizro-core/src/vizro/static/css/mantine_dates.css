@@ -43,7 +43,6 @@
   user-select: none;
   cursor: pointer;
   background-color: transparent;
-  border-radius: var(--mantine-radius-default);
   color: var(--mantine-color-text);
   opacity: 1;
 }
@@ -102,7 +101,6 @@
 
   .m_396ce5cb:where([data-in-range]) {
     background-color: var(--mantine-primary-color-light-hover);
-    border-radius: 0;
   }
 
   @media (hover: hover) {
@@ -116,22 +114,6 @@
         background-color: var(--mantine-primary-color-light);
       }
 }
-
-  .m_396ce5cb:where([data-first-in-range]) {
-    border-radius: 0;
-    border-start-start-radius: var(--mantine-radius-default);
-    border-end-start-radius: var(--mantine-radius-default);
-  }
-
-  .m_396ce5cb:where([data-last-in-range]) {
-    border-radius: 0;
-    border-end-end-radius: var(--mantine-radius-default);
-    border-start-end-radius: var(--mantine-radius-default);
-  }
-
-  .m_396ce5cb:where([data-last-in-range][data-first-in-range]) {
-    border-radius: var(--mantine-radius-default);
-  }
 
   .m_396ce5cb:where([data-selected]) {
     background-color: var(--mantine-primary-color-filled);
@@ -204,7 +186,6 @@
   background-color: transparent;
   color: var(--mantine-color-text);
   opacity: 1;
-  border-radius: var(--mantine-radius-default);
 }
 
   @media (hover: hover) {
@@ -254,7 +235,6 @@
 
   .m_dc6a3c71:where([data-in-range]) {
     background-color: var(--mantine-primary-color-light-hover);
-    border-radius: 0;
   }
 
   @media (hover: hover) {
@@ -271,21 +251,6 @@
   }
 }
 
-  .m_dc6a3c71:where([data-first-in-range]) {
-    border-radius: 0;
-    border-start-start-radius: var(--mantine-radius-default);
-    border-end-start-radius: var(--mantine-radius-default);
-  }
-
-  .m_dc6a3c71:where([data-last-in-range]) {
-    border-radius: 0;
-    border-end-end-radius: var(--mantine-radius-default);
-    border-start-end-radius: var(--mantine-radius-default);
-  }
-
-  .m_dc6a3c71:where([data-first-in-range][data-last-in-range]) {
-    border-radius: var(--mantine-radius-default);
-  }
 
 .m_9206547b {
   border-collapse: collapse;
@@ -330,7 +295,6 @@
 .m_f6645d97,
 .m_2351eeb0 {
   height: var(--dch-control-size);
-  border-radius: var(--mantine-radius-default);
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,0 +1,8 @@
+ipython>=8.10
+jupyterlab>=3.0
+notebook
+kedro[jupyter]~=1.0.0
+kedro-datasets[pandas-csvdataset, pandas-exceldataset, pandas-parquetdataset, plotly-plotlydataset, plotly-jsondataset, matplotlib-matplotlibwriter]>=3.0
+kedro-viz>=6.7.0
+scikit-learn~=1.5.1
+seaborn~=0.12.1

@@ -276,9 +276,7 @@ class TestBuildGraph:
                             }
                         ),
                         config={
-                            "autosizable": True,
                             "frameMargins": 0,
-                            "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
@@ -312,9 +310,7 @@ class TestBuildGraph:
                             }
                         ),
                         config={
-                            "autosizable": True,
                             "frameMargins": 0,
-                            "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
@@ -360,9 +356,7 @@ class TestBuildGraph:
                             }
                         ),
                         config={
-                            "autosizable": True,
                             "frameMargins": 0,
-                            "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
@@ -398,9 +392,7 @@ class TestBuildGraph:
                             }
                         ),
                         config={
-                            "autosizable": True,
                             "frameMargins": 0,
-                            "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
                             "displayModeBar": False,
                         },

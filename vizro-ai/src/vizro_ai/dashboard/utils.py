@@ -1,7 +1,7 @@
 """Helper Functions For Vizro AI dashboard."""
 
 from dataclasses import dataclass
-from typing import Any, Optional, Union
+from typing import Any
 
 import pandas as pd
 import tqdm.std as tsd
@@ -57,9 +57,9 @@ class DashboardOutputs:
 class ComponentResult:
     """Dataclass containing the result of a component creation."""
 
-    component: Union[vm.Card, vm.AgGrid, vm.Figure]
-    imports: Optional[str] = None
-    code: Optional[str] = None
+    component: vm.Card | vm.AgGrid | vm.Figure
+    imports: str | None = None
+    code: str | None = None
 
 
 def _execute_step(pbar: tsd.tqdm, description: str, value: Any) -> Any:
