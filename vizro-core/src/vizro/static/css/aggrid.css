@@ -181,8 +181,13 @@
   text-decoration-line: underline;
 }
 
-.grid-item .ag-header-container {
-  position: sticky !important;
-  top: 0;
+
+.grid-item .ag-header {
+  position: fixed !important;
   z-index: 10;
+}
+
+.grid-item .ag-body-viewport {
+  height: calc(100% - 40px) !important;
+  margin-top: 40px !important;
 }

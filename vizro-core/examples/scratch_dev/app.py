@@ -8,11 +8,18 @@ gapminder = px.data.gapminder()
 iris = px.data.iris()
 tips = px.data.tips()
 
+filtered_gapminder = gapminder[(gapminder["continent"] == "Europe") & (gapminder["year"] == 2007)]
+
 # WORKS FINE - CAN BE ADDED TO STATIC CSS
 page0 = vm.Page(
     title="Sticky headers - grid ",
     components=[
-        vm.AgGrid(figure=dash_ag_grid(data_frame=gapminder)),
+        vm.Container(
+            title="",
+            components=[
+                vm.AgGrid(figure=dash_ag_grid(data_frame=filtered_gapminder)),
+            ],
+        ),
         vm.Graph(figure=px.scatter(iris, x="sepal_width", y="petal_length"), title="Title"),
         vm.AgGrid(figure=dash_ag_grid(data_frame=iris)),
     ],
