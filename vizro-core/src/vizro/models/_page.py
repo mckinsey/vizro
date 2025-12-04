@@ -152,7 +152,8 @@ class Page(VizroBaseModel):
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
         # Convert generator to list as it's going to be iterated multiple times.
-        controls = list(cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), self)))
+        # Use "root_model=self" as controls can be defined inside a "Container.controls" under the "Page.components".
+        controls = list(cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), root_model=self)))
 
         if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.

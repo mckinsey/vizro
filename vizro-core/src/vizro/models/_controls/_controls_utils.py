@@ -77,8 +77,9 @@ def get_control_parent(control: ControlType) -> Page | Container | None:
 
 def check_control_targets(control: ControlType) -> None:
     root_model = get_control_parent(control=control)
+    # Search by using "_get_models" instead of "if control not in root_model.controls" to handle nested custom controls.
     if root_model is None or control not in model_manager._get_models(root_model=root_model.controls):
-        raise ValueError(f"Control {control.id} should be defined within a Page.controls or Container.controls.")
+        raise ValueError(f"Control {control.id} should be defined within Page.controls or Container.controls.")
 
     _validate_targets(targets=control.targets, root_model=root_model)
 

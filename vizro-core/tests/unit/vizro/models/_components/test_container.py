@@ -76,7 +76,7 @@ class TestContainerInstantiation:
 
 
 class TestContainerPreBuildMethod:
-    def test_controls_have_in_container_set(self, standard_px_chart, mock_control_wrapper_class):
+    def test_controls_have_in_container_set(self, standard_px_chart, MockControlWrapper):
         # This test needs to setup a whole page so that we can define filters and parameters even though we only care
         # about them being inside a vm.Container.
         vm.Page(
@@ -89,10 +89,10 @@ class TestContainerPreBuildMethod:
                         vm.Container(
                             components=[vm.Graph(id="graph_in_container", figure=standard_px_chart)],
                             controls=[
-                                mock_control_wrapper_class(
+                                MockControlWrapper(
                                     control=vm.Filter(id="filter_wrapped_in_container", column="continent"),
                                 ),
-                                mock_control_wrapper_class(
+                                MockControlWrapper(
                                     control=vm.Parameter(
                                         id="parameter_wrapped_in_container",
                                         targets=["graph_in_container.size"],
@@ -107,7 +107,7 @@ class TestContainerPreBuildMethod:
                         vm.Filter(id="filter_radio_items", column="continent", selector=vm.RadioItems()),
                         vm.Filter(id="filter_checklist", column="continent", selector=vm.Checklist()),
                         # Wrapped filter to test that _in_container is correctly propagated to the selector:
-                        mock_control_wrapper_class(control=vm.Filter(id="filter_wrapped", column="continent")),
+                        MockControlWrapper(control=vm.Filter(id="filter_wrapped", column="continent")),
                         # Test filter that doesn't have _in_container property to make sure it doesn't crash:
                         vm.Filter(id="filter_slider", column="lifeExp"),
                         vm.Parameter(
@@ -126,7 +126,7 @@ class TestContainerPreBuildMethod:
                             selector=vm.Checklist(options=["country", "continent"]),
                         ),
                         # Wrapped parameter to test that _in_container is correctly propagated to the selector:
-                        mock_control_wrapper_class(
+                        MockControlWrapper(
                             control=vm.Parameter(
                                 id="parameter_wrapped",
                                 targets=["graph.size"],

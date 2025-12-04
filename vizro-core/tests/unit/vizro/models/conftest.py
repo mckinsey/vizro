@@ -20,9 +20,12 @@ def model_with_layout(request):
     return request.param
 
 
+# This test does add_type so ideally we would clean up after this to restore vizro.models to its previous state.
+# This is difficult to fix fully by un-importing vizro.models though, since we use `import vizro.models as vm` - see
+# https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module.
 @pytest.fixture
-def mock_control_wrapper_class():
-    class MockControlWrapper(vm.VizroBaseModel):
+def MockControlWrapper():
+    class _MockControlWrapper(vm.VizroBaseModel):
         """Wrapper model around the control."""
 
         type: Literal["mock_control_wrapper"] = "mock_control_wrapper"
@@ -36,4 +39,4 @@ def mock_control_wrapper_class():
         def build(self):
             return self.control.build()
 
-    return MockControlWrapper
+    return _MockControlWrapper

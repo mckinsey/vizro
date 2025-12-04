@@ -107,7 +107,7 @@ class TestParameterInstantiation:
 class TestPreBuildMethod:
     def test_parameter_not_in_page(self):
         with pytest.raises(
-            ValueError, match=r"Control parameter_id should be defined within a Page.controls or Container.controls."
+            ValueError, match=r"Control parameter_id should be defined within Page.controls or Container.controls."
         ):
             Parameter(
                 id="parameter_id",
@@ -136,9 +136,9 @@ class TestPreBuildMethod:
         assert parameter.selector.title == title
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    def test_set_target_wrapped_parameter_valid(self, mock_control_wrapper_class):
+    def test_set_target_wrapped_parameter_valid(self, MockControlWrapper):
         parameter = Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
-        model_manager["test_page"].controls = [mock_control_wrapper_class(control=parameter)]
+        model_manager["test_page"].controls = [MockControlWrapper(control=parameter)]
         parameter.pre_build()
 
         assert parameter.targets == ["scatter_chart.x"]

@@ -625,7 +625,7 @@ class TestFilterCall:
 class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
         with pytest.raises(
-            ValueError, match=r"Control filter_id should be defined within a Page.controls or Container.controls."
+            ValueError, match=r"Control filter_id should be defined within Page.controls or Container.controls."
         ):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
 
@@ -641,9 +641,9 @@ class TestFilterPreBuildMethod:
             "column_numerical_exists_empty",
         ]
 
-    def test_targets_wrapped_filter_valid(self, managers_column_only_exists_in_some, mock_control_wrapper_class):
+    def test_targets_wrapped_filter_valid(self, managers_column_only_exists_in_some, MockControlWrapper):
         filter = vm.Filter(column="column_numerical")
-        model_manager["test_page"].controls = [mock_control_wrapper_class(control=filter)]
+        model_manager["test_page"].controls = [MockControlWrapper(control=filter)]
         filter.pre_build()
 
         assert filter.targets == [
@@ -990,9 +990,9 @@ class TestFilterPreBuildMethod:
         assert filter.targets == ["scatter_chart"]
 
     @pytest.mark.usefixtures("managers_one_page_container_controls")
-    def test_container_wrapped_filter_default_targets(self, mock_control_wrapper_class):
+    def test_container_wrapped_filter_default_targets(self, MockControlWrapper):
         filter = vm.Filter(column="continent")
-        model_manager["test_container"].controls = [mock_control_wrapper_class(control=filter)]
+        model_manager["test_container"].controls = [MockControlWrapper(control=filter)]
         filter.pre_build()
 
         assert filter.targets == ["scatter_chart"]

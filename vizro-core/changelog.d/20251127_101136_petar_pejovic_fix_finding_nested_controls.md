@@ -36,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- Fix that custom controls can be nested arbitrarily deep inside `Page.controls` and `Container.controls`. ([#1508](https://github.com/mckinsey/vizro/pull/1508))
+- Fix regression that prevented custom controls being nested arbitrarily deep inside `Page.controls` and `Container.controls`. ([#1508](https://github.com/mckinsey/vizro/pull/1508))
 
 <!--
 ### Security
