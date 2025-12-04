@@ -1,61 +1,118 @@
-"""Dev app to try things out."""
-
+import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-import vizro.models as vm
-from vizro.actions import export_data
 
-df = px.data.iris()
+from vizro.tables import dash_ag_grid
 
-page_one = vm.Page(
-    title="Page 1",
+gapminder = px.data.gapminder()
+iris = px.data.iris()
+tips = px.data.tips()
+
+filtered_gapminder = gapminder[(gapminder["continent"] == "Europe") & (gapminder["year"] == 2007)]
+
+page_grid_0 = vm.Page(
+    title="Grid",
+    layout=vm.Grid(
+        grid=[[0, 1], [2, 2]],
+        row_min_height="1000px",
+    ),
+    components=[
+        vm.Container(
+            title="",
+            components=[
+                vm.AgGrid(figure=dash_ag_grid(data_frame=filtered_gapminder)),
+            ],
+        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="petal_length"), title="Title"),
+        vm.AgGrid(figure=dash_ag_grid(data_frame=iris)),
+    ],
+)
+
+
+page_grid_1 = vm.Page(
+    title="Grid - in column",
+    layout=vm.Grid(
+        grid=[[0], [1], [2], [3], [4]],
+        row_min_height="1000px",
+    ),
+    components=[
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+    ],
+)
+
+
+page_grid_2 = vm.Page(
+    title="Grid - in row",
+    layout=vm.Grid(
+        grid=[[0, 1, 2, 3, 4]],
+        col_min_width="1000px",
+    ),
+    components=[
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+    ],
+)
+
+page_flex_0 = vm.Page(
+    title="Flex",
     layout=vm.Flex(),
     components=[
         vm.Container(
-            title="Button Styles",
-            layout=vm.Flex(direction="row"),
+            title="",
             components=[
-                vm.Button(text="Primary", variant="filled"),
-                vm.Button(text="Primary", icon="Download", variant="filled"),
-                vm.Button(text="", icon="Download", variant="filled"),
-                vm.Button(text="Secondary", variant="outlined"),
-                vm.Button(text="Secondary", icon="Download", variant="outlined"),
-                vm.Button(text="", icon="Download", variant="outlined"),
-                vm.Button(text="Tertiary", variant="plain"),
-                vm.Button(text="Tertiary", icon="Download", variant="plain"),
-                vm.Button(text="", icon="Download", variant="plain"),
+                vm.AgGrid(figure=dash_ag_grid(data_frame=filtered_gapminder)),
             ],
         ),
-        vm.Container(
-            title="Controls",
-            controls=[
-                vm.Filter(column="species"),
-                vm.Filter(column="petal_length"),
-                vm.Filter(column="sepal_width"),
-            ],
-            components=[
-                vm.Graph(title="Graph Title", figure=px.histogram(df, x="sepal_width", color="species")),
-                vm.Button(text="Export Data", actions=export_data()),
-            ],
-        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="petal_length"), title="Title"),
+        vm.AgGrid(figure=dash_ag_grid(data_frame=iris)),
     ],
 )
 
 
-page_two = vm.Page(
-    title="Page 2",
+page_flex_1 = vm.Page(
+    title="Flex - in column",
+    layout=vm.Flex(direction="column"),
     components=[
-        vm.Graph(title="Graph Title", figure=px.histogram(df, x="sepal_width", color="species")),
-        vm.Button(text="Export Data", actions=export_data()),
-    ],
-    controls=[
-        vm.Filter(column="species"),
-        vm.Filter(column="petal_length"),
-        vm.Filter(column="sepal_width"),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_one, page_two])
+page_flex_2 = vm.Page(
+    title="Flex - in row",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+    ],
+)
+
+
+dashboard = vm.Dashboard(
+    pages=[
+        page_grid_0,
+        page_grid_1,
+        page_grid_2,
+        page_flex_0,
+        page_flex_1,
+        page_flex_2,
+    ],
+    title="Test out Flex/Grid",
+)
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

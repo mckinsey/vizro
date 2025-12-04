@@ -5,7 +5,7 @@
   --ag-background-color: transparent;
   --ag-odd-row-background-color: transparent;
   --ag-data-color: var(--bs-heading-color);
-  --ag-header-background-color: transparent;
+  --ag-header-background-color: var(--right-side-bg-iterated);
   --ag-icon-font-family: aggridquartz;
   --ag-icon-size: 0.875rem;
   --ag-row-height: 48px;
@@ -179,4 +179,16 @@
     var(--bs-primary);
   color: var(--text-primary-inverted);
   text-decoration-line: underline;
+}
+
+
+.grid-item .ag-header {
+  position: fixed !important;
+  width: fit-content;
+  z-index: 10;
+}
+
+.grid-item .ag-body-viewport {
+  height: calc(100% - 40px) !important;
+  margin-top: 40px !important;
 }
