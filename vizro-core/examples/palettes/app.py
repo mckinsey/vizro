@@ -2,16 +2,19 @@ import itertools
 
 import plotly.io as pio
 import vizro.models as vm
-from charts import charts_by_category
+from charts import CHARTS_BY_CATEGORY
 from dash import Input, Output, State, clientside_callback, html
 from palettes import DIVERGING_PALETTE, QUALITATIVE_PALETTE, SEQUENTIAL_PALETTE, SEQUENTIALMINUS_PALETTE
 from vizro import Vizro
 
-
-
-
-
-palettes = {"colorscale": {"sequential": SEQUENTIAL_PALETTE, "diverging": DIVERGING_PALETTE, "sequentialminus": SEQUENTIALMINUS_PALETTE}, "colorway": QUALITATIVE_PALETTE}
+palettes = {
+    "colorscale": {
+        "sequential": SEQUENTIAL_PALETTE,
+        "diverging": DIVERGING_PALETTE,
+        "sequentialminus": SEQUENTIALMINUS_PALETTE,
+    },
+    "colorway": QUALITATIVE_PALETTE,
+}
 
 pio.templates["vizro_light"] = pio.templates.merge_templates("vizro_light", {"layout": palettes})
 pio.templates["vizro_dark"] = pio.templates.merge_templates("vizro_dark", {"layout": palettes})
@@ -43,32 +46,28 @@ This page demonstrates all Plotly Express chart types (with the exception of `im
 {chart_categories_text}
 """
 
-class CustomDashboard(vm.Dashboard):
-    """Custom dashboard with page controls in header and no left panel.
 
-    Overrides _inner_page to hide the left navigation panel and custom_header to place
-    page controls (colorscale selector, container variant dropdown) in the header next to
-    the theme switch instead of in the left sidebar.
-    """
+class CustomDashboard(vm.Dashboard):
+    """Custom dashboard with page controls in header and no left panel."""
 
     def _inner_page(self, page):
-        """Override to hide the left panel."""
+        # Need to store the current page to access the controls in the custom_header method.
         self._current_page = page
         inner_page = super()._inner_page(page)
+        # Best hidden here rather than CSS so that collapse icon is also hidden.
         inner_page["nav-control-panel"] = html.Div(id="nav-control-panel", hidden=True)
         return inner_page
 
     def custom_header(self):
-        """Add page controls to header next to theme switch."""
-        if hasattr(self, "_current_page") and self._current_page.controls:
-            return [control.build() for control in self._current_page.controls]
-        return []
+        return [control.build() for control in self._current_page.controls]
+
 
 def make_chart_id(px_function, suffix):
     return f"{px_function.split('.')[1]}_{suffix}"
 
 
 def make_chart_container(category, charts):
+    """Make a container for a chart category."""
     graphs = []
     grid = []
     graph_index = 0
@@ -109,28 +108,26 @@ def make_chart_container(category, charts):
             ),
             vm.Container(layout=vm.Grid(grid=grid), components=graphs),
         ],
-        variant="outlined",
     )
 
 
 def generate_chart_categories_text():
     """Generate markdown text listing all chart categories and their charts."""
     lines = []
-    for category, charts in charts_by_category.items():
+    for category, charts in CHARTS_BY_CATEGORY.items():
         chart_titles = [chart.title.lower() for chart in charts]
         lines.append(f"* **{category}**: {', '.join(chart_titles)}")
     return "\n".join(lines)
 
 
-
 introduction_container = vm.Container(
-    title="Introduction", components=[vm.Text(text=INTRODUCTION_TEXT.format(chart_categories_text=generate_chart_categories_text()))], variant="outlined"
+    title="Introduction",
+    components=[vm.Text(text=INTRODUCTION_TEXT.format(chart_categories_text=generate_chart_categories_text()))],
 )
-
+chart_containers = [make_chart_container(category, charts) for category, charts in CHARTS_BY_CATEGORY.items()]
 
 vm.Page.add_type("controls", vm.Dropdown)
 
-chart_containers = [make_chart_container(category, charts) for category, charts in charts_by_category.items()]
 
 page = vm.Page(
     title="",
@@ -140,7 +137,7 @@ page = vm.Page(
         vm.Parameter(
             targets=[
                 f"{make_chart_id(chart_type.px_function, 'continuous')}.color_continuous_scale"
-                for chart_type in itertools.chain.from_iterable(charts_by_category.values())
+                for chart_type in itertools.chain.from_iterable(CHARTS_BY_CATEGORY.values())
                 if chart_type.continuous_figure is not None
             ],
             selector=vm.Dropdown(

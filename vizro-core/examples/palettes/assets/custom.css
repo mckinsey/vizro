@@ -1,0 +1,19 @@
+#colorscale_selector_title {
+    display: none;
+}
+
+#page-header {
+    display: none;
+}
+
+/* Align Parameter wrapper with dropdown in header */
+#header-custom > div > div,
+#header-custom label {
+    display: flex;
+    align-items: center;
+}
+
+#header-custom label {
+    margin-bottom: 0;
+}
+
