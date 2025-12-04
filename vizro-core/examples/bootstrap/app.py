@@ -187,7 +187,7 @@ buttons2 = dbc.Col(
                     dbc.Button("Danger", color="danger"),
                 ]
             ),
-            class_name="mb-2",
+            className="mb-2",
         ),
         html.Div(
             dbc.ButtonGroup(
@@ -205,7 +205,7 @@ buttons2 = dbc.Col(
                 ],
                 vertical=True,
             ),
-            class_name="mb-2",
+            className="mb-2",
         ),
     ],
     lg=6,
