@@ -15,5 +15,8 @@ def correlation_heatmap(data_frame):
     )
 
 
-# Fig definition
-fig = correlation_heatmap(data_frame=iris)
+# definition 
+page = vm.Page(
+    title="Correlation matrix",
+    components=[vm.Graph(figure=correlation_heatmap(data_frame="iris"))],
+)
