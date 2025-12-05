@@ -47,19 +47,19 @@ Here is the prompt as it was typed. Before you submit it, we recommend you check
 
 ![](../../assets/images/cursor-tutorial1.png)
 
-When you submit this prompt to Cursor, you will see some output, which will pause and wait for you to give permission to continue:
+When you submit this prompt to Cursor, you will see some output, which will pause and wait for you to give permission to continue. The pause is a security measure to prevent rogue MCP servers from executing code:
 
 ![](../../assets/images/cursor-tutorial2.png)
 
-If you don't want to have to select **Run** each time you submit a prompt, you can add Vizro-MCP's `get_vizro_chart_or_dashboard_plan` method to the Allowlist by opening the dropdown indicated next to **Ask Every Time**:
+You can grant permission for Vizro-MCP tools to run as shown. If you don't want to have to select **Run** each time you submit a prompt, you can add Vizro-MCP's `get_vizro_chart_or_dashboard_plan` tool to the Allowlist by opening the dropdown indicated next to **Ask Every Time**:
 
 ![](../../assets/images/cursor-tutorial-update-allowlist.png)
 
-When you select **Use Allowlist** you'll be shown the following disclaimer. Select **Continue** to confirm the method.
+When you select **Use Allowlist** you'll be shown the following disclaimer. Select **Continue** to confirm the tool.
 
 ![](../../assets/images/cursor-tutorial-allowlist-disclaimer.png)
 
-You will be asked to give similar permission for additional Vizro-MCP methods to run, and should similarly add these to the Allowlist. When you have done this, Cursor uses Vizro-MCP to generate some code for the chart requested.
+You will be asked to give similar permission for additional Vizro-MCP tools to run, and can similarly add these to the Allowlist. When you have done this, Cursor uses Vizro-MCP to generate some code for the chart requested.
 
 ![](../../assets/images/cursor-tutorial-multiple-allowlist-additions.png)
 
