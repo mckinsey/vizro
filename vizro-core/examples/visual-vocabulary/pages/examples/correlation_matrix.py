@@ -1,4 +1,3 @@
-import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.models.types import capture
 
@@ -18,4 +17,3 @@ def correlation_heatmap(data_frame):
 
 # Fig definition
 fig = correlation_heatmap(data_frame=iris)
-
