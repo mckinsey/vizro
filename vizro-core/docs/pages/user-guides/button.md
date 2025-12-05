@@ -256,6 +256,8 @@ You can use it alongside the `text` argument, or on its own to create a circular
         import vizro.plotly.express as px
         from vizro import Vizro
 
+        iris = px.data.iris()
+
         page = vm.Page(
             title="Buttons with an icon",
             layout=vm.Flex(),
