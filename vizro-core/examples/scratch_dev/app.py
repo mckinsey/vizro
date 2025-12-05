@@ -3,7 +3,9 @@ from vizro import Vizro
 import vizro.models as vm
 from vizro.tables import dash_ag_grid
 
-df = px.data.iris()
+    type: Literal["control_group"] = "control_group"
+    title: str
+    controls: list[ControlType] = []
 
 page = vm.Page(
     title="Vizro on PyCafe",
