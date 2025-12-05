@@ -253,6 +253,7 @@ You can use it alongside the `text` argument, or on its own to create a circular
 
         ```{.python pycafe-link hl_lines="9 25"}
         import vizro.models as vm
+        import vizro.plotly.express as px
         from vizro import Vizro
 
         page = vm.Page(
