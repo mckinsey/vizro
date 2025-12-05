@@ -64,7 +64,7 @@ correlation_intro_text = """
 correlation_chart_group = ChartGroup(
     name="Correlation",
     pages=pages.correlation.pages,
-    incomplete_pages=[]
+    incomplete_pages=[],
     icon="Bubble Chart",
     intro_text=correlation_intro_text,
 )
