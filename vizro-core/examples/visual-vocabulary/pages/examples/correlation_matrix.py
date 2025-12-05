@@ -4,7 +4,7 @@ from vizro.managers import data_manager
 from vizro.models.types import capture
 
 # Note iris data
-data_manager["iris"] = px.data.iris().select_dtypes("number")
+iris = px.data.iris().select_dtypes("number")
 
 
 # Chart definition
