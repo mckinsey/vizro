@@ -13,7 +13,6 @@ def correlation_heatmap(data_frame):
         data_frame.corr(),
         text_auto=True,
         aspect="auto",
-        color_continuous_scale=["#0a0814", "#1a1442", "#2d2463"],
     )
 
 
