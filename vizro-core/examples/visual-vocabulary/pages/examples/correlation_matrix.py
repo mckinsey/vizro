@@ -1,6 +1,5 @@
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.managers import data_manager
 from vizro.models.types import capture
 
 # Note iris data
