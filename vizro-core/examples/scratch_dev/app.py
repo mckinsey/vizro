@@ -137,9 +137,9 @@ class ChatAction(_AbstractAction):
     """Base class for chat functionality with streaming and non-streaming support."""
 
     type: Literal["chat_action"] = "chat_action"
-    chat_id: str
-    prompt: str = Field(default_factory=lambda data: f"{data['chat_id']}-chat-input.value")
-    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
+    parent_id: str = Field(description="ID of the parent Chat component.")
+    prompt: str = Field(default_factory=lambda data: f"{data['parent_id']}-chat-input.value")
+    messages: str = Field(default_factory=lambda data: f"{data['parent_id']}-store.data")
     stream: bool = True
 
     @model_validator(mode="after")
@@ -186,6 +186,13 @@ class ChatAction(_AbstractAction):
         return self
 
     def pre_build(self):
+        if self.parent_id != self._parent_model.id:
+            raise ValueError(
+                f"{self.__class__.__name__} has parent_id='{self.parent_id}' but is attached to "
+                f"Chat component with id='{self._parent_model.id}'. "
+                f"These must match. Fix: use parent_id='{self._parent_model.id}'"
+            )
+
         if self.stream:
             self._setup_streaming_callbacks()
             self._setup_streaming_endpoint()
@@ -281,12 +288,12 @@ class ChatAction(_AbstractAction):
             }
             """,
             [
-                Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
-                Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
-                Output(f"{self.chat_id}-loading-output", "children", allow_duplicate=True),
+                Output(f"{self.parent_id}-hidden-messages", "children", allow_duplicate=True),
+                Output(f"{self.parent_id}-store", "data", allow_duplicate=True),
+                Output(f"{self.parent_id}-loading-output", "children", allow_duplicate=True),
             ],
-            Input(f"{self.chat_id}-sse", "animation"),
-            [State(f"{self.chat_id}-hidden-messages", "children"), State(f"{self.chat_id}-store", "data")],
+            Input(f"{self.parent_id}-sse", "animation"),
+            [State(f"{self.parent_id}-hidden-messages", "children"), State(f"{self.parent_id}-store", "data")],
             prevent_initial_call=True,
         )
 
@@ -295,7 +302,7 @@ class ChatAction(_AbstractAction):
         CHUNK_DELIMITER = "|END|"
 
         @dash.get_app().server.route(
-            f"/streaming-{self.chat_id}", methods=["POST"], endpoint=f"streaming_chat_{self.chat_id}"
+            f"/streaming-{self.parent_id}", methods=["POST"], endpoint=f"streaming_chat_{self.parent_id}"
         )
         def streaming_chat():
             req = StreamingRequest(**request.get_json())
@@ -478,19 +485,19 @@ class ChatAction(_AbstractAction):
                 });
             }
             """,
-            Output(f"{self.chat_id}-rendered-messages", "children"),
-            Input(f"{self.chat_id}-hidden-messages", "children"),
+            Output(f"{self.parent_id}-rendered-messages", "children"),
+            Input(f"{self.parent_id}-hidden-messages", "children"),
             prevent_initial_call=True,
         )
 
         @callback(
-            Output(f"{self.chat_id}-store", "data", allow_duplicate=True),
-            Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
-            Output(f"{self.chat_id}-chat-input", "value"),  # Clear input after sending
-            Output(f"{self.chat_id}-loading-output", "children"),  # Show loading indicator
+            Output(f"{self.parent_id}-store", "data", allow_duplicate=True),
+            Output(f"{self.parent_id}-hidden-messages", "children", allow_duplicate=True),
+            Output(f"{self.parent_id}-chat-input", "value"),  # Clear input after sending
+            Output(f"{self.parent_id}-loading-output", "children"),  # Show loading indicator
             # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
             # make sure it.
-            Input(f"{self.chat_id}-send-button", "n_clicks"),
+            Input(f"{self.parent_id}-send-button", "n_clicks"),
             State(*self.prompt.split(".")),
             prevent_initial_call=True,
         )
@@ -531,13 +538,13 @@ class ChatAction(_AbstractAction):
             function(value) {{
                 // Add event listener for the chat input if not already added
                 setTimeout(() => {{
-                    const chatInput = document.getElementById('{self.chat_id}-chat-input');
+                    const chatInput = document.getElementById('{self.parent_id}-chat-input');
                     if (chatInput && !chatInput.dataset.listenerAdded) {{
                         chatInput.dataset.listenerAdded = 'true';
                         chatInput.addEventListener('keydown', function(e) {{
                             if (e.key === 'Enter' && !e.shiftKey) {{
                                 e.preventDefault();
-                                const sendButton = document.getElementById('{self.chat_id}-send-button');
+                                const sendButton = document.getElementById('{self.parent_id}-send-button');
                                 if (sendButton && chatInput.value.trim()) {{
                                     sendButton.click();
                                 }}
@@ -549,8 +556,8 @@ class ChatAction(_AbstractAction):
                 return window.dash_clientside.no_update;
             }}
             """,
-            Output(f"{self.chat_id}-chat-input", "id", allow_duplicate=True),  # Dummy output
-            Input(f"{self.chat_id}-chat-input", "value"),
+            Output(f"{self.parent_id}-chat-input", "id", allow_duplicate=True),  # Dummy output
+            Input(f"{self.parent_id}-chat-input", "value"),
             prevent_initial_call=True,
         )
 
@@ -558,13 +565,13 @@ class ChatAction(_AbstractAction):
         page = model_manager._get_model_page(self)
 
         @callback(
-            Output(f"{self.chat_id}-hidden-messages", "children", allow_duplicate=True),
+            Output(f"{self.parent_id}-hidden-messages", "children", allow_duplicate=True),
             Output(
                 "vizro_version", "children", allow_duplicate=True
             ),  # Extremely horrible hack we should change, just done here to make
             # sure callback triggers (must have prevent_initial_call=True).
             Input(*page._action_triggers["__default__"].split(".")),
-            State(f"{self.chat_id}-store", "data"),
+            State(f"{self.parent_id}-store", "data"),
             prevent_initial_call=True,
         )
         def on_page_load(_, store):
@@ -637,7 +644,7 @@ class ChatAction(_AbstractAction):
             return [
                 store,
                 html_messages,
-                f"/streaming-{self.chat_id}",
+                f"/streaming-{self.parent_id}",
                 sse_options(StreamingRequest(prompt=prompt, messages=messages)),
                 "",  # Clear loading indicator
             ]
@@ -677,17 +684,17 @@ class ChatAction(_AbstractAction):
     def outputs(self):
         if self.stream:
             return [
-                f"{self.chat_id}-store.data",
-                f"{self.chat_id}-hidden-messages.children",
-                f"{self.chat_id}-sse.url",
-                f"{self.chat_id}-sse.options",
-                f"{self.chat_id}-loading-output.children",
+                f"{self.parent_id}-store.data",
+                f"{self.parent_id}-hidden-messages.children",
+                f"{self.parent_id}-sse.url",
+                f"{self.parent_id}-sse.options",
+                f"{self.parent_id}-loading-output.children",
             ]
         else:
             return [
-                f"{self.chat_id}-store.data",
-                f"{self.chat_id}-hidden-messages.children",
-                f"{self.chat_id}-loading-output.children",
+                f"{self.parent_id}-store.data",
+                f"{self.parent_id}-hidden-messages.children",
+                f"{self.parent_id}-loading-output.children",
             ]
 
 
@@ -720,7 +727,6 @@ class openai_chat(ChatAction):
     api_key: Optional[str] = None  # Uses OPENAI_API_KEY env variable if not provided
     api_base: Optional[str] = None  # Uses OPENAI_BASE_URL env variable if not provided
     stream: bool = True
-    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
 
     # expose instructions and other stuff as fields.
     # But ultimately users will want to customize a lot of things like tools etc. so should be able to easily write
@@ -775,7 +781,6 @@ class anthropic_chat(ChatAction):
     type: Literal["anthropic_chat"] = "anthropic_chat"
     model: str = "claude-haiku-4-5-20251001"
     stream: bool = True  # Streaming-only for this implementation
-    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
 
     def generate_stream(self, messages):
         """Generate streaming response from Anthropic Claude.
@@ -813,7 +818,6 @@ class mixed_content(ChatAction):
 
     type: Literal["mixed_content"] = "mixed_content"
     stream: bool = False  # Non-streaming only - components cannot be streamed
-    messages: str = Field(default_factory=lambda data: f"{data['chat_id']}-store.data")
 
     def generate_response(self, messages):
         """Returns serialized component structure as JSON."""
@@ -865,7 +869,7 @@ class vizro_ai_chat(ChatAction):
 
     type: Literal["vizro_ai_chat"] = "vizro_ai_chat"
     stream: bool = False  # VizroAI returns complete plots, not streamable
-    uploaded_data: str = Field(default_factory=lambda data: f"{data['chat_id']}-data-store.data")
+    uploaded_data: str = Field(default_factory=lambda data: f"{data['parent_id']}-data-store.data")
 
     @property
     def inputs(self):
@@ -1252,7 +1256,7 @@ page = vm.Page(
     components=[
         Chat(
             id="chat",
-            actions=[openai_chat(chat_id="chat", stream=True)],
+            actions=[openai_chat(parent_id="chat", stream=True)],
         ),
     ],
 )
@@ -1262,7 +1266,17 @@ page_nostream = vm.Page(
     components=[
         Chat(
             id="chat_nostream",
-            actions=[openai_chat(chat_id="chat_nostream", stream=False)],
+            actions=[openai_chat(parent_id="chat_nostream", stream=False)],
+        ),
+    ],
+)
+
+page_echo = vm.Page(
+    title="Simple Echo (No API Key)",
+    components=[
+        Chat(
+            id="echo_chat",
+            actions=[simple_echo(parent_id="echo_chat")],
         ),
     ],
 )
@@ -1283,7 +1297,7 @@ This example demonstrates that a chat response can include multiple content type
 Type anything to see all content types rendered together!
 """
         ),
-        Chat(id="mixed_chat", actions=[mixed_content(chat_id="mixed_chat")]),
+        Chat(id="mixed_chat", actions=[mixed_content(parent_id="mixed_chat")]),
     ],
 )
 
@@ -1301,7 +1315,7 @@ page_anthropic = vm.Page(
         ),
         Chat(
             id="claude_chat",
-            actions=[anthropic_chat(chat_id="claude_chat")],  # stream=True is set in the class
+            actions=[anthropic_chat(parent_id="claude_chat")],  # stream=True is default
         ),
     ],
 )
@@ -1311,13 +1325,13 @@ page_vizro_ai = vm.Page(
     components=[
         ChatWithUpload(
             id="vizro_ai_chat",
-            actions=[vizro_ai_chat(chat_id="vizro_ai_chat")],
+            actions=[vizro_ai_chat(parent_id="vizro_ai_chat")],
         ),
     ],
 )
 
 dashboard = vm.Dashboard(
-    pages=[page, page_nostream, page_anthropic, page_2, page_vizro_ai],
+    pages=[page_echo, page, page_nostream, page_anthropic, page_2, page_vizro_ai],
     theme="vizro_light",
     title="Vizro",
 )
