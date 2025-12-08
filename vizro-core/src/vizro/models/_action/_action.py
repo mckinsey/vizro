@@ -192,25 +192,22 @@ class _BaseAction(VizroBaseModel):
         component_id, component_property = dependency, "__default__"
 
         try:
-            return getattr(model_manager[component_id], attribute_type)[component_property]
-        except (KeyError, AttributeError) as exc:
-            # Fallback: try builtin_components
-            with suppress(KeyError, AttributeError):
-                return getattr(builtin_components[component_id], attribute_type)[component_property]
-
-            if isinstance(exc, KeyError):
-                if component_property in str(exc):
-                    raise KeyError(
-                        f"Model with ID `{component_id}` has no `{component_property}` key inside its "
-                        f"`{attribute_type}` property. Please specify the {type} explicitly as "
-                        f"`{component_id}.<property>`."
-                    ) from exc
-                raise KeyError(
-                    f"Model with ID `{component_id}` not found. Please provide a valid component ID."
-                ) from exc
+            # component_properties_lookup is the component's _action_outputs/_action_inputs dictionary.
+            component_properties_lookup = getattr(model_manager[component_id], attribute_type)
+        except KeyError as exc:
+            raise KeyError(f"Model with ID `{component_id}` not found. Provide a valid component ID.") from exc
+        except AttributeError as exc:
             raise AttributeError(
                 f"Model with ID '{component_id}' does not have implicit {type} properties defined. "
-                f"Please specify the {type} explicitly as '{component_id}.<property>'."
+                f"Specify the {type} explicitly as '{component_id}.<property>'."
+            ) from exc
+        
+        try:
+            return component_properties_lookup[component_property]
+        except KeyError as exc:
+            raise KeyError(
+                f"Model with ID `{component_id}` has no `{component_property}` key inside its "
+                f"`{attribute_type}` property. Specify the {type} explicitly as `{component_id}.<property>`."
             ) from exc
 
     @property
