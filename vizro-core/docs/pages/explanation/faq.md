@@ -161,7 +161,7 @@ Vizro is open sourced under the [Apache License, Version 2.0](https://www.apache
 
 ## What versions of Python does Vizro support?
 
-Vizro can be used with Python 3.10 or later, include Python 3.14.
+Vizro can be used with Python 3.10 or later, including Python 3.14.
 
 ## How can I report a bug?
 
