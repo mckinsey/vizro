@@ -9,6 +9,7 @@ from collections.abc import Collection, Iterable, Mapping
 from contextlib import suppress
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
+from types import SimpleNamespace
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
@@ -41,10 +42,6 @@ class ControlsStates(TypedDict):
     filters: list[State]
     parameters: list[State]
     filter_interaction: list[dict[str, State]]
-
-
-class _VizroDownload:
-    _action_outputs = {"__default__": "vizro_download.data"}
 
 
 class _BaseAction(VizroBaseModel):
@@ -167,8 +164,7 @@ class _BaseAction(VizroBaseModel):
             ValueError: If dependency format is invalid (e.g. "id.prop.prop" or "id..prop")
         """
         attribute_type = "_action_outputs" if type == "output" else "_action_inputs"
-        builtin_components = {"vizro_download": _VizroDownload()}
-
+        
         # Validate that the dependency is in one of two valid formats: id.property ("graph-1.figure") or id ("card-id").
         # By this point we have already validation dependency is a str.
         if not re.match(r"^[^.]+$|^[^.]+[.][^.]+$", dependency):
@@ -177,10 +173,16 @@ class _BaseAction(VizroBaseModel):
                 f"'<model_id>.<argument_name>'."
             )
 
+        # Combine builtin components with real models in model_manager (which take priority).
+        builtin_components = {
+            "vizro_download": SimpleNamespace(_action_outputs={"__default__": "vizro_download.data"})
+        }
+        models = builtin_components | {key: model_manager[key] for key in model_manager}
+
         if "." in dependency:
             component_id, component_property = dependency.split(".")
             try:
-                return getattr(model_manager[component_id], attribute_type)[component_property]
+                return getattr(models[component_id], attribute_type)[component_property]
             except (KeyError, AttributeError):
                 # Captures these cases and returns dependency unchanged, as we want to allow the user to target
                 # Dash components, that are not registered in the model_manager (e.g. theme-selector).
@@ -193,7 +195,7 @@ class _BaseAction(VizroBaseModel):
 
         try:
             # component_properties_lookup is the component's _action_outputs/_action_inputs dictionary.
-            component_properties_lookup = getattr(model_manager[component_id], attribute_type)
+            component_properties_lookup = getattr(models[component_id], attribute_type)
         except KeyError as exc:
             raise KeyError(f"Model with ID `{component_id}` not found. Provide a valid component ID.") from exc
         except AttributeError as exc:

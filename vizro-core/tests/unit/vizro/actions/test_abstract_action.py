@@ -266,7 +266,7 @@ class TestAbstractActionInputs:
         with pytest.raises(
             AttributeError,
             match=r"Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
-            "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
+            "Specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
             action._transformed_inputs
 
