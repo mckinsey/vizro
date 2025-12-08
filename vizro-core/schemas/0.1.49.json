@@ -138,9 +138,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -200,9 +197,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -298,9 +292,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -438,9 +429,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -717,9 +705,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -869,9 +854,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -913,9 +895,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -1119,9 +1098,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -1542,9 +1518,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -1743,9 +1716,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -1877,9 +1847,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -2007,9 +1974,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -2075,9 +2039,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -2149,9 +2110,6 @@
               },
               {
                 "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
               }
             ]
           },
@@ -2379,93 +2337,6 @@
       },
       "required": ["control", "value"],
       "title": "set_control",
-      "type": "object"
-    },
-    "show_notification": {
-      "additionalProperties": false,
-      "description": "Shows a notification message using Dash Mantine Components notification system.\n\nThis action displays notifications triggered by buttons, cards, figures, or other interactive components.\nNotifications support auto-dismissal, semantic variants, loading states, and dynamic updates.\n\nArgs:\n    title (Optional[str]): Notification title. Defaults to capitalized variant name if not provided.\n    message (str): Markdown string for the main notification message text. Follows the CommonMark specification.\n    variant (Literal[\"info\", \"success\", \"warning\", \"error\", \"progress\"]): Semantic variant that determines color and\n        default icon. Use `\"progress\"` to display a loading spinner instead of an icon. Defaults to \"info\".\n    icon (str): Icon name from [Google Material Icons](https://fonts.google.com/icons).\n        Defaults to variant-specific icon. Ignored if `variant=\"progress\"`.\n    auto_close (Union[bool, int]): Auto-close duration in milliseconds. Set to `False` to keep the notification\n        open until the user closes it manually. Default value depends on variant: `4000` for\n        info/success/warning/error, `False` for progress.\n    notification_id (Optional[str]): Notification identifier for updates. Multiple actions can share the same\n        `notification_id` to update a single notification.\n    action (Literal[\"show\", \"update\"]): Action type. Use `\"show\"` to display a new notification or `\"update\"`\n        to modify an existing notification with matching `notification_id`. Defaults to `\"show\"`.\n\nExample: Button triggering notification\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(\n        text=\"Save\",\n        actions=[\n            va.show_notification(\n                message=\"Operation completed successfully!\",\n                variant=\"success\",\n            )\n        ],\n    )\n    ```",
-      "properties": {
-        "id": {
-          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "show_notification",
-          "default": "show_notification",
-          "title": "Type",
-          "type": "string"
-        },
-        "title": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Notification title. Defaults to capitalized variant name if not provided.",
-          "title": "Title"
-        },
-        "message": {
-          "description": "Markdown string for the main notification message text. Follows the CommonMark specification.",
-          "title": "Message",
-          "type": "string"
-        },
-        "variant": {
-          "default": "info",
-          "description": "Semantic variant that determines color and default icon / loading state.\n        If `progress`, the notification will show a loading spinner instead of an icon.",
-          "enum": ["info", "success", "warning", "error", "progress"],
-          "title": "Variant",
-          "type": "string"
-        },
-        "icon": {
-          "default": "",
-          "description": "Icon name from Google Material icons library. Defaults to variant-specific icon.\n                Ignored if `variant=\"progress\"`",
-          "title": "Icon",
-          "type": "string"
-        },
-        "auto_close": {
-          "anyOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Auto-close duration in milliseconds. Set to `False` to keep the notification\n            open until the user closes it manually. Default value depends on variant: `4000` for\n            info/success/warning/error, `False` for progress.",
-          "title": "Auto Close"
-        },
-        "notification_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": "",
-          "description": "Notification identifier for updates. Multiple actions can share the same `notification_id`\n            to update a single notification.",
-          "title": "Notification Id"
-        },
-        "action": {
-          "default": "show",
-          "description": "Action type. Use `\"show\"` to display a new notification or `\"update\"` to modify an existing\n            notification with matching `notification_id`.",
-          "enum": ["show", "update"],
-          "title": "Action",
-          "type": "string"
-        }
-      },
-      "required": ["message"],
-      "title": "show_notification",
       "type": "object"
     }
   },
