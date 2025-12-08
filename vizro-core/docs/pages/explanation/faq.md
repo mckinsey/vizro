@@ -151,9 +151,9 @@ There are a number of cases where alternatives to Vizro may be more suitable, in
 
 Yes! You can use [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp), which works alongside a large language model (LLM) to help you build charts and dashboards. The [Vizro-MCP documentation](https://vizro.readthedocs.io/projects/vizro-mcp) includes information such as:
 
-* [How to set up Vizro-MCP to build charts and dashboards with AI](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/first-dashboard-tutorial/).
-* Tutorials for [VS Code](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/vs-code-tutorial/), [Cursor](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/cursor-tutorial/), and [Claude Desktop](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/claude-desktop-tutorial/).
-* How to guides, such as a [guide for using Vizro-MCP prompt templates](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/use-prompt-templates/) and more.
+- [How to set up Vizro-MCP to build charts and dashboards with AI](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/first-dashboard-tutorial/).
+- Tutorials for [VS Code](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/vs-code-tutorial/), [Cursor](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/cursor-tutorial/), and [Claude Desktop](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/claude-desktop-tutorial/).
+- How to guides, such as a [guide for using Vizro-MCP prompt templates](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/use-prompt-templates/) and more.
 
 ## What license is Vizro open sourced under?
 
