@@ -5,6 +5,7 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field
 
 from vizro.actions._abstract_action import _AbstractAction
+from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models.types import ModelID, _IdOrIdProperty
 
@@ -25,16 +26,18 @@ VARIANT_DEFAULTS: dict[str, VariantDefaults] = {
     "progress": VariantDefaults(icon="info", title="Progress", className="alert-info", auto_close=False),
 }
 
+
 class show_notification(_AbstractAction):
     """Shows a notification message.
 
     Args:
         text (str): Markdown text for the main notification message. Follows the CommonMark specification.
         variant (Literal["info", "success", "warning", "error", "progress"]): Variant that determines color and
-            default icon. If `progress`, the notification will show a loading spinner instead of an icon. Defaults to "info".
+            default icon. If `progress`, the notification will show a loading spinner instead of an icon.
+            Defaults to "info".
         title (str): Notification title. Defaults to capitalized variant name if not provided, for example
             'Info' for 'info' variant.
-        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Defaults 
+        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Defaults
             to the variant-specific icon, for example 'info' for 'info' variant. Ignored if `variant="progress"`.
         auto_close (bool | int): Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
@@ -47,9 +50,10 @@ class show_notification(_AbstractAction):
 
         vm.Button(
             text="Save",
-            actions=va.show_notification(title="Useful information",
-                                        text="This is some useful information that you should know.",
-                                        )
+            actions=va.show_notification(
+                title="Useful information",
+                text="This is some useful information that you should know.",
+            ),
         )
         ```
     """
@@ -64,10 +68,11 @@ class show_notification(_AbstractAction):
         description="""Variant that determines color and default icon.
         If `progress`, the notification will show a loading spinner instead of an icon.""",
     )
-    
+
     title: str = Field(
-        default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].title,
-        description="Notification title. Defaults to capitalized variant name if not provided, for example 'Info' for 'info' variant.",
+        default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].title,  # type: ignore[arg-type, misc]
+        description="""Notification title. Defaults to capitalized variant name if not provided,
+        for example 'Info' for 'info' variant.""",
         validate_default=True,
     )
     icon: Annotated[
@@ -77,11 +82,11 @@ class show_notification(_AbstractAction):
             default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].icon,
             description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
                 Ignored if `variant="progress"`""",
-                validate_default=True,
+            validate_default=True,
         ),
     ]
     auto_close: bool | int = Field(
-        default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].auto_close,
+        default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].auto_close,  # type: ignore[arg-type, misc]
         description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
             info/success/warning/error, `False` for progress.""",
@@ -89,8 +94,8 @@ class show_notification(_AbstractAction):
     )
 
     @property
-    def outputs(self) -> list[_IdOrIdProperty]:  # type: ignore[override]
-        return ["notification-container.sendNotifications"]
+    def outputs(self) -> _IdOrIdProperty:  # type: ignore[override]
+        return "vizro_notifications.sendNotifications"
 
     @_log_call
     def function(self):
@@ -117,10 +122,11 @@ class update_notification(show_notification):
         notification (ModelID): Notification to update. Must match the id of the original `show_notification` action.
         text (str): Markdown text for the main notification message. Follows the CommonMark specification.
         variant (Literal["info", "success", "warning", "error", "progress"]): Variant that determines color and
-            default icon. If `progress`, the notification will show a loading spinner instead of an icon. Defaults to "info".
+            default icon. If `progress`, the notification will show a loading spinner instead of an icon.
+            Defaults to "info".
         title (str): Notification title. Defaults to capitalized variant name if not provided, for example
             'Info' for 'info' variant.
-        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Defaults 
+        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Defaults
             to the variant-specific icon, for example 'info' for 'info' variant. Ignored if `variant="progress"`.
         auto_close (bool | int): Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
@@ -136,16 +142,28 @@ class update_notification(show_notification):
             actions=[
                 va.show_notification(id="save_notification", text="Saving data...", variant="progress"),
                 va.export_data(),
-                va.update_notification(notification="save_notification", text="Data saved successfully!", variant="success"),
+                va.update_notification(
+                    notification="save_notification", text="Data saved successfully!", variant="success"
+                ),
             ],
-        )
-    """
+        )"""
 
-    type: Literal["update_notification"] = "update_notification"
+    type: Literal["update_notification"] = "update_notification"  # type: ignore[assignment]
 
     notification: ModelID = Field(
         description="Notification to update. Must match the id of the original `show_notification` action.",
     )
+
+    @_log_call
+    def pre_build(self):
+        notification = model_manager[self.notification] if self.notification in model_manager else None
+
+        # Use type rather than isinstance to rule out subclasses like update_notification itself.
+        if type(notification) is not show_notification:
+            raise ValueError(
+                f"`notification={self.notification}` in `update_notification` action must refer to the ID of a "
+                f"`show_notification` action."
+            )
 
     @_log_call
     def function(self):
@@ -153,4 +171,3 @@ class update_notification(show_notification):
         notification["id"] = self.notification
         notification["action"] = "update"
         return [notification]
-

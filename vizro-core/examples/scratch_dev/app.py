@@ -14,7 +14,7 @@ page_1 = vm.Page(
             text="Success Notification",
             actions=[
                 va.show_notification(
-                    message="Operation completed successfully!",
+                    text="Operation completed successfully!",
                     variant="success",
                 )
             ],
@@ -24,7 +24,7 @@ page_1 = vm.Page(
             text="Warning Notification",
             actions=[
                 va.show_notification(
-                    message="Please review this warning message.",
+                    text="Please review this warning message.",
                     variant="warning",
                 )
             ],
@@ -34,7 +34,7 @@ page_1 = vm.Page(
             icon="error",
             actions=[
                 va.show_notification(
-                    message="An error occurred during the operation.",
+                    text="An error occurred during the operation.",
                     variant="error",
                 )
             ],
@@ -44,7 +44,7 @@ page_1 = vm.Page(
             icon="info",
             actions=[
                 va.show_notification(
-                    message="Here's some useful information for you.",
+                    text="Here's some useful information for you.",
                     variant="info",
                 )
             ],
@@ -54,7 +54,7 @@ page_1 = vm.Page(
             icon="hourglass_empty",
             actions=[
                 va.show_notification(
-                    message="Processing your request...",
+                    text="Processing your request...",
                     variant="progress",
                 )
             ],
@@ -64,7 +64,7 @@ page_1 = vm.Page(
             icon="close",
             actions=[
                 va.show_notification(
-                    message="This notification will stay until you close it manually.",
+                    text="This notification will stay until you close it manually.",
                     title="Persistent",
                     variant="info",
                     auto_close=False,
@@ -76,7 +76,7 @@ page_1 = vm.Page(
             icon="info",
             actions=[
                 va.show_notification(
-                    message="A simple notification with default title and variant.",
+                    text="A simple notification with default title and variant.",
                     variant="info",
                 )
             ],
@@ -86,7 +86,7 @@ page_1 = vm.Page(
             icon="celebration",
             actions=[
                 va.show_notification(
-                    message="Check out this new feature!",
+                    text="Check out this new feature!",
                     title="New Feature",
                     variant="success",
                     icon="celebration",
@@ -98,7 +98,7 @@ page_1 = vm.Page(
             icon="link",
             actions=[
                 va.show_notification(
-                    message="Visit the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) for more details!",
+                    text="Visit the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) for more details!",
                     title="Learn More",
                     auto_close=False,
                 )
@@ -109,8 +109,8 @@ page_1 = vm.Page(
             icon="hourglass_empty",
             actions=[
                 va.show_notification(
-                    notification_id="update-demo",
-                    message="Processing your request...",
+                    id="update-demo",
+                    text="Processing your request...",
                     title="Processing",
                     variant="progress",
                 )
@@ -120,12 +120,11 @@ page_1 = vm.Page(
             text="2. Update to Complete",
             icon="done",
             actions=[
-                va.show_notification(
-                    notification_id="update-demo",
-                    message="Your request has been processed successfully!",
+                va.update_notification(
+                    notification="update-demo",
+                    text="Your request has been processed successfully!",
                     title="Complete",
                     variant="success",
-                    action="update",
                 )
             ],
         ),
@@ -134,7 +133,7 @@ page_1 = vm.Page(
             icon="arrow_forward",
             actions=[
                 va.show_notification(
-                    message="Click [here](/page-two) to go to **Page 2** and explore more features!",
+                    text="Click [here](/page-two) to go to **Page 2** and explore more features!",
                     title="Ready to explore?",
                     variant="info",
                     auto_close=False,
@@ -156,7 +155,7 @@ page_two = vm.Page(
             text="Success Notification",
             actions=[
                 va.show_notification(
-                    message="Operation completed successfully!",
+                    text="Operation completed successfully!",
                     variant="success",
                 )
             ],
