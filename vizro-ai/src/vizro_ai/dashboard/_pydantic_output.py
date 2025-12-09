@@ -4,7 +4,7 @@
 
 import logging
 from inspect import signature
-from typing import Any, Optional
+from typing import Any
 
 import plotly.express as px
 import vizro.models as vm
@@ -49,9 +49,7 @@ def _create_prompt(retry: bool = False) -> ChatPromptTemplate:
     return MODEL_REPROMPT if retry else SINGLE_MODEL_PROMPT
 
 
-def _create_message_content(
-    query: str, df_info: Any, validation_error: Optional[str] = None, retry: bool = False
-) -> dict:
+def _create_message_content(query: str, df_info: Any, validation_error: str | None = None, retry: bool = False) -> dict:
     """Create the message content for the LLM model."""
     message_content = {"message": [HumanMessage(content=query)], "df_info": df_info}
 
@@ -65,7 +63,7 @@ def _get_pydantic_model(
     query: str,
     llm_model: BaseChatModel,
     response_model: BaseModel,
-    df_info: Optional[Any] = None,  # TODO: this should potentially not be part of this function.
+    df_info: Any | None = None,  # TODO: this should potentially not be part of this function.
     max_retry: int = 2,
 ) -> BaseModel:
     # TODO: fix typing similar to instructor library, ie the return type should be the same as response_model

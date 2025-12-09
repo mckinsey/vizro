@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional, cast
+from typing import Annotated, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -14,20 +14,20 @@ from vizro.models.types import NavPagesType, NavSelectorType
 
 
 class Navigation(VizroBaseModel):
-    """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
+    """Navigation to arrange hierarchy of [`Pages`][vizro.models.Page].
 
     Abstract: Usage documentation
         [How to customize the navigation](../user-guides/navigation.md)
 
     Args:
         pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
-        nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
+        nav_selector (NavSelectorType | None): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
             Defaults to `None`.
 
     """
 
     pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
-    nav_selector: Optional[NavSelectorType] = None
+    nav_selector: NavSelectorType | None = None
 
     @_log_call
     def pre_build(self):

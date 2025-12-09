@@ -212,11 +212,11 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
 ## Customize the header
 
-You can now append custom content to the dashboard header using the [`custom_header`][vizro.models.Dashboard.custom_header] static method of the [Dashboard][vizro.models.Dashboard] model. This enables you to inject any Dash component(s) into a dedicated area of the header - common examples include text, badges, or buttons.
+You can add custom content to the dashboard header using the [`Dashboard.custom_header`][vizro.models.Dashboard.custom_header] method. This enables you to inject any Dash component(s) into a dedicated area of the header. Common examples include text, badges, or buttons.
 
 ![Custom header area](../../assets/user_guides/dashboard/custom_header_area.png)
 
-To append items to the custom header area, subclass the [Dashboard][vizro.models.Dashboard] model and override the [`custom_header`][vizro.models.Dashboard.custom_header] static method to return your desired Dash component(s):
+To add items to the custom header area, subclass the [Dashboard][vizro.models.Dashboard] model and override the [`custom_header`][vizro.models.Dashboard.custom_header] method to return your desired Dash component(s):
 
 - The returned value can be a single Dash component or a list of components.
 - The custom header area is styled as a flex row with an 8px gap.
@@ -226,7 +226,7 @@ To append items to the custom header area, subclass the [Dashboard][vizro.models
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="8-13 17"}
+        ```{.python pycafe-link hl_lines="8-12 16"}
         from vizro import Vizro
         import vizro.models as vm
         from typing import Literal
@@ -237,12 +237,11 @@ To append items to the custom header area, subclass the [Dashboard][vizro.models
         class CustomDashboard(vm.Dashboard):
             type: Literal["custom_dashboard"] = "custom_dashboard"
 
-            @staticmethod
-            def custom_header():
+            def custom_header(self):
                 return [html.Div("Good morning, Li! ☕"), dbc.Badge("Tuesday", color="primary")]
 
 
-        page = vm.Page(title="Page Title", components=[vm.Card(text="""# Placerholder""")])
+        page = vm.Page(title="Page Title", components=[vm.Card(text="Placeholder")])
         dashboard = CustomDashboard(pages=[page], title="Dashboard with custom header")
         Vizro().build(dashboard).run()
         ```
