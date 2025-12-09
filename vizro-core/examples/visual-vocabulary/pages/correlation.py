@@ -170,4 +170,3 @@ pages = [
     column_and_line_page,
     correlation_matrix_page,
 ]
-
