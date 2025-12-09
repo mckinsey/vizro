@@ -2,6 +2,8 @@ import vizro.plotly.express as px
 import vizro.models as vm
 import vizro.actions as va
 from vizro import Vizro
+from vizro.models.types import capture
+from time import sleep
 
 df = px.data.iris()
 
@@ -68,16 +70,6 @@ page_1 = vm.Page(
                     title="Persistent",
                     variant="info",
                     auto_close=False,
-                )
-            ],
-        ),
-        vm.Button(
-            text="Simple Message (default title)",
-            icon="info",
-            actions=[
-                va.show_notification(
-                    text="A simple notification with default title and variant.",
-                    variant="info",
                 )
             ],
         ),
@@ -151,13 +143,22 @@ page_two = vm.Page(
     components=[
         vm.Graph(figure=px.histogram(df, x="sepal_length")),
         vm.Button(
-            icon="check_circle",
-            text="Success Notification",
+            icon="file_download",
+            text="Export data notification",
             actions=[
                 va.show_notification(
-                    text="Operation completed successfully!",
+                    id="export-notif",
+                    text="Export data starting...",
+                    title="",
+                    variant="progress",
+                ),
+                vm.Action(function=capture("action")(lambda: sleep(2.5))()),
+                va.export_data(),
+                va.update_notification(
+                    notification="export-notif",
+                    text="Export data completed successfully!",
                     variant="success",
-                )
+                ),
             ],
         ),
     ],
