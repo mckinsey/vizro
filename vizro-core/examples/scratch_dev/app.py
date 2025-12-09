@@ -490,48 +490,6 @@ class ChatAction(_AbstractAction):
             prevent_initial_call=True,
         )
 
-        @callback(
-            Output(f"{self.parent_id}-store", "data", allow_duplicate=True),
-            Output(f"{self.parent_id}-hidden-messages", "children", allow_duplicate=True),
-            Output(f"{self.parent_id}-chat-input", "value"),  # Clear input after sending
-            Output(f"{self.parent_id}-loading-output", "children"),  # Show loading indicator
-            # input(*self._action_triggers["__default__"].split(".")), # Need to look up parent action triggers and
-            # make sure it.
-            Input(f"{self.parent_id}-send-button", "n_clicks"),
-            State(*self.prompt.split(".")),
-            prevent_initial_call=True,
-        )
-        def update_with_user_input(_, prompt):
-            if not prompt:
-                raise PreventUpdate
-
-            store, html_messages = Patch(), Patch()
-            latest_input = {"role": "user", "content_json": json.dumps(prompt)}
-            store.append(latest_input)
-            html_messages.append(self.message_to_html(latest_input))
-
-            # Clear input and show loading
-            # Add a loading indicator as a temporary assistant message
-            loading_msg = html.Div(
-                [
-                    dmc.Paper(
-                        [
-                            dmc.Group(
-                                [
-                                    dmc.Loader(size="md", type="dots"),
-                                ]
-                            )
-                        ],
-                        p="md",
-                        style={"backgroundColor": "var(--left-side-bg)"},
-                    )
-                ],
-                style=ASSISTANT_MESSAGE_STYLE,
-            )
-            html_messages.append(loading_msg)
-
-            return store, html_messages, "", ""
-
         # Handle Enter key for submission (but allow Shift+Enter for new lines)
         clientside_callback(
             f"""
@@ -616,27 +574,32 @@ class ChatAction(_AbstractAction):
     def function(self, prompt, messages):
         """Main action function called by Dash callback.
 
-        This method can be overridden for special cases (e.g., to handle metadata,
-        extra parameters like uploaded_data, or custom response processing).
+        This method handles the complete chat flow:
+        1. Adds user message to store and UI
+        2. Processes the response (streaming or non-streaming)
+        3. Adds assistant response to store and UI
+        4. Clears the input
 
-        However, even when overriding this method, subclasses MUST still implement
-        generate_stream() or generate_response() to satisfy the class contract.
+        This method can be overridden for special cases (e.g., to handle extra
+        parameters like uploaded_data, or custom response processing).
 
         Args:
             prompt: User's input text
             messages: List of previous messages in conversation
         """
-        # Need to repeat append here since this runs at same time as store update.
-        # To be decided exactly what gets passed and how (prompt, latest_input, messages, etc.)
+        if not prompt or not prompt.strip():
+            return [no_update] * len(self.outputs)
+
         latest_input = {"role": "user", "content_json": json.dumps(prompt)}
         messages.append(latest_input)
 
+        store, html_messages = Patch(), Patch()
+
+        store.append(latest_input)
+        html_messages.append(self.message_to_html(latest_input))
+
         if self.stream:
-            store, html_messages = Patch(), Patch()
-
-            # Remove the loading indicator and add placeholder for streaming
-            html_messages[-1] = html.Div(style={"display": "none"})  # Hide loading
-
+            # For streaming: add empty assistant placeholder, then start SSE
             placeholder_msg = {"role": "assistant", "content_json": json.dumps("")}
             store.append(placeholder_msg)
             html_messages.append(self.message_to_html(placeholder_msg))
@@ -644,41 +607,62 @@ class ChatAction(_AbstractAction):
             return [
                 store,
                 html_messages,
+                "",
                 f"/streaming-{self.parent_id}",
                 sse_options(StreamingRequest(prompt=prompt, messages=messages)),
                 "",  # Clear loading indicator
             ]
         else:
+            # For non-streaming: generate response synchronously
             result = self.generate_response(messages)
             latest_output = {"role": "assistant", **result}
 
-            # Could do this without Patch and it would also work fine, but that would send more data across network than
-            # is really necessary. Latest input has already been appended to both of these in update_with_user_input.
-            store, html_messages = Patch(), Patch()
-
-            # Remove the loading indicator and add actual response
-            html_messages[-1] = html.Div(style={"display": "none"})  # Hide loading
-
             store.append(latest_output)
             html_messages.append(self.message_to_html(latest_output))
-            return store, html_messages, ""  # Clear loading indicator
+
+            return [store, html_messages, "", ""]
 
     def message_to_html(self, message):
-        """Convert a message dict to HTML structure.
-
-        All messages use serialized content_json format.
-        """
+        """Convert a message dict to HTML structure."""
         role = message["role"]
         content = json.loads(message["content_json"])
 
-        # Return simple structure: role + content (let clientside callback handle styling)
-        content_str = str(content) if content is not None else ""
-        return html.Div(
-            [
-                html.Div(role, style={"display": "none"}),  # Hidden role marker
-                html.Div(content_str),  # Plain text content
-            ]
-        )
+        if role == "user":
+            return html.Div(
+                html.Div(
+                    html.Div(str(content) if content else "", style={"fontSize": FONT_SIZE_EDITORIAL}),
+                    style=USER_MESSAGE_STYLE,
+                ),
+                style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
+            )
+        else:
+            return self.assistant_message_to_html(content)
+
+    def assistant_message_to_html(self, content):
+        """Convert assistant message content to HTML.
+
+        Override this method only if you need custom rendering logic beyond
+        the default handling.
+
+        Args:
+            content: The deserialized content (already json.loads'd from content_json)
+
+        Returns:
+            Dash HTML component
+        """
+        if isinstance(content, str):
+            # Text: use structure for clientside markdown/code processing
+            return html.Div(
+                [
+                    html.Div("assistant", style={"display": "none"}),  # Hidden role marker
+                    html.Div(content),  # Plain text for clientside to process
+                ]
+            )
+        else:
+            return html.Div(
+                html.Div(content, style=ASSISTANT_MESSAGE_STYLE),
+                style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
+            )
 
     @property
     def outputs(self):
@@ -686,6 +670,7 @@ class ChatAction(_AbstractAction):
             return [
                 f"{self.parent_id}-store.data",
                 f"{self.parent_id}-hidden-messages.children",
+                f"{self.parent_id}-chat-input.value",
                 f"{self.parent_id}-sse.url",
                 f"{self.parent_id}-sse.options",
                 f"{self.parent_id}-loading-output.children",
@@ -694,6 +679,7 @@ class ChatAction(_AbstractAction):
             return [
                 f"{self.parent_id}-store.data",
                 f"{self.parent_id}-hidden-messages.children",
+                f"{self.parent_id}-chat-input.value",
                 f"{self.parent_id}-loading-output.children",
             ]
 
@@ -853,15 +839,6 @@ This example demonstrates rendering different content types:
 
         return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
 
-    def message_to_html(self, message):
-        """Override to recreate components from serialized JSON."""
-        content = json.loads(message["content_json"])
-
-        return html.Div(
-            html.Div(content, style=ASSISTANT_MESSAGE_STYLE),
-            style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
-        )
-
 
 # Example of using VizroAI to generate plots from natural language
 class vizro_ai_chat(ChatAction):
@@ -878,30 +855,31 @@ class vizro_ai_chat(ChatAction):
 
     def function(self, prompt, messages, uploaded_data=None):
         """Override function to handle uploaded data parameter."""
+        if not prompt or not prompt.strip():
+            return [no_update] * len(self.outputs)
+
         latest_input = {"role": "user", "content_json": json.dumps(prompt)}
         messages.append(latest_input)
 
         # Store uploaded_data temporarily so generate_response can access it
         self._uploaded_data = uploaded_data
 
-        # Call generate_response directly (we know stream=False)
+        store, html_messages = Patch(), Patch()
+
+        store.append(latest_input)
+        html_messages.append(self.message_to_html(latest_input))
+
         result = self.generate_response(messages)
         latest_output = {"role": "assistant", **result}
 
-        store, html_messages = Patch(), Patch()
-
-        # Remove the loading indicator and add actual response
-        html_messages[-1] = html.Div(style={"display": "none"})  # Hide loading
-
         store.append(latest_output)
         html_messages.append(self.message_to_html(latest_output))
-        return store, html_messages, ""  # Clear loading indicator
+
+        return [store, html_messages, "", ""]
 
     def generate_response(self, messages):
-        """Required by ChatAction contract.
+        """Generate data visualization using VizroAI.
 
-        Generates data visualization using VizroAI. Requires uploaded_data to be
-        available (stored in self._uploaded_data by function()).
         Returns dict with serialized content for persistence.
         """
         from vizro_ai import VizroAI
@@ -955,15 +933,6 @@ class vizro_ai_chat(ChatAction):
             error_msg = f"Error generating visualization: {str(e)}"
             content = html.P(error_msg, style={"color": "red"})
             return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
-
-    def message_to_html(self, message):
-        """Override to recreate components from serialized JSON."""
-        content = json.loads(message["content_json"])
-
-        return html.Div(
-            html.Div(content, style=ASSISTANT_MESSAGE_STYLE),
-            style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
-        )
 
 
 # -------------------- Chat Component --------------------
