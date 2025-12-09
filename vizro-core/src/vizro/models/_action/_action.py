@@ -6,10 +6,9 @@ import re
 import time
 import warnings
 from collections.abc import Callable, Collection, Iterable, Mapping
-from contextlib import suppress
 from pprint import pformat
-from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 from types import SimpleNamespace
+from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
@@ -174,9 +173,7 @@ class _BaseAction(VizroBaseModel):
             )
 
         # Combine builtin components with real models in model_manager (which take priority).
-        builtin_components = {
-            "vizro_download": SimpleNamespace(_action_outputs={"__default__": "vizro_download.data"})
-        }
+        builtin_components = {"vizro_download": SimpleNamespace(_action_outputs={"__default__": "vizro_download.data"})}
         models = builtin_components | {key: model_manager[key] for key in model_manager}
 
         if "." in dependency:
