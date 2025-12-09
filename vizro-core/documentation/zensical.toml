@@ -1,0 +1,184 @@
+[project]
+site_name = "Vizro"
+site_description = "Core Vizro documentation"
+site_url = "https://vizro.readthedocs.io/en/stable/"
+repo_url = "https://github.com/mckinsey/vizro"
+repo_name = "mckinsey/vizro"
+docs_dir = "pages"
+
+# Make sure any new page added here is also added to the llmstxt plugin below (around line 156)
+nav = [
+  {"Vizro" = "index.md"},
+  {"Tutorials" = [
+    {"Quickstart tutorial" = "pages/tutorials/quickstart-tutorial.md"},
+    {"Explore Vizro" = "pages/tutorials/explore-components.md"},
+    {"Write your own actions" = "pages/tutorials/custom-actions-tutorial.md"}
+  ]},
+  {"How-to guides" = [
+    {"Fundamentals" = [
+      {"Install Vizro" = "pages/user-guides/install.md"},
+      {"Dashboard" = "pages/user-guides/dashboard.md"},
+      {"Page" = "pages/user-guides/pages.md"},
+      {"Run or deploy dashboards" = "pages/user-guides/run-deploy.md"}
+    ]},
+    {"Components" = [
+      {"Overview" = "pages/user-guides/components.md"},
+      {"Graph" = "pages/user-guides/graph.md"},
+      {"Table" = "pages/user-guides/table.md"},
+      {"Figure" = "pages/user-guides/figure.md"},
+      {"Card" = "pages/user-guides/card.md"},
+      {"Text" = "pages/user-guides/text.md"},
+      {"Button" = "pages/user-guides/button.md"},
+      {"Container" = "pages/user-guides/container.md"},
+      {"Tab" = "pages/user-guides/tabs.md"}
+    ]},
+    {"Controls" = [
+      {"Overview" = "pages/user-guides/controls.md"},
+      {"Filter" = "pages/user-guides/filters.md"},
+      {"Parameter" = "pages/user-guides/parameters.md"},
+      {"Selector" = "pages/user-guides/selectors.md"}
+    ]},
+    {"Navigation" = "pages/user-guides/navigation.md"},
+    {"Actions" = [
+      {"Overview" = "pages/user-guides/actions.md"},
+      {"Handle data" = "pages/user-guides/data-actions.md"},
+      {"Graph and table interactions" = "pages/user-guides/graph-table-actions.md"}
+    ]},
+    {"Visual formatting" = [
+      {"Overview" = "pages/user-guides/visual-formatting.md"},
+      {"Layout" = "pages/user-guides/layouts.md"},
+      {"Theme" = "pages/user-guides/themes.md"},
+      {"Assets" = "pages/user-guides/assets.md"},
+      {"Custom CSS" = "pages/user-guides/custom-css.md"}
+    ]},
+    {"Data" = [
+      {"Overview" = "pages/user-guides/data.md"},
+      {"Kedro Data Catalog" = "pages/user-guides/kedro-data-catalog.md"}
+    ]},
+    {"Extensions" = [
+      {"Overview" = "pages/user-guides/extensions.md"},
+      {"Custom actions" = "pages/user-guides/custom-actions.md"},
+      {"Custom charts" = "pages/user-guides/custom-charts.md"},
+      {"Custom tables" = "pages/user-guides/custom-tables.md"},
+      {"Custom figures" = "pages/user-guides/custom-figures.md"},
+      {"Custom components" = "pages/user-guides/custom-components.md"}
+    ]}
+  ]},
+  {"API reference" = [
+    {"Vizro" = "pages/API-reference/vizro.md"},
+    {"Models" = "pages/API-reference/models.md"},
+    {"Actions" = "pages/API-reference/actions.md"},
+    {"Table functions" = "pages/API-reference/table-callables.md"},
+    {"Figure functions" = "pages/API-reference/figure-callables.md"},
+    {"Kedro integration" = "pages/API-reference/kedro-integration.md"},
+    {"Deprecations" = "pages/API-reference/deprecations.md"}
+  ]},
+  {"Find out more" = [
+    {"Technical" = [
+      {"Vizro schema" = "pages/explanation/schema.md"},
+      {"Actions" = "pages/explanation/actions-explanation.md"}
+    ]},
+    {"About Vizro" = [
+      {"FAQs" = "pages/explanation/faq.md"},
+      {"User examples" = "pages/explanation/your-examples.md"},
+      {"Cheatsheet" = "pages/cheatsheet/cheatsheet.html"},
+      {"Contribute to Vizro" = "pages/explanation/contributing.md"},
+      {"Documentation style" = "pages/explanation/documentation-style-guide.md"},
+      {"Authors" = "pages/explanation/authors.md"}
+    ]}
+  ]},
+  {"Vizro-MCP" = [
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
+  ]}
+]
+
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = ["javascripts/extra.js"]
+
+[project.theme]
+variant = "classic"
+custom_dir = "overrides"
+
+#favicon = "images/favicon.png"
+language = "en"
+
+# Zensical provides a number of feature toggles that change the behavior
+# of the documentation site.
+features = [
+    #"content.action.edit",
+    #"content.action.view",
+    # "header.autohide",
+    # "navigation.sections",
+    #"navigation.path",
+    
+    "navigation.expand",
+    "navigation.instant",
+    "navigation.indexes",
+    "navigation.tabs",
+    "navigation.tabs.sticky",
+    "navigation.tracking",
+    "search.suggest",
+    "search.highlight",
+    "content.tabs.link",
+    "content.code.annotation",
+    "content.code.copy",
+    "content.code.annotate", 
+
+]
+
+# ----------------------------------------------------------------------------
+# In the "palette" subsection you can configure options for the color scheme.
+# You can configure different color # schemes, e.g., to turn on dark mode,
+# that the user can switch between. Each color scheme can be further
+# customized.
+#
+# Read more:
+# - https://zensical.org/docs/setup/colors/
+# ----------------------------------------------------------------------------
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+# ----------------------------------------------------------------------------
+# In the "font" subsection you can configure the fonts used. By default, fonts
+# are loaded from Google Fonts, giving you a wide range of choices from a set
+# of suitably licensed fonts. There are options for a normal text font and for
+# a monospaced font used in code blocks.
+# ----------------------------------------------------------------------------
+#[project.theme.font]
+#text = "Inter"
+#code = "Jetbrains Mono"
+
+# ----------------------------------------------------------------------------
+# You can configure your own logo to be shown in the header using the "logo"
+# option in the "icons" subsection. The logo can be a path to a file in your
+# "docs_dir" or it can be a path to an icon.
+#
+# Likewise, you can customize the logo used for the repository section of the
+# header. Zensical derives the default logo for this from the repository URL.
+# See below...
+#
+# There are other icons you can customize. See the documentation for details.
+#
+# Read more:
+# - https://zensical.org/docs/setup/logo-and-icons
+# - https://zensical.org/docs/authoring/icons-emojis/#search
+# ----------------------------------------------------------------------------
+#[project.theme.icon]
+#logo = "lucide/smile"
+#repo = "lucide/smile"
+
+# ----------------------------------------------------------------------------
+# The "extra" section contains miscellaneous settings.
+# ----------------------------------------------------------------------------
+#[[project.extra.social]]
+#icon = "fontawesome/brands/github"
+#link = "https://github.com/user/repo"
+
+

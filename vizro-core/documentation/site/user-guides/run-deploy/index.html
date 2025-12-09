@@ -1,0 +1,3584 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Core Vizro documentation">
+      
+      
+      
+        <link rel="canonical" href="https://vizro.readthedocs.io/en/stable/user-guides/run-deploy/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.11">
+    
+    
+      
+        <title>How to run and/or deploy your dashboard - Vizro</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/classic/main.59dc44d5.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/classic/palette.7dc9a0ad.min.css">
+      
+      
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+  <style>:root{}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+<meta
+  name="google-site-verification"
+  content="CYb3cxosCgsN2QDQVaSGQpMQCesqpsGQ3oTM02NtvkY"
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+  rel="stylesheet"
+/>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-run-andor-deploy-your-dashboard" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Vizro" class="md-header__button md-logo" aria-label="Vizro" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Vizro
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How to run and/or deploy your dashboard
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/mckinsey/vizro" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mckinsey/vizro
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  Vizro
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../pages/tutorials/quickstart-tutorial.md" class="md-tabs__link">
+          
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../pages/user-guides/install.md" class="md-tabs__link">
+          
+  
+  How-to guides
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../pages/API-reference/vizro.md" class="md-tabs__link">
+          
+  
+  API reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../pages/explanation/schema.md" class="md-tabs__link">
+          
+  
+  Find out more
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="https://vizro.readthedocs.io/projects/vizro-mcp/" class="md-tabs__link">
+          
+  
+  Vizro-MCP
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Vizro" class="md-nav__button md-logo" aria-label="Vizro" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Vizro
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mckinsey/vizro" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mckinsey/vizro
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vizro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/tutorials/quickstart-tutorial.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/tutorials/explore-components.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Explore Vizro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/tutorials/custom-actions-tutorial.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Write your own actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-to guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    How-to guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fundamentals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/install.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install Vizro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/dashboard.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/pages.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/run-deploy.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run or deploy dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Components
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/components.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/graph.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/table.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Table
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/figure.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Figure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/card.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Card
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/text.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Text
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/button.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Button
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/container.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Container
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/tabs.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controls
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Controls
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/controls.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/filters.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/parameters.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parameter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/selectors.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Selector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/navigation.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/actions.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/data-actions.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handle data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/graph-table-actions.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph and table interactions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual formatting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visual formatting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/visual-formatting.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/layouts.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Layout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/themes.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Theme
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/assets.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/custom-css.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom CSS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/data.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/kedro-data-catalog.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kedro Data Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Extensions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/extensions.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/custom-actions.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/custom-charts.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom charts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/custom-tables.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom tables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/custom-figures.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom figures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/user-guides/custom-components.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom components
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/API-reference/vizro.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vizro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/API-reference/models.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/API-reference/actions.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/API-reference/table-callables.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Table functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/API-reference/figure-callables.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Figure functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/API-reference/kedro-integration.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kedro integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/API-reference/deprecations.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deprecations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Find out more
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Find out more
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/explanation/schema.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vizro schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/explanation/actions-explanation.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About Vizro
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About Vizro
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/explanation/faq.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/explanation/your-examples.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/cheatsheet/cheatsheet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cheatsheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/explanation/contributing.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute to Vizro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/explanation/documentation-style-guide.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation style
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pages/explanation/authors.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vizro-MCP
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Vizro-MCP
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://vizro.readthedocs.io/projects/vizro-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vizro-MCP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#develop-in-python-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Develop in Python script
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#develop-in-a-notebook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Develop in a Notebook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#develop-in-pycafe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Develop in PyCafe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic-reloading-and-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic reloading and debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#production" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Production
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Production">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-to-hugging-face" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploy to Hugging Face
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-via-dash-enterprise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploy via Dash Enterprise
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-via-pycafe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploy via PyCafe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#general-principles-when-deploying-vizro-dashboards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General principles when deploying Vizro dashboards
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="General principles when deploying Vizro dashboards">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gunicorn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gunicorn
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dockerfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dockerfile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-dockerfile-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Dockerfile configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webassembly-wasm-and-pyodide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebAssembly (WASM) and Pyodide
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shareable-url" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shareable URL
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+<h1 id="how-to-run-andor-deploy-your-dashboard">How to run and/or deploy your dashboard<a class="headerlink" href="#how-to-run-andor-deploy-your-dashboard" title="Permanent link">&para;</a></h1>
+<p>Typically when you create a dashboard, there are two distinct stages:</p>
+<ol>
+<li><a href="#development">Development</a>. This is when you build your dashboard. You make frequent changes to your code and want a simple way to see how it looks after each change. At this point, you may, or may not, want to make it possible for other people to access your dashboard.</li>
+<li><a href="#production">Production</a>. When you complete development, you <em>deploy</em> it to production to make it accessible to other people.</li>
+</ol>
+<p>This guide describes methods to run your dashboard <em>in development</em> and <em>in production</em>. Follow either section based on your current need.</p>
+<p>If your data sources in development and production are different (for example, you have different s3 buckets for development and production data) then you might like to <a href="../kedro-data-catalog/#use-datasets-from-the-kedro-data-catalog">use the Kedro Data Catalog</a> to manage your data source configuration.</p>
+<p>Vizro is built on top of <a href="https://dash.plotly.com/">Dash</a>, which itself uses <a href="https://flask.palletsprojects.com/">Flask</a>. Most of our guidance on how to run a Vizro app in development or production is very similar to guidance on Dash and Flask.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There are many possible workflows depending on your requirements. We are considering a simple workflow that applies to many people but is not suitable for everyone. For example:</p>
+<ul>
+<li>If you are the only user of your app then the process is often simpler since you might never want to deploy to production.</li>
+<li>If there are multiple people involved with development then you will need some way to coordinate code changes, such as a <a href="https://github.com/">GitHub repository</a> or <a href="https://huggingface.co/spaces">Hugging Face Space</a>.</li>
+<li>You might want to use <em>authentication</em> to restrict access to your app.</li>
+<li>You might want to update your dashboard after it has been put into production. There is then a cycle of repeated development and deployment.</li>
+<li>There might be more stages or <em>environments</em> for Quality Assurance (QA) to test that the app works correctly before it is deployed.</li>
+</ul>
+</div>
+<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
+<p>When developing a dashboard, you have several options on how to get started as the table below describes. Clicking the links will lead you to the relevant docs section explaining more. The <a href="https://py.cafe/snippet/vizro/v1">fastest way to run a dashboard is to use PyCafe</a>, as shown in our <a href="../../tutorials/quickstart-tutorial/">First Dashboard tutorial</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+<th>Requires</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#develop-in-python-script">Python script</a></td>
+<td>Run a local Python script using a Flask development server</td>
+<td>Local Python</td>
+</tr>
+<tr>
+<td><a href="#develop-in-a-notebook">Jupyter</a></td>
+<td>Run a cell in a Notebook using a Flask development server</td>
+<td>Local Python, Jupyter/JupyterLab</td>
+</tr>
+<tr>
+<td><a href="#develop-in-pycafe">PyCafe</a></td>
+<td>Run code in your browser using WebAssembly</td>
+<td>No requirements</td>
+</tr>
+</tbody>
+</table>
+<h3 id="develop-in-python-script">Develop in Python script<a class="headerlink" href="#develop-in-python-script" title="Permanent link">&para;</a></h3>
+<p>The most common way to run your dashboard in development is to run it <em>locally</em> (on your own computer) using the Flask development server.</p>
+<ol>
+<li>Create a Python file named <code>app.py</code> that ends with the line <code>Vizro().build(dashboard).run()</code>.</li>
+<li>Run the command <code>python app.py</code> in your terminal.</li>
+<li>Go to <a href="http://127.0.0.1:8050/">http://127.0.0.1:8050/</a> to see your app.</li>
+</ol>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vizro</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vizro</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">vizro.plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">vizro.models</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vm</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">iris</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iris</span><span class="p">()</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">page</span> <span class="o">=</span> <span class="n">vm</span><span class="o">.</span><span class="n">Page</span><span class="p">(</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;My first page&quot;</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">components</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="n">vm</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">figure</span><span class="o">=</span><span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;petal_width&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;species&quot;</span><span class="p">)),</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="p">],</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">dashboard</span> <span class="o">=</span> <span class="n">vm</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">(</span><span class="n">pages</span><span class="o">=</span><span class="p">[</span><span class="n">page</span><span class="p">])</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">Vizro</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></code></pre></div>
+<p>The <code>run</code> method wraps <a href="https://dash.plotly.com/reference#app.run">Dash's run method</a>, and all arguments are passed through to Dash. Particularly useful ones are:</p>
+<ul>
+<li><code>port</code>. If not specified, this defaults to <code>8050</code>. If you run multiple dashboards on your computer then you may need to avoid a clash by specifying a different port with, for example, <code>run(port=8051)</code>.</li>
+<li><code>debug</code>. This is described more below in the <a href="#automatic-reloading-and-debugging">section on debugging</a>.</li>
+<li><code>jupyter_mode</code>. This is described more below in the <a href="#develop-in-a-notebook">section on Jupyter</a>.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Use only for local development</p>
+<p>The Flask development server is <a href="https://flask.palletsprojects.com/en/3.0.x/deploying/">intended for local development only</a> and should not be used when deploying a Vizro dashboard to production. See our <a href="#production">section on deployment</a> for information on how to deploy.</p>
+</div>
+<h3 id="develop-in-a-notebook">Develop in a Notebook<a class="headerlink" href="#develop-in-a-notebook" title="Permanent link">&para;</a></h3>
+<p>If you develop in a Jupyter Notebook or JupyterLab then you should use exactly the <a href="#develop-in-python-script">same code as above</a>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vizro</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vizro</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">vizro.plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">vizro.models</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vm</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">iris</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iris</span><span class="p">()</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">page</span> <span class="o">=</span> <span class="n">vm</span><span class="o">.</span><span class="n">Page</span><span class="p">(</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;My first page&quot;</span><span class="p">,</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">components</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="n">vm</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">figure</span><span class="o">=</span><span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;petal_width&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;species&quot;</span><span class="p">)),</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="p">],</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">dashboard</span> <span class="o">=</span> <span class="n">vm</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">(</span><span class="n">pages</span><span class="o">=</span><span class="p">[</span><span class="n">page</span><span class="p">])</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">Vizro</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></code></pre></div>
+<p>The code runs Vizro using a Flask development server and shows the resulting dashboard inline in your Notebook. You can change where the dashboard appears with the <a href="https://dash.plotly.com/dash-in-jupyter"><code>jupyter_mode</code> argument</a>. For example, <code>run(jupyter_mode="external")</code> provides a link to open the dashboard in a new window.</p>
+<div class="admonition note">
+<p class="admonition-title">Reloading and debugging</p>
+<p>Code reloading and hot reloading do not work in Jupyter. See the <a href="#automatic-reloading-and-debugging">section on reloading for alternatives when using Jupyter</a>.</p>
+</div>
+<h3 id="develop-in-pycafe">Develop in PyCafe<a class="headerlink" href="#develop-in-pycafe" title="Permanent link">&para;</a></h3>
+<p>The easiest way to run a dashboard is to work on the code live on <a href="https://py.cafe/">PyCafe</a>.</p>
+<p>Most of the Vizro documentation examples have a link below the code that reads <a href="https://py.cafe/vizro-official/vizro-iris-analysis"><strong>Run and edit this code in Py.Cafe</strong></a>. Follow the link to open the code in PyCafe within an editor, such as the one below, which displays the dashboard and the code side by side.</p>
+<figure>
+  <img alt="PyCafe editor" src="../../../assets/user_guides/run_deploy/pycafe_editor.png" />
+<br />
+<figcaption>Enter your dashboard code on the left, and see the results immediately reflected in the app on the right.</figcaption>
+</figure>
+<p>You can use <a href="https://py.cafe/snippet/vizro/v1">PyCafe</a> snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that when you save your code as a project, the dashboard and the code will be visible to the public. PyCafe is planning to implement a paid tier that allows private dashboards.</p>
+<p>As long as you remain in <a href="https://py.cafe/snippet/vizro/v1">snippet mode</a> - not having clicked "Push" - your code is only local to your machine and is not visible to others.</p>
+</div>
+<h3 id="automatic-reloading-and-debugging">Automatic reloading and debugging<a class="headerlink" href="#automatic-reloading-and-debugging" title="Permanent link">&para;</a></h3>
+<p>While developing, you often make frequent changes to your code and want to see how the dashboard looks after each change. It can be slow and tedious to manually restart your dashboard every time you want to see your changes. Depending on your chosen development method, there are ways to automatically refresh whenever code changes.</p>
+<p><strong>... in Python scripts</strong></p>
+<p>Turn on <a href="https://dash.plotly.com/devtools">Dash Dev Tools</a> by setting <code>debug=True</code> in the <code>run()</code> method: <code>Vizro().build(dashboard).run(debug=True)</code>. This switches on <a href="https://dash.plotly.com/devtools#code-reloading-&amp;-hot-reloading">code reloading and hot reloading</a> as well as several other features that are useful during development, such as detailed in-app error reporting. Some errors generated at run time can also be viewed via the browser console (for example, in Chrome, see <code>View &gt; Developer &gt; Developer Tools &gt; Console</code>).</p>
+<p>Dash Dev Tools can also be <a href="https://dash.plotly.com/devtools#configuring-with-environment-variables">configured using environment variables</a>. For example, setting the environment variable <code>DASH_DEBUG=true</code> is equivalent to setting <code>debug=True</code> in the <code>run()</code> method.</p>
+<p><strong>... in a Notebook</strong></p>
+<p>Vizro code reloading and hot reloading do not work in Jupyter Notebooks. There are two alternative methods to reload the dashboard after you change your code:</p>
+<ul>
+<li>Restart the Jupyter kernel and re-run your Notebook.</li>
+<li>Add a cell containing <code>from vizro import Vizro; Vizro._reset()</code> to the top of your Notebook and re-run it before you re-run your code. With this method, there is no need to restart the Jupyter kernel.</li>
+</ul>
+<p><strong>... in PyCafe</strong></p>
+<p>In PyCafe there is no need to set anything as your dashboard will automatically reload and update when you make code changes. You can change in the settings whether this should happen automatically or on file save.</p>
+<h2 id="production">Production<a class="headerlink" href="#production" title="Permanent link">&para;</a></h2>
+<p>When developing your dashboard you typically run it <em>locally</em> (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way.</p>
+<p>The below table is a <strong>TLDR</strong> that provides an overview of the most common options. Clicking the links will lead you to the relevant section below.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Free Tier</th>
+<th>Some key features (not exhaustive)</th>
+<th>Requires</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#deploy-to-hugging-face">Hugging Face</a></td>
+<td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12h-2.7c0 5.128-4.172 9.3-9.3 9.3S2.7 17.128 2.7 12 6.872 2.7 12 2.7zm7.4 2.583-7.505 9.371L8.388 9.08l-2.002 2.436 4.741 3.888a1.573 1.573 0 0 0 2.231-.233l8.504-10.617z"/></svg></span></td>
+<td>Easy cloning of apps, Gallery features, easy access to HF model hub</td>
+<td>Hugging Face account</td>
+</tr>
+<tr>
+<td><a href="#deploy-via-dash-enterprise">Dash Enterprise</a></td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/274c.svg" title=":x:" /></td>
+<td>Enterprise deployment solution with many more features going above and beyond</td>
+<td>Dash Enterprise subscription</td>
+</tr>
+<tr>
+<td><a href="#deploy-via-pycafe">PyCafe</a></td>
+<td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12h-2.7c0 5.128-4.172 9.3-9.3 9.3S2.7 17.128 2.7 12 6.872 2.7 12 2.7zm7.4 2.583-7.505 9.371L8.388 9.08l-2.002 2.436 4.741 3.888a1.573 1.573 0 0 0 2.231-.233l8.504-10.617z"/></svg></span></td>
+<td>No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases</td>
+<td>No requirements (in snippet mode), otherwise a PyCafe account</td>
+</tr>
+</tbody>
+</table>
+<h3 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h3>
+<p>Vizro is a production-ready framework, which means that the dashboard created during development is immediately suitable for deployment to production with minimal changes. Under the hood, Vizro uses <a href="https://dash.plotly.com/sharing-data-between-callbacks#dash-is-stateless">Dash's stateless architecture</a>, designed for scaling to thousands of concurrent users.</p>
+<p>In general, there is only one code change that is required for deployment. During development, the last line of your <code>app.py</code> file should be <code>Vizro().build(dashboard).run()</code>.</p>
+<p>For deployment, this should be replaced with:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Vizro</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>  <span class="c1"># (1)!</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># (2)!</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></code></pre></div>
+<ol>
+<li>The Vizro <code>app</code> object needs to be exposed so that the app can be started in production.</li>
+<li>This code is only executed when you run <code>python app.py</code> and does not run in production. It's there to enable you to <a href="#develop-in-python-script">run the same app in development</a> using the Flask development server.</li>
+</ol>
+<p>That's it! Your app is now suitable for deployment to production.</p>
+<div class="admonition warning">
+<p class="admonition-title">Extra step if you use dynamic data cache</p>
+<p>If your dashboard uses <a href="../data/#dynamic-data">dynamic data</a> that can be refreshed while the dashboard is running then you should <a href="../data/#configure-cache">configure your data manager cache</a> to use a backend that supports multiple processes.</p>
+</div>
+<p>Now that your <code>app.py</code> file is ready, you need to choose a <em>hosting provider</em>. There are many services out there with different offerings, but for most users we recommend <a href="https://huggingface.co/">Hugging Face</a>. It has a free tier with the possibility of paying more for extras, and is quick and easy to get started with. We give step-by-step instructions on how to use it below.</p>
+<p>Enterprise users should look at our guidance for <a href="#deploy-via-dash-enterprise">deploying Vizro dashboards on Dash Enterprise</a>. We also discuss the <a href="#general-principles-when-deploying-vizro-dashboards">general principles for deploying a Vizro app</a> that apply to all hosting providers.</p>
+<h3 id="deploy-to-hugging-face">Deploy to Hugging Face<a class="headerlink" href="#deploy-to-hugging-face" title="Permanent link">&para;</a></h3>
+<p><a href="https://huggingface.co/">Hugging Face</a> is a platform for machine learning models, datasets and demos. Within Hugging Face, the <a href="https://huggingface.co/spaces/launch">Spaces feature</a> offers a one click experience to deploy a Vizro dashboard for free. This is the easiest way to deploy a Vizro app if you do not mind your app's code being public or shared within your <a href="https://huggingface.co/organizations">Hugging Face organization</a>. Paid plans include features such as authentication, developer mode for debugging, user analytics and more powerful computing resources.</p>
+<p>The best way to get started with Vizro on Hugging Face is to copy an existing Vizro dashboard and then modify it to add your own app. Vizro maintains an <a href="https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de">official gallery of example dashboards</a> and a <a href="https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de">gallery of example dashboards made by the community</a>. Any of these example dashboards can be used as a template for your app. In Hugging Face terminology, a Vizro dashboard lives in a <em>Space</em>, and you can copy a dashboard by <a href="https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space">duplicating the Space</a>.</p>
+<p>If this is your first Vizro deployment, we recommend using our <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard">first dashboard example</a>. This is a minimal example that is designed to make it as simple as possible to get started on Hugging Face. You can create your own Vizro deployment based on this template as follows:</p>
+<ol>
+<li><a href="https://huggingface.co/join">Sign up for a Hugging Face account</a>.</li>
+<li>Copy our example Hugging Face dashboard by duplicating our <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard">first dashboard example Space</a>. To do so, click the following button: <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true"><img alt="Duplicate this Space" src="https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg" /></a>. This should open a window with the following form: <img alt="Form to duplicate Space" src="../../../assets/user_guides/run_deploy/hugging_face_duplicate_this_space.png" /></li>
+<li>You do not need to alter any of the default options but the <a href="https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space">Hugging Face documentation</a> gives an explanation of each.</li>
+<li>Click "Duplicate Space" to build your Hugging Face Space. This takes around 10 seconds, and when complete you should see the following dashboard running. <img alt="Running dashboard" src="../../../assets/user_guides/run_deploy/hugging_face_space.png" /></li>
+</ol>
+<p>To turn the example app into your own, you will need to edit the code in the <code>app.py</code> file. Click on the Files tab at the top of your app and select <code>app.py</code>. Click the Edit button highlighted in the below screenshot to enter an editor view of the file. <img alt="Edit app.py" src="../../../assets/user_guides/run_deploy/hugging_face_edit_app.png" /></p>
+<p>You can now copy and paste your app code into the editor. When you've finished editing, click "Commit changes to <code>main</code>". This immediately triggers a rebuild of your Space. As with the initial build this takes around 10 seconds, and when complete you should be able to view your own app deployed on Hugging Face!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember that a deployed <code>app.py</code> file must contain a line that <a href="#overview">exposes the Vizro <code>app</code> object</a> as <code>app = Vizro().build(dashboard)</code>.</p>
+</div>
+<p>Under the hood, your Space is a Git repository. Instead of editing files through your browser, you can use <a href="https://huggingface.co/docs/hub/en/repositories-getting-started"><code>git</code> from the command line and the Hugging Face CLI</a>. Every time you make a commit to your repository, your app is automatically rebuilt and restarted.</p>
+<p>In addition to <code>app.py</code>, your Space contains a few other files:</p>
+<ul>
+<li><code>.gitattributes</code> is used by <a href="https://git-lfs.com/">Git Large File Storage (LFS)</a> and is only relevant if you have files larger than 10MB. See the <a href="https://huggingface.co/docs/hub/en/repositories-getting-started">Hugging Face documentation</a> for more information.</li>
+<li><code>Dockerfile</code> gives instructions to configure your app's environment and start the app. See our <a href="#dockerfile">section on Dockerfiles</a> for more information.</li>
+<li><code>README.md</code> configures your Space, for example its title, description and license. See the <a href="https://huggingface.co/docs/hub/en/spaces-config-reference">Hugging Face documentation</a> for more information.</li>
+<li><code>requirements.txt</code> gives your Python package dependencies. See our <a href="#dependencies">section on dependencies</a> for more information.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you'd like to show your Vizro app off to the community then you can add it to our <a href="https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de">Vizro dashboard community gallery</a>. Notify us on GitHub in case you are interested.</p>
+</div>
+<h3 id="deploy-via-dash-enterprise">Deploy via Dash Enterprise<a class="headerlink" href="#deploy-via-dash-enterprise" title="Permanent link">&para;</a></h3>
+<p>Since a Vizro app is a Dash app under the hood, they can be deployed to <a href="https://plotly.com/dash/">Dash Enterprise</a> and accessed in the same way as other Dash apps.</p>
+<p>Dash Enterprise helps to deploy and scale production-grade data apps and integrate them with IT infrastructure such as authentication and VPC services. Vizro users may find it suitable for deployment, rapid development environments, and authentication.</p>
+<p>Vizro is compatible with the following functionality within Dash Enterprise:</p>
+<ul>
+<li><a href="https://dash.plotly.com/dash-enterprise/portal?de-version=5.5">App Portal</a></li>
+<li><a href="https://plotly.com/dash/app-manager/">App Manager</a></li>
+<li><a href="https://plotly.com/dash/workspaces/">Dash App Workspaces</a></li>
+<li><a href="https://dash.plotly.com/dash-enterprise/logs">App logs and viewer statistics</a></li>
+<li><a href="https://plotly.com/dash/centralized-data-app-management/">Centralized data app management</a></li>
+<li><a href="https://plotly.com/dash/continuous-integration/">CI/CD</a></li>
+<li><a href="https://plotly.com/dash/big-data-for-python/">Redis</a></li>
+<li><a href="https://plotly.com/dash/authentication/">Dash Enterprise Authentication</a></li>
+</ul>
+<p>Vizro is not currently compatible with the <a href="https://plotly.com/dash/dashboard-engine/">Dashboard Engine</a> or <a href="https://plotly.com/dash/design-kit/">Dash Design Kit</a>, and cannot produce static reports accessed via the <a href="https://plotly.com/dash/snapshot-engine/">Snapshot Engine</a>.</p>
+<h3 id="deploy-via-pycafe">Deploy via PyCafe<a class="headerlink" href="#deploy-via-pycafe" title="Permanent link">&para;</a></h3>
+<p>You can also share your Vizro application using <a href="#develop-in-pycafe">PyCafe</a> - which we introduced in the <a href="#development">development</a> section. This is not a traditional deployment (using a backend server), but <a href="#webassembly-wasm-and-pyodide">uses WebAssembly and Pyodide to run Python in your browser</a>. If you are happy with the constraints and advantages of this technology, then this is likely the easiest and fastest way to share your application.</p>
+<p>The two menu options of interest are highlighted in red below. "Push" let's you save a snippet to your account, so you can come back to edit it, and "Share" shows you how to share your code and dashboard.</p>
+<figure>
+  <img alt="PyCafe editor" src="../../../assets/user_guides/run_deploy/pycafe_editor_share.png" />
+<br />
+<figcaption>Highlighted in red are the options that help you share your dashboard.</figcaption>
+</figure>
+<p>Since this solution runs the dashboard in every visitors Browser, scalability to many viewers is not an issue.</p>
+<h3 id="general-principles-when-deploying-vizro-dashboards">General principles when deploying Vizro dashboards<a class="headerlink" href="#general-principles-when-deploying-vizro-dashboards" title="Permanent link">&para;</a></h3>
+<p>There are many other hosting providers, such as <a href="https://render.com/">Render</a>, <a href="https://www.heroku.com/">Heroku</a>, and <a href="https://fly.io/">Fly</a>. Some of these, such as Render, offer a free tier.</p>
+<p>Although these services work in slightly different ways, there are some general principles that usually apply across all hosting providers. In general, the procedure is:</p>
+<ol>
+<li>Modify the last line of your <code>app.py</code> to <a href="#overview">expose the Vizro <code>app</code> object</a> as <code>app = Vizro().build(dashboard)</code>.</li>
+<li>Create a <code>requirements.txt</code> file to give your Python package dependencies. This should include <code>vizro</code> and <code>gunicorn</code>. See the <a href="#dependencies">section on dependencies</a> for more information.</li>
+<li>Upload your <code>app.py</code> and <code>requirements.txt</code> files, for example by drag and drop, your hosting provider's CLI, or <code>git push</code>.</li>
+<li>Specify on your hosting provider how to handle your app:<ul>
+<li>Before the app is started, the environment needs to be built. Python dependencies should be installed with <code>pip install -r requirements.txt</code>.</li>
+<li>To start the app, you should use the command <code>gunicorn app:app --workers 4</code>. See the <a href="#gunicorn">section on Gunicorn</a> for more information.</li>
+<li>Optional: set <a href="#advanced-dockerfile-configuration">advanced configuration</a>, for example to serve assets using a Content Delivery Network (CDN).</li>
+</ul>
+</li>
+<li>Optional: configure further settings on your hosting provider, for example to make your dashboard private or to configure computing resources.</li>
+</ol>
+<p>The method for providing instructions on how to handle your app varies between hosting providers. For example, on Render there are <a href="https://render.com/docs/deploys">build and deploy commands</a>; on Heroku and Dash Enterprise there is a <a href="https://devcenter.heroku.com/articles/procfile">Procfile</a>. One common cross-platform way to configure an environment is using a Dockerfile. This is used by many hosting providers, including Hugging Face; see the <a href="#dockerfile">section on Dockerfile</a> for more information.</p>
+<h4 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h4>
+<p>The <code>requirements.txt</code> file <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/">specifies your app's Python dependencies</a>. At a minimum, the file must include <code>vizro</code> (used to run the app in development and production) and <code>gunicorn</code> (used only in production). Our simple dashboard demo has exactly this <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard/blob/main/requirements.txt">minimal example <code>requirements.txt</code></a>. These dependencies should then be installed on your host server using <a href="https://pip.pypa.io/en/stable/cli/pip_install/"><code>pip install</code></a> with the command <code>pip install -r requirements.txt</code> (or the <a href="https://docs.astral.sh/uv/pip/packages/#installing-a-package"><code>uv</code> equivalent</a> <code>uv pip install -r requirements.txt</code>).</p>
+<p>Although this process for handling dependencies is sufficient to get started with deployment, it is best practice to <em>pin</em> your dependencies to exact versions. This ensures that your app does not break when your dependencies are updated. Ideally, pinned versions should include both your <em>direct</em> dependencies and their dependencies (your <em>transitive</em> dependencies). There are two alternative methods we recommend for this:</p>
+<ul>
+<li>Run <a href="https://pip.pypa.io/en/stable/cli/pip_freeze/"><code>pip freeze</code></a> in your development environment to create the <code>requirements.txt</code> file with <code>pip freeze &gt; requirements.txt</code>. On your host server, these dependencies are installed with <code>pip install -r requirements.txt</code>.</li>
+<li>Create a new file <code>requirements.in</code> for your unpinned requirements and run <a href="https://docs.astral.sh/uv/pip/compile/"><code>uv pip compile</code></a> to generate the <code>requirements.txt</code> file from this with <code>uv pip compile requirements.in -o requirements.txt</code>. On the host server, these dependencies should be installed with <code>uv pip sync requirements.txt</code>. This is the method followed in our <a href="https://huggingface.co/spaces/vizro/demo-kpi/tree/main">KPI dashboard demo</a>.</li>
+</ul>
+<h4 id="gunicorn">Gunicorn<a class="headerlink" href="#gunicorn" title="Permanent link">&para;</a></h4>
+<p><a href="https://gunicorn.org/">Gunicorn</a> is a production-ready Python server for deploying an app over multiple worker processes. The standard way to write a Vizro app is to have a file called <code>app.py</code> that contains the Vizro app in a variable called <code>app</code>. Given this setup, the command to start Gunicorn with four worker processes is:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>gunicorn<span class="w"> </span>app:app<span class="w"> </span>--workers<span class="w"> </span><span class="m">4</span>
+</span></code></pre></div>
+<p>The Gunicorn documentation gives <a href="https://docs.gunicorn.org/en/stable/run.html#commands">commonly used arguments</a> and advice for setting them. Other than <code>workers</code>, the most common argument to specify is <code>bind</code>, which makes your app accessible. This is often set as <code>--bind 0.0.0.0:&lt;port&gt;</code>. Your hosting provider needs to tell you what the correct port to use is. For example, on Hugging Face it is 7860.</p>
+<h4 id="dockerfile">Dockerfile<a class="headerlink" href="#dockerfile" title="Permanent link">&para;</a></h4>
+<p>A <a href="https://docs.docker.com/build/concepts/dockerfile/">Dockerfile</a> contains instructions to build a <a href="https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/">container image</a>. You can think of it as a way to give in a single file all the instructions that your hosting provider needs to deploy your app. This includes both the <a href="#dependencies">installation of dependencies</a> and <a href="#gunicorn">starting the app with Gunicorn</a>. A Dockerfile is used by many hosting providers, including Hugging Face.</p>
+<p>Here is an annotated <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard/blob/main/Dockerfile">example Dockerfile</a> that we use in our simple Hugging Face demo. It demonstrates the key Dockerfile instructions needed to deploy Vizro and should serve as a good starting point for your own Dockerfile.</p>
+<div class="language-dockerfile highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">FROM</span><span class="w"> </span><span class="s">ghcr.io/astral-sh/uv:python3.12-bookworm-slim</span><span class="w">  </span><span class="c"># (1)!</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">COPY</span><span class="w"> </span>requirements.txt<span class="w"> </span>.
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">RUN</span><span class="w"> </span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--system<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c"># (2)!</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="k">ENTRYPOINT</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;gunicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;app:app&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--workers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--bind&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;0.0.0.0:7860&quot;</span><span class="p">]</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c"># (3)!</span>
+</span></code></pre></div>
+<ol>
+<li>Use a Docker image that <a href="https://docs.astral.sh/uv/guides/integration/docker/">includes <code>uv</code> pre-installed</a>.</li>
+<li>Install the <a href="#dependencies">Python dependencies</a> as <a href="https://docs.astral.sh/uv/guides/integration/docker/#installing-requirements">described in the <code>uv</code> documentation</a>. The app files are copied into the container after installing dependencies to optimize Docker's <a href="https://docs.docker.com/build/cache/">build cache</a>.</li>
+<li>Run the Vizro app using <a href="#gunicorn">Gunicorn</a>.</li>
+</ol>
+<h4 id="advanced-dockerfile-configuration">Advanced Dockerfile configuration<a class="headerlink" href="#advanced-dockerfile-configuration" title="Permanent link">&para;</a></h4>
+<p>Vizro is built on top of <a href="https://dash.plotly.com/">Dash</a>, which itself uses <a href="https://flask.palletsprojects.com/">Flask</a>. Deployment of Vizro is essentially the same as deployment of the underlying frameworks, and more guidance can be found in <a href="https://flask.palletsprojects.com/en/2.0.x/deploying/">Flask's deployment documentation</a> and <a href="https://dash.plotly.com/deployment">Dash's deployment documentation</a>.</p>
+<p>[<code>Vizro</code>][vizro.Vizro] accepts <code>**kwargs</code> that are passed through to <code>Dash</code>. This enables you to configure the underlying Dash app using the same <a href="https://dash.plotly.com/reference#dash.dash">arguments that are available</a> in <code>Dash</code>. For example, in a deployment context, these arguments may be useful:</p>
+<ul>
+<li><code>url_base_pathname</code>: serve your Vizro app at a specific path rather than at the domain root. For example, if you host your dashboard at <code>http://www.example.com/my_dashboard/</code> then you would set <code>url_base_pathname="/my_dashboard/"</code> or an environment variable <code>DASH_URL_BASE_PATHNAME="/my_dashboard/"</code>.</li>
+<li><code>serve_locally</code>: set to <code>False</code> to <a href="https://dash.plotly.com/external-resources#serving-dash's-component-libraries-locally-or-from-a-cdn">serve Dash component libraries from a Content Delivery Network (CDN)</a>, which reduces load on the server and can improve performance. Vizro uses <a href="https://www.jsdelivr.com/">jsDeliver</a> as a CDN for CSS and JavaScript sources.</li>
+<li><code>assets_external_path</code>: when <code>serve_locally=False</code>, you can also set <code>assets_external_path</code> or an environment variable <code>DASH_ASSETS_EXTERNAL_PATH</code> to <a href="https://dash.plotly.com/external-resources#load-assets-from-a-folder-hosted-on-a-cdn">serve your own assets from a CDN</a>.</li>
+</ul>
+<p>In fact, the only difference between deploying a Vizro app and deploying a Dash app is that Vizro implements a small simplification that makes it unnecessary for you to add a line like <code>server = app.server</code>, as you would do with Dash. Internally, <code>app = Vizro()</code> contains a Flask app in <code>app.dash.server</code>. As a convenience, the Vizro <code>app</code> itself implements the <a href="https://werkzeug.palletsprojects.com/en/3.0.x/terms/#wsgi">WSGI application interface</a> as a shortcut to the underlying Flask app. This means that the Vizro <code>app</code> object can be directly supplied to the WSGI server in the command <code>gunicorn app:app</code>.</p>
+<h4 id="webassembly-wasm-and-pyodide">WebAssembly (WASM) and Pyodide<a class="headerlink" href="#webassembly-wasm-and-pyodide" title="Permanent link">&para;</a></h4>
+<p>Vizro applications traditionally run on a Python backend, serving dynamic content to a web-based frontend. However, <a href="https://en.wikipedia.org/wiki/WebAssembly">advancements in WASM</a> and <a href="https://github.com/pyodide/pyodide">Pyodide</a> as used by <a href="#develop-in-pycafe">PyCafe</a> now enable Vizro to run entirely in the browser without a dedicated server.</p>
+<p><strong>WASM</strong></p>
+<p>WASM is a low-level binary instruction format that enables high-performance execution of code on web browsers. Unlike JavaScript, which is typically interpreted, WASM code is compiled and executed at near-native speed. This enables languages like C, Rust, and even Python (via Pyodide) to run efficiently in the browser.</p>
+<p><strong>Pyodide</strong></p>
+<p><a href="https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific-python-stack-to-the-browser/">Pyodide is a Python distribution compiled to WebAssembly, enabling Python execution in a browser’s JavaScript runtime</a>. It includes a standard Python interpreter, common scientific libraries (NumPy, Pandas, Matplotlib, etc.), and interoperability with JavaScript within the browser environment. In the context of Vizro, Pyodide enables the execution of Dash callbacks, component updates, and external Python libraries directly in the client’s browser, without a persistent backend.</p>
+<p>While potential advantages include serverless execution, reduced latency and easier "deployment", the disadvantages include limited performance compared to a native server, limited library support, and memory constraints.</p>
+<h3 id="shareable-url">Shareable URL<a class="headerlink" href="#shareable-url" title="Permanent link">&para;</a></h3>
+<p>When sharing your dashboard, it can be useful to share or bookmark a link to a page on which you have already set the controls. Any <a href="../controls/">controls</a> that have <code>show_in_url=True</code> are included in the URL of the page.</p>
+<div class="admonition example">
+<p class="admonition-title">Shareable URL that includes filter</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">app.py</label><label for="__tabbed_1_2">app.yaml</label><label for="__tabbed_1_3">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vizro</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vizro</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">vizro.plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">vizro.models</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vm</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">iris</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iris</span><span class="p">()</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">page</span> <span class="o">=</span> <span class="n">vm</span><span class="o">.</span><span class="n">Page</span><span class="p">(</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;My first page&quot;</span><span class="p">,</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">components</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        <span class="n">vm</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">figure</span><span class="o">=</span><span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;petal_width&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;species&quot;</span><span class="p">)),</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="p">],</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="n">controls</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>        <span class="n">vm</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>            <span class="n">column</span><span class="o">=</span><span class="s2">&quot;species&quot;</span><span class="p">,</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="hll">            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;filter-id&quot;</span><span class="p">,</span>  <span class="c1"># (1)!</span>
+</span></span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="hll">            <span class="n">show_in_url</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span></span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>        <span class="p">),</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    <span class="p">],</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="p">)</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="n">dashboard</span> <span class="o">=</span> <span class="n">vm</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">(</span><span class="n">pages</span><span class="o">=</span><span class="p">[</span><span class="n">page</span><span class="p">])</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="n">Vizro</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></code></pre></div>
+<ol>
+<li>Setting <code>id</code> is not compulsory, but it is recommended. If you do not set the <code>id</code> explicitly then a random <code>id</code> is set for you. If you later change your dashboard configuration and re-deploy then a different random <code>id</code> would be generated, and old shareable URLs would not work correctly.</li>
+</ol>
+</div>
+<div class="tabbed-block">
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Still requires a .py to add data to the data manager and parse YAML configuration</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1"># See yaml_version example</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nt">pages</span><span class="p">:</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">components</span><span class="p">:</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">figure</span><span class="p">:</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">          </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scatter</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">          </span><span class="nt">data_frame</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iris</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">          </span><span class="nt">x</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sepal_length</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">          </span><span class="nt">y</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">petal_width</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">          </span><span class="nt">color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">species</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">graph</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="nt">controls</span><span class="p">:</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">species</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="hll"><span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">filter-id</span>
+</span></span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="hll"><span class="w">        </span><span class="nt">show_in_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span></span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">filter</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">My first page</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<p><a href="../../../assets/user_guides/run_deploy/filter_in_url.png"><img alt="filterInUrl" src="../../../assets/user_guides/run_deploy/filter_in_url.png" /></a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Page state rather than dashboard state</p>
+<p>Only controls on the currently opened page are reflected in the URL. It is not yet possible to share or bookmark the global state of a multi-page dashboard.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.expand","navigation.instant","navigation.indexes","navigation.tabs","navigation.tabs.sticky","navigation.tracking","search.suggest","search.highlight","content.tabs.link","content.code.annotation","content.code.copy","content.code.annotate"],"search":"../../assets/javascripts/workers/search.5df7522c.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.21aa498e.min.js"></script>
+      
+        <script src="../../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>

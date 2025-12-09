@@ -1,0 +1,108 @@
+.card-section-wrapper {
+  align-items: center;
+  display: flex;
+}
+
+.responsive-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-auto-rows: auto;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  width: 100%;
+}
+
+.card-section-wrapper .responsive-grid a {
+  background: none;
+  color: black;
+  padding: 0;
+  text-decoration: none;
+  transition: none;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  height: 100%;
+  transition: 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.25);
+}
+
+.card-content {
+  padding: 2px 16px;
+}
+
+:root > * {
+  --md-code-hl-color: #119bec3e;
+}
+
+.md-typeset th,
+td:not([class]):not(:last-child) {
+  border-right: 1px solid lightgrey;
+}
+
+:root {
+  --md-admonition-icon--details: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z"/></svg>');
+}
+
+.md-typeset .admonition.details,
+.md-typeset details.details {
+  border-color: rgb(158, 158, 158);
+}
+
+.md-typeset .details > .admonition-title,
+.md-typeset .details > summary {
+  background-color: rgba(245, 245, 245, 0.3);
+  opacity: 0.5;
+}
+
+.md-typeset .details > .admonition-title::before,
+.md-typeset .details > summary::before {
+  background-color: rgb(3, 3, 3);
+  mask-image: var(--md-admonition-icon--details);
+}
+
+.md-content:has(.markdown-buttons) h1 {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.markdown-buttons button {
+  align-items: center;
+  background: none;
+  border-bottom: 1px solid var(--md-primary-fg-color);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.6rem;
+  gap: 4px;
+  justify-content: center;
+  padding: 4px 8px;
+}
+
+.markdown-buttons button#md-copy {
+  width: 125px;
+}
+
+.markdown-buttons button span {
+  font-size: 20px;
+}
+
+.material-symbols-outlined.loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
