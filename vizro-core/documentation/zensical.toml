@@ -5,8 +5,11 @@ site_url = "https://vizro.readthedocs.io/en/stable/"
 repo_url = "https://github.com/mckinsey/vizro"
 repo_name = "mckinsey/vizro"
 docs_dir = "pages"
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = ["javascripts/extra.js"]
 
-# Make sure any new page added here is also added to the llmstxt plugin below (around line 156)
+
+# -------------------------
 nav = [
   {"Vizro" = "index.md"},
   {"Tutorials" = [
@@ -91,24 +94,24 @@ nav = [
     {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
   ]}
 ]
-
-extra_css = ["stylesheets/extra.css"]
-extra_javascript = ["javascripts/extra.js"]
-
+# -------------------------
 [project.theme]
 variant = "classic"
 custom_dir = "overrides"
-
+# Jo: We should add this
 #favicon = "images/favicon.png"
 language = "en"
 
+# -------------------------
 # Zensical provides a number of feature toggles that change the behavior
 # of the documentation site.
+# -------------------------
+
 features = [
-    #"content.action.edit",
-    #"content.action.view",
-    # "header.autohide",
-    # "navigation.sections",
+    #"content.action.edit", Jo: Not sure about adding this
+    #"content.action.view", Jo: Not sure about adding this
+    # "header.autohide", Jo: Not sure about adding this
+    # "navigation.sections", Jo: Not sure about adding this
     #"navigation.path",
     
     "navigation.expand",
@@ -126,15 +129,8 @@ features = [
 
 ]
 
-# ----------------------------------------------------------------------------
-# In the "palette" subsection you can configure options for the color scheme.
-# You can configure different color # schemes, e.g., to turn on dark mode,
-# that the user can switch between. Each color scheme can be further
-# customized.
-#
-# Read more:
-# - https://zensical.org/docs/setup/colors/
-# ----------------------------------------------------------------------------
+# -------------------------
+
 [[project.theme.palette]]
 scheme = "default"
 toggle.icon = "lucide/sun"
@@ -145,40 +141,222 @@ scheme = "slate"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 
-# ----------------------------------------------------------------------------
-# In the "font" subsection you can configure the fonts used. By default, fonts
-# are loaded from Google Fonts, giving you a wide range of choices from a set
-# of suitably licensed fonts. There are options for a normal text font and for
-# a monospaced font used in code blocks.
-# ----------------------------------------------------------------------------
-#[project.theme.font]
-#text = "Inter"
-#code = "Jetbrains Mono"
+[project.theme.font]
+text = "Google sans"
+code = "Source Code Pro"
 
-# ----------------------------------------------------------------------------
-# You can configure your own logo to be shown in the header using the "logo"
-# option in the "icons" subsection. The logo can be a path to a file in your
-# "docs_dir" or it can be a path to an icon.
-#
-# Likewise, you can customize the logo used for the repository section of the
-# header. Zensical derives the default logo for this from the repository URL.
-# See below...
-#
-# There are other icons you can customize. See the documentation for details.
-#
-# Read more:
-# - https://zensical.org/docs/setup/logo-and-icons
-# - https://zensical.org/docs/authoring/icons-emojis/#search
-# ----------------------------------------------------------------------------
-#[project.theme.icon]
-#logo = "lucide/smile"
-#repo = "lucide/smile"
+[project.extra.social]
+icon = "fontawesome/brands/github"
 
-# ----------------------------------------------------------------------------
-# The "extra" section contains miscellaneous settings.
-# ----------------------------------------------------------------------------
-#[[project.extra.social]]
-#icon = "fontawesome/brands/github"
-#link = "https://github.com/user/repo"
+[project.extra.meta]
+name = "google-site-verification"
+content = "CYb3cxosCgsN2QDQVaSGQpMQCesqpsGQ3oTM02NtvkY"
+
+# -------------------------
+# plugins
+# -------------------------
+
+[project.plugins.search]
+
+[project.plugins.autorefs]
+
+[project.plugins.git-revision-date-localized]
+enable_creation_date = false
+
+# Jo not yet done:
+
+#[project.plugins.llmstxt]
+
+# -------------------------
+# mkdocstrings
+# -------------------------
+
+# mkdocstrings:
+#     handlers:
+#       python:
+#         options:
+#           show_bases: false
+#           show_source: false #currently doesn't show source at correct level, and not for pydantic models
+#           docstring_style: google
+#           merge_init_into_class: true
+#           docstring_section_style: list
+#           separate_signature: true
+#           #   filters: ["!^_"]
+#           show_root_heading: true
+#           docstring_options:
+#             ignore_init_summary: true
+#             warn_unknown_params: false
+#             returns_named_value: false
+#           extensions:
+#             - docs/griffe_extensions.py:
+#                 paths:
+#                   [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
+#             - griffe_warnings_deprecated:
+#                 kind: danger
+#                 title: Deprecated
+#         paths: [src]
+
+
+[project.plugins.mkdocstrings.handlers.python]
+inventories = ["https://docs.python.org/3/objects.inv"]
+paths = ["src"]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+docstring_style = "google"
+docstring_section_style = "list"
+inherited_members = true
+show_source = false
+show_bases = false
+merge_init_into_class = true
+separate_signature = true
+show_root_heading = true
+
+[project.plugins.mkdocstrings.handlers.python.options.docstring_options]
+ignore_init_summary = true
+warn_unknown_params = false
+returns_named_value = false
+
+
+
+# -------------------------
+# markdown_extension
+# -------------------------
+
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+
+[project.markdown_extensions.pymdownx.inlinehilite]
+
+[project.markdown_extensions.pymdownx.snippets]
+
+[project.markdown_extensions.admonition]
+
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+
+[project.markdown_extensions.footnotes]
+
+[project.markdown_extensions.pymdownx.keys]
+
+[project.markdown_extensions.details]
+
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+
+# JO: NOT SURE ABOUT THIS
+#- name: python
+       #  class: "highlight"
+       #  validator: !!python/name:mkdocs_pycafe.validator
+       #  format: !!python/object/apply:mkdocs_pycafe.formatter
+       #    kwds:
+       #      type: vizro
+       #      requirements: |
+       #        vizro==0.1.49
+
+
+ # { name = "python", class = "highlight", validator = "mkdocs_pycafe.validator", format = "!!python/object/apply:mkdocs_pycafe.formatter"}
+
+]
+
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+
+[project.markdown_extensions.pymdownx.mark]
+
+[project.markdown_extensions.md_in_html]
+
+[project.markdown_extensions.attr_list]
+
+[project.markdown_extensions.pymdownx.emoji]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
+
+
+# -------------------------
+
+# The following settings were in the mkdocs.yml but are currently not supported
+# by Zensical https://zensical.org/docs/setup/basics/#unsupported-settings
+# -------------------------
+
+#watch:
+#  - src
+
+#validation:
+#  omitted_files: warn
+#  absolute_links: warn
+#  unrecognized_links: warn
+#  anchors: warn
+
+#- llmstxt: # https://pypi.org/project/mkdocs-llmstxt/
+#      markdown_description:
+#        Vizro is an open-source Python-based toolkit to build data visualization apps.
+#
+#        Every Vizro app is defined by a simple configuration, using the high-level categories
+#        * Components (charts, tables, cards, KPI indicators, forms and more),
+#        * Controls (filters and parameters, using a range of selectors such as drop-down menus and sliders),
+#        * Actions (interactions between components, drill-throughs, export functionality and more),
+#        * Layouts (grid layouts or flexible containers, with a range of pre-set styles),
+#        * Navigation (a range of app layout and navigation settings, including nested page hierarchies).
+#
+#        Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
+#
+#        Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
+#      base_url: https://vizro.readthedocs.io/en/0.1.49/
+#      full_output: llms-full.txt
+#      sections:
+#        "TUTORIALS":
+#          - pages/tutorials/quickstart-tutorial.md: "A quickstart dashboard tutorial"
+#          - pages/tutorials/explore-components.md: "An in-depth tutorial to introduce Vizro's key features (accompanying Video is available)"
+#        "FUNDAMENTAL CONCEPTS IN VIZRO":
+#          - pages/user-guides/install.md: "Guide on how to install Vizro"
+#          - pages/user-guides/dashboard.md: "Dashboard basics"
+#          - pages/user-guides/pages.md: "Pages"
+#          - pages/user-guides/run-deploy.md: "How to run or deploy dashboards"
+#        "LEARN ABOUT VIZRO COMPONENTS":
+#          - pages/user-guides/components.md: "Components overview"
+#          - pages/user-guides/graph.md: "Graphs"
+#          - pages/user-guides/table.md: "Tables"
+#          - pages/user-guides/figure.md: "Figures"
+#          - pages/user-guides/card.md: "Cards"
+#          - pages/user-guides/text.md: "Text"
+#          - pages/user-guides/button.md: "Buttons"
+#          - pages/user-guides/container.md: "Containers"
+#          - pages/user-guides/tabs.md: "Tabs"
+#        "ADD CONTROLS TO A DASHBOARD":
+#          - pages/user-guides/controls.md: "Controls overview"
+#          - pages/user-guides/filters.md: "Filters"
+#          - pages/user-guides/parameters.md: "Parameters"
+#          - pages/user-guides/selectors.md: "Selectors"
+#        "DASHBOARD NAVIGATION ELEMENTS":
+#          - pages/user-guides/navigation.md: "Navigation"
+#        "HOW TO APPLY VISUAL FORMATTING":
+#          - pages/user-guides/visual-formatting.md: "Formatting overview"
+#          - pages/user-guides/layouts.md: "Layouts"
+#          - pages/user-guides/themes.md: "Themes"
+#          - pages/user-guides/assets.md: "Assets"
+#          - pages/user-guides/custom-css.md: "Custom CSS"
+#        "ACTIONS":
+#          - pages/user-guides/actions.md: "Actions"
+#          - pages/user-guides/data-actions.md: "Handle data"
+#          - pages/user-guides/graph-table-actions.md: "Graph and table interactions"
+#        "MANAGE DATA USED BY THE DASHBOARD":
+#          - pages/user-guides/data.md: "Data"
+#          - pages/user-guides/kedro-data-catalog.md: "Kedro Data Catalog"
+#        "EXTEND THE DASHBOARD WITH CUSTOMIZATIONS":
+#          - pages/user-guides/extensions.md: "Extensions overview"
+#          - pages/user-guides/custom-charts.md: "Custom charts"
+#          - pages/user-guides/custom-tables.md: "Custom tables"
+#          - pages/user-guides/custom-components.md: "Custom components"
+#          - pages/user-guides/custom-actions.md: "Custom actions"
+#          - pages/user-guides/custom-figures.md: "Custom figures"
+#        "FAQS, EXAMPLES, CONTRIBUTION GUIDANCE AND THE VIZRO SCHEMA":
+#          - pages/explanation/faq.md: "FAQs"
+#          - pages/explanation/your-examples.md: "Examples created by the Vizro community"
+#          - pages/explanation/contributing.md: "How to contribute to Vizro's open source project"
+#          - pages/explanation/documentation-style-guide.md: "Documentation style guide"
+#          - pages/explanation/schema.md: "The Vizro schema"
+#          - pages/explanation/authors.md: "Vizro contributor listing"
+
 
 
