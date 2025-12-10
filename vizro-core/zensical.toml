@@ -7,14 +7,15 @@ repo_name = "mckinsey/vizro"
 docs_dir = "docs"
 site_dir = "site"
 use_directory_urls = true
-extra_css = ["stylesheets/extra.css"]
-extra_javascript = ["javascripts/extra.js"]
+extra_css = ["/stylesheets/extra.css"]
+extra_javascript = ["/javascripts/extra.js"]
 
 
 # -------------------------
 # Site layout
 # -------------------------
 
+# Make sure any new page added here is also added to the llmstxt plugin below (around line 198)
 nav = [
   {"Vizro" = "index.md"},
   {"Tutorials" = [
@@ -104,7 +105,7 @@ nav = [
 [project.theme]
 variant = "classic"
 custom_dir = "docs/overrides"
-favicon = "stylesheets/favicon.png"
+favicon = "assets/images/favicon.png"
 language = "en"
 
 # -------------------------
@@ -194,7 +195,7 @@ returns_named_value = false
 # llmstxt plugin
 # -------------------------
 
-[project.plugins.llmstxt]
+[project.plugins.llmstxt] # https://pypi.org/project/mkdocs-llmstxt/
 base_url = "https://vizro.readthedocs.io/en/0.1.49/"
 full_output = "llms-full.txt"
 markdown_description = """
