@@ -2,10 +2,12 @@ from vizro.models._fake_vizro.models.models import (
     Action,
     Card,
     Component,
+    Container,
     Dashboard,
     Graph,
     Page,
     SubComponent,
+    Tabs,
     VizroBaseModel,
 )
 
@@ -13,10 +15,12 @@ __all__ = [
     "Action",
     "Card",
     "Component",
+    "Container",
     "Dashboard",
     "Graph",
     "Page",
     "SubComponent",
+    "Tabs",
     "VizroBaseModel",
 ]
 

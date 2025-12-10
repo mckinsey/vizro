@@ -77,6 +77,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, Self, Union
 
 from nutree.typed_tree import TypedTree
 from pydantic import (
+    AfterValidator,
     BaseModel,
     ConfigDict,
     Discriminator,
@@ -85,6 +86,7 @@ from pydantic import (
     PrivateAttr,
     Tag,
     ValidatorFunctionWrapHandler,
+    conlist,
     field_validator,
     model_validator,
 )
@@ -168,6 +170,8 @@ class VizroBaseModel(BaseModel):
         tree_is_none = getattr(model, "_tree", None) is None
         if not has_tree or tree_is_none:
             # Revalidate with build_tree context to ensure tree node is created
+            # NOTE: This can cause UniqueConstraintError if the model was already added to the tree
+            # during normal validation but _tree wasn't set yet (see Container in Tabs issue)
             return model.__class__.model_validate(model, context=context)
         return model
 
@@ -373,11 +377,28 @@ class Component(VizroBaseModel):
     x: Union[str, list[SubComponent]]
 
 
+class Container(VizroBaseModel):
+    type: Literal["container"] = "container"
+    title: str = ""
+    components: list[make_discriminated_union(Graph, Card, Component)]
+
+
+def validate_tab_has_title(tab: Container) -> Container:
+    if not tab.title:
+        raise ValueError("`Container` must have a `title` explicitly set when used inside `Tabs`.")
+    return tab
+
+
+class Tabs(VizroBaseModel):
+    type: Literal["tabs"] = "tabs"
+    tabs: conlist(Annotated[Container, AfterValidator(validate_tab_has_title)], min_length=1)  # type: ignore[valid-type]
+
+
 class Page(VizroBaseModel):
     type: Literal["page"] = "page"
     title: str
     # Example of field where there's multiple options so it's already a real discriminated union.
-    components: list[make_discriminated_union(Graph, Card, Component)]
+    components: list[make_discriminated_union(Graph, Card, Component, Tabs)]
 
     def pre_build(self):
         print(f"Updating page {self.type}")

@@ -5,7 +5,17 @@ from typing import Literal, Union
 import pytest
 from pydantic import ValidationError
 
-from vizro.models._fake_vizro.models import Action, Card, Component, Dashboard, Graph, Page, VizroBaseModel
+from vizro.models._fake_vizro.models import (
+    Action,
+    Card,
+    Component,
+    Container,
+    Dashboard,
+    Graph,
+    Page,
+    Tabs,
+    VizroBaseModel,
+)
 
 # Custom component classes for testing
 
@@ -516,3 +526,27 @@ class TestFakeVizroSerialization:
             "figure": "a",
             "actions": [{"id": "action-id", "action": "a (from make_actions_chain)"}],
         }
+
+
+class TestFakeVizroContainerInTabs:
+    """Test that Container in Tabs causes UniqueConstraintError."""
+
+    def test_container_in_tabs_unique_constraint_error(self):
+        """Test that using a Container in Tabs causes UniqueConstraintError when building tree."""
+        from nutree.common import UniqueConstraintError
+
+        container = Container(
+            title="Tab I",
+            components=[
+                Graph(figure="test_figure_1", actions=[Action(action="a")]),
+                Graph(figure="test_figure_2", actions=[Action(action="b")]),
+            ],
+        )
+
+        tabs = Tabs(tabs=[container])
+        page = Page(title="Tabs", components=[tabs])
+        dashboard = Dashboard(pages=[page])
+
+        # This should raise UniqueConstraintError
+        with pytest.raises(UniqueConstraintError, match="Node.data already exists in parent"):
+            Dashboard.model_validate(dashboard, context={"build_tree": True})

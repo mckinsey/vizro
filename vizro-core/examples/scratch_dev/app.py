@@ -78,29 +78,29 @@ page = vm.Page(
     ],
 )
 
-# tab_1 = vm.Container(
-#     title="Tab I",
-#     components=[
-#         vm.Graph(
-#             figure=px.bar(
-#                 "gapminder_2007",
-#                 title="Graph 1",
-#                 x="continent",
-#                 y="lifeExp",
-#                 color="continent",
-#             ),
-#         ),
-#         vm.Graph(
-#             figure=px.box(
-#                 "gapminder_2007",
-#                 title="Graph 2",
-#                 x="continent",
-#                 y="lifeExp",
-#                 color="continent",
-#             ),
-#         ),
-#     ],
-# )
+tab_1 = vm.Container(
+    title="Tab I",
+    components=[
+        vm.Graph(
+            figure=px.bar(
+                "gapminder_2007",
+                title="Graph 1",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.box(
+                "gapminder_2007",
+                title="Graph 2",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+    ],
+)
 
 # tab_2 = vm.Container(
 #     title="Tab II",
@@ -118,9 +118,9 @@ page = vm.Page(
 #     ],
 # )
 
-# tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls=[vm.Filter(column="continent")])
+tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1])], controls=[vm.Filter(column="continent")])
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[tabs])
 
 # Same configuration as JSON
 # dashboard_config = {
