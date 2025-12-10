@@ -15,5 +15,4 @@ def correlation_heatmap(data_frame):
     )
 
 
-
 fig = correlation_heatmap(data_frame=iris)
