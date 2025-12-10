@@ -11,7 +11,7 @@ from collections import OrderedDict
 from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Protocol, TypeAlias, Union, cast, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -34,7 +34,7 @@ from vizro.charts._charts_utils import _DashboardReadyFigure
 if sys.version_info >= (3, 10):
     from typing import TypeAlias
 else:
-    from typing_extensions import TypeAlias
+    from typing import TypeAlias
 
 
 def camel_to_snake(name: str) -> str:
@@ -160,7 +160,7 @@ def make_discriminated_union(*args):
     def discriminator(model):
         return _get_type_discriminator(model, builtin_tags)
 
-    return Annotated[Union[tuple(types)], Field(discriminator=Discriminator(discriminator))]
+    return Annotated[tuple(types), Field(discriminator=Discriminator(discriminator))]
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -368,7 +368,7 @@ class CapturedCallable:
     @classmethod
     def _validate_captured_callable(
         cls,
-        captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
+        captured_callable_config: dict[str, Any] | _SupportsCapturedCallable | CapturedCallable,
         json_schema_extra: _JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
     ):
@@ -402,10 +402,10 @@ class CapturedCallable:
     @classmethod
     def _parse_json(
         cls,
-        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
+        captured_callable_config: _SupportsCapturedCallable | CapturedCallable | dict[str, Any],
         json_schema_extra: _JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
-    ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
+    ) -> CapturedCallable | _SupportsCapturedCallable:
         """Parses captured_callable_config specification from JSON/YAML.
 
         If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
@@ -454,7 +454,7 @@ class CapturedCallable:
 
     @classmethod
     def _extract_from_attribute(
-        cls, captured_callable: Union[_SupportsCapturedCallable, CapturedCallable]
+        cls, captured_callable: _SupportsCapturedCallable | CapturedCallable
     ) -> CapturedCallable:
         """Extracts CapturedCallable from _SupportCapturedCallable (e.g. _DashboardReadyFigure).
 
@@ -494,7 +494,7 @@ class CapturedCallable:
 
     @staticmethod
     def _format_args(
-        args_for_repr: Union[list[Any], tuple[Any, ...]] | None = None, arguments: dict[str, Any] | None = None
+        args_for_repr: list[Any] | tuple[Any, ...] | None = None, arguments: dict[str, Any] | None = None
     ) -> str:
         """Format arguments for string representation."""
         return ", ".join(
@@ -728,16 +728,14 @@ OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date]
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union[
-        Annotated["Checklist", Tag("checklist")],
-        Annotated["DatePicker", Tag("date_picker")],
-        Annotated["Dropdown", Tag("dropdown")],
-        Annotated["RadioItems", Tag("radio_items")],
-        Annotated["RangeSlider", Tag("range_slider")],
-        Annotated["Slider", Tag("slider")],
-        Annotated["Switch", Tag("switch")],
-        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
-    ],
+    Annotated["Checklist", Tag("checklist")]
+    | Annotated["DatePicker", Tag("date_picker")]
+    | Annotated["Dropdown", Tag("dropdown")]
+    | Annotated["RadioItems", Tag("radio_items")]
+    | Annotated["RangeSlider", Tag("range_slider")]
+    | Annotated["Slider", Tag("slider")]
+    | Annotated["Switch", Tag("switch")]
+    | SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     Field(
         discriminator=Discriminator(_get_multi_type_discriminator),
         description="Selectors to be used inside a control.",
@@ -748,12 +746,10 @@ SelectorType = Annotated[
 [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
 
 _FormComponentType = Annotated[
-    Union[
-        SelectorType,
-        Annotated["Button", Tag("button")],
-        Annotated["UserInput", Tag("user_input")],
-        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
-    ],
+    SelectorType
+    | Annotated["Button", Tag("button")]
+    | Annotated["UserInput", Tag("user_input")]
+    | SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     Field(
         discriminator=Discriminator(_get_multi_type_discriminator),
         description="Components that can be used to receive user input within a form.",
@@ -761,11 +757,9 @@ _FormComponentType = Annotated[
 ]
 
 ControlType = Annotated[
-    Union[
-        Annotated["Filter", Tag("filter")],
-        Annotated["Parameter", Tag("parameter")],
-        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
-    ],
+    Annotated["Filter", Tag("filter")]
+    | Annotated["Parameter", Tag("parameter")]
+    | SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     Field(
         discriminator=Discriminator(_get_multi_type_discriminator),
         description="Control that affects components on the page.",
@@ -775,18 +769,16 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union[
-        Annotated["AgGrid", Tag("ag_grid")],
-        Annotated["Button", Tag("button")],
-        Annotated["Card", Tag("card")],
-        Annotated["Container", Tag("container")],
-        Annotated["Figure", Tag("figure")],
-        Annotated["Graph", Tag("graph")],
-        Annotated["Text", Tag("text")],
-        Annotated["Table", Tag("table")],
-        Annotated["Tabs", Tag("tabs")],
-        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
-    ],
+    Annotated["AgGrid", Tag("ag_grid")]
+    | Annotated["Button", Tag("button")]
+    | Annotated["Card", Tag("card")]
+    | Annotated["Container", Tag("container")]
+    | Annotated["Figure", Tag("figure")]
+    | Annotated["Graph", Tag("graph")]
+    | Annotated["Text", Tag("text")]
+    | Annotated["Table", Tag("table")]
+    | Annotated["Tabs", Tag("tabs")]
+    | SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     Field(
         discriminator=Discriminator(_get_multi_type_discriminator),
         description="Component that makes up part of the layout on the page.",
@@ -804,11 +796,9 @@ NavPagesType: TypeAlias = list[ModelID] | dict[str, list[ModelID]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
-    Union[
-        Annotated["Accordion", Tag("accordion")],
-        Annotated["NavBar", Tag("nav_bar")],
-        SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
-    ],
+    Annotated["Accordion", Tag("accordion")]
+    | Annotated["NavBar", Tag("nav_bar")]
+    | SkipJsonSchema[Annotated[Any, Tag("custom_component")]],
     Field(
         discriminator=Discriminator(_get_multi_type_discriminator),
         description="Component for rendering navigation.",

@@ -73,7 +73,7 @@ import re
 import uuid
 from collections.abc import Mapping
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, Self, Union
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Self
 
 from nutree.typed_tree import TypedTree
 from pydantic import (
@@ -139,7 +139,7 @@ def make_discriminated_union(*args):
         else:
             raise ValueError("something")
 
-    return Annotated[Union[tuple(types)], Field(discriminator=Discriminator(discriminator))]
+    return Annotated[tuple(types), Field(discriminator=Discriminator(discriminator))]
 
 
 class VizroBaseModel(BaseModel):
@@ -347,7 +347,7 @@ class Action(VizroBaseModel):
     action: str
     # This field uses ExportDataAction - creates the forward reference issue
     # Using string forward reference to trigger PydanticUndefinedAnnotation
-    function: Union[str, ExportDataAction] = "default"
+    function: str | ExportDataAction = "default"
 
     _parent_model: VizroBaseModel = PrivateAttr()
 
@@ -374,7 +374,7 @@ class SubComponent(VizroBaseModel):
 
 class Component(VizroBaseModel):
     type: Literal["component"] = "component"
-    x: Union[str, list[SubComponent]]
+    x: str | list[SubComponent]
 
 
 class Container(VizroBaseModel):

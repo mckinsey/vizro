@@ -1,6 +1,6 @@
 """Tests for fake Vizro models to verify custom component handling."""
 
-from typing import Literal, Union
+from typing import Literal
 
 import pytest
 from pydantic import ValidationError
@@ -33,7 +33,7 @@ class CustomPageBase(VizroBaseModel):
 
     type: Literal["custom_component"] = "custom_component"
     title: int
-    components: list[Union[Graph, Card]]
+    components: list[Graph | Card]
 
 
 ######### Graph ############
