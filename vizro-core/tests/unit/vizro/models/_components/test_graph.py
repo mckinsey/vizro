@@ -112,6 +112,7 @@ class TestGraphInstantiation:
         assert my_graph.actions == []
 
 
+# TODO NOW PP: check is that the _get_value_from_trigger gets the unique values.
 class TestGraphGetValueFromTrigger:
     """Tests _get_value_from_trigger models method."""
 
@@ -167,6 +168,8 @@ class TestGraphGetValueFromTrigger:
         "action_value",
         # The "customdata.0" differs here as it raises the TypeError in "return trigger_box[value]"
         ["unknown", "customdata.0"],
+        # TODO PP: Add tests for: custom_data=["x"], custom_data="incorrect",
+        #  custom_data=["customdata[0]], custom_data=["customdata[0]incorrect]
     )
     def test_value_unknown(self, standard_px_chart, action_value):
         graph = vm.Graph(id="graph_id", figure=standard_px_chart)

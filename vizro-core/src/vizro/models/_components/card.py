@@ -2,8 +2,8 @@ from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html
-from pydantic import BeforeValidator, Field, model_validator
-from pydantic.json_schema import JsonValue, SkipJsonSchema
+from pydantic import BeforeValidator, Field, JsonValue, model_validator
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call, make_actions_chain

@@ -1,8 +1,8 @@
 from typing import Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, field_validator, model_validator
-from pydantic.json_schema import JsonValue, SkipJsonSchema
+from pydantic import AfterValidator, Field, JsonValue, field_validator, model_validator
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
@@ -52,7 +52,7 @@ class Figure(VizroBaseModel):
         }
 
     @staticmethod
-    def _get_value_from_trigger(value: str, trigger: int) -> JsonValue:
+    def _get_value_from_trigger(value: JsonValue, trigger: int) -> JsonValue:
         """Return the given `value` without modification."""
         return value
 
