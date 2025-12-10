@@ -5,7 +5,6 @@ import json
 import dash
 import plotly
 from dash import html, dcc, callback, Output, Input, State, Patch, clientside_callback, no_update
-from dash.exceptions import PreventUpdate
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 from dash_extensions import SSE
@@ -24,7 +23,8 @@ from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import make_actions_chain
-from vizro.models.types import capture, ActionType
+from vizro.models.types import ActionType
+from vizro.models._models_utils import _log_call
 
 
 load_dotenv()
@@ -185,6 +185,7 @@ class ChatAction(_AbstractAction):
 
         return self
 
+    @_log_call
     def pre_build(self):
         if self.parent_id != self._parent_model.id:
             raise ValueError(
@@ -623,7 +624,16 @@ class ChatAction(_AbstractAction):
             return [store, html_messages, "", ""]
 
     def message_to_html(self, message):
-        """Convert a message dict to HTML structure."""
+        """Convert a message dict to HTML structure.
+
+        Override this method for custom rendering logic.
+
+        Args:
+            message: Dict with 'role' and 'content_json' keys
+
+        Returns:
+            Dash HTML component
+        """
         role = message["role"]
         content = json.loads(message["content_json"])
 
@@ -636,33 +646,21 @@ class ChatAction(_AbstractAction):
                 style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
             )
         else:
-            return self.assistant_message_to_html(content)
-
-    def assistant_message_to_html(self, content):
-        """Convert assistant message content to HTML.
-
-        Override this method only if you need custom rendering logic beyond
-        the default handling.
-
-        Args:
-            content: The deserialized content (already json.loads'd from content_json)
-
-        Returns:
-            Dash HTML component
-        """
-        if isinstance(content, str):
-            # Text: use structure for clientside markdown/code processing
-            return html.Div(
-                [
-                    html.Div("assistant", style={"display": "none"}),  # Hidden role marker
-                    html.Div(content),  # Plain text for clientside to process
-                ]
-            )
-        else:
-            return html.Div(
-                html.Div(content, style=ASSISTANT_MESSAGE_STYLE),
-                style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
-            )
+            # Assistant message
+            if isinstance(content, str):
+                # Text: use structure for clientside markdown/code processing
+                return html.Div(
+                    [
+                        html.Div("assistant", style={"display": "none"}),  # Hidden role marker
+                        html.Div(content),  # Plain text for clientside to process
+                    ]
+                )
+            else:
+                # Component: render directly with styling
+                return html.Div(
+                    html.Div(content, style=ASSISTANT_MESSAGE_STYLE),
+                    style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
+                )
 
     @property
     def outputs(self):
