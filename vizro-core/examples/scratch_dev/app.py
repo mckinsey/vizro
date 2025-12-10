@@ -58,7 +58,7 @@ def bar_with_clickmode_event(data_frame, **kwargs):
 def text_as_figure(data_frame, text):
     return vm.Text(text=f"Selected countries: {str(text)}").build()
 
-'''
+
 pre = "p1_"
 page_1 = vm.Page(
     title="set_control via selectedData",
@@ -397,7 +397,6 @@ page_7 = vm.Page(
     ],
 )
 
-'''
 pre = "p8_"
 page_8 = vm.Page(
     title="Filtering graph that triggers set_control",
@@ -459,8 +458,7 @@ page_9 = vm.Page(
 
 
 dashboard = vm.Dashboard(pages=[
-    # page_1, page_2, page_3, page_4, page_5, page_6, page_7,
-    page_8, page_9,
+    page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9,
 ])
 
 if __name__ == "__main__":
