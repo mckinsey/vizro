@@ -133,14 +133,14 @@ correlation_matrix_page = vm.Page(
         vm.Card(
             text="""
             #### What is a correlation matrix?
-A correlation matrix includes the numerical correlation values of pairwise variables. 
-The numbers are in the range -1 to 1. A correlation coefficient (CC) of 1 indicates a completely positive correlation. 
+A correlation matrix includes the numerical correlation values of pairwise variables.
+The numbers are in the range -1 to 1. A correlation coefficient (CC) of 1 indicates a completely positive correlation.
 A CC of 0 indicates no linear correlation. A CC of -1 indicates a completely negative correlation.
 
 &nbsp;
 
 #### When should I use it?
-Correlation matrices are implemented for evaluating correlations among variables in datasets. 
+Correlation matrices are implemented for evaluating correlations among variables in datasets.
 Examples include financial dataset metrics and noting multicollinearity.
 This is to select the more correlated variables for additional data visualisations.
             """
