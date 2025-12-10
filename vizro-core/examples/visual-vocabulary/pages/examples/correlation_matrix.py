@@ -15,5 +15,5 @@ def correlation_heatmap(data_frame):
     )
 
 
-# definition
-fig = correlation_heatmap(data_frame="iris")
+
+fig = correlation_heatmap(data_frame=iris)
