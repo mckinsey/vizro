@@ -31,7 +31,7 @@ class Navigation(VizroBaseModel):
         NavPagesType,
         Field(default=[]),
     ]
-    nav_selector: Optional[NavSelectorType] = None
+    nav_selector: NavSelectorType | None = None
 
     @_log_call
     def pre_build(self):

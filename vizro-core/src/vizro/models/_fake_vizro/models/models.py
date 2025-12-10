@@ -159,7 +159,7 @@ class VizroBaseModel(BaseModel):
             validate_default=True,
         ),
     ]
-    _tree: Optional[TypedTree] = PrivateAttr(None)  # initialised in model_after
+    _tree: TypedTree | None = PrivateAttr(None)  # initialised in model_after
 
     @staticmethod
     def _ensure_model_in_tree(model: VizroBaseModel, context: dict[str, Any]) -> VizroBaseModel:
@@ -351,7 +351,7 @@ class Action(VizroBaseModel):
 class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: str
-    actions: Optional[list[Action]]
+    actions: list[Action] | None
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

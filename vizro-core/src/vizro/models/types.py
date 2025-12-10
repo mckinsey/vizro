@@ -5,6 +5,7 @@ from __future__ import annotations
 # ruff: noqa: F821
 import functools
 import inspect
+import sys
 import warnings
 from collections import OrderedDict
 from collections.abc import Callable

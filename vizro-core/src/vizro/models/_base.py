@@ -246,7 +246,7 @@ class VizroBaseModel(BaseModel):
             validate_default=True,
         ),
     ]
-    _tree: Optional[TypedTree] = PrivateAttr(None)  # initialised in model_after
+    _tree: TypedTree | None = PrivateAttr(None)  # initialised in model_after
 
     @_log_call
     def model_post_init(self, context: Any) -> None:
