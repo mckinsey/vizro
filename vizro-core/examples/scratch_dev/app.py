@@ -848,11 +848,6 @@ class vizro_ai_chat(ChatAction):
     stream: bool = False  # VizroAI returns complete plots, not streamable
     uploaded_data: str = Field(default_factory=lambda data: f"{data['parent_id']}-data-store.data")
 
-    @property
-    def inputs(self):
-        """Define runtime inputs including uploaded data."""
-        return [self.prompt, self.messages, self.uploaded_data]
-
     def function(self, prompt, messages, uploaded_data=None):
         """Override function to handle uploaded data parameter."""
         if not prompt or not prompt.strip():
