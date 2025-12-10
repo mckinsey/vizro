@@ -102,7 +102,7 @@ nav = [
 
 # -------------------------
 [project.theme]
-variant = "classic"
+variant = "modern"
 custom_dir = "docs/overrides"
 # Jo: We should add this
 #favicon = "images/favicon.png"
