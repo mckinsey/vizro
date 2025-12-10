@@ -11,7 +11,7 @@ from collections import OrderedDict
 from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, TypeAlias, Union, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -160,7 +160,7 @@ def make_discriminated_union(*args):
     def discriminator(model):
         return _get_type_discriminator(model, builtin_tags)
 
-    return Annotated[tuple(types), Field(discriminator=Discriminator(discriminator))]
+    return Annotated[Union[tuple(types)], Field(discriminator=Discriminator(discriminator))]  # noqa: UP007
 
 
 def _clean_module_string(module_string: str) -> str:

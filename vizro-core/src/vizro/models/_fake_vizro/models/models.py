@@ -73,7 +73,7 @@ import re
 import uuid
 from collections.abc import Mapping
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Annotated, Any, Literal, Self
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Self, Union
 
 from nutree.typed_tree import TypedTree
 from pydantic import (
@@ -139,7 +139,7 @@ def make_discriminated_union(*args):
         else:
             raise ValueError("something")
 
-    return Annotated[tuple(types), Field(discriminator=Discriminator(discriminator))]
+    return Annotated[Union[tuple(types)], Field(discriminator=Discriminator(discriminator))]  # noqa: UP007
 
 
 class VizroBaseModel(BaseModel):
