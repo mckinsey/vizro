@@ -58,7 +58,7 @@ def bar_with_clickmode_event(data_frame, **kwargs):
 def text_as_figure(data_frame, text):
     return vm.Text(text=f"Selected countries: {str(text)}").build()
 
-
+'''
 pre = "p1_"
 page_1 = vm.Page(
     title="set_control via selectedData",
@@ -397,8 +397,43 @@ page_7 = vm.Page(
     ],
 )
 
+'''
 pre = "p8_"
 page_8 = vm.Page(
+    title="Filtering graph that triggers set_control",
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Container(
+            controls=[vm.Filter(column="species")],
+            components=[
+                vm.Graph(
+                    id=f"{pre}graph_1",
+                    title="Test whether the set_control is triggered when filter from container changes.",
+                    figure=px.scatter(
+                        px.data.iris(),
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        custom_data=["species"],
+                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
+                    ),
+                    actions=va.set_control(control=f"{pre}filter_1", value="customdata[0]"),
+                ),
+            ]
+        ),
+        vm.AgGrid(id=f"{pre}table", figure=dash_ag_grid(px.data.iris())),
+    ],
+    controls=[
+        vm.Filter(
+            id=f"{pre}filter_1",
+            targets=[f"{pre}table"],
+            column="species",
+        )
+    ],
+)
+
+pre = "p9_"
+page_9 = vm.Page(
     title="Self-filtering graph",
     components=[
         vm.Graph(
@@ -423,7 +458,10 @@ page_8 = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8])
+dashboard = vm.Dashboard(pages=[
+    # page_1, page_2, page_3, page_4, page_5, page_6, page_7,
+    page_8, page_9,
+])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)
