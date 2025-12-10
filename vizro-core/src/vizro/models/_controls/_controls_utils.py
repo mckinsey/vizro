@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import warnings
 from collections.abc import Generator
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from typing_extensions import TypeIs
 
@@ -20,6 +22,9 @@ from vizro.models import (
 from vizro.models._components.form._form_utils import get_dict_options_and_default
 from vizro.models.types import ControlType, SelectorType
 
+if TYPE_CHECKING:
+    from vizro.models import Page
+
 SELECTORS: dict[str, tuple[type, ...]] = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Checklist, Dropdown, RadioItems),
@@ -29,11 +34,11 @@ SELECTORS: dict[str, tuple[type, ...]] = {
 
 
 # Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
-def _is_numerical_temporal_selector(x: object) -> TypeIs[Union[RangeSlider, Slider, DatePicker]]:
+def _is_numerical_temporal_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
     return isinstance(x, SELECTORS["numerical"] + SELECTORS["temporal"])
 
 
-def _is_categorical_selector(x: object) -> TypeIs[Union[Checklist, Dropdown, RadioItems]]:
+def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
     return isinstance(x, SELECTORS["categorical"])
 
 
@@ -54,25 +59,27 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
 #  This would make the following renaming logical: model_manager._get_models -> model_manager._get_model_children.
 #  These two new methods could have the same signature.
 #  Consider adding the parent_model_id to the VizroBaseModel and use that to find the parent model more easily.
-def _get_control_parent(control: ControlType) -> Optional[VizroBaseModel]:
-    """Get the parent model of a control."""
+def get_control_parent(control: ControlType) -> Page | Container | None:
+    """Get the nearest ancestor Container or Page for the given control."""
     # Return None if the control is not part of any page.
     if (page := model_manager._get_model_page(model=control)) is None:
         return None
 
-    # Return the Page if the control is its direct child.
-    if control in page.controls:
-        return page
+    nearest_ancestor_container = None
+    # Find the deepest Container that contains this control (DFS pre-order in `_get_models` gives deepest match last).
+    for container in model_manager._get_models(model_type=Container, root_model=page):
+        if control in model_manager._get_models(model_type=type(control), root_model=container):
+            nearest_ancestor_container = container
 
-    # Otherwise, return the Container that contains the control.
-    page_containers = model_manager._get_models(model_type=Container, root_model=page)
-
-    return next(container for container in page_containers if control in container.controls)
+    # Fallback to the page if not nested inside any container.
+    return nearest_ancestor_container or page
 
 
 def check_control_targets(control: ControlType) -> None:
-    if (root_model := _get_control_parent(control=control)) is None:
-        raise ValueError(f"Control {control.id} should be defined within a Page object.")
+    root_model = get_control_parent(control=control)
+    # Search by using "_get_models" instead of "if control not in root_model.controls" to handle nested custom controls.
+    if root_model is None or control not in model_manager._get_models(root_model=root_model.controls):
+        raise ValueError(f"Control {control.id} should be defined within Page.controls or Container.controls.")
 
     _validate_targets(targets=control.targets, root_model=root_model)
 

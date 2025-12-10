@@ -13,7 +13,7 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
 
 jobs:
   test-js:
@@ -37,10 +37,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-      # Remove the `click` installation constraint once the
-      # https://github.com/pypa/hatch/issues/2050 is resolved.
       - name: Install Hatch
-        run: pip install hatch "click<8.3.0"
+        run: pip install hatch
 
       - name: Run JavaScript tests
         run: hatch run test-js

@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -22,7 +22,7 @@ from vizro.models.types import ActionsType, _IdProperty, make_discriminated_unio
 
 
 class RangeSlider(VizroBaseModel):
-    """Numeric multi-option selector `RangeSlider`.
+    """Numeric multi-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
@@ -31,17 +31,16 @@ class RangeSlider(VizroBaseModel):
         [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)
 
     Args:
-        type (Literal["range_slider"]): Defaults to `"range_slider"`.
-        min (Optional[float]): Start value for slider. Defaults to `None`.
-        max (Optional[float]): End value for slider. Defaults to `None`.
-        step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
-        marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.
-        value (Optional[list[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
+        min (float | None): Start value for slider. Defaults to `None`.
+        max (float | None): End value for slider. Defaults to `None`.
+        step (float | None): Step-size for marks on slider. Defaults to `None`.
+        marks (dict[float, str]): Marks to be displayed on slider. Defaults to `{}`.
+        value (list[float] | None): Default start and end value for slider. Must be 2 items. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -50,32 +49,27 @@ class RangeSlider(VizroBaseModel):
     """
 
     type: Literal["range_slider"] = "range_slider"
-    min: Optional[float] = Field(default=None, description="Start value for slider.")
-    max: Annotated[
-        Optional[float], AfterValidator(validate_max), Field(default=None, description="End value for slider.")
-    ]
+    min: float | None = Field(default=None, description="Start value for slider.")
+    max: Annotated[float | None, AfterValidator(validate_max), Field(default=None, description="End value for slider.")]
     step: Annotated[
-        Optional[float],
+        float | None,
         AfterValidator(validate_step),
         Field(default=None, description="Step-size for marks on slider."),
     ]
     marks: Annotated[
-        Optional[dict[float, str]],
+        dict[float, str] | None,
         AfterValidator(set_default_marks),
         Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for value field
-    value: Optional[  # type: ignore[valid-type]
-        Annotated[
-            conlist(float, min_length=2, max_length=2),
-            AfterValidator(validate_range_value),
-        ]
-    ] = Field(default=None)
+    value: Annotated[conlist(float, min_length=2, max_length=2), AfterValidator(validate_range_value)] | None = Field(  # type: ignore[valid-type]
+        default=None
+    )
     title: str = Field(default="", description="Title to be displayed.")
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[make_discriminated_union(Tooltip)],
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

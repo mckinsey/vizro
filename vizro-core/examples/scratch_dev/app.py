@@ -1,5 +1,3 @@
-"""Dev app to try things out."""
-
 from typing import Literal
 
 import vizro.models as vm

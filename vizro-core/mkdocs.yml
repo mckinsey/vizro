@@ -125,7 +125,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.47
+                vizro==0.1.49
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -152,7 +152,8 @@ plugins:
         Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
-      base_url: https://vizro.readthedocs.io/en/0.1.47/
+      base_url: https://vizro.readthedocs.io/en/0.1.49/
+      full_output: llms-full.txt
       sections:
         "TUTORIALS":
           - pages/tutorials/quickstart-tutorial.md: "A quickstart dashboard tutorial"
@@ -210,6 +211,7 @@ plugins:
       handlers:
         python:
           options:
+            show_bases: false
             show_source: false #currently doesn't show source at correct level, and not for pydantic models
             docstring_style: google
             merge_init_into_class: true

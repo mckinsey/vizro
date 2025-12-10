@@ -1,15 +1,15 @@
 """Example app to show all features of Vizro."""
 
-from typing import Literal, Optional
+from typing import Literal
 
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
+import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash import dash_table, dcc, get_asset_url, html
 from vizro import Vizro
-from vizro.actions import export_data
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
@@ -277,7 +277,7 @@ button = vm.Page(
         ),
         vm.Button(
             text="Export data",
-            actions=export_data(),
+            actions=va.export_data(),
         ),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
@@ -504,7 +504,7 @@ tooltip = vm.Page(
         ),
         vm.Button(
             text="Export data",
-            actions=export_data(),
+            actions=va.export_data(),
             description="""
                 Use this button to export the filtered data from the Iris dataset.
             """,
@@ -878,7 +878,7 @@ export_data_action = vm.Page(
     components=[
         vm.Graph(figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species")),
         vm.Graph(figure=px.histogram(iris, x="petal_length", color="species")),
-        vm.Button(text="Export data", actions=export_data()),
+        vm.Button(text="Export data", actions=va.export_data()),
     ],
     controls=[vm.Filter(column="species")],
 )
@@ -950,7 +950,7 @@ custom_charts = vm.Page(
 
 # CUSTOM TABLE ------------------------------------------------------------------
 @capture("table")
-def my_custom_table(data_frame=None, chosen_columns: Optional[list[str]] = None):
+def my_custom_table(data_frame=None, chosen_columns: list[str] | None = None):
     """Custom table with added logic to filter on chosen columns."""
     columns = [{"name": i, "id": i} for i in chosen_columns]
     defaults = {
@@ -1055,7 +1055,7 @@ custom_components = vm.Page(
 
 # CUSTOM FIGURE ----------------------------------------------------------------
 @capture("figure")  # (1)!
-def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div:
+def multiple_cards(data_frame: pd.DataFrame, n_rows: int | None = 1) -> html.Div:
     """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
 
     Args:

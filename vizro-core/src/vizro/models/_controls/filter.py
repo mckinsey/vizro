@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import Any, Literal, Optional, Union, cast
+from typing import Any, Literal, cast
 
 import pandas as pd
 from dash import dcc, html
@@ -14,7 +14,7 @@ from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Container, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._components.form import DatePicker, Dropdown, RangeSlider, Switch
 from vizro.models._controls._controls_utils import (
     SELECTORS,
@@ -22,6 +22,7 @@ from vizro.models._controls._controls_utils import (
     _is_categorical_selector,
     _is_numerical_temporal_selector,
     check_control_targets,
+    get_control_parent,
     get_selector_default_value,
     warn_missing_id_for_url_control,
 )
@@ -50,7 +51,7 @@ DISALLOWED_SELECTORS = {
 }
 
 
-def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> pd.Series:
+def _filter_between(series: pd.Series, value: list[float] | list[str]) -> pd.Series:
     if is_datetime64_any_dtype(series):
         # Each value will always have time 00:00:00. In order for the filter to include all times during
         # the end date value[1] we need to remove the time part of every value in series so that it's 00:00:00.
@@ -75,24 +76,26 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
 
 
 class Filter(VizroBaseModel):
-    """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
+    """Filter the data supplied to `targets`.
 
     Abstract: Usage documentation
         [How to use filters](../user-guides/filters.md)
 
-    Examples:
-        >>> print(repr(Filter(column="species")))
-
     Args:
-        type (Literal["filter"]): Defaults to `"filter"`.
         column (str): Column of `DataFrame` to filter.
         targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
             on the page that use `column`. Defaults to `[]`.
-        selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
+        selector (SelectorType | None): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
         show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
             Useful for bookmarking or sharing dashboards with specific filter values pre-set.
         visible (bool): Whether the filter should be visible. Defaults to `True`.
 
+    Example:
+        ```python
+        import vizro.models as vm
+
+        vm.Filter(column="species")
+        ```
     """
 
     type: Literal["filter"] = "filter"
@@ -102,7 +105,7 @@ class Filter(VizroBaseModel):
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
     )
-    selector: Optional[SelectorType] = None
+    selector: SelectorType | None = None
     show_in_url: bool = Field(
         default=False,
         description=(
@@ -208,7 +211,12 @@ class Filter(VizroBaseModel):
         # This is the case when bool(self.targets) is False.
         # If filter used within container and if targets aren't explicitly provided it will target all figures within
         # that container. Possibly in future this will change (which would be breaking change).
-        proposed_targets = self.targets or self._get_proposed_targets()
+        proposed_targets = self.targets or [
+            model.id
+            for model in cast(
+                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, get_control_parent(control=self))
+            )
+        ]
 
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
@@ -392,8 +400,8 @@ class Filter(VizroBaseModel):
     @staticmethod
     def _get_min_max(
         targeted_data: pd.DataFrame,
-        current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
-    ) -> Union[tuple[float, float], tuple[pd.Timestamp, pd.Timestamp]]:
+        current_value: SingleValueType | MultiValueType | None = None,
+    ) -> tuple[float, float] | tuple[pd.Timestamp, pd.Timestamp]:
         # Try to convert the current value to a datetime object. If it fails (like value=123), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
@@ -418,7 +426,7 @@ class Filter(VizroBaseModel):
     @staticmethod
     def _get_options(
         targeted_data: pd.DataFrame,
-        current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
+        current_value: SingleValueType | MultiValueType | None = None,
     ) -> list[Any]:
         # Try to convert the current value to a datetime object. If it fails (like value=123), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
@@ -431,16 +439,3 @@ class Filter(VizroBaseModel):
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data))
-
-    def _get_proposed_targets(self):
-        """Get all valid figure model targets for this control based on its location in the page hierarchy."""
-        page = model_manager._get_model_page(self)
-        page_containers = model_manager._get_models(model_type=Container, root_model=page)
-
-        # Find the control's parent model. Set it as the control's parent container it exists.
-        # Otherwise set it as the control's page.
-        root_model = next(
-            (container for container in page_containers if self in container.controls),
-            page,
-        )
-        return [model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model))]

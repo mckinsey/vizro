@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 import dash_ag_grid as dag
 import pandas as pd
@@ -23,8 +23,8 @@ from vizro.models.types import (
     ActionsType,
     CapturedCallable,
     _IdProperty,
+    _validate_captured_callable,
     make_discriminated_union,
-    validate_captured_callable,
 )
 
 logger = logging.getLogger(__name__)
@@ -36,10 +36,12 @@ DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div()
 
 
 class AgGrid(VizroBaseModel):
-    """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
+    """Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.
+
+    Abstract: Usage documentation
+        [How to use an AgGrid](../user-guides/table.md/#ag-grid)
 
     Args:
-        type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
         figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
         title (str): Title of the `AgGrid`. Defaults to `""`.
         header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.
@@ -47,7 +49,7 @@ class AgGrid(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
@@ -72,10 +74,10 @@ class AgGrid(VizroBaseModel):
         description="Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[make_discriminated_union(Tooltip)],
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -86,7 +88,7 @@ class AgGrid(VizroBaseModel):
     ]
     actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

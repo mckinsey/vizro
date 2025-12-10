@@ -36,7 +36,7 @@ class Tooltip(VizroBaseModel):
     Args:
         text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
             chosen by the Vizro team. This may have unexpected behavior. Visit the
             [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/tooltip/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the

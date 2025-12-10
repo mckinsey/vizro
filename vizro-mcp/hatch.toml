@@ -1,7 +1,7 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -11,9 +11,6 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 
 [envs.default]
 dependencies = [
-  # Remove the `click` installation constraint once the
-  # https://github.com/pypa/hatch/issues/2050 is resolved.
-  "click<8.3.0",
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
@@ -43,9 +40,6 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  # Remove the `click` installation constraint once the
-  # https://github.com/pypa/hatch/issues/2050 is resolved.
-  "click<8.3.0",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
@@ -71,6 +65,7 @@ linkchecker site \
   --check-extern \
   --no-warnings \
   --ignore=404.html \
+  --ignore-url=http://localhost:8050 \
   --ignore-url=127.0.0.1 \
   --ignore-url=https://vizro.readthedocs.io/ \
   --ignore-url="^https://cursor\.com/install-mcp\?name=vizro-mcp&config=(.+)$" \
