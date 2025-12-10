@@ -118,14 +118,14 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-       #- name: python
-       #  class: "highlight"
-       #  validator: !!python/name:mkdocs_pycafe.validator
-       #  format: !!python/object/apply:mkdocs_pycafe.formatter
-       #    kwds:
-       #      type: vizro
-       #      requirements: |
-       #        vizro==0.1.49
+        - name: python
+          class: "highlight"
+          validator: !!python/name:mkdocs_pycafe.validator
+          format: !!python/object/apply:mkdocs_pycafe.formatter
+            kwds:
+              type: vizro
+              requirements: |
+                vizro==0.1.49
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -207,30 +207,30 @@ plugins:
           - pages/explanation/documentation-style-guide.md: "Documentation style guide"
           - pages/explanation/schema.md: "The Vizro schema"
           - pages/explanation/authors.md: "Vizro contributor listing"
-# - mkdocstrings:
-#     handlers:
-#       python:
-#         options:
-#           show_bases: false
-#           show_source: false #currently doesn't show source at correct level, and not for pydantic models
-#           docstring_style: google
-#           merge_init_into_class: true
-#           docstring_section_style: list
-#           separate_signature: true
-#           #   filters: ["!^_"]
-#           show_root_heading: true
-#           docstring_options:
-#             ignore_init_summary: true
-#             warn_unknown_params: false
-#             returns_named_value: false
-#           extensions:
-#             - docs/griffe_extensions.py:
-#                 paths:
-#                   [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
-#             - griffe_warnings_deprecated:
-#                 kind: danger
-#                 title: Deprecated
-#         paths: [src]
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_bases: false
+            show_source: false #currently doesn't show source at correct level, and not for pydantic models
+            docstring_style: google
+            merge_init_into_class: true
+            docstring_section_style: list
+            separate_signature: true
+            #   filters: ["!^_"]
+            show_root_heading: true
+            docstring_options:
+              ignore_init_summary: true
+              warn_unknown_params: false
+              returns_named_value: false
+            extensions:
+              - docs/griffe_extensions.py:
+                  paths:
+                    [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
+              - griffe_warnings_deprecated:
+                  kind: danger
+                  title: Deprecated
+          paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
 
