@@ -117,8 +117,10 @@ class AgGrid(VizroBaseModel):
     def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> MultiValueType | None:
         """Extract values from the trigger that represents selected dag.AgGrid rows. Value is the name of the column.
 
+        Example `trigger` structure: [{"col_1": value_1, "col_2": value_2, ...}, {...}], one dict per selected row.
+
         Returns:
-          - list of values (one per point) or None if no points selected (signals reset).
+          - list of values (one per row) or None if no row selected (signals reset).
 
         Raises:
           - ValueError if `value` column name can't be found.
@@ -128,7 +130,8 @@ class AgGrid(VizroBaseModel):
             return None
 
         try:
-            return sorted({row[value] for row in trigger})
+            # Use dict.fromkeys to remove duplicates while preserving order.
+            return list(dict.fromkeys(row[value] for row in trigger))
         except KeyError:
             raise ValueError(
                 f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "

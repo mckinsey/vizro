@@ -117,7 +117,7 @@ class Graph(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}_actions_trigger.data"}
+        return {"__default__": f"{self.id}_action_trigger.data"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -129,8 +129,10 @@ class Graph(VizroBaseModel):
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
-    def _get_value_from_trigger(self, value: str, trigger: dict[str, list[JsonValue]]) -> MultiValueType | None:
+    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, JsonValue]]) -> MultiValueType | None:
         """Extract values from the trigger that represents clicked or selected Plotly graph points.
+
+        Example `trigger` structure: [{"x": 1, customdata: ["value_1"], ...}, {...}, ...], one dict per selected point.
 
         Priority:
           1) If `value` matches a column name in self["custom_data"], take it as from customdata[index].
@@ -138,7 +140,7 @@ class Graph(VizroBaseModel):
 
         Notes:
           - Allows camelCase and snake_case value keys interchangeably (camel_killer_box=True).
-          - Enables dot-style (e.g. value="customdata[0]") access to nested dict values (box_dots=True).
+          - Enables dot-style (e.g. value="key.subkey") access to nested dict values (box_dots=True).
           - Automatically creates missing keys as empty boxes instead of raising errors (default_box=True). This is done
             to avoid exceptions when the `trigger` has a key with a dot in it.
 
@@ -148,47 +150,45 @@ class Graph(VizroBaseModel):
         Raises:
           - ValueError if `value` can't be found.
         """
-        # Returning None signals a reset of control to its original value.
-        if not (trigger or {}).get("points"):
+        # Returning None signals a reset of control to its original value. No point selected when trigger is None
+        # (unclicking a point) or its 'points' dictionary field is empty (selecting no points).
+        if not trigger:
             return None
 
-        trigger_box = BoxList(trigger["points"], camel_killer_box=True, box_dots=True, default_box=True)
+        trigger_box = BoxList(trigger, camel_killer_box=True, box_dots=True, default_box=True)
 
-        lookup_keys = []
-        with suppress(KeyError, ValueError):
+        try:
             # First try to treat value as a column name. Unfortunately, the customdata returned in the trigger does
             # not contain column names (it's just a list) so we must look it up in the called function's `custom_data`
             # to find its numerical index in this list. This only works if a custom_data was provided in the graph
             # function call.
             index = self["custom_data"].index(value)
-            lookup_keys.append(f"customdata[{index}]")
+            lookup = f"customdata[{index}]"
+        except (KeyError, ValueError):
+            # Treat the value as a box lookup string, as https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots
+            # This works for e.g. value="x" or value="customdata[0]".
+            lookup = value
 
-        # Treat the value as a box lookup string, as in https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots
-        # This works for e.g. value="x" or value="customdata[0]".
-        lookup_keys.append(value)
+        unique_points = set()
+        try:
+            for point in trigger_box:
+                # Treat Box instance result as it's missing keys due to the `default_box=True`.
+                if isinstance(val := point[lookup], Box):
+                    raise KeyError
 
-        for key in lookup_keys:
-            # Safely attempt to extract values by each lookup key from each point. Any lookup-related errors that could
-            # occur by accessing the Box (missing key, wrong type, etc.) are ignored, and we move on to the next key.
-            with suppress(Exception):
-                # Skip Box instances as these represent missing keys when due to the `default_box=True`.
-                if any(isinstance(point[key], Box) for point in trigger_box):
-                    continue
-
-            return sorted(
-                {
-                    # If value is a list, flatten it to single value to skip returning nested object.
-                    val[0] if isinstance((val := point[key]), list) else val
-                    for point in trigger_box
-                }
+                # Certain grouped charts (e.g. pie charts) return custom data as a list of single-item lists
+                # (e.g. [["setosa"], ["setosa"]]). Since all values are identical, flatten to a single value to avoid
+                # returning a nested object.
+                unique_points.add(val[0] if isinstance(val, list) else val)
+        except (KeyError, IndexError, TypeError):
+            raise ValueError(
+                f"Couldn't find value `{value}` in trigger for `set_control` action. "
+                f"This action was added to the Graph model with ID `{self.id}`. "
+                "If you expected the value to come from custom data, add it in the figure's custom_data signature."
             )
 
-        # If we reach here, none of the lookup keys worked.
-        raise ValueError(
-            f"Couldn't find value `{value}` in trigger for `set_control` action. "
-            f"This action was added to the Graph model with ID `{self.id}`. "
-            "If you expected the value to come from custom data, add it in the figure's custom_data signature."
-        )
+        # The order of selected points is nondeterministic, so sort the values to provide consistent output.
+        return sorted(unique_points)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -321,8 +321,8 @@ class Graph(VizroBaseModel):
         )
 
         clientside_callback(
-            ClientsideFunction(namespace="graph", function_name="update_graph_actions_trigger_prop"),
-            Output(f"{self.id}_actions_trigger", "data"),
+            ClientsideFunction(namespace="graph", function_name="update_graph_action_trigger"),
+            Output(f"{self.id}_action_trigger", "data"),
             Input(self.id, "clickData"),
             Input(self.id, "selectedData"),
             State(self.id, "figure"),
@@ -359,7 +359,7 @@ class Graph(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    dcc.Store(id=f"{self.id}_actions_trigger", data={}),
+                    dcc.Store(id=f"{self.id}_action_trigger", data={}),
                     html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,

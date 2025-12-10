@@ -112,6 +112,7 @@ class TestGraphInstantiation:
         assert my_graph.actions == []
 
 
+# TODO NOW PP: check is that the _get_value_from_trigger gets the unique values.
 class TestGraphGetValueFromTrigger:
     """Tests _get_value_from_trigger models method."""
 

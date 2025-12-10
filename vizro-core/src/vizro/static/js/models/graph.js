@@ -12,7 +12,7 @@
  * @param {string}      figureId      DOM id of the graph container used to check for modebar options.
  * @returns {Object|null}             One of clickData, selectedData, or dash_clientside.no_update.
  */
-function update_graph_actions_trigger_prop(
+function update_graph_action_trigger(
   clickData,
   selectedData,
   figure,
@@ -24,12 +24,10 @@ function update_graph_actions_trigger_prop(
     .querySelector('[data-title="Box Select"]');
 
   // Extract the "clickmode" setting from the figure layout or default template.
-  // figure.layout.clickmode can be defined if user has explicitly set it with figure.update_layout(clickmode=...).
-  // figure.layout.template.layout.clickmode can be defined if user has overwritten the default template's clickmode.
-  // By default, Vizro sets figure.layout.template.layout.clickmode to "event+select".
+  // figure.layout.clickmode can be explicitly set with figure.update_layout(clickmode=...).
+  // If not set, it falls back to the default "event+select" (which is set in figure.layout.template.layout.clickmode).
   const isClickmodeEventSelect =
-    (figure?.layout?.clickmode ??
-      figure?.layout?.template?.layout?.clickmode) === "event+select";
+    (figure?.layout?.clickmode ?? "event+select") === "event+select";
 
   // Extract trigger IDs.
   const triggeredIds = dash_clientside.callback_context.triggered;
@@ -44,23 +42,24 @@ function update_graph_actions_trigger_prop(
   // 1. Graph is not selectable or
   // 2. clickmode is not "event+select" (default value is overwritten) and clickData is triggered.
   if (!isGraphSelectable || (!isClickmodeEventSelect && isClickDataTriggered)) {
-    return clickData;
+    return clickData?.points ?? null;
   }
 
   // Ignore "clickData" event for "event+select" mode for charts that support selectedData.
   // This is a workaround for a Plotly issue where "event+select" is set,
   // and clickData changes but selectedData and graph's highlight stays unaffected.
+  // See: https://github.com/plotly/plotly.js/issues/6898
   if (!isSelectedDataTriggered) {
     return dash_clientside.no_update;
   }
 
   // Otherwise, graph is selectable and selectedData is triggered.
-  return selectedData;
+  return selectedData?.points ?? null;
 }
 
 window.dash_clientside = {
   ...window.dash_clientside,
   graph: {
-    update_graph_actions_trigger_prop: update_graph_actions_trigger_prop,
+    update_graph_action_trigger: update_graph_action_trigger,
   },
 };

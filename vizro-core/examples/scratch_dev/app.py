@@ -1,17 +1,12 @@
 """Dev app to try things out."""
 
 import vizro.plotly.express as px
-from vizro import Vizro
 import vizro.models as vm
-from vizro.managers import model_manager
-
 import vizro.actions as va
+
+from vizro import Vizro
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
-from typing import Any
-from box import Box
-import dash
-from vizro.models.types import capture
 
 
 def _create_filters(prefix: str):
@@ -188,7 +183,7 @@ page_2 = vm.Page(
                                 x="sepal_width",
                                 y="sepal_length",
                                 color="species",
-                                custom_data=["species"],
+                                custom_data="species",
                             ),
                             actions=_create_set_control_actions(prefix=pre),
                         ),
