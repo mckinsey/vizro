@@ -140,7 +140,7 @@ class ChatAction(_AbstractAction):
     parent_id: str = Field(description="ID of the parent Chat component.")
     prompt: str = Field(default_factory=lambda data: f"{data['parent_id']}-chat-input.value")
     messages: str = Field(default_factory=lambda data: f"{data['parent_id']}-store.data")
-    stream: bool = True
+    stream: bool = False
 
     @model_validator(mode="after")
     def validate_required_methods(self):
@@ -688,17 +688,17 @@ class ChatAction(_AbstractAction):
 #
 # All chat actions inherit from ChatAction and implement ONE or BOTH methods:
 #
-# 1. generate_stream(messages) - For streaming responses
+# 1. generate_response(messages) - For non-streaming responses (DEFAULT)
+#    - Returns {"content_json": json.dumps(...)} with text or Dash components
+#    - Used when stream=False (default)
+#    - Examples: simple_echo, mixed_content, vizro_ai_chat
+#
+# 2. generate_stream(messages) - For streaming responses
 #    - Yields text chunks
 #    - Used when stream=True
-#    - Example: anthropic_chat (streaming-only)
+#    - Example: anthropic_chat
 #
-# 2. generate_response(messages) - For non-streaming responses
-#    - Returns text (string) or Dash components (charts, images, etc.)
-#    - Used when stream=False
-#    - Examples: simple_echo, mixed_content
-#
-# 3. Both methods - For maximum flexibility
+# 3. Allow both
 #    - Users can toggle stream=True/False
 #    - Example: openai_chat
 
@@ -789,7 +789,6 @@ class simple_echo(ChatAction):
     """Simple echo chat."""
 
     type: Literal["simple_echo"] = "simple_echo"
-    stream: bool = False  # Non-streaming only
 
     def generate_response(self, messages):
         last_message = json.loads(messages[-1]["content_json"]) if messages else ""
@@ -801,7 +800,6 @@ class mixed_content(ChatAction):
     """Simple example showing different content types: text, chart, and image."""
 
     type: Literal["mixed_content"] = "mixed_content"
-    stream: bool = False  # Non-streaming only - components cannot be streamed
 
     def generate_response(self, messages):
         """Returns serialized component structure as JSON."""
@@ -843,7 +841,6 @@ class vizro_ai_chat(ChatAction):
     """Generate data visualizations using natural language with VizroAI."""
 
     type: Literal["vizro_ai_chat"] = "vizro_ai_chat"
-    stream: bool = False  # VizroAI returns complete plots, not streamable
     uploaded_data: str = Field(default_factory=lambda data: f"{data['parent_id']}-data-store.data")
 
     def function(self, prompt, messages, uploaded_data=None):
