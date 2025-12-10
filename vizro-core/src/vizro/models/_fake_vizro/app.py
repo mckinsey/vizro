@@ -1,6 +1,6 @@
 """Example app.py to play with the fake vizro models."""
 
-from typing import Literal, Union
+from typing import Literal
 
 from vizro.models._fake_vizro.models import (
     Action,
@@ -29,7 +29,7 @@ class CustomPage(Page):
 
 class CustomPageBase(VizroBaseModel):
     title: int
-    components: list[Union[Graph, Card]]
+    components: list[Graph | Card]
 
 
 class CustomGraph(Graph):
