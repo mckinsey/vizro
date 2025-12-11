@@ -191,7 +191,7 @@ plugins:
           - pages/user-guides/actions.md: "Actions"
           - pages/user-guides/data-actions.md: "Handle data"
           - pages/user-guides/graph-table-actions.md: "Graph and table interactions"
-          - pages/user-guides/notification-actions.md: "Show notifications"
+          - pages/user-guides/notification-actions.md: "Notifications"
         "MANAGE DATA USED BY THE DASHBOARD":
           - pages/user-guides/data.md: "Data"
           - pages/user-guides/kedro-data-catalog.md: "Kedro Data Catalog"
