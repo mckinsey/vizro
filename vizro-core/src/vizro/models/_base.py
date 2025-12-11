@@ -341,24 +341,26 @@ class VizroBaseModel(BaseModel):
                 f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'} with model id {model_id}"
             )
 
-            if "parent_model" in info.context:
-                info.context["tree"] = info.context["parent_model"]._tree
-                tree = info.context["tree"]
-                tree[info.context["parent_model"].id].add(
-                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
-                )
-            elif "tree" not in info.context:
-                tree = TypedTree("Root", calc_data_id=lambda tree, data: data.id)
-                tree.add(SimpleNamespace(id=model_id), kind="dashboard")  # make this more general
-                info.context["tree"] = tree
-            else:
-                tree = info.context["tree"]
-                # in words: add a node as children to the parent (so id one higher up), but add as kind
-                # the field in which you currently are
-                # ID STACK and FIELD STACK are different "levels" of the tree.
-                tree[info.context["id_stack"][-1]].add(
-                    SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
-                )
+            # Skip addition if node already exists in tree (reason not yet understood)
+            if not ("tree" in info.context and info.context["tree"].find_first(data_id=model_id)):
+                if "parent_model" in info.context:  # is that from pre_build?
+                    info.context["tree"] = info.context["parent_model"]._tree
+                    tree = info.context["tree"]
+                    tree[info.context["parent_model"].id].add(
+                        SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                    )
+                elif "tree" not in info.context:
+                    tree = TypedTree("Root", calc_data_id=lambda tree, data: data.id)
+                    tree.add(SimpleNamespace(id=model_id), kind="dashboard")  # TODO: make this more general
+                    info.context["tree"] = tree
+                else:
+                    tree = info.context["tree"]
+                    # in words: add a node as children to the parent (so id one higher up), but add as kind
+                    # the field in which you currently are
+                    # ID STACK and FIELD STACK are different "levels" of the tree.
+                    tree[info.context["id_stack"][-1]].add(
+                        SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
+                    )
 
         #### Validation ####
         validated_stuff = handler(data)

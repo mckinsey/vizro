@@ -79,6 +79,7 @@ page = vm.Page(
 )
 
 tab_1 = vm.Container(
+    id="container_1",
     title="Tab I",
     components=[
         vm.Graph(
@@ -103,6 +104,7 @@ tab_1 = vm.Container(
 )
 
 # tab_2 = vm.Container(
+#     id="tab_2",
 #     title="Tab II",
 #     components=[
 #         vm.Graph(
@@ -118,9 +120,14 @@ tab_1 = vm.Container(
 #     ],
 # )
 
-tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1])], controls=[vm.Filter(column="continent")])
+tabs = vm.Page(
+    id="page_1",
+    title="Tabs",
+    components=[vm.Tabs(id="tabs_1", tabs=[tab_1])],
+    controls=[vm.Filter(id="filter_1", column="continent")],
+)
 
-dashboard = vm.Dashboard(pages=[tabs])
+dashboard = vm.Dashboard(id="dashboard_1", pages=[tabs])
 
 # Same configuration as JSON
 # dashboard_config = {
@@ -164,10 +171,16 @@ dashboard = vm.Dashboard(pages=[tabs])
 
 if __name__ == "__main__":
     dashboard = vm.Dashboard.model_validate(dashboard, context={"build_tree": True})
-    app = Vizro().build(dashboard)
+
+    ## Here all models have ._tree
+    for node in dashboard._tree:
+        has_tree = hasattr(node.data, "_tree")
+        if not has_tree:
+            print(f"WARNING: {node.kind} (id={node.data.id}) missing ._tree attribute")
     assert all(
         dashboard._tree[model.id].data is model
         for model in [dashboard] + dashboard.pages + [comp for page in dashboard.pages for comp in page.components]
     )
+    app = Vizro().build(dashboard)
     dashboard._tree.print(repr="{node.kind} -> {node.data.type} (id={node.data.id})")
     app.run()
