@@ -24,9 +24,19 @@ def custom_bar(data_frame):
 page_1 = vm.Page(
     title="Vizro download",
     components=[
-        vm.Graph(figure=custom_bar(df)),
+        vm.Graph(id="graph_id", figure=custom_bar(df)),
         vm.Button(text="Download data", actions=vm.Action(function=download_data(), outputs=["vizro_download"])),
+        vm.Button(text="Standard export data", actions=va.export_data()),
+        vm.Button(
+            text="Paste clickData to text below",
+            actions=vm.Action(
+                function=capture("action")(lambda x: str(x))("graph_id.clickData"),
+                outputs="text_id",
+            ),
+        ),
+        vm.Text(id="text_id", text="Blah"),
     ],
+    controls=[vm.Filter(column="species")],
 )
 
 

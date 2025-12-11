@@ -5,6 +5,7 @@ import logging
 import re
 import time
 import warnings
+from collections import ChainMap
 from collections.abc import Callable, Collection, Iterable, Mapping
 from pprint import pformat
 from types import SimpleNamespace
@@ -174,7 +175,9 @@ class _BaseAction(VizroBaseModel):
 
         # Combine builtin components with real models in model_manager (which take priority).
         builtin_components = {"vizro_download": SimpleNamespace(_action_outputs={"__default__": "vizro_download.data"})}
-        models = builtin_components | {key: model_manager[key] for key in model_manager}
+
+        # ChainMap is used to avoid unnecessary copying of model_manager.
+        models = ChainMap(model_manager, builtin_components)  # type: ignore[arg-type]
 
         if "." in dependency:
             component_id, component_property = dependency.split(".")
