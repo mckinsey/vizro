@@ -40,9 +40,7 @@ class TestShowNotificationFunction:
 
         assert result["id"] == "test_notification"
         assert result["title"] == "Info"
-        assert_component_equal(
-            result["message"], dcc.Markdown(children="Info message", dangerously_allow_html=False)
-        )
+        assert_component_equal(result["message"], dcc.Markdown(children="Info message", dangerously_allow_html=False))
         assert result["className"] == "alert-info"
         assert_component_equal(result["icon"], html.Span("info", className="material-symbols-outlined"))
         assert result["autoClose"] == 4000
@@ -65,9 +63,7 @@ class TestShowNotificationFunction:
 
         assert result["id"] == "custom_notification"
         assert result["title"] == "Custom Title"
-        assert_component_equal(
-            result["message"], dcc.Markdown(children="Test message", dangerously_allow_html=False)
-        )
+        assert_component_equal(result["message"], dcc.Markdown(children="Test message", dangerously_allow_html=False))
         assert result["className"] == "alert-success"
         assert_component_equal(result["icon"], html.Span("star", className="material-symbols-outlined"))
         assert result["autoClose"] is False

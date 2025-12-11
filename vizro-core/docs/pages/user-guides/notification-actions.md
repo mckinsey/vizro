@@ -66,7 +66,7 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
 
         [![BasicNotification]][basicnotification]
 
-When you click the button, a notification appears in the top-right corner of the screen. Since only `text` is provided, the notification uses the default `variant="info"` styling with a blue color scheme and an info icon. The `text` field accepts [Markdown text](https://markdown-guide.readthedocs.io/). 
+When you click the button, a notification appears in the top-right corner of the screen. Since only `text` is provided, the notification uses the default `variant="info"` styling with a blue color scheme and an info icon. The `text` field accepts [Markdown text](https://markdown-guide.readthedocs.io/).
 
 ### Notification variants
 
