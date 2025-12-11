@@ -144,6 +144,7 @@ class update_notification(show_notification):
                     notification="save_notification", text="Data saved successfully!", variant="success"
                 ),
             ],
+        ```
         )"""
 
     type: Literal["update_notification"] = "update_notification"  # type: ignore[assignment]
