@@ -30,6 +30,9 @@ VARIANT_DEFAULTS: dict[str, VariantDefaults] = {
 class show_notification(_AbstractAction):
     """Shows a notification message.
 
+    Abstract: Usage documentation
+        [Notifications](../user-guides/notification-actions.md)
+
     Args:
         text (str): Markdown text for the main notification message. Follows the CommonMark specification.
         variant (Literal["info", "success", "warning", "error", "progress"]): Variant that determines color and
@@ -115,6 +118,9 @@ class update_notification(show_notification):
     This action updates notifications that were previously created with
     [`show_notification`][vizro.actions.show_notification]. `notification` must match the `id` of the original
     `show_notification` action.
+
+    Abstract: Usage documentation
+        [Update notification](../user-guides/notification-actions.md#update-notification)
 
     Args:
         notification (ModelID): Notification to update. Must match the id of the original `show_notification` action.
