@@ -420,9 +420,9 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
 If the available arguments are not sufficient, there is always the option to [create a custom AG Grid callable](custom-tables.md).
 
-#### Add sticky headers inside a Flex layout
+#### Add sticky headers
 
-AG Grid provides sticky headers by default when used in a Grid layout. To achieve the same behavior within a Flex layout, you must add this CSS to your custom CSS file within your local `assets` folder.
+To add sticky headers to your AG Grid, you must add this CSS to your custom CSS file within your local `assets` folder.
 
 ```css
 .ag-header {
@@ -437,7 +437,7 @@ AG Grid provides sticky headers by default when used in a Grid layout. To achiev
 
 !!! note
 
-    This approach works best when there is only one `AgGrid` on top of the screen, or when all `AgGrid` tables are in the same row. Otherwise, all headers will stack on top of one another.
+    This approach works reliably only when a single `AgGrid` is positioned on top of a non-scrollable page, or when all `AgGrid` tables are in the same row in Flex layout. Using a fixed header may cause unexpected behavior in more complex layouts.
 
 ## Dash DataTable
 
