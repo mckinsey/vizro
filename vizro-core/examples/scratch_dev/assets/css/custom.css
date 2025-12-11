@@ -3,3 +3,14 @@
   height: 150px;
   width: 300px;
 }
+
+/*
+.flex-item .ag-header {
+  position: fixed !important;
+  z-index: 1;
+}
+
+.flex-item .ag-body {
+  top: 40px;
+}
+*/

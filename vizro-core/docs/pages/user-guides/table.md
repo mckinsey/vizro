@@ -420,6 +420,25 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
 If the available arguments are not sufficient, there is always the option to [create a custom AG Grid callable](custom-tables.md).
 
+#### Add sticky headers
+
+To add sticky headers to your AG Grid, you must add this CSS to your custom CSS file within your local `assets` folder.
+
+```css
+.ag-header {
+    position: fixed !important;
+    z-index: 1;
+}
+
+.ag-body {
+    top: 40px;
+}
+```
+
+!!! note
+
+    This approach works reliably only when a single `AgGrid` is positioned on top of a non-scrollable page, or when all `AgGrid` tables are in the same row in Flex layout. Using a fixed header may cause unexpected behavior in more complex layouts.
+
 ## Dash DataTable
 
 Similar to AG Grid, the [Dash DataTable](https://dash.plotly.com/datatable) is an interactive table/grid component designed for viewing, editing, and exploring large datasets.
