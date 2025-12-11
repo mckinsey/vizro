@@ -112,8 +112,9 @@ class show_notification(_AbstractAction):
 class update_notification(show_notification):
     """Updates an existing notification message.
 
-    This action updates notifications that were previously created with `show_notification`.
-    `notification` must match the `id` of the original `show_notification` action.
+    This action updates notifications that were previously created with
+    [`show_notification`][vizro.actions.show_notification]. `notification` must match the `id` of the original
+    `show_notification` action.
 
     Args:
         notification (ModelID): Notification to update. Must match the id of the original `show_notification` action.
