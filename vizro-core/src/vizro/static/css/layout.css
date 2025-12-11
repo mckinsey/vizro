@@ -73,6 +73,7 @@
   display: flex;
   gap: 0.5rem;
   height: 100%;
+  z-index: 1000;
 }
 
 #action-progress-indicator {
@@ -248,7 +249,8 @@ Current logic:
   }
 
   #header,
-  #right-side {
+  #right-side,
+  #notification-container {
     zoom: 80%;
   }
 }
