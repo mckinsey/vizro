@@ -33,7 +33,7 @@ nav:
           - Overview: pages/user-guides/actions.md
           - Handle data: pages/user-guides/data-actions.md
           - Graph and table interactions: pages/user-guides/graph-table-actions.md
-          - Show notifications: pages/user-guides/notification-actions.md
+          - Notifications: pages/user-guides/notification-actions.md
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
           - Layout: pages/user-guides/layouts.md
