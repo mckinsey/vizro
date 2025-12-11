@@ -92,7 +92,7 @@ repo_url = "https://github.com/mckinsey/vizro"
 site_description = "Core Vizro documentation"
 site_dir = "site"
 site_name = "Vizro"
-site_url = "https://vizro.readthedocs.io/en/stable"
+site_url = "https://vizro.readthedocs.io/en/stable/"
 use_directory_urls = true
 
 [[project.extra.meta]]
