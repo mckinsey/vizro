@@ -73,7 +73,6 @@ class show_notification(_AbstractAction):
         default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].title,  # type: ignore[arg-type, misc]
         description="""Notification title. Defaults to capitalized variant name if not provided,
         for example 'Info' for 'info' variant.""",
-        validate_default=True,
     )
     icon: Annotated[
         str,
@@ -82,7 +81,6 @@ class show_notification(_AbstractAction):
             default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].icon,
             description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
                 Ignored if `variant="progress"`""",
-            validate_default=True,
         ),
     ]
     auto_close: bool | int = Field(
@@ -90,7 +88,6 @@ class show_notification(_AbstractAction):
         description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
             info/success/warning/error, `False` for progress.""",
-        validate_default=True,
     )
 
     @property
