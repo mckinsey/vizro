@@ -142,7 +142,7 @@ A CC of 0 indicates no linear correlation. A CC of -1 indicates a completely neg
 #### When should I use it?
 Correlation matrices are implemented for evaluating correlations among variables in datasets.
 Examples include financial dataset metrics and noting multicollinearity.
-This is to select the more correlated variables for additional data visualisations.
+This is to select the more correlated variables for additional data visualizations.
             """
         ),
         vm.Graph(figure=correlation_matrix.fig),
