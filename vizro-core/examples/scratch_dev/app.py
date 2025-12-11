@@ -6,6 +6,7 @@ import dash
 import plotly
 from dash import html, dcc, callback, Output, Input, State, Patch, clientside_callback, no_update
 import dash_mantine_components as dmc
+from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
@@ -122,7 +123,6 @@ INPUT_SECTION = {
     "paddingRight": "10px",
 }
 
-
 # -------------------- Base Classes --------------------
 
 
@@ -199,6 +199,7 @@ class ChatAction(_AbstractAction):
             self._setup_streaming_endpoint()
 
         self._setup_chat_callbacks()
+        self._setup_loading_indicator()
 
     # Now there are two data flows:
     #     1. SSE chunks → decoded and accumulated in hidden-messages div
@@ -250,7 +251,7 @@ class ChatAction(_AbstractAction):
                 // Handle stream completion
                 if (!animatedText || animatedText === STREAM_DONE_SIGNAL) {
                     window.lastProcessedChunkCount = 0;
-                    return [existingChildren, window.dash_clientside.no_update, ""];  // Clear loading
+                    return [existingChildren, window.dash_clientside.no_update];
                 }
 
                 const newChildren = [...(existingChildren || [])];
@@ -285,13 +286,12 @@ class ChatAction(_AbstractAction):
                     }
                 }
 
-                return [newChildren, newData, window.dash_clientside.no_update];
+                return [newChildren, newData];
             }
             """,
             [
                 Output(f"{self.parent_id}-hidden-messages", "children", allow_duplicate=True),
                 Output(f"{self.parent_id}-store", "data", allow_duplicate=True),
-                Output(f"{self.parent_id}-loading-output", "children", allow_duplicate=True),
             ],
             Input(f"{self.parent_id}-sse", "animation"),
             [State(f"{self.parent_id}-hidden-messages", "children"), State(f"{self.parent_id}-store", "data")],
@@ -573,55 +573,40 @@ class ChatAction(_AbstractAction):
         pass
 
     def function(self, prompt, messages):
-        """Main action function called by Dash callback.
-
-        This method handles the complete chat flow:
-        1. Adds user message to store and UI
-        2. Processes the response (streaming or non-streaming)
-        3. Adds assistant response to store and UI
-        4. Clears the input
-
-        This method can be overridden for special cases (e.g., to handle extra
-        parameters like uploaded_data, or custom response processing).
-
-        Args:
-            prompt: User's input text
-            messages: List of previous messages in conversation
-        """
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
 
         latest_input = {"role": "user", "content_json": json.dumps(prompt)}
         messages.append(latest_input)
 
-        store, html_messages = Patch(), Patch()
-
+        store = Patch()
         store.append(latest_input)
-        html_messages.append(self.message_to_html(latest_input))
 
         if self.stream:
             # For streaming: add empty assistant placeholder, then start SSE
             placeholder_msg = {"role": "assistant", "content_json": json.dumps("")}
             store.append(placeholder_msg)
+
+            html_messages = [self.message_to_html(msg) for msg in messages]
             html_messages.append(self.message_to_html(placeholder_msg))
 
             return [
                 store,
                 html_messages,
-                "",
+                no_update,
                 f"/streaming-{self.parent_id}",
                 sse_options(StreamingRequest(prompt=prompt, messages=messages)),
-                "",  # Clear loading indicator
             ]
         else:
             # For non-streaming: generate response synchronously
             result = self.generate_response(messages)
             latest_output = {"role": "assistant", **result}
-
             store.append(latest_output)
+
+            html_messages = [self.message_to_html(msg) for msg in messages]
             html_messages.append(self.message_to_html(latest_output))
 
-            return [store, html_messages, "", ""]
+            return [store, html_messages, no_update]
 
     def message_to_html(self, message):
         """Convert a message dict to HTML structure.
@@ -662,6 +647,54 @@ class ChatAction(_AbstractAction):
                     style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
                 )
 
+    def _setup_loading_indicator(self):
+        """Set up loading indicator using a serverside callback.
+
+        This callback triggers immediately on button click and:
+        1. Adds user message and loading placeholder to hidden-messages (UI only)
+        2. Clears the input
+
+        Note: This doesn't update the store - that's handled by function().
+        The loading placeholder gets replaced when the main action callback returns.
+        """
+
+        @callback(
+            Output(f"{self.parent_id}-hidden-messages", "children", allow_duplicate=True),
+            Output(f"{self.parent_id}-chat-input", "value", allow_duplicate=True),
+            Input(f"{self.parent_id}-send-button", "n_clicks"),
+            State(f"{self.parent_id}-chat-input", "value"),
+            prevent_initial_call=True,
+        )
+        def update_with_user_input(_, prompt):
+            """Handle immediate UI update when user sends a message."""
+            if not prompt or not prompt.strip():
+                raise PreventUpdate
+
+            html_messages = Patch()
+
+            # Add user message to display
+            latest_input = {"role": "user", "content_json": json.dumps(prompt)}
+            html_messages.append(self.message_to_html(latest_input))
+
+            # Add a loading indicator as a temporary assistant message
+            loading_msg = html.Div(
+                html.Div(
+                    dmc.Loader(size="sm", type="dots"),
+                    style={
+                        **ASSISTANT_MESSAGE_STYLE,
+                        "display": "flex",
+                        "alignItems": "center",
+                        "padding": "16px",
+                        "minHeight": "48px",
+                    },
+                ),
+                style={"display": "flex", "justifyContent": "flex-start", "width": "100%"},
+            )
+            html_messages.append(loading_msg)
+
+            # Clear input
+            return html_messages, ""
+
     @property
     def outputs(self):
         if self.stream:
@@ -671,14 +704,12 @@ class ChatAction(_AbstractAction):
                 f"{self.parent_id}-chat-input.value",
                 f"{self.parent_id}-sse.url",
                 f"{self.parent_id}-sse.options",
-                f"{self.parent_id}-loading-output.children",
             ]
         else:
             return [
                 f"{self.parent_id}-store.data",
                 f"{self.parent_id}-hidden-messages.children",
                 f"{self.parent_id}-chat-input.value",
-                f"{self.parent_id}-loading-output.children",
             ]
 
 
@@ -743,6 +774,10 @@ class openai_chat(ChatAction):
 
     def generate_response(self, messages):
         """Handle non-streaming response from OpenAI."""
+        import time
+
+        time.sleep(3)  # Simulate delay to test loading indicator
+
         api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
         response = self.client.responses.create(
             model=self.model,
@@ -854,18 +889,17 @@ class vizro_ai_chat(ChatAction):
         # Store uploaded_data temporarily so generate_response can access it
         self._uploaded_data = uploaded_data
 
-        store, html_messages = Patch(), Patch()
-
+        store = Patch()
         store.append(latest_input)
-        html_messages.append(self.message_to_html(latest_input))
 
         result = self.generate_response(messages)
         latest_output = {"role": "assistant", **result}
-
         store.append(latest_output)
+
+        html_messages = [self.message_to_html(msg) for msg in messages]
         html_messages.append(self.message_to_html(latest_output))
 
-        return [store, html_messages, "", ""]
+        return [store, html_messages, no_update]
 
     def generate_response(self, messages):
         """Generate data visualization using VizroAI.
@@ -1025,8 +1059,6 @@ class Chat(VizroBaseModel):
                 ),
                 # Input area
                 self.build_input_area(),
-                # Loading indicator (hidden by default)
-                html.Div(id=f"{self.id}-loading-output", style={"display": "none"}),
                 # Store for conversation history
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),
                 # Server-Sent Events for streaming support
