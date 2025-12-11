@@ -11,7 +11,7 @@ The [`show_notification`][vizro.actions.show_notification] action displays a tem
 - Provide informational messages
 - Show loading states during long-running operations
 
-Notifications appear at the top-right of the screen and are customizable with options for styling (variants and icons), timing (auto-close duration), content (title and message), and behavior (loading states and updates).
+Notifications appear at the top-right of the screen and are customizable with options for styling (variants and icons), timing (auto-close duration), content (title and text), and behavior (loading states and updates).
 
 !!! note "Under the hood"
 
@@ -38,7 +38,7 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
             components=[
                 vm.Button(
                     text="Show notification",
-                    actions=[va.show_notification(message="This is a default notification!")],
+                    actions=[va.show_notification(text="This is a default notification!")],
                 ),
             ],
         )
@@ -58,7 +58,7 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
                 text: Show notification
                 actions:
                   - type: show_notification
-                    message: This is a default notification!
+                    text: This is a default notification!
             title: Basic notification
         ```
 
@@ -66,11 +66,11 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
 
         [![BasicNotification]][basicnotification]
 
-When you click the button, a notification appears in the top-right corner of the screen. Since only the `message` is provided, the notification uses the default `variant="info"` styling with a blue color scheme and an info icon.
+When you click the button, a notification appears in the top-right corner of the screen. Since only the `text` is provided, the notification uses the default `variant="info"` styling with a blue color scheme and an info icon.
 
 !!! tip "Markdown support"
 
-    The `message` field accepts markdown text following the CommonMark specification. You can use markdown to format text, add hyperlinks, create lists, and more.
+    The `text` field accepts markdown text following the CommonMark specification. You can use markdown to format text, add hyperlinks, create lists, and more.
 
 ### Notification variants
 
@@ -99,23 +99,23 @@ Each variant has its own color scheme and default icon (except `"progress"` whic
             components=[
                 vm.Button(
                     text="Info",
-                    actions=[va.show_notification(message="This is an info message", variant="info")],
+                    actions=[va.show_notification(text="This is an info message", variant="info")],
                 ),
                 vm.Button(
                     text="Success",
-                    actions=[va.show_notification(message="Operation completed!", variant="success")],
+                    actions=[va.show_notification(text="Operation completed!", variant="success")],
                 ),
                 vm.Button(
                     text="Warning",
-                    actions=[va.show_notification(message="Please review your inputs", variant="warning")],
+                    actions=[va.show_notification(text="Please review your inputs", variant="warning")],
                 ),
                 vm.Button(
                     text="Error",
-                    actions=[va.show_notification(message="Something went wrong", variant="error")],
+                    actions=[va.show_notification(text="Something went wrong", variant="error")],
                 ),
                 vm.Button(
                     text="Progress",
-                    actions=[va.show_notification(message="Processing...", variant="progress")],
+                    actions=[va.show_notification(text="Processing...", variant="progress")],
                 ),
             ],
         )
@@ -135,31 +135,31 @@ Each variant has its own color scheme and default icon (except `"progress"` whic
                 text: Info
                 actions:
                   - type: show_notification
-                    message: This is an info message
+                    text: This is an info message
                     variant: info
               - type: button
                 text: Success
                 actions:
                   - type: show_notification
-                    message: Operation completed!
+                    text: Operation completed!
                     variant: success
               - type: button
                 text: Warning
                 actions:
                   - type: show_notification
-                    message: Please review your inputs
+                    text: Please review your inputs
                     variant: warning
               - type: button
                 text: Error
                 actions:
                   - type: show_notification
-                    message: Something went wrong
+                    text: Something went wrong
                     variant: error
               - type: button
                 text: Progress
                 actions:
                   - type: show_notification
-                    message: Processing...
+                    text: Processing...
                     variant: progress
             title: Notification variants
             layout:
@@ -192,7 +192,7 @@ By default, notifications use the capitalized variant name as the title (e.g., "
                     actions=[
                         va.show_notification(
                             title="Download Complete",
-                            message="Your data has been exported successfully",
+                            text="Your data has been exported successfully",
                             variant="success",
                             icon="download",
                         )
@@ -217,7 +217,7 @@ By default, notifications use the capitalized variant name as the title (e.g., "
                 actions:
                   - type: show_notification
                     title: Download Complete
-                    message: Your data has been exported successfully
+                    text: Your data has been exported successfully
                     variant: success
                     icon: download
             title: Custom notification
@@ -258,7 +258,7 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
                     text="Quick message (2s)",
                     actions=[
                         va.show_notification(
-                            message="This will disappear quickly",
+                            text="This will disappear quickly",
                             auto_close=2000,
                         )
                     ],
@@ -267,7 +267,7 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
                     text="Long message (10s)",
                     actions=[
                         va.show_notification(
-                            message="This message stays longer to ensure you see it",
+                            text="This message stays longer to ensure you see it",
                             auto_close=10000,
                         )
                     ],
@@ -276,7 +276,7 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
                     text="Manual close",
                     actions=[
                         va.show_notification(
-                            message="Click the X to close this notification",
+                            text="Click the X to close this notification",
                             auto_close=False,
                         )
                     ],
@@ -299,19 +299,19 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
                 text: Quick message (2s)
                 actions:
                   - type: show_notification
-                    message: This will disappear quickly
+                    text: This will disappear quickly
                     auto_close: 2000
               - type: button
                 text: Long message (10s)
                 actions:
                   - type: show_notification
-                    message: This message stays longer to ensure you see it
+                    text: This message stays longer to ensure you see it
                     auto_close: 10000
               - type: button
                 text: Manual close
                 actions:
                   - type: show_notification
-                    message: Click the X to close this notification
+                    text: Click the X to close this notification
                     auto_close: false
             title: Auto-close settings
             layout:
@@ -349,7 +349,7 @@ Notifications can be chained with other actions to provide user feedback. For ex
                     actions=[
                         va.export_data(),
                         va.show_notification(
-                            message="Data exported successfully!",
+                            text="Data exported successfully!",
                             variant="success",
                             icon="download",
                         ),
@@ -378,7 +378,7 @@ Notifications can be chained with other actions to provide user feedback. For ex
                 actions:
                   - type: export_data
                   - type: show_notification
-                    message: Data exported successfully!
+                    text: Data exported successfully!
                     variant: success
                     icon: download
             title: Export with notification
@@ -392,7 +392,7 @@ Notifications can be chained with other actions to provide user feedback. For ex
 
 ### Update existing notification
 
-You can update an existing notification by using `action="update"` and providing a matching `notification_id`. This is useful for showing progress updates or state changes for the same logical operation without creating multiple notifications.
+You can update an existing notification by using the [`update_notification`][vizro.actions.update_notification] action and providing a matching `notification` ID that references the original `show_notification` action. This is useful for showing progress updates or state changes for the same logical operation without creating multiple notifications.
 
 !!! example "Update notification"
 
@@ -411,8 +411,8 @@ You can update an existing notification by using `action="update"` and providing
                     text="Start process",
                     actions=[
                         va.show_notification(
-                            notification_id="process_status",
-                            message="Processing started...",
+                            id="process_status",
+                            text="Processing started...",
                             variant="progress",
                         )
                     ],
@@ -420,11 +420,10 @@ You can update an existing notification by using `action="update"` and providing
                 vm.Button(
                     text="Complete process",
                     actions=[
-                        va.show_notification(
-                            notification_id="process_status",
-                            action="update",
+                        va.update_notification(
+                            notification="process_status",
                             title="Complete",
-                            message="Processing finished successfully!",
+                            text="Processing finished successfully!",
                             variant="success",
                         )
                     ],
@@ -447,17 +446,16 @@ You can update an existing notification by using `action="update"` and providing
                 text: Start process
                 actions:
                   - type: show_notification
-                    notification_id: process_status
-                    message: Processing started...
+                    id: process_status
+                    text: Processing started...
                     variant: progress
               - type: button
                 text: Complete process
                 actions:
-                  - type: show_notification
-                    notification_id: process_status
-                    action: update
+                  - type: update_notification
+                    notification: process_status
                     title: Complete
-                    message: Processing finished successfully!
+                    text: Processing finished successfully!
                     variant: success
             title: Update notification example
             layout:
