@@ -931,6 +931,7 @@ class vizro_ai_chat(ChatAction):
 class Chat(VizroBaseModel):
     type: Literal["chat"] = "chat"
     actions: list[ActionType] = []
+    placeholder: str = "How can I help you?"
 
     # This is how you make a new component a trigger of an action in the new system.
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
@@ -939,17 +940,82 @@ class Chat(VizroBaseModel):
     def _action_triggers(self):
         return {"__default__": f"{self.id}-send-button.n_clicks"}
 
+    def build_extra_stores(self):
+        """Override to add extra dcc.Store components.
+
+        Returns:
+            List of Dash components to add before the messages container.
+        """
+        return []
+
+    def build_input_area(self):
+        """Override to customize the input area.
+
+        Returns:
+            Dash component for the input area.
+        """
+        return html.Div(
+            [
+                html.Div(
+                    [
+                        # Textarea
+                        dmc.Textarea(
+                            id=f"{self.id}-chat-input",
+                            placeholder=self.placeholder,
+                            autosize=True,
+                            size="md",
+                            minRows=1,
+                            maxRows=6,
+                            radius=0,
+                            styles={
+                                "input": {
+                                    "borderLeft": "none",
+                                    "borderRight": "none",
+                                    "borderTop": "none",
+                                    "borderRadius": "0",
+                                    "resize": "none",
+                                    "backgroundColor": "var(--bs-body-bg)",
+                                    "fontSize": FONT_SIZE_EDITORIAL,
+                                    "lineHeight": LINE_HEIGHT_EDITORIAL,
+                                    "color": COLOR_TEXT_PRIMARY,
+                                }
+                            },
+                            style={"width": "100%"},
+                            value="",
+                        ),
+                        # Button row
+                        html.Div(
+                            [
+                                html.Div(style={"width": "42px", "height": "42px", "visibility": "hidden"}),
+                                dmc.ActionIcon(
+                                    DashIconify(icon="material-symbols-light:send-outline", width=38, height=38),
+                                    id=f"{self.id}-send-button",
+                                    variant="subtle",
+                                    color="grey",
+                                    n_clicks=0,
+                                    radius=BORDER_RADIUS,
+                                    style={"width": "42px", "height": "42px"},
+                                ),
+                            ],
+                            style={"display": "flex", "justifyContent": "space-between", "width": "100%"},
+                        ),
+                    ],
+                    style={"width": "100%", "maxWidth": MAX_CHAT_WIDTH},
+                )
+            ],
+            style=INPUT_SECTION,
+        )
+
     def build(self):
         return html.Div(
             [
+                *self.build_extra_stores(),
                 # Messages container
                 html.Div(
                     [
                         html.Div(
                             [
-                                # Hidden div to store raw messages
                                 html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
-                                # Visible div to display parsed messages with code highlighting
                                 html.Div(id=f"{self.id}-rendered-messages", style=HISTORY_CONTAINER),
                             ],
                             id=f"{self.id}-chat-messages-container",
@@ -957,8 +1023,8 @@ class Chat(VizroBaseModel):
                     ],
                     style=HISTORY_SECTION,
                 ),
-                # Input area - reusable component without file upload
-                build_input_area(chat_id=self.id, placeholder="How can I help you?", show_upload=False),
+                # Input area
+                self.build_input_area(),
                 # Loading indicator (hidden by default)
                 html.Div(id=f"{self.id}-loading-output", style={"display": "none"}),
                 # Store for conversation history
@@ -978,154 +1044,87 @@ Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 Chat.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
 
 
-# -------------------- Helper Methods --------------------
-
-
-def build_input_area(chat_id, placeholder="How can I help you?", show_upload=False, upload_id=None, file_info_id=None):
-    """
-    Build a reusable input area with optional file upload support.
-
-    Args:
-        chat_id: ID of the chat component
-        placeholder: Placeholder text for the textarea
-        show_upload: Whether to show the upload button
-        upload_id: ID for the upload component (required if show_upload=True)
-        file_info_id: ID for the file info display (required if show_upload=True)
-
-    Returns:
-        html.Div containing the input area with 3-row layout
-    """
-    rows = []
-
-    # Row 1: File preview area (only if upload is enabled)
-    if show_upload and file_info_id:
-        rows.append(html.Div(id=file_info_id, style={"marginBottom": "8px", "minHeight": "0px"}))
-
-    # Row 2: Textarea
-    rows.append(
-        dmc.Textarea(
-            id=f"{chat_id}-chat-input",
-            placeholder=placeholder,
-            autosize=True,
-            size="md",
-            minRows=1,
-            maxRows=6,
-            radius=0,
-            # styles: targets internal parts of the component (the actual textarea element)
-            styles={
-                "input": {
-                    "borderLeft": "none",
-                    "borderRight": "none",
-                    "borderTop": "none",
-                    "borderRadius": "0",
-                    "resize": "none",
-                    "backgroundColor": "var(--bs-body-bg)",  # from design system
-                    "fontSize": FONT_SIZE_EDITORIAL,  # 16px for input text
-                    "lineHeight": LINE_HEIGHT_EDITORIAL,  # 24px
-                    "color": COLOR_TEXT_PRIMARY,  # Main text color
-                }
-            },
-            # style: targets the outer wrapper div
-            style={"width": "100%"},
-            value="",
-        )
-    )
-
-    # Row 3: Action buttons (upload and send)
-    button_row = []
-
-    if show_upload and upload_id:
-        button_row.append(
-            dcc.Upload(
-                id=upload_id,
-                children=dmc.ActionIcon(
-                    DashIconify(
-                        icon="material-symbols-light:attach-file-add", width=28, height=28
-                    ),  # need to make this smaller so it looks aligned with the send button
-                    variant="subtle",
-                    color="grey",
-                    radius=BORDER_RADIUS,
-                    style={"width": "42px", "height": "42px"},
-                ),
-                style={"width": "fit-content"},
-                multiple=False,
-            )
-        )
-    else:
-        # Invisible placeholder to maintain layout
-        button_row.append(html.Div(style={"width": "42px", "height": "42px", "visibility": "hidden"}))
-
-    button_row.append(
-        dmc.ActionIcon(
-            DashIconify(icon="material-symbols-light:send-outline", width=38, height=38),
-            id=f"{chat_id}-send-button",
-            variant="subtle",
-            color="grey",
-            n_clicks=0,
-            radius=BORDER_RADIUS,
-            style={"width": "42px", "height": "42px"},
-        )
-    )
-
-    rows.append(
-        html.Div(
-            button_row,
-            style={
-                "display": "flex",
-                "justifyContent": "space-between",
-                "width": "100%",
-            },
-        )
-    )
-
-    return html.Div([html.Div(rows, style={"width": "100%", "maxWidth": MAX_CHAT_WIDTH})], style=INPUT_SECTION)
-
-
 # -------------------- Chat with Upload Component --------------------
 
 
 class ChatWithUpload(Chat):
-    """Chat component with file upload capability for data analysis."""
+    """Chat component with file upload capability for data analysis.
+
+    Example of subclassing Chat - only overrides hooks, not internal build logic.
+    """
 
     type: Literal["chat_with_upload"] = "chat_with_upload"
+    placeholder: str = "Ask about your data..."
 
-    def build(self):
-        """Build the chat UI with file upload."""
+    def build_extra_stores(self):
+        """Add data store for uploaded file."""
+        return [dcc.Store(id=f"{self.id}-data-store")]
+
+    def build_input_area(self):
+        """Input area with file upload enabled."""
         return html.Div(
             [
-                # Data store
-                dcc.Store(id=f"{self.id}-data-store"),
-                # Messages container
                 html.Div(
                     [
+                        # File preview area
+                        html.Div(id=f"{self.id}-data-info", style={"marginBottom": "8px", "minHeight": "0px"}),
+                        # Textarea
+                        dmc.Textarea(
+                            id=f"{self.id}-chat-input",
+                            placeholder=self.placeholder,
+                            autosize=True,
+                            size="md",
+                            minRows=1,
+                            maxRows=6,
+                            radius=0,
+                            styles={
+                                "input": {
+                                    "borderLeft": "none",
+                                    "borderRight": "none",
+                                    "borderTop": "none",
+                                    "borderRadius": "0",
+                                    "resize": "none",
+                                    "backgroundColor": "var(--bs-body-bg)",
+                                    "fontSize": FONT_SIZE_EDITORIAL,
+                                    "lineHeight": LINE_HEIGHT_EDITORIAL,
+                                    "color": COLOR_TEXT_PRIMARY,
+                                }
+                            },
+                            style={"width": "100%"},
+                            value="",
+                        ),
+                        # Button row with upload and send
                         html.Div(
                             [
-                                # Hidden div to store raw messages
-                                html.Div(id=f"{self.id}-hidden-messages", children=[], style={"display": "none"}),
-                                # Visible div to display parsed messages with code highlighting
-                                html.Div(id=f"{self.id}-rendered-messages", style=HISTORY_CONTAINER),
+                                dcc.Upload(
+                                    id=f"{self.id}-upload",
+                                    children=dmc.ActionIcon(
+                                        DashIconify(icon="material-symbols-light:attach-file-add", width=28, height=28),
+                                        variant="subtle",
+                                        color="grey",
+                                        radius=BORDER_RADIUS,
+                                        style={"width": "42px", "height": "42px"},
+                                    ),
+                                    style={"width": "fit-content"},
+                                    multiple=False,
+                                ),
+                                dmc.ActionIcon(
+                                    DashIconify(icon="material-symbols-light:send-outline", width=38, height=38),
+                                    id=f"{self.id}-send-button",
+                                    variant="subtle",
+                                    color="grey",
+                                    n_clicks=0,
+                                    radius=BORDER_RADIUS,
+                                    style={"width": "42px", "height": "42px"},
+                                ),
                             ],
-                            id=f"{self.id}-chat-messages-container",
-                        )
+                            style={"display": "flex", "justifyContent": "space-between", "width": "100%"},
+                        ),
                     ],
-                    style=HISTORY_SECTION,
-                ),
-                # Input area - reusable component with file upload
-                build_input_area(
-                    chat_id=self.id,
-                    placeholder="Ask about your data...",
-                    show_upload=True,
-                    upload_id=f"{self.id}-upload",
-                    file_info_id=f"{self.id}-data-info",
-                ),
-                # Loading indicator (hidden by default)
-                html.Div(id=f"{self.id}-loading-output", style={"display": "none"}),
-                # Store for conversation history
-                dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),
-                # Server-Sent Events for streaming support
-                SSE(id=f"{self.id}-sse", concat=True, animate_chunk=10, animate_delay=5),
+                    style={"width": "100%", "maxWidth": MAX_CHAT_WIDTH},
+                )
             ],
-            style={"height": "100%", "width": "100%", "display": "flex", "flexDirection": "column"},
+            style=INPUT_SECTION,
         )
 
     def pre_build(self):
