@@ -56,8 +56,6 @@ def _resolve_list_of_page_references(
     return unknown_pages, validated_list
 
 
-# TODO[MS]: This will need to move to pre-build in next PR - hopefully there is no problems
-# introduced with handling things this way
 def _validate_pages(pages: NavPagesType) -> NavPagesType:
     """Reusable validator to check if provided Page titles exist as registered pages."""
     from vizro.models import Page

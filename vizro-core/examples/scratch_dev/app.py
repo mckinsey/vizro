@@ -1,97 +1,186 @@
 from typing import Literal
 
-from dash import html
-
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import html
 from vizro import Vizro
-from vizro.models.types import ControlType
+from vizro.managers import data_manager
 
-df_gapminder = px.data.gapminder()
+df = px.data.iris()
+data_manager["iris"] = df
+
+data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
 
 
-class ControlGroup(vm.VizroBaseModel):
-    """Container to group controls."""
+# 2. Create new custom component
+class Jumbotron(vm.VizroBaseModel):
+    """New custom component `Jumbotron`."""
 
-    type: Literal["control_group"] = "control_group"
+    type: Literal["custom_component"] = "custom_component"
     title: str
-    controls: list[ControlType] = []
+    subtitle: str
+    text: str
 
     def build(self):
+        """Build the new component based on Dash components."""
+        return html.Div([html.H2(self.title), html.H3(self.subtitle), html.P(self.text)])
+
+
+class CustomCard(vm.VizroBaseModel):
+    """New custom component `Card`."""
+
+    type: Literal["custom_component"] = "custom_component"
+    title: str
+    description: str
+
+    def build(self):
+        """Build the new component based on Dash components."""
         return html.Div(
-            [html.H4(self.title), html.Hr()] + [control.build() for control in self.controls],
-            className="control_group_container",
+            [
+                html.Div(
+                    [
+                        html.H4(self.title, style={"margin": "0 0 10px 0"}),
+                        html.P(self.description, style={"margin": "0"}),
+                    ],
+                    style={
+                        "border": "1px solid #ddd",
+                        "border-radius": "8px",
+                        "padding": "16px",
+                        "background-color": "#f9f9f9",
+                    },
+                )
+            ]
         )
 
 
-vm.Page.add_type("controls", ControlGroup)
-vm.Page.add_type("components", ControlGroup)
-vm.Page.add_type("components", vm.Filter)
-
-vm.Container.add_type("controls", ControlGroup)
-vm.Container.add_type("components", ControlGroup)
-vm.Container.add_type("components", vm.Filter)
-
 page = vm.Page(
-    layout=vm.Flex(),
-    title="Page:",
+    title="My first dashboard",
     components=[
-        # vm.Filter(id="page_components", column="country"),  # -> EXCEPTION
-        # ControlGroup(  # -> EXCEPTION
-        #     title="page_components_group",
-        #     controls=[vm.Filter(id="page_components_group", column="continent")],
-        # ),
-        vm.Container(
-            title="Container:",
-            components=[
-                # vm.Filter(id="container_components", column="country"),  # -> EXCEPTION
-                # ControlGroup(  # -> EXCEPTION
-                #     title="container_components_group",
-                #     controls=[vm.Filter(id="container_components_group", column="continent")],
-                # ),
-                vm.Container(
-                    components=[
-                        vm.Container(
-                            title="Nested Container:",
-                            components=[
-                                # vm.Filter(id="nested_container_components", column="country"),  # -> EXCEPTION
-                                # ControlGroup(  # -> EXCEPTION
-                                #     title="nested_container_components_group",
-                                #     controls=[vm.Filter(id="nested_container_components_group", column="continent")],
-                                # ),
-                                vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop")),
-                            ],
-                            controls=[
-                                vm.Filter(id="nested_container_controls", column="country"),
-                                ControlGroup(
-                                    title="nested_container_controls_group",
-                                    controls=[vm.Filter(id="nested_container_controls_group", column="continent")],
-                                ),
-                            ],
-                        )
-                    ]
-                )
-            ],
-            controls=[
-                vm.Filter(id="container_controls", column="country"),
-                ControlGroup(
-                    title="container_controls_group",
-                    controls=[vm.Filter(id="container_controls_group", column="continent")],
-                ),
-            ],
+        vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
+        Jumbotron(
+            title="Custom component",
+            subtitle="This is a subtitle",
+            text="This is the main body of text of the Jumbotron.",
+        ),
+        Jumbotron(
+            title="Custom component 2",
+            subtitle="This is a subtitle",
+            text="This is the main body of text of the Jumbotron.",
+        ),
+        CustomCard(
+            title="Custom card",
+            description="This is a description of the custom card.",
         ),
     ],
     controls=[
-        vm.Filter(id="page_controls", column="continent"),
-        ControlGroup(
-            title="page_controls_group",
-            controls=[
-                vm.Filter(id="page_controls_group", column="country"),
-            ],
+        vm.Filter(column="species"),
+    ],
+)
+
+tab_1 = vm.Container(
+    id="container_1",
+    title="Tab I",
+    components=[
+        vm.Graph(
+            figure=px.bar(
+                "gapminder_2007",
+                title="Graph 1",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.box(
+                "gapminder_2007",
+                title="Graph 2",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+# tab_2 = vm.Container(
+#     id="tab_2",
+#     title="Tab II",
+#     components=[
+#         vm.Graph(
+#             figure=px.scatter(
+#                 "gapminder_2007",
+#                 title="Graph 3",
+#                 x="gdpPercap",
+#                 y="lifeExp",
+#                 size="pop",
+#                 color="continent",
+#             ),
+#         ),
+#     ],
+# )
+
+tabs = vm.Page(
+    id="page_1",
+    title="Tabs",
+    components=[vm.Tabs(id="tabs_1", tabs=[tab_1])],
+    controls=[vm.Filter(id="filter_1", column="continent")],
+)
+
+dashboard = vm.Dashboard(id="dashboard_1", pages=[tabs])
+
+# Same configuration as JSON
+# dashboard_config = {
+#     "type": "dashboard",
+#     "pages": [
+#         {
+#             "type": "page",
+#             "title": "My first dashboard",
+#             "components": [
+#                 {
+#                     "type": "graph",
+#                     "figure": {
+#                         "_target_": "scatter",
+#                         "data_frame": "iris",
+#                         "x": "sepal_length",
+#                         "y": "petal_width",
+#                         "color": "species",
+#                     },
+#                 },
+#                 {
+#                     "type": "graph",
+#                     "figure": {
+#                         "_target_": "histogram",
+#                         "data_frame": "iris",
+#                         "x": "sepal_width",
+#                         "color": "species",
+#                     },
+#                 },
+#             ],
+#             "controls": [
+#                 {
+#                     "type": "filter",
+#                     "column": "species",
+#                 }
+#             ],
+#         }
+#     ],
+# }
+
+# dashboard = vm.Dashboard.model_validate(dashboard_config)
+
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    dashboard = vm.Dashboard.model_validate(dashboard, context={"build_tree": True})
+
+    ## Here all models have ._tree
+    for node in dashboard._tree:
+        has_tree = hasattr(node.data, "_tree")
+        if not has_tree:
+            print(f"WARNING: {node.kind} (id={node.data.id}) missing ._tree attribute")
+    assert all(
+        dashboard._tree[model.id].data is model
+        for model in [dashboard] + dashboard.pages + [comp for page in dashboard.pages for comp in page.components]
+    )
+    app = Vizro().build(dashboard)
+    dashboard._tree.print(repr="{node.kind} -> {node.data.type} (id={node.data.id})")
+    app.run()

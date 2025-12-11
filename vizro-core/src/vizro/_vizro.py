@@ -204,6 +204,8 @@ Provide a valid import path for these in your dashboard configuration."""
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
         # In future may add a second pre_build loop after the first one.
 
+        # TODO: Things fail here because the MM copy of the model is outdated - fix in next iteration
+        # This is also the reason why this is not replicated in fake Vizro
         for filter in cast(Iterable[Filter], model_manager._get_models(Filter)):
             # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
             # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
@@ -306,3 +308,11 @@ def _make_resource_spec(path: Path) -> _ResourceType:
         resource_spec["dynamic"] = True
 
     return resource_spec
+
+
+"""FURTHER PLAN OF ACTION
+
+- convert MM from dictionary to just tree reference, populate at correct moment
+- then replace all methods with tree lookups
+- then remove the MM from its global state
+"""
