@@ -3,6 +3,7 @@ from vizro.models.types import capture
 
 iris = px.data.iris().select_dtypes("number")
 
+
 @capture("graph")
 def correlation_heatmap(data_frame):
     return px.imshow(
