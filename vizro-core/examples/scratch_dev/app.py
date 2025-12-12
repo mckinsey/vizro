@@ -536,42 +536,68 @@ class ChatAction(_AbstractAction):
             Input(*page._action_triggers["__default__"].split(".")),
             [
                 State(f"{self.parent_id}-store", "data"),
-                State(f"{self.parent_id}-filename-store", "data"),
+                State(f"{self.parent_id}-file-store", "data"),
             ],
             prevent_initial_call=True,
         )
-        def on_page_load(_, store, filename):
+        def on_page_load(_, store, files):
             html_messages = [self.message_to_html(message) for message in store]
-            file_preview = self._create_file_preview(filename) if filename else ""
+            filenames = [f["filename"] for f in files] if files else []
+            file_preview = self._create_file_preview(filenames) if filenames else ""
             return html_messages, dash.no_update, file_preview
 
     def _setup_file_upload_callbacks(self):
         @callback(
-            Output(f"{self.parent_id}-data-store", "data"),
-            Output(f"{self.parent_id}-filename-store", "data"),
+            Output(f"{self.parent_id}-file-store", "data"),
             Output(f"{self.parent_id}-data-info", "children"),
             Input(f"{self.parent_id}-upload", "contents"),
             State(f"{self.parent_id}-upload", "filename"),
+            State(f"{self.parent_id}-file-store", "data"),
             prevent_initial_call=True,
         )
-        def process_upload(contents, filename):
-            """Store uploaded file contents. Processing is handled by the action implementation."""
-            if contents is None:
-                return None, None, ""
-            return contents, filename, self._create_file_preview(filename)
+        def process_upload(new_contents, new_filenames, existing_files):
+            """Store uploaded files."""
+            if new_contents is None:
+                return no_update, no_update
+
+            if not isinstance(new_contents, list):
+                new_contents = [new_contents]
+                new_filenames = [new_filenames]
+
+            # Append new files to existing ones
+            all_files = existing_files or []
+            all_files.extend({"content": c, "filename": f} for c, f in zip(new_contents, new_filenames))
+
+            return all_files, self._create_file_preview([f["filename"] for f in all_files])
 
         @callback(
-            Output(f"{self.parent_id}-data-store", "data", allow_duplicate=True),
-            Output(f"{self.parent_id}-filename-store", "data", allow_duplicate=True),
+            Output(f"{self.parent_id}-file-store", "data", allow_duplicate=True),
             Output(f"{self.parent_id}-data-info", "children", allow_duplicate=True),
-            Input(f"{self.parent_id}-remove-file", "n_clicks"),
+            Input({"type": f"{self.parent_id}-remove-file", "index": dash.ALL}, "n_clicks"),
+            State(f"{self.parent_id}-file-store", "data"),
             prevent_initial_call=True,
         )
-        def remove_file(n_clicks):
-            """Remove the uploaded file."""
-            if n_clicks:
-                return None, None, ""
-            return no_update, no_update, no_update
+        def remove_file(n_clicks, files):
+            """Remove a specific uploaded file by index."""
+            if not n_clicks or not any(n_clicks):
+                return no_update, no_update
+
+            ctx = dash.callback_context
+            if not ctx.triggered:
+                return no_update, no_update
+
+            # Get the index of the file to remove
+            triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
+            index = json.loads(triggered_id)["index"]
+
+            # Remove the file at the specified index
+            if files and 0 <= index < len(files):
+                files = files[:index] + files[index + 1 :]
+                if not files:
+                    return [], ""
+                return files, self._create_file_preview([f["filename"] for f in files])
+
+            return no_update, no_update
 
     def generate_stream(self, messages):
         """Override to implement streaming response.
@@ -645,20 +671,30 @@ class ChatAction(_AbstractAction):
 
             return [store, html_messages, no_update]
 
-    def _create_file_preview(self, filename):
-        """Create file preview UI component for restoring on page load."""
-        return html.Div(
-            [
+    def _create_file_preview(self, filenames: list[str]):
+        """Create file preview UI component for multiple files.
+
+        Args:
+            filenames: List of filenames to display, or a single filename string for backwards compatibility.
+        """
+        file_items = []
+        for i, filename in enumerate(filenames):
+            file_items.append(
                 dmc.Paper(
                     [
                         dmc.Group(
                             [
-                                dmc.Text(filename, size="sm", fw=500),
+                                dmc.Text(
+                                    filename,
+                                    size="sm",
+                                    fw=500,
+                                    style={"maxWidth": "150px", "overflow": "hidden", "textOverflow": "ellipsis"},
+                                ),
                                 dmc.ActionIcon(
                                     DashIconify(icon="material-symbols:close", width=16),
                                     size="xs",
                                     variant="subtle",
-                                    id=f"{self.parent_id}-remove-file",
+                                    id={"type": f"{self.parent_id}-remove-file", "index": i},
                                     n_clicks=0,
                                 ),
                             ],
@@ -671,8 +707,18 @@ class ChatAction(_AbstractAction):
                     withBorder=True,
                     style={"backgroundColor": "var(--surfaces-bg-card)"},
                 )
-            ],
-            style={"width": "200px"},
+            )
+
+        return html.Div(
+            file_items,
+            style={
+                "display": "flex",
+                "flexDirection": "row",
+                "flexWrap": "nowrap",
+                "gap": "8px",
+                "maxWidth": "100%",
+                "overflowX": "auto",
+            },
         )
 
     def message_to_html(self, message):
@@ -806,22 +852,11 @@ class openai_chat(ChatAction):
 
     type: Literal["openai_chat"] = "openai_chat"
     model: str = "gpt-4.1-nano"
-    api_key: Optional[str] = None  # Uses OPENAI_API_KEY env variable if not provided
-    api_base: Optional[str] = None  # Uses OPENAI_BASE_URL env variable if not provided
     stream: bool = True
 
-    # expose instructions and other stuff as fields.
-    # But ultimately users will want to customize a lot of things like tools etc. so should be able to easily write
-    # their own.
-    # Could pass through arbitrary kwargs to create function? Should always be configurable via JSON.
-    # https://platform.openai.com/docs/api-reference/responses
-    # Good idea to make this specific to OpenAI responses API and have specific arguments we've picked out for OpenAI
-    # class, create and how to handle response.
     @property
     def client(self):
-        if not hasattr(self, "_client"):
-            self._client = OpenAI(api_key=self.api_key, base_url=self.api_base)
-        return self._client
+        return OpenAI()
 
     def generate_stream(self, messages):
         """Handle streaming response from OpenAI."""
@@ -943,10 +978,9 @@ class vizro_ai_chat(ChatAction):
     """Generate data visualizations using natural language with VizroAI."""
 
     type: Literal["vizro_ai_chat"] = "vizro_ai_chat"
-    uploaded_data: str = Field(default_factory=lambda data: f"{data['parent_id']}-data-store.data")
-    uploaded_filename: str = Field(default_factory=lambda data: f"{data['parent_id']}-filename-store.data")
+    uploaded_files: str = Field(default_factory=lambda data: f"{data['parent_id']}-file-store.data")
 
-    def function(self, prompt, messages, uploaded_data=None, uploaded_filename=None):
+    def function(self, prompt, messages, uploaded_files=None):
         """Override function to handle uploaded data parameter."""
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
@@ -957,7 +991,7 @@ class vizro_ai_chat(ChatAction):
         store = Patch()
         store.append(latest_input)
 
-        result = self.generate_response(messages, uploaded_data, uploaded_filename)
+        result = self.generate_response(messages, uploaded_files)
         latest_output = {"role": "assistant", **result}
         store.append(latest_output)
 
@@ -966,7 +1000,7 @@ class vizro_ai_chat(ChatAction):
 
         return [store, html_messages, no_update]
 
-    def generate_response(self, messages, uploaded_data=None, uploaded_filename=None):
+    def generate_response(self, messages, uploaded_files=None):
         """Generate data visualization using VizroAI.
 
         Returns dict with serialized content for persistence.
@@ -977,9 +1011,13 @@ class vizro_ai_chat(ChatAction):
 
         prompt = json.loads(messages[-1]["content_json"]) if messages else ""
 
-        if not uploaded_data:
+        if not uploaded_files:
             content = html.P("Please upload a data file first!", style={"color": "#1890ff"})
             return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+
+        # Get the first uploaded file
+        uploaded_data = uploaded_files[0]["content"]
+        uploaded_filename = uploaded_files[0]["filename"]
 
         # Parse the raw file contents (base64 encoded from dcc.Upload)
         try:
@@ -1035,6 +1073,91 @@ class vizro_ai_chat(ChatAction):
             return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
 
 
+class openai_vision_chat(ChatAction):
+    """OpenAI Vision chat for analyzing images with text prompts.
+
+    Uses the OpenAI responses API with input_image content type for vision capabilities.
+    Supports multiple image uploads with a text prompt.
+    """
+
+    type: Literal["openai_vision_chat"] = "openai_vision_chat"
+    model: str = "gpt-4.1-nano"
+    uploaded_files: str = Field(default_factory=lambda data: f"{data['parent_id']}-file-store.data")
+
+    @property
+    def client(self):
+        return OpenAI()
+
+    def function(self, prompt, messages, uploaded_files=None):
+        """Override function to handle uploaded images."""
+        if not prompt or not prompt.strip():
+            return [no_update] * len(self.outputs)
+
+        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
+        messages.append(latest_input)
+
+        store = Patch()
+        store.append(latest_input)
+
+        result = self.generate_response(messages, uploaded_files)
+        latest_output = {"role": "assistant", **result}
+        store.append(latest_output)
+
+        html_messages = [self.message_to_html(msg) for msg in messages]
+        html_messages.append(self.message_to_html(latest_output))
+
+        return [store, html_messages, no_update]
+
+    def generate_response(self, messages, uploaded_files=None):
+        """Generate response using OpenAI Vision API with images.
+
+        Builds content array with input_text and input_image types for OpenAI responses API.
+        """
+        prompt = json.loads(messages[-1]["content_json"]) if messages else ""
+
+        content = [{"type": "input_text", "text": prompt}]
+
+        if uploaded_files:
+            for file_info in uploaded_files:
+                data = file_info["content"]
+                filename = file_info["filename"]
+
+                is_image = any(filename.lower().endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".gif", ".webp"])
+
+                if is_image:
+                    # data is already base64 encoded from dcc.Upload (format: "data:image/png;base64,...")
+                    content.append(
+                        {
+                            "type": "input_image",
+                            "image_url": data,  # Pass the full data URL
+                        }
+                    )
+
+        # Build API messages
+        api_messages = []
+        for msg in messages[:-1]:  # Exclude the last message since we'll add it with images
+            api_messages.append({"role": msg["role"], "content": json.loads(msg["content_json"])})
+
+        # Add the current message with images
+        api_messages.append({"role": "user", "content": content})
+
+        try:
+            response = self.client.responses.create(
+                model=self.model,
+                input=api_messages,
+                instructions="You are a helpful assistant that can analyze images and answer questions about them.",
+                store=False,
+            )
+
+            response_text = response.output_text
+            return {"content_json": json.dumps(response_text)}
+
+        except Exception as e:
+            error_msg = f"Error calling OpenAI Vision API: {str(e)}"
+            content = html.P(error_msg, style={"color": "red"})
+            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+
+
 # -------------------- Chat Component --------------------
 
 
@@ -1053,10 +1176,7 @@ class Chat(VizroBaseModel):
 
     def _build_upload_stores(self):
         """Build stores for file upload (always rendered for consistent callbacks)."""
-        return [
-            dcc.Store(id=f"{self.id}-data-store", storage_type="session"),
-            dcc.Store(id=f"{self.id}-filename-store", storage_type="session"),
-        ]
+        return [dcc.Store(id=f"{self.id}-file-store", storage_type="session")]
 
     def _build_input_area(self):
         """Build the input area with optional file upload button."""
@@ -1070,7 +1190,7 @@ class Chat(VizroBaseModel):
                 style={"width": "42px", "height": "42px"},
             ),
             style={"width": "fit-content", "display": "block" if self.file_upload else "none"},
-            multiple=False,
+            multiple=True,
         )
 
         # Build children list explicitly
@@ -1169,6 +1289,7 @@ Chat.add_type("actions", Annotated[openai_chat, Tag("openai_chat")])
 Chat.add_type("actions", Annotated[anthropic_chat, Tag("anthropic_chat")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 Chat.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
+Chat.add_type("actions", Annotated[openai_vision_chat, Tag("openai_vision_chat")])
 
 
 page = vm.Page(
@@ -1252,8 +1373,37 @@ page_vizro_ai = vm.Page(
     ],
 )
 
+page_vision = vm.Page(
+    title="OpenAI Vision Chat",
+    layout=vm.Grid(grid=[[0], [1], [1], [1], [1]]),
+    components=[
+        vm.Card(
+            text="""
+## OpenAI Vision Chat - Image Analysis
+
+Upload images and ask questions about them using OpenAI's vision capabilities.
+
+**How to use:**
+1. Click the attachment icon to upload one or more images
+2. Type your question about the image(s)
+3. Press send to get AI analysis
+
+**Supported formats:** PNG, JPG, JPEG
+
+**Model:** gpt-4.1-nano
+"""
+        ),
+        Chat(
+            id="vision_chat",
+            file_upload=True,
+            placeholder="Upload images and ask questions about them...",
+            actions=[openai_vision_chat(parent_id="vision_chat", model="gpt-4.1-nano")],
+        ),
+    ],
+)
+
 dashboard = vm.Dashboard(
-    pages=[page_echo, page, page_nostream, page_anthropic, page_2, page_vizro_ai],
+    pages=[page_echo, page, page_nostream, page_anthropic, page_2, page_vizro_ai, page_vision],
     theme="vizro_light",
     title="Vizro",
 )
