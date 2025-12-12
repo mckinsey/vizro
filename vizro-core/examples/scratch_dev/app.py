@@ -200,6 +200,7 @@ class ChatAction(_AbstractAction):
 
         self._setup_chat_callbacks()
         self._setup_loading_indicator()
+        self._setup_file_upload_callbacks()
 
     # Now there are two data flows:
     #     1. SSE chunks → decoded and accumulated in hidden-messages div
@@ -524,17 +525,53 @@ class ChatAction(_AbstractAction):
         page = model_manager._get_model_page(self)
 
         @callback(
-            Output(f"{self.parent_id}-hidden-messages", "children", allow_duplicate=True),
-            Output(
-                "vizro_version", "children", allow_duplicate=True
-            ),  # Extremely horrible hack we should change, just done here to make
-            # sure callback triggers (must have prevent_initial_call=True).
+            [
+                Output(f"{self.parent_id}-hidden-messages", "children", allow_duplicate=True),
+                Output(
+                    "vizro_version", "children", allow_duplicate=True
+                ),  # Extremely horrible hack we should change, just done here to make
+                # sure callback triggers (must have prevent_initial_call=True).
+                Output(f"{self.parent_id}-data-info", "children", allow_duplicate=True),
+            ],
             Input(*page._action_triggers["__default__"].split(".")),
-            State(f"{self.parent_id}-store", "data"),
+            [
+                State(f"{self.parent_id}-store", "data"),
+                State(f"{self.parent_id}-filename-store", "data"),
+            ],
             prevent_initial_call=True,
         )
-        def on_page_load(_, store):
-            return [self.message_to_html(message) for message in store], dash.no_update
+        def on_page_load(_, store, filename):
+            html_messages = [self.message_to_html(message) for message in store]
+            file_preview = self._create_file_preview(filename) if filename else ""
+            return html_messages, dash.no_update, file_preview
+
+    def _setup_file_upload_callbacks(self):
+        @callback(
+            Output(f"{self.parent_id}-data-store", "data"),
+            Output(f"{self.parent_id}-filename-store", "data"),
+            Output(f"{self.parent_id}-data-info", "children"),
+            Input(f"{self.parent_id}-upload", "contents"),
+            State(f"{self.parent_id}-upload", "filename"),
+            prevent_initial_call=True,
+        )
+        def process_upload(contents, filename):
+            """Store uploaded file contents. Processing is handled by the action implementation."""
+            if contents is None:
+                return None, None, ""
+            return contents, filename, self._create_file_preview(filename)
+
+        @callback(
+            Output(f"{self.parent_id}-data-store", "data", allow_duplicate=True),
+            Output(f"{self.parent_id}-filename-store", "data", allow_duplicate=True),
+            Output(f"{self.parent_id}-data-info", "children", allow_duplicate=True),
+            Input(f"{self.parent_id}-remove-file", "n_clicks"),
+            prevent_initial_call=True,
+        )
+        def remove_file(n_clicks):
+            """Remove the uploaded file."""
+            if n_clicks:
+                return None, None, ""
+            return no_update, no_update, no_update
 
     def generate_stream(self, messages):
         """Override to implement streaming response.
@@ -607,6 +644,36 @@ class ChatAction(_AbstractAction):
             html_messages.append(self.message_to_html(latest_output))
 
             return [store, html_messages, no_update]
+
+    def _create_file_preview(self, filename):
+        """Create file preview UI component for restoring on page load."""
+        return html.Div(
+            [
+                dmc.Paper(
+                    [
+                        dmc.Group(
+                            [
+                                dmc.Text(filename, size="sm", fw=500),
+                                dmc.ActionIcon(
+                                    DashIconify(icon="material-symbols:close", width=16),
+                                    size="xs",
+                                    variant="subtle",
+                                    id=f"{self.parent_id}-remove-file",
+                                    n_clicks=0,
+                                ),
+                            ],
+                            justify="space-between",
+                            style={"width": "100%"},
+                        )
+                    ],
+                    p="xs",
+                    radius="sm",
+                    withBorder=True,
+                    style={"backgroundColor": "var(--surfaces-bg-card)"},
+                )
+            ],
+            style={"width": "200px"},
+        )
 
     def message_to_html(self, message):
         """Convert a message dict to HTML structure.
@@ -877,8 +944,9 @@ class vizro_ai_chat(ChatAction):
 
     type: Literal["vizro_ai_chat"] = "vizro_ai_chat"
     uploaded_data: str = Field(default_factory=lambda data: f"{data['parent_id']}-data-store.data")
+    uploaded_filename: str = Field(default_factory=lambda data: f"{data['parent_id']}-filename-store.data")
 
-    def function(self, prompt, messages, uploaded_data=None):
+    def function(self, prompt, messages, uploaded_data=None, uploaded_filename=None):
         """Override function to handle uploaded data parameter."""
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
@@ -886,13 +954,10 @@ class vizro_ai_chat(ChatAction):
         latest_input = {"role": "user", "content_json": json.dumps(prompt)}
         messages.append(latest_input)
 
-        # Store uploaded_data temporarily so generate_response can access it
-        self._uploaded_data = uploaded_data
-
         store = Patch()
         store.append(latest_input)
 
-        result = self.generate_response(messages)
+        result = self.generate_response(messages, uploaded_data, uploaded_filename)
         latest_output = {"role": "assistant", **result}
         store.append(latest_output)
 
@@ -901,7 +966,7 @@ class vizro_ai_chat(ChatAction):
 
         return [store, html_messages, no_update]
 
-    def generate_response(self, messages):
+    def generate_response(self, messages, uploaded_data=None, uploaded_filename=None):
         """Generate data visualization using VizroAI.
 
         Returns dict with serialized content for persistence.
@@ -912,16 +977,27 @@ class vizro_ai_chat(ChatAction):
 
         prompt = json.loads(messages[-1]["content_json"]) if messages else ""
 
-        # Check if uploaded_data is available (set by function())
-        uploaded_data = getattr(self, "_uploaded_data", None)
         if not uploaded_data:
-            content = html.P("Please upload a CSV file first!", style={"color": "#1890ff"})
+            content = html.P("Please upload a data file first!", style={"color": "#1890ff"})
             return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
 
+        # Parse the raw file contents (base64 encoded from dcc.Upload)
         try:
-            df = pd.read_json(io.StringIO(uploaded_data), orient="split")
+            content_type, content_string = uploaded_data.split(",")
+            decoded = base64.b64decode(content_string)
+
+            if uploaded_filename and uploaded_filename.endswith(".csv"):
+                df = pd.read_csv(io.BytesIO(decoded))
+            elif uploaded_filename and uploaded_filename.endswith((".xls", ".xlsx")):
+                df = pd.read_excel(io.BytesIO(decoded))
+            else:
+                content = html.P(
+                    f"Unsupported file type: {uploaded_filename}. Please upload CSV or Excel files.",
+                    style={"color": "red"},
+                )
+                return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
         except Exception as e:
-            content = html.P(f"Error loading data: {str(e)}", style={"color": "red"})
+            content = html.P(f"Error parsing file: {str(e)}", style={"color": "red"})
             return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
 
         # Generate plot with VizroAI
@@ -966,6 +1042,7 @@ class Chat(VizroBaseModel):
     type: Literal["chat"] = "chat"
     actions: list[ActionType] = []
     placeholder: str = "How can I help you?"
+    file_upload: bool = False
 
     # This is how you make a new component a trigger of an action in the new system.
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
@@ -974,66 +1051,84 @@ class Chat(VizroBaseModel):
     def _action_triggers(self):
         return {"__default__": f"{self.id}-send-button.n_clicks"}
 
-    def build_extra_stores(self):
-        """Override to add extra dcc.Store components.
+    def _build_upload_stores(self):
+        """Build stores for file upload (always rendered for consistent callbacks)."""
+        return [
+            dcc.Store(id=f"{self.id}-data-store", storage_type="session"),
+            dcc.Store(id=f"{self.id}-filename-store", storage_type="session"),
+        ]
 
-        Returns:
-            List of Dash components to add before the messages container.
-        """
-        return []
+    def _build_input_area(self):
+        """Build the input area with optional file upload button."""
+        left_button = dcc.Upload(
+            id=f"{self.id}-upload",
+            children=dmc.ActionIcon(
+                DashIconify(icon="material-symbols-light:attach-file-add", width=28, height=28),
+                variant="subtle",
+                color="grey",
+                radius=BORDER_RADIUS,
+                style={"width": "42px", "height": "42px"},
+            ),
+            style={"width": "fit-content", "display": "block" if self.file_upload else "none"},
+            multiple=False,
+        )
 
-    def build_input_area(self):
-        """Override to customize the input area.
+        # Build children list explicitly
+        inner_children = []
 
-        Returns:
-            Dash component for the input area.
-        """
+        inner_children.append(html.Div(id=f"{self.id}-data-info", style={"marginBottom": "8px", "minHeight": "0px"}))
+
+        # Textarea
+        inner_children.append(
+            dmc.Textarea(
+                id=f"{self.id}-chat-input",
+                placeholder=self.placeholder,
+                autosize=True,
+                size="md",
+                minRows=1,
+                maxRows=6,
+                radius=0,
+                styles={
+                    "input": {
+                        "borderLeft": "none",
+                        "borderRight": "none",
+                        "borderTop": "none",
+                        "borderRadius": "0",
+                        "resize": "none",
+                        "backgroundColor": "var(--bs-body-bg)",
+                        "fontSize": FONT_SIZE_EDITORIAL,
+                        "lineHeight": LINE_HEIGHT_EDITORIAL,
+                        "color": COLOR_TEXT_PRIMARY,
+                    }
+                },
+                style={"width": "100%"},
+                value="",
+            )
+        )
+
+        # Button row
+        inner_children.append(
+            html.Div(
+                [
+                    left_button,
+                    dmc.ActionIcon(
+                        DashIconify(icon="material-symbols-light:send-outline", width=38, height=38),
+                        id=f"{self.id}-send-button",
+                        variant="subtle",
+                        color="grey",
+                        n_clicks=0,
+                        radius=BORDER_RADIUS,
+                        style={"width": "42px", "height": "42px"},
+                    ),
+                ],
+                style={"display": "flex", "justifyContent": "space-between", "width": "100%"},
+            )
+        )
+
         return html.Div(
             [
                 html.Div(
-                    [
-                        # Textarea
-                        dmc.Textarea(
-                            id=f"{self.id}-chat-input",
-                            placeholder=self.placeholder,
-                            autosize=True,
-                            size="md",
-                            minRows=1,
-                            maxRows=6,
-                            radius=0,
-                            styles={
-                                "input": {
-                                    "borderLeft": "none",
-                                    "borderRight": "none",
-                                    "borderTop": "none",
-                                    "borderRadius": "0",
-                                    "resize": "none",
-                                    "backgroundColor": "var(--bs-body-bg)",
-                                    "fontSize": FONT_SIZE_EDITORIAL,
-                                    "lineHeight": LINE_HEIGHT_EDITORIAL,
-                                    "color": COLOR_TEXT_PRIMARY,
-                                }
-                            },
-                            style={"width": "100%"},
-                            value="",
-                        ),
-                        # Button row
-                        html.Div(
-                            [
-                                html.Div(style={"width": "42px", "height": "42px", "visibility": "hidden"}),
-                                dmc.ActionIcon(
-                                    DashIconify(icon="material-symbols-light:send-outline", width=38, height=38),
-                                    id=f"{self.id}-send-button",
-                                    variant="subtle",
-                                    color="grey",
-                                    n_clicks=0,
-                                    radius=BORDER_RADIUS,
-                                    style={"width": "42px", "height": "42px"},
-                                ),
-                            ],
-                            style={"display": "flex", "justifyContent": "space-between", "width": "100%"},
-                        ),
-                    ],
+                    inner_children,
                     style={"width": "100%", "maxWidth": MAX_CHAT_WIDTH},
                 )
             ],
@@ -1043,7 +1138,7 @@ class Chat(VizroBaseModel):
     def build(self):
         return html.Div(
             [
-                *self.build_extra_stores(),
+                *self._build_upload_stores(),
                 # Messages container
                 html.Div(
                     [
@@ -1058,7 +1153,7 @@ class Chat(VizroBaseModel):
                     style=HISTORY_SECTION,
                 ),
                 # Input area
-                self.build_input_area(),
+                self._build_input_area(),
                 # Store for conversation history
                 dcc.Store(id=f"{self.id}-store", data=[], storage_type="session"),
                 # Server-Sent Events for streaming support
@@ -1074,171 +1169,6 @@ Chat.add_type("actions", Annotated[openai_chat, Tag("openai_chat")])
 Chat.add_type("actions", Annotated[anthropic_chat, Tag("anthropic_chat")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 Chat.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
-
-
-# -------------------- Chat with Upload Component --------------------
-
-
-class ChatWithUpload(Chat):
-    """Chat component with file upload capability for data analysis.
-
-    Example of subclassing Chat - only overrides hooks, not internal build logic.
-    """
-
-    type: Literal["chat_with_upload"] = "chat_with_upload"
-    placeholder: str = "Ask about your data..."
-
-    def build_extra_stores(self):
-        """Add data store for uploaded file."""
-        return [dcc.Store(id=f"{self.id}-data-store")]
-
-    def build_input_area(self):
-        """Input area with file upload enabled."""
-        return html.Div(
-            [
-                html.Div(
-                    [
-                        # File preview area
-                        html.Div(id=f"{self.id}-data-info", style={"marginBottom": "8px", "minHeight": "0px"}),
-                        # Textarea
-                        dmc.Textarea(
-                            id=f"{self.id}-chat-input",
-                            placeholder=self.placeholder,
-                            autosize=True,
-                            size="md",
-                            minRows=1,
-                            maxRows=6,
-                            radius=0,
-                            styles={
-                                "input": {
-                                    "borderLeft": "none",
-                                    "borderRight": "none",
-                                    "borderTop": "none",
-                                    "borderRadius": "0",
-                                    "resize": "none",
-                                    "backgroundColor": "var(--bs-body-bg)",
-                                    "fontSize": FONT_SIZE_EDITORIAL,
-                                    "lineHeight": LINE_HEIGHT_EDITORIAL,
-                                    "color": COLOR_TEXT_PRIMARY,
-                                }
-                            },
-                            style={"width": "100%"},
-                            value="",
-                        ),
-                        # Button row with upload and send
-                        html.Div(
-                            [
-                                dcc.Upload(
-                                    id=f"{self.id}-upload",
-                                    children=dmc.ActionIcon(
-                                        DashIconify(icon="material-symbols-light:attach-file-add", width=28, height=28),
-                                        variant="subtle",
-                                        color="grey",
-                                        radius=BORDER_RADIUS,
-                                        style={"width": "42px", "height": "42px"},
-                                    ),
-                                    style={"width": "fit-content"},
-                                    multiple=False,
-                                ),
-                                dmc.ActionIcon(
-                                    DashIconify(icon="material-symbols-light:send-outline", width=38, height=38),
-                                    id=f"{self.id}-send-button",
-                                    variant="subtle",
-                                    color="grey",
-                                    n_clicks=0,
-                                    radius=BORDER_RADIUS,
-                                    style={"width": "42px", "height": "42px"},
-                                ),
-                            ],
-                            style={"display": "flex", "justifyContent": "space-between", "width": "100%"},
-                        ),
-                    ],
-                    style={"width": "100%", "maxWidth": MAX_CHAT_WIDTH},
-                )
-            ],
-            style=INPUT_SECTION,
-        )
-
-    def pre_build(self):
-        """Set up file upload callback."""
-
-        @callback(
-            Output(f"{self.id}-data-store", "data"),
-            Output(f"{self.id}-data-info", "children"),
-            Input(f"{self.id}-upload", "contents"),
-            State(f"{self.id}-upload", "filename"),
-            prevent_initial_call=True,
-        )
-        def process_upload(contents, filename):
-            """Process uploaded file and store data."""
-            if contents is None:
-                return None, ""
-
-            try:
-                import io
-
-                # Parse the file
-                content_type, content_string = contents.split(",")
-                decoded = base64.b64decode(content_string)
-
-                if filename.endswith(".csv"):
-                    df = pd.read_csv(io.BytesIO(decoded))
-                else:
-                    return None, html.Div(
-                        "Please upload a CSV file", style={"color": "red", "fontSize": FONT_SIZE_HELP}
-                    )
-
-                # Create a file preview with icon and filename
-                info = html.Div(
-                    [
-                        dmc.Paper(
-                            [
-                                dmc.Group(
-                                    [
-                                        dmc.Text(filename, size="sm", fw=500),
-                                        dmc.ActionIcon(
-                                            DashIconify(icon="material-symbols:close", width=16),
-                                            size="xs",
-                                            variant="subtle",
-                                            id=f"{self.id}-remove-file",
-                                            n_clicks=0,
-                                        ),
-                                    ],
-                                    justify="space-between",
-                                    style={"width": "100%"},
-                                )
-                            ],
-                            p="xs",
-                            radius="sm",
-                            withBorder=True,
-                            style={"backgroundColor": "var(--surfaces-bg-card)"},
-                        )
-                    ],
-                    style={"width": "200px"},
-                )
-
-                return df.to_json(orient="split"), info
-
-            except Exception as e:
-                return None, html.Div(
-                    f"Error loading file: {str(e)}", style={"color": "red", "fontSize": FONT_SIZE_HELP}
-                )
-
-        @callback(
-            Output(f"{self.id}-data-store", "data", allow_duplicate=True),
-            Output(f"{self.id}-data-info", "children", allow_duplicate=True),
-            Input(f"{self.id}-remove-file", "n_clicks"),
-            prevent_initial_call=True,
-        )
-        def remove_file(n_clicks):
-            """Remove the uploaded file."""
-            if n_clicks:
-                return None, ""
-            return no_update, no_update
-
-
-vm.Page.add_type("components", ChatWithUpload)
-ChatWithUpload.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
 
 
 page = vm.Page(
@@ -1313,8 +1243,10 @@ page_anthropic = vm.Page(
 page_vizro_ai = vm.Page(
     title="VizroAI Natural Language Charts",
     components=[
-        ChatWithUpload(
+        Chat(
             id="vizro_ai_chat",
+            file_upload=True,
+            placeholder="Ask about your data...",
             actions=[vizro_ai_chat(parent_id="vizro_ai_chat")],
         ),
     ],
