@@ -1,7 +1,6 @@
 import vizro.plotly.express as px
 from vizro.models.types import capture
 
-# Note iris data
 iris = px.data.iris().select_dtypes("number")
 
 
