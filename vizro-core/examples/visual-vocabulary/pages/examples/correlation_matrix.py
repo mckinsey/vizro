@@ -9,6 +9,9 @@ def correlation_heatmap(data_frame):
         data_frame.corr(),
         text_auto=True,
         aspect="auto",
+        color_continuous_scale="RdBu",
+        zmin=-1,
+        zmax=1,
     )
 
 
