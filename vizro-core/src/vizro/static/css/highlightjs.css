@@ -47,7 +47,7 @@ x = 1
 .hljs-regexp,
 .hljs-string,
 .hljs-meta .hljs-string {
-  color: var(--sequentialTeal-500)
+  color: var(--sequentialTeal-500);
 }
 
 .hljs-built_in,
