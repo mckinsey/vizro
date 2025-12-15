@@ -66,106 +66,17 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
 
         [![BasicNotification]][basicnotification]
 
-When you click the button, a notification appears in the top-right corner of the screen. Since only `text` is provided, the notification uses the default `variant="info"` styling with a blue color scheme and an info icon. The `text` field accepts [Markdown text](https://markdown-guide.readthedocs.io/).
+When you click the button, a notification appears in the top-right corner of the screen. Since only `text` is provided, the notification uses the default `variant="info"` styling with a blue color scheme and an info icon. The `text` field accepts [Markdown text](https://markdown-guide.readthedocs.io/). 
 
 ### Notification variants
 
-The `variant` argument controls the visual style and semantic meaning of the notification. Five variants are available:
+The `variant` argument controls the visual style and semantic meaning of the notification. Five variants are available as described in the [API docs of `show_notification`][vizro.actions.show_notification]:
 
 - `"info"` (default): For general information messages
 - `"success"`: For successful operations
 - `"warning"`: For warnings or cautionary messages
 - `"error"`: For errors or critical issues
 - `"progress"`: For loading states - displays a spinner instead of an icon. Useful for indicating long-running operations. This variant automatically has `auto_close=False` so the notification remains visible until the operation completes.
-
-Each variant has its own color scheme and default icon (except `"progress"` which shows a loading spinner).
-
-!!! example "Notification variants"
-
-    === "app.py"
-
-        ```{.python pycafe-link}
-        import vizro.actions as va
-        import vizro.models as vm
-        from vizro import Vizro
-
-        page = vm.Page(
-            title="Notification variants",
-            layout=vm.Flex(direction="row"),
-            components=[
-                vm.Button(
-                    text="Info",
-                    actions=va.show_notification(text="This is an info message", variant="info"),
-                ),
-                vm.Button(
-                    text="Success",
-                    actions=va.show_notification(text="Operation completed!", variant="success"),
-                ),
-                vm.Button(
-                    text="Warning",
-                    actions=va.show_notification(text="Please review your inputs", variant="warning"),
-                ),
-                vm.Button(
-                    text="Error",
-                    actions=va.show_notification(text="Something went wrong", variant="error"),
-                ),
-                vm.Button(
-                    text="Progress",
-                    actions=va.show_notification(text="Processing...", variant="progress"),
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: button
-                text: Info
-                actions:
-                  type: show_notification
-                  text: This is an info message
-                  variant: info
-              - type: button
-                text: Success
-                actions:
-                  type: show_notification
-                  text: Operation completed!
-                  variant: success
-              - type: button
-                text: Warning
-                actions:
-                  type: show_notification
-                  text: Please review your inputs
-                  variant: warning
-              - type: button
-                text: Error
-                actions:
-                  type: show_notification
-                  text: Something went wrong
-                  variant: error
-              - type: button
-                text: Progress
-                actions:
-                  type: show_notification
-                  text: Processing...
-                  variant: progress
-            title: Notification variants
-            layout:
-              type: flex
-              direction: row
-        ```
-
-    === "Result"
-
-        [![NotificationVariants]][notificationvariants]
 
 ### Custom title and icon
 
