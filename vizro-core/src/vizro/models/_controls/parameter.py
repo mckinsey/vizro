@@ -77,17 +77,16 @@ class Parameter(VizroBaseModel):
     """
 
     type: Literal["parameter"] = "parameter"
-    targets: Annotated[  # TODO[MS]: check if the double annotation is the best way to do this
-        list[
-            Annotated[
-                str,
-                AfterValidator(check_dot_notation),
-                AfterValidator(check_data_frame_as_target_argument),
-                Field(description="Targets in the form of `<target_component>.<target_argument>`."),
-            ]
-        ],
-        AfterValidator(check_duplicate_parameter_target),
-    ]
+    targets: list[  # Annotated[  # TODO[MS]: check if the double annotation is the best way to do this
+        Annotated[
+            str,
+            AfterValidator(check_dot_notation),
+            AfterValidator(check_data_frame_as_target_argument),
+            Field(description="Targets in the form of `<target_component>.<target_argument>`."),
+        ]
+    ]  # ,
+    # AfterValidator(check_duplicate_parameter_target),
+    # ]
     selector: SelectorType
     show_in_url: bool = Field(
         default=False,
@@ -185,7 +184,16 @@ class Parameter(VizroBaseModel):
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
             # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
             self.targets.extend(list(filter_targets))
-            self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+            self.selector.actions = [
+                _parameter.from_pre_build(
+                    {
+                        "id": f"{PARAMETER_ACTION_PREFIX}_{self.id}",
+                        "targets": self.targets,
+                    },
+                    parent_model=self.selector,
+                    field_name="actions",
+                )
+            ]
 
     @_log_call
     def build(self):

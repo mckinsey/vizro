@@ -995,7 +995,7 @@ custom_tables = vm.Page(
 class TooltipNonCrossRangeSlider(vm.RangeSlider):
     """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
 
-    type: Literal["other_range_slider"] = "other_range_slider"
+    type: Literal["custom_component"] = "custom_component"
 
     def build(self):
         """Extend existing component by calling the super build and update properties."""
@@ -1005,14 +1005,14 @@ class TooltipNonCrossRangeSlider(vm.RangeSlider):
         return range_slider_build_obj
 
 
-vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
+# vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
 
 
 # 2. Create new custom component
 class Jumbotron(vm.VizroBaseModel):
     """New custom component `Jumbotron`."""
 
-    type: Literal["jumbotron"] = "jumbotron"
+    type: Literal["custom_component"] = "custom_component"
     title: str
     subtitle: str
     text: str
@@ -1022,7 +1022,7 @@ class Jumbotron(vm.VizroBaseModel):
         return html.Div([html.H2(self.title), html.H3(self.subtitle), html.P(self.text)])
 
 
-vm.Page.add_type("components", Jumbotron)
+# vm.Page.add_type("components", Jumbotron)
 
 custom_components = vm.Page(
     title="Custom Components",
@@ -1093,7 +1093,7 @@ kpi_indicators = vm.Page(
 
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip]
+components = [tabs, graphs, ag_grid, table, cards, figure, button, containers, tooltip]
 controls = [filters, parameters, selectors, controls_in_containers]
 actions = [export_data_action]
 layout = [grid_layout, flex_layout]
@@ -1101,7 +1101,7 @@ extensions = [custom_charts, custom_tables, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
-    pages=[home, *components, *controls, *actions, *layout, *extensions],
+    pages=[home, *controls, *actions, *layout, *extensions, *components],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -1140,6 +1140,7 @@ dashboard = vm.Dashboard(
 
 if __name__ == "__main__":
     # Move app definition outside of __main__ block for the HF demo to work
+    dashboard = vm.Dashboard.model_validate(dashboard, context={"build_tree": True})
     app = Vizro().build(dashboard)
     app.dash.layout.children.append(
         dbc.NavLink(

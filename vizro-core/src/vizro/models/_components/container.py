@@ -20,7 +20,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProperty
+from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProperty, make_discriminated_union
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
@@ -85,7 +85,7 @@ class Container(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

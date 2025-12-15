@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from itertools import chain
-from typing import Annotated, cast
+from typing import Annotated, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import (
@@ -28,7 +28,7 @@ from vizro.models._models_utils import (
     make_actions_chain,
     warn_description_without_title,
 )
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty, make_discriminated_union
 
 from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip
@@ -69,13 +69,14 @@ class Page(VizroBaseModel):
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    type: Literal["page"] = "page"
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title of the `Page`")
     layout: Annotated[LayoutType | None, AfterValidator(set_layout), Field(default=None, validate_default=True)]
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -104,10 +105,10 @@ class Page(VizroBaseModel):
             new_path = clean_path(self.title, "-_")
 
         # Check for duplicate path - will move to pre_build in next PR
-        for page in cast(Iterable[Page], model_manager._get_models(Page)):
-            # Need to check for id equality to avoid checking the same page against itself
-            if not self.id == page.id and new_path == page.path:
-                raise ValueError(f"Path {new_path} cannot be used by more than one page.")
+        # for page in cast(Iterable[Page], model_manager._get_models(Page)):
+        #     # Need to check for id equality to avoid checking the same page against itself
+        #     if not self.id == page.id and new_path == page.path:
+        #         raise ValueError(f"Path {new_path} cannot be used by more than one page.")
 
         # We should do self.path = new_path but this leads to a recursion error. The below is a workaround
         # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
@@ -149,7 +150,16 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
+            self.actions = [
+                _on_page_load.from_pre_build(
+                    {
+                        "id": f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
+                        "targets": targets,
+                    },
+                    parent_model=self,
+                    field_name="actions",
+                )
+            ]
 
         # Convert generator to list as it's going to be iterated multiple times.
         # Use "root_model=self" as controls can be defined inside a "Container.controls" under the "Page.components".
