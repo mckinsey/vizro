@@ -422,7 +422,7 @@ If the available arguments are not sufficient, there is always the option to [cr
 
 #### Add sticky headers
 
-To add sticky headers to your AG Grid, you must add this CSS to your custom CSS file within your local `assets` folder.
+To add sticky headers to your AG Grid, add the following CSS to your custom CSS file within your local `assets` folder.
 
 ```css
 .ag-header {
