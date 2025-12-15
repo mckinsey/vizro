@@ -1,97 +1,117 @@
-from typing import Literal
-
-from dash import html
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import ControlType
 
-df_gapminder = px.data.gapminder()
+from vizro.tables import dash_ag_grid
 
+gapminder = px.data.gapminder()
+iris = px.data.iris()
+tips = px.data.tips()
 
-class ControlGroup(vm.VizroBaseModel):
-    """Container to group controls."""
+filtered_gapminder = gapminder[(gapminder["continent"] == "Europe") & (gapminder["year"] == 2007)]
 
-    type: Literal["control_group"] = "control_group"
-    title: str
-    controls: list[ControlType] = []
-
-    def build(self):
-        return html.Div(
-            [html.H4(self.title), html.Hr()] + [control.build() for control in self.controls],
-            className="control_group_container",
-        )
-
-
-vm.Page.add_type("controls", ControlGroup)
-vm.Page.add_type("components", ControlGroup)
-vm.Page.add_type("components", vm.Filter)
-
-vm.Container.add_type("controls", ControlGroup)
-vm.Container.add_type("components", ControlGroup)
-vm.Container.add_type("components", vm.Filter)
-
-page = vm.Page(
-    layout=vm.Flex(),
-    title="Page:",
+page_grid_0 = vm.Page(
+    title="Grid",
+    layout=vm.Grid(
+        grid=[[0, 1], [2, 2]],
+    ),
     components=[
-        # vm.Filter(id="page_components", column="country"),  # -> EXCEPTION
-        # ControlGroup(  # -> EXCEPTION
-        #     title="page_components_group",
-        #     controls=[vm.Filter(id="page_components_group", column="continent")],
-        # ),
         vm.Container(
-            title="Container:",
+            title="",
             components=[
-                # vm.Filter(id="container_components", column="country"),  # -> EXCEPTION
-                # ControlGroup(  # -> EXCEPTION
-                #     title="container_components_group",
-                #     controls=[vm.Filter(id="container_components_group", column="continent")],
-                # ),
-                vm.Container(
-                    components=[
-                        vm.Container(
-                            title="Nested Container:",
-                            components=[
-                                # vm.Filter(id="nested_container_components", column="country"),  # -> EXCEPTION
-                                # ControlGroup(  # -> EXCEPTION
-                                #     title="nested_container_components_group",
-                                #     controls=[vm.Filter(id="nested_container_components_group", column="continent")],
-                                # ),
-                                vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop")),
-                            ],
-                            controls=[
-                                vm.Filter(id="nested_container_controls", column="country"),
-                                ControlGroup(
-                                    title="nested_container_controls_group",
-                                    controls=[vm.Filter(id="nested_container_controls_group", column="continent")],
-                                ),
-                            ],
-                        )
-                    ]
-                )
-            ],
-            controls=[
-                vm.Filter(id="container_controls", column="country"),
-                ControlGroup(
-                    title="container_controls_group",
-                    controls=[vm.Filter(id="container_controls_group", column="continent")],
-                ),
+                vm.AgGrid(figure=dash_ag_grid(data_frame=filtered_gapminder)),
             ],
         ),
-    ],
-    controls=[
-        vm.Filter(id="page_controls", column="continent"),
-        ControlGroup(
-            title="page_controls_group",
-            controls=[
-                vm.Filter(id="page_controls_group", column="country"),
-            ],
-        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="petal_length"), title="Title"),
+        vm.AgGrid(figure=dash_ag_grid(data_frame=iris)),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+
+page_grid_1 = vm.Page(
+    title="Grid - in column",
+    layout=vm.Grid(
+        grid=[[0], [1], [2], [3], [4]],
+        row_min_height="1000px",
+    ),
+    components=[
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+    ],
+)
+
+
+page_grid_2 = vm.Page(
+    title="Grid - in row",
+    layout=vm.Grid(
+        grid=[[0, 1, 2, 3, 4]],
+        col_min_width="1000px",
+    ),
+    components=[
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+    ],
+)
+
+page_flex_0 = vm.Page(
+    title="Flex",
+    layout=vm.Flex(),
+    components=[
+        vm.Container(
+            title="",
+            components=[
+                vm.AgGrid(figure=dash_ag_grid(data_frame=filtered_gapminder)),
+            ],
+        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="petal_length"), title="Title"),
+        vm.AgGrid(figure=dash_ag_grid(data_frame=iris)),
+    ],
+)
+
+
+page_flex_1 = vm.Page(
+    title="Flex - in column",
+    layout=vm.Flex(direction="column"),
+    components=[
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+    ],
+)
+
+page_flex_2 = vm.Page(
+    title="Flex - in row",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Button(text="Button"),
+        vm.Button(text="Button"),
+    ],
+)
+
+
+dashboard = vm.Dashboard(
+    pages=[
+        page_grid_0,
+        page_grid_1,
+        page_grid_2,
+        page_flex_0,
+        page_flex_1,
+        page_flex_2,
+    ],
+    title="Test out Flex/Grid",
+)
+
+
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
