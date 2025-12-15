@@ -116,7 +116,6 @@ theme:
         icon: lucide/moon
         name: Switch to light mode
 
-
 markdown_extensions:
   - admonition
   - attr_list
@@ -260,11 +259,8 @@ extra_css:
 
 extra_javascript:
   - /javascripts/extra.js
-
 # validation:
 # omitted_files: warn
 # absolute_links: warn
 # unrecognized_links: warn
 # anchors: warn
-
-
