@@ -34,8 +34,6 @@ nav:
   - Vizro: https://vizro.readthedocs.io
   - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
-
-
 theme:
   name: material
   variant: classic
@@ -130,7 +128,6 @@ plugins:
 
 extra_css:
   - stylesheets/extra.css
-
 # Strictest settings possible, and will be elevated to ERROR when run with --strict.
 # See https://www.mkdocs.org/user-guide/configuration/#validation.
 # validation:
