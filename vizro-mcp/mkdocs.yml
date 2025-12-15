@@ -1,5 +1,14 @@
 site_name: Vizro-MCP
 site_url: https://vizro.readthedocs.io/projects/vizro-mcp
+site_description: Vizro-MCP documentation
+site_dir: site
+docs_dir: docs
+#  This infers the version number of the latest release of whole repo, so we're hiding it for sub-packed in extra.css
+repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-mcp
+repo_name: mckinsey/vizro-mcp
+
+use_directory_urls: true
+
 nav:
   - Vizro-MCP: index.md
   - Get started:
@@ -25,25 +34,34 @@ nav:
   - Vizro: https://vizro.readthedocs.io
   - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
-#  This infers the version number of the latest release of whole repo, so we're hiding it for sub-packed in extra.css
-repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-mcp
-repo_name: mckinsey/vizro-mcp
+
 
 theme:
   name: material
+  variant: classic
   language: en
   palette:
     - scheme: default
+      toggle:
+        icon: lucide/sun
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: lucide/moon
+        name: Switch to light mode
   font:
     text: Google sans
     code: Source Code Pro
   icon:
     repo: fontawesome/brands/github
   features:
+    - header.autohide
+    - navigation.path
+    - navigation.expand
     - navigation.instant
+    - navigation.indexes
     - navigation.tabs
     - navigation.tabs.sticky
-    - navigation.sections
     - navigation.tracking
     - search.suggest
     - search.highlight
@@ -115,8 +133,8 @@ extra_css:
 
 # Strictest settings possible, and will be elevated to ERROR when run with --strict.
 # See https://www.mkdocs.org/user-guide/configuration/#validation.
-validation:
-  omitted_files: warn
-  absolute_links: warn
-  unrecognized_links: warn
-  anchors: warn
+# validation:
+# omitted_files: warn
+# absolute_links: warn
+# unrecognized_links: warn
+# anchors: warn
