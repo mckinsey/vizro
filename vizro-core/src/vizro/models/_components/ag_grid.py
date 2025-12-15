@@ -7,7 +7,7 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.actions import filter_interaction
+from vizro.actions import filter_interaction, set_control
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
@@ -145,7 +145,10 @@ class AgGrid(VizroBaseModel):
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
-        figure = self.figure(**kwargs)
+
+        # Enable checkboxes in the AgGrid if any of the actions is a `set_control` action.
+        figure = self.figure(_set_checkboxes=any(isinstance(action, set_control) for action in self.actions), **kwargs)
+
         figure.id = self._inner_component_id
         return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
 

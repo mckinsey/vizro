@@ -38,10 +38,24 @@ function update_graph_action_trigger(
     t.prop_id.includes("selectedData"),
   );
 
+  // ADD THIS TO STOP ONLY []. KEEP IT HERE and not BELOW. -> Another solution. Treat selected_data == [] as no_update. Leave selected_data == null as valid and reset.
+  if (
+    isSelectedDataTriggered &&
+    selectedData?.points !== undefined &&
+    selectedData.points.length === 0
+  ) {
+    return dash_clientside.no_update;
+  }
+
   // Return clickData if:
   // 1. Graph is not selectable or
   // 2. clickmode is not "event+select" (default value is overwritten) and clickData is triggered.
   if (!isGraphSelectable || (!isClickmodeEventSelect && isClickDataTriggered)) {
+    // ADD THIS CODE:
+    //    if (clickData?.points === undefined){
+    //        return dash_clientside.no_update;
+    //    }
+
     return clickData?.points ?? null;
   }
 
@@ -52,6 +66,12 @@ function update_graph_action_trigger(
   if (!isSelectedDataTriggered) {
     return dash_clientside.no_update;
   }
+
+  // ADD THIS CODE:
+  //  if (selectedData?.points === undefined || selectedData.points.length === 0) {
+  //    return dash_clientside.no_update;
+  //  }
+  //  return selectedData?.points;
 
   // Otherwise, graph is selectable and selectedData is triggered.
   return selectedData?.points ?? null;
