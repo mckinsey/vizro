@@ -273,6 +273,13 @@ class TestLegacyActionOutputs:
                 {"output_1": "known_ag_grid_id.cellClicked"},
                 {"output_1": Output("underlying_ag_grid_id", "cellClicked")},
             ),
+            ("vizro_download", ["vizro_download"], Output("vizro_download", "data")),
+            (["vizro_download"], ["vizro_download"], Output("vizro_download", "data")),
+            (
+                {"output_1": "vizro_download"},
+                {"output_1": "vizro_download"},
+                {"output_1": Output("vizro_download", "data")},
+            ),
         ],
     )
     def test_outputs_valid(
@@ -594,6 +601,13 @@ class TestActionOutputs:
                 {"output_1": "known_ag_grid_id.cellClicked"},
                 {"output_1": "known_ag_grid_id.cellClicked"},
                 {"output_1": Output("underlying_ag_grid_id", "cellClicked")},
+            ),
+            ("vizro_download", ["vizro_download"], Output("vizro_download", "data")),
+            (["vizro_download"], ["vizro_download"], Output("vizro_download", "data")),
+            (
+                {"output_1": "vizro_download"},
+                {"output_1": "vizro_download"},
+                {"output_1": Output("vizro_download", "data")},
             ),
         ],
     )
