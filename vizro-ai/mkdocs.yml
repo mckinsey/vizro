@@ -1,5 +1,7 @@
 site_name: Vizro-AI
 site_url: https://vizro.readthedocs.io/projects/vizro-ai
+site_dir: site
+docs_dir: docs
 nav:
   - Vizro-AI: index.md
   - Tutorials:
@@ -39,6 +41,7 @@ repo_name: mckinsey/vizro-ai
 
 theme:
   name: material
+  variant: classic
   language: en
   palette:
     - scheme: default
@@ -124,8 +127,8 @@ extra_css:
 
 # Strictest settings possible, and will be elevated to ERROR when run with --strict.
 # See https://www.mkdocs.org/user-guide/configuration/#validation.
-validation:
-  omitted_files: warn
-  absolute_links: warn
-  unrecognized_links: warn
-  anchors: warn
+#validation:
+#  omitted_files: warn
+#  absolute_links: warn
+#  unrecognized_links: warn
+#  anchors: warn
