@@ -40,8 +40,7 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  "mkdocs>=1.6",
-  "mkdocs-material",
+  "zensical",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
@@ -53,7 +52,7 @@ detached = true
 installer = "uv"
 
 [envs.docs.scripts]
-build = "mkdocs build --strict"
+build = "zensical build --clean"
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file. openai.com doesn't seem to work well with linkchecking,
 # throwing 403 errors, but these are not real errors.
@@ -77,7 +76,7 @@ python ../tools/check_vizro_docs_links_in_mcp_prompts.py
 '''
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
-serve = "mkdocs serve --open"
+serve = "zensical serve --open"
 
 [publish.index]
 disable = true
