@@ -1,4 +1,4 @@
-/* 
+/*
 The contents of this file define the color scheme for syntax highlighting using highlight.js.
 Each CSS class corresponds to a specific syntactic element in the code being highlighted.
 The colors are defined using CSS variables to ensure consistency with the overall theme.
@@ -13,6 +13,7 @@ x = 1
 .hljs {
   color: var(--bs-primary);
 }
+
 .hljs-doctag,
 .hljs-keyword,
 .hljs-meta .hljs-keyword,
@@ -22,12 +23,14 @@ x = 1
 .hljs-variable.language_ {
   color: var(--sequentialRed-500);
 }
+
 .hljs-title,
 .hljs-title.class_,
 .hljs-title.class_.inherited__,
 .hljs-title.function_ {
   color: var(--categorical-08Purple);
 }
+
 .hljs-attr,
 .hljs-attribute,
 .hljs-literal,
@@ -40,50 +43,62 @@ x = 1
 .hljs-selector-id {
   color: var(--sequentialCyan-600);
 }
+
 .hljs-regexp,
 .hljs-string,
 .hljs-meta .hljs-string {
   color: var(--sequentialTeal-500);
 }
+
 .hljs-built_in,
 .hljs-symbol {
   color: var(--sequentialRed-500);
 }
+
 .hljs-comment,
 .hljs-code,
 .hljs-formula {
   color: var(--bs-secondary);
 }
+
 .hljs-name,
 .hljs-quote,
 .hljs-selector-tag,
 .hljs-selector-pseudo {
   color: var(--status-success);
 }
+
 .hljs-subst {
   color: var(--bs-secondary);
 }
+
 .hljs-section {
   color: var(--sequentialTeal-500);
   font-weight: bold
 }
+
 .hljs-bullet {
   color: var(--sequentialYellow-800);
 }
+
 .hljs-emphasis {
   color: var(--bs-secondary);
   font-style: italic
 }
+
 .hljs-strong {
   color: var(--bs-secondary);
   font-weight: bold
 }
+
 .hljs-addition {
+  background-color: var(--primary-100);
   color: var(--status-success);
-  background-color: var(--primary-100);
 }
+
 .hljs-deletion {
-  color: var(--status-error);
   background-color: var(--primary-100);
+  color: var(--status-error);
 }
+
 /* .hljs-char.escape_, .hljs-link, .hljs-params, .hljs-property, .hljs-punctuation, .hljs-tag {} */
