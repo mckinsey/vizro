@@ -29,7 +29,7 @@ from pydantic.fields import FieldInfo
 from pydantic_core.core_schema import ValidationInfo
 
 from vizro.managers import model_manager
-from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
+from vizro.models._models_utils import REPLACEMENT_STRINGS
 from vizro.models.types import ModelID
 
 # As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that

@@ -1101,7 +1101,7 @@ extensions = [custom_charts, custom_tables, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
-    pages=[home, *controls, *actions, *layout, *extensions, *components],  #
+    pages=[home, *controls, *actions, *layout, *extensions, *components],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[

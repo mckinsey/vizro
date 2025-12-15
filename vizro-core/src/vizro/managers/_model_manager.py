@@ -103,7 +103,7 @@ class ModelManager:
             return  # return empty generator
 
         # Convert to list to avoid changing size when looping through at runtime.
-        for model in list(models):
+        for model in models:
             if model_type is None or isinstance(model, model_type):
                 yield model  # type: ignore[misc]
 
