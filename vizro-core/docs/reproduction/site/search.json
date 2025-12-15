@@ -1,1 +1,13 @@
-{"config":{"separator":"[\\s\\-_,:!=\\[\\]()\\\\\"`/]+|\\.(?!\\d)"},"items":[{"location":"","level":1,"title":"Get started","text":"<pre><code>import vizro.plotly.express as px\nfrom vizro import Vizro\nimport vizro.models as vm\n\ndf = px.data.iris()\n\npage = vm.Page(\n    title=\"My first dashboard\",\n    components=[\n        vm.Graph(figure=px.scatter(df, x=\"sepal_length\", y=\"petal_width\", color=\"species\")),\n        vm.Graph(figure=px.histogram(df, x=\"sepal_width\", color=\"species\")),\n    ],\n    controls=[\n        vm.Filter(column=\"species\"),\n    ],\n)\n\ndashboard = vm.Dashboard(pages=[page])\nVizro().build(dashboard).run()\n</code></pre><p> Run and edit this code in Py.Cafe</p>","path":["Get started"],"tags":[]}]}
+{
+  "config": { "separator": "[\\s\\-_,:!=\\[\\]()\\\\\"`/]+|\\.(?!\\d)" },
+  "items": [
+    {
+      "location": "",
+      "level": 1,
+      "title": "Get started",
+      "text": "<pre><code>import vizro.plotly.express as px\nfrom vizro import Vizro\nimport vizro.models as vm\n\ndf = px.data.iris()\n\npage = vm.Page(\n    title=\"My first dashboard\",\n    components=[\n        vm.Graph(figure=px.scatter(df, x=\"sepal_length\", y=\"petal_width\", color=\"species\")),\n        vm.Graph(figure=px.histogram(df, x=\"sepal_width\", color=\"species\")),\n    ],\n    controls=[\n        vm.Filter(column=\"species\"),\n    ],\n)\n\ndashboard = vm.Dashboard(pages=[page])\nVizro().build(dashboard).run()\n</code></pre><p> Run and edit this code in Py.Cafe</p>",
+      "path": ["Get started"],
+      "tags": []
+    }
+  ]
+}

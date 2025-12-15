@@ -1,6 +1,5 @@
 site_name: My Docs
 
-
 markdown_extensions:
   - pymdownx.superfences:
       custom_fences:

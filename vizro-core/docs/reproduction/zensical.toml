@@ -7,22 +7,16 @@
 # ============================================================================
 
 [project]
-
+docs_dir = "docs"
+site_author = "https://github.com/stichbury"
+site_description = "A reproduction for issue #193."
 site_name = "Vizro reproduction"
 
-site_description = "A reproduction for issue #193."
-
-site_author = "https://github.com/stichbury"
-
-docs_dir = "docs"
+[[project.markdown_extensions.pymdownx.superfences.custom_fences]]
+class = "highlight"
+format = {function = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.49"}}
+name = "python"
+validator = "mkdocs_pycafe.validator"
 
 [project.theme]
-
 language = "en"
-
-
-[[project.markdown_extensions.pymdownx.superfences.custom_fences]]
-name = "python"
-class = "highlight"
-validator = "mkdocs_pycafe.validator"
-format = { function = "mkdocs_pycafe.formatter", kwds = { type = "vizro", requirements = "vizro==0.1.49" } }
