@@ -435,9 +435,22 @@ To add sticky headers to your AG Grid, you must add this CSS to your custom CSS 
 }
 ```
 
+If your dashboard contains multiple AG Grids, you can scope this CSS to a specific grid by assigning an ID to the corresponding `vm.AgGrid` model and targeting it in your CSS. For example:
+
+```css
+#my-aggrid .ag-header {
+    position: fixed !important;
+    z-index: 1;
+}
+
+#my-aggrid .ag-body {
+    top: 40px;
+}
+```
+
 !!! note
 
-    This approach works reliably only when a single `AgGrid` is positioned on top of a non-scrollable page, or when all `AgGrid` tables are in the same row in Flex layout. Using a fixed header may cause unexpected behavior in more complex layouts.
+    This approach works reliably only when a single `AgGrid` is positioned on top of a non-scrollable page.
 
 ## Dash DataTable
 

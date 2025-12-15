@@ -14,7 +14,6 @@ page_grid_0 = vm.Page(
     title="Grid",
     layout=vm.Grid(
         grid=[[0, 1], [2, 2]],
-        row_min_height="1000px",
     ),
     components=[
         vm.Container(
