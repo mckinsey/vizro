@@ -124,7 +124,6 @@ hooks:
 
 extra_css:
   - stylesheets/extra.css
-
 # Strictest settings possible, and will be elevated to ERROR when run with --strict.
 # See https://www.mkdocs.org/user-guide/configuration/#validation.
 #validation:
