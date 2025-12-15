@@ -88,6 +88,7 @@ instance/
 # mkdocs
 vizro-core/site
 vizro-ai/site
+Vizro-mcp/site
 
 # PyBuilder
 .pybuilder/
