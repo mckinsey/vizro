@@ -450,7 +450,7 @@ If your dashboard contains multiple AG Grids, you can scope this CSS to a specif
 
 !!! note
 
-    This approach works reliably only when a single `AgGrid` is positioned on top of a non-scrollable page.
+    This approach works reliably only when the `AgGrid` is positioned in the non-scrollable page.
 
 ## Dash DataTable
 
