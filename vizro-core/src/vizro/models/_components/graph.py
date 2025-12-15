@@ -155,6 +155,8 @@ class Graph(VizroBaseModel):
         if not trigger:
             return None
 
+        # "default_box=True" is used to prevent exceptions that occur when a trigger key includes a dot.
+        # The side effect is that `Box({})` will be returned later when `point[lookup]` does not exist.
         trigger_box = BoxList(trigger, camel_killer_box=True, box_dots=True, default_box=True)
 
         try:
