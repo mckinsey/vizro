@@ -105,10 +105,10 @@ class Page(VizroBaseModel):
             new_path = clean_path(self.title, "-_")
 
         # Check for duplicate path - will move to pre_build in next PR
-        for page in cast(Iterable[Page], model_manager._get_models(Page)):
-            # Need to check for id equality to avoid checking the same page against itself
-            if not self.id == page.id and new_path == page.path:
-                raise ValueError(f"Path {new_path} cannot be used by more than one page.")
+        # for page in cast(Iterable[Page], model_manager._get_models(Page)):
+        #     # Need to check for id equality to avoid checking the same page against itself
+        #     if not self.id == page.id and new_path == page.path:
+        #         raise ValueError(f"Path {new_path} cannot be used by more than one page.")
 
         # We should do self.path = new_path but this leads to a recursion error. The below is a workaround
         # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.

@@ -248,9 +248,9 @@ class VizroBaseModel(BaseModel):
     ]
     _tree: TypedTree | None = PrivateAttr(None)  # initialised in model_after
 
-    @_log_call
-    def model_post_init(self, context: Any) -> None:
-        model_manager[self.id] = self
+    # @_log_call
+    # def model_post_init(self, context: Any) -> None:
+    #     model_manager[self.id] = self
 
     @staticmethod
     def _ensure_model_in_tree(model: VizroBaseModel, context: dict[str, Any]) -> VizroBaseModel:

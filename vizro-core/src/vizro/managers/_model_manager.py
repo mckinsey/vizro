@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Collection, Generator, Iterable, Mapping
 from typing import TYPE_CHECKING, TypeVar, cast
 
+from nutree.typed_tree import TypedTree
+
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
@@ -30,6 +32,7 @@ class ModelManager:
     def __init__(self):
         self.__models: dict[ModelID, VizroBaseModel] = {}
         self._frozen_state = False
+        self._dashboard_tree: TypedTree | None = None
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
     @_state_modifier
@@ -49,7 +52,7 @@ class ModelManager:
 
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
         # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
-        return self.__models[model_id]
+        return self._dashboard_tree.find_first(data_id=model_id).data
 
     def __iter__(self) -> Generator[ModelID, None, None]:
         """Iterates through all models.
@@ -58,7 +61,8 @@ class ModelManager:
         """
         # TODO: should this yield models rather than model IDs? Should model_manager be more like set with a special
         #  lookup by model ID or more like dictionary?
-        yield from self.__models
+        for node in self._dashboard_tree.iterator():
+            yield node.data.id
 
     def _get_models(
         self,
@@ -71,10 +75,32 @@ class ModelManager:
         If `root_model` is specified, return only models that are descendants of the given `root_model`.
         """
         import vizro.models as vm
+        from vizro.models import VizroBaseModel
 
         if model_type is FIGURE_MODELS:
             model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
-        models = self.__get_model_children(root_model) if root_model is not None else self.__models.values()  # type: ignore[type-var]
+
+        # Get models from tree based on root_model
+        if root_model is None:
+            # Iterate entire tree
+            models = (n.data for n in self._dashboard_tree.iterator() if isinstance(n.data, VizroBaseModel))
+        elif isinstance(root_model, VizroBaseModel):
+            # Single model - get its descendants
+            models = self.__get_model_children(root_model)
+        elif isinstance(root_model, Mapping):
+            # Mapping - extract VizroBaseModel instances and get descendants for each
+            models = []
+            for child in root_model.values():
+                if isinstance(child, VizroBaseModel):
+                    models.extend(list(self.__get_model_children(child)))
+        elif isinstance(root_model, Collection) and not isinstance(root_model, str):
+            # Collection - extract VizroBaseModel instances and get descendants for each
+            models = []
+            for child in root_model:
+                if isinstance(child, VizroBaseModel):
+                    models.extend(list(self.__get_model_children(child)))
+        else:
+            return  # return empty generator
 
         # Convert to list to avoid changing size when looping through at runtime.
         for model in list(models):
@@ -83,19 +109,8 @@ class ModelManager:
 
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
         """Iterates through children of `model` with depth-first pre-order traversal."""
-        from vizro.models import VizroBaseModel
-
-        if isinstance(model, VizroBaseModel):
-            yield model
-            for model_field in model.__class__.model_fields:
-                yield from self.__get_model_children(getattr(model, model_field))
-        elif isinstance(model, Mapping):
-            # We don't look through keys because Vizro models aren't hashable.
-            for child in model.values():
-                yield from self.__get_model_children(child)
-        elif isinstance(model, Collection) and not isinstance(model, str):
-            for child in model:
-                yield from self.__get_model_children(child)
+        node = self._dashboard_tree.find_first(data_id=model.id)
+        yield from (n.data for n in node.iterator(add_self=True))
 
     def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
         """Gets the page containing `model`."""

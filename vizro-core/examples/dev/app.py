@@ -1093,7 +1093,7 @@ kpi_indicators = vm.Page(
 
 
 # DASHBOARD -------------------------------------------------------------------
-components = [tabs]  # graphs, ag_grid, table, cards, figure, button, containers, tooltip
+components = [tabs, graphs, ag_grid, table, cards, figure, button, containers, tooltip]
 controls = [filters, parameters, selectors, controls_in_containers]
 actions = [export_data_action]
 layout = [grid_layout, flex_layout]
@@ -1101,40 +1101,40 @@ extensions = [custom_charts, custom_tables, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
-    pages=[*components],  # home,  *controls, *actions, *layout, *extensions
-    # navigation=vm.Navigation(
-    #     nav_selector=vm.NavBar(
-    #         items=[
-    #             vm.NavLink(label="Homepage", pages=["Homepage"], icon="Home"),
-    #             vm.NavLink(
-    #                 label="Features",
-    #                 pages={
-    #                     "Components": [
-    #                         "Graphs",
-    #                         "AG Grid",
-    #                         "Table",
-    #                         "Cards",
-    #                         "Figure",
-    #                         "Button",
-    #                         "Containers",
-    #                         "Tabs",
-    #                         "Tooltip",
-    #                     ],
-    #                     "Controls": ["Filters", "Parameters", "Selectors", "Controls in containers"],
-    #                     "Layout": ["Grid layout", "flex-layout"],
-    #                     "Actions": ["Export data"],
-    #                     "Extensions": [
-    #                         "Custom Charts",
-    #                         "Custom Tables",
-    #                         "Custom Components",
-    #                         "Custom Figures",
-    #                     ],
-    #                 },
-    #                 icon="Library Add",
-    #             ),
-    #         ]
-    #     )
-    # ),
+    pages=[home, *controls, *actions, *layout, *extensions, *components],  #
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Homepage", pages=["Homepage"], icon="Home"),
+                vm.NavLink(
+                    label="Features",
+                    pages={
+                        "Components": [
+                            "Graphs",
+                            "AG Grid",
+                            "Table",
+                            "Cards",
+                            "Figure",
+                            "Button",
+                            "Containers",
+                            "Tabs",
+                            "Tooltip",
+                        ],
+                        "Controls": ["Filters", "Parameters", "Selectors", "Controls in containers"],
+                        "Layout": ["Grid layout", "flex-layout"],
+                        "Actions": ["Export data"],
+                        "Extensions": [
+                            "Custom Charts",
+                            "Custom Tables",
+                            "Custom Components",
+                            "Custom Figures",
+                        ],
+                    },
+                    icon="Library Add",
+                ),
+            ]
+        )
+    ),
 )
 
 

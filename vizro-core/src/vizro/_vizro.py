@@ -139,6 +139,8 @@ class Vizro:
         pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
+        # TMP: Set the tree
+        model_manager._dashboard_tree = dashboard._tree
         self._pre_build()
         self.dash.layout = dashboard.build()
 
