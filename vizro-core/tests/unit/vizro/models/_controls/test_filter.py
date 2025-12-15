@@ -624,7 +624,9 @@ class TestFilterCall:
 
 class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match=r"Control filter_id should be defined within a Page object."):
+        with pytest.raises(
+            ValueError, match=r"Control filter_id should be defined within Page.controls or Container.controls."
+        ):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
 
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
@@ -633,6 +635,17 @@ class TestFilterPreBuildMethod:
         # Special case - need filter in the context of page in order to run filter.pre_build
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
+        assert filter.targets == [
+            "column_numerical_exists_1",
+            "column_numerical_exists_2",
+            "column_numerical_exists_empty",
+        ]
+
+    def test_targets_wrapped_filter_valid(self, managers_column_only_exists_in_some, MockControlWrapper):
+        filter = vm.Filter(column="column_numerical")
+        model_manager["test_page"].controls = [MockControlWrapper(control=filter)]
+        filter.pre_build()
+
         assert filter.targets == [
             "column_numerical_exists_1",
             "column_numerical_exists_2",
@@ -976,9 +989,17 @@ class TestFilterPreBuildMethod:
 
         assert filter.targets == ["scatter_chart"]
 
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_container_wrapped_filter_default_targets(self, MockControlWrapper):
+        filter = vm.Filter(column="continent")
+        model_manager["test_container"].controls = [MockControlWrapper(control=filter)]
+        filter.pre_build()
+
+        assert filter.targets == ["scatter_chart"]
+
     @pytest.mark.usefixtures("managers_one_page_container_controls_invalid")
     def test_container_filter_targets_specific_invalid(self):
-        filter = model_manager["container_filter_2"]
+        filter = model_manager["container_filter"]
         with pytest.raises(
             ValueError,
             match="Target bar_chart not found within the container_1",
