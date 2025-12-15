@@ -2,7 +2,7 @@
 
 This guide shows you how to display notifications and alerts in your dashboard to provide feedback to users about their interactions with the UI.
 
-## Show notification
+## Show a notification
 
 The [`show_notification`][vizro.actions.show_notification] action displays a temporary message to the user. Notifications are useful to:
 
@@ -378,7 +378,7 @@ Notifications can be chained with other actions to provide user feedback. For ex
 
         [![ExportNotification]][exportnotification]
 
-### Update existing notification
+## Update existing notification
 
 You can update an existing notification with the [`update_notification`][vizro.actions.update_notification] action and providing a matching `notification` ID that references the original `show_notification` action. This is useful for showing progress updates or state changes for the same logical operation without creating multiple notifications.
 
