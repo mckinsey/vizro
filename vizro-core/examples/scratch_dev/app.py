@@ -11,6 +11,10 @@ data_manager["iris"] = df
 
 data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
 
+gapminder = px.data.gapminder()
+iris = px.data.iris()
+tips = px.data.tips()
+
 
 # 2. Create new custom component
 class Jumbotron(vm.VizroBaseModel):
@@ -100,6 +104,8 @@ tab_1 = vm.Container(
                 color="continent",
             ),
         ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="petal_length"), title="Title"),
+        vm.AgGrid(figure=dash_ag_grid(data_frame=iris)),
     ],
 )
 
