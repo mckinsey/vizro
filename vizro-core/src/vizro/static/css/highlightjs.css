@@ -20,13 +20,13 @@ x = 1
 .hljs-template-variable,
 .hljs-type,
 .hljs-variable.language_ {
-  color: var(--sequentialRed-500)
+  color: var(--sequentialRed-500);
 }
 .hljs-title,
 .hljs-title.class_,
 .hljs-title.class_.inherited__,
 .hljs-title.function_ {
-  color: var(--categorical-08Purple) 
+  color: var(--categorical-08Purple);
 }
 .hljs-attr,
 .hljs-attribute,
@@ -38,16 +38,16 @@ x = 1
 .hljs-selector-attr,
 .hljs-selector-class,
 .hljs-selector-id {
-  color: var(--sequentialCyan-600) 
+  color: var(--sequentialCyan-600);
 }
 .hljs-regexp,
 .hljs-string,
 .hljs-meta .hljs-string {
-  color: var(--sequentialTeal-500)
+  color: var(--sequentialTeal-500);
 }
 .hljs-built_in,
 .hljs-symbol {
-  color: var(--sequentialRed-500)
+  color: var(--sequentialRed-500);
 }
 .hljs-comment,
 .hljs-code,
@@ -58,7 +58,7 @@ x = 1
 .hljs-quote,
 .hljs-selector-tag,
 .hljs-selector-pseudo {
-  color: var(--status-success)
+  color: var(--status-success);
 }
 .hljs-subst {
   color: var(--bs-secondary);
@@ -68,7 +68,7 @@ x = 1
   font-weight: bold
 }
 .hljs-bullet {
-  color: var(--sequentialYellow-800)
+  color: var(--sequentialYellow-800);
 }
 .hljs-emphasis {
   color: var(--bs-secondary);
