@@ -1,7 +1,16 @@
 site_name: Vizro
+site_description: Core Vizro documentation
 site_url: https://vizro.readthedocs.io/en/stable/
+site_dir: site
+docs_dir: docs
+
+repo_url: https://github.com/mckinsey/vizro
+repo_name: mckinsey/vizro
+
+use_directory_urls: true
+
+# Make sure any new page added here is also added to the llmstxt plugin below
 nav:
-  # Make sure any new page added here is also added to the llmstxt plugin below (around line 156)
   - Vizro: index.md
   - Tutorials:
       - Quickstart tutorial: pages/tutorials/quickstart-tutorial.md
@@ -71,21 +80,20 @@ nav:
   - Vizro-MCP:
       - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
 
-repo_url: https://github.com/mckinsey/vizro
-repo_name: mckinsey/vizro
-
 theme:
   name: material
-  language: en
   custom_dir: docs/overrides
-  palette:
-    - scheme: default
+  language: en
+  variant: classic
+  favicon: assets/images/favicon.png
   font:
     text: Google sans
     code: Source Code Pro
   icon:
     repo: fontawesome/brands/github
   features:
+    - header.autohide
+    - navigation.path
     - navigation.expand
     - navigation.instant
     - navigation.indexes
@@ -98,21 +106,36 @@ theme:
     - content.code.annotation
     - content.code.copy
     - content.code.annotate
+  palette:
+    - scheme: default
+      toggle:
+        icon: lucide/sun
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: lucide/moon
+        name: Switch to light mode
 
-watch:
-  - src
 
 markdown_extensions:
+  - admonition
+  - attr_list
+  - footnotes
+  - md_in_html
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:zensical.extensions.emoji.to_svg
+      emoji_index: !!python/name:zensical.extensions.emoji.twemoji
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - admonition
-  - pymdownx.arithmatex:
-      generic: true
-  - footnotes
   - pymdownx.keys
-  - pymdownx.details
+  - pymdownx.mark
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -126,20 +149,41 @@ markdown_extensions:
               type: vizro
               requirements: |
                 vizro==0.1.49
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.mark
-  - md_in_html
-  - attr_list
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 plugins:
   - search
   - autorefs
-  - llmstxt: # https://pypi.org/project/mkdocs-llmstxt/
-      markdown_description:
+  - git-revision-date-localized:
+      enable_creation_date: false
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - src
+          options:
+            docstring_style: google
+            docstring_section_style: list
+            show_bases: false
+            show_root_heading: true
+            show_source: false
+            merge_init_into_class: true
+            separate_signature: true
+            docstring_options:
+              ignore_init_summary: true
+              returns_named_value: false
+              warn_unknown_params: false
+            extensions:
+              - docs/griffe_extensions.py:
+                  paths:
+                    - vizro.figures.kpi_card
+                    - vizro.figures.kpi_card_reference
+              - griffe_warnings_deprecated:
+                  kind: danger
+                  title: Deprecated
+  - llmstxt:
+      base_url: https://vizro.readthedocs.io/en/0.1.49/
+      full_output: llms-full.txt
+      markdown_description: |
         Vizro is an open-source Python-based toolkit to build data visualization apps.
 
         Every Vizro app is defined by a simple configuration, using the high-level categories
@@ -152,100 +196,75 @@ plugins:
         Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
-      base_url: https://vizro.readthedocs.io/en/0.1.49/
-      full_output: llms-full.txt
       sections:
-        "TUTORIALS":
-          - pages/tutorials/quickstart-tutorial.md: "A quickstart dashboard tutorial"
-          - pages/tutorials/explore-components.md: "An in-depth tutorial to introduce Vizro's key features (accompanying Video is available)"
-        "FUNDAMENTAL CONCEPTS IN VIZRO":
-          - pages/user-guides/install.md: "Guide on how to install Vizro"
-          - pages/user-guides/dashboard.md: "Dashboard basics"
-          - pages/user-guides/pages.md: "Pages"
-          - pages/user-guides/run-deploy.md: "How to run or deploy dashboards"
-        "LEARN ABOUT VIZRO COMPONENTS":
-          - pages/user-guides/components.md: "Components overview"
-          - pages/user-guides/graph.md: "Graphs"
-          - pages/user-guides/table.md: "Tables"
-          - pages/user-guides/figure.md: "Figures"
-          - pages/user-guides/card.md: "Cards"
-          - pages/user-guides/text.md: "Text"
-          - pages/user-guides/button.md: "Buttons"
-          - pages/user-guides/container.md: "Containers"
-          - pages/user-guides/tabs.md: "Tabs"
-        "ADD CONTROLS TO A DASHBOARD":
-          - pages/user-guides/controls.md: "Controls overview"
-          - pages/user-guides/filters.md: "Filters"
-          - pages/user-guides/parameters.md: "Parameters"
-          - pages/user-guides/selectors.md: "Selectors"
-        "DASHBOARD NAVIGATION ELEMENTS":
-          - pages/user-guides/navigation.md: "Navigation"
-        "HOW TO APPLY VISUAL FORMATTING":
-          - pages/user-guides/visual-formatting.md: "Formatting overview"
-          - pages/user-guides/layouts.md: "Layouts"
-          - pages/user-guides/themes.md: "Themes"
-          - pages/user-guides/assets.md: "Assets"
-          - pages/user-guides/custom-css.md: "Custom CSS"
-        "ACTIONS":
-          - pages/user-guides/actions.md: "Actions"
-          - pages/user-guides/data-actions.md: "Handle data"
-          - pages/user-guides/graph-table-actions.md: "Graph and table interactions"
-        "MANAGE DATA USED BY THE DASHBOARD":
-          - pages/user-guides/data.md: "Data"
-          - pages/user-guides/kedro-data-catalog.md: "Kedro Data Catalog"
-        "EXTEND THE DASHBOARD WITH CUSTOMIZATIONS":
-          - pages/user-guides/extensions.md: "Extensions overview"
-          - pages/user-guides/custom-charts.md: "Custom charts"
-          - pages/user-guides/custom-tables.md: "Custom tables"
-          - pages/user-guides/custom-components.md: "Custom components"
-          - pages/user-guides/custom-actions.md: "Custom actions"
-          - pages/user-guides/custom-figures.md: "Custom figures"
-        "FAQS, EXAMPLES, CONTRIBUTION GUIDANCE AND THE VIZRO SCHEMA":
-          - pages/explanation/faq.md: "FAQs"
-          - pages/explanation/your-examples.md: "Examples created by the Vizro community"
-          - pages/explanation/contributing.md: "How to contribute to Vizro's open source project"
-          - pages/explanation/documentation-style-guide.md: "Documentation style guide"
-          - pages/explanation/schema.md: "The Vizro schema"
-          - pages/explanation/authors.md: "Vizro contributor listing"
-  - mkdocstrings:
-      handlers:
-        python:
-          options:
-            show_bases: false
-            show_source: false #currently doesn't show source at correct level, and not for pydantic models
-            docstring_style: google
-            merge_init_into_class: true
-            docstring_section_style: list
-            separate_signature: true
-            #   filters: ["!^_"]
-            show_root_heading: true
-            docstring_options:
-              ignore_init_summary: true
-              warn_unknown_params: false
-              returns_named_value: false
-            extensions:
-              - docs/griffe_extensions.py:
-                  paths:
-                    [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
-              - griffe_warnings_deprecated:
-                  kind: danger
-                  title: Deprecated
-          paths: [src]
-  - git-revision-date-localized:
-      enable_creation_date: false
+        TUTORIALS:
+          - pages/tutorials/quickstart-tutorial.md: A quickstart dashboard tutorial
+          - pages/tutorials/explore-components.md: An in-depth tutorial to introduce Vizro's key features (accompanying Video is available)
+        FUNDAMENTAL CONCEPTS IN VIZRO:
+          - pages/user-guides/install.md: Guide on how to install Vizro
+          - pages/user-guides/dashboard.md: Dashboard basics
+          - pages/user-guides/pages.md: Pages
+          - pages/user-guides/run-deploy.md: How to run or deploy dashboards
+        LEARN ABOUT VIZRO COMPONENTS:
+          - pages/user-guides/components.md: Components overview
+          - pages/user-guides/graph.md: Graphs
+          - pages/user-guides/table.md: Tables
+          - pages/user-guides/figure.md: Figures
+          - pages/user-guides/card.md: Cards
+          - pages/user-guides/text.md: Text
+          - pages/user-guides/button.md: Buttons
+          - pages/user-guides/container.md: Containers
+          - pages/user-guides/tabs.md: Tabs
+        ADD CONTROLS TO A DASHBOARD:
+          - pages/user-guides/controls.md: Controls overview
+          - pages/user-guides/filters.md: Filters
+          - pages/user-guides/parameters.md: Parameters
+          - pages/user-guides/selectors.md: Selectors
+        DASHBOARD NAVIGATION ELEMENTS:
+          - pages/user-guides/navigation.md: Navigation
+        ACTIONS:
+          - pages/user-guides/actions.md: Actions
+          - pages/user-guides/data-actions.md: Handle data
+          - pages/user-guides/graph-table-actions.md: Graph and table interactions
+        HOW TO APPLY VISUAL FORMATTING:
+          - pages/user-guides/visual-formatting.md: Formatting overview
+          - pages/user-guides/layouts.md: Layouts
+          - pages/user-guides/themes.md: Themes
+          - pages/user-guides/assets.md: Assets
+          - pages/user-guides/custom-css.md: Custom CSS
+        MANAGE DATA USED BY THE DASHBOARD:
+          - pages/user-guides/data.md: Data
+          - pages/user-guides/kedro-data-catalog.md: Kedro Data Catalog
+        EXTEND THE DASHBOARD WITH CUSTOMIZATIONS:
+          - pages/user-guides/extensions.md: Extensions overview
+          - pages/user-guides/custom-charts.md: Custom charts
+          - pages/user-guides/custom-tables.md: Custom tables
+          - pages/user-guides/custom-components.md: Custom components
+          - pages/user-guides/custom-actions.md: Custom actions
+          - pages/user-guides/custom-figures.md: Custom figures
+        FAQS, EXAMPLES, CONTRIBUTION GUIDANCE AND THE VIZRO SCHEMA:
+          - pages/explanation/faq.md: FAQs
+          - pages/explanation/your-examples.md: Examples created by the Vizro community
+          - pages/explanation/contributing.md: How to contribute to Vizro's open source project
+          - pages/explanation/documentation-style-guide.md: Documentation style guide
+          - pages/explanation/schema.md: The Vizro schema
+          - pages/explanation/authors.md: Vizro contributor listing
 
 extra:
   meta:
     - name: google-site-verification
-      content: "CYb3cxosCgsN2QDQVaSGQpMQCesqpsGQ3oTM02NtvkY"
+      content: CYb3cxosCgsN2QDQVaSGQpMQCesqpsGQ3oTM02NtvkY
+
 extra_css:
-  - stylesheets/extra.css
+  - /stylesheets/extra.css
+
 extra_javascript:
-  - javascripts/extra.js
-# Strictest settings possible, and will be elevated to ERROR when run with --strict.
-# See https://www.mkdocs.org/user-guide/configuration/#validation.
-validation:
-  omitted_files: warn
-  absolute_links: warn
-  unrecognized_links: warn
-  anchors: warn
+  - /javascripts/extra.js
+
+# validation:
+# omitted_files: warn
+# absolute_links: warn
+# unrecognized_links: warn
+# anchors: warn
+
+
