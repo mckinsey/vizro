@@ -4,11 +4,3 @@
   width: 300px;
 }
 
-.ag-header {
-  position: fixed !important;
-  z-index: 1;
-}
-
-.ag-body {
-  top: 40px;
-}

@@ -149,13 +149,13 @@ class TestAgGridGetValueFromTrigger:
             "continent", [{"country": "France", "continent": "Europe", "year": 2007}]
         )
 
-        assert value == "Europe"
+        assert value == ["Europe"]
 
     def test_trigger_empty_list(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
         value = ag_grid._get_value_from_trigger("continent", [])
 
-        assert value == []
+        assert value is None
 
     def test_value_unknown(self, standard_ag_grid):
         ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid)

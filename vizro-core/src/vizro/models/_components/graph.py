@@ -361,7 +361,7 @@ class Graph(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    dcc.Store(id=f"{self.id}_action_trigger", data={}),
+                    dcc.Store(id=f"{self.id}_action_trigger"),
                     html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,

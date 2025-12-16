@@ -195,8 +195,8 @@ class TestSetControlFunction:
         action.pre_build()
 
         # Call function method with a mock trigger value
-        result = action.function(_trigger={"points": [{"customdata": ["Europe"]}]})
-        expected = "Europe"
+        result = action.function(_trigger=[{"customdata": ["Europe"]}], _controls_store={})
+        expected = ["Europe"]
 
         assert result == expected
 
@@ -213,12 +213,12 @@ class TestSetControlFunction:
 
         # Call function method with a mock trigger value
         result_relative_path, result_url_query_params = action.function(
-            _trigger={"points": [{"customdata": ["Europe"]}]},
+            _trigger=[{"customdata": ["Europe"]}], _controls_store={}
         )
         # From mocked get_relative_path
         expected_relative_path = "/mocked_path"
-        # Value "Europe" base64 encoded is b64_IkV1cm9wZSI
-        expected_url_query_params = "?filter_page_2_show_in_url_true=b64_IkV1cm9wZSI"
+        # Value ["Europe"] base64 encoded is b64_WyJFdXJvcGUiXQ
+        expected_url_query_params = "?filter_page_2_show_in_url_true=b64_WyJFdXJvcGUiXQ"
 
         assert result_relative_path == expected_relative_path
         assert result_url_query_params == expected_url_query_params
