@@ -571,8 +571,7 @@ class _BaseChatAction(_AbstractAction):
                      (content is serialized JSON)
 
         Returns:
-            dict: Always returns {"content_json": "..."} with serialized content
-                  for consistent handling and persistence
+            str or Dash component: The response content (JSON serialization is handled automatically)
         """
         raise NotImplementedError("Subclasses must implement generate_response()")
 
@@ -733,7 +732,7 @@ class ChatAction(_BaseChatAction):
             **kwargs: Any extra Field inputs defined on the action
 
         Returns:
-            dict: Must return {"content_json": "..."} with serialized content
+            str or Dash component: The response content (will be JSON-serialized automatically)
         """
         raise NotImplementedError("Subclasses must implement generate_response()")
 
@@ -748,7 +747,9 @@ class ChatAction(_BaseChatAction):
         store.append(latest_input)
 
         result = self.generate_response(messages, **extra_inputs)
-        latest_output = {"role": "assistant", **result}
+        # Serialize the result - handles both strings and Dash components
+        content_json = json.dumps(result, cls=plotly.utils.PlotlyJSONEncoder)
+        latest_output = {"role": "assistant", "content_json": content_json}
         store.append(latest_output)
 
         html_messages = [self.message_to_html(msg) for msg in messages]
@@ -863,7 +864,7 @@ class StreamingChatAction(_BaseChatAction):
 # The difference is in what the method returns/yields.
 #
 # For non-streaming: inherit from ChatAction and implement generate_response()
-#   - Returns {"content_json": json.dumps(...)} with text or Dash components
+#   - Returns str or Dash component directly (JSON serialization is handled automatically)
 #   - Examples: simple_echo, mixed_content, openai_chat
 #
 # For streaming: inherit from StreamingChatAction and implement generate_response()
@@ -890,7 +891,7 @@ class openai_chat(ChatAction):
             instructions="Be polite and creative.",
             store=False,
         )
-        return {"content_json": json.dumps(response.output_text)}
+        return response.output_text
 
 
 class openai_streaming_chat(StreamingChatAction):
@@ -956,8 +957,7 @@ class simple_echo(ChatAction):
 
     def generate_response(self, messages):
         last_message = json.loads(messages[-1]["content_json"]) if messages else ""
-        content = f"You said: {last_message}"
-        return {"content_json": json.dumps(content)}
+        return f"You said: {last_message}"
 
 
 class mixed_content(ChatAction):
@@ -978,7 +978,7 @@ class mixed_content(ChatAction):
             height=400,
         )
 
-        content = html.Div(
+        return html.Div(
             [
                 dcc.Markdown(f"""
 **You said:** "{prompt}"
@@ -997,8 +997,6 @@ This example demonstrates rendering different content types:
             ]
         )
 
-        return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
-
 
 # Example of using VizroAI to generate plots from natural language
 class vizro_ai_chat(ChatAction):
@@ -1008,10 +1006,7 @@ class vizro_ai_chat(ChatAction):
     uploaded_files: str = Field(default_factory=lambda data: f"{data['parent_id']}-file-store.data")
 
     def generate_response(self, messages, uploaded_files=None):
-        """Generate data visualization using VizroAI.
-
-        Returns dict with serialized content for persistence.
-        """
+        """Generate data visualization using VizroAI."""
         from vizro_ai import VizroAI
         from langchain_openai import ChatOpenAI
         import io
@@ -1019,8 +1014,7 @@ class vizro_ai_chat(ChatAction):
         prompt = json.loads(messages[-1]["content_json"]) if messages else ""
 
         if not uploaded_files:
-            content = html.P("Please upload a data file first!", style={"color": "#1890ff"})
-            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+            return html.P("Please upload a data file first!", style={"color": "#1890ff"})
 
         # Get the first uploaded file
         uploaded_data = uploaded_files[0]["content"]
@@ -1036,14 +1030,12 @@ class vizro_ai_chat(ChatAction):
             elif uploaded_filename and uploaded_filename.endswith((".xls", ".xlsx")):
                 df = pd.read_excel(io.BytesIO(decoded))
             else:
-                content = html.P(
+                return html.P(
                     f"Unsupported file type: {uploaded_filename}. Please upload CSV or Excel files.",
                     style={"color": "red"},
                 )
-                return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
         except Exception as e:
-            content = html.P(f"Error parsing file: {str(e)}", style={"color": "red"})
-            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+            return html.P(f"Error parsing file: {str(e)}", style={"color": "red"})
 
         # Generate plot with VizroAI
         try:
@@ -1052,7 +1044,7 @@ class vizro_ai_chat(ChatAction):
             ai_outputs = vizro_ai.plot(df, prompt, return_elements=True)
             figure = ai_outputs.get_fig_object(data_frame=df, vizro=False)
 
-            content = html.Div(
+            return html.Div(
                 [
                     dcc.Graph(figure=figure, style={"height": PLOT_HEIGHT, "width": PLOT_WIDTH}),
                     html.Details(
@@ -1072,12 +1064,8 @@ class vizro_ai_chat(ChatAction):
                 style={"width": PLOT_WIDTH},
             )
 
-            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
-
         except Exception as e:
-            error_msg = f"Error generating visualization: {str(e)}"
-            content = html.P(error_msg, style={"color": "red"})
-            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+            return html.P(f"Error generating visualization: {str(e)}", style={"color": "red"})
 
 
 class openai_vision_chat(ChatAction):
@@ -1135,14 +1123,10 @@ class openai_vision_chat(ChatAction):
                 instructions="You are a helpful assistant that can analyze images and answer questions about them.",
                 store=False,
             )
-
-            response_text = response.output_text
-            return {"content_json": json.dumps(response_text)}
+            return response.output_text
 
         except Exception as e:
-            error_msg = f"Error calling OpenAI Vision API: {str(e)}"
-            content = html.P(error_msg, style={"color": "red"})
-            return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+            return html.P(f"Error calling OpenAI Vision API: {str(e)}", style={"color": "red"})
 
 
 class openai_vision_streaming_chat(StreamingChatAction):
