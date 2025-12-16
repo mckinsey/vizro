@@ -133,57 +133,12 @@ class StreamingRequest(BaseModel):
     messages: Any  # List of message dicts with 'role' and 'content' keys
 
 
-class ChatAction(_AbstractAction):
-    """Base class for chat functionality with streaming and non-streaming support."""
+class _BaseChatAction(_AbstractAction):
+    """Base class with shared chat functionality."""
 
-    type: Literal["chat_action"] = "chat_action"
     parent_id: str = Field(description="ID of the parent Chat component.")
     prompt: str = Field(default_factory=lambda data: f"{data['parent_id']}-chat-input.value")
     messages: str = Field(default_factory=lambda data: f"{data['parent_id']}-store.data")
-    stream: bool = False
-
-    @model_validator(mode="after")
-    def validate_required_methods(self):
-        """Validate that subclasses implement the required generation methods.
-
-        This enforces the contract:
-        - If stream=True, generate_stream() must be implemented
-        - If stream=False, generate_response() must be implemented
-
-        Methods are considered "implemented" if they're defined in the subclass
-        (not just inherited from ChatAction base class).
-        """
-        cls = self.__class__
-
-        # Check if a method is actually implemented in the subclass (not just inherited from base)
-        def is_implemented_in_subclass(method_name):
-            # Get the method from the instance's class
-            method = getattr(cls, method_name, None)
-            if method is None:
-                return False
-
-            # Check if it's defined in ChatAction base class
-            base_method = getattr(ChatAction, method_name, None)
-
-            # If the method is the same object as the base class method, it's not overridden
-            return method is not base_method
-
-        if self.stream:
-            if not is_implemented_in_subclass("generate_stream"):
-                raise NotImplementedError(
-                    f"{cls.__name__} has stream=True but does not implement generate_stream(). "
-                    f"You must override generate_stream() to yield text chunks, even if you "
-                    f"override function() for custom behavior."
-                )
-        else:
-            if not is_implemented_in_subclass("generate_response"):
-                raise NotImplementedError(
-                    f"{cls.__name__} has stream=False but does not implement generate_response(). "
-                    f"You must override generate_response() to return content (string or Dash component), or a tuple of (content, metadata), even if you "
-                    f"override function() for custom behavior."
-                )
-
-        return self
 
     @_log_call
     def pre_build(self):
@@ -194,22 +149,10 @@ class ChatAction(_AbstractAction):
                 f"These must match. Fix: use parent_id='{self._parent_model.id}'"
             )
 
-        if self.stream:
-            self._setup_streaming_callbacks()
-            self._setup_streaming_endpoint()
-
         self._setup_chat_callbacks()
         self._setup_loading_indicator()
         self._setup_file_upload_callbacks()
 
-    # Now there are two data flows:
-    #     1. SSE chunks → decoded and accumulated in hidden-messages div
-    #     2. hidden-messages → parsed for markdown/code blocks → rendered-messages div
-
-    # This separation allows the markdown parser to work nicely for:
-    #     - Streaming messages (accumulated chunk by chunk)
-    #     - Non-streaming messages (complete response)
-    #     - Restored messages from history (on page load)
     def _setup_streaming_callbacks(self):
         """SSE streaming decoding and accumulation."""
         clientside_callback(
@@ -310,7 +253,7 @@ class ChatAction(_AbstractAction):
             req = StreamingRequest(**request.get_json())
 
             def event_stream():
-                for chunk in self.generate_stream(req.messages):
+                for chunk in self.generate_response(req.messages):
                     # Encode chunk as base64 to handle any special characters
                     encoded_chunk = base64.b64encode(chunk.encode("utf-8")).decode("utf-8")
                     # Need a robust delimiter for clientside parsing
@@ -599,25 +542,8 @@ class ChatAction(_AbstractAction):
 
             return no_update, no_update
 
-    def generate_stream(self, messages):
-        """Override to implement streaming response.
-
-        Args:
-            messages: List of message dicts with 'role' and 'content_json' keys
-                     (content is serialized JSON)
-
-        Yields:
-            str: Text chunks to stream
-
-        Note:
-            This method MUST be implemented if stream=True, enforced by
-            validate_required_methods(). Even if you override function() entirely,
-            implement this method to satisfy the contract.
-        """
-        pass
-
     def generate_response(self, messages):
-        """Override to implement non-streaming response.
+        """Override to implement response generation.
 
         Args:
             messages: List of message dicts with 'role' and 'content_json' keys
@@ -626,50 +552,8 @@ class ChatAction(_AbstractAction):
         Returns:
             dict: Always returns {"content_json": "..."} with serialized content
                   for consistent handling and persistence
-
-        Note:
-            This method MUST be implemented if stream=False, enforced by
-            validate_required_methods(). Even if you override function() entirely
-            (e.g., to handle extra parameters like uploaded_data), implement this
-            method to satisfy the contract.
         """
-        pass
-
-    def function(self, prompt, messages):
-        if not prompt or not prompt.strip():
-            return [no_update] * len(self.outputs)
-
-        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
-        messages.append(latest_input)
-
-        store = Patch()
-        store.append(latest_input)
-
-        if self.stream:
-            # For streaming: add empty assistant placeholder, then start SSE
-            placeholder_msg = {"role": "assistant", "content_json": json.dumps("")}
-            store.append(placeholder_msg)
-
-            html_messages = [self.message_to_html(msg) for msg in messages]
-            html_messages.append(self.message_to_html(placeholder_msg))
-
-            return [
-                store,
-                html_messages,
-                no_update,
-                f"/streaming-{self.parent_id}",
-                sse_options(StreamingRequest(prompt=prompt, messages=messages)),
-            ]
-        else:
-            # For non-streaming: generate response synchronously
-            result = self.generate_response(messages)
-            latest_output = {"role": "assistant", **result}
-            store.append(latest_output)
-
-            html_messages = [self.message_to_html(msg) for msg in messages]
-            html_messages.append(self.message_to_html(latest_output))
-
-            return [store, html_messages, no_update]
+        raise NotImplementedError("Subclasses must implement generate_response()")
 
     def _create_file_preview(self, filenames: list[str]):
         """Create file preview UI component for multiple files.
@@ -808,57 +692,147 @@ class ChatAction(_AbstractAction):
             # Clear input
             return html_messages, ""
 
+class ChatAction(_BaseChatAction):
+    """Non-streaming chat action. Subclasses must implement generate_response()."""
+
+    type: Literal["chat_action"] = "chat_action"
+
+    def function(self, prompt, messages):
+        if not prompt or not prompt.strip():
+            return [no_update] * len(self.outputs)
+
+        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
+        messages.append(latest_input)
+
+        store = Patch()
+        store.append(latest_input)
+
+        result = self.generate_response(messages)
+        latest_output = {"role": "assistant", **result}
+        store.append(latest_output)
+
+        html_messages = [self.message_to_html(msg) for msg in messages]
+        html_messages.append(self.message_to_html(latest_output))
+
+        return [store, html_messages, no_update]
+
     @property
     def outputs(self):
-        if self.stream:
-            return [
-                f"{self.parent_id}-store.data",
-                f"{self.parent_id}-hidden-messages.children",
-                f"{self.parent_id}-chat-input.value",
-                f"{self.parent_id}-sse.url",
-                f"{self.parent_id}-sse.options",
-            ]
-        else:
-            return [
-                f"{self.parent_id}-store.data",
-                f"{self.parent_id}-hidden-messages.children",
-                f"{self.parent_id}-chat-input.value",
-            ]
+        return [
+            f"{self.parent_id}-store.data",
+            f"{self.parent_id}-hidden-messages.children",
+            f"{self.parent_id}-chat-input.value",
+        ]
+
+
+class StreamingChatAction(_BaseChatAction):
+    """Streaming chat action. Subclasses must implement generate_stream()."""
+
+    type: Literal["streaming_chat_action"] = "streaming_chat_action"
+
+    @_log_call
+    def pre_build(self):
+        super().pre_build()
+        self._setup_streaming_callbacks()
+        self._setup_streaming_endpoint()
+
+    def generate_response(self, messages):
+        """Override to implement streaming response.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys
+                     (content is serialized JSON)
+
+        Yields:
+            str: Text chunks to stream
+        """
+        raise NotImplementedError("Subclasses must implement generate_response()")
+
+    def function(self, prompt, messages):
+        if not prompt or not prompt.strip():
+            return [no_update] * len(self.outputs)
+
+        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
+        messages.append(latest_input)
+
+        store = Patch()
+        store.append(latest_input)
+
+        # For streaming: add empty assistant placeholder, then start SSE
+        placeholder_msg = {"role": "assistant", "content_json": json.dumps("")}
+        store.append(placeholder_msg)
+
+        html_messages = [self.message_to_html(msg) for msg in messages]
+        html_messages.append(self.message_to_html(placeholder_msg))
+
+        return [
+            store,
+            html_messages,
+            no_update,
+            f"/streaming-{self.parent_id}",
+            sse_options(StreamingRequest(prompt=prompt, messages=messages)),
+        ]
+
+    @property
+    def outputs(self):
+        return [
+            f"{self.parent_id}-store.data",
+            f"{self.parent_id}-hidden-messages.children",
+            f"{self.parent_id}-chat-input.value",
+            f"{self.parent_id}-sse.url",
+            f"{self.parent_id}-sse.options",
+        ]
 
 
 # -------------------- Example Chat Actions --------------------
 
 # HOW TO CREATE A CHAT ACTION:
 #
-# All chat actions inherit from ChatAction and implement ONE or BOTH methods:
+# Both ChatAction and StreamingChatAction use the same method name: generate_response()
+# The difference is in what the method returns/yields.
 #
-# 1. generate_response(messages) - For non-streaming responses (DEFAULT)
-#    - Returns {"content_json": json.dumps(...)} with text or Dash components
-#    - Used when stream=False (default)
-#    - Examples: simple_echo, mixed_content, vizro_ai_chat
+# For non-streaming: inherit from ChatAction and implement generate_response()
+#   - Returns {"content_json": json.dumps(...)} with text or Dash components
+#   - Examples: simple_echo, mixed_content, openai_chat
 #
-# 2. generate_stream(messages) - For streaming responses
-#    - Yields text chunks
-#    - Used when stream=True
-#    - Example: anthropic_chat
-#
-# 3. Allow both
-#    - Users can toggle stream=True/False
-#    - Example: openai_chat
+# For streaming: inherit from StreamingChatAction and implement generate_response()
+#   - Yields text chunks (generator/iterator)
+#   - Examples: openai_streaming_chat, anthropic_chat
 
 
 class openai_chat(ChatAction):
-    """OpenAI chat implementation with both streaming and non-streaming support."""
+    """OpenAI non-streaming chat implementation."""
 
     type: Literal["openai_chat"] = "openai_chat"
     model: str = "gpt-4.1-nano"
-    stream: bool = True
 
     @property
     def client(self):
         return OpenAI()
 
-    def generate_stream(self, messages):
+    def generate_response(self, messages):
+        """Handle non-streaming response from OpenAI."""
+        api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
+        response = self.client.responses.create(
+            model=self.model,
+            input=api_messages,
+            instructions="Be polite and creative.",
+            store=False,
+        )
+        return {"content_json": json.dumps(response.output_text)}
+
+
+class openai_streaming_chat(StreamingChatAction):
+    """OpenAI streaming chat implementation."""
+
+    type: Literal["openai_streaming_chat"] = "openai_streaming_chat"
+    model: str = "gpt-4.1-nano"
+
+    @property
+    def client(self):
+        return OpenAI()
+
+    def generate_response(self, messages):
         """Handle streaming response from OpenAI."""
         api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
         response = self.client.responses.create(
@@ -870,25 +844,8 @@ class openai_chat(ChatAction):
         )
 
         for event in response:
-            # Handle OpenAI-specific event types
             if event.type == "response.output_text.delta":
                 yield event.delta
-
-    def generate_response(self, messages):
-        """Handle non-streaming response from OpenAI."""
-        import time
-
-        time.sleep(3)  # Simulate delay to test loading indicator
-
-        api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
-        response = self.client.responses.create(
-            model=self.model,
-            input=api_messages,
-            instructions="Be polite and creative.",
-            store=False,
-            stream=False,
-        )
-        return {"content_json": json.dumps(response.output_text)}
 
 
 # Initialize Anthropic client once at module level
@@ -896,14 +853,13 @@ class openai_chat(ChatAction):
 anthropic_client = anthropic.Anthropic()
 
 
-class anthropic_chat(ChatAction):
-    """Streaming-only implementation for Anthropic Claude chat."""
+class anthropic_chat(StreamingChatAction):
+    """Streaming implementation for Anthropic Claude chat."""
 
     type: Literal["anthropic_chat"] = "anthropic_chat"
     model: str = "claude-haiku-4-5-20251001"
-    stream: bool = True  # Streaming-only for this implementation
 
-    def generate_stream(self, messages):
+    def generate_response(self, messages):
         """Generate streaming response from Anthropic Claude.
 
         Args:
@@ -1286,6 +1242,7 @@ class Chat(VizroBaseModel):
 vm.Page.add_type("components", Chat)
 Chat.add_type("actions", Annotated[simple_echo, Tag("simple_echo")])
 Chat.add_type("actions", Annotated[openai_chat, Tag("openai_chat")])
+Chat.add_type("actions", Annotated[openai_streaming_chat, Tag("openai_streaming_chat")])
 Chat.add_type("actions", Annotated[anthropic_chat, Tag("anthropic_chat")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 Chat.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
@@ -1297,7 +1254,7 @@ page = vm.Page(
     components=[
         Chat(
             id="chat",
-            actions=[openai_chat(parent_id="chat", stream=True)],
+            actions=[openai_streaming_chat(parent_id="chat")],
         ),
     ],
 )
@@ -1307,7 +1264,7 @@ page_nostream = vm.Page(
     components=[
         Chat(
             id="chat_nostream",
-            actions=[openai_chat(parent_id="chat_nostream", stream=False)],
+            actions=[openai_chat(parent_id="chat_nostream")],
         ),
     ],
 )
@@ -1356,7 +1313,7 @@ page_anthropic = vm.Page(
         ),
         Chat(
             id="claude_chat",
-            actions=[anthropic_chat(parent_id="claude_chat")],  # stream=True is default
+            actions=[anthropic_chat(parent_id="claude_chat")],
         ),
     ],
 )
