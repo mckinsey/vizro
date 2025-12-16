@@ -15,6 +15,7 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._components.form import DatePicker, Dropdown, RangeSlider, Switch
 from vizro.models._controls._controls_utils import (
     SELECTORS,
@@ -239,8 +240,8 @@ class Filter(VizroBaseModel):
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
         if not self.selector:
-            self.selector = DEFAULT_SELECTORS[self._column_type].from_pre_build(
-                {}, parent_model=self, field_name="selector"
+            self.selector = _validate_with_tree_context(
+                DEFAULT_SELECTORS[self._column_type](), parent_model=self, field_name="selector"
             )
         self.selector.title = self.selector.title or self.column.title()
 
@@ -290,13 +291,13 @@ class Filter(VizroBaseModel):
                 filter_function = _filter_isin
 
             self.selector.actions = [
-                _filter.from_pre_build(
-                    {
-                        "id": f"{FILTER_ACTION_PREFIX}_{self.id}",
-                        "column": self.column,
-                        "filter_function": filter_function,
-                        "targets": self.targets,
-                    },
+                _validate_with_tree_context(
+                    _filter(
+                        id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                        column=self.column,
+                        filter_function=filter_function,
+                        targets=self.targets,
+                    ),
                     parent_model=self,
                     field_name="actions",
                 )

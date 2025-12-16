@@ -19,6 +19,7 @@ from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,
@@ -151,11 +152,11 @@ class Page(VizroBaseModel):
 
         if targets:
             self.actions = [
-                _on_page_load.from_pre_build(
-                    {
-                        "id": f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
-                        "targets": targets,
-                    },
+                _validate_with_tree_context(
+                    _on_page_load(
+                        id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
+                        targets=targets,
+                    ),
                     parent_model=self,
                     field_name="actions",
                 )

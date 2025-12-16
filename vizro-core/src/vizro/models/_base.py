@@ -7,7 +7,7 @@ import textwrap
 import uuid
 from collections.abc import Mapping
 from types import SimpleNamespace
-from typing import Annotated, Any, Literal, Self, Union, cast, get_args, get_origin
+from typing import Annotated, Any, Literal, Self, TypeVar, Union, cast, get_args, get_origin
 
 import autoflake
 import black
@@ -31,6 +31,8 @@ from pydantic_core.core_schema import ValidationInfo
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS
 from vizro.models.types import ModelID
+
+Model = TypeVar("Model", bound="VizroBaseModel")
 
 # As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
 # the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
@@ -218,6 +220,25 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
+def _validate_with_tree_context(
+    model: Model,
+    parent_model: Model,
+    field_name: str,
+) -> Model:
+    """Validate a model instance with tree-building context."""
+    # if not isinstance(model, VizroBaseModel):
+    #     raise ValueError(f"Model must be a subclass of VizroBaseModel: {model}")
+    return type(model).model_validate(
+        model,
+        context={
+            "build_tree": True,
+            "parent_model": parent_model,
+            "field_stack": [field_name],
+            "id_stack": [parent_model.id],
+        },
+    )
+
+
 class VizroBaseModel(BaseModel):
     """All Vizro models inherit from this class.
 
@@ -316,20 +337,16 @@ class VizroBaseModel(BaseModel):
     @model_validator(mode="wrap")
     @classmethod
     def build_tree_model_wrap(cls, data: Any, handler: ModelWrapValidatorHandler[Self], info: ValidationInfo) -> Self:
-        #### ID ####
-        model_id = "UNKNOWN_ID"
-        if isinstance(data, dict):
-            if "id" not in data or data["id"] is None:
-                model_id = str(uuid.uuid4())
-                data["id"] = model_id
-            elif isinstance(data["id"], str):
-                model_id = data["id"]
-        elif hasattr(data, "id"):
-            model_id = data.id
-        else:
-            print("GRANDE PROBLEMA!!!")
-
         if info.context is not None and "build_tree" in info.context:
+            #### ID ####
+            if isinstance(data, dict):
+                model_id = data.get("id")
+            else:
+                model_id = getattr(data, "id", None)
+
+            if model_id is None:
+                raise ValueError(f"Cannot determine model id for data: {data}")
+
             #### Level and indentation ####
             if "level" not in info.context:
                 info.context["level"] = 0
@@ -383,35 +400,6 @@ class VizroBaseModel(BaseModel):
             print(f"--> Revalidation: Updated tree node for {validated_stuff.id} <--")
 
         return validated_stuff
-
-    @classmethod
-    def from_pre_build(cls, data, parent_model, field_name):
-        """Create a model instance with tree building context.
-
-        Note this always adds new models to the tree. It's not currently possible to replace or remove a node.
-        It should work with any parent_model, but ideally we should only use it to make children of the calling
-        model, so that parent_model=self in the call (where self isn't the created model instance, it's the calling
-        model).
-        Since we have revalidate_instances = "always", calling model_validate on a single model will also execute
-        the validators on children models.
-
-        Args:
-            data: Data to validate into the model
-            parent_model: Parent model instance
-            field_name: Name of the field in the parent model
-
-        Returns:
-            Validated model instance
-        """
-        return cls.model_validate(
-            data,
-            context={
-                "build_tree": True,
-                "parent_model": parent_model,
-                "field_stack": [field_name],
-                "id_stack": [parent_model.id],
-            },
-        )
 
     # Previously in V1, we used to have an overwritten `.dict` method, that would add __vizro_model__ to the dictionary
     # if called in the correct context.

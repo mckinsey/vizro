@@ -8,6 +8,7 @@ from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._controls._controls_utils import (
     _is_categorical_selector,
     _is_numerical_temporal_selector,
@@ -185,11 +186,11 @@ class Parameter(VizroBaseModel):
             # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
             self.targets.extend(list(filter_targets))
             self.selector.actions = [
-                _parameter.from_pre_build(
-                    {
-                        "id": f"{PARAMETER_ACTION_PREFIX}_{self.id}",
-                        "targets": self.targets,
-                    },
+                _validate_with_tree_context(
+                    _parameter(
+                        id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",
+                        targets=self.targets,
+                    ),
                     parent_model=self.selector,
                     field_name="actions",
                 )

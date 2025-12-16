@@ -9,6 +9,7 @@ from pydantic import AfterValidator, Field, PrivateAttr
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.accordion import Accordion
@@ -45,8 +46,8 @@ class NavLink(VizroBaseModel):
     def pre_build(self):
         # TODO[MS]: Check validate pages properly
         self.pages = _validate_pages(self.pages)
-        self._nav_selector = Accordion.from_pre_build(
-            {"pages": self.pages},
+        self._nav_selector = _validate_with_tree_context(
+            Accordion(pages=self.pages),
             parent_model=self,
             field_name="_nav_selector",
         )

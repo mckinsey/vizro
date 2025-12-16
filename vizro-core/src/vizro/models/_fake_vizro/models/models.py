@@ -101,6 +101,8 @@ if TYPE_CHECKING:
     from vizro.models._fake_vizro.actions import ExportDataAction
 # Don't define ExportDataAction at runtime - this will cause PydanticUndefinedAnnotation
 
+from vizro.models._base import _validate_with_tree_context
+
 
 # Written by ChatGPT
 def camel_to_snake(name):
@@ -404,10 +406,10 @@ class Page(VizroBaseModel):
         print(f"Updating page {self.type}")
         if isinstance(self.components[0], Component) and self.components[0].x == "c1":
             self.components = [
-                Component.from_pre_build(
-                    {"x": "new c1!!!"},  # , SubComponent(y="another new c3")
-                    self,
-                    "components",
+                _validate_with_tree_context(
+                    Component(x="new c1!!!"),  # , SubComponent(y="another new c3")
+                    parent_model=self,
+                    field_name="components",
                 )
             ]
 
