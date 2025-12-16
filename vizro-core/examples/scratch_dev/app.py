@@ -12,8 +12,8 @@ from dash_extensions import SSE
 from dash_extensions.streaming import sse_message, sse_options
 from dotenv import load_dotenv
 from flask import Response, request
-from openai import OpenAI, BaseModel
-from pydantic import Tag, Field, model_validator
+from openai import OpenAI
+from pydantic import BaseModel, Tag, Field, model_validator, ConfigDict
 import anthropic
 import pandas as pd
 
@@ -126,8 +126,10 @@ INPUT_SECTION = {
 # -------------------- Base Classes --------------------
 
 
-class StreamingRequest(BaseModel):
-    """Request payload for streaming chat endpoint."""
+class _StreamingRequest(BaseModel):
+    """Generic request payload for streaming chat endpoint."""
+
+    model_config = ConfigDict(extra="allow")
 
     prompt: str
     messages: Any  # List of message dicts with 'role' and 'content' keys
@@ -139,6 +141,25 @@ class _BaseChatAction(_AbstractAction):
     parent_id: str = Field(description="ID of the parent Chat component.")
     prompt: str = Field(default_factory=lambda data: f"{data['parent_id']}-chat-input.value")
     messages: str = Field(default_factory=lambda data: f"{data['parent_id']}-store.data")
+
+    # TODO: This override of _parameters is a workaround to auto-detect Fields that are Dash component
+    # references (format: "component-id.property"). Without this, users would need to override `function`
+    # just to declare extra params like `uploaded_files` in the signature.
+    #
+    # Vizro's _AbstractAction._runtime_args only includes Fields that are explicitly named in the
+    # function signature. By overriding _parameters to include all Fields with "." in their value,
+    # we make them available as **extra_inputs without users needing to touch `function`.
+    #
+    # This approach may not be the best way to do this. Any suggestions?
+    @property
+    def _parameters(self) -> set[str]:
+        """Override to auto-include all Dash component reference Fields as parameters."""
+        params = set(super()._parameters)
+        for field_name in self.__class__.model_fields:
+            value = getattr(self, field_name, None)
+            if isinstance(value, str) and "." in value and self.parent_id in value:
+                params.add(field_name)
+        return params
 
     @_log_call
     def pre_build(self):
@@ -692,12 +713,31 @@ class _BaseChatAction(_AbstractAction):
             # Clear input
             return html_messages, ""
 
+
 class ChatAction(_BaseChatAction):
-    """Non-streaming chat action. Subclasses must implement generate_response()."""
+    """Non-streaming chat action. Subclasses must implement generate_response().
+
+    For actions that need additional inputs (like uploaded files):
+    1. Define the input as a Field (e.g., uploaded_files: str = Field(...))
+    2. Accept it in generate_response() via named param or **kwargs
+    """
 
     type: Literal["chat_action"] = "chat_action"
 
-    def function(self, prompt, messages):
+    def generate_response(self, messages, **kwargs):
+        """Override to implement response generation.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys
+                     (content is serialized JSON)
+            **kwargs: Any extra Field inputs defined on the action
+
+        Returns:
+            dict: Must return {"content_json": "..."} with serialized content
+        """
+        raise NotImplementedError("Subclasses must implement generate_response()")
+
+    def function(self, prompt, messages, **extra_inputs):
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
 
@@ -707,7 +747,7 @@ class ChatAction(_BaseChatAction):
         store = Patch()
         store.append(latest_input)
 
-        result = self.generate_response(messages)
+        result = self.generate_response(messages, **extra_inputs)
         latest_output = {"role": "assistant", **result}
         store.append(latest_output)
 
@@ -726,7 +766,12 @@ class ChatAction(_BaseChatAction):
 
 
 class StreamingChatAction(_BaseChatAction):
-    """Streaming chat action. Subclasses must implement generate_stream()."""
+    """Streaming chat action. Subclasses must implement generate_response().
+
+    For actions that need additional inputs (like uploaded files):
+    1. Define the input as a Field (e.g., uploaded_files: str = Field(...))
+    2. Accept it in generate_response() via named param or **kwargs
+    """
 
     type: Literal["streaming_chat_action"] = "streaming_chat_action"
 
@@ -736,19 +781,42 @@ class StreamingChatAction(_BaseChatAction):
         self._setup_streaming_callbacks()
         self._setup_streaming_endpoint()
 
-    def generate_response(self, messages):
+    def generate_response(self, messages, **kwargs):
         """Override to implement streaming response.
 
         Args:
             messages: List of message dicts with 'role' and 'content_json' keys
                      (content is serialized JSON)
+            **kwargs: Any extra Field inputs defined on the action
 
         Yields:
             str: Text chunks to stream
         """
         raise NotImplementedError("Subclasses must implement generate_response()")
 
-    def function(self, prompt, messages):
+    def _setup_streaming_endpoint(self):
+        """Private: Set up streaming endpoint for SSE."""
+        CHUNK_DELIMITER = "|END|"
+
+        @dash.get_app().server.route(
+            f"/streaming-{self.parent_id}", methods=["POST"], endpoint=f"streaming_chat_{self.parent_id}"
+        )
+        def streaming_chat():
+            data = request.get_json()
+            messages = data.pop("messages")
+            data.pop("prompt")  # Not needed for generate_response
+            # Remaining data is extra inputs
+            extra_inputs = data
+
+            def event_stream():
+                for chunk in self.generate_response(messages, **extra_inputs):
+                    encoded_chunk = base64.b64encode(chunk.encode("utf-8")).decode("utf-8")
+                    yield sse_message(encoded_chunk + CHUNK_DELIMITER)
+                yield sse_message()
+
+            return Response(event_stream(), mimetype="text/event-stream")
+
+    def function(self, prompt, messages, **extra_inputs):
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
 
@@ -765,12 +833,15 @@ class StreamingChatAction(_BaseChatAction):
         html_messages = [self.message_to_html(msg) for msg in messages]
         html_messages.append(self.message_to_html(placeholder_msg))
 
+        # Pass all extra inputs through to SSE endpoint
+        sse_request = _StreamingRequest(prompt=prompt, messages=messages, **extra_inputs)
+
         return [
             store,
             html_messages,
             no_update,
             f"/streaming-{self.parent_id}",
-            sse_options(StreamingRequest(prompt=prompt, messages=messages)),
+            sse_options(sse_request),
         ]
 
     @property
@@ -936,26 +1007,6 @@ class vizro_ai_chat(ChatAction):
     type: Literal["vizro_ai_chat"] = "vizro_ai_chat"
     uploaded_files: str = Field(default_factory=lambda data: f"{data['parent_id']}-file-store.data")
 
-    def function(self, prompt, messages, uploaded_files=None):
-        """Override function to handle uploaded data parameter."""
-        if not prompt or not prompt.strip():
-            return [no_update] * len(self.outputs)
-
-        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
-        messages.append(latest_input)
-
-        store = Patch()
-        store.append(latest_input)
-
-        result = self.generate_response(messages, uploaded_files)
-        latest_output = {"role": "assistant", **result}
-        store.append(latest_output)
-
-        html_messages = [self.message_to_html(msg) for msg in messages]
-        html_messages.append(self.message_to_html(latest_output))
-
-        return [store, html_messages, no_update]
-
     def generate_response(self, messages, uploaded_files=None):
         """Generate data visualization using VizroAI.
 
@@ -1044,26 +1095,6 @@ class openai_vision_chat(ChatAction):
     def client(self):
         return OpenAI()
 
-    def function(self, prompt, messages, uploaded_files=None):
-        """Override function to handle uploaded images."""
-        if not prompt or not prompt.strip():
-            return [no_update] * len(self.outputs)
-
-        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
-        messages.append(latest_input)
-
-        store = Patch()
-        store.append(latest_input)
-
-        result = self.generate_response(messages, uploaded_files)
-        latest_output = {"role": "assistant", **result}
-        store.append(latest_output)
-
-        html_messages = [self.message_to_html(msg) for msg in messages]
-        html_messages.append(self.message_to_html(latest_output))
-
-        return [store, html_messages, no_update]
-
     def generate_response(self, messages, uploaded_files=None):
         """Generate response using OpenAI Vision API with images.
 
@@ -1112,6 +1143,69 @@ class openai_vision_chat(ChatAction):
             error_msg = f"Error calling OpenAI Vision API: {str(e)}"
             content = html.P(error_msg, style={"color": "red"})
             return {"content_json": json.dumps(content, cls=plotly.utils.PlotlyJSONEncoder)}
+
+
+class openai_vision_streaming_chat(StreamingChatAction):
+    """OpenAI Vision chat with streaming for analyzing images with text prompts.
+
+    Uses the OpenAI responses API with input_image content type and streaming.
+    Supports multiple image uploads with a text prompt.
+    """
+
+    type: Literal["openai_vision_streaming_chat"] = "openai_vision_streaming_chat"
+    model: str = "gpt-4.1-nano"
+    uploaded_files: str = Field(default_factory=lambda data: f"{data['parent_id']}-file-store.data")
+
+    @property
+    def client(self):
+        return OpenAI()
+
+    def generate_response(self, messages, uploaded_files=None):
+        """Generate streaming response using OpenAI Vision API with images.
+
+        Yields text chunks from the streaming response.
+        """
+        prompt = json.loads(messages[-1]["content_json"]) if messages else ""
+
+        content = [{"type": "input_text", "text": prompt}]
+
+        if uploaded_files:
+            for file_info in uploaded_files:
+                data = file_info["content"]
+                filename = file_info["filename"]
+
+                is_image = any(filename.lower().endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".gif", ".webp"])
+
+                if is_image:
+                    content.append(
+                        {
+                            "type": "input_image",
+                            "image_url": data,
+                        }
+                    )
+
+        # Build API messages
+        api_messages = []
+        for msg in messages[:-1]:
+            api_messages.append({"role": msg["role"], "content": json.loads(msg["content_json"])})
+
+        api_messages.append({"role": "user", "content": content})
+
+        try:
+            response = self.client.responses.create(
+                model=self.model,
+                input=api_messages,
+                instructions="You are a helpful assistant that can analyze images and answer questions about them.",
+                store=False,
+                stream=True,
+            )
+
+            for event in response:
+                if event.type == "response.output_text.delta":
+                    yield event.delta
+
+        except Exception as e:
+            yield f"Error calling OpenAI Vision API: {str(e)}"
 
 
 # -------------------- Chat Component --------------------
@@ -1247,6 +1341,7 @@ Chat.add_type("actions", Annotated[anthropic_chat, Tag("anthropic_chat")])
 Chat.add_type("actions", Annotated[mixed_content, Tag("mixed_content")])
 Chat.add_type("actions", Annotated[vizro_ai_chat, Tag("vizro_ai_chat")])
 Chat.add_type("actions", Annotated[openai_vision_chat, Tag("openai_vision_chat")])
+Chat.add_type("actions", Annotated[openai_vision_streaming_chat, Tag("openai_vision_streaming_chat")])
 
 
 page = vm.Page(
@@ -1331,21 +1426,21 @@ page_vizro_ai = vm.Page(
 )
 
 page_vision = vm.Page(
-    title="OpenAI Vision Chat",
+    title="OpenAI Vision Chat (Streaming)",
     layout=vm.Grid(grid=[[0], [1], [1], [1], [1]]),
     components=[
         vm.Card(
             text="""
-## OpenAI Vision Chat - Image Analysis
+## OpenAI Vision Chat - Image Analysis (Streaming)
 
-Upload images and ask questions about them using OpenAI's vision capabilities.
+Upload images and ask questions about them using OpenAI's vision capabilities with streaming responses.
 
 **How to use:**
 1. Click the attachment icon to upload one or more images
 2. Type your question about the image(s)
-3. Press send to get AI analysis
+3. Press send to get AI analysis (streams in real-time!)
 
-**Supported formats:** PNG, JPG, JPEG
+**Supported formats:** PNG, JPG, JPEG, GIF, WEBP
 
 **Model:** gpt-4.1-nano
 """
@@ -1354,7 +1449,7 @@ Upload images and ask questions about them using OpenAI's vision capabilities.
             id="vision_chat",
             file_upload=True,
             placeholder="Upload images and ask questions about them...",
-            actions=[openai_vision_chat(parent_id="vision_chat", model="gpt-4.1-nano")],
+            actions=[openai_vision_streaming_chat(parent_id="vision_chat", model="gpt-4.1-nano")],
         ),
     ],
 )
