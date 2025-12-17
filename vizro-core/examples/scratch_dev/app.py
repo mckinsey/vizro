@@ -374,18 +374,19 @@ page_6 = vm.Page(
     ],
 )
 
+# Commenting out page_7 as filter_interaction is deprecated
 
-pre = "p7_"
-page_7 = vm.Page(
-    title="Old filter_interaction",
-    components=[
-        vm.Graph(
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            actions=va.filter_interaction(targets=[f"{pre}table"]),
-        ),
-        vm.AgGrid(id=f"{pre}table", figure=dash_ag_grid(px.data.iris())),
-    ],
-)
+# pre = "p7_"
+# page_7 = vm.Page(
+#     title="Old filter_interaction",
+#     components=[
+#         vm.Graph(
+#             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+#             actions=va.filter_interaction(targets=[f"{pre}table"]),
+#         ),
+#         vm.AgGrid(id=f"{pre}table", figure=dash_ag_grid(px.data.iris())),
+#     ],
+# )
 
 pre = "p8_"
 page_8 = vm.Page(
@@ -533,7 +534,21 @@ page_10 = vm.Page(
     controls=[vm.Filter(id=f"{pre}filter_1", column="species", targets=[f"{pre}table"])],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10])
+dashboard = vm.Dashboard(
+    pages=[
+        page_1,
+        page_2,
+        page_3,
+        page_4,
+        page_5,
+        page_6,
+        # Commenting out page_7 as filter_interaction is deprecated
+        # page_7,
+        page_8,
+        page_9,
+        page_10,
+    ]
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)

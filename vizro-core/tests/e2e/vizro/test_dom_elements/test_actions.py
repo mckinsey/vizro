@@ -404,7 +404,7 @@ def test_drill_down_graph(dash_br):
     )
 
     # check that graph title changed to 'versicolor'
-    dash_br.wait_for_text_to_equal(".gtitle", "Graph shows `versicolor` species.")
+    dash_br.wait_for_text_to_equal(".gtitle", "Graph shows `[versicolor]` species.")
 
 
 def test_action_properties_shortcut_title_description_header_footer(dash_br):
