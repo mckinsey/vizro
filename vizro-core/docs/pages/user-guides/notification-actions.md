@@ -25,7 +25,7 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="13"}
         import vizro.actions as va
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -78,15 +78,15 @@ The `variant` argument controls the visual style and semantic meaning of the not
 - `"error"`: For errors or critical issues
 - `"progress"`: For loading states - displays a spinner instead of an icon. Useful for indicating long-running operations. This variant automatically has `auto_close=False` so the notification remains visible until the operation completes.
 
-### Custom title and icon
+### Custom title, text and icon
 
-By default, notifications use the capitalized variant name as the title (e.g., "Info", "Success", "Warning", "Error"). You can customize both the title and icon. The `icon` argument accepts any icon name from the [Google Material Icons library](https://fonts.google.com/icons):
+By default, notifications use the capitalized variant name as the title (e.g., "Info", "Success", "Warning", "Error"). You can customize the title, text and icon. The `icon` argument accepts any icon name from the [Google Material Icons library](https://fonts.google.com/icons):
 
-!!! example "Custom title and icon"
+!!! example "Custom content"
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="11-13"}
         import vizro.actions as va
         import vizro.models as vm
         from vizro import Vizro
@@ -97,11 +97,11 @@ By default, notifications use the capitalized variant name as the title (e.g., "
                 vm.Button(
                     text="Download data",
                     actions=va.show_notification(
-                            title="Download Complete",
-                            text="Your data has been exported successfully",
-                            variant="success",
-                            icon="download",
-                        ),
+                        title="Download Complete",
+                        text="Your data has been exported successfully",
+                        icon="download",
+                        variant="success",
+                    ),
                 ),
             ],
         )
@@ -150,7 +150,7 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="13 20 27"}
         import vizro.actions as va
         import vizro.models as vm
         from vizro import Vizro
@@ -230,7 +230,7 @@ Notifications can be chained with other actions to provide user feedback. For ex
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="15-22"}
         import vizro.actions as va
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -297,7 +297,7 @@ You can update an existing notification with the [`update_notification`][vizro.a
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="11-12 19-20"}
         import vizro.actions as va
         import vizro.models as vm
         from vizro import Vizro
@@ -308,16 +308,16 @@ You can update an existing notification with the [`update_notification`][vizro.a
             components=[
                 vm.Button(
                     text="Start process",
-                    actions=va.show_notification(
-                        id="process_status",
+                    actions=va.show_notification(  # (1)!
+                        id="process_status",  # (2)!
                         text="Processing started...",
                         variant="progress",
                     ),
                 ),
                 vm.Button(
                     text="Complete process",
-                    actions=va.update_notification(
-                        notification="process_status",
+                    actions=va.update_notification(  # (3)!
+                        notification="process_status",  # (4)!
                         title="Complete",
                         text="Processing finished successfully!",
                         variant="success",
@@ -329,6 +329,11 @@ You can update an existing notification with the [`update_notification`][vizro.a
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. Use `show_notification` to display an initial notification
+        1. Give the notification an explicit `id` so it can be targeted by `update_notification`
+        1. Use `update_notification` to modify an existing notification
+        1. Set `notification` to the `id` of the `show_notification` you want to update.
 
     === "app.yaml"
 
