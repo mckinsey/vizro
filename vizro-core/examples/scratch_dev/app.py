@@ -91,7 +91,7 @@ page_1 = vm.Page(
             actions=[
                 va.show_notification(
                     text="Visit the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) for more details!",
-                    title="Learn More",
+                    title="",
                     auto_close=False,
                 )
             ],
