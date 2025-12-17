@@ -165,4 +165,5 @@ cython_debug/
 *.orc
 
 #uv
+# Every library user will have its own lock file
 uv.lock
