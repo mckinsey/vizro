@@ -3,7 +3,7 @@
   background: var(--surfaces-bg-card-inverted);
   box-shadow: var(--bs-box-shadow);
   display: flex;
-  margin-top: 16px;
+  margin-top: 12px;
   padding: 12px 8px;
 }
 
@@ -76,9 +76,4 @@
   --loader-color: var(--text-secondary-inverted);
 
   margin-inline-end: 8px;
-}
-
-
-#notification-container[data-position="top-right"] {
-  padding-top: 30px;
 }
