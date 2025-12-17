@@ -112,9 +112,16 @@ class TestGraphInstantiation:
         assert my_graph.actions == []
 
 
-# TODO NOW PP: check is that the _get_value_from_trigger gets the unique values.
 class TestGraphGetValueFromTrigger:
     """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", [None, []])
+    def test_no_trigger_data(self, gapminder, trigger):
+        graph = vm.Graph(figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp"))
+        value = graph._get_value_from_trigger(value="continent", trigger=trigger)
+
+        assert value is None
+
     @pytest.mark.parametrize(
         "figure_custom_data, trigger_custom_data",
         [
@@ -126,7 +133,7 @@ class TestGraphGetValueFromTrigger:
         graph = vm.Graph(
             figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp", custom_data=figure_custom_data),
         )
-        value = graph._get_value_from_trigger("continent", [{"customdata": trigger_custom_data}])
+        value = graph._get_value_from_trigger(value="continent", trigger=[{"customdata": trigger_custom_data}])
 
         assert value == ["Europe"]
 
@@ -136,15 +143,41 @@ class TestGraphGetValueFromTrigger:
     def test_value_nested_box_notation(self, standard_px_chart, action_value):
         graph = vm.Graph(figure=standard_px_chart)
         value = graph._get_value_from_trigger(
-            action_value,
+            value=action_value,
             trigger=[
                 {
                     "customdata": ["Europe"],
                     "x": "Europe",
                     "nestedDict": {"key1": [{"key2": "Europe"}]},
                 }
-            ]
+            ],
         )
+
+        assert value == ["Europe"]
+
+    @pytest.mark.parametrize("action_value", ["continent", "customdata[0]"])
+    @pytest.mark.parametrize(
+        "trigger, expected_result",
+        [
+            ([{"customdata": ["Europe"]}], ["Europe"]),
+            ([{"customdata": ["Europe"]}, {"customdata": ["Europe"]}], ["Europe"]),
+            # vm.Graph._get_value_from_trigger ensures uniqueness and ascending order
+            ([{"customdata": ["Europe"]}, {"customdata": ["Europe"]}, {"customdata": ["Asia"]}], ["Asia", "Europe"]),
+        ],
+    )
+    def test_uniqueness_and_order_multiple_points_selected(self, gapminder, action_value, trigger, expected_result):
+        graph = vm.Graph(
+            figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp", custom_data=["continent"]),
+        )
+        value = graph._get_value_from_trigger(value=action_value, trigger=trigger)
+
+        assert value == expected_result
+
+    def test_value_nested_list_in_trigger_custom_data(self, gapminder):
+        graph = vm.Graph(
+            figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp", custom_data=["continent"]),
+        )
+        value = graph._get_value_from_trigger(value="continent", trigger=[{"customdata": [["Europe"], ["Europe"]]}])
 
         assert value == ["Europe"]
 
@@ -159,7 +192,7 @@ class TestGraphGetValueFromTrigger:
                 "If you expected the value to come from custom data, add it in the figure's custom_data signature."
             ),
         ):
-            graph._get_value_from_trigger("continent", [{"customdata": ["Europe"]}])
+            graph._get_value_from_trigger(value="continent", trigger=[{"customdata": ["Europe"]}])
 
     @pytest.mark.parametrize(
         "action_value",
@@ -180,7 +213,7 @@ class TestGraphGetValueFromTrigger:
                 "If you expected the value to come from custom data, add it in the figure's custom_data signature."
             ),
         ):
-            graph._get_value_from_trigger(action_value, [{"customdata": ["Europe"]}])
+            graph._get_value_from_trigger(value=action_value, trigger=[{"customdata": ["Europe"]}])
 
 
 class TestDunderMethodsGraph:
