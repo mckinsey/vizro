@@ -304,6 +304,7 @@ class TestDashboardBuild:
         # Test application of dashboard overwrites
         dashboard_vizro_dark = pio.templates["vizro_dark"]
         dashboard_vizro_dark.layout.update(
+            clickmode="event+select",
             geo_bgcolor="rgba(0, 0, 0, 0)",
             geo_lakecolor="rgba(0, 0, 0, 0)",
             geo_landcolor="rgba(0, 0, 0, 0)",
@@ -319,6 +320,7 @@ class TestDashboardBuild:
         )
         dashboard_vizro_light = pio.templates["vizro_light"]
         dashboard_vizro_light.layout.update(
+            clickmode="event+select",
             geo_bgcolor="rgba(0, 0, 0, 0)",
             geo_lakecolor="rgba(0, 0, 0, 0)",
             geo_landcolor="rgba(0, 0, 0, 0)",

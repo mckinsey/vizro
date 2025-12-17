@@ -237,6 +237,7 @@ class _BaseAction(VizroBaseModel):
                 "filter_interaction": self._get_filter_interaction_states(),
             },
             "_trigger": State(*self._first_in_chain_trigger.split(".")),
+            "_controls_store": State("vizro_controls_store", "data"),
         }
 
         # Work out which built in arguments are actually required for this function.
