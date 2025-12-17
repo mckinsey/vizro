@@ -85,9 +85,7 @@ class TestShowNotificationFunction:
     def test_function_variants(
         self, variant, expected_class, expected_title, expected_icon, expected_loading, expected_auto_close
     ):
-        model_manager["button_one"].actions = [
-            show_notification(id="test_notification", text=f"{variant} message", variant=variant)
-        ]
+        model_manager["button_one"].actions = [show_notification(id="test_notification", text="test", variant=variant)]
         action = model_manager["test_notification"]
         [result] = action.function()
 
