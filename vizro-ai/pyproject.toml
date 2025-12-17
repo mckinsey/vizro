@@ -22,7 +22,7 @@ dependencies = [
   "langgraph>=0.1.2",
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
   "vizro>=0.1.32",
-  "pydantic>=2.10.0",
+  "pydantic>=2.7.0",  # TODO: Update to 2.10.0 when pyCafe is made compatible
   "langchain_openai",  # Base dependency, ie minimum model working
   "black",
   "autoflake"

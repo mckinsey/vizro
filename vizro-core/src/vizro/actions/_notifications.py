@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field
+from pydantic import AfterValidator, Field, ValidationInfo
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -25,6 +25,14 @@ VARIANT_DEFAULTS: dict[str, VariantDefaults] = {
     "error": VariantDefaults(icon="error", title="Error", className="alert-error"),
     "progress": VariantDefaults(icon="info", title="Progress", className="alert-info", auto_close=False),
 }
+
+
+# TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
+def set_variant_default(value, info: ValidationInfo):
+    # Check for "is None" rather than falsey values because auto_close=False is valid.
+    if value is None:
+        return getattr(VARIANT_DEFAULTS[info.data["variant"]], info.field_name)  # type: ignore[arg-type]
+    return value
 
 
 class show_notification(_AbstractAction):
@@ -72,26 +80,38 @@ class show_notification(_AbstractAction):
         If `progress`, the notification will show a loading spinner instead of an icon.""",
     )
 
-    title: str = Field(
-        default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].title,  # type: ignore[arg-type, misc]
-        description="""Notification title. Defaults to capitalized variant name if not provided,
-        for example 'Info' for 'info' variant.""",
-    )
-    icon: Annotated[
-        str,
-        AfterValidator(validate_icon),
+    title: Annotated[
+        str | None,
+        AfterValidator(set_variant_default),
         Field(
-            default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].icon,
-            description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
-                Ignored if `variant="progress"`""",
+            default=None,
+            description="""Notification title. Defaults to capitalized variant name if not provided,
+            for example 'Info' for 'info' variant.""",
+            validate_default=True,
         ),
     ]
-    auto_close: bool | int = Field(
-        default_factory=lambda data: VARIANT_DEFAULTS[data["variant"]].auto_close,  # type: ignore[arg-type, misc]
-        description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
-            open until the user closes it manually. Default value depends on variant: `4000` for
-            info/success/warning/error, `False` for progress.""",
-    )
+    icon: Annotated[
+        str | None,
+        AfterValidator(validate_icon),
+        AfterValidator(set_variant_default),
+        Field(
+            default=None,
+            description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
+                Ignored if `variant="progress"`""",
+            validate_default=True,
+        ),
+    ]
+    auto_close: Annotated[
+        bool | int | None,
+        AfterValidator(set_variant_default),
+        Field(
+            default=None,
+            description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
+                open until the user closes it manually. Default value depends on variant: `4000` for
+                info/success/warning/error, `False` for progress.""",
+            validate_default=True,
+        ),
+    ]
 
     @property
     def outputs(self) -> _IdOrIdProperty:  # type: ignore[override]

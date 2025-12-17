@@ -2451,14 +2451,30 @@
           "type": "string"
         },
         "title": {
-          "description": "Notification title. Defaults to capitalized variant name if not provided,\n        for example 'Info' for 'info' variant.",
-          "title": "Title",
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Notification title. Defaults to capitalized variant name if not provided,\n            for example 'Info' for 'info' variant.",
+          "title": "Title"
         },
         "icon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
           "description": "Icon name from Google Material icons library. Defaults to variant-specific icon.\n                Ignored if `variant=\"progress\"`",
-          "title": "Icon",
-          "type": "string"
+          "title": "Icon"
         },
         "auto_close": {
           "anyOf": [
@@ -2467,9 +2483,13 @@
             },
             {
               "type": "integer"
+            },
+            {
+              "type": "null"
             }
           ],
-          "description": "Auto-close duration in milliseconds. Set to `False` to keep the notification\n            open until the user closes it manually. Default value depends on variant: `4000` for\n            info/success/warning/error, `False` for progress.",
+          "default": null,
+          "description": "Auto-close duration in milliseconds. Set to `False` to keep the notification\n                open until the user closes it manually. Default value depends on variant: `4000` for\n                info/success/warning/error, `False` for progress.",
           "title": "Auto Close"
         }
       },
@@ -2505,14 +2525,30 @@
           "type": "string"
         },
         "title": {
-          "description": "Notification title. Defaults to capitalized variant name if not provided,\n        for example 'Info' for 'info' variant.",
-          "title": "Title",
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Notification title. Defaults to capitalized variant name if not provided,\n            for example 'Info' for 'info' variant.",
+          "title": "Title"
         },
         "icon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
           "description": "Icon name from Google Material icons library. Defaults to variant-specific icon.\n                Ignored if `variant=\"progress\"`",
-          "title": "Icon",
-          "type": "string"
+          "title": "Icon"
         },
         "auto_close": {
           "anyOf": [
@@ -2521,9 +2557,13 @@
             },
             {
               "type": "integer"
+            },
+            {
+              "type": "null"
             }
           ],
-          "description": "Auto-close duration in milliseconds. Set to `False` to keep the notification\n            open until the user closes it manually. Default value depends on variant: `4000` for\n            info/success/warning/error, `False` for progress.",
+          "default": null,
+          "description": "Auto-close duration in milliseconds. Set to `False` to keep the notification\n                open until the user closes it manually. Default value depends on variant: `4000` for\n                info/success/warning/error, `False` for progress.",
           "title": "Auto Close"
         },
         "notification": {

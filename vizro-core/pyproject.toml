@@ -24,7 +24,7 @@ dependencies = [
   # Must be <= the version in pre-commit mypy hook, sync manually
   # When updating this to >=2.9, search code for `but this requires pydantic >= 2.9` to find all
   # occurrences of code that is now ready to change
-  "pydantic>=2.10.0",  # needed for default_factory to be able to take on arguments
+  "pydantic>=2.7.0",  # TODO: Update to 2.10.0 when pyCafe is made compatible
   "flask_caching>=2",
   "wrapt>=1",
   "black",
