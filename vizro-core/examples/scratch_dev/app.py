@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import base64
-from typing import Annotated, Optional, Any, Literal
+from typing import Annotated, Any, Iterator, Literal, Union
 import json
 
 import dash
@@ -23,9 +25,8 @@ from vizro import Vizro
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import make_actions_chain
+from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models.types import ActionType
-from vizro.models._models_utils import _log_call
 
 
 load_dotenv()
@@ -34,15 +35,12 @@ load_dotenv()
 # Common style values for consistency
 BORDER_RADIUS = "0px"
 # Spacing from design system
-SPACING_SM = "8px"  # Small gaps
-SPACING_MD = "12px"  # Medium gaps (was 15px, updated to design spec)
-SPACING_LG = "24px"  # Large gaps (was 20px, updated to design spec)
+SPACING_MD = "12px"
+SPACING_LG = "24px"
 
 # Typography from design system
-FONT_FAMILY = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-FONT_SIZE_EDITORIAL = "16px"  # Body editorial 01 - for main message content
-FONT_SIZE_HELP = "12px"  # Help text
-LINE_HEIGHT_EDITORIAL = "24px"  # 150% of 16px
+FONT_SIZE_EDITORIAL = "16px"
+LINE_HEIGHT_EDITORIAL = "24px"
 LETTER_SPACING_EDITORIAL = "-0.002em"
 
 COLOR_TEXT_PRIMARY = "var(--text-primary)"
@@ -54,37 +52,36 @@ MAX_CHAT_WIDTH = "788px"  # from design system
 PLOT_WIDTH = "600px"
 PLOT_HEIGHT = "400px"
 
-# Message bubble styling - aligned with design system
+# Message bubble styling
 MESSAGE_BUBBLE = {
     "maxWidth": "100%",
     "paddingTop": "10px",
     "paddingBottom": "10px",
     "marginBottom": SPACING_MD,
     "borderRadius": BORDER_RADIUS,
-    "fontFamily": FONT_FAMILY,  # Inter font from design
-    "lineHeight": LINE_HEIGHT_EDITORIAL,  # 24px from design (was 1.65rem)
-    "letterSpacing": LETTER_SPACING_EDITORIAL,  # -0.002em from design (was 0.2px)
+    "lineHeight": LINE_HEIGHT_EDITORIAL,
+    "letterSpacing": LETTER_SPACING_EDITORIAL,
     "whiteSpace": "pre-wrap",
     "wordBreak": "break-word",
-    "display": "inline-block",  # Allow natural sizing based on content
-    "color": COLOR_TEXT_PRIMARY,  # rgba(20, 23, 33, 0.88) from design
+    "display": "inline-block",
+    "color": COLOR_TEXT_PRIMARY,
 }
 
-# User message specific styling
+# User message styling
 USER_MESSAGE_STYLE = {
     **MESSAGE_BUBBLE,
     "backgroundColor": "var(--surfaces-bg-card)",
-    "marginLeft": "0",  # Align to the left
+    "marginLeft": "0",
     "marginRight": "auto",
     "paddingLeft": "15px",
     "paddingRight": "15px",
 }
 
-# Assistant message specific styling
+# Assistant message styling
 ASSISTANT_MESSAGE_STYLE = {
     **MESSAGE_BUBBLE,
     "backgroundColor": "var(--bs-body-bg)",
-    "marginLeft": "0",  # Align to the left
+    "marginLeft": "0",
     "marginRight": "auto",
 }
 
@@ -97,11 +94,11 @@ HISTORY_CONTAINER = {
     "paddingLeft": "5px",
     "paddingRight": "5px",
     "overflowY": "auto",
-    "overflowX": "hidden",  # Prevent horizontal scroll
+    "overflowX": "hidden",
     "height": "100%",
     "display": "flex",
     "flexDirection": "column",
-    "margin": "0 auto",  # Center the container
+    "margin": "0 auto",
 }
 
 HISTORY_SECTION = {
@@ -127,25 +124,43 @@ INPUT_SECTION = {
 
 
 class _StreamingRequest(BaseModel):
-    """Generic request payload for streaming chat endpoint."""
+    """Request payload for streaming chat endpoint.
+
+    Args:
+        prompt (str): The user's input prompt.
+        messages (list[dict[str, Any]]): List of message dicts with 'role' and 'content_json' keys.
+
+    """
 
     model_config = ConfigDict(extra="allow")
 
-    prompt: str
-    messages: Any  # List of message dicts with 'role' and 'content' keys
+    prompt: str = Field(description="The user's input prompt.")
+    messages: list[dict[str, Any]] = Field(description="List of message dicts with 'role' and 'content_json' keys.")
 
 
 class _BaseChatAction(_AbstractAction):
-    """Base class with shared chat functionality."""
+    """Base class with shared chat functionality for Chat component actions.
+
+    Args:
+        parent_id (str): ID of the parent Chat component.
+        prompt (str): Reference to the chat input value. Defaults to `"{parent_id}-chat-input.value"`.
+        messages (str): Reference to the message store data. Defaults to `"{parent_id}-store.data"`.
+
+    """
 
     parent_id: str = Field(description="ID of the parent Chat component.")
-    prompt: str = Field(default_factory=lambda data: f"{data['parent_id']}-chat-input.value")
-    messages: str = Field(default_factory=lambda data: f"{data['parent_id']}-store.data")
+    prompt: str = Field(
+        default_factory=lambda data: f"{data['parent_id']}-chat-input.value",
+        description="Reference to the chat input value.",
+    )
+    messages: str = Field(
+        default_factory=lambda data: f"{data['parent_id']}-store.data",
+        description="Reference to the message store data.",
+    )
 
     # TODO: This override of _parameters is a workaround to auto-detect Fields that are Dash component
     # references (format: "component-id.property"). Without this, users would need to override `function`
     # just to declare extra params like `uploaded_files` in the signature.
-    #
     # Vizro's _AbstractAction._runtime_args only includes Fields that are explicitly named in the
     # function signature. By overriding _parameters to include all Fields with "." in their value,
     # we make them available as **extra_inputs without users needing to touch `function`.
@@ -263,28 +278,6 @@ class _BaseChatAction(_AbstractAction):
             prevent_initial_call=True,
         )
 
-    def _setup_streaming_endpoint(self):
-        """Set up streaming endpoint for SSE."""
-        CHUNK_DELIMITER = "|END|"
-
-        @dash.get_app().server.route(
-            f"/streaming-{self.parent_id}", methods=["POST"], endpoint=f"streaming_chat_{self.parent_id}"
-        )
-        def streaming_chat():
-            req = StreamingRequest(**request.get_json())
-
-            def event_stream():
-                for chunk in self.generate_response(req.messages):
-                    # Encode chunk as base64 to handle any special characters
-                    encoded_chunk = base64.b64encode(chunk.encode("utf-8")).decode("utf-8")
-                    # Need a robust delimiter for clientside parsing
-                    yield sse_message(encoded_chunk + CHUNK_DELIMITER)
-
-                # Send SSE completion signal
-                yield sse_message()
-
-            return Response(event_stream(), mimetype="text/event-stream")
-
     def _setup_chat_callbacks(self):
         """Set up generic chat UI callbacks."""
 
@@ -296,7 +289,6 @@ class _BaseChatAction(_AbstractAction):
 
                 // Style constants
                 const BORDER_RADIUS = "0px";
-                const FONT_FAMILY = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
                 const FONT_SIZE_EDITORIAL = "16px";
                 const LINE_HEIGHT_EDITORIAL = "24px";
                 const LETTER_SPACING_EDITORIAL = "-0.002em";
@@ -308,7 +300,6 @@ class _BaseChatAction(_AbstractAction):
                     paddingBottom: "10px",
                     marginBottom: SPACING_MD,
                     borderRadius: BORDER_RADIUS,
-                    fontFamily: FONT_FAMILY,
                     lineHeight: LINE_HEIGHT_EDITORIAL,
                     letterSpacing: LETTER_SPACING_EDITORIAL,
                     whiteSpace: "pre-wrap",
@@ -563,23 +554,31 @@ class _BaseChatAction(_AbstractAction):
 
             return no_update, no_update
 
-    def generate_response(self, messages):
-        """Override to implement response generation.
+    def generate_response(self, messages: list[dict[str, Any]], **kwargs: Any) -> Any:
+        """Generate a response from the chat model. Must be implemented by subclasses.
 
         Args:
-            messages: List of message dicts with 'role' and 'content_json' keys
-                     (content is serialized JSON)
+            messages: List of message dicts with 'role' and 'content_json' keys (content is serialized JSON).
+            **kwargs: Additional keyword arguments from extra Fields.
 
         Returns:
-            str or Dash component: The response content (JSON serialization is handled automatically)
+            Response content as string or Dash component.
+
+        Raises:
+            NotImplementedError: If not implemented by subclass.
+
         """
         raise NotImplementedError("Subclasses must implement generate_response()")
 
-    def _create_file_preview(self, filenames: list[str]):
+    def _create_file_preview(self, filenames: list[str]) -> html.Div:
         """Create file preview UI component for multiple files.
 
         Args:
-            filenames: List of filenames to display, or a single filename string for backwards compatibility.
+            filenames: List of filenames to display.
+
+        Returns:
+            Dash HTML Div component with file preview chips.
+
         """
         file_items = []
         for i, filename in enumerate(filenames):
@@ -625,16 +624,17 @@ class _BaseChatAction(_AbstractAction):
             },
         )
 
-    def message_to_html(self, message):
+    def message_to_html(self, message: dict[str, str]) -> html.Div:
         """Convert a message dict to HTML structure.
 
         Override this method for custom rendering logic.
 
         Args:
-            message: Dict with 'role' and 'content_json' keys
+            message: Dict with 'role' and 'content_json' keys.
 
         Returns:
-            Dash HTML component
+            Dash HTML Div component representing the message.
+
         """
         role = message["role"]
         content = json.loads(message["content_json"])
@@ -714,29 +714,55 @@ class _BaseChatAction(_AbstractAction):
 
 
 class ChatAction(_BaseChatAction):
-    """Non-streaming chat action. Subclasses must implement generate_response().
+    """Non-streaming chat action for synchronous response generation.
 
-    For actions that need additional inputs (like uploaded files):
-    1. Define the input as a Field (e.g., uploaded_files: str = Field(...))
-    2. Accept it in generate_response() via named param or **kwargs
+    Subclass this to create custom chat actions that return complete responses.
+
+    Args:
+        type (Literal["chat_action"]): Defaults to `"chat_action"`.
+        parent_id (str): ID of the parent Chat component.
+
+    Example:
+        ```python
+        class my_chat(ChatAction):
+            type: Literal["my_chat"] = "my_chat"
+
+            def generate_response(self, messages, **kwargs):
+                return "Hello from my chat!"
+        ```
+
     """
 
     type: Literal["chat_action"] = "chat_action"
 
-    def generate_response(self, messages, **kwargs):
-        """Override to implement response generation.
+    def generate_response(self, messages: list[dict[str, Any]], **kwargs: Any) -> Union[str, html.Div]:
+        """Generate a chat response.
 
         Args:
-            messages: List of message dicts with 'role' and 'content_json' keys
-                     (content is serialized JSON)
-            **kwargs: Any extra Field inputs defined on the action
+            messages: List of message dicts with 'role' and 'content_json' keys (content is serialized JSON).
+            **kwargs: Extra Field inputs defined on the action.
 
         Returns:
-            str or Dash component: The response content (will be JSON-serialized automatically)
+            Response content as string or Dash component (will be JSON-serialized automatically).
+
+        Raises:
+            NotImplementedError: Must be implemented by subclass.
+
         """
         raise NotImplementedError("Subclasses must implement generate_response()")
 
-    def function(self, prompt, messages, **extra_inputs):
+    def function(self, prompt: str, messages: list[dict[str, Any]], **extra_inputs: Any) -> list[Any]:
+        """Execute the chat action callback.
+
+        Args:
+            prompt: User's input text.
+            messages: Current message history.
+            **extra_inputs: Additional inputs from Fields.
+
+        Returns:
+            List of outputs for store, hidden-messages, and chat-input.
+
+        """
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
 
@@ -758,7 +784,13 @@ class ChatAction(_BaseChatAction):
         return [store, html_messages, no_update]
 
     @property
-    def outputs(self):
+    def outputs(self) -> list[str]:
+        """Define callback outputs for this action.
+
+        Returns:
+            List of output component references.
+
+        """
         return [
             f"{self.parent_id}-store.data",
             f"{self.parent_id}-hidden-messages.children",
@@ -767,36 +799,53 @@ class ChatAction(_BaseChatAction):
 
 
 class StreamingChatAction(_BaseChatAction):
-    """Streaming chat action. Subclasses must implement generate_response().
+    """Streaming chat action for real-time response generation via SSE.
 
-    For actions that need additional inputs (like uploaded files):
-    1. Define the input as a Field (e.g., uploaded_files: str = Field(...))
-    2. Accept it in generate_response() via named param or **kwargs
+    Subclass this to create custom chat actions that stream responses in real-time.
+
+    Args:
+        type (Literal["streaming_chat_action"]): Defaults to `"streaming_chat_action"`.
+        parent_id (str): ID of the parent Chat component.
+
+    Example:
+        ```python
+        class my_streaming_chat(StreamingChatAction):
+            type: Literal["my_streaming_chat"] = "my_streaming_chat"
+
+            def generate_response(self, messages, **kwargs):
+                for chunk in ["Hello", " ", "World!"]:
+                    yield chunk
+        ```
+
     """
 
     type: Literal["streaming_chat_action"] = "streaming_chat_action"
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self) -> None:
+        """Set up streaming callbacks and endpoint during pre-build phase."""
         super().pre_build()
         self._setup_streaming_callbacks()
         self._setup_streaming_endpoint()
 
-    def generate_response(self, messages, **kwargs):
-        """Override to implement streaming response.
+    def generate_response(self, messages: list[dict[str, Any]], **kwargs: Any) -> Iterator[str]:
+        """Generate a streaming chat response.
 
         Args:
-            messages: List of message dicts with 'role' and 'content_json' keys
-                     (content is serialized JSON)
-            **kwargs: Any extra Field inputs defined on the action
+            messages: List of message dicts with 'role' and 'content_json' keys (content is serialized JSON).
+            **kwargs: Extra Field inputs defined on the action.
 
         Yields:
-            str: Text chunks to stream
+            Text chunks to stream to the client.
+
+        Raises:
+            NotImplementedError: Must be implemented by subclass.
+
         """
         raise NotImplementedError("Subclasses must implement generate_response()")
 
-    def _setup_streaming_endpoint(self):
-        """Private: Set up streaming endpoint for SSE."""
+    def _setup_streaming_endpoint(self) -> None:
+        """Set up streaming endpoint for SSE."""
         CHUNK_DELIMITER = "|END|"
 
         @dash.get_app().server.route(
@@ -811,13 +860,28 @@ class StreamingChatAction(_BaseChatAction):
 
             def event_stream():
                 for chunk in self.generate_response(messages, **extra_inputs):
+                    # Encode chunk as base64 to handle any special characters
                     encoded_chunk = base64.b64encode(chunk.encode("utf-8")).decode("utf-8")
+                    # Need a robust delimiter for clientside parsing
                     yield sse_message(encoded_chunk + CHUNK_DELIMITER)
+
+                # Send SSE completion signal
                 yield sse_message()
 
             return Response(event_stream(), mimetype="text/event-stream")
 
-    def function(self, prompt, messages, **extra_inputs):
+    def function(self, prompt: str, messages: list[dict[str, Any]], **extra_inputs: Any) -> list[Any]:
+        """Execute the streaming chat action callback.
+
+        Args:
+            prompt: User's input text.
+            messages: Current message history.
+            **extra_inputs: Additional inputs from Fields.
+
+        Returns:
+            List of outputs for store, hidden-messages, chat-input, SSE url, and SSE options.
+
+        """
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
 
@@ -846,7 +910,13 @@ class StreamingChatAction(_BaseChatAction):
         ]
 
     @property
-    def outputs(self):
+    def outputs(self) -> list[str]:
+        """Define callback outputs for this action.
+
+        Returns:
+            List of output component references.
+
+        """
         return [
             f"{self.parent_id}-store.data",
             f"{self.parent_id}-hidden-messages.children",
@@ -858,32 +928,41 @@ class StreamingChatAction(_BaseChatAction):
 
 # -------------------- Example Chat Actions --------------------
 
-# HOW TO CREATE A CHAT ACTION:
-#
-# Both ChatAction and StreamingChatAction use the same method name: generate_response()
-# The difference is in what the method returns/yields.
-#
-# For non-streaming: inherit from ChatAction and implement generate_response()
-#   - Returns str or Dash component directly (JSON serialization is handled automatically)
-#   - Examples: simple_echo, mixed_content, openai_chat
-#
-# For streaming: inherit from StreamingChatAction and implement generate_response()
-#   - Yields text chunks (generator/iterator)
-#   - Examples: openai_streaming_chat, anthropic_chat
-
 
 class openai_chat(ChatAction):
-    """OpenAI non-streaming chat implementation."""
+    """OpenAI non-streaming chat implementation.
+
+    Args:
+        type (Literal["openai_chat"]): Defaults to `"openai_chat"`.
+        parent_id (str): ID of the parent Chat component.
+        model (str): OpenAI model name. Defaults to `"gpt-4.1-nano"`.
+
+    """
 
     type: Literal["openai_chat"] = "openai_chat"
-    model: str = "gpt-4.1-nano"
+    model: str = Field(default="gpt-4.1-nano", description="OpenAI model name.")
 
     @property
-    def client(self):
+    def client(self) -> OpenAI:
+        """Get OpenAI client instance.
+
+        Returns:
+            OpenAI client.
+
+        """
         return OpenAI()
 
-    def generate_response(self, messages):
-        """Handle non-streaming response from OpenAI."""
+    def generate_response(self, messages: list[dict[str, Any]], **kwargs: Any) -> str:
+        """Generate response from OpenAI.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys.
+            **kwargs: Additional keyword arguments (unused).
+
+        Returns:
+            Generated text response.
+
+        """
         api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
         response = self.client.responses.create(
             model=self.model,
@@ -895,17 +974,39 @@ class openai_chat(ChatAction):
 
 
 class openai_streaming_chat(StreamingChatAction):
-    """OpenAI streaming chat implementation."""
+    """OpenAI streaming chat implementation.
+
+    Args:
+        type (Literal["openai_streaming_chat"]): Defaults to `"openai_streaming_chat"`.
+        parent_id (str): ID of the parent Chat component.
+        model (str): OpenAI model name. Defaults to `"gpt-4.1-nano"`.
+
+    """
 
     type: Literal["openai_streaming_chat"] = "openai_streaming_chat"
-    model: str = "gpt-4.1-nano"
+    model: str = Field(default="gpt-4.1-nano", description="OpenAI model name.")
 
     @property
-    def client(self):
+    def client(self) -> OpenAI:
+        """Get OpenAI client instance.
+
+        Returns:
+            OpenAI client.
+
+        """
         return OpenAI()
 
-    def generate_response(self, messages):
-        """Handle streaming response from OpenAI."""
+    def generate_response(self, messages: list[dict[str, Any]], **kwargs: Any) -> Iterator[str]:
+        """Generate streaming response from OpenAI.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys.
+            **kwargs: Additional keyword arguments (unused).
+
+        Yields:
+            Text chunks from OpenAI's response.
+
+        """
         api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
         response = self.client.responses.create(
             model=self.model,
@@ -926,19 +1027,28 @@ anthropic_client = anthropic.Anthropic()
 
 
 class anthropic_chat(StreamingChatAction):
-    """Streaming implementation for Anthropic Claude chat."""
+    """Streaming implementation for Anthropic Claude chat.
+
+    Args:
+        type (Literal["anthropic_chat"]): Defaults to `"anthropic_chat"`.
+        parent_id (str): ID of the parent Chat component.
+        model (str): Anthropic model name. Defaults to `"claude-haiku-4-5-20251001"`.
+
+    """
 
     type: Literal["anthropic_chat"] = "anthropic_chat"
-    model: str = "claude-haiku-4-5-20251001"
+    model: str = Field(default="claude-haiku-4-5-20251001", description="Anthropic model name.")
 
-    def generate_response(self, messages):
+    def generate_response(self, messages: list[dict[str, Any]], **kwargs: Any) -> Iterator[str]:
         """Generate streaming response from Anthropic Claude.
 
         Args:
-            messages: List of message dicts with 'role' and 'content_json' keys
+            messages: List of message dicts with 'role' and 'content_json' keys.
+            **kwargs: Additional keyword arguments (unused).
 
         Yields:
-            str: Text chunks from Claude's response
+            Text chunks from Claude's response.
+
         """
         api_messages = [{"role": msg["role"], "content": json.loads(msg["content_json"])} for msg in messages]
         with anthropic_client.messages.stream(
@@ -951,22 +1061,53 @@ class anthropic_chat(StreamingChatAction):
 
 
 class simple_echo(ChatAction):
-    """Simple echo chat."""
+    """Simple echo chat that returns the user's message.
+
+    Args:
+        type (Literal["simple_echo"]): Defaults to `"simple_echo"`.
+        parent_id (str): ID of the parent Chat component.
+
+    """
 
     type: Literal["simple_echo"] = "simple_echo"
 
-    def generate_response(self, messages):
+    def generate_response(self, messages: list[dict[str, Any]], **kwargs: Any) -> str:
+        """Echo the user's last message.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys.
+            **kwargs: Additional keyword arguments (unused).
+
+        Returns:
+            Echo of the user's last message.
+
+        """
         last_message = json.loads(messages[-1]["content_json"]) if messages else ""
         return f"You said: {last_message}"
 
 
 class mixed_content(ChatAction):
-    """Simple example showing different content types: text, chart, and image."""
+    """Example showing different content types: text, chart, and image.
+
+    Args:
+        type (Literal["mixed_content"]): Defaults to `"mixed_content"`.
+        parent_id (str): ID of the parent Chat component.
+
+    """
 
     type: Literal["mixed_content"] = "mixed_content"
 
-    def generate_response(self, messages):
-        """Returns serialized component structure as JSON."""
+    def generate_response(self, messages: list[dict[str, Any]], **kwargs: Any) -> html.Div:
+        """Generate a response with mixed content types.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys.
+            **kwargs: Additional keyword arguments (unused).
+
+        Returns:
+            Dash HTML Div containing markdown, image, and chart components.
+
+        """
         prompt = json.loads(messages[-1]["content_json"]) if messages else ""
 
         fig = px.scatter(
@@ -998,15 +1139,39 @@ This example demonstrates rendering different content types:
         )
 
 
-# Example of using VizroAI to generate plots from natural language
 class vizro_ai_chat(ChatAction):
-    """Generate data visualizations using natural language with VizroAI."""
+    """Generate data visualizations using natural language with VizroAI.
+
+    Args:
+        type (Literal["vizro_ai_chat"]): Defaults to `"vizro_ai_chat"`.
+        parent_id (str): ID of the parent Chat component.
+        uploaded_files (str): Reference to file store data. Defaults to `"{parent_id}-file-store.data"`.
+
+    """
 
     type: Literal["vizro_ai_chat"] = "vizro_ai_chat"
-    uploaded_files: str = Field(default_factory=lambda data: f"{data['parent_id']}-file-store.data")
+    uploaded_files: str = Field(
+        default_factory=lambda data: f"{data['parent_id']}-file-store.data",
+        description="Reference to file store data.",
+    )
 
-    def generate_response(self, messages, uploaded_files=None):
-        """Generate data visualization using VizroAI."""
+    def generate_response(
+        self,
+        messages: list[dict[str, Any]],
+        uploaded_files: list[dict[str, str]] | None = None,
+        **kwargs: Any,
+    ) -> html.Div | html.P:
+        """Generate data visualization using VizroAI.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys.
+            uploaded_files: List of uploaded file dicts with 'content' and 'filename' keys.
+            **kwargs: Additional keyword arguments (unused).
+
+        Returns:
+            Dash component containing the generated visualization or error message.
+
+        """
         from vizro_ai import VizroAI
         from langchain_openai import ChatOpenAI
         import io
@@ -1073,20 +1238,48 @@ class openai_vision_chat(ChatAction):
 
     Uses the OpenAI responses API with input_image content type for vision capabilities.
     Supports multiple image uploads with a text prompt.
+
+    Args:
+        type (Literal["openai_vision_chat"]): Defaults to `"openai_vision_chat"`.
+        parent_id (str): ID of the parent Chat component.
+        model (str): OpenAI model name. Defaults to `"gpt-4.1-nano"`.
+        uploaded_files (str): Reference to file store data. Defaults to `"{parent_id}-file-store.data"`.
+
     """
 
     type: Literal["openai_vision_chat"] = "openai_vision_chat"
-    model: str = "gpt-4.1-nano"
-    uploaded_files: str = Field(default_factory=lambda data: f"{data['parent_id']}-file-store.data")
+    model: str = Field(default="gpt-4.1-nano", description="OpenAI model name.")
+    uploaded_files: str = Field(
+        default_factory=lambda data: f"{data['parent_id']}-file-store.data",
+        description="Reference to file store data.",
+    )
 
     @property
-    def client(self):
+    def client(self) -> OpenAI:
+        """Get OpenAI client instance.
+
+        Returns:
+            OpenAI client.
+
+        """
         return OpenAI()
 
-    def generate_response(self, messages, uploaded_files=None):
+    def generate_response(
+        self,
+        messages: list[dict[str, Any]],
+        uploaded_files: list[dict[str, str]] | None = None,
+        **kwargs: Any,
+    ) -> str | html.P:
         """Generate response using OpenAI Vision API with images.
 
-        Builds content array with input_text and input_image types for OpenAI responses API.
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys.
+            uploaded_files: List of uploaded file dicts with 'content' and 'filename' keys.
+            **kwargs: Additional keyword arguments (unused).
+
+        Returns:
+            Generated text response or error message component.
+
         """
         prompt = json.loads(messages[-1]["content_json"]) if messages else ""
 
@@ -1134,20 +1327,48 @@ class openai_vision_streaming_chat(StreamingChatAction):
 
     Uses the OpenAI responses API with input_image content type and streaming.
     Supports multiple image uploads with a text prompt.
+
+    Args:
+        type (Literal["openai_vision_streaming_chat"]): Defaults to `"openai_vision_streaming_chat"`.
+        parent_id (str): ID of the parent Chat component.
+        model (str): OpenAI model name. Defaults to `"gpt-4.1-nano"`.
+        uploaded_files (str): Reference to file store data. Defaults to `"{parent_id}-file-store.data"`.
+
     """
 
     type: Literal["openai_vision_streaming_chat"] = "openai_vision_streaming_chat"
-    model: str = "gpt-4.1-nano"
-    uploaded_files: str = Field(default_factory=lambda data: f"{data['parent_id']}-file-store.data")
+    model: str = Field(default="gpt-4.1-nano", description="OpenAI model name.")
+    uploaded_files: str = Field(
+        default_factory=lambda data: f"{data['parent_id']}-file-store.data",
+        description="Reference to file store data.",
+    )
 
     @property
-    def client(self):
+    def client(self) -> OpenAI:
+        """Get OpenAI client instance.
+
+        Returns:
+            OpenAI client.
+
+        """
         return OpenAI()
 
-    def generate_response(self, messages, uploaded_files=None):
+    def generate_response(
+        self,
+        messages: list[dict[str, Any]],
+        uploaded_files: list[dict[str, str]] | None = None,
+        **kwargs: Any,
+    ) -> Iterator[str]:
         """Generate streaming response using OpenAI Vision API with images.
 
-        Yields text chunks from the streaming response.
+        Args:
+            messages: List of message dicts with 'role' and 'content_json' keys.
+            uploaded_files: List of uploaded file dicts with 'content' and 'filename' keys.
+            **kwargs: Additional keyword arguments (unused).
+
+        Yields:
+            Text chunks from the streaming response.
+
         """
         prompt = json.loads(messages[-1]["content_json"]) if messages else ""
 
@@ -1196,24 +1417,50 @@ class openai_vision_streaming_chat(StreamingChatAction):
 
 
 class Chat(VizroBaseModel):
+    """Chat component for conversational AI interfaces.
+
+    Args:
+        type (Literal["chat"]): Defaults to `"chat"`.
+        actions (list[ActionType]): List of chat actions to handle responses. Defaults to `[]`.
+        placeholder (str): Placeholder text for the input field. Defaults to `"How can I help you?"`.
+        file_upload (bool): Enable file upload functionality. Defaults to `False`.
+
+    """
+
     type: Literal["chat"] = "chat"
-    actions: list[ActionType] = []
-    placeholder: str = "How can I help you?"
-    file_upload: bool = False
+    actions: list[ActionType] = Field(default=[], description="List of chat actions to handle responses.")
+    placeholder: str = Field(default="How can I help you?", description="Placeholder text for the input field.")
+    file_upload: bool = Field(default=False, description="Enable file upload functionality.")
 
     # This is how you make a new component a trigger of an action in the new system.
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
     @property
-    def _action_triggers(self):
+    def _action_triggers(self) -> dict[str, str]:
+        """Define action triggers for the chat component.
+
+        Returns:
+            Dict mapping trigger names to component property references.
+
+        """
         return {"__default__": f"{self.id}-send-button.n_clicks"}
 
-    def _build_upload_stores(self):
-        """Build stores for file upload (always rendered for consistent callbacks)."""
+    def _build_upload_stores(self) -> list[dcc.Store]:
+        """Build stores for file upload.
+
+        Returns:
+            List of dcc.Store components for file upload state.
+
+        """
         return [dcc.Store(id=f"{self.id}-file-store", storage_type="session")]
 
-    def _build_input_area(self):
-        """Build the input area with optional file upload button."""
+    def _build_input_area(self) -> html.Div:
+        """Build the input area with optional file upload button.
+
+        Returns:
+            Dash HTML Div containing the input area components.
+
+        """
         left_button = dcc.Upload(
             id=f"{self.id}-upload",
             children=dmc.ActionIcon(
@@ -1289,7 +1536,14 @@ class Chat(VizroBaseModel):
             style=INPUT_SECTION,
         )
 
-    def build(self):
+    @_log_call
+    def build(self) -> html.Div:
+        """Build the chat component layout.
+
+        Returns:
+            Dash HTML Div containing the complete chat interface.
+
+        """
         return html.Div(
             [
                 *self._build_upload_stores(),
@@ -1443,44 +1697,6 @@ dashboard = vm.Dashboard(
     theme="vizro_light",
     title="Vizro",
 )
-
-"""
-Notes:
-* How to handle different types? See options below.
-* How can user easily write in chat function that plugs in?
-* What stuff belongs in chat model vs. action function?
-
-If get message history from server then need to hook into OPL for it. Could be whole separate action from OPL since
-it doesn't involve Figures. Could do this with OpenAI but looks like it's potentially several requests due to
-pagination.
-If get message history from local then still need to populate somehow but not in OPL - could all be clientside and
-outside actions. Probably easier overall.
-Use previous_response_id stored locally so there's possibility in future of moving message population to serverside.
-
-Can't use previous_response_id internally:
-Previous response cannot be used for this organization due to Zero Data Retention.
-
-Options for handling messages/prompt:
-- messages as input property to do Dash component. Then don't need JSON duplication of it in store. Handle different
-return types in Dash component rather than purely returning Dash components as here. Effectively this is done by
-store_to_html callback in this example. Still easier to do this way than Dash component, regardless of whether it's
-SS or CS callback. Could maybe have user write function that plugs in to do render of message? Conclusion: do the
-Dash stuff SS by hand for response updating message output. Remember SS callbacks will have no problems at all for local use so not such a big compromise.
-But need to work with streaming too so can't be done in callback - must be returned at same time as store,
-so option 3 only realistic possibility.
-- JSON store version that produces HTML version with SSCB. Ways to update this:
-  - Option 1: prompt trigger updates store and triggers OpenAI callback at same time.
-  - Option 2: prompt trigger updates store which then is trigger for OpenAI callback
-  - Option 3: update HTML at same time as store. Then have duplicated data which is inelegant but not a big problem.
-  Also makes on_page_load serverside - also not big problem. This is done here.
-
-Things to improve in nearish future:
-- need to specify chat_id manually
-- way to plug into OPL if want to retrieve messages from server. Not urgent if do it all clientside. But now that
-translation of store messages to html is SS, need to be able to do this. Options:
-   - plug into OPL properly somehow
-   - write another callback here that is triggered by {ON_PAGE_LOAD_ACTION_PREFIX}_{page.id}. Done here in hacky way
-"""
 
 if __name__ == "__main__":
     app = Vizro()
