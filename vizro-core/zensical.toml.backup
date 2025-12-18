@@ -2,7 +2,7 @@
 docs_dir = "docs"
 extra_css = ["/stylesheets/extra.css"]
 extra_javascript = ["/javascripts/extra.js"]
-# Make sure any new page added here is also added to the llmstxt plugin below (around line 198)
+# Make sure any new page added here is also added to the llmstxt plugin below (around line 170)
 nav = [
   {"Vizro" = "index.md"},
   {"Tutorials" = [
