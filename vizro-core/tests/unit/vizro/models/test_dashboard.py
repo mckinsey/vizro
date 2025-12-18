@@ -354,7 +354,7 @@ class TestDashboardBuild:
                         ),
                         dash.page_container,
                     ],
-                )
+                ),
             ],
             theme={
                 "primaryColor": "gray",
