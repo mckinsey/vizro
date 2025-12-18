@@ -1,9 +1,14 @@
+#vizro-notifications > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .alert-info, .alert-success, .alert-warning, .alert-error {
   align-items: flex-start;
   background: var(--surfaces-bg-card-inverted);
   box-shadow: var(--bs-box-shadow);
   display: flex;
-  margin-top: 12px;
   padding: 12px 8px;
 }
 

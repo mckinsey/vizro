@@ -249,7 +249,7 @@ Current logic:
 
   #header,
   #right-side,
-  #notification-container {
+  #vizro-notifications {
     zoom: 80%;
   }
 }
