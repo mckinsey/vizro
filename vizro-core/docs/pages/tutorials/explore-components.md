@@ -77,18 +77,18 @@ For each [`Page`](../user-guides/pages.md), you can also configure the following
 
 In this section, you learn how to create a new [`Page`](../user-guides/pages.md) and store it in a variable called `first_page`.
 
-A [`Page`][vizro.models.Page] model is the foundation of any Vizro dashboard. It uses a set of components to display content. For a comprehensive list of all Vizro components, refer to the [components overview page](../user-guides/components.md).
+A [`Page`](../API-reference/models.md#vizro.models.Page) model is the foundation of any Vizro dashboard. It uses a set of components to display content. For a comprehensive list of all Vizro components, refer to the [components overview page](../user-guides/components.md).
 
 ### 3.1. Add a table
 
 To start, let's get an overview of the data by displaying it in a table using [`AgGrid`](../user-guides/table.md/#ag-grid). These steps create a page and add a table to it:
 
 1. Import the necessary packages and load the dataset.
-1. Create a [`Page`][vizro.models.Page] and set its `title` to `"Data"`.
-1. Add an [`AgGrid`][vizro.models.AgGrid] component to the `components` list.
-1. Use the [`dash_ag_grid`][vizro.tables.dash_ag_grid] function inside the `figure` argument of `AgGrid`.
+1. Create a [`Page`](../API-reference/models.md#vizro.models.Page) and set its `title` to `"Data"`.
+1. Add an [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) component to the `components` list.
+1. Use the [`dash_ag_grid`](../API-reference/table-callables.md#vizro.tables.dash_ag_grid) function inside the `figure` argument of `AgGrid`.
 1. Provide details about the data source in the `footer` argument of `AgGrid`.
-1. Add the newly created page to the list of `pages` in the [Dashboard][vizro.models.Dashboard] model.
+1. Add the newly created page to the list of `pages` in the [Dashboard](../API-reference/models.md#vizro.models.Dashboard) model.
 
 !!! example "First Page"
 
@@ -138,7 +138,7 @@ This is an example of an _action_. Vizro provides several [built-in actions](../
 
 These steps add an export data button:
 
-1. Add a [`Button`][vizro.models.Button] model to the `components` list and set `text="Export Data"`.
+1. Add a [`Button`](../API-reference/models.md#vizro.models.Button) model to the `components` list and set `text="Export Data"`.
 1. Use the `actions` argument of the `Button` to specify the built-in [`export_data`](../user-guides/data-actions.md#export-data) action.
 
 !!! example "Export Data Button"
@@ -195,7 +195,7 @@ By default, Vizro uses the `Grid` layout, which arranges components in the order
 
 To achieve this, we'll switch to the `Flex` layout and set a `height` for the `AgGrid`, as the default is `400px` otherwise.
 
-1. In the `layout` argument of the `Page`, use the [`Flex`][vizro.models.Flex] layout model via `layout = vm.Flex()`
+1. In the `layout` argument of the `Page`, use the [`Flex`](../API-reference/models.md#vizro.models.Flex) layout model via `layout = vm.Flex()`
 1. Specify `style= {"height": "600px"}` inside the `dash_ag_grid`, as it would otherwise default to `400px`.
 
 !!! example "Use Flex layout"
@@ -249,14 +249,14 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
 
 Next, you'll learn how to add a second page to the dashboard that features charts and KPI (Key Performance Indicator) cards.
 
-Vizro uses [`Graph`][vizro.models.Graph] models and [Plotly Express functions](https://plotly.com/python/plotly-express/) to create various types of charts. You can explore some of the available chart types and their code examples in the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space).
+Vizro uses [`Graph`](../API-reference/models.md#vizro.models.Graph) models and [Plotly Express functions](https://plotly.com/python/plotly-express/) to create various types of charts. You can explore some of the available chart types and their code examples in the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space).
 
 These steps add a histogram to the page:
 
-1. Create a second [`Page`][vizro.models.Page] and store it in a variable called `second_page`. Set its `title` to `"Summary"`.
-1. Add a [`Graph`][vizro.models.Graph] model to the `components` list.
-1. Inside the `figure` argument of the [`Graph`][vizro.models.Graph] model, use the code for the [px.histogram from the visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
-1. Add the new page to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model by calling `vm.Dashboard(pages=[first_page, second_page])`.
+1. Create a second [`Page`](../API-reference/models.md#vizro.models.Page) and store it in a variable called `second_page`. Set its `title` to `"Summary"`.
+1. Add a [`Graph`](../API-reference/models.md#vizro.models.Graph) model to the `components` list.
+1. Inside the `figure` argument of the [`Graph`](../API-reference/models.md#vizro.models.Graph) model, use the code for the [px.histogram from the visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
+1. Add the new page to the list of `pages` in the [`Dashboard`](../API-reference/models.md#vizro.models.Dashboard) model by calling `vm.Dashboard(pages=[first_page, second_page])`.
 
 !!! example "Second Page"
 
@@ -327,8 +327,8 @@ You can combine and arrange various types of `components` on a dashboard page. R
 
 These steps add two KPI cards to the second page:
 
-1. Add a [`Figure`][vizro.models.Figure] model to the list of `components`.
-1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
+1. Add a [`Figure`](../API-reference/models.md#vizro.models.Figure) model to the list of `components`.
+1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card) function.
 1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out our [guide to KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
 1. Repeat the above steps to add another KPI card to the page.
 
@@ -424,11 +424,11 @@ These steps add two KPI cards to the second page:
 
 ### 4.3. Add tabs to switch views
 
-You may not want to display both histograms simultaneously and instead prefer to switch between views. You can achieve this by using the [`Tabs`][vizro.models.Tabs] model. For more details, refer to Vizro's [tabs user guide](../user-guides/tabs.md).
+You may not want to display both histograms simultaneously and instead prefer to switch between views. You can achieve this by using the [`Tabs`](../API-reference/models.md#vizro.models.Tabs) model. For more details, refer to Vizro's [tabs user guide](../user-guides/tabs.md).
 
 These steps place the two histograms in separate tabs:
 
-1. Add each [`Graph`][vizro.models.Graph] to the `components` of a [`Container`][vizro.models.Container].
+1. Add each [`Graph`](../API-reference/models.md#vizro.models.Graph) to the `components` of a [`Container`](../API-reference/models.md#vizro.models.Container).
 1. Set the `title` argument inside each `Container` to the desired tab name.
 1. Add the containers to the `tabs` list of the `Tabs` component.
 1. Add the `Tabs` component to the `components` of the `Page`.
@@ -652,9 +652,9 @@ You can use [filters](../user-guides/filters.md) to interact with the dashboard 
 
 These steps add a filter to the dashboard:
 
-1. Add a [`Filter`][vizro.models.Filter] model to the `controls` list of the `Page`.
-1. Specify the column to be filtered using the `column` argument of the [Filter][vizro.models.Filter] model.
-1. Change the `selector` in one of the `Filters` to a [`Checklist`][vizro.models.Checklist]. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
+1. Add a [`Filter`](../API-reference/models.md#vizro.models.Filter) model to the `controls` list of the `Page`.
+1. Specify the column to be filtered using the `column` argument of the [Filter](../API-reference/models.md#vizro.models.Filter) model.
+1. Change the `selector` in one of the `Filters` to a [`Checklist`](../API-reference/models.md#vizro.models.Checklist). For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
 !!! example "Add a filter"
 
@@ -740,7 +740,7 @@ These steps add a filter to the dashboard:
 
         [![SecondPage5]][secondpage5]
 
-You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data, while a [`RangeSlider`][vizro.models.RangeSlider] is used for numerical data. Also, filters are applied to all components on the page.
+You'll see that a [`Dropdown`](../API-reference/models.md#vizro.models.Dropdown) is selected by default for categorical data, while a [`RangeSlider`](../API-reference/models.md#vizro.models.RangeSlider) is used for numerical data. Also, filters are applied to all components on the page.
 
 If you want to apply a filter to specific components only, check out [How to use filters](../user-guides/filters.md).
 
@@ -766,14 +766,14 @@ This page takes inspiration from the [Vizro visual vocabulary](https://vizro-dem
 
 These steps should feel familiar, as they add three charts to the new page.
 
-1. Create a third [`Page`][vizro.models.Page] and store it in a variable called `third_page`. Set its `title` to "Analysis".
-1. Add three [`Graph`][vizro.models.Graph] models to the `components` of the `Page`.
+1. Create a third [`Page`](../API-reference/models.md#vizro.models.Page) and store it in a variable called `third_page`. Set its `title` to "Analysis".
+1. Add three [`Graph`](../API-reference/models.md#vizro.models.Graph) models to the `components` of the `Page`.
 1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions:
     - [px.violin](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin) (copy the code directly)
     - [px.bar](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column) (copy the code directly)
     - [px.density_heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap) (update the `data`, `x`, and `y` arguments to match the dataset)
 1. Provide a `title` for each `Graph`.
-1. Add the new `Page` to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model.
+1. Add the new `Page` to the list of `pages` in the [`Dashboard`](../API-reference/models.md#vizro.models.Dashboard) model.
 
 !!! example "Third page"
 
@@ -1032,10 +1032,10 @@ In this section, you learn how to switch the `x` and `color` arguments across al
 
 These steps add a parameter to the dashboard:
 
-1. Add a [`Parameter`][vizro.models.Parameter] to the `controls` of the `Page`.
-1. Assign an `id` to each `Graph` that the [Parameter][vizro.models.Parameter] should target.
+1. Add a [`Parameter`](../API-reference/models.md#vizro.models.Parameter) to the `controls` of the `Page`.
+1. Assign an `id` to each `Graph` that the [Parameter](../API-reference/models.md#vizro.models.Parameter) should target.
 1. Define the parameter's `targets` using the format `component-id.argument`.
-1. Set the `selector` of the [Parameter][vizro.models.Parameter] to a [`RadioItems`][vizro.models.RadioItems].
+1. Set the `selector` of the [Parameter](../API-reference/models.md#vizro.models.Parameter) to a [`RadioItems`](../API-reference/models.md#vizro.models.RadioItems).
 1. Provide options for the `RadioItems` selector.
 
 !!! example "Add a parameter"
@@ -1319,7 +1319,7 @@ Now that you've created all the dashboard pages, let's add a title and logo, and
 
 The following steps add a title and logo to the dashboard:
 
-1. Set the `title` attribute of the [Dashboard][vizro.models.Dashboard] model to "Tips Analysis Dashboard".
+1. Set the `title` attribute of the [Dashboard](../API-reference/models.md#vizro.models.Dashboard) model to "Tips Analysis Dashboard".
 1. Download the `logo` from [this link](https://raw.githubusercontent.com/mckinsey/vizro/refs/heads/main/vizro-core/examples/dev/assets/logo.svg) and save it in a folder named `assets`.
 1. Place the `assets` folder in the same directory as your `app.py/app.ipynb` file.
 
@@ -1464,10 +1464,10 @@ The navigation bar will have two icons: one for the "Data" page and another for 
 
 The following steps create a navigation bar:
 
-1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] model to a [Navigation][vizro.models.Navigation] object.
-1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
-1. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
-1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
+1. Set the `navigation` attribute of the [Dashboard](../API-reference/models.md#vizro.models.Dashboard) model to a [Navigation](../API-reference/models.md#vizro.models.Navigation) object.
+1. Assign a [NavBar](../API-reference/models.md#vizro.models.NavBar) object to the `nav_selector` attribute of the `Navigation`.
+1. Populate the `items` of the [NavBar](../API-reference/models.md#vizro.models.NavBar) object with a list of [NavLink](../API-reference/models.md#vizro.models.NavLink) objects.
+1. Customize each [NavLink](../API-reference/models.md#vizro.models.NavLink) object by setting its `label`, `pages`, and `icon` attributes.
     - The `label` controls the text displayed in the tooltip when hovering over the navigation icon.
     - The `pages` controls the pages included in the accordion navigation for that icon.
     - The `icon` sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).

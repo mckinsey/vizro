@@ -42,7 +42,7 @@ Let's start by making a very simple single-page app that tells us the current ti
 
         [![CustAction1]][custaction1]
 
-We have specified that a button should be included in the page layout but haven't configured what should happen when it is clicked. Let's define an action for that and [attach it to the button](../user-guides/custom-actions.md#trigger-an-action-with-a-button) with the `actions` argument and the [`Action`][vizro.models.Action] model.
+We have specified that a button should be included in the page layout but haven't configured what should happen when it is clicked. Let's define an action for that and [attach it to the button](../user-guides/custom-actions.md#trigger-an-action-with-a-button) with the `actions` argument and the [`Action`](../API-reference/models.md#vizro.models.Action) model.
 
 !!! example "A simple action"
 
@@ -105,7 +105,7 @@ In this flowchart, the rectangular boxes refer to Vizro models that are used as 
 
 ## Runtime input
 
-Let's extend our action to depend on an _input_ from the user's screen. As before, let's start by adding something to the layout and then handle the action. Here we create a small form by adding a [`Switch`][vizro.models.Switch] to the layout that lets the user specify whether they would like to use the 12- or 24-hour clock.
+Let's extend our action to depend on an _input_ from the user's screen. As before, let's start by adding something to the layout and then handle the action. Here we create a small form by adding a [`Switch`](../API-reference/models.md#vizro.models.Switch) to the layout that lets the user specify whether they would like to use the 12- or 24-hour clock.
 
 !!! example "Add `Switch` to layout"
 
@@ -154,7 +154,7 @@ Let's extend our action to depend on an _input_ from the user's screen. As befor
         Vizro().build(dashboard).run()
         ```
 
-        1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selector](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
+        1. Currently [`Switch`](../API-reference/models.md#vizro.models.Switch) is designed to be used as a [control selector](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`](../API-reference/models.md#vizro.models.Container). For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. We group the form inputs into a [styled container](../user-guides/container.md#styled-containers) to achieve some visual separation of the form inputs and outputs. This is purely stylistic and does not affect the operation of actions.
 
     === "Result"
@@ -237,7 +237,7 @@ Action inputs and outputs can be used in multiple actions; there can be any numb
 
 ## Multiple inputs and outputs
 
-Let's extend our example to handle multiple inputs and outputs. We add another card to show the date and a [`RadioItems`][vizro.models.RadioItems] to allow the user to configure the date format.
+Let's extend our example to handle multiple inputs and outputs. We add another card to show the date and a [`RadioItems`](../API-reference/models.md#vizro.models.RadioItems) to allow the user to configure the date format.
 
 !!! example "Multiple inputs and outputs"
 

@@ -10,7 +10,7 @@ This guide shows you how to use cards in your dashboard.
 
     You should use `Card` to display Markdown text that needs attention drawn to it. Generally, this would be relatively short portions of text. Unlike `Text`, a `Card` can also be [used for navigation](#create-a-navigation-card).
 
-You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page] or [`Container`][vizro.models.Container] models.
+You can add a [`Card`](../API-reference/models.md#vizro.models.Card) to your dashboard by inserting the [`Card`](../API-reference/models.md#vizro.models.Card) into the `components` argument of the [`Page`](../API-reference/models.md#vizro.models.Page) or [`Container`](../API-reference/models.md#vizro.models.Container) models.
 
 !!! example "Card"
 
@@ -61,7 +61,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
 ## Customize card text
 
-The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
+The [`Card`](../API-reference/models.md#vizro.models.Card) uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Card`](../API-reference/models.md#vizro.models.Card) model supports the following:
 
 - Headers
 - Emphasis
@@ -141,7 +141,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
         Vizro().build(dashboard).run()
         ```
 
-        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] model. This layout automatically arranges all components to fit on a single page, giving each one equal space. As a result, all `Card` components are evenly sized and fill the entire screen.
+        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`](../API-reference/models.md#vizro.models.Grid) model. This layout automatically arranges all components to fit on a single page, giving each one equal space. As a result, all `Card` components are evenly sized and fill the entire screen.
 
     === "app.yaml"
 
@@ -199,7 +199,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
 
 ## Add header and footer
 
-You can now add a header and footer to your [`Card`][vizro.models.Card] by using the `header` and `footer` arguments. Both fields support [Markdown text](https://markdown-guide.readthedocs.io/), so you can easily include text, links, and inline formatting.
+You can now add a header and footer to your [`Card`](../API-reference/models.md#vizro.models.Card) by using the `header` and `footer` arguments. Both fields support [Markdown text](https://markdown-guide.readthedocs.io/), so you can easily include text, links, and inline formatting.
 
 !!! example "Card with header and footer"
 
@@ -511,13 +511,13 @@ img[src*="#my-image"] {
 
 ## Create a navigation card
 
-This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card, enabling users to navigate to another page by clicking on the card area.
+This section describes how to use the [`Card`](../API-reference/models.md#vizro.models.Card) component to create a navigation card, enabling users to navigate to another page by clicking on the card area.
 
 For a button-style link navigation component, see the [separate guide on creating a link button](button.md#create-a-link-button). To configure the navigation panel on the left hand side of the screen, refer to the [separate guide on navigation](navigation.md).
 
 To create a navigation card:
 
-1. Insert the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
+1. Insert the [`Card`](../API-reference/models.md#vizro.models.Card) into the `components` argument of the [`Page`](../API-reference/models.md#vizro.models.Page).
 1. Pass your [Markdown text](https://markdown-guide.readthedocs.io/) to the `Card.text`.
 1. Pass a relative or absolute URL to the `Card.href`.
 
@@ -604,9 +604,9 @@ If you now click on the card area, you should automatically be redirected to the
 
 !!! note
 
-    When using the [`Card`][vizro.models.Card], keep the following in mind:
+    When using the [`Card`](../API-reference/models.md#vizro.models.Card), keep the following in mind:
 
-    - If the href given is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
+    - If the href given is a relative URL, it should match the `path` of the [`Page`](../API-reference/models.md#vizro.models.Page) that the [`Card`](../API-reference/models.md#vizro.models.Card) should navigate to.
     - If the href given is an absolute link, it should start with `https://` or an equivalent protocol.
 
 ## Create a KPI card
@@ -619,7 +619,7 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 Use the `description` argument to add helpful context to your `Card`. This displays an info icon in the top-right corner, and hovering over it reveals a tooltip with your chosen text.
 
-You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `description` argument to use the default info icon, or pass a [`Tooltip`][vizro.models.Tooltip] model to customize the icon using any symbol from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `description` argument to use the default info icon, or pass a [`Tooltip`](../API-reference/models.md#vizro.models.Tooltip) model to customize the icon using any symbol from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! example "Card with a tooltip"
 
@@ -669,7 +669,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `
 
 ## Trigger an action with a card
 
-The example below shows how to use the [set_control action][vizro.actions.set_control] to filter another Graph or Table when a [`Card`][vizro.models.Card] is clicked.
+The example below shows how to use the [set_control action](../API-reference/actions.md#vizro.actions.set_control) to filter another Graph or Table when a [`Card`](../API-reference/models.md#vizro.models.Card) is clicked.
 
 !!! example "Action triggered by card"
 

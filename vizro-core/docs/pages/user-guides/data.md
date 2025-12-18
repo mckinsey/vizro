@@ -94,7 +94,7 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
 
         [![DataBasic]][databasic]
 
-The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the above example, `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
+The [`Graph`](../API-reference/models.md#vizro.models.Graph), [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) and [`Table`](../API-reference/models.md#vizro.models.Table) models all have an argument called `figure`. This accepts a function (in the above example, `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
 
 !!! note
 
@@ -304,7 +304,7 @@ To add a parameter to control a dynamic data source, do the following:
 1. give an `id` to all components that have the data source you wish to alter through a parameter.
 1. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
-For example, let us extend the [dynamic data example](#dynamic-data) above into an example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
+For example, let us extend the [dynamic data example](#dynamic-data) above into an example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`](../API-reference/models.md#vizro.models.Slider).
 
 !!! example "Parametrized dynamic data"
 
@@ -374,7 +374,7 @@ A dynamic filter behaves as follows when updated:
 - The value selected on screen by a dashboard user _does not_ change. If the selected value is not already present in the new set of available values then the `options` or `min` and `max` are modified to include it. In this case, the filtering operation might result in an empty DataFrame.
 - Even though the values present in a data source can change, the schema should not: `column` should remain present and of the same type in the data sources. The `targets` of the filter and selector type cannot change while the dashboard is running. For example, a `vm.Dropdown` selector cannot turn into `vm.RadioItems`.
 
-For example, let us extend the [parametrized dynamic data example](#parametrize-data-loading) above with a filter. When you run the code and refresh the page, the filter and Graph update automatically. The same happens when the dynamic data parameter [`Slider`][vizro.models.Slider] changes, ensuring the latest data is always reflected.
+For example, let us extend the [parametrized dynamic data example](#parametrize-data-loading) above with a filter. When you run the code and refresh the page, the filter and Graph update automatically. The same happens when the dynamic data parameter [`Slider`](../API-reference/models.md#vizro.models.Slider) changes, ensuring the latest data is always reflected.
 
 !!! example "Dynamic filters"
 

@@ -2,7 +2,7 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [Container][vizro.models.Container] complements a [Page][vizro.models.Page]: both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
+A [Container](../API-reference/models.md#vizro.models.Container) complements a [Page](../API-reference/models.md#vizro.models.Page): both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
 
 Unlike `Page`, the `Container` model offers additional visual customization options:
 
@@ -21,7 +21,7 @@ Unlike `Page`, the `Container` model offers additional visual customization opti
 
 In general, any arbitrarily granular layout can already be achieved by [using `Page.layout`](layouts.md) alone, which is our recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
 
-Both `Page.layout` and `Container.layout` now accept either a [`Grid`][vizro.models.Grid] (default) or a [`Flex`][vizro.models.Flex] layout model, giving you full flexibility when arranging components.
+Both `Page.layout` and `Container.layout` now accept either a [`Grid`](../API-reference/models.md#vizro.models.Grid) (default) or a [`Flex`](../API-reference/models.md#vizro.models.Flex) layout model, giving you full flexibility when arranging components.
 
 - `Page.layout` defines the overall layout of the page using either `Grid` or `Flex`.
 - `Container.layout` allows you to insert a nested `Grid` or `Flex` layout within the page layout, offering more granular control by breaking the page into independently arranged sublayouts.
@@ -37,9 +37,9 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 
 ## Basic containers
 
-To add a [`Container`][vizro.models.Container] to your page, do the following:
+To add a [`Container`](../API-reference/models.md#vizro.models.Container) to your page, do the following:
 
-1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
+1. Insert the `Container` into the `components` argument of the [`Page`](../API-reference/models.md#vizro.models.Page)
 1. Configure your `components`, [read the overview page for various options](components.md)
 1. (optional) Set a `title` for your `Container`
 1. (optional) Configure your `layout`, see [the guide on layouts](layouts.md)
@@ -418,7 +418,7 @@ Collapsible containers can be used in `Grid` layout as well.
 
 The `description` argument enables you to add helpful context to your container by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your chosen text.
 
-You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`](../API-reference/models.md#vizro.models.Tooltip) model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! example "Container with tooltip"
 

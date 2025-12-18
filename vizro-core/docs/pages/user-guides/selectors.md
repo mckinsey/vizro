@@ -1,18 +1,18 @@
 # How to use selectors
 
-This guide highlights different selectors that can be used in a dashboard. Selectors do not serve a purpose on their own, but they enable you to change how the input is given to other models, for example, the [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model.
+This guide highlights different selectors that can be used in a dashboard. Selectors do not serve a purpose on their own, but they enable you to change how the input is given to other models, for example, the [`Filter`](../API-reference/models.md#vizro.models.Filter) or the [`Parameter`](../API-reference/models.md#vizro.models.Parameter) model.
 
-The [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model accept the `selector` argument, where a selector model can be entered to choose how the user should input their choices for the respective models.
+The [`Filter`](../API-reference/models.md#vizro.models.Filter) or the [`Parameter`](../API-reference/models.md#vizro.models.Parameter) model accept the `selector` argument, where a selector model can be entered to choose how the user should input their choices for the respective models.
 
 ## Categorical selectors
 
-Within the categorical selectors, a clear distinction exists between multi-option and single-option selectors. For instance, the [`Checklist`][vizro.models.Checklist] functions as a multi-option selector by default while the [`RadioItem`][vizro.models.RadioItems] serves as a single-option selector by default. However, the [`Dropdown`][vizro.models.Dropdown] can function as both a multi-option or single-option selector.
+Within the categorical selectors, a clear distinction exists between multi-option and single-option selectors. For instance, the [`Checklist`](../API-reference/models.md#vizro.models.Checklist) functions as a multi-option selector by default while the [`RadioItem`](../API-reference/models.md#vizro.models.RadioItems) serves as a single-option selector by default. However, the [`Dropdown`](../API-reference/models.md#vizro.models.Dropdown) can function as both a multi-option or single-option selector.
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`Dropdown`][vizro.models.Dropdown] based on [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown)
-- [`Checklist`][vizro.models.Checklist] based on [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist)
-- [`RadioItems`][vizro.models.RadioItems] based on [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems)
+- [`Dropdown`](../API-reference/models.md#vizro.models.Dropdown) based on [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown)
+- [`Checklist`](../API-reference/models.md#vizro.models.Checklist) based on [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist)
+- [`RadioItems`](../API-reference/models.md#vizro.models.RadioItems) based on [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems)
 
 If you have binary data (such as `False`/`True` or `0`/`1`), you might prefer to use a dedicated [boolean selector](#boolean-selectors) instead.
 
@@ -29,34 +29,34 @@ If you have binary data (such as `False`/`True` or `0`/`1`), you might prefer to
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`Slider`][vizro.models.Slider] based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider)
-- [`RangeSlider`][vizro.models.RangeSlider] based on [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider)
+- [`Slider`](../API-reference/models.md#vizro.models.Slider) based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider)
+- [`RangeSlider`](../API-reference/models.md#vizro.models.RangeSlider) based on [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider)
 
 !!! note "Using float values and `step` with an integer value"
 
-    When configuring the [`Slider`][vizro.models.Slider] and the [`RangeSlider`][vizro.models.RangeSlider] with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
+    When configuring the [`Slider`](../API-reference/models.md#vizro.models.Slider) and the [`RangeSlider`](../API-reference/models.md#vizro.models.RangeSlider) with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
 
 ## Temporal selectors
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`DatePicker`][vizro.models.DatePicker] based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput)
+- [`DatePicker`](../API-reference/models.md#vizro.models.DatePicker) based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput)
 
 !!! note
 
-    When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
+    When configuring the [`DatePicker`](../API-reference/models.md#vizro.models.DatePicker) make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
 
 ## Boolean selectors
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`Switch`][vizro.models.Switch] based on [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/)
+- [`Switch`](../API-reference/models.md#vizro.models.Switch) based on [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/)
 
 ## Add a tooltip
 
 The `description` argument enables you to add helpful context to your selector by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
 
-You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`](../API-reference/models.md#vizro.models.Tooltip) model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! example "Selectors with tooltip"
 
@@ -131,7 +131,7 @@ Currently each selector is based on an underlying Dash component as mentioned in
 
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
-An example would be to make the [`RadioItem`][vizro.models.RadioItems] display inline instead of stacked vertically. For this you can use `extra={"inline": True}` argument:
+An example would be to make the [`RadioItem`](../API-reference/models.md#vizro.models.RadioItems) display inline instead of stacked vertically. For this you can use `extra={"inline": True}` argument:
 
 !!! example "Inline Radio Items"
 

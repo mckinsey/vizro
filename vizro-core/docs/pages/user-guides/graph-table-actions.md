@@ -6,7 +6,7 @@ In this guide we show you how to configure interactions between graphs and table
 - [Cross-parameter](#cross-parameter): a _source_ graph or table updates any argument other than `data_frame` of a _target_ graph or table. The source component sets a [parameter](parameters.md), which in turn updates the target component.
 - [Cross-highlight](#cross-highlight): a _source_ graph or table highlights data in a _target_ graph or table. This is an example of a [cross-parameter](#cross-parameter).
 
-All these interactions use the [`set_control` action][vizro.actions.set_control]. This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
+All these interactions use the [`set_control` action](../API-reference/actions.md#vizro.actions.set_control). This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
 
 - The target components can be anything that reacts to a control: [built-in graphs](graph.md), [custom graphs](custom-charts.md), [built-in tables](table.md), [custom tables](custom-tables.md), [built-in figures](figure.md) and [custom figures](custom-figures.md).
 - A single control can update any number of these target components, and a single source component can set any number of controls. Hence a single source component can interact with any number of target components.
@@ -35,10 +35,10 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
     1. Remember that if `targets` is not explicitly specified, a filter [targets all components on the page whose data source includes `column`](filters.md#basic-filters).
 
-1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-filter.
+1. Call `set_control` in the `actions` argument of the source [`Graph`](../API-reference/models.md#vizro.models.Graph) or [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) component that triggers the cross-filter.
 
     1. Set `control` to the ID of the filter.
-    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control], but it is often `column` of the filter. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
+    1. Set `value`. The format of this depends on the source model and is given in the [API reference](../API-reference/actions.md#vizro.actions.set_control), but it is often `column` of the filter. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
 
     ```python
     import vizro.actions as va
@@ -54,7 +54,7 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
 ### Cross-filter from table
 
-The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row in the table. The `value` argument of the [`set_control` action][vizro.actions.set_control] specifies the column of the value that sets `control`.
+The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row in the table. The `value` argument of the [`set_control` action](../API-reference/actions.md#vizro.actions.set_control) specifies the column of the value that sets `control`.
 
 !!! example "Cross-filter from table to graph"
 
@@ -143,7 +143,7 @@ When you click on a row in the table, the graph is cross-filtered to show data o
 
 ### Cross-filter from graph
 
-The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. The `value` argument of the [`set_control` action][vizro.actions.set_control] can be used in two ways to specify what sets `control`:
+The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. The `value` argument of the [`set_control` action](../API-reference/actions.md#vizro.actions.set_control) can be used in two ways to specify what sets `control`:
 
 - Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function. For example, for a graph `px.bar(..., color="country", custom_data="country")` you can use `va.set_control(value="country", ...)`.
 - As a shortcut, if the value is encoded by a _positional dimension_ such as `x` or `y` then you can use that variable directly and do not need to set `custom_data`. For example, for a graph `px.bar(x="country", ...)` you can use `va.set_control(value="x", ...)`. Positional dimensions include `x`, `y`, `z` for Cartesian plots and `lat`, `lon`, `location` for choropleth maps.
@@ -426,7 +426,7 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
 ### Cross-filter between pages
 
-You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_control`][vizro.actions.set_control] is identical, but the intermediate filter must have [`show_in_url=True`](run-deploy.md#shareable-url).
+You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_control`](../API-reference/actions.md#vizro.actions.set_control) is identical, but the intermediate filter must have [`show_in_url=True`](run-deploy.md#shareable-url).
 
 For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
 
@@ -650,10 +650,10 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
     ]
     ```
 
-1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-parameter.
+1. Call `set_control` in the `actions` argument of the source [`Graph`](../API-reference/models.md#vizro.models.Graph) or [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) component that triggers the cross-parameter.
 
     1. Set `control` to the ID of the parameter.
-    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control]. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
+    1. Set `value`. The format of this depends on the source model and is given in the [API reference](../API-reference/actions.md#vizro.actions.set_control). Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
 
     ```python
     import vizro.actions as va
@@ -678,7 +678,7 @@ In general, there are many different ways to visually highlight data in a graph.
 
 !!! tip Cross-highlight between containers and pages
 
-    All [cross-parameters](#cross-parameter), which includes cross-highlights, can operate across different containers and different pages. The use of [`va.set_control`][vizro.actions.set_control] is identical to when source and target are in the same container and page. For further examples and styling hints, see the sections on cross-filtering [between containers](#cross-filter-between-containers) and [between pages](#cross-filter-between-pages).
+    All [cross-parameters](#cross-parameter), which includes cross-highlights, can operate across different containers and different pages. The use of [`va.set_control`](../API-reference/actions.md#vizro.actions.set_control) is identical to when source and target are in the same container and page. For further examples and styling hints, see the sections on cross-filtering [between containers](#cross-filter-between-containers) and [between pages](#cross-filter-between-pages).
 
 #### Cross-highlight from table
 
@@ -704,7 +704,7 @@ This example shows how to configure cross-highlighting where clicking on the row
     1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
-1. Call `set_control` in the `actions` argument of the source [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-highlight.
+1. Call `set_control` in the `actions` argument of the source [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) component that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
     1. Set `value` to specify which column contains the value that sets the control when a row in the table is clicked.
@@ -892,7 +892,7 @@ This example shows how to configure cross-highlighting where clicking on a point
     1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
-1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] component that triggers the cross-highlight.
+1. Call `set_control` in the `actions` argument of the source [`Graph`](../API-reference/models.md#vizro.models.Graph) component that triggers the cross-highlight.
 
     1. Set `control` to the ID of the parameter.
     1. Set `value`. As with a [cross-filter from a graph](#cross-filter-from-graph), there are two different ways to specify this. However, often the value you require is encoded by a _positional dimension_ such as `x`, `y`, `z`. If the value is not encoded as a positional dimension (for example, it corresponds to `color`) then you should instead use `custom_data` as described in the instructions on [cross-filtering from a graph](#cross-filter-from-graph).

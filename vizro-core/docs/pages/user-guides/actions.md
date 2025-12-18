@@ -5,7 +5,7 @@ Actions control how your app responds to user input such as clicking a button or
 - [Handle data](data-actions.md), for example to export data.
 - [Graph and table interactions](graph-table-actions.md), for example to cross-filter.
 
-A complete list of built-in actions in given in the [API documentation][vizro.actions]. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
+A complete list of built-in actions in given in the [API documentation](../API-reference/actions.md). We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
 
 !!! note
 
@@ -13,7 +13,7 @@ A complete list of built-in actions in given in the [API documentation][vizro.ac
 
 ## General principles
 
-Many [Vizro models][vizro.models] have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ by a user interaction.
+Many [Vizro models](../API-reference/models.md) have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ by a user interaction.
 
 To use an action:
 
@@ -28,7 +28,7 @@ Some actions are typically triggered by certain components, for example [`export
 
 !!! note
 
-    Unlike [custom actions](custom-actions.md), built-in actions do not use the [`Action`][vizro.models.Action] model.
+    Unlike [custom actions](custom-actions.md), built-in actions do not use the [`Action`](../API-reference/models.md#vizro.models.Action) model.
 
 ## Trigger an action with a button
 

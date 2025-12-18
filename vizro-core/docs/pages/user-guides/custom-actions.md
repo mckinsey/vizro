@@ -10,7 +10,7 @@ We also have an in-depth [tutorial on creating an action](../tutorials/custom-ac
 
 ## General principles
 
-Many [Vizro models][vizro.models] have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ by a user interaction. The function can optionally have any number of _inputs_ and _outputs_ that refer to a Vizro model `id`.
+Many [Vizro models](../API-reference/models.md) have an `actions` argument that can contain one or more actions. Each action is a Python function that is _triggered_ by a user interaction. The function can optionally have any number of _inputs_ and _outputs_ that refer to a Vizro model `id`.
 
 To define your own action:
 
@@ -26,7 +26,7 @@ To define your own action:
         return "My string value, potentially dependent on input_1 and input_2"
     ```
 
-1. attach it to the `actions` argument of a Vizro model using [`Action`][vizro.models.Action]:
+1. attach it to the `actions` argument of a Vizro model using [`Action`](../API-reference/models.md#vizro.models.Action):
 
     1. call it using the `function` argument
     1. if your action has one or more inputs then specify them as function arguments
@@ -231,7 +231,7 @@ Here is the full example code that includes the input component `vm.Switch(id="c
 
         ```
 
-        1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
+        1. Currently [`Switch`](../API-reference/models.md#vizro.models.Switch) is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`](../API-reference/models.md#vizro.models.Container). For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
 
     === "app.yaml"
         ```yaml
@@ -316,7 +316,7 @@ For most actions that you write, you should only need to specify `<model_id>` fo
 
 The syntax for using a particular model argument as an action input or output is `<model_id>.<argument_name>`.
 
-For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. [`Switch`][vizro.models.Switch] has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
+For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. [`Switch`](../API-reference/models.md#vizro.models.Switch) has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
 
 !!! example "Use model argument as output"
 
@@ -361,7 +361,7 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         Vizro().build(dashboard).run()
         ```
 
-        1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
+        1. Currently [`Switch`](../API-reference/models.md#vizro.models.Switch) is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`](../API-reference/models.md#vizro.models.Container). For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. In the [previous example](#trigger-with-a-runtime-input), the action was triggered when a button is clicked; now we change the action to be triggered when the switch itself is clicked.
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.title"` to update the title of the switch.
 
@@ -377,7 +377,7 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
 
 Sometimes you might like to use as input or output a component that is on the screen but cannot be addressed explicitly with `<model_id>.<argument_name>`. Vizro actions in fact accept as input and output _any_ Dash component in the format `<component_id>.<property>`.
 
-For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
+For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`](../API-reference/models.md#vizro.models.Switch) does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
 
 !!! example "Use Dash property as input"
 
@@ -420,7 +420,7 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         ```
 
         1. We disable the switch by returning `True` to its `disabled` property. After this action runs, the switch can no longer the clicked. To reset it, you must refresh the page.
-        1. Currently [`Switch`][vizro.models.Switch] is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`][vizro.models.Container]. For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
+        1. Currently [`Switch`](../API-reference/models.md#vizro.models.Switch) is designed to be used as a [control selectors](../user-guides/selectors.md). In future, Vizro will have a dedicated `Form` model for the creation of forms. For now, we add them directly as `components` inside a [`Container`](../API-reference/models.md#vizro.models.Container). For this to be a valid configuration we must first do `add_type` as for a [custom component](../user-guides/custom-components.md).
         1. This action now has [two `outputs`](#multiple-inputs-and-outputs). We refer to `"clock_switch.disabled"` to update the `disabled` property of the component with `id="clock_switch"`.
 
     === "app.yaml"

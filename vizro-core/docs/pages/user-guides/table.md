@@ -6,9 +6,9 @@ There are two ways to visualize tables in Vizro, using either [AG Grid](#ag-grid
 
 ## Choose between AG Grid and Dash DataTable
 
-Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Table`][vizro.models.Table] model - for the above two approaches respectively. They both visualize tabular data in similar ways.
+Vizro offers two models - the [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) model and the [`Table`](../API-reference/models.md#vizro.models.Table) model - for the above two approaches respectively. They both visualize tabular data in similar ways.
 
-The main difference between the two is that the [`AgGrid`][vizro.models.AgGrid] model is based on Plotly's [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) component, while the [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable) component.
+The main difference between the two is that the [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) model is based on Plotly's [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) component, while the [`Table`](../API-reference/models.md#vizro.models.Table) model is based on the [Dash DataTable](https://dash.plotly.com/datatable) component.
 
 Both approaches have similar base features, and are configurable in similar ways. However, the AG Grid offers more advanced features out-of-the-box, is more customizable and also ships a powerful enterprise version. This is why it is Vizro's recommended table implementation. At the same time, the Dash DataTable can be used if developers are already familiar with it, or if some custom functionality is easier to implement using the Dash DataTable.
 
@@ -16,7 +16,7 @@ Both approaches have similar base features, and are configurable in similar ways
 
 [AG Grid](https://www.ag-grid.com/) is an interactive table/grid component designed for viewing, editing, and exploring large datasets. It is Vizro's recommended table implementation.
 
-The Vizro [`AgGrid`][vizro.models.AgGrid] model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the original [Javascript implementation](https://www.ag-grid.com/).
+The Vizro [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the original [Javascript implementation](https://www.ag-grid.com/).
 
 !!! note "More examples of AG Grid"
 
@@ -24,9 +24,9 @@ The Vizro [`AgGrid`][vizro.models.AgGrid] model is based on the [Dash AG Grid](h
 
 ### Basic usage
 
-To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
+To add a [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) to your page, do the following:
 
-1. Insert the [`AgGrid`][vizro.models.AgGrid] model into the `components` argument of the [`Page`][vizro.models.Page] model.
+1. Insert the [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) model into the `components` argument of the [`Page`](../API-reference/models.md#vizro.models.Page) model.
 1. Enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`).
 
 The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to pass a pandas DataFrame as the source of data. As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`. Most other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Note that some defaults are set for some arguments (for example, for `columnDefs`) to help with styling and usability. Sometimes a parameter may not work because it requires a callback to function. In that case you can try [creating a custom AG Grid callable](custom-tables.md).
@@ -197,7 +197,7 @@ In the example below we select and format some columns of the gapminder data.
 
 #### Dates
 
-For the [`AgGrid`][vizro.models.AgGrid] model to sort and filter dates correctly, the date must either be of string format `yyyy-mm-dd` (see [Dash AG Grid docs](https://dash.plotly.com/dash-ag-grid/date-filters#example:-date-filter)) or a pandas datetime object. Any pandas datetime column will be transformed into the `yyyy-mm-dd` format automatically.
+For the [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) model to sort and filter dates correctly, the date must either be of string format `yyyy-mm-dd` (see [Dash AG Grid docs](https://dash.plotly.com/dash-ag-grid/date-filters#example:-date-filter)) or a pandas datetime object. Any pandas datetime column will be transformed into the `yyyy-mm-dd` format automatically.
 
 #### Objects and strings
 
@@ -205,7 +205,7 @@ No specific formatting is available for custom objects and strings, however you 
 
 ### Resizing columns
 
-The [`AgGrid`][vizro.models.AgGrid] provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
+The [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
 
 You can configure column sizing by setting the `columnSize` parameter in your `dash_ag_grid` function call. By default, the `columnSize` is set to `responsiveSizeToFit` within the `vm.AgGrid`. The available options are:
 
@@ -458,7 +458,7 @@ Similar to AG Grid, the [Dash DataTable](https://dash.plotly.com/datatable) is a
 
 In general, we recommend using [AG Grid](#ag-grid) for tables unless you have a particular reason to prefer Dash DataTable.
 
-The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable).
+The Vizro [`Table`](../API-reference/models.md#vizro.models.Table) model is based on the [Dash DataTable](https://dash.plotly.com/datatable).
 
 !!! note "More examples of Dash DataTable"
 
@@ -466,9 +466,9 @@ The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](h
 
 ### Basic usage
 
-To add a [`Table`][vizro.models.Table] model to your page, do the following:
+To add a [`Table`](../API-reference/models.md#vizro.models.Table) model to your page, do the following:
 
-1. Insert the [`Table`][vizro.models.Table] model into the `components` argument of the [`Page`][vizro.models.Page] model.
+1. Insert the [`Table`](../API-reference/models.md#vizro.models.Table) model into the `components` argument of the [`Page`](../API-reference/models.md#vizro.models.Page) model.
 1. Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).
 
 The Vizro version of this table differs in one way from the original table: it requires the user to pass a pandas DataFrame as the source of data. As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`.
@@ -654,12 +654,12 @@ If the available arguments are not sufficient, there is always the option to cre
 
 ## Add additional text
 
-The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the table.
+The [`Table`](../API-reference/models.md#vizro.models.Table) and the [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) models accept `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the table.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
 - **header**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), ideal for extra descriptions, subtitles, or detailed data insights.
 - **footer**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), commonly used for citing data sources, providing information on the last update, or adding disclaimers.
-- **description**: Displayed as an icon that opens a tooltip containing [Markdown text](https://markdown-guide.readthedocs.io/) when hovered over. You can provide a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+- **description**: Displayed as an icon that opens a tooltip containing [Markdown text](https://markdown-guide.readthedocs.io/) when hovered over. You can provide a string to use the default info icon or a [`Tooltip`](../API-reference/models.md#vizro.models.Tooltip) model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 ### Formatted AgGrid
 

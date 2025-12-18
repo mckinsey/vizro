@@ -2,14 +2,14 @@
 
 This guide shows you how to add any [Dash component](https://dash.plotly.com/#open-source-component-libraries) that needs to be reactive to [controls](controls.md) such as [filters](filters.md) and [parameters](parameters.md). If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
 
-[`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro. The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] models are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific to their purposes.
+[`Figure`](../API-reference/models.md#vizro.models.Figure) provides a flexible foundation for all types of reactive Dash components in Vizro. The [`Graph`](../API-reference/models.md#vizro.models.Graph), [`Table`](../API-reference/models.md#vizro.models.Table) and [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid) models are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific to their purposes.
 
 If these more specific models already achieve what you need then they should be used in preference to the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph` and [custom tables](custom-tables.md) to `Table`.
 
 There are already a few figure functions you can reuse, see the section on [KPI cards](#key-performance-indicator-kpi-cards) for more details:
 
-- [`kpi_card`][vizro.figures.kpi_card]
-- [`kpi_card_reference`][vizro.figures.kpi_card_reference]
+- [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card)
+- [`kpi_card_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_reference)
 
 The following flowchart shows what you need to consider when choosing which model to use:
 
@@ -35,7 +35,7 @@ graph TD
 
 To add a `Figure` to your page:
 
-1. Add the `Figure` model to the components argument of the [Page][vizro.models.Page] model.
+1. Add the `Figure` model to the components argument of the [Page](../API-reference/models.md#vizro.models.Page) model.
 1. Use an existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) and pass it to the `figure` argument of the `Figure` model.
 
 !!! example "Use existing figure functions"
@@ -71,7 +71,7 @@ To add a `Figure` to your page:
         Vizro().build(dashboard).run()
         ```
 
-        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card].
+        1. For more information, refer to the API reference for [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
         1. We switch to a [`Flex`](../user-guides/layouts.md#flex-layout) layout so that the KPI card only takes up as much space as it needs.
 
     === "app.yaml"
@@ -201,7 +201,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
         Vizro().build(dashboard).run()
         ```
 
-        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card] and [`kpi_card_reference`][vizro.figures.kpi_card_reference].
+        1. For more information, refer to the API reference for [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card) and [`kpi_card_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_reference).
         1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout with `direction=row` and `wrap=True` to allow KPI cards to wrap to the next line when needed.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-kpi-cards">Run and edit this code in PyCafe</a></b>
