@@ -45,6 +45,8 @@ dependencies = [
 ]
 features = ["kedro"]
 installer = "uv"
+# Pin Python version so that `hatch run test` etc. give consistent behavior.
+python = "3.13"
 
 [envs.default.env-vars]
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
@@ -170,7 +172,7 @@ extra-dependencies = [
   "dash-ag-grid==31.3.1",
   "dash-mantine-components==2.0.0",
   "plotly==5.24.0",
-  "pydantic==2.7.0",
+  "pydantic==2.7.0",  # TODO: Update to 2.10.0 when pyCafe is made compatible
   "pandas==2.0.0",
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
   "kedro==0.19.9"

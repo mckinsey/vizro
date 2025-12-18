@@ -33,6 +33,7 @@ nav:
           - Overview: pages/user-guides/actions.md
           - Handle data: pages/user-guides/data-actions.md
           - Graph and table interactions: pages/user-guides/graph-table-actions.md
+          - Notifications: pages/user-guides/notification-actions.md
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
           - Layout: pages/user-guides/layouts.md
@@ -125,7 +126,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.48
+                vizro==0.1.49
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -152,7 +153,7 @@ plugins:
         Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
-      base_url: https://vizro.readthedocs.io/en/0.1.48/
+      base_url: https://vizro.readthedocs.io/en/0.1.49/
       full_output: llms-full.txt
       sections:
         "TUTORIALS":
@@ -190,6 +191,7 @@ plugins:
           - pages/user-guides/actions.md: "Actions"
           - pages/user-guides/data-actions.md: "Handle data"
           - pages/user-guides/graph-table-actions.md: "Graph and table interactions"
+          - pages/user-guides/notification-actions.md: "Notifications"
         "MANAGE DATA USED BY THE DASHBOARD":
           - pages/user-guides/data.md: "Data"
           - pages/user-guides/kedro-data-catalog.md: "Kedro Data Catalog"

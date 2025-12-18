@@ -704,6 +704,7 @@ ActionType = Annotated[
     | Annotated["filter_interaction", Tag("filter_interaction")]
     | Annotated["set_control", Tag("set_control")]
     | Annotated["show_notification", Tag("show_notification")]
+    | Annotated["update_notification", Tag("update_notification")]
     | SkipJsonSchema[Annotated["_filter", Tag("_filter")]]
     | SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]]
     | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],

@@ -193,10 +193,7 @@ class Dashboard(VizroBaseModel):
                     data={
                         control.id: {"originalValue": control.selector.value, "pageId": page.id}
                         for page in self.pages
-                        for control in cast(
-                            Iterable[ControlType],
-                            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
-                        )
+                        for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), page))
                     },
                 ),
                 dash.page_container,
@@ -333,6 +330,7 @@ class Dashboard(VizroBaseModel):
                 html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(children="Reset all page controls", target="reset-button"),
             ],
+            color="link",
             class_name="btn-circular",
         )
         theme_switch = dbc.Switch(
@@ -366,7 +364,7 @@ class Dashboard(VizroBaseModel):
             text = html.Span("Reset controls", className="btn-text")
 
             control_panel.children.append(
-                dbc.Button(id="reset-button", children=[icon, text]),
+                dbc.Button(id="reset-button", children=[icon, text], color="link"),
             )
 
         nav_control_panel_content = [nav_panel, control_panel]
