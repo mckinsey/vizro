@@ -164,7 +164,7 @@ page_two = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_two])
+dashboard = vm.Dashboard(pages=[page_1, page_two], title="Test Dashboard")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

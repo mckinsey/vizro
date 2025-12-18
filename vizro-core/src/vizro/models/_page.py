@@ -237,7 +237,7 @@ class Page(VizroBaseModel):
                 dcc.Location(id="vizro_url", refresh="callback-nav"),
                 dmc.NotificationContainer(
                     position="top-right",
-                    id="vizro_notifications",
+                    id="vizro-notifications",
                 ),
             ]
         )
