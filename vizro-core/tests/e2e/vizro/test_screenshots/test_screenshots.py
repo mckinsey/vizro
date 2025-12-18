@@ -423,7 +423,7 @@ def test_notifications_page_dark_theme(dash_br):
 
     # Check that the last notification is displayed
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.SUCCESS_NOTIFICATION_TITLE
     )
 
 
