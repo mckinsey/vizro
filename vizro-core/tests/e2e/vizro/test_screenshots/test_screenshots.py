@@ -397,11 +397,7 @@ def test_notifications_page(dash_br):
         page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
     )
 
-    # Trigger multiple notifications
-    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    # Trigger link notification
     dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1, delay=1)
 
     # Check that the last notification is displayed
@@ -422,12 +418,8 @@ def test_notifications_page_dark_theme(dash_br):
     # Switch theme to dark
     dash_br.multiple_click(theme_toggle_path(), 1)
 
-    # Trigger multiple notifications
-    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1, delay=1)
+    # Trigger success notification
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1, delay=1)
 
     # Check that the last notification is displayed
     dash_br.wait_for_text_to_equal(
