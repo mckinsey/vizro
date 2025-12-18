@@ -163,3 +163,7 @@ cython_debug/
 *.sqlite
 *.sqlite3
 *.orc
+
+#uv
+# Every library user will have its own lock file
+uv.lock

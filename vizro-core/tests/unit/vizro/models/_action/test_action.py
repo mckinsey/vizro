@@ -138,7 +138,7 @@ class TestLegacyActionInputs:
         ],
     )
     def test_action_inputs_invalid_model_id(self, runtime_inputs):
-        with pytest.raises(KeyError, match=r"Model with ID .* not found. Please provide a valid component ID\."):
+        with pytest.raises(KeyError, match=r"Model with ID .* not found. Provide a valid component ID\."):
             action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
             action._transformed_inputs
 
@@ -164,7 +164,7 @@ class TestLegacyActionInputs:
         with pytest.raises(
             AttributeError,
             match=r"Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
-            r"Please specify the input explicitly as 'known_model_with_no_default_props.<property>'\.",
+            r"Specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
             action = Action(function=action_with_one_arg(), inputs=["known_model_with_no_default_props"])
             action._transformed_inputs
@@ -273,6 +273,13 @@ class TestLegacyActionOutputs:
                 {"output_1": "known_ag_grid_id.cellClicked"},
                 {"output_1": Output("underlying_ag_grid_id", "cellClicked")},
             ),
+            ("vizro_download", ["vizro_download"], Output("vizro_download", "data")),
+            (["vizro_download"], ["vizro_download"], Output("vizro_download", "data")),
+            (
+                {"output_1": "vizro_download"},
+                {"output_1": "vizro_download"},
+                {"output_1": Output("vizro_download", "data")},
+            ),
         ],
     )
     def test_outputs_valid(
@@ -296,7 +303,7 @@ class TestLegacyActionOutputs:
     def test_outputs_invalid_model_id(self, outputs):
         with pytest.raises(
             KeyError,
-            match=r"Model with ID .* not found. Please provide a valid component ID\.",
+            match=r"Model with ID .* not found. Provide a valid component ID\.",
         ):
             # inputs=[] added to force action to be legacy
             action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
@@ -338,7 +345,7 @@ class TestLegacyActionOutputs:
         with pytest.raises(
             KeyError,
             match=r"Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
-            " `_action_outputs` property. Please specify the output explicitly as"
+            " `_action_outputs` property. Specify the output explicitly as"
             r" `known_model_with_no_default_props.<property>`\.",
         ):
             # inputs=[] added to force action to be legacy
@@ -509,7 +516,7 @@ class TestActionInputs:
         with pytest.raises(
             AttributeError,
             match=r"Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
-            r"Please specify the input explicitly as 'known_model_with_no_default_props.<property>'\.",
+            r"Specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
             action = Action(function=action_with_one_arg("known_model_with_no_default_props"))
 
@@ -595,6 +602,13 @@ class TestActionOutputs:
                 {"output_1": "known_ag_grid_id.cellClicked"},
                 {"output_1": Output("underlying_ag_grid_id", "cellClicked")},
             ),
+            ("vizro_download", ["vizro_download"], Output("vizro_download", "data")),
+            (["vizro_download"], ["vizro_download"], Output("vizro_download", "data")),
+            (
+                {"output_1": "vizro_download"},
+                {"output_1": "vizro_download"},
+                {"output_1": Output("vizro_download", "data")},
+            ),
         ],
     )
     def test_outputs_valid(
@@ -616,7 +630,7 @@ class TestActionOutputs:
     def test_outputs_invalid_model_id(self, outputs):
         with pytest.raises(
             KeyError,
-            match=r"Model with ID .* not found. Please provide a valid component ID\.",
+            match=r"Model with ID .* not found. Provide a valid component ID\.",
         ):
             action = Action(function=action_with_no_args(), outputs=outputs)
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
@@ -656,7 +670,7 @@ class TestActionOutputs:
         with pytest.raises(
             KeyError,
             match=r"Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
-            r" `_action_outputs` property\. Please specify the output explicitly as"
+            r" `_action_outputs` property\. Specify the output explicitly as"
             r" `known_model_with_no_default_props.<property>`\.",
         ):
             action = Action(function=action_with_no_args(), outputs=["known_model_with_no_default_props"])

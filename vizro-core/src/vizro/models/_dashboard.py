@@ -193,10 +193,7 @@ class Dashboard(VizroBaseModel):
                     data={
                         control.id: {"originalValue": control.selector.value, "pageId": page.id}
                         for page in self.pages
-                        for control in cast(
-                            Iterable[ControlType],
-                            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
-                        )
+                        for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), page))
                     },
                 ),
                 dash.page_container,
