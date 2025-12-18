@@ -1,12 +1,8 @@
 site_name: Vizro
-site_description: Core Vizro documentation
 site_url: https://vizro.readthedocs.io/en/stable/
+site_description: Core Vizro documentation
 site_dir: site
 docs_dir: docs
-
-repo_url: https://github.com/mckinsey/vizro
-repo_name: mckinsey/vizro
-
 use_directory_urls: true
 
 # Make sure any new page added here is also added to the llmstxt plugin below
@@ -80,6 +76,9 @@ nav:
           - Authors: pages/explanation/authors.md
   - Vizro-MCP:
       - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
+
+repo_url: https://github.com/mckinsey/vizro
+repo_name: mckinsey/vizro
 
 theme:
   name: material
