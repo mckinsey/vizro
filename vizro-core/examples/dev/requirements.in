@@ -1,5 +1,5 @@
 # This file is only used if you don't have hatch installed.
 gunicorn
 openpyxl
-vizro==0.1.44
+vizro==0.1.49
 numpy!=2.0.2  # there is an issue with this specific version that the whl can't be built
