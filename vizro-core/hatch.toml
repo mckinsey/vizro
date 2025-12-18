@@ -172,7 +172,7 @@ extra-dependencies = [
   "dash-ag-grid==31.3.1",
   "dash-mantine-components==2.0.0",
   "plotly==5.24.0",
-  "pydantic==2.7.0",  # TODO: Update to 2.10.0 when pyCafe is made compatible
+  "pydantic==2.7.0",
   "pandas==2.0.0",
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
   "kedro==0.19.9"
