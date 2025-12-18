@@ -259,8 +259,10 @@ extra_css:
 
 extra_javascript:
   - /javascripts/extra.js
-# validation:
-# omitted_files: warn
-# absolute_links: warn
-# unrecognized_links: warn
-# anchors: warn
+
+# Keep these for now as strict building will be enabled by Zensical soon
+validation:
+ omitted_files: warn
+ absolute_links: warn
+ unrecognized_links: warn
+ anchors: warn

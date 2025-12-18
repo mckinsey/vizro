@@ -128,10 +128,10 @@ plugins:
 
 extra_css:
   - stylesheets/extra.css
-# Strictest settings possible, and will be elevated to ERROR when run with --strict.
-# See https://www.mkdocs.org/user-guide/configuration/#validation.
-# validation:
-# omitted_files: warn
-# absolute_links: warn
-# unrecognized_links: warn
-# anchors: warn
+
+# Keep these for now as strict building will be enabled by Zensical soon
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
