@@ -411,13 +411,16 @@ def test_notifications_page(dash_br):
 
 
 @image_assertion
-def test_notifications_page_switch_theme(dash_br):
-    """Testing static notifications page with theme switch."""
+def test_notifications_page_dark_theme(dash_br):
+    """Testing static notifications page with dark theme."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
     )
+
+    # Switch theme to dark
+    dash_br.multiple_click(theme_toggle_path(), 1)
 
     # Trigger multiple notifications
     dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
@@ -430,9 +433,6 @@ def test_notifications_page_switch_theme(dash_br):
     dash_br.wait_for_text_to_equal(
         f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
     )
-
-    # Switch theme to dark
-    dash_br.multiple_click(theme_toggle_path(), 1)
 
 
 @pytest.mark.mobile_screenshots
