@@ -42,6 +42,7 @@ nav:
           - Overview: pages/user-guides/actions.md
           - Handle data: pages/user-guides/data-actions.md
           - Graph and table interactions: pages/user-guides/graph-table-actions.md
+          - Notifications: pages/user-guides/notification-actions.md
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
           - Layout: pages/user-guides/layouts.md
@@ -225,6 +226,7 @@ plugins:
           - pages/user-guides/actions.md: Actions
           - pages/user-guides/data-actions.md: Handle data
           - pages/user-guides/graph-table-actions.md: Graph and table interactions
+          - pages/user-guides/notification-actions.md: Notifications
         HOW TO APPLY VISUAL FORMATTING:
           - pages/user-guides/visual-formatting.md: Formatting overview
           - pages/user-guides/layouts.md: Layouts
