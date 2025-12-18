@@ -76,7 +76,7 @@ python ../tools/check_vizro_docs_links_in_mcp_prompts.py
 '''
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
-serve = "zensical serve --open"
+serve = "zensical serve --open {args}"
 
 [publish.index]
 disable = true

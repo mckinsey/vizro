@@ -81,7 +81,7 @@ build = "zensical build --clean"
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
-serve = "zensical serve --open"
+serve = "zensical serve --open {args}"
 
 [envs.lower-bounds]
 extra-dependencies = ["pydantic==2.11.9"]  # required by langchain>=0.3.0 and openai>=1.108.0
