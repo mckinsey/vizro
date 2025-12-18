@@ -4,12 +4,10 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-<!--
 ### Highlights ✨
 
-- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Multi-select controls can now be updated by the `set_control` action. For example, you can set controls by using lasso select on a graph or selecting multiple rows on a table. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
 
--->
 <!--
 ### Removed
 
@@ -22,12 +20,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Set `clickmode="event+select"` as the default for all `plotly.express` charts, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
 
--->
 <!--
 ### Deprecated
 

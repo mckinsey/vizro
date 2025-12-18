@@ -88,7 +88,9 @@ layout_flex_with_all_params_and_card = vm.Page(
 layout_flex_with_direction_param_and_graph = vm.Page(
     title=cnst.LAYOUT_FLEX_DIRECTION_AND_GRAPH,
     layout=vm.Flex(direction="row"),
-    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True, width=300)) for i in range(6)],
+    components=[
+        vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True), title="short") for i in range(6)
+    ],
 )
 
 layout_flex_with_gap_param_and_table = vm.Page(

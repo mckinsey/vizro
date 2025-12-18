@@ -4,19 +4,23 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-<!--
+
 ### Highlights ✨
 
-- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add `show_notification` and `update_notification` actions to display notification messages to users. Notifications can be customized with different variants, icons, and timing, and can be triggered by, for example, buttons, graphs, or cards. See the [notification actions user guide](../user-guides/notification-actions.md) for details. ([#1496](https://github.com/mckinsey/vizro/pull/1496))
 
--->
+<!--
 ### Removed
 
-- Drop support for Python 3.9. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
+- A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
+<!--
 ### Added
 
-- Add support for Python 3.14. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+
+-->
 <!--
 ### Changed
 

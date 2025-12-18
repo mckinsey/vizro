@@ -4,10 +4,10 @@ from typing import Annotated, Literal
 import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.actions import filter_interaction
+from vizro.actions import filter_interaction, set_control
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
@@ -19,7 +19,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, _validate_captured_callable
+from vizro.models.types import ActionsType, CapturedCallable, MultiValueType, _IdProperty, _validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -114,15 +114,24 @@ class AgGrid(VizroBaseModel):
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
-    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> JsonValue:
-        """Value is the name of the column. There is only one row selected, so we just look at trigger[0]."""
-        # In case the selectedRows is empty (e.g. when the user unselects the row), trigger is an empty list.
-        # This works for both multi=True and multi=False selectors.
+    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> MultiValueType | None:
+        """Extract values from the trigger that represents selected dag.AgGrid rows. Value is the name of the column.
+
+        Example `trigger` structure: [{"col_1": value_1, "col_2": value_2, ...}, {...}], one dict per selected row.
+
+        Returns:
+          - list of values (one per row) or None if no row selected (signals reset).
+
+        Raises:
+          - ValueError if `value` column name can't be found.
+        """
+        # Returning None signals a reset of control to its original value.
         if not trigger:
-            return []
+            return None
 
         try:
-            return trigger[0][value]
+            # Use dict.fromkeys to remove duplicates while preserving order.
+            return list(dict.fromkeys(row[value] for row in trigger))
         except KeyError:
             raise ValueError(
                 f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
@@ -136,7 +145,10 @@ class AgGrid(VizroBaseModel):
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
-        figure = self.figure(**kwargs)
+
+        # Enable checkboxes in the AgGrid if any of the actions is a `set_control` action.
+        figure = self.figure(_set_checkboxes=any(isinstance(action, set_control) for action in self.actions), **kwargs)
+
         figure.id = self._inner_component_id
         return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
 
