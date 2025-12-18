@@ -264,7 +264,7 @@ extra_javascript:
 
 # Keep these for now as strict building will be enabled by Zensical soon
 validation:
- omitted_files: warn
- absolute_links: warn
- unrecognized_links: warn
- anchors: warn
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
