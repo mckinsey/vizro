@@ -140,7 +140,7 @@ class update_notification(show_notification):
     `show_notification` action.
 
     Abstract: Usage documentation
-        [Update notification](../user-guides/notification-actions.md#update-notification)
+        [Update notification](../user-guides/notification-actions.md#update-existing-notification)
 
     Args:
         notification (ModelID): Notification to update. Must match the id of the original `show_notification` action.

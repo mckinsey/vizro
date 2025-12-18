@@ -22,9 +22,9 @@ dependencies = [
   "pandas>=2",
   "plotly>=5.24.0",
   # Must be <= the version in pre-commit mypy hook, sync manually
-  # When updating this to >=2.9, search code for `but this requires pydantic >= 2.9` to find all
-  # occurrences of code that is now ready to change
-  "pydantic>=2.7.0",  # TODO: Update to 2.10.0 when pyCafe is made compatible
+  # TODO: When updating to `>=2.10`, search code for `pydantic>=2.10.0` or
+  # `pydantic>=2.9` to find all occurrences ready for this change
+  "pydantic>=2.7.0",
   "flask_caching>=2",
   "wrapt>=1",
   "black",
