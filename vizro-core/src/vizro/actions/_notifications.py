@@ -38,10 +38,10 @@ class show_notification(_AbstractAction):
         variant (Literal["info", "success", "warning", "error", "progress"]): Variant that determines color and
             default icon. If `progress`, the notification will show a loading spinner instead of an icon.
             Defaults to "info".
-        title (str): Notification title. Defaults to the capitalized variant name, for example `"Info"` for
-            `variant="info"`. Set to `""` to hide the title.
-        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Defaults
-            to the variant-specific icon, for example 'info' for 'info' variant. Ignored if `variant="progress"`.
+        title (str): Notification title. Set to `""` to hide the title. Defaults to the capitalized variant name,
+            for example `"Info"` for `variant="info"`.
+        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Ignored if
+            `variant="progress"`. Defaults to the variant-specific icon, for example 'info' for 'info' variant.
         auto_close (bool | int): Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
             info/success/warning/error, `False` for progress.
@@ -62,7 +62,6 @@ class show_notification(_AbstractAction):
     """
 
     type: Literal["show_notification"] = "show_notification"
-
     text: str = Field(
         description="Markdown text for the main notification message. Follows the CommonMark specification.",
     )
@@ -77,13 +76,14 @@ class show_notification(_AbstractAction):
     # Placeholder defaults are used to satisfy type checking; actual defaults are set in the validator.
     title: str = Field(
         default="",
-        description="""Notification title. Defaults to the capitalized variant name, for example
-            `"Info"` for `variant="info"`. Set to `""` to hide the title.""",
+        description="""Notification title. Set to `""` to hide the title. Defaults to the capitalized
+            variant name, for example `"Info"` for `variant="info"`""",
     )
     icon: Annotated[str, AfterValidator(validate_icon)] = Field(
         default="",
-        description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
-            Ignored if `variant="progress"`.""",
+        description="""Icon name from the [Google Material Icon Library](https://fonts.google.com/icons).
+            Ignored if `variant="progress"`. Defaults to the variant-specific icon, for example
+            'info' for 'info' variant.""",
     )
     auto_close: bool | int = Field(
         default=4000,
@@ -136,10 +136,10 @@ class update_notification(show_notification):
         variant (Literal["info", "success", "warning", "error", "progress"]): Variant that determines color and
             default icon. If `progress`, the notification will show a loading spinner instead of an icon.
             Defaults to "info".
-        title (str): Notification title. Defaults to capitalized variant name if not provided, for example
-            'Info' for 'info' variant.
-        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Defaults
-            to the variant-specific icon, for example 'info' for 'info' variant. Ignored if `variant="progress"`.
+        title (str): Notification title. Set to `""` to hide the title. Defaults to the capitalized variant name,
+            for example `"Info"` for `variant="info"`.
+        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Ignored if
+            `variant="progress"`. Defaults to the variant-specific icon, for example 'info' for 'info' variant.
         auto_close (bool | int): Auto-close duration in milliseconds. Set to `False` to keep the notification
             open until the user closes it manually. Default value depends on variant: `4000` for
             info/success/warning/error, `False` for progress.
@@ -163,7 +163,6 @@ class update_notification(show_notification):
     """
 
     type: Literal["update_notification"] = "update_notification"  # type: ignore[assignment]
-
     notification: ModelID = Field(
         description="Notification to update. Must match the id of the original `show_notification` action.",
     )
