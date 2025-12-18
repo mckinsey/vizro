@@ -2,16 +2,16 @@
 
 This guide shows you how to use graphs to visualize your data in the dashboard.
 
-The [`Graph`](../API-reference/models.md#vizro.models.Graph) model is the most used component in many dashboards, allowing you to visualize data in a variety of ways. It is based on [`dcc.Graph`](https://dash.plotly.com/dash-core-components/graph).
+The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways. It is based on [`dcc.Graph`](https://dash.plotly.com/dash-core-components/graph).
 
-To add a [`Graph`](../API-reference/models.md#vizro.models.Graph) model to your page, do the following:
+To add a [`Graph`][vizro.models.Graph] model to your page, do the following:
 
-1. insert a [`Graph`](../API-reference/models.md#vizro.models.Graph) model into the `components` argument of the [`Page`](../API-reference/models.md#vizro.models.Page) model
+1. insert a [`Graph`][vizro.models.Graph] model into the `components` argument of the [`Page`][vizro.models.Page] model
 1. enter any of the currently available charts of the open source library [`plotly.express`](https://plotly.com/python/plotly-express/) into the `figure` argument
 
 !!! note
 
-    To use the [`plotly.express`](https://plotly.com/python/plotly-express/) chart in a Vizro dashboard, you need to import it as `import vizro.plotly.express as px`. This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched yet enables _direct insertion_ into the [`Graph`](../API-reference/models.md#vizro.models.Graph) model _as is_.
+    To use the [`plotly.express`](https://plotly.com/python/plotly-express/) chart in a Vizro dashboard, you need to import it as `import vizro.plotly.express as px`. This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched yet enables _direct insertion_ into the [`Graph`][vizro.models.Graph] model _as is_.
 
     Note also that the `plotly.express` chart needs to have a `data_frame` argument. In case you require a chart without a `data_frame` argument (for example, the [`imshow` chart](https://plotly.com/python/imshow/)), refer to our [guide on custom charts](custom-charts.md).
 
@@ -90,12 +90,12 @@ A graph can act as a source for [interactions with other components](graph-table
 
 ## Add additional text
 
-The [`Graph`](../API-reference/models.md#vizro.models.Graph) model accepts `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the chart.
+The [`Graph`][vizro.models.Graph] model accepts `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the chart.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
 - **header**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), ideal for extra descriptions, subtitles, or detailed data insights.
 - **footer**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), commonly used for citing data sources, providing information on the last update, or adding disclaimers.
-- **description**: Displayed as an icon that opens a tooltip containing [Markdown text](https://markdown-guide.readthedocs.io/) when hovered over. You can provide a string to use the default info icon or a [`Tooltip`](../API-reference/models.md#vizro.models.Tooltip) model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+- **description**: Displayed as an icon that opens a tooltip containing [Markdown text](https://markdown-guide.readthedocs.io/) when hovered over. You can provide a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! note "Use `Graph.title` instead of the Plotly Express chart title"
 

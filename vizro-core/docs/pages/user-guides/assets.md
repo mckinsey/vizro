@@ -43,7 +43,7 @@ Note that both `logo_light.<extension>` and `logo_dark.<extension>` must be supp
 
 ## Change the `assets` folder path
 
-If you do not want to place your `assets` folder in the root directory of your app, you can specify an alternative path through the `assets_folder` argument of the [`Vizro`](../API-reference/vizro.md#vizro.Vizro) class.
+If you do not want to place your `assets` folder in the root directory of your app, you can specify an alternative path through the `assets_folder` argument of the [`Vizro`][vizro.Vizro] class.
 
 ```python
 Vizro(assets_folder="path/to/assets/folder").build(dashboard).run()

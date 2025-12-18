@@ -246,7 +246,7 @@ You can thus configure a Vizro dashboard according to a set of constraints that 
 
 !!! note
 
-    The Vizro schema is still incomplete. This means that it does not yet define everything that we consider to be core and supported functionality of Vizro. The most prominent example of an omission is the [`CapturedCallable`](../API-reference/models.md#vizro.models.types.CapturedCallable), which are the objects you insert into many models such as `vm.Graph`, `vm.Table` or `vm.Action`, often into the `figure` argument.
+    The Vizro schema is still incomplete. This means that it does not yet define everything that we consider to be core and supported functionality of Vizro. The most prominent example of an omission is the [`CapturedCallable`][vizro.models.types.CapturedCallable], which are the objects you insert into many models such as `vm.Graph`, `vm.Table` or `vm.Action`, often into the `figure` argument.
 
     This does not mean that it cannot be configured in JSON. In fact, in the configuration above, we have used the following JSON:
 

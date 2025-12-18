@@ -1,6 +1,6 @@
 # How to create custom charts
 
-This guide shows you how to create custom charts and how to add them to your dashboard. The [`Graph`](../API-reference/models.md#vizro.models.Graph) model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the [user guide on graphs](graph.md).
+This guide shows you how to create custom charts and how to add them to your dashboard. The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the [user guide on graphs](graph.md).
 
 ## When to use a custom chart
 
@@ -15,7 +15,7 @@ In general, you should use the custom chart decorator `@capture("graph")` if you
 1. Decorate it with `@capture("graph")`.
 1. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
 1. The visualization should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments will not react to dashboard controls such as [`Filter`](filters.md).
-1. Pass your function to the `figure` argument of the [`Graph`](../API-reference/models.md#vizro.models.Graph) model.
+1. Pass your function to the `figure` argument of the [`Graph`][vizro.models.Graph] model.
 
 The minimal example below can be used as a base to build more sophisticated charts.
 

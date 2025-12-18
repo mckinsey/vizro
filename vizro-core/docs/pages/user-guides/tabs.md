@@ -1,8 +1,8 @@
 # How to use tabs
 
-This guide shows you how to use the [`Tabs`](../API-reference/models.md#vizro.models.Tabs) model, which organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
+This guide shows you how to use the [`Tabs`][vizro.models.Tabs] model, which organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
 
-They are essentially a way of putting multiple [`Container`](../API-reference/models.md#vizro.models.Container) models in the same screen space, and letting the user switch between them. A [`Container`](../user-guides/container.md) enables the grouping of page components into sections and subsections. The [`Tabs`](../API-reference/models.md#vizro.models.Tabs) model is based on the underlying Dash component [`dbc.Tabs`](https://www.dash-bootstrap-components.com/docs/components/tabs/).
+They are essentially a way of putting multiple [`Container`][vizro.models.Container] models in the same screen space, and letting the user switch between them. A [`Container`](../user-guides/container.md) enables the grouping of page components into sections and subsections. The [`Tabs`][vizro.models.Tabs] model is based on the underlying Dash component [`dbc.Tabs`](https://www.dash-bootstrap-components.com/docs/components/tabs/).
 
 <figure markdown>
   ![tabs](../../assets/user_guides/components/tabs-info.png){ width="400"}
@@ -13,17 +13,17 @@ Both `Tabs` and `Containers` are a more advanced technique for customizing your 
 
 This guide shows you how to use tabs to organize your `Containers` into subsections inside the dashboard.
 
-By using the [`Tabs`](../API-reference/models.md#vizro.models.Tabs) model, the following applies:
+By using the [`Tabs`][vizro.models.Tabs] model, the following applies:
 
 - [Filters](../user-guides/filters.md) affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
-- The `title` of the [`Container`](../API-reference/models.md#vizro.models.Container) inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
+- The `title` of the [`Container`][vizro.models.Container] inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
 
 ## Add tabs
 
-To add a [`Tabs`](../API-reference/models.md#vizro.models.Tabs) model to your page, do the following:
+To add a [`Tabs`][vizro.models.Tabs] model to your page, do the following:
 
-1. Insert the [`Tabs`](../API-reference/models.md#vizro.models.Tabs) model into the `components` argument of the [`Page`](../API-reference/models.md#vizro.models.Page) model
-1. Insert your [`Container`](../API-reference/models.md#vizro.models.Container) models into the `tabs` argument of the `Tabs` model
+1. Insert the [`Tabs`][vizro.models.Tabs] model into the `components` argument of the [`Page`][vizro.models.Page] model
+1. Insert your [`Container`][vizro.models.Container] models into the `tabs` argument of the `Tabs` model
 1. Add a `title` to the `Container`, which will be used as the `label` for the corresponding `Tab`.
 1. (optional) Add a `title` to the `Tabs` model to display a heading above your `Tabs`.
 
@@ -144,7 +144,7 @@ To add a [`Tabs`](../API-reference/models.md#vizro.models.Tabs) model to your pa
 
 The `description` argument enables you to add helpful context to your tabs by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your chosen text.
 
-You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`](../API-reference/models.md#vizro.models.Tooltip) model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! example "Tabs with tooltip"
 

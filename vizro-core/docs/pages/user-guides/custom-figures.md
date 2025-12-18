@@ -2,13 +2,13 @@
 
 This guide explains how to create custom figures, which is useful when you need a component that reacts to [filter](filters.md) and [parameter](parameters.md) controls.
 
-The [`Figure`](../API-reference/models.md#vizro.models.Figure) model accepts the `figure` argument, where you can enter _any_ custom figure function as explained in the [user guide on figures](figure.md).
+The [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where you can enter _any_ custom figure function as explained in the [user guide on figures](figure.md).
 
 ## When to use a custom figure
 
 As described in the flowchart detailing [when to use `Figure`](figure.md), custom figures should be used if **both** of the following conditions are met:
 
-- You need a figure that doesn't fit into the existing built-in models ([`Graph`](../API-reference/models.md#vizro.models.Graph), [`Table`](../API-reference/models.md#vizro.models.Table) or [`AgGrid`](../API-reference/models.md#vizro.models.AgGrid)).
+- You need a figure that doesn't fit into the existing built-in models ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
 - You need a figure that isn't available in our built-in figure functions [`vizro.figures`](../API-reference/figure-callables.md).
 
 ## Steps to create a custom figure
@@ -17,7 +17,7 @@ As described in the flowchart detailing [when to use `Figure`](figure.md), custo
 1. Decorate it with `@capture("figure")`.
 1. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
 1. The figure should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments will not react to dashboard controls such as [`Filter`](filters.md).
-1. Pass your function to the `figure` argument of the [`Figure`](../API-reference/models.md#vizro.models.Figure) model.
+1. Pass your function to the `figure` argument of the [`Figure`][vizro.models.Figure] model.
 
 The following examples can be used as a base to build more sophisticated figures.
 

@@ -20,7 +20,7 @@ You can create custom chart functions in Vizro by wrapping Plotly chart code ins
 
 ### [Custom tables](custom-tables.md)
 
-If the available arguments for the [`dash_ag_grid`](../API-reference/table-callables.md#vizro.tables.dash_ag_grid) or [`dash_data_table`](../API-reference/table-callables.md#vizro.tables.dash_data_table) models are insufficient, you can create a custom Dash AG Grid or Dash DataTable.
+If the available arguments for the [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] models are insufficient, you can create a custom Dash AG Grid or Dash DataTable.
 
 ### [Custom components](custom-components.md)
 
@@ -36,7 +36,7 @@ If you want to perform functions that are not available in the [built-in action 
 
 Custom figures are useful when you need a component that reacts to [filter](filters.md) and [parameter](parameters.md) controls.
 
-Vizro's [`Figure`](../API-reference/models.md#vizro.models.Figure) model accepts the `figure` argument, where you can enter _any_ custom figure function as described in the [how-to guide for figures](figure.md).
+Vizro's [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where you can enter _any_ custom figure function as described in the [how-to guide for figures](figure.md).
 
 ### Use custom functions in `yaml`/`json` configuration
 

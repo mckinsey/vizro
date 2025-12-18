@@ -2,7 +2,7 @@
 
 This guide shows you how to use and customize the navigation that appears on the left of your dashboard.
 
-The [`Dashboard`](../API-reference/models.md#vizro.models.Dashboard) model accepts a `navigation` argument, where you can enter a [`Navigation`](../API-reference/models.md#vizro.models.Navigation) model. This enables you to group pages together and customize how they appear in your navigation. The dashboard includes a collapsible side panel that users can minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
+The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation. The dashboard includes a collapsible side panel that users can minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
 
 ## Use the default navigation
 
@@ -190,7 +190,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
 
 ## Use a navigation bar with icons
 
-Another way to group together pages in the navigation is to use a [`NavBar`](../API-reference/models.md#vizro.models.NavBar) model with icons. The simplest way to use this is to change the `nav_selector` specified in the [`Navigation`](../API-reference/models.md#vizro.models.Navigation) model:
+Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] model with icons. The simplest way to use this is to change the `nav_selector` specified in the [`Navigation`][vizro.models.Navigation] model:
 
 !!! example "Using `NavBar`"
 
@@ -261,7 +261,7 @@ Here, the first level of the navigation hierarchy ("Group A" and "Group B") is r
 
 ## Customize the navigation bar
 
-Under the hood, the [`NavBar`](../API-reference/models.md#vizro.models.NavBar) model uses a [`NavLink`](../API-reference/models.md#vizro.models.NavLink) to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink` models yourself.
+Under the hood, the [`NavBar`][vizro.models.NavBar] model uses a [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink` models yourself.
 
 ### Customize NavLinks
 

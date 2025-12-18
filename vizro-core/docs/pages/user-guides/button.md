@@ -4,11 +4,11 @@ This guide shows you how to use buttons to interact with your data in the dashbo
 
 The Button component is commonly used for dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/).
 
-To add a [`Button`](../API-reference/models.md#vizro.models.Button), insert it into the `components` argument of the [`Page`](../API-reference/models.md#vizro.models.Page) model.
+To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page] model.
 
 ## Customize button text
 
-You can configure the `text` argument to alter the display text of the [`Button`](../API-reference/models.md#vizro.models.Button).
+You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button].
 
 !!! example "Customize text"
 
@@ -55,7 +55,7 @@ vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 
 ## Trigger an action
 
-You can use the [`Button`](../API-reference/models.md#vizro.models.Button) to trigger actions. These actions could be [built-in](actions.md#trigger-an-action-with-a-button) or [custom](custom-actions.md#trigger-an-action-with-a-button). Use the `Button.actions` argument to configure the action that executes when the button is clicked.
+You can use the [`Button`][vizro.models.Button] to trigger actions. These actions could be [built-in](actions.md#trigger-an-action-with-a-button) or [custom](custom-actions.md#trigger-an-action-with-a-button). Use the `Button.actions` argument to configure the action that executes when the button is clicked.
 
 The example below shows how to configure a button that exports the filtered data from a target chart using the [`export_data`](data-actions.md#export-data) action.
 
@@ -130,7 +130,7 @@ If your app includes several action buttons, consider [adding icons](#add-an-ico
 
 ## Use as a control
 
-The [`Button`](../API-reference/models.md#vizro.models.Button) component is currently reserved to be used inside the main panel (right-side) of the dashboard. However, there might be use cases where one would like to place the `Button` inside the control panel (left-side) with the other controls.
+The [`Button`][vizro.models.Button] component is currently reserved to be used inside the main panel (right-side) of the dashboard. However, there might be use cases where one would like to place the `Button` inside the control panel (left-side) with the other controls.
 
 In this case, follow the user-guide outlined for [creating custom components](custom-components.md) and manually add the `Button` as a valid type to the `controls` argument by running the following lines before your dashboard configurations:
 
@@ -202,7 +202,7 @@ There are three predefined button styles that can be customized using the `varia
 
 The `description` argument enables you to add helpful context to your button by displaying an info icon next to its text. Hovering over the icon shows a tooltip with your chosen text.
 
-You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`](../API-reference/models.md#vizro.models.Tooltip) model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! example "Button with a tooltip"
 

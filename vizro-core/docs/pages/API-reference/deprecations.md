@@ -4,7 +4,7 @@ This page lists Vizro features that are now deprecated and forthcoming breaking 
 
 ## `Layout` model
 
-The [`Layout`](models.md#vizro.models.Layout) model has been renamed [`Grid`](models.md#vizro.models.Grid). Replace your references to `Layout` with `Grid`.
+The [`Layout`][vizro.models.Layout] model has been renamed [`Grid`][vizro.models.Grid]. Replace your references to `Layout` with `Grid`.
 
 ```python
 # Before:
@@ -16,7 +16,7 @@ vm.Grid(grid=[[0, 1], [2, 3]])
 
 ## `Action` model `inputs` argument
 
-The `inputs` argument of the [`Action` model](models.md#vizro.models.Action) is deprecated. Pass references to runtime inputs directly as arguments of `function`.
+The `inputs` argument of the [`Action` model][vizro.models.Action] is deprecated. Pass references to runtime inputs directly as arguments of `function`.
 
 ```python
 # Before:
@@ -46,7 +46,7 @@ Does this cause you a problem? Please [let us know](https://github.com/mckinsey/
 
 ## `Action` model for built-in action
 
-Using the [`Action` model](models.md#vizro.models.Action) for built-in actions is deprecated.
+Using the [`Action` model][vizro.models.Action] for built-in actions is deprecated.
 Call the action directly:
 
 ```python
@@ -61,7 +61,7 @@ See the [user guide on built-in actions](../user-guides/actions.md) for more inf
 
 ## `filter_interaction`
 
-`filter_interaction` is deprecated. Use the more powerful and flexible [`set_control`](actions.md#vizro.actions.set_control).
+`filter_interaction` is deprecated. Use the more powerful and flexible [`set_control`][vizro.actions.set_control].
 
 ```python
 # Before:

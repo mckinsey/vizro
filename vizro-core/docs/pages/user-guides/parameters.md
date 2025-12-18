@@ -6,24 +6,24 @@ This guide shows you how to add parameters to your dashboard. A parameter sets a
 - [built-in tables](table.md) and [custom tables](custom-tables.md)
 - [built-in figures](figure.md) and [custom figures](custom-figures.md)
 
-It is possible to add parameters to a [page](pages.md) or [container](container.md#add-controls-to-container). Both the [`Page` model](../API-reference/models.md#vizro.models.Page) and the [`Container` model](../API-reference/models.md#vizro.models.Container) have an optional `controls` argument where you can give any number of controls including parameters.
+It is possible to add parameters to a [page](pages.md) or [container](container.md#add-controls-to-container). Both the [`Page` model][vizro.models.Page] and the [`Container` model][vizro.models.Container] have an optional `controls` argument where you can give any number of controls including parameters.
 
 When the dashboard is running there are two ways for a user to set a parameter:
 
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
-- [User interaction with a graph or table](graph-table-actions.md#cross-parameter) via the [`set_control` action](../API-reference/actions.md#vizro.actions.set_control). This enables functionality such as [cross-highlighting](graph-table-actions.md#cross-highlight). To achieve a visually cleaner dashboard you might like to hide the parameter's underlying selector with `visible=False`.
+- [User interaction with a graph or table](graph-table-actions.md#cross-parameter) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-highlighting](graph-table-actions.md#cross-highlight). To achieve a visually cleaner dashboard you might like to hide the parameter's underlying selector with `visible=False`.
 
 ## Basic parameters
 
 To add a parameter to your page, do the following:
 
-1. add the [`Parameter`](../API-reference/models.md#vizro.models.Parameter) model into the `controls` argument of the [`Page`](../API-reference/models.md#vizro.models.Page) model.
+1. add the [`Parameter`][vizro.models.Parameter] model into the `controls` argument of the [`Page`][vizro.models.Page] model.
 1. add the `targets` argument
 1. add a selector model to the `selector` argument.
 
 In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (for example, `scatter_chart.title`).
 
-Unlike for the [`Filter`](../API-reference/models.md#vizro.models.Filter) model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
+Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 
 !!! example "Basic Parameter"
 
@@ -200,7 +200,7 @@ If you use [dynamic data](data.md/#dynamic-data) that can be updated while the d
 
 ## Further customization
 
-For further customizations, refer to the [guide to selectors](selectors.md) and the [`Parameter` model](../API-reference/models.md#vizro.models.Parameter). Some popular choices are:
+For further customizations, refer to the [guide to selectors](selectors.md) and the [`Parameter` model][vizro.models.Parameter]. Some popular choices are:
 
 - Customize the `selector`. For example: `multi`, to switch between a multi-option and single-option selector; `options` for a categorical parameter; or `min` and `max` for a numerical parameter.
 - Make the parameter's selector invisible by setting `visible=False`. This is particularly useful for graph interactions to hide the selector from the user interface while keeping the functionality active. Cross-highlighting is a common example of this pattern. For a complete code example, see the [cross-highlighting section](graph-table-actions.md#cross-highlight) in the graph and table interactions guide.

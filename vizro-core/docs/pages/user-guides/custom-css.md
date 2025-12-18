@@ -10,7 +10,7 @@ To make customizations, you need to:
 
 !!! note "For quick visual fixes, you may shortcut by using the `extra` argument"
 
-    If you want to alter the visual appearance of a single component quickly, or if you are not yet comfortable with creating a CSS file, you could opt for an alternative approach. Many of our models have an `extra` argument, that let's you pass arguments to the underlying Dash component directly. Often these components have a `style` or `className` argument that let's you alter the style directly. You can check the [API reference](../API-reference/models.md) of the model in question. An example of this would be to make the [`Button`](../API-reference/models.md#vizro.models.Button) [outlined and green](../user-guides/button.md).
+    If you want to alter the visual appearance of a single component quickly, or if you are not yet comfortable with creating a CSS file, you could opt for an alternative approach. Many of our models have an `extra` argument, that let's you pass arguments to the underlying Dash component directly. Often these components have a `style` or `className` argument that let's you alter the style directly. You can check the [API reference](../API-reference/models.md) of the model in question. An example of this would be to make the [`Button`][vizro.models.Button] [outlined and green](../user-guides/button.md).
 
 ## Introduction to Vizro CSS
 
