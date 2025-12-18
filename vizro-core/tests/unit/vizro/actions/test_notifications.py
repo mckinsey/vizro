@@ -1,6 +1,7 @@
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
+from pydantic import ValidationError
 
 import vizro.models as vm
 from vizro import Vizro
@@ -29,6 +30,11 @@ class TestShowNotificationInstantiation:
         assert notification.icon == "info"
         assert notification.auto_close == 4000
         assert notification.outputs == "vizro_notifications.sendNotifications"
+
+    @pytest.mark.parametrize("field", ["title", "icon", "auto_close"])
+    def test_none_value_raises_validation_error(self, field):
+        with pytest.raises(ValidationError, match=field):
+            show_notification(text="Test message", **{field: None})
 
 
 @pytest.mark.usefixtures("managers_one_page_one_button")

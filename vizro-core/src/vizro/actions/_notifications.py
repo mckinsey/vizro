@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, ValidationInfo
+from pydantic import AfterValidator, Field, model_validator
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -27,14 +27,6 @@ VARIANT_DEFAULTS: dict[str, VariantDefaults] = {
 }
 
 
-# TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
-def set_variant_default(value, info: ValidationInfo):
-    # Check for "is None" rather than falsey values because auto_close=False is valid.
-    if value is None:
-        return getattr(VARIANT_DEFAULTS[info.data["variant"]], info.field_name)  # type: ignore[arg-type]
-    return value
-
-
 class show_notification(_AbstractAction):
     """Shows a notification message.
 
@@ -46,8 +38,8 @@ class show_notification(_AbstractAction):
         variant (Literal["info", "success", "warning", "error", "progress"]): Variant that determines color and
             default icon. If `progress`, the notification will show a loading spinner instead of an icon.
             Defaults to "info".
-        title (str): Notification title. Defaults to capitalized variant name if not provided, for example
-            'Info' for 'info' variant.
+        title (str): Notification title. Defaults to the capitalized variant name, for example `"Info"` for
+            `variant="info"`. Set to `""` to hide the title.
         icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Defaults
             to the variant-specific icon, for example 'info' for 'info' variant. Ignored if `variant="progress"`.
         auto_close (bool | int): Auto-close duration in milliseconds. Set to `False` to keep the notification
@@ -80,38 +72,34 @@ class show_notification(_AbstractAction):
         If `progress`, the notification will show a loading spinner instead of an icon.""",
     )
 
-    title: Annotated[
-        str | None,
-        AfterValidator(set_variant_default),
-        Field(
-            default=None,
-            description="""Notification title. Defaults to capitalized variant name if not provided,
-            for example 'Info' for 'info' variant.""",
-            validate_default=True,
-        ),
-    ]
-    icon: Annotated[
-        str | None,
-        AfterValidator(validate_icon),
-        AfterValidator(set_variant_default),
-        Field(
-            default=None,
-            description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
-                Ignored if `variant="progress"`""",
-            validate_default=True,
-        ),
-    ]
-    auto_close: Annotated[
-        bool | int | None,
-        AfterValidator(set_variant_default),
-        Field(
-            default=None,
-            description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
-                open until the user closes it manually. Default value depends on variant: `4000` for
-                info/success/warning/error, `False` for progress.""",
-            validate_default=True,
-        ),
-    ]
+    # TODO: title, icon and auto_close could use default_factory once we bump to pydantic>=2.10.0.
+    # For now, we use a model_validator with model_fields_set below to set variant-specific defaults.
+    # Placeholder defaults are used to satisfy type checking; actual defaults are set in the validator.
+    title: str = Field(
+        default="",
+        description="""Notification title. Defaults to the capitalized variant name, for example
+            `"Info"` for `variant="info"`. Set to `""` to hide the title.""",
+    )
+    icon: Annotated[str, AfterValidator(validate_icon)] = Field(
+        default="",
+        description="""Icon name from Google Material icons library. Defaults to variant-specific icon.
+            Ignored if `variant="progress"`.""",
+    )
+    auto_close: bool | int = Field(
+        default=4000,
+        description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
+            open until the user closes it manually. Default value depends on variant: `4000` for
+            info/success/warning/error, `False` for progress.""",
+    )
+
+    # This should ideally be replaced with default_factory once we bump to pydantic>=2.10.0.
+    @model_validator(mode="after")
+    def set_variant_defaults(self):
+        variant_defaults = VARIANT_DEFAULTS[self.variant]
+        for field_name in ("title", "icon", "auto_close"):
+            if field_name not in self.model_fields_set:
+                self.__dict__[field_name] = getattr(variant_defaults, field_name)
+        return self
 
     @property
     def outputs(self) -> _IdOrIdProperty:  # type: ignore[override]

@@ -77,9 +77,7 @@ def _build_inner_layout(layout, components):
     return components_container
 
 
-def validate_icon(icon) -> str | None:
-    if icon is None:
-        return None
+def validate_icon(icon) -> str:
     return icon.strip().lower().replace(" ", "_")
 
 
