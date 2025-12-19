@@ -140,6 +140,7 @@ class Vizro:
 
         # Note that model instantiation and pre_build are independent of Dash.
         # TMP: Set the tree
+        dashboard = dashboard.__class__.model_validate(dashboard, context={"build_tree": True})
         model_manager._dashboard_tree = dashboard._tree
         self._pre_build()
         self.dash.layout = dashboard.build()

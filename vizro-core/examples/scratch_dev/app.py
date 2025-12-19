@@ -5,6 +5,7 @@ import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro
 from vizro.managers import data_manager
+from vizro.tables import dash_ag_grid
 
 df = px.data.iris()
 data_manager["iris"] = df
@@ -109,27 +110,27 @@ tab_1 = vm.Container(
     ],
 )
 
-# tab_2 = vm.Container(
-#     id="tab_2",
-#     title="Tab II",
-#     components=[
-#         vm.Graph(
-#             figure=px.scatter(
-#                 "gapminder_2007",
-#                 title="Graph 3",
-#                 x="gdpPercap",
-#                 y="lifeExp",
-#                 size="pop",
-#                 color="continent",
-#             ),
-#         ),
-#     ],
-# )
+tab_2 = vm.Container(
+    id="container_2",
+    title="Tab II",
+    components=[
+        vm.Graph(
+            figure=px.scatter(
+                "gapminder_2007",
+                title="Graph 3",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+    ],
+)
 
 tabs = vm.Page(
     id="page_1",
     title="Tabs",
-    components=[vm.Tabs(id="tabs_1", tabs=[tab_1])],
+    components=[vm.Tabs(id="tabs_1", tabs=[tab_1, tab_2])],
     controls=[vm.Filter(id="filter_1", column="continent")],
 )
 
@@ -176,17 +177,15 @@ dashboard = vm.Dashboard(id="dashboard_1", pages=[tabs])
 # dashboard = vm.Dashboard.model_validate(dashboard_config)
 
 if __name__ == "__main__":
-    dashboard = vm.Dashboard.model_validate(dashboard, context={"build_tree": True})
-
-    ## Here all models have ._tree
-    for node in dashboard._tree:
-        has_tree = hasattr(node.data, "_tree")
-        if not has_tree:
-            print(f"WARNING: {node.kind} (id={node.data.id}) missing ._tree attribute")
-    assert all(
-        dashboard._tree[model.id].data is model
-        for model in [dashboard] + dashboard.pages + [comp for page in dashboard.pages for comp in page.components]
-    )
     app = Vizro().build(dashboard)
-    dashboard._tree.print(repr="{node.kind} -> {node.data.type} (id={node.data.id})")
+    # TODO: Do these tests elsewhere
+    # for node in dashboard._tree:
+    #     has_tree = hasattr(node.data, "_tree")
+    #     if not has_tree:
+    #         print(f"WARNING: {node.kind} (id={node.data.id}) missing ._tree attribute")
+    # assert all(
+    #     dashboard._tree[model.id].data is model
+    #     for model in [dashboard] + dashboard.pages + [comp for page in dashboard.pages for comp in page.components]
+    # )
+
     app.run()
