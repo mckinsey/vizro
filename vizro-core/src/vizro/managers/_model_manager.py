@@ -24,34 +24,19 @@ class FIGURE_MODELS:
     pass
 
 
+# TODO: Re-implement the dupicate ID error and investigate further why things (atm) are working nonetheless:
+# Duplciate ID on Tabs Containers caused the duplicate not to appear in the tree, BUT the page worked as intended, why?
+# Very likely because we still get to the model via the parent model when we iterator over the tabs field
 class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
 
 
 class ModelManager:
     def __init__(self):
-        self.__models: dict[ModelID, VizroBaseModel] = {}
         self._frozen_state = False
         self._dashboard_tree: TypedTree | None = None
 
-    # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
-    @_state_modifier
-    def __setitem__(self, model_id: ModelID, model: Model):
-        # if model_id in self.__models:
-        #     raise DuplicateIDError(
-        #         f"Model with id={model_id} already exists. Models must have a unique id across the whole dashboard. "
-        #         f"If you are working from a Jupyter Notebook, please either restart the kernel, or "
-        #         f"use 'from vizro import Vizro; Vizro._reset()`."
-        #     )
-        self.__models[model_id] = model
-
-    @_state_modifier
-    def __delitem__(self, model_id: ModelID):
-        # Only required to handle legacy actions and could be removed when those are no longer needed.
-        del self.__models[model_id]
-
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
-        # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
         return self._dashboard_tree.find_first(data_id=model_id).data
 
     def __iter__(self) -> Generator[ModelID, None, None]:
