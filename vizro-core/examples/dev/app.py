@@ -1140,6 +1140,7 @@ dashboard = vm.Dashboard(
 
 if __name__ == "__main__":
     # Move app definition outside of __main__ block for the HF demo to work
+    print("================ STARTING TREE BUILDING ==================")
     dashboard = vm.Dashboard.model_validate(dashboard, context={"build_tree": True})
     app = Vizro().build(dashboard)
     app.dash.layout.children.append(
@@ -1150,4 +1151,4 @@ if __name__ == "__main__":
             class_name="anchor-container",
         )
     )
-    app.run()
+    app.run(debug=False)

@@ -269,10 +269,19 @@ class VizroBaseModel(BaseModel):
     ]
     _tree: TypedTree | None = PrivateAttr(None)  # initialised in model_after
 
+    # Next TODO:
+    # why do we end up with ._tree = None
+    # is it legit to just copy all private attributes
+    # why should that wrap validator be the last one, is it because otherwise it misses things when not
+    # having finished?
+    # We should document the error to also discuss with rest of the team...
+    # Idea for tomorrow: why don't we check the diff between before and after too?
+
     # @_log_call
     # def model_post_init(self, context: Any) -> None:
     #     model_manager[self.id] = self
 
+    # TODO: is that really used?
     @staticmethod
     def _ensure_model_in_tree(model: VizroBaseModel, context: dict[str, Any]) -> VizroBaseModel:
         """Revalidate a VizroBaseModel instance if it hasn't been added to the tree yet."""
@@ -337,6 +346,26 @@ class VizroBaseModel(BaseModel):
     @model_validator(mode="wrap")
     @classmethod
     def build_tree_model_wrap(cls, data: Any, handler: ModelWrapValidatorHandler[Self], info: ValidationInfo) -> Self:
+        # PRIVATE ATTR PRESERVATION
+        # What could go wrong here?
+        # Potentially if during validation of a subfield model, i want to set something in a parent
+        # private attribute, but what i set then get's overwritten later by the saving mechanism?
+        private_attrs = {}
+        # If data is already an instance of this model, capture PrivateAttr values
+        if isinstance(data, cls):
+            # Get all PrivateAttr fields from the model's __private_attributes__
+            if hasattr(cls, "__private_attributes__"):
+                for attr_name in cls.__private_attributes__.keys():
+                    # Check if the attribute has been set on the instance
+                    if hasattr(data, attr_name):
+                        # print(f"Capturing PrivateAttr: {attr_name}")
+                        try:
+                            value = getattr(data, attr_name)
+                            # Capture the value (including None if explicitly set)
+                            private_attrs[attr_name] = value
+                        except AttributeError:
+                            pass
+
         if info.context is not None and "build_tree" in info.context:
             #### ID ####
             if isinstance(data, dict):
@@ -354,9 +383,9 @@ class VizroBaseModel(BaseModel):
             info.context["level"] += 1
 
             #### Tree ####
-            print(
-                f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'} with model id {model_id}"
-            )
+            # print(
+            #     f"{indent}{cls.__name__} Before validation: {info.context['field_stack'] if 'field_stack' in info.context else 'no field stack'} with model id {model_id}"
+            # )
 
             # Skip addition if node already exists in tree (reason not yet understood)
             if not ("tree" in info.context and info.context["tree"].find_first(data_id=model_id)):
@@ -382,6 +411,10 @@ class VizroBaseModel(BaseModel):
         #### Validation ####
         validated_stuff = handler(data)
 
+        # Restore PrivateAttr values if we captured any
+        for attr_name, value in private_attrs.items():
+            setattr(validated_stuff, attr_name, value)
+
         if info.context is not None and "build_tree" in info.context:
             #### Replace placeholder nodes and propagate tree to all models ####
             info.context["tree"][validated_stuff.id].set_data(validated_stuff)
@@ -390,7 +423,7 @@ class VizroBaseModel(BaseModel):
             #### Level and indentation ####
             info.context["level"] -= 1
             indent = info.context["level"] * " " * 4
-            print(f"{indent}{cls.__name__} After validation: {info.context['field_stack']}")
+            # print(f"{indent}{cls.__name__} After validation: {info.context['field_stack']}")
         elif hasattr(data, "_tree") and data._tree is not None:
             #### Revalidation case: model already has a tree (e.g., during assignment) ####
             # Inherit the tree from the original instance
