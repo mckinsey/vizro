@@ -431,9 +431,10 @@ TODOs Maxi:
 - serialization/deserialization - DONE
 - NEW: circular deps issue (see below) - DONE
 - custom components do not end up in the tree - DONE
-- CURRENT ISSUE: containers in tabs seem to cause problems - need to investigate
+- containers in tabs seem to cause problems - need to investigate - DONE (was due to private attributes being lost, this
+  is not implemented in fake vizro)
 
-NOT FULLY RESSOVLED
+NOT FULLY RESOLVED
 - what if we want to add normal component to other fields? (happens a lot!) - just use normal add_type?
 ==> This may run into the usual revalidate_instances problems! We may need to good schema modification function
 ==> after all!!
@@ -447,9 +448,10 @@ pre-build and/or pre and post tree building?
 ------------------------------------------------------------------------------------------------------------------------
 TODOs after moving the real Vizro:
 ------------------------------------------------------------------------------------------------------------------------
-- trial the model manager with the real Vizro and tree
+- trial the model manager with the real Vizro and tree - DONE (dev example now works, notebooks not yet)
+- try NOT referring to model_manager in a few places (probably take one of each case in the MM summary I once wrote)
 - sort out page validation
-- then bring over tests
+- then bring over tests, and fix existing unit tests
 
 
 Circular dependency issue:
