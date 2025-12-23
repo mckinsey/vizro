@@ -33,6 +33,7 @@ from pages.layout_pages import (
     layout_flex_with_wrap_param_and_ag_grid,
     layout_flex_without_params,
 )
+from pages.notifications_page import static_notifications_page
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
 from pages.set_control_cross_filter_page import (
@@ -106,6 +107,7 @@ dashboard = vm.Dashboard(
         action_model_field_shortcut_page,
         action_ag_grid_underlying_id_shortcut_page,
         action_control_shortcut_page,
+        static_notifications_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -166,6 +168,7 @@ dashboard = vm.Dashboard(
                 cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
                 cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
                 cnst.ACTION_CONTROL_SHORTCUT_PAGE,
+                cnst.STATIC_NOTIFICATIONS_PAGE,
             ],
         }
     ),

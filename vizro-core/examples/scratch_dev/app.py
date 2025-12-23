@@ -1,97 +1,170 @@
-from typing import Literal
-
-from dash import html
-
-import vizro.models as vm
 import vizro.plotly.express as px
+import vizro.models as vm
+import vizro.actions as va
 from vizro import Vizro
-from vizro.models.types import ControlType
+from vizro.models.types import capture
+from time import sleep
 
-df_gapminder = px.data.gapminder()
+df = px.data.iris()
 
-
-class ControlGroup(vm.VizroBaseModel):
-    """Container to group controls."""
-
-    type: Literal["control_group"] = "control_group"
-    title: str
-    controls: list[ControlType] = []
-
-    def build(self):
-        return html.Div(
-            [html.H4(self.title), html.Hr()] + [control.build() for control in self.controls],
-            className="control_group_container",
-        )
-
-
-vm.Page.add_type("controls", ControlGroup)
-vm.Page.add_type("components", ControlGroup)
-vm.Page.add_type("components", vm.Filter)
-
-vm.Container.add_type("controls", ControlGroup)
-vm.Container.add_type("components", ControlGroup)
-vm.Container.add_type("components", vm.Filter)
-
-page = vm.Page(
+page_1 = vm.Page(
+    title="Test dmc notification system",
     layout=vm.Flex(),
-    title="Page:",
     components=[
-        # vm.Filter(id="page_components", column="country"),  # -> EXCEPTION
-        # ControlGroup(  # -> EXCEPTION
-        #     title="page_components_group",
-        #     controls=[vm.Filter(id="page_components_group", column="continent")],
-        # ),
-        vm.Container(
-            title="Container:",
-            components=[
-                # vm.Filter(id="container_components", column="country"),  # -> EXCEPTION
-                # ControlGroup(  # -> EXCEPTION
-                #     title="container_components_group",
-                #     controls=[vm.Filter(id="container_components_group", column="continent")],
-                # ),
-                vm.Container(
-                    components=[
-                        vm.Container(
-                            title="Nested Container:",
-                            components=[
-                                # vm.Filter(id="nested_container_components", column="country"),  # -> EXCEPTION
-                                # ControlGroup(  # -> EXCEPTION
-                                #     title="nested_container_components_group",
-                                #     controls=[vm.Filter(id="nested_container_components_group", column="continent")],
-                                # ),
-                                vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop")),
-                            ],
-                            controls=[
-                                vm.Filter(id="nested_container_controls", column="country"),
-                                ControlGroup(
-                                    title="nested_container_controls_group",
-                                    controls=[vm.Filter(id="nested_container_controls_group", column="continent")],
-                                ),
-                            ],
-                        )
-                    ]
+        vm.Button(
+            icon="check_circle",
+            text="Success Notification",
+            actions=[
+                va.show_notification(
+                    text="Operation completed successfully!",
+                    variant="success",
                 )
             ],
-            controls=[
-                vm.Filter(id="container_controls", column="country"),
-                ControlGroup(
-                    title="container_controls_group",
-                    controls=[vm.Filter(id="container_controls_group", column="continent")],
-                ),
+        ),
+        vm.Button(
+            icon="warning",
+            text="Warning Notification",
+            actions=[
+                va.show_notification(
+                    text="Please review this warning message.",
+                    variant="warning",
+                )
             ],
         ),
-    ],
-    controls=[
-        vm.Filter(id="page_controls", column="continent"),
-        ControlGroup(
-            title="page_controls_group",
-            controls=[
-                vm.Filter(id="page_controls_group", column="country"),
+        vm.Button(
+            text="Error Notification",
+            icon="error",
+            actions=[
+                va.show_notification(
+                    text="An error occurred during the operation.",
+                    variant="error",
+                )
+            ],
+        ),
+        vm.Button(
+            text="Info Notification",
+            icon="info",
+            actions=[
+                va.show_notification(
+                    text="Here's some useful information for you.",
+                    variant="info",
+                )
+            ],
+        ),
+        vm.Button(
+            text="Loading Notification",
+            icon="hourglass_empty",
+            actions=[
+                va.show_notification(
+                    text="Processing your request...",
+                    variant="progress",
+                )
+            ],
+        ),
+        vm.Button(
+            text="No Auto-Close",
+            icon="close",
+            actions=[
+                va.show_notification(
+                    text="This notification will stay until you close it manually.",
+                    title="Persistent",
+                    variant="info",
+                    auto_close=False,
+                )
+            ],
+        ),
+        vm.Button(
+            text="Custom Icon",
+            icon="celebration",
+            actions=[
+                va.show_notification(
+                    text="Check out this new feature!",
+                    title="New Feature",
+                    variant="success",
+                    icon="celebration",
+                )
+            ],
+        ),
+        vm.Button(
+            text="Markdown with Link",
+            icon="link",
+            actions=[
+                va.show_notification(
+                    text="Visit the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) for more details!",
+                    title="",
+                    auto_close=False,
+                )
+            ],
+        ),
+        vm.Button(
+            text="1. Show Loading",
+            icon="hourglass_empty",
+            actions=[
+                va.show_notification(
+                    id="update-demo",
+                    text="Processing your request...",
+                    title="Processing",
+                    variant="progress",
+                )
+            ],
+        ),
+        vm.Button(
+            text="2. Update to Complete",
+            icon="done",
+            actions=[
+                va.update_notification(
+                    notification="update-demo",
+                    text="Your request has been processed successfully!",
+                    title="Complete",
+                    variant="success",
+                )
+            ],
+        ),
+        vm.Button(
+            text="Show Navigation Notification",
+            icon="arrow_forward",
+            actions=[
+                va.show_notification(
+                    text="Click [here](/page-two) to go to **Page 2** and explore more features!",
+                    title="Ready to explore?",
+                    variant="info",
+                    auto_close=False,
+                )
             ],
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+
+page_two = vm.Page(
+    id="page-two",
+    title="Page Two",
+    controls=[vm.Filter(column="species")],
+    components=[
+        vm.Graph(figure=px.histogram(df, x="sepal_length")),
+        vm.Button(
+            icon="file_download",
+            text="Export data notification",
+            actions=[
+                va.show_notification(
+                    id="export-notif",
+                    text="Export data starting...",
+                    title="",
+                    variant="progress",
+                ),
+                vm.Action(function=capture("action")(lambda: sleep(2.5))()),
+                va.export_data(),
+                va.update_notification(
+                    notification="export-notif",
+                    text="Export data completed successfully!",
+                    variant="success",
+                ),
+            ],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_two], title="Test Dashboard")
+
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

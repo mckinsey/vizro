@@ -2,15 +2,18 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
 from typing import Literal, Protocol, cast, runtime_checkable
 
-from dash import get_relative_path
+from dash import get_relative_path, no_update
 from pydantic import Field, JsonValue
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ControlType, ModelID
+
+logger = logging.getLogger(__name__)
 
 
 # This defines what a model needs to implement for it to be capable of acting as the trigger of set_control.
@@ -168,11 +171,37 @@ class set_control(_AbstractAction):
                 )
             self._same_page = False
 
-    def function(self, _trigger):
+    def function(self, _trigger, _controls_store):
+        from vizro.models import Checklist
+
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
+        # If value is None then reset control to original value.
+        if value is None:
+            value = _controls_store[self.control]["originalValue"]
+
+        # Normalize returned value based on target selector type.
+        selector = cast(ControlType, model_manager[self.control]).selector
+        is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
+        if is_multi:
+            value = value if isinstance(value, list) else [value]
+        elif isinstance(value, list):
+            # Target is single-value selector but value is list.
+            if len(value) != 1:
+                # Single-value selector cannot be set to empty list or multiple values.
+                # Returning no_update will leave control unchanged.
+                # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
+                logger.debug(
+                    "set_control %s received list with %d items but targets a single-select control %s; "
+                    "return no_update",
+                    self.id,
+                    len(value),
+                    self.control,
+                )
+                return no_update if self._same_page else (no_update, no_update)
+            [value] = value
+
         if self._same_page:
-            # Returning a single element value works for both single and multi select selectors.
             return value
 
         page_path = model_manager._get_model_page(model_manager[self.control]).path
