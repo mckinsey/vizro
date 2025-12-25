@@ -1,1 +1,25 @@
 /* Custom CSS  */
+#nav-bar {
+  border-right: none !important;
+  display: flex;
+  flex-direction: row !important;
+  max-width: 1200px;
+}
+
+.navbar {
+  background: inherit !important;
+  height: 60px !important;
+  min-height: 0 !important;
+}
+
+.custom_header {
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+#header:not(:empty) {
+  border-bottom: none;
+}
+
+.navbar .nav-link {
+  width: fit-content !important;
+}

@@ -31,6 +31,7 @@ class NavBar(VizroBaseModel):
         pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
             Defaults to `{}`.
         items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
+        position (str): Position of the NavBar. Defaults to `"left"`.
 
     """
 
@@ -42,10 +43,13 @@ class NavBar(VizroBaseModel):
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
     items: list[NavLink] = []
+    position: str = "left"
 
     @_log_call
     def pre_build(self):
         from vizro.models import Page
+
+        self.items = self._alter_items()
 
         self.items = self.items or [
             NavLink(
@@ -55,6 +59,7 @@ class NavBar(VizroBaseModel):
                 if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
                 else group_title,
                 pages=pages,
+                nav_position=self.position,
             )
             for group_title, pages in self.pages.items()
         ]
@@ -91,3 +96,11 @@ class NavBar(VizroBaseModel):
         # `flex-column` ensures that we return a vertical NavBar. In the future, we could use that className
         # to create a horizontal NavBar.
         return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className="flex-column"), nav_panel])
+
+    def _alter_items(self):
+        nav_position = self.position
+
+        for nav_link in self.items:
+            nav_link.nav_position = nav_position
+
+        return self.items
