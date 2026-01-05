@@ -1,10 +1,12 @@
 import asyncio
 import os
+from dataclasses import dataclass
 
 import logfire
 import pandas as pd
 import plotly.express as px
 from dotenv import load_dotenv
+from pandas.core.frame import DataFrame
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.anthropic import AnthropicModel
 from pydantic_ai.models.openai import OpenAIChatModel
@@ -15,7 +17,7 @@ from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFa
 
 # from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
 
-chart_agent = Agent(
+chart_agent = Agent[pd.DataFrame, BaseChartPlan](
     deps_type=pd.DataFrame,
     output_type=BaseChartPlan,  # ChartPlanFactory(df),
     instructions=(
@@ -25,8 +27,10 @@ chart_agent = Agent(
 
 
 @chart_agent.instructions
-def add_df(ctx: RunContext[pd.DataFrame]) -> str:
+def add_df(ctx: RunContext[pd.DataFrame | None]) -> str:
     """Add the dataframe to the chart plan."""
+    if ctx.deps is None or type(ctx.deps) is not pd.DataFrame:
+        raise ValueError("DataFrame dependency is required and must be a pandas DataFrame.")
     return f"A sample of the data is {ctx.deps.sample(5)}"
 
 
@@ -51,19 +55,21 @@ if __name__ == "__main__":
     df_stocks = px.data.stocks()
 
     # Run the agent - user can choose the data_frame
-    # result = chart_agent.run_sync(model=model, user_prompt="Create a bar chart", deps=df_stocks)
-    # print(result.output.chart_code)
+    result = chart_agent.run_sync(model=model, user_prompt="Create a bar chart", deps=df_iris)
+    print(result.output.chart_code)
+
+    result2 = chart_agent.run_sync(model=model, deps=df_stocks)
 
     async def main():
         async with chart_agent.run_stream(
             model=model,
-            user_prompt="Create a bar chart of the iris , make the chart code with lots of comments as I am testing something.",
+            user_prompt="Create a bar chart of the iris.",
             deps=df_stocks,
         ) as response:
             async for text in response.stream_output():
                 print(text)
 
-    asyncio.run(main())
+    # asyncio.run(main())
 
     #### Test code execution
     # from pydantic_ai import CodeExecutionTool
