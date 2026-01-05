@@ -1,7 +1,6 @@
-import asyncio
 import os
 from dataclasses import dataclass
-from typing import Any, Union
+from typing import Any
 
 import logfire
 import pandas as pd
@@ -12,9 +11,7 @@ from pydantic import BaseModel, Field, ValidationError
 from pydantic.json_schema import GenerateJsonSchema
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.anthropic import AnthropicModel
-from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.anthropic import AnthropicProvider
-from pydantic_ai.providers.openai import OpenAIProvider
 
 # from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
 
@@ -89,7 +86,6 @@ def add_df(ctx: RunContext[list[pd.DataFrame]]) -> str:
 @dashboard_agent.output_validator
 def validate_dashboard_config(output: BaseDashboardPlan) -> BaseDashboardPlan:
     """Validate the dashboard configuration."""
-
     try:
         vm.Dashboard.model_validate(output.dashboard_config)
     except ValidationError as e:
