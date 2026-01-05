@@ -1,6 +1,6 @@
 # How to add text to your page
 
-This guide shows you how to display text in your dashboard with the [`Text` component][vizro.models.Text].
+This guide shows you how to display text in your dashboard with the [`Text` component][vizro.models.Text] model.
 
 !!! note "Card and Text components"
 
@@ -10,7 +10,7 @@ This guide shows you how to display text in your dashboard with the [`Text` comp
 
     You should use `Card` to display Markdown text that needs attention drawn to it. Generally, this would be relatively short portions of text. Unlike `Text`, a `Card` can also be [used for navigation](card.md#create-a-navigation-card).
 
-You can add a [`Text`][vizro.models.Text] component to your dashboard by inserting [`Text`][vizro.models.Text] into the `components` argument of the [`Page`][vizro.models.Page] or the [`Container`][vizro.models.Container] model.
+You can add a [`Text`][vizro.models.Text] model to your dashboard by inserting [`Text`][vizro.models.Text] into the `components` argument of the [`Page`][vizro.models.Page] or [`Container`][vizro.models.Container] models.
 
 !!! example "Text"
 
@@ -51,7 +51,7 @@ You can add a [`Text`][vizro.models.Text] component to your dashboard by inserti
 
 ## Customize text
 
-The [`Text`][vizro.models.Text] uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Text`][vizro.models.Text] model supports the following:
+The [`Text`][vizro.models.Text] model uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Text`][vizro.models.Text] model supports the following:
 
 - Headers
 - Emphasis

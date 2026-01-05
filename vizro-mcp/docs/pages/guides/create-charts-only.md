@@ -2,7 +2,7 @@
 
 If you don't want to create an entire Vizro dashboard, you can still use Vizro-MCP to create the code for a single chart. If you're not sure what kind of chart you want, check out the [Vizro Visual Vocabulary](https://huggingface.co/spaces/vizro/demo-visual-vocabulary) for ideas.
 
-The **easiest** way to create a Vizro chart is to choose the [`create_vizro_chart` template](./use-prompt-templates.md) and just send the prompt. This will create a simple chart that you can alter. Take it from there!
+In Claude Desktop or Cursor, the **easiest** way to create a Vizro chart is to choose the [`create_vizro_chart` template](./use-prompt-templates.md) and just send the prompt. This will create a simple chart that you can alter. Take it from there!
 
 Alternatively, you can just ask Vizro-MCP through a prompt. For example:
 

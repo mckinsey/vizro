@@ -70,6 +70,10 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
         [![AGGrid]][aggrid]
 
+## Interact with other graphs and tables
+
+An AG Grid can act as a source for [interactions with other components](graph-table-actions.md), for example to cross-filter another graph or table when the user clicks on a point.
+
 ### Disable pagination
 
 By default, pagination is enabled in AG Grid to improve performance and usability with large datasets. If you prefer to show all rows in a single scrollable table (for example, to allow users to scroll vertically through all data), you can disable pagination by setting `dashGridOptions={"pagination": False}`.
@@ -416,6 +420,38 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
 If the available arguments are not sufficient, there is always the option to [create a custom AG Grid callable](custom-tables.md).
 
+#### Add sticky headers
+
+To add sticky headers to your AG Grid, add the following CSS to your custom CSS file within your local `assets` folder.
+
+```css
+.ag-header {
+    position: fixed !important;
+    z-index: 1;
+}
+
+.ag-body {
+    top: 40px;
+}
+```
+
+If your dashboard contains multiple AG Grids, you can scope this CSS to a specific grid by assigning an ID to the corresponding `vm.AgGrid` model and targeting it in your CSS. For example:
+
+```css
+#my-aggrid .ag-header {
+    position: fixed !important;
+    z-index: 1;
+}
+
+#my-aggrid .ag-body {
+    top: 40px;
+}
+```
+
+!!! note
+
+    This approach works reliably only when the `AgGrid` is positioned in the non-scrollable page.
+
 ## Dash DataTable
 
 Similar to AG Grid, the [Dash DataTable](https://dash.plotly.com/datatable) is an interactive table/grid component designed for viewing, editing, and exploring large datasets.
@@ -430,7 +466,7 @@ The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](h
 
 ### Basic usage
 
-To add a [`Table`][vizro.models.Table] to your page, do the following:
+To add a [`Table`][vizro.models.Table] model to your page, do the following:
 
 1. Insert the [`Table`][vizro.models.Table] model into the `components` argument of the [`Page`][vizro.models.Page] model.
 1. Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).

@@ -1,0 +1,47 @@
+name: e2e vizro http requests checks
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  test-e2e-vizro-http-requests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Install Playwright and browser
+        run: |
+          hatch run pip install playwright
+          hatch run playwright install --with-deps chromium
+      - name: Run tests
+        run: |
+          hatch run test-e2e-vizro-http-requests
+
+      - name: Create artifacts
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: http-requests-artifacts
+          path: |
+            /home/runner/work/vizro/vizro/vizro-core/*.png

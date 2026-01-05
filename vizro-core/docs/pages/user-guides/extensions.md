@@ -30,7 +30,7 @@ All Vizro's components are based on `Dash` and ship with a set of defaults that 
 
 ### [Custom actions](custom-actions.md)
 
-If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [built-in action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions can also be added as an element inside the [actions chain](actions.md#chain-actions), and triggered with one of dashboard components.
+If you want to perform functions that are not available in the [built-in action functions](actions.md), you can [create your own custom actions](custom-actions.md).
 
 ### [Custom figures](custom-figures.md)
 
@@ -186,7 +186,7 @@ Here is an example showing a Dash callback within Vizro, enabling an interaction
             title="Example: Dash callback within Vizro",
             components=[
                 vm.Graph(id="source_chart",
-                         figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"])),
+                         figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data="species")),
                 vm.Card(id="card_id",
                         text="Click on the graph to apply filter interaction."),
             ]

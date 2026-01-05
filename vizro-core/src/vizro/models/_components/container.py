@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, Literal, Optional
+from collections.abc import Iterable
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
@@ -8,9 +9,11 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist, model_vali
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
+from vizro.managers import model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
+    _all_hidden,
     _build_inner_layout,
     _log_call,
     check_captured_callable_model,
@@ -21,7 +24,7 @@ from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProper
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
-def set_variant(variant: Optional[Literal["plain", "filled", "outlined"]], info: ValidationInfo):
+def set_variant(variant: Literal["plain", "filled", "outlined"] | None, info: ValidationInfo):
     if variant is not None:
         return variant
     return "plain" if info.data["collapsed"] is None else "outlined"
@@ -30,21 +33,23 @@ def set_variant(variant: Optional[Literal["plain", "filled", "outlined"]], info:
 class Container(VizroBaseModel):
     """Container to group together a set of components on a page.
 
+    Abstract: Usage documentation
+        [How to use containers](../user-guides/container.md)
+
     Args:
-        type (Literal["container"]): Defaults to `"container"`.
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Container`. Defaults to `""`.
-        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
-        collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.
+        layout (LayoutType | None): Layout to place components in. Defaults to `None`.
+        collapsed (bool | None): Boolean flag that determines whether the container is collapsed on initial load.
             Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the
             container is not collapsible.
-        variant (Optional[Literal["plain", "filled", "outlined"]]): Predefined styles to choose from. Options are
+        variant (Literal["plain", "filled", "outlined"] | None): Predefined styles to choose from. Options are
             `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/layout/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -60,15 +65,15 @@ class Container(VizroBaseModel):
         min_length=1,
     )
     title: str = Field(default="", description="Title of the `Container`")
-    layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    collapsed: Optional[bool] = Field(
+    layout: Annotated[LayoutType | None, AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    collapsed: bool | None = Field(
         default=None,
         description="Boolean flag that determines whether the container is collapsed on initial load. "
         "Set to `True` for a collapsed state, `False` for an expanded state. "
         "Defaults to `None`, meaning the container is not collapsible.",
     )
     variant: Annotated[
-        Optional[Literal["plain", "filled", "outlined"]],
+        Literal["plain", "filled", "outlined"] | None,
         AfterValidator(set_variant),
         Field(
             default=None,
@@ -77,10 +82,10 @@ class Container(VizroBaseModel):
             validate_default=True,
         ),
     ]
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -119,9 +124,15 @@ class Container(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise
-        # control.selector might not be set.
-        for control in self.controls:
+        from vizro.models import Filter, Parameter
+
+        # Mark controls under this container as `_in_container`. Note this relies on the fact that filters are pre-built
+        # upfront in Vizro._pre_build. Otherwise, control.selector might not be set.
+        # Use "_get_models" instead of "for control in self.controls" to handle nested custom controls.
+        # Use root_model=self.controls so only its own self.controls are marked, not these nested under self.components.
+        for control in cast(
+            Iterable[ControlType], model_manager._get_models(model_type=(Filter, Parameter), root_model=self.controls)
+        ):
             control.selector._in_container = True
 
     @_log_call
@@ -216,8 +227,10 @@ class Container(VizroBaseModel):
         )
 
     def _build_control_panel(self):
+        controls_content = [control.build() for control in self.controls]
         return html.Div(
             id=f"{self.id}-control-panel",
-            children=[control.build() for control in self.controls],
+            children=controls_content,
             className="container-controls-panel",
+            hidden=_all_hidden(controls_content),
         )

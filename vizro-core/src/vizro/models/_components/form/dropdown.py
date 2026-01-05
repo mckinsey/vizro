@@ -1,6 +1,6 @@
 import math
 from datetime import date
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -15,7 +15,13 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, MultiValueType, OptionsType, SingleValueType, _IdProperty
+from vizro.models.types import (
+    ActionsType,
+    MultiValueType,
+    OptionsType,
+    SingleValueType,
+    _IdProperty,
+)
 
 
 def validate_multi(multi, info: ValidationInfo):
@@ -27,12 +33,12 @@ def validate_multi(multi, info: ValidationInfo):
     return multi
 
 
-def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
+def _get_list_of_labels(full_options: OptionsType) -> list[StrictBool] | list[float] | list[str] | list[date]:
     """Returns a list of labels from the selector options provided."""
     if all(isinstance(option, dict) for option in full_options):
         return [option["label"] for option in full_options]  # type: ignore[index]
     else:
-        return cast(Union[list[StrictBool], list[float], list[str], list[date]], full_options)
+        return cast(list[StrictBool] | list[float] | list[str] | list[date], full_options)
 
 
 def _calculate_option_height(full_options: OptionsType, char_count: int) -> int:
@@ -46,23 +52,25 @@ def _calculate_option_height(full_options: OptionsType, char_count: int) -> int:
 
 
 class Dropdown(VizroBaseModel):
-    """Categorical single/multi-option selector `Dropdown`.
+    """Categorical single/multi-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
+
     Args:
-        type (Literal["dropdown"]): Defaults to `"dropdown"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (Optional[Union[SingleValueType, MultiValueType]]): See
+        value (SingleValueType | MultiValueType | None): See
             [`SingleValueType`][vizro.models.types.SingleValueType] and
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -72,7 +80,7 @@ class Dropdown(VizroBaseModel):
     type: Literal["dropdown"] = "dropdown"
     options: OptionsType = []
     value: Annotated[
-        Optional[Union[SingleValueType, MultiValueType]],
+        SingleValueType | MultiValueType | None,
         AfterValidator(validate_value),
         Field(default=None, validate_default=True),
     ]
@@ -82,10 +90,10 @@ class Dropdown(VizroBaseModel):
         Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
     ]
     title: str = Field(default="", description="Title to be displayed")
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
@@ -112,6 +120,7 @@ class Dropdown(VizroBaseModel):
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
+    _inner_component_properties: list[str] = PrivateAttr(dcc.Dropdown().available_properties)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)

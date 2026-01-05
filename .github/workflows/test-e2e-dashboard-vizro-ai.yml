@@ -22,11 +22,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Passed fork step
         run: echo "Success!"
@@ -39,17 +39,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.12"
-            hatch-env: all.py3.12
+          - python-version: "3.13"
+            hatch-env: all.py3.13
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python ${{ matrix.config.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.config.python-version }}
-
       - name: Install Hatch
         run: pip install hatch
 
@@ -77,12 +76,11 @@ jobs:
             {
               "text": "Vizro-ai ${{ matrix.config.hatch-env }} e2e dashboard tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          webhook: ${{ env.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
 
       - name: Report artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: Report-${{ matrix.config.python-version }}-${{ matrix.config.label }}
@@ -94,10 +92,10 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download All Artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
 
       - name: Set current date as env variable
         id: date
@@ -113,7 +111,7 @@ jobs:
           gawk -F, -i inplace 'FNR>1 {$1="${{ steps.date.outputs.date }}"} {print}' OFS=, report-aggregated-${{ steps.date.outputs.date }}.csv
 
       - name: Report artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: Report-aggregated-${{ steps.date.outputs.date }}

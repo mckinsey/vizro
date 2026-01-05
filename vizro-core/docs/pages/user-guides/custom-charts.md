@@ -37,6 +37,10 @@ To alter the data in the `data_frame` argument, consider using a [Filter](filter
 
     Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any extra configuration. We will showcase both possibilities in the following examples.
 
+## Interact with other graphs and tables
+
+A custom graph can act as a source for [interactions with other components](graph-table-actions.md), for example to cross-filter another graph or table when the user clicks on a point.
+
 ## Enhanced `plotly.express` chart with reference line
 
 The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then add a `Parameter` that enables the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
@@ -45,12 +49,15 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="7-11 19"}
+        ```{.python pycafe-link hl_lines="10-14 22"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
+        from vizro.managers import data_manager
         from vizro.models.types import capture
 
+
+        data_manager["iris"] = px.data.iris()
 
         @capture("graph")
         def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None): # (1)!
@@ -65,12 +72,12 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
                 vm.Graph(
                     id="enhanced_scatter",
                     figure=scatter_with_line(
+                        data_frame="iris",
                         x="sepal_length",
                         y="sepal_width",
                         color="species",
                         size="petal_width",
                         hline=3,
-                        data_frame=px.data.iris(),
                     ),
                 ),
             ],
@@ -91,7 +98,34 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
 
     === "app.yaml"
 
-        Custom charts are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: __main__.scatter_with_line
+                  color: species
+                  data_frame: iris
+                  hline: 3
+                  size: petal_width
+                  x: sepal_length
+                  y: sepal_width
+                id: enhanced_scatter
+                type: graph
+            controls:
+              - selector:
+                  max: 5.0
+                  min: 2.0
+                  step: 1.0
+                  title: Horizontal line
+                  type: slider
+                  value: 3.0
+                targets:
+                  - enhanced_scatter.hline
+                type: parameter
+            title: Custom chart
+        ```
 
     === "Result"
 
@@ -105,12 +139,13 @@ The below examples shows a more involved use-case. We create and style a waterfa
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="20-36 43"}
+        ```{.python pycafe-link hl_lines="23-39 46"}
         import pandas as pd
         import plotly.graph_objects as go
 
         import vizro.models as vm
         from vizro import Vizro
+        from vizro.managers import data_manager
         from vizro.models.types import capture
 
 
@@ -123,6 +158,8 @@ The below examples shows a more involved use-case. We create and style a waterfa
                     "y": [60, 80, 0, -40, -20, 0],
                 }
             )
+
+        data_manager["waterfall_data"] = waterfall_data()
 
 
         @capture("graph")
@@ -148,7 +185,7 @@ The below examples shows a more involved use-case. We create and style a waterfa
             title="Custom chart",
             components=[
                 vm.Graph(
-                    figure=waterfall(data_frame=waterfall_data(), measure="measure", x="x", y="y", text="text"),
+                    figure=waterfall(data_frame="waterfall_data", measure="measure", x="x", y="y", text="text"),
                 ),
             ],
             controls=[
@@ -162,7 +199,27 @@ The below examples shows a more involved use-case. We create and style a waterfa
 
     === "app.yaml"
 
-        Custom charts are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: __main__.waterfall
+                  data_frame: waterfall_data
+                  measure: measure
+                  text: text
+                  x: x
+                  y: y
+                type: graph
+            controls:
+              - column: x
+                selector:
+                  title: Financial categories
+                  type: dropdown
+                type: filter
+            title: Custom chart
+        ```
 
     === "Result"
 

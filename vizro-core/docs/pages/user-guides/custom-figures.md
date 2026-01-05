@@ -8,12 +8,12 @@ The [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where y
 
 As described in the flowchart detailing [when to use `Figure`](figure.md), custom figures should be used if **both** of the following conditions are met:
 
-- You need a figure that doesn't fit into the existing built-in components ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
+- You need a figure that doesn't fit into the existing built-in models ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
 - You need a figure that isn't available in our built-in figure functions [`vizro.figures`](../API-reference/figure-callables.md).
 
 ## Steps to create a custom figure
 
-1. Define a function that returns a [Dash component](https://dash.plotly.com/#open-source-component-libraries). This can, but does not need to, be based on code in our pre-defined figure functions in [`vizro.figures`](../API-reference/figure-callables.md).
+1. Define a function that returns a [Dash component](https://dash.plotly.com/#open-source-component-libraries). This can, but does not need to, be based on code in our built-in figure functions in [`vizro.figures`](../API-reference/figure-callables.md).
 1. Decorate it with `@capture("figure")`.
 1. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
 1. The figure should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments will not react to dashboard controls such as [`Filter`](filters.md).
@@ -35,9 +35,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="15-34 51"}
-        from typing import Optional
-
+        ```{.python pycafe-link hl_lines="13-32 49"}
         import dash_bootstrap_components as dbc
         import pandas as pd
         import vizro.models as vm
@@ -47,7 +45,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
         from vizro.figures import kpi_card
         from vizro.models.types import capture
 
-        tips = px.data.tips
+        tips = px.data.tips()
 
 
         @capture("figure")  # (1)!
@@ -57,8 +55,8 @@ For instance, to make a KPI card with the icon positioned on the right side of t
             *,
             value_format: str = "{value}",
             agg_func: str = "sum",
-            title: Optional[str] = None,
-            icon: Optional[str] = None,
+            title: str | None,
+            icon: str | None,
         ) -> dbc.Card:  # (2)!
             title = title or f"{agg_func} {value_column}".title()
             value = data_frame[value_column].agg(agg_func)
@@ -104,13 +102,38 @@ For instance, to make a KPI card with the icon positioned on the right side of t
         1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
         1. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
         1. We adjust the return statement to include the icon on the right side of the title. This is achieved by swapping the order of the `html.H2` and `html.P` compared to the original `kpi_card`.
-        1. We use a [`Flex`][vizro.models.Flex] layout with `direction="row"` to ensure the KPI cards are placed side by side and only take up as much space as needed.
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout with `direction="row"` to ensure the KPI cards are placed side by side and only take up as much space as needed.
         1. For more information, refer to the API reference for the [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
         1. Our custom figure function `custom_kpi_card` now needs to be passed on to the `vm.Figure`.
 
     === "app.yaml"
 
-        Custom figures are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: kpi_card
+                  data_frame: tips
+                  value_column: tip
+                  value_format: ${value:.2f}
+                  icon: Shopping Cart
+                  title: Default KPI card
+                type: figure
+              - figure:
+                  _target_: __main__.custom_kpi_card
+                  data_frame: tips
+                  value_column: tip
+                  value_format: ${value:.2f}
+                  icon: Payment
+                  title: Custom KPI card
+                type: figure
+            layout:
+              direction: row
+              type: flex
+            title: Create your own KPI card
+        ```
 
     === "Result"
 
@@ -161,7 +184,23 @@ You can create a custom figure for any [Dash component](https://dash.plotly.com/
 
     === "app.yaml"
 
-        Custom figures are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: __main__.dynamic_html_header
+                  data_frame: df
+                  column: names
+                type: figure
+            controls:
+              - column: names
+                type: filter
+                selector:
+                  type: radio_items
+            title: Dynamic HTML header
+        ```
 
     === "Result"
 
@@ -179,9 +218,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
 
     === "app.py"
 
-        ```py hl_lines="22-38 43"
-        from typing import Optional
-
+        ```py hl_lines="20-36 41"
         import dash_bootstrap_components as dbc
         import pandas as pd
         import vizro.models as vm
@@ -202,7 +239,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
 
 
         @capture("figure")  # (1)!
-        def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div:  # (2)!
+        def multiple_cards(data_frame: pd.DataFrame, n_rows: int = 1) -> html.Div:  # (2)!
             """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
 
             Args:
@@ -229,6 +266,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
                     selector=vm.Slider(min=2, max=12, step=2, value=10, title="Number of cards to display"),
                 ),
             ],
+            layout=vm.Flex()
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -264,7 +302,30 @@ The example below shows how to create multiple cards created from a `pandas.Data
 
     === "app.yaml"
 
-        Custom figures are currently only possible via Python configuration.
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - figure:
+                  _target_: __main__.multiple_cards
+                  data_frame: df
+                id: my-figure
+                type: figure
+            controls:
+              - targets: [my-figure.n_rows]
+                type: parameter
+                selector:
+                  type: slider
+                  min: 2
+                  max: 12
+                  step: 2
+                  value: 10
+                  title: Number of cards to display
+            layout:
+              type: flex
+            title: Dynamic HTML header
+        ```
 
     === "Result"
 

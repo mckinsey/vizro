@@ -22,10 +22,12 @@ def coerce_pages_type(pages: Any) -> Any:
 
 
 class NavBar(VizroBaseModel):
-    """Navigation bar to be used as a nav_selector for `Navigation`.
+    """Navigation bar to be used as a `nav_selector` for `Navigation`.
+
+    Abstract: Usage documentation
+        [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)
 
     Args:
-        type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
         pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
             Defaults to `{}`.
         items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.

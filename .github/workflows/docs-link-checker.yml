@@ -9,20 +9,19 @@ on:
       - main
   pull_request:
     branches:
-      - main
   workflow_dispatch: # Allow for running this manually.
 
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
 
 jobs:
   link-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -48,6 +47,7 @@ jobs:
         working-directory: ./vizro-mcp
         if: always()
         run: |
+          hatch run docs:links-in-prompts-check
           hatch run docs:pip tree
           hatch run docs:build
           hatch run docs:link-check

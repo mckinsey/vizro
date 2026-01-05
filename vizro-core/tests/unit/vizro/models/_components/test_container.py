@@ -25,29 +25,30 @@ class TestContainerInstantiation:
     @pytest.mark.parametrize("variant", ["plain", "filled", "outlined"])
     def test_create_container_mandatory_and_optional(self, variant):
         container = vm.Container(
-            id="my-id",
+            id="container-id",
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             components=[vm.Button(), vm.Button()],
             layout=vm.Grid(grid=[[0, 1]]),
             variant=variant,
             collapsed=True,
             controls=[vm.Filter(column="test")],
         )
-        assert container.id == "my-id"
+        assert container.id == "container-id"
         assert isinstance(container.components[0], vm.Button) and isinstance(container.components[1], vm.Button)
         assert container.layout.grid == [[0, 1]]
         assert container.title == "Title"
         assert container.variant == variant
         assert container.collapsed is True
         assert isinstance(container.controls[0], vm.Filter)
+        assert isinstance(container.description, vm.Tooltip)
         assert container._action_outputs == {
-            "title": f"{container.id}_title.children",
-            "description": f"{container.description.id}-text.children",
+            "title": "container-id_title.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_create_container_mandatory_and_optional_legacy_layout(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             container = vm.Container(
                 id="my-id",
                 title="Title",
@@ -64,29 +65,49 @@ class TestContainerInstantiation:
             vm.Container(title="Title")
 
     def test_invalid_variant(self):
-        with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
+        with pytest.raises(ValidationError, match=r"Input should be 'plain', 'filled' or 'outlined'."):
             vm.Container(title="Title", components=[vm.Button()], variant="test")
 
     def test_invalid_collapsed(self):
         with pytest.raises(
-            ValidationError, match="`Container` must have a `title` explicitly set when `collapsed` is not None."
+            ValidationError, match=r"`Container` must have a `title` explicitly set when `collapsed` is not None."
         ):
             vm.Container(components=[vm.Button()], collapsed=True)
 
 
 class TestContainerPreBuildMethod:
-    def test_controls_have_in_container_set(self, standard_px_chart):
+    def test_controls_have_in_container_set(self, standard_px_chart, MockControlWrapper):
         # This test needs to setup a whole page so that we can define filters and parameters even though we only care
         # about them being inside a vm.Container.
         vm.Page(
             title="Test page",
             components=[
                 vm.Container(
-                    components=[vm.Graph(id="graph", figure=standard_px_chart)],
+                    components=[
+                        vm.Graph(id="graph", figure=standard_px_chart),
+                        # Test nested container to make sure _in_container is propagated correctly:
+                        vm.Container(
+                            components=[vm.Graph(id="graph_in_container", figure=standard_px_chart)],
+                            controls=[
+                                MockControlWrapper(
+                                    control=vm.Filter(id="filter_wrapped_in_container", column="continent"),
+                                ),
+                                MockControlWrapper(
+                                    control=vm.Parameter(
+                                        id="parameter_wrapped_in_container",
+                                        targets=["graph_in_container.size"],
+                                        selector=vm.Checklist(options=["pop", "lifeExp"]),
+                                    )
+                                ),
+                            ],
+                        ),
+                    ],
                     controls=[
                         vm.Filter(id="filter_dropdown", column="continent"),
                         vm.Filter(id="filter_radio_items", column="continent", selector=vm.RadioItems()),
                         vm.Filter(id="filter_checklist", column="continent", selector=vm.Checklist()),
+                        # Wrapped filter to test that _in_container is correctly propagated to the selector:
+                        MockControlWrapper(control=vm.Filter(id="filter_wrapped", column="continent")),
                         # Test filter that doesn't have _in_container property to make sure it doesn't crash:
                         vm.Filter(id="filter_slider", column="lifeExp"),
                         vm.Parameter(
@@ -104,6 +125,14 @@ class TestContainerPreBuildMethod:
                             targets=["graph.custom_data"],
                             selector=vm.Checklist(options=["country", "continent"]),
                         ),
+                        # Wrapped parameter to test that _in_container is correctly propagated to the selector:
+                        MockControlWrapper(
+                            control=vm.Parameter(
+                                id="parameter_wrapped",
+                                targets=["graph.size"],
+                                selector=vm.Checklist(options=["pop", "lifeExp"]),
+                            )
+                        ),
                         # Test parameter that doesn't have _in_container property to make sure it doesn't crash:
                         vm.Parameter(
                             id="parameter_slider",
@@ -119,9 +148,13 @@ class TestContainerPreBuildMethod:
         assert model_manager["filter_dropdown"].selector._in_container
         assert model_manager["filter_radio_items"].selector._in_container
         assert model_manager["filter_checklist"].selector._in_container
+        assert model_manager["filter_wrapped"].selector._in_container
+        assert model_manager["filter_wrapped_in_container"].selector._in_container
         assert model_manager["parameter_dropdown"].selector._in_container
         assert model_manager["parameter_radio_items"].selector._in_container
         assert model_manager["parameter_checklist"].selector._in_container
+        assert model_manager["parameter_wrapped"].selector._in_container
+        assert model_manager["parameter_wrapped_in_container"].selector._in_container
 
 
 class TestContainerBuildMethod:
@@ -153,7 +186,7 @@ class TestContainerBuildMethod:
         )
 
     def test_container_build_legacy_layout(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             result = vm.Container(
                 id="container", title="Title", components=[vm.Button()], layout=vm.Layout(id="layout_id", grid=[[0]])
             ).build()
@@ -272,13 +305,16 @@ class TestContainerBuildMethod:
             ),
         )
 
-    def test_container_build_with_controls(self):
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_container_build_with_controls(self, visible):
         result = vm.Container(
             id="container",
             components=[vm.Button()],
             controls=[
                 vm.Filter(
-                    column="species", selector=vm.RadioItems(id="radio-items-id", options=["A", "B", "C"], value="A")
+                    column="species",
+                    selector=vm.RadioItems(id="radio-items-id", options=["A", "B", "C"], value="A"),
+                    visible=visible,
                 )
             ],
         ).build()
@@ -287,10 +323,7 @@ class TestContainerBuildMethod:
         )
         assert_component_equal(
             result["container-control-panel"],
-            html.Div(
-                id="container-control-panel",
-                className="container-controls-panel",
-            ),
+            html.Div(id="container-control-panel", className="container-controls-panel", hidden=not visible),
             keys_to_strip={"children"},
         )
         assert_component_equal(result["radio-items-id"], dbc.RadioItems(), keys_to_strip=STRIP_ALL)

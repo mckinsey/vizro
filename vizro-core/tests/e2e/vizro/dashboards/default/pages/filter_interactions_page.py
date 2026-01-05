@@ -22,7 +22,7 @@ filter_interactions_page = vm.Page(
                 custom_data=["species"],
             ),
             actions=[
-                vm.Action(function=filter_interaction(targets=[cnst.BOX_INTERACTIONS_ID])),
+                filter_interaction(targets=[cnst.BOX_INTERACTIONS_ID]),
                 vm.Action(
                     function=scatter_click_data_custom_action(),
                     inputs=[f"{cnst.SCATTER_INTERACTIONS_ID}.clickData"],

@@ -1,6 +1,7 @@
 .container-fluid {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
   height: 100%;
   padding: 0;
 }
@@ -28,7 +29,7 @@
 }
 
 .container-title-collapse .material-symbols-outlined {
-  color: var(--bs-secondary);
+  color: var(--bs-body-color);
 }
 
 .container-title-collapse .material-symbols-outlined:hover {
@@ -72,7 +73,6 @@ and all containers need to have a white background on that page */
   gap: 24px;
   justify-content: start;
   margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
 }
 
 .tab-content .container-controls-panel {

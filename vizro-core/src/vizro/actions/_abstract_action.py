@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import abc
 import inspect
-from typing import Union
 
 from pydantic import TypeAdapter
 
@@ -47,12 +46,14 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
         * `_controls`: state of all the controls on the page. The format of is not yet decided and is likely to
         change in future versions.
+
+        * `_trigger`: the value of the component's property that triggered the first action in the chain.
         """
         pass
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> Union[_IdOrIdProperty, list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]:  # type: ignore[override]
+    def outputs(self) -> _IdOrIdProperty | list[_IdOrIdProperty] | dict[str, _IdOrIdProperty]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key

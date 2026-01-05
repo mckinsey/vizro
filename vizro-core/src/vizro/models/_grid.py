@@ -1,5 +1,5 @@
 import re
-from typing import Annotated, Any, Literal, NamedTuple, Optional
+from typing import Annotated, Any, Literal, NamedTuple
 
 import numpy as np
 from dash import html
@@ -166,10 +166,12 @@ def _get_grid_lines(grid: list[list[int]]) -> tuple[list[ColRowGridLines], list[
 
 
 class Grid(VizroBaseModel):
-    """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
+    """Grid layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].
+
+    Abstract: Usage documentation
+        [How to use the Grid layout](../user-guides/layouts.md#grid-layout)
 
     Args:
-        type (Literal["grid"]): Defaults to `"grid"`.
         grid (list[list[int]]): Grid specification to arrange components on screen.
         row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
         col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
@@ -204,7 +206,7 @@ class Grid(VizroBaseModel):
         description="Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
         pattern=re.compile(r"^\d+(px|rem|em|%)$"),
     )
-    _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
+    _component_grid_lines: list[ColRowGridLines] | None = PrivateAttr()
 
     def model_post_init(self, context: Any) -> None:
         self._component_grid_lines = _get_grid_lines(self.grid)[0]
@@ -252,11 +254,9 @@ class Grid(VizroBaseModel):
 
 
 @deprecated(
-    "The `Layout` model has been renamed `Grid`, and `Layout` will no longer exist in Vizro 0.2.0. To ensure future "
-    "compatibility, replace your references to `vm.Layout` with `vm.Grid`.",
+    "The `Layout` model has been renamed [`Grid`][vizro.models.Grid], and [`Layout` will not exist in Vizro 0.2.0]"
+    "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#layout-model).",
     category=FutureWarning,
 )
 class Layout(Grid):
-    """Deprecated. This model has been renamed [`Grid`][vizro.models.Grid]."""
-
     type: Literal["legacy_layout"] = "legacy_layout"  # type: ignore[assignment]

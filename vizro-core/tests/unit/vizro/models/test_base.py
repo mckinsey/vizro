@@ -1,7 +1,7 @@
 import logging
 import textwrap
 import uuid
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -15,6 +15,7 @@ from pydantic import (
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.actions import export_data
+from vizro.figures import kpi_card
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
@@ -37,7 +38,7 @@ class ChildWithForwardRef(vm.VizroBaseModel):
 
 
 # ChildType does not include ChildZ initially.
-ChildType = Annotated[Union[ChildX, ChildY], Field(discriminator="type")]
+ChildType = Annotated[ChildX | ChildY, Field(discriminator="type")]
 
 
 # These parent classes must be done as fixtures so that each test gets a fresh, unmodified copy of the class.
@@ -52,9 +53,9 @@ def Parent():
 
 @pytest.fixture()
 def ParentWithOptional():
-    # e.g. Filter.selector: Optional[SelectorType]
+    # e.g. Filter.selector: SelectorType | None
     class _ParentWithOptional(vm.VizroBaseModel):
-        child: Optional[ChildType]
+        child: ChildType | None
 
     return _ParentWithOptional
 
@@ -71,7 +72,7 @@ def ParentWithList():
 @pytest.fixture()
 def ParentWithForwardRef():
     class _ParentWithForwardRef(vm.VizroBaseModel):
-        child: Annotated[Union["ChildXForwardRef", "ChildYForwardRef"], Field(discriminator="type")]
+        child: Annotated["ChildXForwardRef | ChildYForwardRef", Field(discriminator="type")]
 
     # TODO: [MS] This is how I would update the forward refs, but we should double check
     ChildXForwardRef = ChildX
@@ -83,7 +84,7 @@ def ParentWithForwardRef():
 @pytest.fixture()
 def ParentWithNonDiscriminatedUnion():
     class _ParentWithNonDiscriminatedUnion(vm.VizroBaseModel):
-        child: Union[ChildX, ChildY]
+        child: ChildX | ChildY
 
     return _ParentWithNonDiscriminatedUnion
 
@@ -108,7 +109,7 @@ class TestDiscriminatedUnion:
 
 
 class TestOptionalDiscriminatedUnion:
-    # Optional[ChildType] does not work correctly as a discriminated union - pydantic turns it into a regular union.
+    # ChildType | None does not work correctly as a discriminated union - pydantic turns it into a regular union.
     # Hence the validation error messages are not as expected. The tests of add_type pass because in practice a
     # discriminated union is not actually needed to achieve the desired behavior. The union is still a regular one
     # even after add_type.
@@ -218,12 +219,12 @@ class Model(vm.VizroBaseModel):
 class ModelWithFieldSetting(vm.VizroBaseModel):
     type: Literal["exclude_model"] = "exclude_model"
     title: str = Field(description="Title to be displayed.")
-    foo: Optional[str] = Field(default=None, description="Foo field.", validate_default=True)
+    foo: str | None = Field(default=None, description="Foo field.", validate_default=True)
 
     # Set a field with regular validator
     @field_validator("foo")
     @classmethod
-    def set_foo(cls, foo: Optional[str]) -> str:
+    def set_foo(cls, foo: str | None) -> str:
         return foo or "long-random-thing"
 
 
@@ -291,8 +292,8 @@ def page_builtin_actions():
             vm.Button(
                 text="Export data",
                 actions=[
-                    vm.Action(function=export_data()),
-                    vm.Action(function=export_data()),
+                    export_data(),
+                    export_data(),
                 ],
             ),
         ],
@@ -302,11 +303,11 @@ def page_builtin_actions():
 @pytest.fixture
 def page_two_captured_callables():
     @capture("graph")
-    def chart(data_frame, hover_data: Optional[list[str]] = None):
+    def chart(data_frame, hover_data: list[str] | None = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     @capture("graph")
-    def chart2(data_frame, hover_data: Optional[list[str]] = None):
+    def chart2(data_frame, hover_data: list[str] | None = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     return vm.Page(
@@ -323,7 +324,7 @@ def chart_dynamic():
     function_string = textwrap.dedent(
         """
         @capture("graph")
-        def chart_dynamic(data_frame, hover_data: Optional[list[str]] = None):
+        def chart_dynamic(data_frame, hover_data: list[str] | None = None):
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
         """
     )
@@ -336,22 +337,31 @@ def chart_dynamic():
 @pytest.fixture
 def complete_dashboard():
     @capture("graph")
-    def chart(data_frame, hover_data: Optional[list[str]] = None):
+    def chart(data_frame, hover_data: list[str] | None = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     page = vm.Page(
         title="Page 1",
-        layout=vm.Grid(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
+        layout=vm.Grid(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
         components=[
             vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
             vm.Graph(figure=chart(data_frame="iris")),
             vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+            vm.Figure(
+                figure=kpi_card(
+                    data_frame="iris",
+                    value_column="sepal_width",
+                    value_format="${value:.2f}",
+                    icon="Shopping Cart",
+                    title="Average Sepal Width",
+                )
+            ),
             vm.Button(
                 text="Export data",
                 actions=[
-                    vm.Action(function=export_data()),
-                    vm.Action(function=export_data()),
+                    export_data(),
+                    export_data(),
                 ],
             ),
         ],
@@ -399,12 +409,11 @@ expected_graph_with_callable = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.models.types import capture
-from typing import Optional
 
 
 ####### Function definitions ######
 @capture("graph")
-def chart(data_frame, hover_data: Optional[list[str]] = None):
+def chart(data_frame, hover_data: list[str] | None = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -458,7 +467,7 @@ model = vm.Graph(figure=chart_dynamic(data_frame="iris"))
 
 
 extra_callable = """@capture("graph")
-def extra(data_frame, hover_data: Optional[list[str]] = None):
+def extra(data_frame, hover_data: list[str] | None = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 """
 
@@ -471,7 +480,7 @@ from vizro.models.types import capture
 
 ####### Function definitions ######
 @capture("graph")
-def extra(data_frame, hover_data: Optional[list[str]] = None):
+def extra(data_frame, hover_data: list[str] | None = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -484,13 +493,13 @@ import vizro.plotly.express as px
 import vizro.tables as vt
 import vizro.models as vm
 import vizro.actions as va
+import vizro.figures as vf
 from vizro.models.types import capture
-from typing import Optional
 
 
 ####### Function definitions ######
 @capture("graph")
-def chart(data_frame, hover_data: Optional[list[str]] = None):
+def chart(data_frame, hover_data: list[str] | None = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
@@ -511,12 +520,21 @@ model = vm.Dashboard(
                 ),
                 vm.Graph(figure=chart(data_frame="iris")),
                 vm.AgGrid(figure=vt.dash_ag_grid(data_frame="iris")),
+                vm.Figure(
+                    figure=vf.kpi_card(
+                        data_frame="iris",
+                        value_column="sepal_width",
+                        value_format="${value:.2f}",
+                        title="Average Sepal Width",
+                        icon="Shopping Cart",
+                    )
+                ),
                 vm.Button(
                     text="Export data", actions=[va.export_data(), va.export_data()]
                 ),
             ],
             title="Page 1",
-            layout=vm.Grid(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
+            layout=vm.Grid(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
             controls=[
                 vm.Filter(
                     column="species",
@@ -615,18 +633,18 @@ class TestPydanticPython:
         # Test if captured callable is included correctly in output
         # Test if extra imports are included correctly in output (typing yes, pandas no)
         @capture("graph")
-        def chart(data_frame, hover_data: Optional[list[str]] = None):
+        def chart(data_frame, hover_data: list[str] | None = None):
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
         graph = vm.Graph(figure=chart(data_frame="iris"))
-        result = graph._to_python(extra_imports={"from typing import Optional", "import pandas as pd"})
+        result = graph._to_python(extra_imports={"import pandas as pd"})
         assert result == expected_graph_with_callable
 
     def test_to_python_two_captured_callable_charts(self, page_two_captured_callables):
         # Test if two captured callables are included. Note that the order in which they are included is not guaranteed.
         result = page_two_captured_callables._to_python()
-        assert "def chart(data_frame, hover_data: Optional[list[str]] = None):" in result
-        assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
+        assert "def chart(data_frame, hover_data: list[str] | None = None):" in result
+        assert "def chart2(data_frame, hover_data: list[str] | None = None):" in result
 
     def test_to_python_builtin_actions(self, page_builtin_actions):
         result = page_builtin_actions._to_python()
@@ -649,7 +667,7 @@ class TestPydanticPython:
 
     def test_to_python_complete_dashboard(self, complete_dashboard):
         # Test more complete and nested model
-        result = complete_dashboard._to_python(extra_imports={"from typing import Optional"})
+        result = complete_dashboard._to_python()
         assert result == expected_complete_dashboard
 
 

@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from typing import Literal
 
+import dash_bootstrap_components as dbc
 import pandas as pd
 import pytest
 from asserts import assert_component_equal
@@ -299,6 +300,7 @@ class TestFilterStaticMethods:
             ([[]], []),
             ([["A", "B", "A"]], ["A", "B"]),
             ([[1, 2, 1]], [1, 2]),
+            ([[1990, 2025, 1990]], [1990, 2025]),
             ([[1.1, 2.2, 1.1]], [1.1, 2.2]),
             (
                 [
@@ -339,6 +341,8 @@ class TestFilterStaticMethods:
             ([["A"]], ["B", "C"], ["A", "B", "C"]),
             ([[1]], 2, [1, 2]),
             ([[1]], [2, 3], [1, 2, 3]),
+            ([[1990]], 2025, [1990, 2025]),
+            ([[1990]], [2015, 2025], [1990, 2015, 2025]),
             ([[1.1]], 2.2, [1.1, 2.2]),
             ([[1.1]], [2.2, 3.3], [1.1, 2.2, 3.3]),
             (
@@ -384,6 +388,7 @@ class TestFilterStaticMethods:
         "data_columns, expected",
         [
             ([[1, 2, 1]], (1, 2)),
+            ([[1990, 2025, 1990]], (1990, 2025)),
             ([[1.1, 2.2, 1.1]], (1.1, 2.2)),
             (
                 [
@@ -413,6 +418,8 @@ class TestFilterStaticMethods:
         [
             ([[1, 2]], 3, (1, 3)),
             ([[1, 2]], [3, 4], (1, 4)),
+            ([[1990]], 2025, (1990, 2025)),
+            ([[1990]], [2015, 2025], (1990, 2025)),
             ([[1.1, 2.2]], 3.3, (1.1, 3.3)),
             ([[1.1, 2.2]], [3.3, 4.4], (1.1, 4.4)),
             (
@@ -464,23 +471,35 @@ class TestFilterInstantiation:
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == []
-        assert filter.selector is None
-        assert filter._action_outputs == {"__default__": f"{filter.id}.children"}
 
     def test_create_filter_mandatory_and_optional(self):
         filter = Filter(
             id="filter_id",
             column="foo",
             targets=["scatter_chart", "bar_chart"],
-            selector=vm.RadioItems(),
+            selector=vm.RadioItems(
+                id="selector_id",
+                title="Test Title",
+                description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
+            ),
             show_in_url=True,
         )
+
         assert filter.id == "filter_id"
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == ["scatter_chart", "bar_chart"]
         assert isinstance(filter.selector, vm.RadioItems)
         assert filter.show_in_url is True
+        assert isinstance(filter.selector.description, vm.Tooltip)
+        assert filter._action_triggers == {"__default__": "selector_id.value"}
+        assert filter._action_outputs == {
+            "__default__": "selector_id.value",
+            "selector": "filter_id.children",
+            "title": "selector_id_title.children",
+            "description": "tooltip-id-text.children",
+        }
+        assert filter._action_inputs == {"__default__": "selector_id.value"}
 
     def test_missing_id_for_url_control_warning_raised(self):
         with pytest.warns(
@@ -571,8 +590,8 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="column_categorical has changed type from numerical to categorical. "
-            "A filtered column cannot change type while the dashboard is running.",
+            match=r"column_categorical has changed type from numerical to categorical. "
+            r"A filtered column cannot change type while the dashboard is running.",
         ):
             filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])
 
@@ -583,7 +602,7 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_categorical not found in dataframe for column_categorical_exists_1.",
+            match=r"Selected column column_categorical not found in dataframe for column_categorical_exists_1.",
         ):
             filter(target_to_data_frame={"column_categorical_exists_1": pd.DataFrame()}, current_value=["a", "b"])
 
@@ -594,8 +613,8 @@ class TestFilterCall:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_categorical does not contain anything in any dataframe "
-            "for column_categorical_exists_1.",
+            match=r"Selected column column_categorical does not contain anything in any dataframe "
+            r"for column_categorical_exists_1.",
         ):
             filter(
                 target_to_data_frame={"column_categorical_exists_1": pd.DataFrame({"column_categorical": []})},
@@ -605,7 +624,9 @@ class TestFilterCall:
 
 class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
-        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object."):
+        with pytest.raises(
+            ValueError, match=r"Control filter_id should be defined within Page.controls or Container.controls."
+        ):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
 
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
@@ -614,6 +635,17 @@ class TestFilterPreBuildMethod:
         # Special case - need filter in the context of page in order to run filter.pre_build
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
+        assert filter.targets == [
+            "column_numerical_exists_1",
+            "column_numerical_exists_2",
+            "column_numerical_exists_empty",
+        ]
+
+    def test_targets_wrapped_filter_valid(self, managers_column_only_exists_in_some, MockControlWrapper):
+        filter = vm.Filter(column="column_numerical")
+        model_manager["test_page"].controls = [MockControlWrapper(control=filter)]
+        filter.pre_build()
+
         assert filter.targets == [
             "column_numerical_exists_1",
             "column_numerical_exists_2",
@@ -630,7 +662,7 @@ class TestFilterPreBuildMethod:
         filter = vm.Filter(column="column_numerical", targets=["invalid_target"])
         model_manager["test_page"].controls = [filter]
 
-        with pytest.raises(ValueError, match="Target invalid_target not found within the test_page."):
+        with pytest.raises(ValueError, match=r"Target invalid_target not found within the test_page."):
             filter.pre_build()
 
     def test_targets_default_invalid(self, managers_column_only_exists_in_some):
@@ -639,9 +671,9 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column invalid_choice not found in any dataframe for column_numerical_exists_1, "
+            match=r"Selected column invalid_choice not found in any dataframe for column_numerical_exists_1, "
             "column_numerical_exists_2, column_numerical_exists_empty, column_categorical_exists_1, "
-            "column_categorical_exists_2.",
+            r"column_categorical_exists_2.",
         ):
             filter.pre_build()
 
@@ -651,7 +683,7 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_numerical not found in dataframe for column_categorical_exists_1.",
+            match=r"Selected column column_numerical not found in dataframe for column_categorical_exists_1.",
         ):
             filter.pre_build()
 
@@ -661,8 +693,8 @@ class TestFilterPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match="Selected column column_numerical does not contain anything in any dataframe for "
-            "column_numerical_exists_empty.",
+            match=r"Selected column column_numerical does not contain anything in any dataframe for "
+            r"column_numerical_exists_empty.",
         ):
             filter.pre_build()
 
@@ -768,7 +800,7 @@ class TestFilterPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match="Inconsistent types detected in column shared_column.",
+            match=r"Inconsistent types detected in column shared_column.",
         ):
             filter.pre_build()
 
@@ -811,12 +843,12 @@ class TestFilterPreBuildMethod:
             ("continent", vm.Checklist(options=["Africa", "Europe"])),
             ("continent", vm.Dropdown(options=["Africa", "Europe"])),
             ("continent", vm.RadioItems(options=["Africa", "Europe"])),
-            ("pop", vm.Slider(min=2002)),
-            ("pop", vm.Slider(max=2007)),
-            ("pop", vm.Slider(min=2002, max=2007)),
-            ("pop", vm.RangeSlider(min=2002)),
-            ("pop", vm.RangeSlider(max=2007)),
-            ("pop", vm.RangeSlider(min=2002, max=2007)),
+            ("pop", vm.Slider(min=10**6)),
+            ("pop", vm.Slider(max=10**7)),
+            ("pop", vm.Slider(min=10**6, max=10**7)),
+            ("pop", vm.RangeSlider(min=10**6)),
+            ("pop", vm.RangeSlider(max=10**7)),
+            ("pop", vm.RangeSlider(min=10**6, max=10**7)),
             ("year", vm.DatePicker(min="2002-01-01")),
             ("year", vm.DatePicker(max="2007-01-01")),
             ("year", vm.DatePicker(min="2002-01-01", max="2007-01-01")),
@@ -957,9 +989,17 @@ class TestFilterPreBuildMethod:
 
         assert filter.targets == ["scatter_chart"]
 
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_container_wrapped_filter_default_targets(self, MockControlWrapper):
+        filter = vm.Filter(column="continent")
+        model_manager["test_container"].controls = [MockControlWrapper(control=filter)]
+        filter.pre_build()
+
+        assert filter.targets == ["scatter_chart"]
+
     @pytest.mark.usefixtures("managers_one_page_container_controls_invalid")
     def test_container_filter_targets_specific_invalid(self):
-        filter = model_manager["container_filter_2"]
+        filter = model_manager["container_filter"]
         with pytest.raises(
             ValueError,
             match="Target bar_chart not found within the container_1",
@@ -980,6 +1020,35 @@ class TestFilterPreBuildMethod:
         filter.pre_build()
 
         assert filter.selector.actions == [custom_action]
+
+    def test_filter_action_properties(self, managers_column_only_exists_in_some):
+        filter = Filter(
+            id="filter_id",
+            column="column_categorical",
+            selector=vm.RadioItems(
+                id="selector_id",
+                title="Test Title",
+                description=vm.Tooltip(id="selector_tooltip_id", text="Test", icon="info"),
+            ),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        radio_items_properties = dbc.RadioItems().available_properties
+        filter_selector_properties = set(radio_items_properties) - set(html.Div().available_properties)
+
+        assert filter._action_triggers == {"__default__": "selector_id.value"}
+        assert filter._action_outputs == {
+            "__default__": "selector_id.value",
+            "selector": "filter_id.children",
+            "title": "selector_id_title.children",
+            "description": "selector_tooltip_id-text.children",
+            **{prop: f"selector_id.{prop}" for prop in filter_selector_properties},
+        }
+        assert filter._action_inputs == {
+            "__default__": "selector_id.value",
+            **{prop: f"selector_id.{prop}" for prop in filter_selector_properties},
+        }
 
 
 class TestFilterBuild:
@@ -1004,10 +1073,16 @@ class TestFilterBuild:
     def test_filter_build(self, test_column, test_selector):
         filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
-
         filter.pre_build()
+
         result = filter.build()
-        expected = html.Div(id="filter-id", children=html.Div(children=[test_selector.build()]))
+        expected = html.Div(
+            id="filter-id",
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
+            ),
+            hidden=False,
+        )
 
         assert_component_equal(result, expected)
 
@@ -1035,7 +1110,9 @@ class TestFilterBuild:
         result = filter.build()
         expected = dcc.Loading(
             id="filter_id",
-            children=html.Div(children=[test_selector.build()]),
+            children=html.Div(
+                children=[test_selector.build(), dcc.Store(id=f"{test_selector.id}_guard_actions_chain", data=False)]
+            ),
             color="grey",
             overlay_style={"visibility": "visible"},
         )
@@ -1043,32 +1120,31 @@ class TestFilterBuild:
         assert_component_equal(result, expected, keys_to_strip={"className"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize(
-        "test_column ,test_selector",
-        [
-            ("continent", vm.Checklist()),
-            ("continent", vm.Dropdown()),
-            ("continent", vm.Dropdown(multi=False)),
-            ("continent", vm.RadioItems()),
-            ("pop", vm.Slider()),
-            ("pop", vm.RangeSlider()),
-            ("year", vm.DatePicker()),
-            ("year", vm.DatePicker(range=False)),
-            ("is_europe", vm.Switch()),
-            ("is_europe", vm.Switch(value=True)),
-        ],
-    )
-    def test_filter_show_in_url_build(self, test_column, test_selector):
-        filter = vm.Filter(id="filter-id", column=test_column, selector=test_selector, show_in_url=True)
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_filter_build_visible(self, visible):
+        filter = vm.Filter(id="filter-id", column="continent", visible=visible)
+        model_manager["test_page"].controls = [filter]
+
+        filter.pre_build()
+        result = filter.build()
+        expected = html.Div(id="filter-id", hidden=not visible)
+
+        assert_component_equal(result, expected, keys_to_strip={"children"})
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
+    @pytest.mark.parametrize("visible", [True, False])
+    def test_dynamic_filter_build_visible(self, gapminder_dynamic_first_n_last_n_function, visible):
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+        filter = vm.Filter(id="filter_id", column="continent", visible=visible)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         result = filter.build()
-        expected = html.Div(
-            id="filter-id",
-            children=html.Div(
-                children=[test_selector.build(), dcc.Store(id=f"{filter.selector.id}_guard_actions_chain", data=False)]
-            ),
+        expected = dcc.Loading(
+            id="filter_id",
+            color="grey",
+            overlay_style={"visibility": "visible"},
+            className="d-none" if not visible else "",
         )
 
-        assert_component_equal(result, expected)
+        assert_component_equal(result, expected, keys_to_strip={"children"})

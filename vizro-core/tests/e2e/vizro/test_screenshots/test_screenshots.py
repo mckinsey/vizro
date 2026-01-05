@@ -12,6 +12,8 @@ from e2e.vizro.navigation import (
     page_select,
 )
 from e2e.vizro.paths import (
+    button_id_path,
+    dropdown_arrow_path,
     kpi_card_path,
     nav_card_link_path,
     switch_path_using_filter_control_id,
@@ -36,10 +38,14 @@ def image_assertion(func):
 
 
 @image_assertion
-def test_kpi_indicators_page(dash_br):
+def test_kpi_indicators_page_theme_switch(dash_br):
     page_select(dash_br, page_name=cnst.KPI_INDICATORS_PAGE, graph_check=False)
+
     # check if first kpi card have correct value
     dash_br.wait_for_text_to_equal(kpi_card_path(), "67434")
+
+    # switch theme to dark (delay is needed to fully load the layout)
+    dash_br.multiple_click(theme_toggle_path(), 1, delay=1.5)
 
 
 @image_assertion
@@ -181,12 +187,14 @@ def test_flex_layout_all_params(dash_br):
 
 
 @image_assertion
-def test_flex_layout_direction_and_graph(dash_br):
+def test_flex_layout_direction_and_graph_theme_switch(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.LAYOUT_FLEX_DIRECTION_AND_GRAPH,
     )
+    # switch theme to dark (delay is needed to fully load the layout)
+    dash_br.multiple_click(theme_toggle_path(), 1, delay=1.5)
 
 
 @image_assertion
@@ -362,6 +370,63 @@ def test_switch_control(dash_br):
     )
 
 
+@image_assertion
+def test_reset_controls_page(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
+    )
+    # change dropdown controls on the page
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+    dash_br.multiple_click(f"#{cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID}_select_all", 1)
+
+    # click reset controls button
+    dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
+
+    # open dropdown menu to check on the screenshot if select_all is unchecked
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+
+
+@image_assertion
+def test_notifications_page(dash_br):
+    """Testing static notifications page."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
+    )
+
+    # Trigger link notification
+    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1, delay=1)
+
+    # Check that the last notification is displayed
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
+    )
+
+
+@image_assertion
+def test_notifications_page_dark_theme(dash_br):
+    """Testing static notifications page with dark theme."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
+    )
+
+    # Switch theme to dark
+    dash_br.multiple_click(theme_toggle_path(), 1)
+
+    # Trigger success notification
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1, delay=1)
+
+    # Check that the last notification is displayed
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.SUCCESS_NOTIFICATION_TITLE
+    )
+
+
 @pytest.mark.mobile_screenshots
 @image_assertion
 def test_homepage_mobile(dash_br):
@@ -387,3 +452,25 @@ def test_filter_interactions_dark_theme_page(dash_br_driver):
     dash_br_driver.multiple_click(theme_toggle_path(), 1)
     check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
     check_theme_color(dash_br_driver, color=cnst.THEME_DARK)
+
+
+@pytest.mark.mobile_screenshots
+@pytest.mark.parametrize(
+    "dash_br_driver", [({"path": f"/{cnst.STATIC_NOTIFICATIONS_PAGE}"})], ids=["mobile"], indirect=["dash_br_driver"]
+)
+@image_assertion
+def test_notifications_page_mobile(dash_br_driver):
+    """Testing static notifications page on mobile."""
+    graph_load_waiter(dash_br_driver)
+
+    # Trigger multiple notifications
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+
+    # Check that the last notification is displayed
+    dash_br_driver.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
+    )

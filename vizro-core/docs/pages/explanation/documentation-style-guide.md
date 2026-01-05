@@ -13,10 +13,9 @@ What follows is a set of lightweight guidelines rather than rules. There are alw
 The names of our products and sites are:
 
 - **[Vizro](https://github.com/mckinsey/vizro)**
-- **[Vizro-AI](https://github.com/mckinsey/vizro/tree/main/vizro-ai)**
 - **[Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp)**
 - **[Vizro visual vocabulary dashboard](https://huggingface.co/spaces/vizro/demo-visual-vocabulary)**
-- **[Vizro examples gallery](https://vizro.mckinsey.com/)**
+- **[Vizro-AI](https://github.com/mckinsey/vizro/tree/main/vizro-ai) (mostly deprecated in favor of Vizro-MCP)**
 
 We refer to other products using their preferred capitalization. For example:
 

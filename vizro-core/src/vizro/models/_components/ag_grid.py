@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 import dash_ag_grid as dag
 import pandas as pd
@@ -7,7 +7,7 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.actions import filter_interaction
+from vizro.actions import filter_interaction, set_control
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
@@ -19,7 +19,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, validate_captured_callable
+from vizro.models.types import ActionsType, CapturedCallable, MultiValueType, _IdProperty, _validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +30,12 @@ DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div()
 
 
 class AgGrid(VizroBaseModel):
-    """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
+    """Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.
+
+    Abstract: Usage documentation
+        [How to use an AgGrid](../user-guides/table.md/#ag-grid)
 
     Args:
-        type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
         figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
         title (str): Title of the `AgGrid`. Defaults to `""`.
         header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.
@@ -41,7 +43,7 @@ class AgGrid(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
@@ -66,10 +68,10 @@ class AgGrid(VizroBaseModel):
         description="Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -80,7 +82,7 @@ class AgGrid(VizroBaseModel):
     ]
     actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -92,7 +94,7 @@ class AgGrid(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self._inner_component_id}.cellClicked"}
+        return {"__default__": f"{self._inner_component_id}.selectedRows"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -112,6 +114,30 @@ class AgGrid(VizroBaseModel):
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
+    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> MultiValueType | None:
+        """Extract values from the trigger that represents selected dag.AgGrid rows. Value is the name of the column.
+
+        Example `trigger` structure: [{"col_1": value_1, "col_2": value_2, ...}, {...}], one dict per selected row.
+
+        Returns:
+          - list of values (one per row) or None if no row selected (signals reset).
+
+        Raises:
+          - ValueError if `value` column name can't be found.
+        """
+        # Returning None signals a reset of control to its original value.
+        if not trigger:
+            return None
+
+        try:
+            # Use dict.fromkeys to remove duplicates while preserving order.
+            return list(dict.fromkeys(row[value] for row in trigger))
+        except KeyError:
+            raise ValueError(
+                f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
+                f"This action was added to the AgGrid model with ID `{self.id}`. "
+            )
+
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
@@ -119,7 +145,10 @@ class AgGrid(VizroBaseModel):
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
-        figure = self.figure(**kwargs)
+
+        # Enable checkboxes in the AgGrid if any of the actions is a `set_control` action.
+        figure = self.figure(_set_checkboxes=any(isinstance(action, set_control) for action in self.actions), **kwargs)
+
         figure.id = self._inner_component_id
         return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
 
@@ -154,7 +183,7 @@ class AgGrid(VizroBaseModel):
         for action in source_table_actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  Potentially this function would move to the filter_interaction action. That will be removed so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
             #  new interaction functionality anyway.
             if not isinstance(action, filter_interaction) or target not in action.targets:

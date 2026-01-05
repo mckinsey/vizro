@@ -1,3 +1,5 @@
+"""Vizro [pydantic](https://docs.pydantic.dev/) models, typically aliased as `vm` using `import vizro.models as vm`."""
+
 # Keep these imports at the top to avoid circular imports since they're used in other models.
 from ._base import VizroBaseModel  # noqa: I001
 from ._tooltip import Tooltip
@@ -51,7 +53,7 @@ __all__ = [
 # To resolve ForwardRefs we need to import a few more things that are not part of the vizro.models namespace.
 # We rebuild all the models even if it's not strictly necessary so that if pydantic changes how model_rebuild works
 # we won't end up with unresolved references.
-from vizro.actions import export_data, filter_interaction
+from vizro.actions import export_data, filter_interaction, set_control, show_notification, update_notification
 from vizro.actions._filter_action import _filter
 from vizro.actions._on_page_load import _on_page_load
 from vizro.actions._parameter_action import _parameter

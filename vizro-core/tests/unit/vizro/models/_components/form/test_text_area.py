@@ -27,7 +27,7 @@ class TestTextAreaInstantiation:
             id="text-area-id",
             title="Title",
             placeholder="Placeholder",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
         assert text_area.id == "text-area-id"
@@ -35,10 +35,11 @@ class TestTextAreaInstantiation:
         assert text_area.title == "Title"
         assert text_area.placeholder == "Placeholder"
         assert text_area.actions == []
+        assert isinstance(text_area.description, vm.Tooltip)
         assert text_area._action_outputs == {
-            "__default__": f"{text_area.id}.value",
-            "title": f"{text_area.id}_title.children",
-            "description": f"{text_area.description.id}-text.children",
+            "__default__": "text-area-id.value",
+            "title": "text-area-id_title.children",
+            "description": "tooltip-id-text.children",
         }
         assert text_area._action_inputs == {"__default__": f"{text_area.id}.value"}
 

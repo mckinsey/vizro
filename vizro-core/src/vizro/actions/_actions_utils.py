@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from copy import deepcopy
-from typing import Any, Literal, Optional, TypedDict, Union, cast
+from typing import Any, Literal, TypedDict, cast
 
 import pandas as pd
 
@@ -21,7 +21,7 @@ from vizro.models.types import (
     SingleValueType,
 )
 
-ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
+ValidatedNoneValueType = SingleValueType | MultiValueType | None | list[None] | list[SingleValueType]
 
 
 # TODO-AV2 A 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here
@@ -43,7 +43,7 @@ class CallbackTriggerDict(TypedDict):
 
     id: ModelID
     property: Literal["clickData", "value", "n_clicks", "active_cell", "derived_viewport_data"]
-    value: Optional[Any]
+    value: Any | None
     str_id: str
     triggered: bool
 
@@ -102,7 +102,7 @@ def _apply_filter_interaction(
 
     Returns: filtered DataFrame.
     """
-    # The filter_interaction model actually contains the id we require in its _parent_model_id field.
+    # The filter_interaction model actually contains the id we require in its _parent_model field.
     # We could use that if we had the action_id available here. Alternatively we could explicitly pass the
     # input_component_id as a state and then use _get_triggered_model to look up the parent model. Both these methods
     # would mean we can remove modelID from the states, but given that filter_interaction will be removed it's not worth
@@ -118,11 +118,11 @@ def _apply_filter_interaction(
     return data_frame
 
 
-def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
+def _validate_selector_value_none(value: SingleValueType | MultiValueType) -> ValidatedNoneValueType:
     if value == NONE_OPTION:
         return None
     if isinstance(value, list) and len(value):
-        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item]
+        return [i for i in value if i != NONE_OPTION] or [None]
     return value
 
 
@@ -196,7 +196,7 @@ def _get_parametrized_config(
         for action in selector_actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  Potentially this function would move to the filter_interaction action. That will be removed so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
             #  new interaction functionality anyway.
             if not isinstance(action, _parameter):

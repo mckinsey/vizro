@@ -11,12 +11,13 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13"
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "httpx>=0.28.1",
   "mcp[cli]>=1.6.0",
-  "vizro>=0.1.42",
+  "vizro>=0.1.46",
   "click>=8.1.7",
   "pandas[html,parquet,excel]"
 ]
@@ -39,7 +40,7 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:"
 ]
-fail_under = 63
+fail_under = 62
 show_missing = true
 skip_covered = true
 

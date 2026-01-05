@@ -46,6 +46,7 @@ class TestGraphInstantiation:
         assert graph.header == ""
         assert graph.footer == ""
         assert graph.description is None
+        assert graph._action_triggers == {"__default__": f"{graph.id}_action_trigger.data"}
         assert graph._action_outputs == {"__default__": f"{graph.id}.figure"}
 
     def test_create_graph_mandatory_and_optional(self, standard_px_chart):
@@ -53,7 +54,7 @@ class TestGraphInstantiation:
             id="graph-id",
             figure=standard_px_chart,
             title="Title",
-            description="Test description",
+            description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             header="Header",
             footer="Footer",
         )
@@ -66,12 +67,13 @@ class TestGraphInstantiation:
         assert graph.header == "Header"
         assert graph.footer == "Footer"
         assert isinstance(graph.description, vm.Tooltip)
+        assert graph._action_triggers == {"__default__": "graph-id_action_trigger.data"}
         assert graph._action_outputs == {
-            "__default__": f"{graph.id}.figure",
-            "title": f"{graph.id}_title.children",
-            "header": f"{graph.id}_header.children",
-            "footer": f"{graph.id}_footer.children",
-            "description": f"{graph.description.id}-text.children",
+            "__default__": "graph-id.figure",
+            "title": "graph-id_title.children",
+            "header": "graph-id_header.children",
+            "footer": "graph-id_footer.children",
+            "description": "tooltip-id-text.children",
         }
 
     def test_mandatory_figure_missing(self):
@@ -108,6 +110,110 @@ class TestGraphInstantiation:
         assert my_graph.type == "graph"
         assert my_graph.figure == standard_px_chart._captured_callable
         assert my_graph.actions == []
+
+
+class TestGraphGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", [None, []])
+    def test_no_trigger_data(self, gapminder, trigger):
+        graph = vm.Graph(figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp"))
+        value = graph._get_value_from_trigger(value="continent", trigger=trigger)
+
+        assert value is None
+
+    @pytest.mark.parametrize(
+        "figure_custom_data, trigger_custom_data",
+        [
+            (["continent"], ["Europe"]),
+            (["country", "continent", "year"], ["France", "Europe", 2007]),
+        ],
+    )
+    def test_value_matches_custom_data_by_key(self, gapminder, figure_custom_data, trigger_custom_data):
+        graph = vm.Graph(
+            figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp", custom_data=figure_custom_data),
+        )
+        value = graph._get_value_from_trigger(value="continent", trigger=[{"customdata": trigger_custom_data}])
+
+        assert value == ["Europe"]
+
+    # TODO AM: It doesn't work for `nestedDict.key1[0].key2`. Should we remove `camel_killer_box=True`?
+    # We use Box notation to access nested data in the trigger dict by using dots and brackets string syntax.
+    @pytest.mark.parametrize("action_value", ["customdata[0]", "x", "nested_dict.key1[0].key2"])
+    def test_value_nested_box_notation(self, standard_px_chart, action_value):
+        graph = vm.Graph(figure=standard_px_chart)
+        value = graph._get_value_from_trigger(
+            value=action_value,
+            trigger=[
+                {
+                    "customdata": ["Europe"],
+                    "x": "Europe",
+                    "nestedDict": {"key1": [{"key2": "Europe"}]},
+                }
+            ],
+        )
+
+        assert value == ["Europe"]
+
+    @pytest.mark.parametrize("action_value", ["continent", "customdata[0]"])
+    @pytest.mark.parametrize(
+        "trigger, expected_result",
+        [
+            ([{"customdata": ["Europe"]}], ["Europe"]),
+            ([{"customdata": ["Europe"]}, {"customdata": ["Europe"]}], ["Europe"]),
+            # vm.Graph._get_value_from_trigger ensures uniqueness and ascending order
+            ([{"customdata": ["Europe"]}, {"customdata": ["Europe"]}, {"customdata": ["Asia"]}], ["Asia", "Europe"]),
+        ],
+    )
+    def test_uniqueness_and_order_multiple_points_selected(self, gapminder, action_value, trigger, expected_result):
+        graph = vm.Graph(
+            figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp", custom_data=["continent"]),
+        )
+        value = graph._get_value_from_trigger(value=action_value, trigger=trigger)
+
+        assert value == expected_result
+
+    def test_value_nested_list_in_trigger_custom_data(self, gapminder):
+        graph = vm.Graph(
+            figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp", custom_data=["continent"]),
+        )
+        value = graph._get_value_from_trigger(value="continent", trigger=[{"customdata": [["Europe"], ["Europe"]]}])
+
+        assert value == ["Europe"]
+
+    def test_no_custom_data_in_figure(self, gapminder):
+        graph = vm.Graph(id="graph_id", figure=px.scatter(data_frame=gapminder, x="gdpPercap", y="lifeExp"))
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "Couldn't find value `continent` in trigger for `set_control` action. "
+                "This action was added to the Graph model with ID `graph_id`. "
+                "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+            ),
+        ):
+            graph._get_value_from_trigger(value="continent", trigger=[{"customdata": ["Europe"]}])
+
+    @pytest.mark.parametrize(
+        "action_value",
+        [
+            "unknown",  # Originally raises the KeyError
+            "customdata.0",  # Originally raises the TypeError
+            "customdata[1]",  # Originally raises the IndexError
+        ],
+    )
+    def test_value_unknown(self, standard_px_chart, action_value):
+        graph = vm.Graph(id="graph_id", figure=standard_px_chart)
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                f"Couldn't find value `{action_value}` in trigger for `set_control` action. "
+                "This action was added to the Graph model with ID `graph_id`. "
+                "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+            ),
+        ):
+            graph._get_value_from_trigger(value=action_value, trigger=[{"customdata": ["Europe"]}])
 
 
 class TestDunderMethodsGraph:
@@ -150,7 +256,7 @@ class TestDunderMethodsGraph:
     def test_graph_trigger(self, standard_px_chart, identity_action_function):
         graph = vm.Graph(id="graph-id", figure=standard_px_chart, actions=[Action(function=identity_action_function())])
         [action] = graph.actions
-        assert action._trigger == "graph-id.clickData"
+        assert action._trigger == "graph-id_action_trigger.data"
 
 
 class TestAttributesGraph:
@@ -186,14 +292,16 @@ class TestPreBuildGraph:
 
 class TestBuildGraph:
     def test_graph_build_mandatory(self, standard_px_chart):
-        graph = vm.Graph(figure=standard_px_chart).build()
+        graph = vm.Graph(id="graph_id", figure=standard_px_chart).build()
 
         expected_graph = dcc.Loading(
             html.Div(
                 [
+                    dcc.Store(id="graph_id_action_trigger"),
                     None,
                     None,
                     dcc.Graph(
+                        id="graph_id",
                         figure=go.Figure(
                             layout={
                                 "paper_bgcolor": "rgba(0,0,0,0)",
@@ -203,9 +311,7 @@ class TestBuildGraph:
                             }
                         ),
                         config={
-                            "autosizable": True,
                             "frameMargins": 0,
-                            "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
@@ -221,15 +327,21 @@ class TestBuildGraph:
 
     def test_graph_build_title_header_footer(self, standard_px_chart):
         graph = vm.Graph(
-            figure=standard_px_chart, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+            id="graph_id",
+            figure=standard_px_chart,
+            title="Title",
+            header="""#### Subtitle""",
+            footer="""SOURCE: **DATA**""",
         ).build()
 
         expected_graph = dcc.Loading(
             html.Div(
                 [
+                    dcc.Store(id="graph_id_action_trigger"),
                     html.H3([html.Span("Title"), None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     dcc.Graph(
+                        id="graph_id",
                         figure=go.Figure(
                             layout={
                                 "paper_bgcolor": "rgba(0,0,0,0)",
@@ -239,9 +351,7 @@ class TestBuildGraph:
                             }
                         ),
                         config={
-                            "autosizable": True,
                             "frameMargins": 0,
-                            "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
@@ -257,6 +367,7 @@ class TestBuildGraph:
 
     def test_graph_build_with_description(self, standard_px_chart):
         graph = vm.Graph(
+            id="graph_id",
             figure=standard_px_chart,
             title="Title",
             description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
@@ -275,9 +386,11 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
+                    dcc.Store(id="graph_id_action_trigger"),
                     html.H3([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     dcc.Graph(
+                        id="graph_id",
                         figure=go.Figure(
                             layout={
                                 "paper_bgcolor": "rgba(0,0,0,0)",
@@ -287,9 +400,7 @@ class TestBuildGraph:
                             }
                         ),
                         config={
-                            "autosizable": True,
                             "frameMargins": 0,
-                            "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
@@ -305,6 +416,7 @@ class TestBuildGraph:
 
     def test_graph_build_with_extra(self, standard_px_chart):
         graph = vm.Graph(
+            id="graph_id",
             figure=standard_px_chart,
             title="Title",
             extra={"className": "test", "config": {"displayModeBar": False}},
@@ -313,9 +425,11 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
+                    dcc.Store(id="graph_id_action_trigger"),
                     html.H3([html.Span("Title"), None], className="figure-title"),
                     None,
                     dcc.Graph(
+                        id="graph_id",
                         figure=go.Figure(
                             layout={
                                 "paper_bgcolor": "rgba(0,0,0,0)",
@@ -325,9 +439,7 @@ class TestBuildGraph:
                             }
                         ),
                         config={
-                            "autosizable": True,
                             "frameMargins": 0,
-                            "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
                             "displayModeBar": False,
                         },

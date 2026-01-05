@@ -1,6 +1,9 @@
+# Exclude Kedro projects used in tests.
+exclude: vizro-core/tests/unit/vizro/integrations/kedro/kedro-.+-project
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-merge-conflict
@@ -38,7 +41,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.7
+    rev: v0.14.7
     hooks:
       - id: ruff
         args: [--fix]
@@ -46,14 +49,14 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.6
+    rev: 1.9.2
     hooks:
       - id: bandit
         args: [-c, pyproject.toml, -ll]
         additional_dependencies: ["bandit[toml]"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.17.1
+    rev: v1.19.0
     hooks:
       - id: mypy
         files: ^vizro-core/src/
@@ -73,6 +76,8 @@ repos:
         exclude: ^vizro-core/src/vizro/static/css/.+\.min.*|^vizro-core/src/vizro/static/css/mantine_dates.css
 
   - repo: https://github.com/executablebooks/mdformat
+    # mdformat 1.0.0 is incompatible with mdformat-frontmatter (max version 2.0.8 requires
+    # mdformat<0.8.0). No way to skip this automatically in pre-commit autoupdate.
     rev: 0.7.22
     hooks:
       - id: mdformat
@@ -82,7 +87,7 @@ repos:
             --wrap=no,
             --align-semantic-breaks-in-lists,
           ]
-        exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|^vizro-mcp/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md|^vizro-core/changelog.d|^vizro-ai/changelog.d
+        exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|^vizro-mcp/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md|vizro-core/docs/pages/user-guides/custom-actions.md|^vizro-core/changelog.d|^vizro-ai/changelog.d
         additional_dependencies:
           - mdformat-mkdocs[recommended]==4.3.0
 

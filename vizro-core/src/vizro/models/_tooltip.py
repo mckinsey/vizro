@@ -24,15 +24,33 @@ def coerce_str_to_tooltip(text: Any) -> Any:
 class Tooltip(VizroBaseModel):
     """A tooltip that displays text when hovering over an icon.
 
+    Abstract: Usage documentation
+        Read more about usage in the guides on [dashboards](../user-guides/dashboard.md#add-a-dashboard-tooltip),
+        [pages](../user-guides/pages.md#add-a-tooltip),
+        [containers](../user-guides/container.md#add-a-tooltip),
+        [graphs](../user-guides/graph.md#add-a-tooltip),
+        [tables](../user-guides/table.md#add-a-tooltip), [tabs](../user-guides/tabs.md#add-a-tooltip),
+        [selectors](../user-guides/selectors.md#add-a-tooltip) and
+        [buttons](../user-guides/button.md#add-a-tooltip).
+
     Args:
         text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
             chosen by the Vizro team. This may have unexpected behavior. Visit the
             [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/tooltip/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
 
+    Example: `Tooltip` on a [`Checklist`][vizro.models.Checklist] selector
+        ```python
+        import vizro.models as vm
+
+        vm.Checklist(
+            title="Select Species",
+            description=vm.Tooltip(text="Select something", icon="start"),
+        )
+        ```
     """
 
     text: str = Field(

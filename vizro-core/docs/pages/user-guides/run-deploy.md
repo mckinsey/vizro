@@ -144,7 +144,6 @@ The below table is a **TLDR** that provides an overview of the most common optio
 | Method                                         | Free Tier         | Some key features (not exhaustive)                                                                                                                                     | Requires                                                      |
 | ---------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | [Hugging Face](#deploy-to-hugging-face)        | :simple-ticktick: | Easy cloning of apps, Gallery features, easy access to HF model hub                                                                                                    | Hugging Face account                                          |
-| [Ploomber Cloud](#deploy-to-ploomber-cloud)    | :simple-ticktick: | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier                                                                   | Ploomber Account                                              |
 | [Dash Enterprise](#deploy-via-dash-enterprise) | :x:               | Enterprise deployment solution with many more features going above and beyond                                                                                          | Dash Enterprise subscription                                  |
 | [PyCafe](#deploy-via-pycafe)                   | :simple-ticktick: | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases | No requirements (in snippet mode), otherwise a PyCafe account |
 
@@ -172,10 +171,7 @@ That's it! Your app is now suitable for deployment to production.
 
     If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a backend that supports multiple processes.
 
-Now that your `app.py` file is ready, you need to choose a _hosting provider_. There are many services out there with different offerings, but for most users we recommend two in particular: [Hugging Face](https://huggingface.co/) and [Ploomber Cloud](https://docs.cloud.ploomber.io/). These both have a free tier with the possibility of paying more for extras, and they are both quick and easy to get started with. We give step-by-step instructions on how to use each:
-
-- [Deploy a Vizro dashboard to Hugging Face](#deploy-to-hugging-face)
-- [Deploy a Vizro dashboard to Ploomber Cloud](#deploy-to-ploomber-cloud)
+Now that your `app.py` file is ready, you need to choose a _hosting provider_. There are many services out there with different offerings, but for most users we recommend [Hugging Face](https://huggingface.co/). It has a free tier with the possibility of paying more for extras, and is quick and easy to get started with. We give step-by-step instructions on how to use it below.
 
 Enterprise users should look at our guidance for [deploying Vizro dashboards on Dash Enterprise](#deploy-via-dash-enterprise). We also discuss the [general principles for deploying a Vizro app](#general-principles-when-deploying-vizro-dashboards) that apply to all hosting providers.
 
@@ -212,21 +208,6 @@ In addition to `app.py`, your Space contains a few other files:
 !!! tip
 
     If you'd like to show your Vizro app off to the community then you can add it to our [Vizro dashboard community gallery](https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de). Notify us on GitHub in case you are interested.
-
-### Deploy to Ploomber Cloud
-
-[Ploomber Cloud](https://ploomber.io/) is a platform specifically built to deploy data visualization apps built using frameworks such as Vizro. Its free tier offers an easy deployment by drag and drop, the [Ploomber Cloud CLI](https://docs.cloud.ploomber.io/en/latest/user-guide/cli.html), or `git push`. Paid plans include features such as a custom domains, enterprise-grade authentication, user analytics and more powerful computing resources.
-
-The [Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html) contains detailed instructions on how to deploy Vizro on Ploomber Cloud. In short, the process is as follows:
-
-1. [Sign up for a Ploomber Cloud account](https://platform.ploomber.io/register).
-1. Modify the last line of your `app.py` to [expose the Vizro `app` object](#overview) as `app = Vizro().build(dashboard)`.
-1. Create a `requirements.txt` file to give your Python package dependencies. This should include `vizro` and `gunicorn`. See our [section on dependencies](#dependencies) for more information.
-1. Create a `Dockerfile` by copying the [example given in the Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html#application-setup). See our [section on Dockerfiles](#dockerfile) for more information.
-1. Compress your `app.py`, `requirements.txt` and `Dockerfile` into a single zip file.
-1. Upload the zip file to Ploomber Cloud.
-
-You can find a [similar guide on the Ploomber Cloud Blog](https://ploomber.io/blog/vizro-deploy).
 
 ### Deploy via Dash Enterprise
 
@@ -275,7 +256,7 @@ Although these services work in slightly different ways, there are some general 
     - Optional: set [advanced configuration](#advanced-dockerfile-configuration), for example to serve assets using a Content Delivery Network (CDN).
 1. Optional: configure further settings on your hosting provider, for example to make your dashboard private or to configure computing resources.
 
-The method for providing instructions on how to handle your app varies between hosting providers. For example, on Render there are [build and deploy commands](https://render.com/docs/deploys); on Heroku and Dash Enterprise there is a [Procfile](https://devcenter.heroku.com/articles/procfile). One common cross-platform way to configure an environment is using a Dockerfile. This is used by both Hugging Face and Ploomber Cloud among others. See the [section on Dockerfile](#dockerfile) for more information.
+The method for providing instructions on how to handle your app varies between hosting providers. For example, on Render there are [build and deploy commands](https://render.com/docs/deploys); on Heroku and Dash Enterprise there is a [Procfile](https://devcenter.heroku.com/articles/procfile). One common cross-platform way to configure an environment is using a Dockerfile. This is used by many hosting providers, including Hugging Face; see the [section on Dockerfile](#dockerfile) for more information.
 
 #### Dependencies
 
@@ -294,11 +275,11 @@ Although this process for handling dependencies is sufficient to get started wit
 gunicorn app:app --workers 4
 ```
 
-The Gunicorn documentation gives [commonly used arguments](https://docs.gunicorn.org/en/stable/run.html#commands) and advice for setting them. Other than `workers`, the most common argument to specify is `bind`, which makes your app accessible. This is often set as `--bind 0.0.0.0:<port>`. Your hosting provider needs to tell you what the correct port to use is. For example, on Hugging Face it is 7860 and on Ploomber Cloud it is 80.
+The Gunicorn documentation gives [commonly used arguments](https://docs.gunicorn.org/en/stable/run.html#commands) and advice for setting them. Other than `workers`, the most common argument to specify is `bind`, which makes your app accessible. This is often set as `--bind 0.0.0.0:<port>`. Your hosting provider needs to tell you what the correct port to use is. For example, on Hugging Face it is 7860.
 
 #### Dockerfile
 
-A [Dockerfile](https://docs.docker.com/build/concepts/dockerfile/) contains instructions to build a [container image](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/). You can think of it as a way to give in a single file all the instructions that your hosting provider needs to deploy your app. This includes both the [installation of dependencies](#dependencies) and [starting the app with Gunicorn](#gunicorn). A Dockerfile is used by many hosting providers, including Hugging Face and Ploomber Cloud.
+A [Dockerfile](https://docs.docker.com/build/concepts/dockerfile/) contains instructions to build a [container image](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/). You can think of it as a way to give in a single file all the instructions that your hosting provider needs to deploy your app. This includes both the [installation of dependencies](#dependencies) and [starting the app with Gunicorn](#gunicorn). A Dockerfile is used by many hosting providers, including Hugging Face.
 
 Here is an annotated [example Dockerfile](https://huggingface.co/spaces/vizro/demo-first-dashboard/blob/main/Dockerfile) that we use in our simple Hugging Face demo. It demonstrates the key Dockerfile instructions needed to deploy Vizro and should serve as a good starting point for your own Dockerfile.
 
@@ -345,3 +326,70 @@ WASM is a low-level binary instruction format that enables high-performance exec
 [Pyodide is a Python distribution compiled to WebAssembly, enabling Python execution in a browser’s JavaScript runtime](https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific-python-stack-to-the-browser/). It includes a standard Python interpreter, common scientific libraries (NumPy, Pandas, Matplotlib, etc.), and interoperability with JavaScript within the browser environment. In the context of Vizro, Pyodide enables the execution of Dash callbacks, component updates, and external Python libraries directly in the client’s browser, without a persistent backend.
 
 While potential advantages include serverless execution, reduced latency and easier "deployment", the disadvantages include limited performance compared to a native server, limited library support, and memory constraints.
+
+### Shareable URL
+
+When sharing your dashboard, it can be useful to share or bookmark a link to a page on which you have already set the controls. Any [controls](controls.md) that have `show_in_url=True` are included in the URL of the page.
+
+!!! example "Shareable URL that includes filter"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="15-16"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    id="filter-id",  # (1)!
+                    show_in_url=True,
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. Setting `id` is not compulsory, but it is recommended. If you do not set the `id` explicitly then a random `id` is set for you. If you later change your dashboard configuration and re-deploy then a different random `id` would be generated, and old shareable URLs would not work correctly.
+
+    === "app.yaml"
+
+        ```yaml {hl_lines="14-15"}
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color: species
+                type: graph
+            controls:
+              - column: species
+                id: filter-id
+                show_in_url: true
+                type: filter
+            title: My first page
+        ```
+
+    === "Result"
+
+        [![filterInUrl]][filterinurl]
+
+!!! note "Page state rather than dashboard state"
+
+    Only controls on the currently opened page are reflected in the URL. It is not yet possible to share or bookmark the global state of a multi-page dashboard.
+
+[filterinurl]: ../../assets/user_guides/run_deploy/filter_in_url.png

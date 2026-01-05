@@ -1,7 +1,7 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -45,7 +45,9 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "mkdocs-glightbox",
+  "vizro"
 ]
 detached = true
 installer = "uv"
@@ -63,11 +65,15 @@ linkchecker site \
   --check-extern \
   --no-warnings \
   --ignore=404.html \
+  --ignore-url=http://localhost:8050 \
   --ignore-url=127.0.0.1 \
   --ignore-url=https://vizro.readthedocs.io/ \
   --ignore-url="^https://cursor\.com/install-mcp\?name=vizro-mcp&config=(.+)$" \
   --ignore-url="^https://insiders\.vscode\.dev/redirect/mcp/install\?name=vizro-mcp&config=(.+)$" \
   --ignore-url=https://claude.ai/download
+'''
+links-in-prompts-check = '''
+python ../tools/check_vizro_docs_links_in_mcp_prompts.py
 '''
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"

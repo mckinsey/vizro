@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -12,19 +12,21 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Switch(VizroBaseModel):
-    """Boolean single-option selector `Switch`.
+    """Boolean single-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
+    Abstract: Usage documentation
+        [How to use boolean selectors](../user-guides/selectors.md/#boolean-selectors)
+
     Args:
-        type (Literal["switch"]): Defaults to `"switch"`.
         value (bool): Initial state of the switch. When `True`, the switch is "on".
             When `False`, the switch is "off". Defaults to `False`.
         title (str): Title/Label to be displayed to the right of the switch. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Switch` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Switch` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -38,10 +40,10 @@ class Switch(VizroBaseModel):
         When `False`, the switch is disabled/off. Defaults to `False`.""",
     )
     title: str = Field(default="", description="Title/Label to be displayed to the right of the switch.")
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -66,7 +68,7 @@ class Switch(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _in_container: bool = PrivateAttr(False)
+    _inner_component_properties: list[str] = PrivateAttr(dbc.Switch().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

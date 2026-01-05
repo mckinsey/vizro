@@ -1,7 +1,12 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+[envs."all.py3.14"]
+# Make sys.warnoptions non-empty so that Kedro doesn't turn its Python 3.14 warning into an error.
+# This means we can ignore it like others in tool.pytest.ini_options.filterwarnings.
+env-vars = {PYTHONWARNINGS = "default"}
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -31,10 +36,17 @@ dependencies = [
   "pyhamcrest",
   "gunicorn",
   "pixelmatch",
-  "playwright"
+  "playwright",
+  # seaborn and scikit-learn are needed for tests of kedro integration on real project.
+  # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
+  # we want to be testing the latest.
+  "seaborn",
+  "scikit-learn"
 ]
 features = ["kedro"]
 installer = "uv"
+# Pin Python version so that `hatch run test` etc. give consistent behavior.
+python = "3.13"
 
 [envs.default.env-vars]
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
@@ -58,10 +70,10 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 schema = ["python schemas/generate.py", '- pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 schema-check = ["python schemas/generate.py --check"]
 templates = [
-  "python src/vizro/_themes/generate_plotly_templates.py",
+  "python src/vizro/_themes/_static_template_generator.py",
   '- pre-commit run --files src/vizro/_themes/vizro_dark.json src/vizro/_themes/vizro_light.json > /dev/null'
 ]
-templates-check = ["python src/vizro/_themes/generate_plotly_templates.py --check"]
+templates-check = ["python src/vizro/_themes/_static_template_generator.py --check"]
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
@@ -73,6 +85,11 @@ test-e2e-vizro-dom-elements = [
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5007 -t 30",
   "pytest -vs --reruns 1 --ctrf ../.ctrf/ctrf-report.json tests/e2e/vizro/test_dom_elements --headless {args}"
+]
+test-e2e-vizro-http-requests = [
+  "gunicorn dashboard_http_requests:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+  "pytest -vs --reruns 1 tests/e2e/vizro/test_http_requests --headless {args}"
 ]
 test-e2e-vizro-screenshots = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
@@ -102,8 +119,9 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
+  "griffe-warnings-deprecated",
   "mkdocs-llmstxt-md",
-  "mkdocs-llmstxt",
+  "mkdocs-llmstxt>=0.5.0",
   "linkchecker",
   "mkdocs-open-in-new-tab",
   "mkdocs-pycafe",
@@ -122,7 +140,7 @@ link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --
 logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/install.md"
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
-serve = "mkdocs serve --open"
+serve = "mkdocs serve --open {args}"
 
 [envs.examples]
 # TODO: once the visual-vocabulary dashboard has moved out of this repo, this environment should be removed fully and
@@ -152,14 +170,14 @@ extra-dependencies = [
   "dash==3.1.1",
   "dash-bootstrap-components==2.0.0",
   "dash-ag-grid==31.3.1",
-  "dash-mantine-components==1.0.0",
+  "dash-mantine-components==2.0.0",
   "plotly==5.24.0",
   "pydantic==2.7.0",
   "pandas==2.0.0",
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
-  "kedro==0.19.0"  # Includes kedro-datasets as a dependency.
+  "kedro==0.19.9"
 ]
-python = "3.9"
+python = "3.10"
 
 [publish.index]
 disable = true

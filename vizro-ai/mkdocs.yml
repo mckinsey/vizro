@@ -27,7 +27,6 @@ nav:
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
       - Why use Vizro-AI: pages/explanation/why-use-vizro-ai.md
-  - Examples gallery: https://vizro.mckinsey.com
   #- Contribute:
   #      - Contributing: pages/contribute/contributing.md
   - Vizro: https://vizro.readthedocs.io
@@ -86,7 +85,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.30
+                vizro==0.1.50
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark

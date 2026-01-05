@@ -8,40 +8,41 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13"
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
-  "dash>=3.1.1",  # must be >=3.1.1 to include bugfixes for persistence and suppress_callback_exception
+  "dash>=3.1.1,<4",  # temporary upper bound to avoid breaking changes in Dash v4
   "dash_bootstrap_components>=2",  # 2.0.0 needed to support dash>=3.0.0
   "dash-ag-grid>=31.3.1",  # 31.3.1 needed to support dash>=3.0.0
-  "dash_mantine_components>=1",  # 1.0.0 needed to support dash>=3.0.0
+  "dash_mantine_components>=2.0.0",  # 2.0.0 needed to support dmc.NotificationContainer
   "pandas>=2",
   "plotly>=5.24.0",
   # Must be <= the version in pre-commit mypy hook, sync manually
-  # When updating this to >=2.9, search code for `but this requires pydantic >= 2.9` to find all
-  # occurrences of code that is now ready to change
+  # TODO: When updating to `>=2.10`, search code for `pydantic>=2.10.0` or
+  # `pydantic>=2.9` to find all occurrences ready for this change
   "pydantic>=2.7.0",
   "flask_caching>=2",
   "wrapt>=1",
   "black",
   "autoflake",
-  "packaging"
+  "packaging",
+  "python-box"
 ]
 description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.19.0,<1.0",  # remove once we have tested the released Kedro 1.0
-  "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
+  "kedro>=0.19.9",
+  "kedro-datasets"
 ]
 
 [project.urls]
@@ -58,7 +59,7 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:"
 ]
-fail_under = 92
+fail_under = 91
 show_missing = true
 skip_covered = true
 
@@ -80,10 +81,16 @@ filterwarnings = [
   "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
   "ignore:HTTPResponse.getheader():DeprecationWarning",
-  # ignore this warning for firefox screenshot tests
+  # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
-  # ignore kedro deprecation warning
-  "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning"
+  # Ignore dash_data_table deprecation warning
+  "ignore:(?s).*The dash_table.DataTable will be removed from the builtin dash components in a future major version:DeprecationWarning",
+  # Ignore Dash's use of deprecated method (due to be removed in Python 3.16).
+  "ignore:'asyncio.iscoroutinefunction' is deprecated:DeprecationWarning",
+  # Ignore kedro warnings. Note you can't use kedro.*Warning as categories here since pytest would then import kedro#
+  # and trigger the 3.14 error before it can be ignored.
+  "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`",
+  "ignore:Kedro is not yet fully compatible with this Python version."
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"

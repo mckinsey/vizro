@@ -1,4 +1,9 @@
 import e2e.vizro.constants as cnst
+from pages.actions_properties_shortcut_page import (
+    action_ag_grid_underlying_id_shortcut_page,
+    action_control_shortcut_page,
+    action_model_field_shortcut_page,
+)
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
 from pages.collapsible_containers_pages import collapsible_containers_flex, collapsible_containers_grid
@@ -28,8 +33,23 @@ from pages.layout_pages import (
     layout_flex_with_wrap_param_and_ag_grid,
     layout_flex_without_params,
 )
+from pages.notifications_page import static_notifications_page
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
+from pages.set_control_cross_filter_page import (
+    cross_filter_ag_grid_page,
+    cross_filter_card_graph_page,
+    cross_filter_graph_page,
+)
+from pages.set_control_drill_down import drill_down_graph_page
+from pages.set_control_drill_through import (
+    drill_through_filter_ag_grid_source_page,
+    drill_through_filter_ag_grid_target_page,
+    drill_through_filter_graph_source_page,
+    drill_through_filter_graph_target_page,
+    drill_through_parameter_graph_source_page,
+    drill_through_parameter_graph_target_page,
+)
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
@@ -74,6 +94,20 @@ dashboard = vm.Dashboard(
         collapsible_containers_grid,
         collapsible_containers_flex,
         vizro_url_and_download_page,
+        cross_filter_graph_page,
+        cross_filter_ag_grid_page,
+        cross_filter_card_graph_page,
+        drill_down_graph_page,
+        drill_through_filter_graph_source_page,
+        drill_through_filter_graph_target_page,
+        drill_through_parameter_graph_source_page,
+        drill_through_parameter_graph_target_page,
+        drill_through_filter_ag_grid_source_page,
+        drill_through_filter_ag_grid_target_page,
+        action_model_field_shortcut_page,
+        action_ag_grid_underlying_id_shortcut_page,
+        action_control_shortcut_page,
+        static_notifications_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -119,6 +153,22 @@ dashboard = vm.Dashboard(
                 cnst.BUTTONS_PAGE,
                 cnst.COLLAPSIBLE_CONTAINERS_GRID,
                 cnst.COLLAPSIBLE_CONTAINERS_FLEX,
+            ],
+            cnst.ACTIONS_ACCORDION: [
+                cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
+                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET,
+                cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
+                cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_TARGET,
+                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
+                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
+                cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
+                cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
+                cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
+                cnst.ACTION_CONTROL_SHORTCUT_PAGE,
+                cnst.STATIC_NOTIFICATIONS_PAGE,
             ],
         }
     ),

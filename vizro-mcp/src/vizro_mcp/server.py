@@ -4,8 +4,9 @@ import mimetypes
 import webbrowser
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
+import vizro
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field, ValidationError
@@ -14,12 +15,14 @@ from vizro import Vizro
 from vizro_mcp._schemas import (
     AgGridEnhanced,
     ChartPlan,
+    FigureEnhanced,
     GraphEnhanced,
 )
 from vizro_mcp._utils import (
     CHART_INSTRUCTIONS,
     GAPMINDER,
     IRIS,
+    LAYOUT_INSTRUCTIONS,
     STOCKS,
     TIPS,
     DFInfo,
@@ -45,7 +48,7 @@ class ValidateResults:
     valid: bool
     message: str
     python_code: str
-    pycafe_url: Optional[str]
+    pycafe_url: str | None
     browser_opened: bool
 
 
@@ -55,8 +58,8 @@ class DataAnalysisResults:
 
     valid: bool
     message: str
-    df_info: Optional[DFInfo]
-    df_metadata: Optional[DFMetaData]
+    df_info: DFInfo | None
+    df_metadata: DFMetaData | None
 
 
 @dataclass
@@ -70,27 +73,27 @@ class ModelJsonSchemaResults:
 
 # TODO: check on https://github.com/modelcontextprotocol/python-sdk what new things are possible to do here
 mcp = FastMCP(
-    "MCP server to help create Vizro dashboards and charts.",
+    name=f"MCP server to help create Vizro dashboards and charts. Server Vizro version: {vizro.__version__}",
 )
 
 
 @mcp.tool()
 def get_vizro_chart_or_dashboard_plan(
-    user_plan: Literal["chart", "dashboard"],
-    user_host: Literal["generic_host", "ide"],
-    advanced_mode: bool = False,
+    user_plan: Literal["chart", "dashboard"] = Field(description="The type of Vizro thing the user wants to create"),
+    user_host: Literal["generic_host", "ide"] = Field(
+        description="The host the user is using, if 'ide' you can use the IDE/editor to run python code"
+    ),
+    advanced_mode: bool = Field(
+        default=False,
+        description="""Only call if you need to use custom CSS, custom components or custom actions.
+No need to call this with advanced_mode=True if you need advanced charts,
+use `custom_charts` in the `validate_dashboard_config` tool instead.""",
+    ),
 ) -> str:
     """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things.
 
     Must be ALWAYS called FIRST with advanced_mode=False, then call again with advanced_mode=True
     if the JSON config does not suffice anymore.
-
-    Args:
-        user_plan: The type of Vizro thing the user wants to create
-        user_host: The host the user is using, if "ide" you can use the IDE/editor to run python code
-        advanced_mode: Only call if you need to use custom CSS, custom components or custom actions.
-            No need to call this with advanced_mode=True if you need advanced charts, use `custom_charts` in
-            the `validate_dashboard_config` tool instead.
 
     Returns:
         Instructions for creating a Vizro chart or dashboard
@@ -101,20 +104,29 @@ def get_vizro_chart_or_dashboard_plan(
         return f"{get_dashboard_instructions(advanced_mode, user_host)}"
 
 
-@mcp.tool()
-def get_model_json_schema(model_name: str) -> ModelJsonSchemaResults:
+@mcp.tool(description=f"Get the JSON schema for the specified Vizro model. Server Vizro version: {vizro.__version__}")
+def get_model_json_schema(
+    model_name: str = Field(
+        description="Name of the Vizro model to get schema for (e.g., 'Card', 'Dashboard', 'Page')"
+    ),
+) -> ModelJsonSchemaResults:
     """Get the JSON schema for the specified Vizro model.
-
-    Args:
-        model_name: Name of the Vizro model to get schema for (e.g., 'Card', 'Dashboard', 'Page')
 
     Returns:
         JSON schema of the requested Vizro model
     """
+    if not hasattr(vm, model_name):
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema={},
+            additional_info=f"Model '{model_name}' not found in vizro.models",
+        )
+
     modified_models = {
         "Graph": GraphEnhanced,
         "AgGrid": AgGridEnhanced,
         "Table": AgGridEnhanced,
+        "Figure": FigureEnhanced,
     }
 
     if model_name in modified_models:
@@ -124,15 +136,22 @@ def get_model_json_schema(model_name: str) -> ModelJsonSchemaResults:
             additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
 that model if necessary. Do NOT forget to call `validate_dashboard_config` after each iteration.""",
         )
-
-    if not hasattr(vm, model_name):
+    deprecated_models = {"filter_interaction": "set_control", "Layout": "Grid"}
+    if model_name in deprecated_models:
         return ModelJsonSchemaResults(
             model_name=model_name,
             json_schema={},
-            additional_info=f"Model '{model_name}' not found in vizro.models",
+            additional_info=f"Model '{model_name}' is deprecated. Use {deprecated_models[model_name]} instead.",
         )
 
     model_class = getattr(vm, model_name)
+    if model_name in {"Grid", "Flex"}:
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
+            additional_info=LAYOUT_INSTRUCTIONS,
+        )
+
     return ModelJsonSchemaResults(
         model_name=model_name,
         json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
@@ -142,7 +161,11 @@ that model if necessary. Do NOT forget to call `validate_dashboard_config` after
 
 
 @mcp.tool()
-def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder"]) -> DFMetaData:
+def get_sample_data_info(
+    data_name: Literal["iris", "tips", "stocks", "gapminder"] = Field(
+        description="Name of the dataset to get sample data for"
+    ),
+) -> DFMetaData:
     """If user provides no data, use this tool to get sample data information.
 
     Use the following data for the below purposes:
@@ -150,9 +173,6 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
         - tips: contains mix of numerical and categorical columns, good for bar, pie, etc.
         - stocks: stock prices, good for line, scatter, generally things that change over time
         - gapminder: demographic data, good for line, scatter, generally things with maps or many categories
-
-    Args:
-        data_name: Name of the dataset to get sample data for
 
     Returns:
         Data info object containing information about the dataset.
@@ -168,7 +188,9 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
 
 
 @mcp.tool()
-def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
+def load_and_analyze_data(
+    path_or_url: str = Field(description="Absolute (important!) local file path or URL to a data file"),
+) -> DataAnalysisResults:
     """Use to understand local or remote data files. Must be called with absolute paths or URLs.
 
     Supported formats:
@@ -178,9 +200,6 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
     - Excel (.xls, .xlsx)
     - OpenDocument Spreadsheet (.ods)
     - Parquet (.parquet)
-
-    Args:
-        path_or_url: Absolute (important!) local file path or URL to a data file
 
     Returns:
         DataAnalysisResults object containing DataFrame information and metadata
@@ -225,21 +244,21 @@ column types for passing along to the `validate_dashboard_config` or `validate_c
 # - data_infos: check we are referring to the correct dataframe, or at least A DF
 @mcp.tool()
 def validate_dashboard_config(
-    dashboard_config: dict[str, Any],
-    data_infos: list[DFMetaData],
-    custom_charts: list[ChartPlan],
-    auto_open: bool = True,
+    dashboard_config: dict[str, Any] = Field(
+        description="Either a JSON string or a dictionary representing a Vizro dashboard model configuration"
+    ),
+    data_infos: list[DFMetaData] = Field(
+        description="List of DFMetaData objects containing information about the data files"
+    ),
+    custom_charts: list[ChartPlan] = Field(
+        description="List of ChartPlan objects containing information about the custom charts in the dashboard"
+    ),
+    auto_open: bool = Field(default=True, description="Whether to automatically open the PyCafe link in a browser"),
 ) -> ValidateResults:
     """Validate Vizro model configuration. Run ALWAYS when you have a complete dashboard configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
     The PyCafe link will be automatically opened in your default browser if auto_open is True.
-
-    Args:
-        dashboard_config: Either a JSON string or a dictionary representing a Vizro dashboard model configuration
-        data_infos: List of DFMetaData objects containing information about the data files
-        custom_charts: List of ChartPlan objects containing information about the custom charts in the dashboard
-        auto_open: Whether to automatically open the PyCafe link in a browser
 
     Returns:
         ValidationResults object with status and dashboard details
@@ -296,7 +315,7 @@ def create_starter_dashboard():
 @mcp.prompt()
 def create_dashboard(
     file_path_or_url: str = Field(description="The absolute path or URL to the data file you want to use."),
-    context: Optional[str] = Field(default=None, description="(Optional) Describe the dashboard you want to create."),
+    context: str | None = Field(default=None, description="(Optional) Describe the dashboard you want to create."),
 ) -> str:
     """Prompt template for creating an EDA dashboard based on one dataset."""
     return get_dashboard_prompt(file_path_or_url, context)
@@ -304,16 +323,11 @@ def create_dashboard(
 
 @mcp.tool()
 def validate_chart_code(
-    chart_config: ChartPlan,
-    data_info: DFMetaData,
-    auto_open: bool = True,
+    chart_config: ChartPlan = Field(description="A ChartPlan object with the chart configuration"),
+    data_info: DFMetaData = Field(description="Metadata for the dataset to be used in the chart"),
+    auto_open: bool = Field(default=True, description="Whether to automatically open the PyCafe link in a browser"),
 ) -> ValidateResults:
     """Validate the chart code created by the user and optionally open the PyCafe link in a browser.
-
-    Args:
-        chart_config: A ChartPlan object with the chart configuration
-        data_info: Metadata for the dataset to be used in the chart
-        auto_open: Whether to automatically open the PyCafe link in a browser
 
     Returns:
         ValidationResults object with status and dashboard details
@@ -358,7 +372,7 @@ def validate_chart_code(
 @mcp.prompt()
 def create_vizro_chart(
     file_path_or_url: str = Field(description="The absolute path or URL to the data file you want to use."),
-    context: Optional[str] = Field(default=None, description="(Optional) Describe the chart you want to create."),
+    context: str | None = Field(default=None, description="(Optional) Describe the chart you want to create."),
 ) -> str:
     """Prompt template for creating a Vizro chart."""
     return get_chart_prompt(file_path_or_url, context)

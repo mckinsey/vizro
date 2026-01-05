@@ -8,6 +8,13 @@ from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
+pytestmark = [
+    pytest.mark.filterwarnings(
+        "ignore:Using the `Action` model for the built-in action `filter_interaction`:FutureWarning"
+    ),
+    pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning"),
+]
+
 
 @pytest.fixture
 def ctx_filter_interaction(request):
@@ -119,6 +126,16 @@ def target_box_filtered_continent(request, gapminder_2007, box_params):
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_aggrid_one_button")
 class TestFilterInteraction:
+    def test_filter_interaction_in_action_deprecated(self):
+        actions = vm.Action(function=filter_interaction())
+        with pytest.warns(FutureWarning, match="Using the `Action` model for the built-in action `filter_interaction`"):
+            # make_actions_chain is what raises the warning, so it only happens when the action is used inside a model.
+            vm.Button(actions=actions)
+
+    def test_filter_interaction_deprecated(self):
+        with pytest.warns(FutureWarning, match="`filter_interaction` is deprecated "):
+            filter_interaction()
+
     @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None, None), ("Europe", None, None)], indirect=True)
     def test_filter_interaction_without_targets_temporary_behavior(  # temporary fix, see below test
         self, ctx_filter_interaction
@@ -202,7 +219,7 @@ class TestFilterInteraction:
     @pytest.mark.parametrize("target", ["invalid_target", ["invalid_target"]])
     @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None, None), ("Europe", None, None)], indirect=True)
     def test_filter_interaction_with_invalid_targets(self, target, ctx_filter_interaction):
-        with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
+        with pytest.raises(ValueError, match=r"Target invalid_target not found in model_manager."):
             # Add action to relevant component - here component[0] is the source_chart
             model_manager["box_chart"].actions = [
                 vm.Action(function=filter_interaction(id="test_action", targets=target))

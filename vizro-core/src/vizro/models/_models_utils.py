@@ -1,14 +1,28 @@
 import logging
 import warnings
 from functools import wraps
+from typing import Any
 
 from dash import html
+from dash.development.base_component import Component
 from pydantic import ValidationInfo
 
 from vizro.managers import model_manager
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
+
+
+def _all_hidden(components: Component | list[Component]):
+    """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
+    if isinstance(components, Component):
+        components = [components]
+    return all(
+        component is None
+        or getattr(component, "hidden", False)
+        or "d-none" in getattr(component, "className", "d-inline")
+        for component in components
+    )
 
 
 def _log_call(method):
@@ -81,6 +95,28 @@ def warn_description_without_title(description, info: ValidationInfo):
     return description
 
 
+# We use this as a validator to deprecate a field, instead of setting deprecate=True, which only affects the JSON schema
+# and raises unwanted warnings when looking through model attributes. deprecate=True wouldn't be sufficient anyway,
+# since:
+# - the warning isn't raised on model instantiation, just on field access
+# - the warning category can't be changed from the default DeprecationWarning to FutureWarning and so will not be
+# visible to most users
+# These are known limitations with pydantic's current implementation; see
+# https://github.com/pydantic/pydantic/issues/8922 and https://docs.pydantic.dev/latest/concepts/fields/.
+# This only runs if the field is explicitly set since validate_default=False by default.
+# This does not add anything to the API docs. You must add a note to the field docstring manually.
+def make_deprecated_field_warning(message: str, /):
+    def deprecate_field(value: Any, info: ValidationInfo):
+        warnings.warn(
+            f"The `{info.field_name}` argument is deprecated and will not exist in Vizro 0.2.0. {message}.",
+            category=FutureWarning,
+            stacklevel=3,
+        )
+        return value
+
+    return deprecate_field
+
+
 def make_actions_chain(self):
     """Creates actions chain from a list of actions.
 
@@ -101,31 +137,38 @@ def make_actions_chain(self):
     # built in actions are always handled in the new way.
     for action in self.actions:
         if isinstance(action.function, (export_data, filter_interaction)):
+            action_name = action.function._action_name
+            warnings.warn(
+                f"Using the `Action` model for the built-in action `{action_name}` is deprecated and will not be"
+                f" possible in Vizro 0.2.0. Call the action directly with `actions=va.{action_name}(...)`. See "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-for-built-in"
+                "-action.",
+                category=FutureWarning,
+                stacklevel=4,
+            )
+
             del model_manager[action.id]
             converted_actions.append(action.function)
         else:
             converted_actions.append(action)
 
+    model_action_trigger = self._action_triggers["__default__"]
     for i, action in enumerate(converted_actions):
-        first_in_chain = i == 0
+        # First action in the chain uses the model's specified trigger.
+        # All subsequent actions in the chain are triggered by the previous action's completion.
+        # In the future, we would allow multiple keys in the _action_triggers dictionary, and then we'd need to look up
+        # the relevant entry here. For now there's just __default__ so we always use that.
+        action._trigger = model_action_trigger if i == 0 else f"{converted_actions[i - 1].id}_finished.data"
 
-        if first_in_chain:
-            # First action in the chain uses the model's specified trigger. In future we would allow multiple keys in
-            # the _action_triggers dictionary and then we'd need to look up the relevant entry here. For now there's
-            # just __default__ so we always use that.
-            trigger = self._action_triggers["__default__"]
-        else:
-            # All subsequent actions in the chain are triggered by the previous action's completion.
-            trigger = f"{converted_actions[i - 1].id}_finished.data"
+        # Every action has to know about the model action trigger to properly set the action's builtin arg "_trigger".
+        action._first_in_chain_trigger = model_action_trigger
 
-        action._trigger = trigger
-        action._first_in_chain = first_in_chain
         # The actions chain guard should be called only for on page load.
         action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
 
-        # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
-        # model manager and removal of filter_interaction.
-        action._parent_model_id = self.id
+        # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
+        # the model manager supports `parent_model` access for all Vizro models.
+        action._parent_model = self
 
     # We should do self.actions = converted_actions but this leads to a recursion error. The below is a workaround
     # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.

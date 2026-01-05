@@ -1,11 +1,11 @@
 # How to create a dashboard
 
-This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] using either pydantic models, Python dictionaries, YAML, or JSON.
+This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] model using either pydantic models, Python dictionaries, YAML, or JSON.
 
 To create a dashboard:
 
 1. Choose one of the possible configuration syntaxes
-1. Create your `pages`, see our [guide on Pages](pages.md)
+1. Create your [`pages`](pages.md)
 1. (optional) Customize your `navigation`, see our [guide on Navigation](navigation.md)
 1. (optional) Set a `title` for your dashboard
 1. (optional) Set a `description` for your dashboard to [add a tooltip](#add-a-dashboard-tooltip) and [set meta tags](#meta-tags-for-social-media)
@@ -194,11 +194,11 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 ## Add a dashboard title
 
-If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
+If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] model displays a heading at the top of every page.
 
 ## Add a dashboard logo
 
-Vizro [automatically incorporate the dashboard logo](assets.md/#add-a-logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+Vizro [automatically displays a logo](assets.md/#add-a-logo-image) in the top-left corner of each page if you place an image named `logo.<extension>` in the [assets](assets.md) folder. You can also add [theme-specific logos](assets.md/#theme-specific-logos) named `logo-dark.<extension>` and `logo-light.<extension>`, which switch automatically with the active theme. By default, clicking the logo takes you to the homepage.
 
 ![Dashboard with logo](../../assets/user_guides/dashboard/dashboard_with_logo.png)
 
@@ -212,11 +212,11 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
 ## Customize the header
 
-You can now append custom content to the dashboard header using the [`custom_header`][vizro.models.Dashboard.custom_header] static method of the [Dashboard][vizro.models.Dashboard]. This enables you to inject any Dash component(s) into a dedicated area of the header - common examples include text, badges, or buttons.
+You can add custom content to the dashboard header using the [`Dashboard.custom_header`][vizro.models.Dashboard.custom_header] method. This enables you to inject any Dash component(s) into a dedicated area of the header. Common examples include text, badges, or buttons.
 
 ![Custom header area](../../assets/user_guides/dashboard/custom_header_area.png)
 
-To append items to the custom header area, subclass the [Dashboard][vizro.models.Dashboard] and override the [`custom_header`][vizro.models.Dashboard.custom_header] static method to return your desired Dash component(s):
+To add items to the custom header area, subclass the [Dashboard][vizro.models.Dashboard] model and override the [`custom_header`][vizro.models.Dashboard.custom_header] method to return your desired Dash component(s):
 
 - The returned value can be a single Dash component or a list of components.
 - The custom header area is styled as a flex row with an 8px gap.
@@ -226,7 +226,7 @@ To append items to the custom header area, subclass the [Dashboard][vizro.models
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="8-13 17"}
+        ```{.python pycafe-link hl_lines="8-12 16"}
         from vizro import Vizro
         import vizro.models as vm
         from typing import Literal
@@ -237,19 +237,18 @@ To append items to the custom header area, subclass the [Dashboard][vizro.models
         class CustomDashboard(vm.Dashboard):
             type: Literal["custom_dashboard"] = "custom_dashboard"
 
-            @staticmethod
-            def custom_header():
+            def custom_header(self):
                 return [html.Div("Good morning, Li! ☕"), dbc.Badge("Tuesday", color="primary")]
 
 
-        page = vm.Page(title="Page Title", components=[vm.Card(text="""# Placerholder""")])
+        page = vm.Page(title="Page Title", components=[vm.Card(text="Placeholder")])
         dashboard = CustomDashboard(pages=[page], title="Dashboard with custom header")
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
 
-        Custom sashboards are currently only possible via Python configuration.
+        Custom dashboards are currently only possible via Python configuration.
 
     === "Result"
 
@@ -257,7 +256,7 @@ To append items to the custom header area, subclass the [Dashboard][vizro.models
 
 ## Meta tags for social media
 
-Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat clients. To see an example, try sharing an example from the [Vizro examples gallery](https://vizro.mckinsey.com/).
+Vizro automatically adds meta tags to display a preview card when your app is shared on social media and chat clients. To see an example, try sharing an example such the [Vizro visual vocabulary dashboard](https://huggingface.co/spaces/vizro/demo-visual-vocabulary).
 
 The preview includes:
 

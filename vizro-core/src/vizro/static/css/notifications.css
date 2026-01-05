@@ -1,0 +1,89 @@
+#vizro-notifications > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alert-info, .alert-success, .alert-warning, .alert-error {
+  align-items: flex-start;
+  background: var(--surfaces-bg-card-inverted);
+  box-shadow: var(--bs-box-shadow);
+  display: flex;
+  padding: 12px 8px;
+}
+
+.alert-info {
+  border-left: 4px solid var(--bs-info);
+}
+
+.alert-success {
+  border-left: 4px solid var(--bs-success);
+}
+
+.alert-warning {
+  border-left: 4px solid var(--bs-warning);
+}
+
+.alert-error {
+  border-left: 4px solid var(--bs-danger);
+}
+
+.alert-info .material-symbols-outlined {
+  color: var(--bs-info);
+}
+
+.alert-success .material-symbols-outlined {
+  color: var(--bs-success);
+}
+
+.alert-warning .material-symbols-outlined {
+  color: var(--bs-warning);
+}
+
+.alert-error .material-symbols-outlined {
+  color: var(--bs-danger);
+}
+
+.mantine-Notification-description p {
+  color: var(--text-secondary-inverted);
+}
+
+.mantine-Notification-description p:last-child {
+  margin-bottom: 0;
+}
+
+.mantine-Notification-description a:hover {
+  color: var(--text-primary-inverted);
+}
+
+.mantine-Notification-title {
+  color: var(--text-primary-inverted);
+  font-weight: 600;
+}
+
+.mantine-Notification-icon {
+  background: none;
+  margin-inline-end: 8px;
+}
+
+.mantine-Notification-closeButton {
+  background: none;
+  color: var(--text-secondary-inverted);
+
+  &:hover {
+    background: none;
+    color: var(--text-primary-inverted);
+  }
+}
+
+.mantine-Notification-loader {
+  --loader-size: 24px !important;
+  --loader-color: var(--text-secondary-inverted);
+
+  margin-inline-end: 8px;
+}
+
+
+.mantine-Notification-body {
+  margin: auto;
+}

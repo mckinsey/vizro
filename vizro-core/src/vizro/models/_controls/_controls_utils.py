@@ -1,11 +1,49 @@
+from __future__ import annotations
+
 import warnings
 from collections.abc import Generator
-from typing import Optional
+from typing import TYPE_CHECKING, Any
+
+from typing_extensions import TypeIs
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Container, VizroBaseModel
-from vizro.models.types import ControlType
+from vizro.models import (
+    Checklist,
+    Container,
+    DatePicker,
+    Dropdown,
+    RadioItems,
+    RangeSlider,
+    Slider,
+    Switch,
+    VizroBaseModel,
+)
+from vizro.models._components.form._form_utils import get_dict_options_and_default
+from vizro.models.types import ControlType, SelectorType
+
+if TYPE_CHECKING:
+    from vizro.models import Page
+
+SELECTORS: dict[str, tuple[type, ...]] = {
+    "numerical": (RangeSlider, Slider),
+    "categorical": (Checklist, Dropdown, RadioItems),
+    "temporal": (DatePicker,),
+    "boolean": (Switch,),
+}
+
+
+# Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
+def _is_numerical_temporal_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
+    return isinstance(x, SELECTORS["numerical"] + SELECTORS["temporal"])
+
+
+def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
+    return isinstance(x, SELECTORS["categorical"])
+
+
+def _is_boolean_selector(x: object) -> TypeIs[Switch]:
+    return isinstance(x, SELECTORS["boolean"])
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
@@ -21,24 +59,27 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
 #  This would make the following renaming logical: model_manager._get_models -> model_manager._get_model_children.
 #  These two new methods could have the same signature.
 #  Consider adding the parent_model_id to the VizroBaseModel and use that to find the parent model more easily.
-def _get_control_parent(control: ControlType) -> Optional[VizroBaseModel]:
-    """Get the parent model of a control."""
+def get_control_parent(control: ControlType) -> Page | Container | None:
+    """Get the nearest ancestor Container or Page for the given control."""
     # Return None if the control is not part of any page.
     if (page := model_manager._get_model_page(model=control)) is None:
         return None
 
-    # Return the Page if the control is its direct child.
-    if control in page.controls:
-        return page
+    nearest_ancestor_container = None
+    # Find the deepest Container that contains this control (DFS pre-order in `_get_models` gives deepest match last).
+    for container in model_manager._get_models(model_type=Container, root_model=page):
+        if control in model_manager._get_models(model_type=type(control), root_model=container):
+            nearest_ancestor_container = container
 
-    # Otherwise, return the Container that contains the control.
-    page_containers = model_manager._get_models(model_type=Container, root_model=page)
-    return next(container for container in page_containers if control in container.controls)
+    # Fallback to the page if not nested inside any container.
+    return nearest_ancestor_container or page
 
 
 def check_control_targets(control: ControlType) -> None:
-    if (root_model := _get_control_parent(control=control)) is None:
-        raise ValueError(f"Control {control.id} should be defined within a Page object.")
+    root_model = get_control_parent(control=control)
+    # Search by using "_get_models" instead of "if control not in root_model.controls" to handle nested custom controls.
+    if root_model is None or control not in model_manager._get_models(root_model=root_model.controls):
+        raise ValueError(f"Control {control.id} should be defined within Page.controls or Container.controls.")
 
     _validate_targets(targets=control.targets, root_model=root_model)
 
@@ -51,3 +92,23 @@ def warn_missing_id_for_url_control(control: ControlType) -> None:
             "If you want to ensure that links continue working, set a fixed `id`.",
             UserWarning,
         )
+
+
+def get_selector_default_value(selector: SelectorType) -> Any:
+    """Get default value for a selector if not explicitly provided.
+
+    This is used to set selector.value in controls so that the "Reset controls" button works. Ideally it would be
+    done elsewhere, e.g. in the selector models themselves, but that is tricky to get in the right order because it
+    would require running the selector.pre_build as part of Filter.pre_build.
+    """
+    if selector.value is not None:
+        return selector.value
+
+    if _is_numerical_temporal_selector(selector):
+        is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
+        return [selector.min, selector.max] if is_range else selector.min
+    elif _is_categorical_selector(selector):
+        is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
+        _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
+        return default_value
+    # Boolean selectors always have a default value specified so no need to handle them here.

@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 import pandas as pd
 from dash import State, dcc, html
@@ -18,7 +18,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, validate_captured_callable
+from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, _validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +26,10 @@ logger = logging.getLogger(__name__)
 class Table(VizroBaseModel):
     """Wrapper for `dash_table.DataTable` to visualize tables in dashboard.
 
+    Abstract: Usage documentation
+        [How to use tables](../user-guides/table.md)
+
     Args:
-        type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
         title (str): Title of the `Table`. Defaults to `""`.
         header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.
@@ -35,7 +37,7 @@ class Table(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
@@ -60,10 +62,10 @@ class Table(VizroBaseModel):
         description="Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -75,7 +77,7 @@ class Table(VizroBaseModel):
     actions: ActionsType = []
 
     _inner_component_id: str = PrivateAttr()
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -147,7 +149,7 @@ class Table(VizroBaseModel):
         for action in source_table_actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  Potentially this function would move to the filter_interaction action. That will be removed so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
             #  new interaction functionality anyway.
             if not isinstance(action, filter_interaction) or target not in action.targets:

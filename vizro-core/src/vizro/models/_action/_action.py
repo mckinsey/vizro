@@ -4,28 +4,30 @@ import inspect
 import logging
 import re
 import time
-from collections.abc import Collection, Iterable, Mapping
+import warnings
+from collections import ChainMap
+from collections.abc import Callable, Collection, Iterable, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
+from types import SimpleNamespace
+from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
-from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc
+from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
-from pydantic import Field, PrivateAttr, TypeAdapter, field_validator
+from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, make_deprecated_field_warning
 from vizro.models.types import (
     CapturedCallable,
     ControlType,
     FigureWithFilterInteractionType,
-    ModelID,
     OutputsType,
     _IdOrIdProperty,
     _IdProperty,
-    validate_captured_callable,
+    _validate_captured_callable,
 )
 
 logger = logging.getLogger(__name__)
@@ -52,15 +54,20 @@ class _BaseAction(VizroBaseModel):
 
     # These are set in the make_actions_chain validator (same for both Action and _AbstractAction).
     # In the future a user would probably be able to specify something here that would look up a key in
-    # _action_triggers or just a full _IdProperty. The _first_in_chain and _prevent_initial_call_of_guard would remain
-    # private though. These are required for correct functioning of the actions chain guard.
+    # _action_triggers or just a full _IdProperty. The _first_in_chain_trigger and _prevent_initial_call_of_guard would
+    # remain private though. These are required for correct functioning of the actions chain guard.
     _trigger: _IdProperty = PrivateAttr()
-    _first_in_chain: bool = PrivateAttr()
+    _first_in_chain_trigger: _IdProperty = PrivateAttr()
     _prevent_initial_call_of_guard: bool = PrivateAttr()
 
-    # Temporary hack to help with lookups in filter_interaction. Should not be required in future with reworking of
-    # model manager and removal of filter_interaction.
-    _parent_model_id: ModelID = PrivateAttr()
+    # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
+    # the model manager supports `parent_model` access for all Vizro models.
+    _parent_model: VizroBaseModel = PrivateAttr()
+
+    @property
+    def _is_first_in_chain(self) -> bool:
+        """Whether this action is the first in the chain of actions."""
+        return self._first_in_chain_trigger == self._trigger
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -75,7 +82,8 @@ class _BaseAction(VizroBaseModel):
         generally encouraged. In the future it might not be possible.
         """
         dash_components = [dcc.Store(id=f"{self.id}_finished")]
-        if self._first_in_chain:
+        if self._is_first_in_chain:
+            # Only need the guard for the first action in the chain.
             dash_components.append(dcc.Store(id=f"{self.id}_guarded_trigger"))
 
         return dash_components
@@ -120,10 +128,13 @@ class _BaseAction(VizroBaseModel):
         page = model_manager._get_model_page(self)
 
         # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
-        # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
+        # the filter_interaction model itself, hence needing to lookup action._parent_model.
+        # This is also needed to trigger the parent model's `_get_value_from_trigger` method in set_control.
+        # After work on the model_manager we should be able to tidy this to directly get the parent model
+        # from inside the action.
         # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
-            cast(FigureWithFilterInteractionType, model_manager[action._parent_model_id])._filter_interaction_input
+            cast(FigureWithFilterInteractionType, action._parent_model)._filter_interaction_input
             for action in model_manager._get_models(filter_interaction, page)
         ]
 
@@ -162,10 +173,16 @@ class _BaseAction(VizroBaseModel):
                 f"'<model_id>.<argument_name>'."
             )
 
+        # Combine builtin components with real models in model_manager (which take priority).
+        builtin_components = {"vizro_download": SimpleNamespace(_action_outputs={"__default__": "vizro_download.data"})}
+
+        # ChainMap is used to avoid unnecessary copying of model_manager.
+        models = ChainMap(model_manager, builtin_components)  # type: ignore[arg-type]
+
         if "." in dependency:
             component_id, component_property = dependency.split(".")
             try:
-                return getattr(model_manager[component_id], attribute_type)[component_property]
+                return getattr(models[component_id], attribute_type)[component_property]
             except (KeyError, AttributeError):
                 # Captures these cases and returns dependency unchanged, as we want to allow the user to target
                 # Dash components, that are not registered in the model_manager (e.g. theme-selector).
@@ -177,25 +194,26 @@ class _BaseAction(VizroBaseModel):
         component_id, component_property = dependency, "__default__"
 
         try:
-            return getattr(model_manager[component_id], attribute_type)[component_property]
-        except (KeyError, AttributeError) as exc:
-            if isinstance(exc, KeyError):
-                if component_property in str(exc):
-                    raise KeyError(
-                        f"Model with ID `{component_id}` has no `{component_property}` key inside its "
-                        f"`{attribute_type}` property. Please specify the {type} explicitly as "
-                        f"`{component_id}.<property>`."
-                    ) from exc
-                raise KeyError(
-                    f"Model with ID `{component_id}` not found. Please provide a valid component ID."
-                ) from exc
+            # component_properties_lookup is the component's _action_outputs/_action_inputs dictionary.
+            component_properties_lookup = getattr(models[component_id], attribute_type)
+        except KeyError as exc:
+            raise KeyError(f"Model with ID `{component_id}` not found. Provide a valid component ID.") from exc
+        except AttributeError as exc:
             raise AttributeError(
                 f"Model with ID '{component_id}' does not have implicit {type} properties defined. "
-                f"Please specify the {type} explicitly as '{component_id}.<property>'."
+                f"Specify the {type} explicitly as '{component_id}.<property>'."
+            ) from exc
+
+        try:
+            return component_properties_lookup[component_property]
+        except KeyError as exc:
+            raise KeyError(
+                f"Model with ID `{component_id}` has no `{component_property}` key inside its "
+                f"`{attribute_type}` property. Specify the {type} explicitly as `{component_id}.<property>`."
             ) from exc
 
     @property
-    def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
+    def _transformed_inputs(self) -> list[State] | dict[str, State | ControlsStates]:
         """Creates Dash States given the user-specified runtime arguments and built in ones.
 
         Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
@@ -217,7 +235,9 @@ class _BaseAction(VizroBaseModel):
                 "filters": self._get_control_states(control_type=Filter),
                 "parameters": self._get_control_states(control_type=Parameter),
                 "filter_interaction": self._get_filter_interaction_states(),
-            }
+            },
+            "_trigger": State(*self._first_in_chain_trigger.split(".")),
+            "_controls_store": State("vizro_controls_store", "data"),
         }
 
         # Work out which built in arguments are actually required for this function.
@@ -228,7 +248,7 @@ class _BaseAction(VizroBaseModel):
         # Validate that the runtime arguments are in the same form as the legacy Action.inputs field (str).
         # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a
         # vm.Action that does not pass this check will have already been classified as legacy in Action._legacy.
-        # In future when vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
+        # In future when vm.Action.inputs is removed then this will be used for vm.Action instances also.
         TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
@@ -241,7 +261,7 @@ class _BaseAction(VizroBaseModel):
         return builtin_args | runtime_args
 
     @property
-    def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
+    def _transformed_outputs(self) -> list[Output] | dict[str, Output]:
         """Creates Dash Output objects from string specifications in self.outputs.
 
         Converts self._validated_outputs (list of strings or dictionary of strings where each string is in the
@@ -250,7 +270,7 @@ class _BaseAction(VizroBaseModel):
             [Output(component_id='my_graph', component_property='figure', allow_duplicate=True)].
 
         Returns:
-            Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
+            list[Output] | dict[str, Output]: A list of Output objects if self.outputs is a list of strings,
             or a dictionary mapping keys to Output objects if self.outputs is a dictionary of strings.
         """
 
@@ -275,8 +295,8 @@ class _BaseAction(VizroBaseModel):
 
     def _action_callback_function(
         self,
-        inputs: Union[dict[str, Any], list[Any]],
-        outputs: Union[dict[str, Output], list[Output], Output, None],
+        inputs: dict[str, Any] | list[Any],
+        outputs: dict[str, Output] | list[Output] | Output | None,
     ) -> Any:
         logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
         if logger.isEnabledFor(logging.DEBUG):
@@ -326,7 +346,7 @@ class _BaseAction(VizroBaseModel):
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
-        if self._first_in_chain:
+        if self._is_first_in_chain:
             # If the action is the first one in the action chain then we need to insert an additional "guard"
             # callback. This prevents the main action callback (action_callback) firing even in the case that the
             # Input component is created in the layout. This is a workaround for the behavior of
@@ -368,8 +388,13 @@ class _BaseAction(VizroBaseModel):
             trigger = Input(*self._trigger.split("."))
 
         callback_inputs = {"external": external_callback_inputs, "internal": {"trigger": trigger}}
-        callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
-            "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
+        callback_outputs: dict[str, list[Output] | dict[str, Output]] = {
+            "internal": {
+                "action_finished": Output(f"{self.id}_finished", "data"),
+                "action_progress_indicator": Output(
+                    "action-progress-indicator-placeholder", "children", allow_duplicate=True
+                ),
+            },
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
@@ -390,20 +415,32 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
-        def action_callback(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
-            return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
+        def action_callback(external: list[Any] | dict[str, Any], internal: dict[str, Any]) -> dict[str, Any]:
+            external_return = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
+            return_value = {
+                "internal": {
+                    "action_finished": time.time(),
+                    "action_progress_indicator": no_update,
+                }
+            }
             if "external" in callback_outputs:
-                return {"internal": {"action_finished": time.time()}, "external": return_value}
-            return {"internal": {"action_finished": time.time()}}
+                return_value["external"] = external_return
+
+            return return_value
 
 
 class Action(_BaseAction):
-    """Action to be inserted into `actions` of relevant component.
+    """Custom action to be inserted into `actions` of source component.
+
+    Abstract: Usage documentation
+        [How to create custom actions](../user-guides/custom-actions.md)
 
     Args:
-        function (CapturedCallable): Action function.
-        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
-            or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+        function (CapturedCallable): Custom action function.
+        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
+            deprecations.md#action-model-inputs-argument).
         outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
     """
 
@@ -415,34 +452,43 @@ class Action(_BaseAction):
     type: Literal["action"] = "action"
     # export_data and filter_interaction are here just so that legacy vm.Action(function=filter_interaction(...)) and
     # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
-    # actions.function in _set_actions. It's done as a forward ref here to avoid circular imports and resolved with
-    # Dashboard.model_rebuild() later.
-    # TODO-AV2 C 1: Need to think about which parts of validation in CapturedCallable are legacy and how user
-    # now specifies a user defined action in YAML (ok if not possible initially since it's not already) - could just
-    # enable class-based one? Presumably import_path is no longer relevant though.
+    # actions.function in _make_actions_chain. It's done as a forward ref here to avoid circular imports and resolved
+    # with Dashboard.model_rebuild() later.
     function: Annotated[  # type: ignore[misc, assignment]
-        SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
+        SkipJsonSchema[CapturedCallable | export_data | filter_interaction],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
-    # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
-    # TODO-AV2 C 1: Put in deprecation warning.
+    # inputs is deprecated and must only be used when _legacy = True. We don't use deprecated=True here because it only
+    # affects the JSON schema and raises unwanted warnings when looking through model attributes. We use our own
+    # make_deprecated_field_warning validator instead.
     # The type hint str here really means _IdOrIdProperty. We might change it in future for clearer API docs, but the
     # validation to check string format (presence of 0 or 1 . characters) does not need to be included in the
     # annotation. Options for good public API might be:
-    # Union[ModelID, str] - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
-    # Union[ModelID, IdProperty] - means making IdProperty public, which is ok but maybe overkill
-    inputs: list[str] = Field(
-        default=[],
-        description="""List of inputs provided to the action function. Each input can be specified as `<model_id>` or
-        `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
-    )
+    # ModelID | str - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
+    # ModelID | IdProperty - means making IdProperty public, which is ok but maybe overkill
+    inputs: Annotated[
+        list[str],
+        Field(
+            default=[],
+            description="""List of inputs provided to the action function. Each input can be specified as
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
+            deprecations.md#action-model-inputs-argument).""",
+        ),
+        BeforeValidator(
+            make_deprecated_field_warning(
+                "Pass references to runtime inputs directly as arguments of `function`. See "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-inputs-argument."
+            )
+        ),
+    ]
+
     outputs: OutputsType  # type: ignore[misc]
 
     @property
     def _legacy(self) -> bool:
-        # TODO-AV2 C 1: add deprecation warnings
-
         if "inputs" in self.model_fields_set:
+            # Deprecation warning has already been raised by make_deprecated_field_warning.
             legacy = True
         else:
             # If all supplied arguments look like states `<component_id>.<property>` or are model IDs then assume it's
@@ -456,10 +502,18 @@ class Action(_BaseAction):
                 # arg_val isn't a string so it must be treated as a legacy action.
                 legacy = True
 
+            if legacy:
+                warnings.warn(
+                    "Passing a static argument to a custom action is deprecated and will not be possible in "
+                    "Vizro 0.2.0. See https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/static"
+                    "-argument-for-custom-action.",
+                    category=FutureWarning,
+                )
+
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy
 
-    _validate_function = field_validator("function", mode="before")(validate_captured_callable)
+    _validate_function = field_validator("function", mode="before")(_validate_captured_callable)
 
     @property
     def _parameters(self) -> set[str]:

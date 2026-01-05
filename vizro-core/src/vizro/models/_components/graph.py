@@ -1,13 +1,14 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Annotated, Any, Literal, Optional, cast
+from typing import Annotated, Any, Literal, cast
 
 import pandas as pd
+from box import Box, BoxList
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested
@@ -22,16 +23,25 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, ModelID, _IdProperty, validate_captured_callable
+from vizro.models.types import (
+    ActionsType,
+    CapturedCallable,
+    ModelID,
+    MultiValueType,
+    _IdProperty,
+    _validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class Graph(VizroBaseModel):
-    """Wrapper for `dcc.Graph` to visualize charts in dashboard.
+    """Wrapper for `dcc.Graph` to visualize charts.
+
+    Abstract: Usage documentation
+        [How to use graphs](../user-guides/graph.md)
 
     Args:
-        type (Literal["graph"]): Defaults to `"graph"`.
         figure (CapturedCallable): Function that returns a graph. Either use
             [`vizro.plotly.express`](../user-guides/graph.md) or see
             [`CapturedCallable`][vizro.models.types.CapturedCallable].
@@ -41,10 +51,10 @@ class Graph(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -72,10 +82,10 @@ class Graph(VizroBaseModel):
         description="Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -99,7 +109,7 @@ class Graph(VizroBaseModel):
         ]
     ]
 
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -107,7 +117,7 @@ class Graph(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.clickData"}
+        return {"__default__": f"{self.id}_action_trigger.data"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -118,6 +128,69 @@ class Graph(VizroBaseModel):
             **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
+
+    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, JsonValue]]) -> MultiValueType | None:
+        """Extract values from the trigger that represents clicked or selected Plotly graph points.
+
+        Example `trigger` structure: [{"x": 1, customdata: ["value_1"], ...}, {...}, ...], one dict per selected point.
+
+        Priority:
+          1) If `value` matches a column name in self["custom_data"], take it as from customdata[index].
+          2) Otherwise treat `value` as a Box lookup (e.g. "x", "customdata[0]").
+
+        Notes:
+          - Allows camelCase and snake_case value keys interchangeably (camel_killer_box=True).
+          - Enables dot-style (e.g. value="key.subkey") access to nested dict values (box_dots=True).
+          - Automatically creates missing keys as empty boxes instead of raising errors (default_box=True). This is done
+            to avoid exceptions when the `trigger` has a key with a dot in it.
+
+        Returns:
+          - list of values (one per point) or None if no points selected (signals reset).
+
+        Raises:
+          - ValueError if `value` can't be found.
+        """
+        # Returning None signals a reset of control to its original value. No point selected when trigger is None
+        # (unclicking a point) or its 'points' dictionary field is empty (selecting no points).
+        if not trigger:
+            return None
+
+        # "default_box=True" is used to prevent exceptions that occur when a trigger key includes a dot.
+        # The side effect is that `Box({})` will be returned later when `point[lookup]` does not exist.
+        trigger_box = BoxList(trigger, camel_killer_box=True, box_dots=True, default_box=True)
+
+        try:
+            # First try to treat value as a column name. Unfortunately, the customdata returned in the trigger does
+            # not contain column names (it's just a list) so we must look it up in the called function's `custom_data`
+            # to find its numerical index in this list. This only works if a custom_data was provided in the graph
+            # function call.
+            index = self["custom_data"].index(value)
+            lookup = f"customdata[{index}]"
+        except (KeyError, ValueError):
+            # Treat the value as a box lookup string, as https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots
+            # This works for e.g. value="x" or value="customdata[0]".
+            lookup = value
+
+        unique_points = set()
+        try:
+            for point in trigger_box:
+                # Treat Box instance result as it's missing keys due to the `default_box=True`.
+                if isinstance(val := point[lookup], Box):
+                    raise KeyError
+
+                # Certain grouped charts (e.g. pie charts) return custom data as a list of single-item lists
+                # (e.g. [["setosa"], ["setosa"]]). Since all values are identical, flatten to a single value to avoid
+                # returning a nested object.
+                unique_points.add(val[0] if isinstance(val, list) else val)
+        except (KeyError, IndexError, TypeError):
+            raise ValueError(
+                f"Couldn't find value `{value}` in trigger for `set_control` action. "
+                f"This action was added to the Graph model with ID `{self.id}`. "
+                "If you expected the value to come from custom data, add it in the figure's custom_data signature."
+            )
+
+        # The order of selected points is nondeterministic, so sort the values to provide consistent output.
+        return sorted(unique_points)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -189,7 +262,7 @@ class Graph(VizroBaseModel):
         for action in source_graph.actions:
             # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  Potentially this function would move to the filter_interaction action. That will be removed so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
             #  new interaction functionality anyway.
             if not isinstance(action, filter_interaction) or target not in action.targets:
@@ -249,6 +322,16 @@ class Graph(VizroBaseModel):
             prevent_initial_call=True,
         )
 
+        clientside_callback(
+            ClientsideFunction(namespace="graph", function_name="update_graph_action_trigger"),
+            Output(f"{self.id}_action_trigger", "data"),
+            Input(self.id, "clickData"),
+            Input(self.id, "selectedData"),
+            State(self.id, "figure"),
+            State(self.id, "id"),
+            prevent_initial_call=True,
+        )
+
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters
         # etc. are applied. It only appears on the screen for a brief instant, but we need to make sure it's
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
@@ -267,9 +350,7 @@ class Graph(VizroBaseModel):
                 )
             ),
             "config": {
-                "autosizable": True,
                 "frameMargins": 0,
-                "responsive": True,
                 "modeBarButtonsToRemove": ["toImage"],
             },
         }
@@ -280,6 +361,7 @@ class Graph(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
+                    dcc.Store(id=f"{self.id}_action_trigger"),
                     html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,

@@ -12,7 +12,7 @@ from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro import Vizro
-from vizro.models._dashboard import _all_hidden
+from vizro.models._models_utils import _all_hidden
 
 
 class TestDashboardInstantiation:
@@ -49,7 +49,7 @@ class TestDashboardInstantiation:
             vm.Dashboard()
 
     def test_field_invalid_pages_empty_list(self):
-        with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
+        with pytest.raises(ValidationError, match=r"Ensure this value has at least 1 item."):
             vm.Dashboard(pages=[])
 
     def test_field_invalid_pages_input_type(self):
@@ -301,9 +301,10 @@ class TestDashboardBuild:
         dashboard = vm.Dashboard(pages=[page_1, page_2])
         dashboard.pre_build()
 
-        # Test application of template_dashboard_overrides.
+        # Test application of dashboard overwrites
         dashboard_vizro_dark = pio.templates["vizro_dark"]
         dashboard_vizro_dark.layout.update(
+            clickmode="event+select",
             geo_bgcolor="rgba(0, 0, 0, 0)",
             geo_lakecolor="rgba(0, 0, 0, 0)",
             geo_landcolor="rgba(0, 0, 0, 0)",
@@ -319,6 +320,7 @@ class TestDashboardBuild:
         )
         dashboard_vizro_light = pio.templates["vizro_light"]
         dashboard_vizro_light.layout.update(
+            clickmode="event+select",
             geo_bgcolor="rgba(0, 0, 0, 0)",
             geo_lakecolor="rgba(0, 0, 0, 0)",
             geo_landcolor="rgba(0, 0, 0, 0)",
@@ -346,11 +348,28 @@ class TestDashboardBuild:
                                 "vizro_light": dashboard_vizro_light,
                             },
                         ),
+                        dcc.Store(
+                            id="vizro_controls_store",
+                            data={},
+                        ),
                         dash.page_container,
                     ],
-                )
+                ),
             ],
-            theme={"primaryColor": "gray"},
+            theme={
+                "primaryColor": "gray",
+                "defaultRadius": 0,
+                "components": {
+                    "Card": {
+                        "styles": {
+                            "root": {
+                                "backgroundColor": "var(--surfaces-bg-card)",
+                                "boxShadow": "var(--bs-box-shadow)",
+                            }
+                        }
+                    },
+                },
+            },
         )
         assert_component_equal(dashboard.build(), expected_dashboard_container)
 

@@ -8,10 +8,10 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12"
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
   "pandas",
@@ -32,7 +32,7 @@ dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro_ai"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10,<3.14"
 
 [project.optional-dependencies]
 anthropic = ["langchain-anthropic"]  # TODO: decide if we want to use this
@@ -68,6 +68,7 @@ filterwarnings = [
   "ignore:CapturedCallable function is excluded from the schema",
   # Ignore `Layout` FutureWarning until vizro 0.2.0 released:
   "ignore:The `Layout` model has been renamed `Grid`:FutureWarning",
+  "ignore:The `Layout` model has been renamed",
   # Ignore langgraph.warnings.LangGraphDeprecatedSinceV10: Importing Send from langgraph.constants is deprecated.
   # Please use 'from langgraph.types import Send' instead. Deprecated in LangGraph V1.0 to be removed in V2.0.
   "ignore:Importing Send from langgraph.constants is deprecated"

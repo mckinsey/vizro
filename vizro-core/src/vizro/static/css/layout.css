@@ -5,12 +5,6 @@
   width: 100vw;
 }
 
-#settings {
-  align-items: center;
-  display: flex;
-  gap: 0.5rem;
-}
-
 #nav-control-panel {
   align-items: flex-start;
   border-right: 1px solid var(--bs-border-color);
@@ -41,7 +35,7 @@
 }
 
 #page-header {
-  align-items: baseline;
+  align-items: center;
   display: flex;
   flex-direction: row;
   height: 32px;
@@ -72,6 +66,36 @@
   display: flex;
   gap: 8px;
   height: 100%;
+}
+
+#header-controls {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  height: 100%;
+}
+
+#action-progress-indicator {
+  position: static !important;
+}
+
+#action-progress-indicator-placeholder {
+  display: none;
+}
+
+.progress-indicator {
+  animation: spin 1s linear infinite;
+  opacity: 1;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 #page-components {
@@ -113,7 +137,9 @@
   border-right: 1px solid var(--bs-border-color);
   display: flex;
   justify-content: flex-start;
-  width: 60px;
+  max-width: 60px;
+  min-width: 60px;
+  padding-top: 4px;
 }
 
 #dashboard-container div[hidden] {
@@ -132,12 +158,17 @@
   margin: 0;
 }
 
+a:has(#logo),
+a:has(#logo-light),
+a:has(#logo-dark),
 #logo,
 #logo-light,
 #logo-dark {
   height: 100%;
 }
 
+a:has(#logo-light),
+a:has(#logo-dark),
 #logo-dark,
 #logo-light {
   display: none;
@@ -217,7 +248,8 @@ Current logic:
   }
 
   #header,
-  #right-side {
+  #right-side,
+  #vizro-notifications {
     zoom: 80%;
   }
 }
@@ -297,6 +329,31 @@ Current logic:
 
 .btn-circular {
   border-radius: 50%;
-  height: 28px;
-  width: 28px;
+  height: 24px;
+  width: 24px;
+}
+
+.card-wrapper {
+  display: block;
+}
+
+.card-header-outer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+
+.card-body-outer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.card-wrapper-actions > .card {
+    cursor: pointer;
+}
+
+.card-wrapper-actions > .card:hover {
+  border: 1px solid var(--bs-border-color);
 }

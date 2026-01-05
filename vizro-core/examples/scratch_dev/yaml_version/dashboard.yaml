@@ -1,26 +1,12 @@
-# Still requires a .py to add data to the data manager and parse YAML configuration
-# See yaml_version example
+# Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+# More explanation in the docs on `Dashboard` and extensions.
 pages:
   - components:
       - figure:
-          _target_: dash_ag_grid
-          data_frame: gapminder
-          columnSize: responsiveSizeToFit
-        id: ag-grid
-        type: ag_grid
-    controls:
-      - selector:
-          options:
-            [
-              { value: autoSize, label: autoSize },
-              { value: responsiveSizeToFit, label: responsiveSizeToFit },
-              { value: sizeToFit, label: sizeToFit },
-              { value: NONE, label: None },
-            ]
-          value: responsiveSizeToFit
-          title: Select ColumnSize
-          type: radio_items
-        targets:
-          - ag-grid.columnSize
-        type: parameter
-    title: AG Grid with Column Sizing
+          _target_: vizro.plotly.express.bar
+          data_frame: gapminder_2007
+          x: continent
+          y: pop
+          color: continent
+        type: graph
+    title: Simple Bar Chart Example

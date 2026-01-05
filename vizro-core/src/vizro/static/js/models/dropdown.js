@@ -15,6 +15,11 @@ function update_dropdown_select_all(dropdown_value, options) {
     .map((dict) => dict["value"])
     .filter((value) => value !== "__SELECT_ALL");
 
+  // Ensure `dropdown_value` is an array as Dropdown is multi=True.
+  if (!Array.isArray(dropdown_value)) {
+    dropdown_value = [dropdown_value];
+  }
+
   // When "Select All" option is clicked (includes when clicks on checkbox itself and area next to checkbox).
   if (dropdown_value.includes("__SELECT_ALL")) {
     // All the real options are already selected, so untick the checkbox and empty the dropdown value.

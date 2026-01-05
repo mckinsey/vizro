@@ -1,8 +1,8 @@
-from typing import Annotated, Any, Literal, Optional, Union
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import AfterValidator, BeforeValidator, Field, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -12,19 +12,21 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 class Button(VizroBaseModel):
-    """Component provided to `Page` to trigger any defined `action` in `Page`.
+    """Button that can trigger actions or navigate.
+
+    Abstract: Usage documentation
+        [How to use buttons](../user-guides/button.md)
 
     Args:
-        type (Literal["button"]): Defaults to `"button"`.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
         actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
+        description (Tooltip | None): Optional markdown string that adds an icon next to the button text.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -46,10 +48,10 @@ class Button(VizroBaseModel):
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `filled`.",
     )
-    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Optional[Tooltip],
+        Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
         # AfterValidator(warn_description_without_title) is not needed here because either 'text' or 'icon' argument
         # is mandatory.
@@ -74,9 +76,16 @@ class Button(VizroBaseModel):
     ]
 
     @model_validator(mode="after")
-    def validate_text(self):
+    def validate_text_and_icon(self):
         if not self.text and not self.icon:
             raise ValueError("You must provide either the `text` or `icon` argument.")
+
+        return self
+
+    @model_validator(mode="after")
+    def validate_href_and_actions(self):
+        if self.href and self.actions:
+            raise ValueError("Button cannot have both `href` and `actions` defined.")
 
         return self
 
@@ -91,9 +100,19 @@ class Button(VizroBaseModel):
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
+            "__default__": f"{self.id}.n_clicks",
             "text": f"{self.id}.children",
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.n_clicks"}
+
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, trigger: int) -> JsonValue:
+        """Return the given `value` without modification."""
+        return value
 
     @_log_call
     def build(self):
@@ -104,10 +123,11 @@ class Button(VizroBaseModel):
             if self.icon
             else None,
         )
+        text = html.Span(self.text, className="btn-text") if self.text else None
 
         defaults = {
             "id": self.id,
-            "children": html.Span([*icon, self.text, *description], className="btn-text"),
+            "children": [*icon, text, *description],
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
@@ -118,7 +138,7 @@ class Button(VizroBaseModel):
 
         return dbc.Button(**(defaults | self.extra))
 
-    def _build_description(self) -> list[Optional[Union[dbc.Tooltip, html.Span]]]:
+    def _build_description(self) -> list[dbc.Tooltip | html.Span | None]:
         """Conditionally returns the tooltip based on the provided `text` and `icon` arguments.
 
         If text='', the tooltip icon is omitted, and the tooltip text is shown when hovering over the button icon.

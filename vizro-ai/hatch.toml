@@ -1,7 +1,7 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12"]
+python = ["3.10", "3.11", "3.12", "3.13"]
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -86,8 +86,8 @@ pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "mkdocs serve --open"
 
 [envs.lower-bounds]
-extra-dependencies = ["pydantic==2.7.4"]  # required by langchain>=0.3.0
-python = "3.9"
+extra-dependencies = ["pydantic==2.11.9"]  # required by langchain>=0.3.0 and openai>=1.108.0
+python = "3.10"
 
 [version]
 path = "src/vizro_ai/__init__.py"

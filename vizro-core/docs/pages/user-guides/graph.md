@@ -4,9 +4,9 @@ This guide shows you how to use graphs to visualize your data in the dashboard.
 
 The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways. It is based on [`dcc.Graph`](https://dash.plotly.com/dash-core-components/graph).
 
-To add a [`Graph`][vizro.models.Graph] to your page, do the following:
+To add a [`Graph`][vizro.models.Graph] model to your page, do the following:
 
-1. insert the [`Graph`][vizro.models.Graph] model into the `components` argument of the [`Page`][vizro.models.Page] model
+1. insert a [`Graph`][vizro.models.Graph] model into the `components` argument of the [`Page`][vizro.models.Page] model
 1. enter any of the currently available charts of the open source library [`plotly.express`](https://plotly.com/python/plotly-express/) into the `figure` argument
 
 !!! note
@@ -73,6 +73,20 @@ You will need to create a custom chart if you want to customize the Plotly chart
 - by creating a custom `plotly.graph_objects.Figure()` object and manually adding traces with `add_trace`.
 
 For more details, refer to our [user guide on custom chart](custom-charts.md) and the [Plotly documentation on updating figures](https://plotly.com/python/creating-and-updating-figures/).
+
+### Control height and width of the Plotly chart
+
+By default, graphs in a flex-row layout have a width of 450px, regardless of available space.
+
+You can increase the width by providing a `width` argument in the `px` chart, but decreasing it below 450px requires specifying both `width` and `height`.
+
+!!! note "Limitations of fixed dimensions"
+
+    Setting both `width` and `height` makes the chart use fixed, non-responsive dimensions. This can reduce flexibility in responsive layouts, may cause overflow on smaller screens, and can limit Plotly’s ability to automatically adjust the plot area or aspect ratio.
+
+## Interact with other graphs and tables
+
+A graph can act as a source for [interactions with other components](graph-table-actions.md), for example to cross-filter another graph or table when the user clicks on a point.
 
 ## Add additional text
 

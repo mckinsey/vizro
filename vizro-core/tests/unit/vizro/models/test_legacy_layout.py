@@ -9,8 +9,7 @@ from vizro.models._grid import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_u
 from vizro.models.types import LayoutType
 
 pytestmark = [
-    pytest.mark.filterwarnings("ignore:The `Layout` model has been renamed `Grid`:FutureWarning"),
-    pytest.mark.filterwarnings("ignore:`layout` without an explicit `type`:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The `Layout` model has been renamed:FutureWarning"),
 ]
 
 
@@ -18,7 +17,7 @@ class TestLayoutInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
     def test_layout_deprecated(self):
-        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed"):
             vm.Layout(grid=[[0]])
 
     def test_layout_deprecated_yaml(self):
@@ -31,7 +30,7 @@ class TestLayoutInstantiation:
         Layout = vm.Layout  # noqa: F841
 
         with (
-            pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"),
+            pytest.warns(FutureWarning, match="The `Layout` model has been renamed"),
             pytest.warns(FutureWarning, match="`layout` without an explicit `type`"),
         ):
             layout = TypeAdapter(LayoutType).validate_python({"grid": [[0]]})
@@ -146,7 +145,7 @@ class TestMalformedGrid:
         ],
     )
     def test_invalid_int_sequence(self, grid):
-        with pytest.raises(ValidationError, match="Grid must contain consecutive integers starting from 0."):
+        with pytest.raises(ValidationError, match=r"Grid must contain consecutive integers starting from 0."):
             vm.Layout(grid=grid)
 
     @pytest.mark.parametrize(
@@ -157,7 +156,7 @@ class TestMalformedGrid:
         ],
     )
     def test_invalid_list_length(self, grid):
-        with pytest.raises(ValidationError, match="All rows must be of same length."):
+        with pytest.raises(ValidationError, match=r"All rows must be of same length."):
             vm.Layout(grid=grid)
 
 
@@ -207,7 +206,7 @@ class TestSharedLayoutHelpers:
         model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
 
     def test_set_layout_invalid(self, model_with_layout):
-        with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
+        with pytest.raises(ValidationError, match=r"Number of page and grid components need to be the same."):
             model_with_layout(title="Title", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
 
 

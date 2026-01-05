@@ -40,19 +40,57 @@ layout_flex_with_all_params_and_card = vm.Page(
     title=cnst.LAYOUT_FLEX_ALL_PARAMS,
     layout=vm.Flex(direction="row", gap="40px", wrap=True),
     components=[
-        vm.Card(text=generate_lorem_ipsum(300), extra={"style": {"width": "240px"}}),
-        vm.Card(text=generate_lorem_ipsum(300), extra={"style": {"width": "240px"}}),
-        vm.Card(text=generate_lorem_ipsum(300), extra={"style": {"width": "240px"}}),
-        vm.Card(text=generate_lorem_ipsum(100), extra={"style": {"width": "240px"}}),
-        vm.Card(text=generate_lorem_ipsum(500), extra={"style": {"width": "240px"}}),
-        vm.Card(text=generate_lorem_ipsum(400), extra={"style": {"width": "240px"}}),
+        vm.Card(
+            text=generate_lorem_ipsum(100),
+            header=generate_lorem_ipsum(30),
+            footer=generate_lorem_ipsum(30),
+            description=generate_lorem_ipsum(30),
+            extra={"style": {"width": "240px"}},
+        ),
+        vm.Card(
+            text=generate_lorem_ipsum(100),
+            header=generate_lorem_ipsum(30),
+            footer=generate_lorem_ipsum(30),
+            description=generate_lorem_ipsum(30),
+            extra={"style": {"width": "240px"}},
+        ),
+        vm.Card(
+            text=generate_lorem_ipsum(100),
+            header=generate_lorem_ipsum(30),
+            footer=generate_lorem_ipsum(30),
+            description=generate_lorem_ipsum(30),
+            extra={"style": {"width": "240px"}},
+        ),
+        vm.Card(
+            text=generate_lorem_ipsum(50),
+            header=generate_lorem_ipsum(30),
+            footer=generate_lorem_ipsum(30),
+            description=generate_lorem_ipsum(30),
+            extra={"style": {"width": "240px"}},
+        ),
+        vm.Card(
+            text=generate_lorem_ipsum(300),
+            header=generate_lorem_ipsum(30),
+            footer=generate_lorem_ipsum(30),
+            description=generate_lorem_ipsum(30),
+            extra={"style": {"width": "240px"}},
+        ),
+        vm.Card(
+            text=generate_lorem_ipsum(200),
+            header=generate_lorem_ipsum(30),
+            footer=generate_lorem_ipsum(30),
+            description=generate_lorem_ipsum(30),
+            extra={"style": {"width": "240px"}},
+        ),
     ],
 )
 
 layout_flex_with_direction_param_and_graph = vm.Page(
     title=cnst.LAYOUT_FLEX_DIRECTION_AND_GRAPH,
     layout=vm.Flex(direction="row"),
-    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True, width=300)) for i in range(6)],
+    components=[
+        vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True), title="short") for i in range(6)
+    ],
 )
 
 layout_flex_with_gap_param_and_table = vm.Page(

@@ -1,5 +1,6 @@
 import os
 import time
+from collections import Counter
 
 import e2e.vizro.constants as cnst
 from e2e.vizro.paths import (
@@ -134,7 +135,7 @@ def check_selected_categorical_component(
     if checklist:
         select_all = driver.find_element(select_all_path(elem_id=component_id))
         assert_that(select_all.is_selected(), equal_to(select_all_status))
-    values = driver.find_elements(f"div[id='{component_id}'] div")
+    values = driver.find_elements(f"div[id='{component_id}'] div[class^='form-check']")
     assert_that(len(values), equal_to(len(options_value_status)))
     for option in options_value_status:
         driver.wait_for_text_to_equal(
@@ -186,4 +187,16 @@ def check_table_ag_grid_rows_number(driver, table_id, expected_rows_num):
         len(actual_rows_num),
         equal_to(expected_rows_num),
         reason=f"Rows number is '{actual_rows_num}', but expected number is '{expected_rows_num}'",
+    )
+
+
+# Current http_requests_paths contains only "_dash-update-component", but the Counter is used to
+# simplify scaling of this code if we start observing and counting other http requests
+def check_http_requests_count(
+    page, http_requests_paths, requests_number, sleep=cnst.HTTP_TIMEOUT_SHORT, url_path="_dash-update-component"
+):
+    page.wait_for_timeout(sleep)
+    counts = Counter(http_requests_paths)
+    assert_that(
+        counts[url_path], equal_to(requests_number), reason=f"'{url_path}' should be equal to {requests_number}"
     )

@@ -53,10 +53,6 @@ def dropdown_arrow_path(dropdown_id):
     return f"div[id='{dropdown_id}'] .Select-arrow"
 
 
-def button_path():
-    return "button[class='btn btn-primary']"
-
-
 def button_id_path(btn_id):
     return f"button[id='{btn_id}']"
 
@@ -75,3 +71,7 @@ def table_ag_grid_cell_value_path(table_id, row_number, column_number):
 def graph_axis_value_path(graph_id, axis_value_number, axis_value):
     """Path to x or y axis values of the graph according to axis_value_number."""
     return f"div[id='{graph_id}'] g:nth-of-type({axis_value_number}) text[data-unformatted='{axis_value}']"
+
+
+def actions_progress_indicator_path():
+    return 'span[class="material-symbols-outlined progress-indicator"]'

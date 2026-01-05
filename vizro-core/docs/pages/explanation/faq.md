@@ -17,7 +17,9 @@ Here are some answers to frequently asked questions:
 - [How does Vizro differ from Dash or Streamlit?](#how-does-vizro-differ-from-dash-or-streamlit)
 - [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
 - [When would an alternative to Vizro be more suitable?](#when-would-an-alternative-to-vizro-be-more-suitable)
+- [Can I use AI-assistance to build Vizro dashboards?](#can-i-use-ai-assistance-to-build-vizro-dashboards)
 - [What license is Vizro open sourced under?](#what-license-is-vizro-open-sourced-under)
+- [What versions of Python does Vizro support?](#what-versions-of-python-does-vizro-support)
 - [How can I report a bug?](#how-can-i-report-a-bug)
 - [Where can I find the roadmap for Vizro?](#where-can-i-find-the-roadmap-for-vizro)
 - [How can I request a feature?](#how-can-i-request-a-feature)
@@ -37,7 +39,7 @@ This project adheres to [semantic versioning](https://semver.org/spec/v2.0.0.htm
 
 ## Where can I find example dashboards?
 
-For a gallery of examples showing Vizro in action, take a look at [vizro.mckinsey.com](https://vizro.mckinsey.com). The gallery links to the [Vizro HuggingFace collection](https://huggingface.co/vizro), which includes complete code accessed for each example by selecting "Files" in the top right menu.
+For a gallery of examples showing Vizro in action, take a look at the [Vizro HuggingFace collection](https://huggingface.co/vizro), which includes complete code accessed for each example by selecting "Files" in the top right menu.
 
 We also maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).
 
@@ -109,7 +111,7 @@ Any attempt at a high-level explanation must rely on an oversimplification that 
 
 All are great entry points to the world of data apps. If you prefer a top-down scripting style, then Streamlit is a powerful approach. If you prefer full control and customization over callbacks and layouts, then Dash is a powerful approach. If you prefer a configuration approach with in-built best practices, and the potential for customization and scalability through Dash, then Vizro is a powerful approach.
 
-For a more detailed comparison, it may help to read introductory articles about [Dash](https://medium.com/plotly/introducing-dash-5ecf7191b503), [Streamlit](https://blog.streamlit.io/streamlit-101-python-data-app/) and [Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db), to see how each tool serves a distinct purpose.
+For a more detailed comparison, it may help to read introductory articles about [Dash](https://medium.com/plotly/introducing-dash-5ecf7191b503), [Streamlit](https://docs.streamlit.io/get-started/fundamentals) and [Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db), to see how each tool serves a distinct purpose.
 
 ## How does Vizro compare with Python packages and business intelligence (BI) tools?
 
@@ -145,9 +147,21 @@ There are a number of cases where alternatives to Vizro may be more suitable, in
 
 - where Python developers are already very comfortable leveraging other Python packages
 
+## Can I use AI-assistance to build Vizro dashboards?
+
+Yes! You can use [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp), which works alongside a large language model (LLM) to help you build charts and dashboards. The [Vizro-MCP documentation](https://vizro.readthedocs.io/projects/vizro-mcp) includes information such as:
+
+- [How to set up Vizro-MCP to build charts and dashboards with AI](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/first-dashboard-tutorial/).
+- Tutorials for [VS Code](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/vs-code-tutorial/), [Cursor](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/cursor-tutorial/), and [Claude Desktop](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/claude-desktop-tutorial/).
+- How to guides, such as a [guide for using Vizro-MCP prompt templates](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/use-prompt-templates/) and more.
+
 ## What license is Vizro open sourced under?
 
 Vizro is open sourced under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). We have a page of documentation if you want to [contribute to Vizro](./contributing.md).
+
+## What versions of Python does Vizro support?
+
+Vizro can be used with Python 3.10 or later, including Python 3.14.
 
 ## How can I report a bug?
 
