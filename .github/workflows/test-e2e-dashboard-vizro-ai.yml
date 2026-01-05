@@ -95,7 +95,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Download All Artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
 
       - name: Set current date as env variable
         id: date
