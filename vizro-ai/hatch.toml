@@ -30,7 +30,7 @@ dependencies = [
   "langchain-aws",
   "langchain-google-genai",
   "pre-commit",
-  "logfire",
+  "logfire"
 ]
 installer = "uv"
 

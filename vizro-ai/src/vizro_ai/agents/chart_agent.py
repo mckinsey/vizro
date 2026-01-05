@@ -6,12 +6,10 @@ import pandas as pd
 import plotly.express as px
 from dotenv import load_dotenv
 from pydantic_ai import Agent, RunContext
-from pydantic_ai.models.anthropic import AnthropicModel
 from pydantic_ai.models.openai import OpenAIChatModel
-from pydantic_ai.providers.anthropic import AnthropicProvider
 from pydantic_ai.providers.openai import OpenAIProvider
 
-from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
+from vizro_ai.plot._response_models import BaseChartPlan
 
 # from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
 
