@@ -7,7 +7,7 @@ import plotly.express as px
 from dotenv import load_dotenv
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.anthropic import AnthropicModel
-from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.anthropic import AnthropicProvider
 from pydantic_ai.providers.openai import OpenAIProvider
 
@@ -37,14 +37,14 @@ if __name__ == "__main__":
     logfire.instrument_pydantic_ai()
 
     # User can configure model, including usage limits etc
-    # model = OpenAIModel(
-    #     "gpt-4o-mini",
-    #     provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
-    # )
-    model = AnthropicModel(
-        "claude-3-7-sonnet-latest",
-        provider=AnthropicProvider(api_key=os.getenv("ANTHROPIC_API_KEY")),
+    model = OpenAIChatModel(
+        "gpt-4o-mini",
+        provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
     )
+    # model = AnthropicModel(
+    #     "claude-3-7-sonnet-latest",
+    #     provider=AnthropicProvider(api_key=os.getenv("ANTHROPIC_API_KEY")),
+    # )
 
     # Get some data
     df_iris = px.data.iris()
@@ -54,20 +54,22 @@ if __name__ == "__main__":
     # result = chart_agent.run_sync(model=model, user_prompt="Create a bar chart", deps=df_stocks)
     # print(result.output.chart_code)
 
-    # async def main():
-    #     async with chart_agent.run_stream(
-    #         model=model, user_prompt="Create a bar chart of the iris dataset."
-    #     ) as response:
-    #         async for text in response.stream():
-    #             print(text)
+    async def main():
+        async with chart_agent.run_stream(
+            model=model,
+            user_prompt="Create a bar chart of the iris , make the chart code with lots of comments as I am testing something.",
+            deps=df_stocks,
+        ) as response:
+            async for text in response.stream_output():
+                print(text)
 
-    # asyncio.run(main())
+    asyncio.run(main())
 
     #### Test code execution
-    from pydantic_ai import CodeExecutionTool
+    # from pydantic_ai import CodeExecutionTool
 
-    agent = Agent(model=model, builtin_tools=[CodeExecutionTool()])
+    # agent = Agent(model=model, builtin_tools=[CodeExecutionTool()])
 
-    result = agent.run_sync("Calculate the factorial of 15 and show your work")
-    print(result)
+    # result = agent.run_sync("Calculate the factorial of 15 and show your work")
+    # print(result)
     # I am not sure the model actually uses the inbuilt tool...
