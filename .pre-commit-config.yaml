@@ -41,7 +41,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.7
+    rev: v0.14.10
     hooks:
       - id: ruff
         args: [--fix]
@@ -56,7 +56,7 @@ repos:
         additional_dependencies: ["bandit[toml]"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.0
+    rev: v1.19.1
     hooks:
       - id: mypy
         files: ^vizro-core/src/
@@ -78,7 +78,7 @@ repos:
   - repo: https://github.com/executablebooks/mdformat
     # mdformat 1.0.0 is incompatible with mdformat-frontmatter (max version 2.0.8 requires
     # mdformat<0.8.0). No way to skip this automatically in pre-commit autoupdate.
-    rev: 0.7.22
+    rev: 1.0.0
     hooks:
       - id: mdformat
         args:
