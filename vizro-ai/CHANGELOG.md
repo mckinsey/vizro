@@ -11,6 +11,17 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.3.8'></a>
+# 0.3.8 — 2026-01-05
+
+## Removed
+
+- Remove `dashboard_ui` example. ([#1332](https://github.com/mckinsey/vizro/pull/1332))
+
+- Drop support for Python 3.9. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
+
+- Drop support for Python 3.14 until dependencies are updated. ([#1529](https://github.com/mckinsey/vizro/pull/1529))
+
 <a id='changelog-0.3.7'></a>
 
 # 0.3.7 — 2025-06-03
