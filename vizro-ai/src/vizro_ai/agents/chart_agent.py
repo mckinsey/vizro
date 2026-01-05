@@ -1,12 +1,9 @@
-import asyncio
 import os
-from dataclasses import dataclass
 
 import logfire
 import pandas as pd
 import plotly.express as px
 from dotenv import load_dotenv
-from pandas.core.frame import DataFrame
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
