@@ -9,9 +9,14 @@ import vizro.models as vm
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ValidationError
 from pydantic.json_schema import GenerateJsonSchema
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent, ModelRetry, RunContext
 from pydantic_ai.models.anthropic import AnthropicModel
+from pydantic_ai.models.google import GoogleModel
+from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.anthropic import AnthropicProvider
+from pydantic_ai.providers.google import GoogleProvider
+from pydantic_ai.providers.openai import OpenAIProvider
+from vizro import Vizro
 
 # from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
 
@@ -86,11 +91,16 @@ def add_df(ctx: RunContext[list[pd.DataFrame]]) -> str:
 @dashboard_agent.output_validator
 def validate_dashboard_config(output: BaseDashboardPlan) -> BaseDashboardPlan:
     """Validate the dashboard configuration."""
-    try:
-        vm.Dashboard.model_validate(output.dashboard_config)
-    except ValidationError as e:
-        raise ValueError(f"Invalid dashboard configuration: {e}")
+    import copy
 
+    # Make a deep copy to prevent mutation of the original config
+    config_copy = copy.deepcopy(output.dashboard_config)
+
+    try:
+        vm.Dashboard.model_validate(config_copy)
+    except ValidationError as e:
+        raise ModelRetry(f"Invalid dashboard configuration: {e}")
+    # TODO: not sure this works as expected, ie really retrying with the specific error message!
     return output
 
 
@@ -181,14 +191,21 @@ if __name__ == "__main__":
     logfire.instrument_pydantic_ai()
 
     # User can configure model, including usage limits etc
-    # model = OpenAIModel(
+    # model = OpenAIChatModel(
     #     "gpt-5-2025-08-07",
     #     provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
     # )
     model = AnthropicModel(
-        "claude-3-7-sonnet-latest",
+        "claude-3-5-haiku-latest",
         provider=AnthropicProvider(api_key=os.getenv("ANTHROPIC_API_KEY")),
     )
+    # So far can't get google to work...
+    # model = GoogleModel(
+    #     "gemini-2.5-flash-lite",
+    #     provider=GoogleProvider(
+    #         vertexai=True, api_key=os.getenv("GOOGLE_API_KEY"), base_url=os.getenv("GOOGLE_BASE_URL")
+    #     ),
+    # )
 
     # Get some data
     df_iris = px.data.iris()
@@ -196,19 +213,22 @@ if __name__ == "__main__":
 
     # Run the agent - user can choose the data_frame
     result = dashboard_agent.run_sync(
-        model=model, user_prompt="Create a single page vizro dashboard with two charts", deps=[df_iris, df_stocks]
+        model=model,
+        user_prompt="Create a single page vizro dashboard with two charts, and three cards above the two charts. Refer to the data as iris and stocks.",
+        deps=[df_iris, df_stocks],
     )
     print(result.output.dashboard_config)
 
-    # from vizro import Vizro
-    # from vizro.managers import data_manager
+    Vizro._reset()
+    from vizro import Vizro
+    from vizro.managers import data_manager
 
-    # data_manager["Dataframe 1"] = df_iris
-    # data_manager["Dataframe 2"] = df_stocks
+    data_manager["iris"] = df_iris
+    data_manager["stocks"] = df_stocks
 
-    # config =
-    # dashboard = vm.Dashboard.model_validate(config)
-    # Vizro().build(dashboard=dashboard).run()
+    config = result.output.dashboard_config
+    dashboard = vm.Dashboard.model_validate(config)
+    Vizro().build(dashboard=dashboard).run()
 
 """Learnings for the day
 
