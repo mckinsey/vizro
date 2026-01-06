@@ -3,7 +3,7 @@ from typing import Annotated
 
 import logfire
 from dotenv import load_dotenv
-from pydantic import AfterValidator, BaseModel, Field, ValidationError
+from pydantic import AfterValidator, BaseModel, Field
 from pydantic_ai import Agent, ModelRetry
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider

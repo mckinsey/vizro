@@ -11,11 +11,7 @@ from pydantic import BaseModel, Field, ValidationError
 from pydantic.json_schema import GenerateJsonSchema
 from pydantic_ai import Agent, ModelRetry, RunContext
 from pydantic_ai.models.anthropic import AnthropicModel
-from pydantic_ai.models.google import GoogleModel
-from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.anthropic import AnthropicProvider
-from pydantic_ai.providers.google import GoogleProvider
-from pydantic_ai.providers.openai import OpenAIProvider
 from vizro import Vizro
 
 # from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
