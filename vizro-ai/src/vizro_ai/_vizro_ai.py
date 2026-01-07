@@ -1,7 +1,7 @@
 import logging
-from typing import deprecated
 
 import pandas as pd
+from typing_extensions import deprecated
 
 logger = logging.getLogger(__name__)
 
