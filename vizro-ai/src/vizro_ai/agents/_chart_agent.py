@@ -2,7 +2,7 @@ import pandas as pd
 from pandas.core.frame import DataFrame
 from pydantic_ai import Agent, RunContext
 
-from vizro_ai.plot._response_models import BaseChartPlan
+from .response_models import BaseChartPlan
 
 # from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
 

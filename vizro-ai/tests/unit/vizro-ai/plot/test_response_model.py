@@ -3,7 +3,7 @@ import plotly.express as ppx
 import pytest
 import vizro.plotly.express as px
 
-from vizro_ai.plot._response_models import (
+from vizro_ai.agents.response_models._response_models import (
     BaseChartPlan,
     ChartPlan,
     ChartPlanFactory,

@@ -10,6 +10,9 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 # from vizro_ai import VizroAI
 from vizro_ai.agents import chart_agent
+from vizro_ai.agents.response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
+
+load_dotenv()
 
 # vizro_ai = VizroAI()
 # df = px.data.gapminder()
@@ -19,10 +22,10 @@ from vizro_ai.agents import chart_agent
 # fig.get_fig_object(df).show()
 
 
-load_dotenv()
 # # configure logfire
-logfire.configure(token=os.getenv("LOGFIRE_TOKEN"))
-logfire.instrument_pydantic_ai()
+if os.getenv("LOGFIRE_TOKEN"):
+    logfire.configure(token=os.getenv("LOGFIRE_TOKEN"))
+    logfire.instrument_pydantic_ai()
 
 # User can configure model, including usage limits etc
 model = OpenAIChatModel(
@@ -39,7 +42,9 @@ df_iris = px.data.iris()
 df_stocks = px.data.stocks()
 
 # Run the agent - user can choose the data_frame
-result = chart_agent.run_sync(model=model, user_prompt="Create a bar chart", deps=df_iris)
+result = chart_agent.run_sync(
+    model=model, output_type=ChartPlanFactory(data_frame=df_iris), user_prompt="Create a bar chart", deps=df_iris
+)
 print(result.output)
 # fig = result.output.get_fig_object(df_iris, vizro=True)
 # fig.show()
