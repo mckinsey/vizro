@@ -17,19 +17,13 @@ dependencies = [
   "pytest-mock",
   "pytest-rerunfailures",
   "toml",
-  "nbformat>=4.2.0",
-  "pyhamcrest",
   "jupyter",
-  "dash[testing]",
-  "chromedriver-autoinstaller>=0.6.4",
-  # "urllib3<2.0.0",  # helps to resolve bug with urllib3 timeout from vizro-ai integration tests: https://bugs.launchpad.net/python-jenkins/+bug/2018567
-  # Below dependencies useful to test different models
-  "langchain-community",
-  "langchain_mistralai",
-  "langchain-anthropic",
-  "langchain-aws",
-  "langchain-google-genai",
-  "pre-commit"
+  "pre-commit",
+  "python-dotenv>=1.0.0",
+  "openai", # to have an easier time trying out models
+  "anthropic", # to have an easier time trying out models
+  "vizro", # to get the full functionality out of vizro-ai
+  "logfire" # for easy logging and testing, free account suffices
 ]
 installer = "uv"
 

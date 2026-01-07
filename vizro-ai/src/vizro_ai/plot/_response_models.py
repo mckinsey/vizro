@@ -60,7 +60,15 @@ def _exec_code(code: str, namespace: dict) -> dict:
     # TODO: ideally in future we properly handle process and namespace separation, or even Docke execution
     # TODO: this is also important as it can affect unit-tests influencing one another, which is really not good!
     ldict = {}
-    exec(code, namespace, ldict)  # nosec # noqa: S102
+    try:
+        exec(code, namespace, ldict)  # nosec # noqa: S102
+    except ModuleNotFoundError as e:
+        if "vizro" in str(e):
+            raise ModuleNotFoundError(
+                f"""Failed to execute code: <{e}>. Please install `vizro` to use Vizro features,
+you can use the `vizro` optional group — `pip install "vizro-ai[vizro]"`"""
+            )
+        raise ModuleNotFoundError(f"Failed to execute code: <{e}>.")
     namespace.update(ldict)
     return namespace
 
