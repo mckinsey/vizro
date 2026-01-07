@@ -17,7 +17,7 @@ from pydantic import (
     field_validator,
 )
 
-from vizro_ai.plot._utils._safeguard import _safeguard_check
+from vizro_ai.agents._utils._safeguard import _safeguard_check
 
 ADDITIONAL_IMPORTS = [
     "import vizro.plotly.express as px",
