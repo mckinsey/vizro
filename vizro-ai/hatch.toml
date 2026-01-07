@@ -17,6 +17,7 @@ dependencies = [
   "pytest-mock",
   "pytest-rerunfailures",
   "toml",
+  "pyhamcrest",
   "jupyter",
   "pre-commit",
   "python-dotenv>=1.0.0",
@@ -45,8 +46,7 @@ prep-release = [
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 test = "pytest tests {args}"
 # to run dashboard and plot tests please configure base url and api key for the selected model
-test-e2e-dashboard = "pytest -vs tests/e2e/test_dashboard.py --headless {args}"
-test-e2e-plot = "pytest -vs --reruns 1 tests/e2e/test_plot.py --headless {args}"
+test-e2e-plot = "pytest -vs --reruns 1 tests/e2e/test_chart_agent.py {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
   "coverage run -m pytest tests/unit {args}",
