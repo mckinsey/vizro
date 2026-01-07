@@ -20,10 +20,10 @@ dependencies = [
   "jupyter",
   "pre-commit",
   "python-dotenv>=1.0.0",
-  "openai", # to have an easier time trying out models
-  "anthropic", # to have an easier time trying out models
-  "vizro", # to get the full functionality out of vizro-ai
-  "logfire" # for easy logging and testing, free account suffices
+  "openai",  # to have an easier time trying out models
+  "anthropic",  # to have an easier time trying out models
+  "vizro",  # to get the full functionality out of vizro-ai
+  "logfire"  # for easy logging and testing, free account suffices
 ]
 installer = "uv"
 
