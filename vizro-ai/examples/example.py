@@ -10,7 +10,7 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 # from vizro_ai import VizroAI
 from vizro_ai.agents import chart_agent
-from vizro_ai.agents.response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
+from vizro_ai.agents.response_models import ChartPlanFactory
 
 load_dotenv()
 
