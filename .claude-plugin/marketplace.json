@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "vizro-e2e-flow",
-      "source": "./../vizro-e2e-flow"
+      "source": "./vizro-e2e-flow"
     }
   ]
 }

@@ -1,12 +1,12 @@
 # Vizro Flow Plugin
 
-This folder contains a Claude Code plugin for end-to-end dashboard development through a comprehensive 5-stage workflow:
+This folder contains a Claude Code plugin for end-to-end Vizro dashboard development with an enforced 5-phase workflow:
 
-1. **information-architecture**: Define the overall information structure, analytical questions, and KPI organization
-1. **interaction-ux-design**: Design navigation, layouts, filter placement, and create wireframes
-1. **visual-data-design**: Select chart types, establish visual hierarchy, and apply design principles
-1. **development-implementation**: Build the dashboard with Vizro, integrate data, and optimize performance
-1. **test-iterate**: Validate correctness, usability, and performance through systematic testing
+1. **Understand Requirements**: Define analytical questions, KPIs, and page structure
+2. **Design Layout & Interactions**: Plan navigation, layouts, and filter placement
+3. **Select Visualizations**: Choose chart types and establish visual hierarchy
+4. **Implement Dashboard**: Build with Vizro MCP tools or Python
+5. **Test & Verify**: Validate functionality with Playwright MCP
 
 The plugin includes pre-configured MCP servers for a seamless workflow:
 
@@ -26,81 +26,71 @@ Install using the plugin command with the `mckinsey/vizro` repository:
 
 This works well when using Claude Code. It automatically configures both MCP servers (Vizro, Playwright) for the complete workflow.
 
-### Option 2: Upload skills folders
+### Option 2: Upload skill folder
 
-Zip the individual skill folders and upload them directly to Claude apps, e.g. Claude Desktop:
+Zip the skill folder and upload it directly to Claude apps (e.g., Claude Desktop):
 
-- `/vizro-e2e-flow/skills/information-architecture/`
-- `/vizro-e2e-flow/skills/interaction-ux-design/`
-- `/vizro-e2e-flow/skills/visual-data-design/`
-- `/vizro-e2e-flow/skills/development-implementation/`
-- `/vizro-e2e-flow/skills/test-iterate/`
+- `/vizro-e2e-flow/skills/dashboard/`
 
-**Important**: This option only uploads the skill files, not the MCP configuration. You'll need to manually configure the MCP servers by adding the `.mcp.json` configuration to your MCP client. See the [.mcp.json file](https://github.com/mckinsey/vizro/blob/main/vizro-e2e-flow/.mcp.json) in this repository for the exact configuration needed for both MCP servers (Vizro MCP, Playwright MCP).
+**Important**: This option only uploads the skill files, not the MCP configuration. You'll need to manually configure the MCP servers by adding the `.mcp.json` configuration to your MCP client. See the [.mcp.json file](https://github.com/mckinsey/vizro/blob/main/vizro-e2e-flow/.mcp.json) for the configuration needed for both MCP servers (Vizro MCP, Playwright MCP).
 
 ## Usage
 
-The skills can be used individually or as a complete 5-stage workflow:
+The skill enforces a structured 5-phase workflow. Claude will guide you through each phase sequentially:
 
-1. **Stage 1 - Information Architecture**: Use `information-architecture` skill to:
+**Phase 1 - Understand Requirements**:
+- Define analytical questions and business context
+- Inventory data sources and map KPIs
+- Design page structure and information flow
 
-    - Define analytical questions and business context
-    - Inventory data sources and map KPIs
-    - Design page structure and information flow
+**Phase 2 - Design Layout & Interactions**:
+- Design navigation structure and grid layouts
+- Define filter strategy and placement
+- Create wireframes for complex pages
 
-1. **Stage 2 - Interaction/UX Design**: Use `interaction-ux-design` skill to:
+**Phase 3 - Select Visualizations**:
+- Select appropriate chart types for each metric
+- Establish visual hierarchy and color strategy
+- Identify custom chart needs
 
-    - Design navigation structure and layout grids
-    - Define filter strategy and interaction patterns
-    - Create wireframes (ASCII and HTML)
+**Phase 4 - Implement Dashboard**:
+- Use Vizro MCP tools or Python implementation
+- Build, integrate data, and configure layouts
+- Implement custom charts as needed
 
-1. **Stage 3 - Visual/Data Design**: Use `visual-data-design` skill to:
-
-    - Select appropriate chart types
-    - Establish visual hierarchy and color strategy
-    - Create high-fidelity visual mockups
-
-1. **Stage 4 - Development/Implementation**: Use `development-implementation` skill to:
-
-    - Decide if Vizro is appropriate
-    - Set up MCP or Python implementation
-    - Build, test, and optimize the dashboard
-
-1. **Stage 5 - Test & Iterate**: Use `test-iterate` skill to:
-
-    - Validate data accuracy and functionality
-    - Conduct usability and performance testing
-    - Monitor and iterate based on feedback
+**Phase 5 - Test & Verify**:
+- Validate launch and navigation
+- Test filter and control functionality
+- Check for console errors
 
 **Flexible Entry Points:**
 
-- Full development: Start at Stage 1
-- Have wireframes? Start at Stage 3
-- Have designs? Start at Stage 4
-- Iterate existing dashboard? Start at any stage if extra context required for iteration. Otherwise, make direct code edits
+- Full development: Start at Phase 1
+- Have wireframes: Validate Phase 1, proceed from Phase 2
+- Have designs: Validate Phases 1-2, proceed from Phase 3
+- Iterate existing dashboard: Make direct code edits or start from relevant phase
 
-For more information, see individual `SKILL.md` files in each skill folder
+For detailed guidance, see `skills/dashboard/SKILL.md` and reference files in `skills/dashboard/references/`.
 
 ## Requirements
 
-- **Stages 1-3** (Information Architecture, UX Design, Visual Design): No technical dependencies - pure design guidance
-- **Stage 4** (Development/Implementation): Python environment for local Vizro implementation OR public datasets for remote PyCafe previews
-- **Stage 5** (Test & Iterate):
+- **Phases 1-3** (Requirements, Layout, Visualization): No technical dependencies - pure design guidance
+- **Phase 4** (Implementation): Python environment for local Vizro OR public datasets for remote PyCafe previews
+- **Phase 5** (Testing):
     - **Included with plugin**: Playwright MCP for AI-assisted UI testing
     - **Requirements for MCP**: Node.js (for Playwright MCP)
-    - **Alternative**: Testing tools (pytest, selenium) for manual test script writing
 
 ## Compatibility
 
-At the time of writing, this plugin is compatible with Anthropic products. However, as is often the case with genAI products, we expect this to work with other products in the future.
+At the time of writing, this plugin is compatible with products which support Claude Skills (https://agentskills.io/). As is often the case with genAI products, we expect this to work with more products in the future.
 
 ## Support
 
-For issues or questions about these skills, please file an issue in the repository.
+For issues or questions about this skill, please file an issue in the repository.
 
 ## Credits
 
-Some of the skills content is based on the following sources:
+Some of the skill content is based on the following sources:
 
 - FusionCharts: [10 Dashboard Design Mistakes](https://www.fusioncharts.com/blog/10-dashboard-design-mistakes/)
 - Geckoboard: [Dashboard Design and Build a Great Dashboard](https://www.geckoboard.com/uploads/geckoboard-dashboard-design-and-build-a-great-dashboard.pdf)
