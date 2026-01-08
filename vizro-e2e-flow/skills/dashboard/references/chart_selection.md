@@ -37,11 +37,13 @@ What is your primary goal?
 **Use for**: Comparing discrete categories or values
 
 **Best when**:
+
 - 3-15 categories
 - Significant differences between values
 - Category labels are short (vertical) or long (horizontal)
 
 **Avoid when**:
+
 - Categories exceed 15 (consider grouping)
 - Time-series data (use line chart)
 
@@ -60,10 +62,12 @@ px.bar(df, x="value", y="category", orientation="h")
 **Use for**: Comparing subcategories within main categories
 
 **Best when**:
+
 - 2-4 subcategories per group
 - Need to compare across groups
 
 **Avoid when**:
+
 - More than 5 subcategories (too cluttered)
 - Values are very similar (hard to distinguish)
 
@@ -78,15 +82,18 @@ px.bar(df, x="category", y="value", color="subcategory", barmode="group")
 **Use for**: Showing trends over continuous time
 
 **Best when**:
+
 - 12+ data points
 - Continuous time series
 - Comparing 2-5 series
 
 **Avoid when**:
+
 - Comparing distinct categories (use bar)
 - Non-sequential data
 
 **Best practices**:
+
 - Limit to 3-5 lines maximum
 - Use distinct colors
 - Full-width layout recommended for timeseries
@@ -100,10 +107,12 @@ px.line(df, x="date", y="revenue", color="region")
 **Use for**: Showing cumulative trends, volume over time
 
 **Best when**:
+
 - Emphasizing magnitude of change
 - Single series or stacked comparison
 
 **Avoid when**:
+
 - Multiple overlapping series (use stacked area or line)
 
 ```python
@@ -119,10 +128,12 @@ px.area(df, x="date", y="value", color="category")
 **Use for**: Comparing values across discrete time periods
 
 **Best when**:
+
 - Fewer than 12 time periods
 - Showing discrete intervals (Q1, Q2, etc.)
 
 **Avoid when**:
+
 - Continuous time with many points (use line)
 
 ```python
@@ -136,11 +147,13 @@ px.bar(df, x="quarter", y="revenue")
 **Use for**: Showing proportions of a whole
 
 **Best when**:
+
 - 2-5 categories ONLY
 - One category is notably larger (>25%)
 - Showing simple percentage breakdown
 
 **Avoid when**:
+
 - More than 5 categories
 - Similar-sized slices
 - Comparing multiple pies
@@ -160,6 +173,7 @@ px.pie(df, values="amount", names="category", hole=0.4)
 **Use for**: Comparing composition across multiple groups
 
 **Best when**:
+
 - Comparing how parts make up wholes across categories
 - 2-5 segments per bar
 
@@ -168,8 +182,7 @@ px.pie(df, values="amount", names="category", hole=0.4)
 px.bar(df, x="region", y="sales", color="product", barmode="stack")
 
 # Percentages (100% stacked)
-px.bar(df, x="region", y="sales", color="product", barmode="stack",
-       barnorm="percent")
+px.bar(df, x="region", y="sales", color="product", barmode="stack", barnorm="percent")
 ```
 
 ### Stacked Area Chart
@@ -177,6 +190,7 @@ px.bar(df, x="region", y="sales", color="product", barmode="stack",
 **Use for**: Showing composition over time
 
 **Best when**:
+
 - Need to show both trend and composition
 - 2-5 categories
 
@@ -191,12 +205,14 @@ px.area(df, x="date", y="value", color="category")
 **Use for**: Showing frequency distribution of continuous data
 
 **Best when**:
+
 - Large datasets (50+ values)
 - Understanding data spread
 
 **Avoid when**:
+
 - Categorical data
-- Small sample sizes (<30)
+- Small sample sizes (\<30)
 
 ```python
 px.histogram(df, x="value", nbins=20)
@@ -207,10 +223,12 @@ px.histogram(df, x="value", nbins=20)
 **Use for**: Showing statistical distribution (quartiles, outliers)
 
 **Best when**:
+
 - Comparing distributions across groups
 - Technical/analytical audience
 
 **Avoid when**:
+
 - Audience unfamiliar with box plots
 - Need to show actual data points
 
@@ -223,6 +241,7 @@ px.box(df, x="category", y="value")
 **Use for**: Showing distribution shape with density
 
 **Best when**:
+
 - Need more detail than box plot
 - Comparing distribution shapes
 
@@ -237,10 +256,12 @@ px.violin(df, x="category", y="value")
 **Use for**: Showing correlation between two variables
 
 **Best when**:
+
 - Looking for patterns, relationships, clusters
 - Two continuous variables
 
 **Avoid when**:
+
 - No relationship exists
 - Too many overlapping points (use density plot)
 
@@ -253,6 +274,7 @@ px.scatter(df, x="price", y="sales", color="category", size="quantity")
 **Use for**: Scatter with third variable encoded as size
 
 **Use with caution**:
+
 - Size differences hard to judge accurately
 - Overlapping bubbles problematic
 
@@ -267,6 +289,7 @@ px.scatter(df, x="x", y="y", size="z", color="category")
 **Use for**: Showing performance against targets
 
 **Best when**:
+
 - Comparing actual vs target
 - Including context ranges (poor/good/excellent)
 
@@ -280,6 +303,7 @@ px.scatter(df, x="x", y="y", size="z", color="category")
 **Use for**: Showing cumulative effect of sequential values
 
 **Best when**:
+
 - Explaining how starting value becomes final value
 - Financial breakdowns (revenue → costs → profit)
 
@@ -295,6 +319,7 @@ import plotly.graph_objects as go
 **Use for**: Showing intensity across two dimensions
 
 **Best when**:
+
 - Large datasets
 - Pattern recognition
 - Correlation matrices
@@ -308,6 +333,7 @@ px.density_heatmap(df, x="day", y="hour", z="value")
 **Use for**: Hierarchical part-to-whole relationships
 
 **Best when**:
+
 - Nested categories
 - Many categories (where pie fails)
 
@@ -342,39 +368,44 @@ vizro_colors = [
 
 ### Semantic Color Usage
 
-| Meaning | Color | Hex Code |
-|---------|-------|----------|
-| Positive/Success | Green | `#689f38` |
-| Warning/Caution | Orange | `#ff9222` |
-| Error/Negative | Pink/Red | `#ff5267` |
-| Neutral/Info | Blue | `#00b4ff` |
-| Inactive/Disabled | Gray | `gray` |
+| Meaning           | Color    | Hex Code  |
+| ----------------- | -------- | --------- |
+| Positive/Success  | Green    | `#689f38` |
+| Warning/Caution   | Orange   | `#ff9222` |
+| Error/Negative    | Pink/Red | `#ff5267` |
+| Neutral/Info      | Blue     | `#00b4ff` |
+| Inactive/Disabled | Gray     | `gray`    |
 
 ### Color Palette Rules
 
 **3-Color Maximum**:
+
 - Primary: One Vizro core color
 - Secondary: Complementary from core colors
 - Accent: For emphasis
 - Neutral: Gray for backgrounds/borders
 
 **Sequential Scales** (continuous data):
+
 - Light to dark single hue
 - Derive from one Vizro core color
 - 3-7 steps with sufficient contrast
 
 **Diverging Scales** (data with midpoint):
+
 - Two colors meeting at neutral
 - Example: `#ff5267` (negative) ← gray → `#689f38` (positive)
 
 ### Color Accessibility
 
 **Contrast Requirements**:
+
 - Text on background: Minimum 4.5:1 (WCAG AA)
 - Large text (18px+): Minimum 3:1
 - Chart elements: Minimum 3:1 against background
 
 **Color Blindness**:
+
 - Never use color alone to convey information
 - Supplement with patterns, icons, or labels
 - Vizro default palettes are colorblind-safe
@@ -383,28 +414,28 @@ vizro_colors = [
 
 ### Never Use
 
-| Chart Type | Problem | Alternative |
-|------------|---------|-------------|
-| 3D Charts | Distort perception | 2D equivalent |
-| Dual Y-Axis | Confusing, manipulative | Separate charts |
-| Pie (6+ slices) | Unreadable | Bar chart |
-| Radar/Spider | Hard to interpret | Small multiples |
+| Chart Type      | Problem                 | Alternative     |
+| --------------- | ----------------------- | --------------- |
+| 3D Charts       | Distort perception      | 2D equivalent   |
+| Dual Y-Axis     | Confusing, manipulative | Separate charts |
+| Pie (6+ slices) | Unreadable              | Bar chart       |
+| Radar/Spider    | Hard to interpret       | Small multiples |
 
 ### Use with Caution
 
-| Chart Type | Risk | Mitigation |
-|------------|------|------------|
-| Bubble | Size hard to compare | Add size legend |
-| Stacked Area | Overlapping trends | Limit to 4 series |
-| Gauge | Takes space, little info | Use KPI card instead |
+| Chart Type   | Risk                     | Mitigation           |
+| ------------ | ------------------------ | -------------------- |
+| Bubble       | Size hard to compare     | Add size legend      |
+| Stacked Area | Overlapping trends       | Limit to 4 series    |
+| Gauge        | Takes space, little info | Use KPI card instead |
 
 ## Quick Reference Table
 
-| Data Type | Wrong Chart | Right Chart | Why |
-|-----------|-------------|-------------|-----|
-| Time series (many points) | Bar | Line | Lines show continuity |
-| Geographic | Bar | Map | Spatial patterns visible |
-| Small differences | Pie | Bar | Bars more precise |
-| Composition over time | Multiple pies | Stacked area | Shows trend + composition |
-| 10+ categories | Pie | Bar | Readable labels |
-| Correlation | Line | Scatter | Line implies sequence |
+| Data Type                 | Wrong Chart   | Right Chart  | Why                       |
+| ------------------------- | ------------- | ------------ | ------------------------- |
+| Time series (many points) | Bar           | Line         | Lines show continuity     |
+| Geographic                | Bar           | Map          | Spatial patterns visible  |
+| Small differences         | Pie           | Bar          | Bars more precise         |
+| Composition over time     | Multiple pies | Stacked area | Shows trend + composition |
+| 10+ categories            | Pie           | Bar          | Readable labels           |
+| Correlation               | Line          | Scatter      | Line implies sequence     |

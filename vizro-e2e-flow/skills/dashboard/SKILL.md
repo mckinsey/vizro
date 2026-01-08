@@ -30,7 +30,7 @@ Dashboard Development Progress:
 - User has wireframes → Validate Phase 1 decisions, then proceed from Phase 2
 - User asks to "just build it" → Explain value of phases, offer to streamline but not skip
 
-**For simple dashboards** (single page, <5 charts): Phases 1-3 can be abbreviated but not skipped entirely.
+**For simple dashboards** (single page, \<5 charts): Phases 1-3 can be abbreviated but not skipped entirely.
 
 ---
 
@@ -54,9 +54,9 @@ Create the `spec/` directory at the start of the project.
 ### Key Questions to Discuss
 
 1. **Users**: Who uses this dashboard? What decisions do they make?
-2. **Questions**: What are the 3-5 most important questions this answers?
-3. **Data**: What sources are available? What's the refresh frequency?
-4. **Structure**: How many pages? What's the logical grouping?
+1. **Questions**: What are the 3-5 most important questions this answers?
+1. **Data**: What sources are available? What's the refresh frequency?
+1. **Structure**: How many pages? What's the logical grouping?
 
 ### Design Principles
 
@@ -132,11 +132,11 @@ Tier 3: Component-level
 
 **Component Sizing** (height = rows × 140px):
 
-| Component | Columns | Rows | Height |
-|-----------|---------|------|--------|
-| KPI cards | 2-3 | 1 | 140px |
-| Charts | 3-4 | 3+ | 420px+ |
-| Tables | Full width | 4+ | 560px+ |
+| Component | Columns    | Rows | Height |
+| --------- | ---------- | ---- | ------ |
+| KPI cards | 2-3        | 1    | 140px  |
+| Charts    | 3-4        | 3+   | 420px+ |
+| Tables    | Full width | 4+   | 560px+ |
 
 **Layout Rules**:
 
@@ -153,8 +153,7 @@ Is this filter needed across multiple visualizations?
 └─ NO → Container-level filter (above container in main area)
 ```
 
-**Page-level filters**: Always in left collapsible sidebar
-**Container filters**: Above the container they control
+**Page-level filters**: Always in left collapsible sidebar **Container filters**: Above the container they control
 
 ### When to Use Containers
 
@@ -174,7 +173,7 @@ pages:
   - name: [Must match Phase 1]
     layout_type: grid  # or flex
     grid_columns: 8  # or 12
-    grid_pattern: [[0,1], [2,3]]  # Component placement
+    grid_pattern: [[0, 1], [2, 3]] # Component placement
 
     containers:
       - name: [Container Name]
@@ -211,15 +210,15 @@ Before proceeding to Phase 3:
 
 ### Chart Type Quick Reference
 
-| Data Question | Recommended Chart |
-|---------------|-------------------|
-| Compare categories | Bar chart (horizontal for 8+ categories) |
-| Show trend over time | Line chart (12+ points) or Column chart (<12 points) |
-| Part-to-whole (simple) | Pie/donut (2-5 slices ONLY) |
-| Part-to-whole (complex) | Stacked bar chart |
-| Distribution | Histogram or box plot |
-| Correlation | Scatter plot |
-| Performance vs target | Bullet chart |
+| Data Question           | Recommended Chart                                     |
+| ----------------------- | ----------------------------------------------------- |
+| Compare categories      | Bar chart (horizontal for 8+ categories)              |
+| Show trend over time    | Line chart (12+ points) or Column chart (\<12 points) |
+| Part-to-whole (simple)  | Pie/donut (2-5 slices ONLY)                           |
+| Part-to-whole (complex) | Stacked bar chart                                     |
+| Distribution            | Histogram or box plot                                 |
+| Correlation             | Scatter plot                                          |
+| Performance vs target   | Bullet chart                                          |
 
 ### Chart Anti-Patterns (Never Use)
 
@@ -241,15 +240,16 @@ Before proceeding to Phase 3:
 **Vizro Semantic Colors**:
 
 ```python
-success_color = "#689f38"   # Green - positive
-warning_color = "#ff9222"   # Orange - caution
-error_color = "#ff5267"     # Pink/red - negative
-neutral_color = "gray"      # Inactive
+success_color = "#689f38"  # Green - positive
+warning_color = "#ff9222"  # Orange - caution
+error_color = "#ff5267"  # Pink/red - negative
+neutral_color = "gray"  # Inactive
 ```
 
 ### KPI Card Pattern
 
 Use Vizro built-in `kpi_card` and `kpi_card_reference` from `vizro.figures`:
+
 - `kpi_card()`: Simple metric display with formatting and icons
 - `kpi_card_reference()`: Metric with comparison (auto green/red coloring)
 - Use `reverse_color=True` when lower is better (costs, errors)
@@ -280,7 +280,7 @@ color_decisions:
 kpi_cards:
   - name: [KPI Name]
     value_column: [column]
-    format: [e.g., "${value:,.0f}"]
+    format: [e.g., '${value:,.0f}']
     has_reference: true/false
 
 decisions:
@@ -297,8 +297,7 @@ Before proceeding to Phase 4:
 - [ ] Custom chart needs are identified
 - [ ] Color usage is consistent and intentional
 
-→ See `references/chart_selection.md` for detailed decision trees
-→ See `references/common_mistakes.md` for anti-patterns to avoid
+→ See `references/chart_selection.md` for detailed decision trees → See `references/common_mistakes.md` for anti-patterns to avoid
 
 ---
 
@@ -307,6 +306,7 @@ Before proceeding to Phase 4:
 **Goal**: Build the working dashboard **strictly following** Phase 1-3 spec files.
 
 **CRITICAL**: Before writing any code, review the spec files:
+
 - `spec/1_information_architecture.yaml` → Pages, KPIs, data sources
 - `spec/2_interaction_ux.yaml` → Layout, grid, filter placement
 - `spec/3_visual_design.yaml` → Chart types, colors, custom chart needs
@@ -347,6 +347,7 @@ Use: validate_dashboard_config(dashboard_config={...}, data_infos=[...], custom_
 **Dashboard Structure**: `vm.Dashboard` → `vm.Page` → components + controls
 
 **Custom Charts**: Use `@capture("graph")` decorator when you need:
+
 - `update_layout()`, `update_traces()` calls
 - Reference lines or annotations
 - Data manipulation before visualization
@@ -393,8 +394,7 @@ Before proceeding to Phase 5, verify against spec files:
 - [ ] Dashboard runs without errors
 - [ ] Any deviations are documented in `spec/4_implementation.yaml`
 
-→ See `references/implementation_guide.md` for complete examples
-→ See `references/data_management.md` for dynamic data and caching
+→ See `references/implementation_guide.md` for complete examples → See `references/data_management.md` for dynamic data and caching
 
 ---
 
@@ -421,10 +421,10 @@ Look for `mcp__*playwright__*` tools.
 **Basic Testing Flow**:
 
 1. Navigate to dashboard URL
-2. Take snapshot to verify layout
-3. Click through all pages
-4. Test filter interactions
-5. Check console for errors
+1. Take snapshot to verify layout
+1. Click through all pages
+1. Test filter interactions
+1. Check console for errors
 
 ```
 Use: browser_navigate(url="http://localhost:8050")
@@ -468,6 +468,7 @@ dashboard_ready: true/false
 ### User Acceptance
 
 Return to Phase 1 requirements:
+
 - [ ] Dashboard answers the key questions identified
 - [ ] KPIs are visible and accurate
 - [ ] User confirms it meets their needs
@@ -482,14 +483,14 @@ Return to Phase 1 requirements:
 
 ## Reference Files
 
-| File | When to Read |
-|------|--------------|
-| `references/information_architecture.md` | Phase 1: Deep dive on requirements |
-| `references/layout_patterns.md` | Phase 2: Wireframes, grid examples |
-| `references/chart_selection.md` | Phase 3: Chart decision trees |
-| `references/common_mistakes.md` | Phase 3: Anti-patterns to avoid |
-| `references/implementation_guide.md` | Phase 4: Complete Python/MCP examples |
-| `references/data_management.md` | Phase 4: Dynamic data and caching |
+| File                                     | When to Read                          |
+| ---------------------------------------- | ------------------------------------- |
+| `references/information_architecture.md` | Phase 1: Deep dive on requirements    |
+| `references/layout_patterns.md`          | Phase 2: Wireframes, grid examples    |
+| `references/chart_selection.md`          | Phase 3: Chart decision trees         |
+| `references/common_mistakes.md`          | Phase 3: Anti-patterns to avoid       |
+| `references/implementation_guide.md`     | Phase 4: Complete Python/MCP examples |
+| `references/data_management.md`          | Phase 4: Dynamic data and caching     |
 
 ---
 

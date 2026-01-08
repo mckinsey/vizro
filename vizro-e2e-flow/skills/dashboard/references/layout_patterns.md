@@ -53,12 +53,12 @@ vm.Page(
 **8-Column Grid** (recommended for most dashboards):
 
 ```python
-grid=[
-    [0, 0, 1, 1, 2, 2, 3, 3],      # 4 KPI cards (2 cols each)
-    [4, 4, 4, 5, 5, 5, 6, 6],      # 3 charts
+grid = [
+    [0, 0, 1, 1, 2, 2, 3, 3],  # 4 KPI cards (2 cols each)
+    [4, 4, 4, 5, 5, 5, 6, 6],  # 3 charts
     [4, 4, 4, 5, 5, 5, 6, 6],
     [4, 4, 4, 5, 5, 5, 6, 6],
-    [7, 7, 7, 7, 7, 7, 7, 7],      # Full-width table
+    [7, 7, 7, 7, 7, 7, 7, 7],  # Full-width table
     [7, 7, 7, 7, 7, 7, 7, 7],
 ]
 ```
@@ -66,7 +66,7 @@ grid=[
 **12-Column Grid** (for finer control):
 
 ```python
-grid=[
+grid = [
     [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3],  # 4 KPI cards (3 cols each)
     [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],  # 3 charts (4 cols each)
     [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],
@@ -76,12 +76,12 @@ grid=[
 
 ### Component Sizing Guidelines
 
-| Component | Columns | Rows | Min Height |
-|-----------|---------|------|------------|
-| KPI Card | 2-3 | 1 | 140px |
-| Small Chart | 3-4 | 3 | 420px |
-| Large Chart | 4-6 | 4-5 | 560-700px |
-| Table | 8 (full) | 4-6 | 560-840px |
+| Component   | Columns  | Rows | Min Height |
+| ----------- | -------- | ---- | ---------- |
+| KPI Card    | 2-3      | 1    | 140px      |
+| Small Chart | 3-4      | 3    | 420px      |
+| Large Chart | 4-6      | 4-5  | 560-700px  |
+| Table       | 8 (full) | 4-6  | 560-840px  |
 
 ### Row Height Control
 
@@ -100,10 +100,10 @@ vm.Grid(grid=[...], row_min_height="140px")
 Use list multiplication for components spanning multiple rows:
 
 ```python
-grid=[
-    [0, 0, 0, 0, 0, 0],           # Header: 1 row
-    *[[1, 1, 1, 1, 1, 1]] * 3,    # Chart: 3 rows (repeat pattern)
-    *[[2, 2, 2, 3, 3, 3]] * 4,    # Two charts side-by-side: 4 rows
+grid = [
+    [0, 0, 0, 0, 0, 0],  # Header: 1 row
+    *[[1, 1, 1, 1, 1, 1]] * 3,  # Chart: 3 rows (repeat pattern)
+    *[[2, 2, 2, 3, 3, 3]] * 4,  # Two charts side-by-side: 4 rows
 ]
 ```
 
@@ -111,16 +111,16 @@ grid=[
 
 ### Component Labels for Wireframes
 
-| Label | Description |
-|-------|-------------|
-| **KPI** | Metric cards |
-| **CHART** | Visualizations with type: `[Line chart]`, `[Bar chart]`, `[Histogram]` |
-| **TABLE** | Data tables with features: `[sortable]`, `[pagination]` |
-| **CONTAINER** | Groups components, can have own filters/parameters |
-| **TABS** | Multiple views with tab labels |
-| **FILTER** | In left panel (global) or above container (scoped) |
-| **PARAMETER** | In left panel (global) or above container (scoped) |
-| **ACTIONS** | Buttons for export, drill-down, etc. |
+| Label         | Description                                                            |
+| ------------- | ---------------------------------------------------------------------- |
+| **KPI**       | Metric cards                                                           |
+| **CHART**     | Visualizations with type: `[Line chart]`, `[Bar chart]`, `[Histogram]` |
+| **TABLE**     | Data tables with features: `[sortable]`, `[pagination]`                |
+| **CONTAINER** | Groups components, can have own filters/parameters                     |
+| **TABS**      | Multiple views with tab labels                                         |
+| **FILTER**    | In left panel (global) or above container (scoped)                     |
+| **PARAMETER** | In left panel (global) or above container (scoped)                     |
+| **ACTIONS**   | Buttons for export, drill-down, etc.                                   |
 
 ### Interaction Annotations
 
@@ -132,12 +132,12 @@ grid=[
 ### Wireframing Guidelines
 
 1. Use three-column layout: icon nav | left panel | main content
-2. Label sections: KPI, CHART, TABLE, FILTER, PARAMETER, CONTAINER, TABS
-3. Indicate chart types: `[Line chart]`, `[Bar chart]`, `[Histogram]`
-4. Show hierarchy through box sizes (larger = more important)
-5. Global filters/parameters in left panel, container-specific above containers
-6. **Full-width charts**: Use ONLY for timeseries line charts
-7. Most charts should be side-by-side (2-3 per row)
+1. Label sections: KPI, CHART, TABLE, FILTER, PARAMETER, CONTAINER, TABS
+1. Indicate chart types: `[Line chart]`, `[Bar chart]`, `[Histogram]`
+1. Show hierarchy through box sizes (larger = more important)
+1. Global filters/parameters in left panel, container-specific above containers
+1. **Full-width charts**: Use ONLY for timeseries line charts
+1. Most charts should be side-by-side (2-3 per row)
 
 ### Template 1: KPIs + Chart + Table
 
@@ -167,12 +167,12 @@ grid=[
 **Grid Pattern**:
 
 ```python
-grid=[
-    [0, 0, 1, 1, 2, 2, 3, 3],      # KPIs
-    [4, 4, 4, 4, 5, 5, 5, 5],      # Charts
+grid = [
+    [0, 0, 1, 1, 2, 2, 3, 3],  # KPIs
+    [4, 4, 4, 4, 5, 5, 5, 5],  # Charts
     [4, 4, 4, 4, 5, 5, 5, 5],
     [4, 4, 4, 4, 5, 5, 5, 5],
-    [6, 6, 6, 6, 6, 6, 6, 6],      # Table
+    [6, 6, 6, 6, 6, 6, 6, 6],  # Table
     [6, 6, 6, 6, 6, 6, 6, 6],
 ]
 ```
@@ -202,11 +202,11 @@ grid=[
 **Grid Pattern**:
 
 ```python
-grid=[
-    [0, 0, 0, 0, 0, 0, 0, 0],      # Full-width timeseries
+grid = [
+    [0, 0, 0, 0, 0, 0, 0, 0],  # Full-width timeseries
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1],      # Container (full-width)
+    [1, 1, 1, 1, 1, 1, 1, 1],  # Container (full-width)
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1],
 ]
@@ -237,12 +237,12 @@ grid=[
 
 ### When to Use Containers
 
-| Scenario | Use Container? |
-|----------|---------------|
-| Group related charts | Yes |
-| Section needs own filters | Yes |
-| Visual separation needed | Yes |
-| Simple sequential layout | No (use Grid directly) |
+| Scenario                  | Use Container?         |
+| ------------------------- | ---------------------- |
+| Group related charts      | Yes                    |
+| Section needs own filters | Yes                    |
+| Visual separation needed  | Yes                    |
+| Simple sequential layout  | No (use Grid directly) |
 
 ### Container with Scoped Filters
 
@@ -304,13 +304,13 @@ vm.Container(
 
 ### Filter Type Selection
 
-| Options Count | Recommended Selector |
-|---------------|---------------------|
-| 2-3 | Radio buttons |
-| 4-7 | Dropdown |
-| 8+ | Dropdown with search |
-| Range | Slider or RangeSlider |
-| Date | DatePicker |
+| Options Count | Recommended Selector  |
+| ------------- | --------------------- |
+| 2-3           | Radio buttons         |
+| 4-7           | Dropdown              |
+| 8+            | Dropdown with search  |
+| Range         | Slider or RangeSlider |
+| Date          | DatePicker            |
 
 ## Visual Hierarchy Principles
 
@@ -350,32 +350,28 @@ For sparse layouts with few elements, users scan in a Z-shape:
 
 ### 1. Charts Too Small
 
-**Problem**: Charts crammed into 2×2 cells
-**Solution**: Minimum 3 columns × 3 rows for any chart
+**Problem**: Charts crammed into 2×2 cells **Solution**: Minimum 3 columns × 3 rows for any chart
 
 ### 2. Everything Full-Width
 
-**Problem**: Every chart spans all columns
-**Solution**: Only timeseries line charts should be full-width
+**Problem**: Every chart spans all columns **Solution**: Only timeseries line charts should be full-width
 
 ### 3. No Visual Grouping
 
-**Problem**: 10 charts with no clear sections
-**Solution**: Use containers to group related content
+**Problem**: 10 charts with no clear sections **Solution**: Use containers to group related content
 
 ### 4. Filters in Main Area
 
-**Problem**: Filters placed among charts
-**Solution**: Page filters in left sidebar; container filters above container
+**Problem**: Filters placed among charts **Solution**: Page filters in left sidebar; container filters above container
 
 ## Vizro-Specific Constraints
 
 1. **Page Navigation**: Automatic sidebar (built-in, not customizable)
-2. **Page Filters/Parameters**: MUST be in collapsible left sidebar
-3. **Layouts**: Use Grid or Flex only (no absolute positioning)
-4. **Components**: Limited to `Graph`, `AgGrid`, `Card`, `Figure`
-5. **Containers**: Can use `Tabs` for organizing content
-6. **Actions**: Export, filter, and parameter actions only
+1. **Page Filters/Parameters**: MUST be in collapsible left sidebar
+1. **Layouts**: Use Grid or Flex only (no absolute positioning)
+1. **Components**: Limited to `Graph`, `AgGrid`, `Card`, `Figure`
+1. **Containers**: Can use `Tabs` for organizing content
+1. **Actions**: Export, filter, and parameter actions only
 
 **Important**: Do not use emojis in dashboard implementations. Emojis in wireframes are for documentation only.
 

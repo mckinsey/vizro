@@ -3,10 +3,10 @@
 This folder contains a Claude Code plugin for end-to-end Vizro dashboard development with an enforced 5-phase workflow:
 
 1. **Understand Requirements**: Define analytical questions, KPIs, and page structure
-2. **Design Layout & Interactions**: Plan navigation, layouts, and filter placement
-3. **Select Visualizations**: Choose chart types and establish visual hierarchy
-4. **Implement Dashboard**: Build with Vizro MCP tools or Python
-5. **Test & Verify**: Validate functionality with Playwright MCP
+1. **Design Layout & Interactions**: Plan navigation, layouts, and filter placement
+1. **Select Visualizations**: Choose chart types and establish visual hierarchy
+1. **Implement Dashboard**: Build with Vizro MCP tools or Python
+1. **Test & Verify**: Validate functionality with Playwright MCP
 
 The plugin includes pre-configured MCP servers for a seamless workflow:
 
@@ -39,26 +39,31 @@ Zip the skill folder and upload it directly to Claude apps (e.g., Claude Desktop
 The skill enforces a structured 5-phase workflow. Claude will guide you through each phase sequentially:
 
 **Phase 1 - Understand Requirements**:
+
 - Define analytical questions and business context
 - Inventory data sources and map KPIs
 - Design page structure and information flow
 
 **Phase 2 - Design Layout & Interactions**:
+
 - Design navigation structure and grid layouts
 - Define filter strategy and placement
 - Create wireframes for complex pages
 
 **Phase 3 - Select Visualizations**:
+
 - Select appropriate chart types for each metric
 - Establish visual hierarchy and color strategy
 - Identify custom chart needs
 
 **Phase 4 - Implement Dashboard**:
+
 - Use Vizro MCP tools or Python implementation
 - Build, integrate data, and configure layouts
 - Implement custom charts as needed
 
 **Phase 5 - Test & Verify**:
+
 - Validate launch and navigation
 - Test filter and control functionality
 - Check for console errors

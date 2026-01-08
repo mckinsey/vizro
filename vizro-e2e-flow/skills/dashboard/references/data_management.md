@@ -18,10 +18,10 @@ Deep guidance for handling data in Vizro dashboards.
 
 Vizro supports two types of data sources:
 
-| Type | Python Type | Refresh | Use Case |
-|------|-------------|---------|----------|
-| Static | pandas DataFrame | Never | Simple dashboards, fixed data |
-| Dynamic | Function returning DataFrame | On demand | Live data, caching needed |
+| Type    | Python Type                  | Refresh   | Use Case                      |
+| ------- | ---------------------------- | --------- | ----------------------------- |
+| Static  | pandas DataFrame             | Never     | Simple dashboards, fixed data |
+| Dynamic | Function returning DataFrame | On demand | Live data, caching needed     |
 
 ## Choosing Your Approach
 
@@ -55,8 +55,7 @@ dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()
 ```
 
-**Pros**: Simplest approach
-**Cons**: Data never refreshes
+**Pros**: Simplest approach **Cons**: Data never refreshes
 
 ### Named Reference
 
@@ -83,9 +82,11 @@ Dynamic data uses a **function** that returns a DataFrame. This function can be 
 from vizro.managers import data_manager
 import pandas as pd
 
+
 def load_sales():
     """This function runs on each page refresh (without caching)."""
     return pd.read_csv("sales.csv")
+
 
 # Add function (NOT function call!)
 data_manager["sales"] = load_sales  # Correct: function reference
@@ -107,8 +108,10 @@ from vizro.managers import data_manager
 
 data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
+
 def load_sales():
     return pd.read_csv("sales.csv")
+
 
 data_manager["sales"] = load_sales
 ```
@@ -116,20 +119,24 @@ data_manager["sales"] = load_sales
 **Production (File System Cache)**:
 
 ```python
-data_manager.cache = Cache(config={
-    "CACHE_TYPE": "FileSystemCache",
-    "CACHE_DIR": "cache",
-})
+data_manager.cache = Cache(
+    config={
+        "CACHE_TYPE": "FileSystemCache",
+        "CACHE_DIR": "cache",
+    }
+)
 ```
 
 **Production (Redis Cache)**:
 
 ```python
-data_manager.cache = Cache(config={
-    "CACHE_TYPE": "RedisCache",
-    "CACHE_REDIS_HOST": "localhost",
-    "CACHE_REDIS_PORT": 6379,
-})
+data_manager.cache = Cache(
+    config={
+        "CACHE_TYPE": "RedisCache",
+        "CACHE_REDIS_HOST": "localhost",
+        "CACHE_REDIS_PORT": 6379,
+    }
+)
 ```
 
 ### Custom Timeouts
@@ -166,9 +173,11 @@ Add parameters to control what data is loaded:
 from vizro.managers import data_manager
 import pandas as pd
 
+
 def load_data(sample_size=100):
     df = pd.read_csv("large_data.csv")
     return df.sample(sample_size)
+
 
 data_manager["data"] = load_data
 
@@ -199,6 +208,7 @@ page = vm.Page(
 import sqlalchemy as sa
 import pandas as pd
 
+
 def load_from_database():
     engine = sa.create_engine("postgresql://user:pass@host/db")
     query = """
@@ -206,6 +216,7 @@ def load_from_database():
         WHERE date >= CURRENT_DATE - INTERVAL '30 days'
     """
     return pd.read_sql(query, engine)
+
 
 data_manager["sales"] = load_from_database
 data_manager["sales"].timeout = 300  # 5-minute cache
@@ -217,12 +228,11 @@ data_manager["sales"].timeout = 300  # 5-minute cache
 import requests
 import pandas as pd
 
+
 def load_from_api():
-    response = requests.get(
-        "https://api.example.com/metrics",
-        headers={"Authorization": "Bearer token"}
-    )
+    response = requests.get("https://api.example.com/metrics", headers={"Authorization": "Bearer token"})
     return pd.DataFrame(response.json())
+
 
 data_manager["api_data"] = load_from_api
 ```
@@ -233,10 +243,12 @@ data_manager["api_data"] = load_from_api
 from pathlib import Path
 import pandas as pd
 
+
 def load_all_csvs():
     files = Path("data/").glob("*.csv")
     dfs = [pd.read_csv(f) for f in files]
     return pd.concat(dfs, ignore_index=True)
+
 
 data_manager["combined"] = load_all_csvs
 ```
@@ -248,10 +260,17 @@ For better performance, aggregate in the loading function:
 ```python
 def load_summary():
     df = pd.read_csv("transactions.csv")
-    return df.groupby(["region", "product"]).agg({
-        "revenue": "sum",
-        "orders": "count",
-    }).reset_index()
+    return (
+        df.groupby(["region", "product"])
+        .agg(
+            {
+                "revenue": "sum",
+                "orders": "count",
+            }
+        )
+        .reset_index()
+    )
+
 
 data_manager["summary"] = load_summary
 ```
@@ -264,6 +283,7 @@ Filters on dynamic data automatically update their options when data changes:
 def load_data(limit=100):
     df = pd.read_csv("data.csv")
     return df.head(limit)
+
 
 data_manager["data"] = load_data
 
@@ -311,10 +331,10 @@ vm.Filter(
 ### Performance Tips
 
 1. **Enable caching** for slow data loads
-2. **Pre-aggregate** in the loading function
-3. **Use appropriate dtypes** (`category` for strings)
-4. **Filter early** in the loading function
-5. **Use FileSystemCache or Redis** in production
+1. **Pre-aggregate** in the loading function
+1. **Use appropriate dtypes** (`category` for strings)
+1. **Filter early** in the loading function
+1. **Use FileSystemCache or Redis** in production
 
 ### Security
 
@@ -323,6 +343,7 @@ Always validate user input in parametrized loading:
 ```python
 from werkzeug.utils import secure_filename
 
+
 def load_file(filename):
     safe_name = secure_filename(filename)
     return pd.read_csv(f"data/{safe_name}.csv")
@@ -330,14 +351,14 @@ def load_file(filename):
 
 ## Comparison Summary
 
-| Feature | Static | Dynamic |
-|---------|--------|---------|
-| Python type | DataFrame | Function |
-| Supply directly in figure | Yes | No |
-| Reference by name | Yes | Yes |
-| Refresh while running | No | Yes |
-| Caching | N/A | Configurable |
-| Parametrized loading | No | Yes |
+| Feature                   | Static    | Dynamic      |
+| ------------------------- | --------- | ------------ |
+| Python type               | DataFrame | Function     |
+| Supply directly in figure | Yes       | No           |
+| Reference by name         | Yes       | Yes          |
+| Refresh while running     | No        | Yes          |
+| Caching                   | N/A       | Configurable |
+| Parametrized loading      | No        | Yes          |
 
 ## Documentation Links
 

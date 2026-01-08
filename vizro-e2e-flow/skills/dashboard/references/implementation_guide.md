@@ -45,7 +45,9 @@ Add to your MCP settings file:
   "mcpServers": {
     "vizro-mcp": {
       "command": "uvx",
-      "args": ["vizro-mcp"]
+      "args": [
+        "vizro-mcp"
+      ]
     }
   }
 }
@@ -59,14 +61,14 @@ Add to your MCP settings file:
 
 ### MCP Tools Reference
 
-| Tool | Purpose |
-|------|---------|
+| Tool                                | Purpose                                         |
+| ----------------------------------- | ----------------------------------------------- |
 | `get_vizro_chart_or_dashboard_plan` | Get instructions for creating charts/dashboards |
-| `get_model_json_schema` | Get JSON schema for Vizro models |
-| `get_sample_data_info` | Get info about built-in sample datasets |
-| `load_and_analyze_data` | Load and analyze user's data files |
-| `validate_dashboard_config` | Validate config and get Python code |
-| `validate_chart_code` | Validate custom chart code |
+| `get_model_json_schema`             | Get JSON schema for Vizro models                |
+| `get_sample_data_info`              | Get info about built-in sample datasets         |
+| `load_and_analyze_data`             | Load and analyze user's data files              |
+| `validate_dashboard_config`         | Validate config and get Python code             |
+| `validate_chart_code`               | Validate custom chart code                      |
 
 ## MCP Workflow
 
@@ -108,7 +110,10 @@ Create a JSON configuration that matches Phase 1-3 decisions:
         }
       ],
       "controls": [
-        {"type": "filter", "column": "region"}
+        {
+          "type": "filter",
+          "column": "region"
+        }
       ]
     }
   ]
@@ -394,6 +399,7 @@ Use `@capture("graph")` when you need:
 from vizro.models.types import capture
 import vizro.plotly.express as px
 
+
 @capture("graph")
 def bar_with_target(data_frame, x, y, target=None):
     """Bar chart with optional horizontal target line."""
@@ -406,6 +412,7 @@ def bar_with_target(data_frame, x, y, target=None):
             annotation_text=f"Target: {target}",
         )
     return fig
+
 
 # Usage
 vm.Graph(
@@ -424,9 +431,9 @@ vm.Parameter(
 ### Custom Chart Rules
 
 1. Function must accept `data_frame` as first argument
-2. Must return `plotly.graph_objects.Figure`
-3. Chart titles go in `vm.Graph(title=...)`, not in the function
-4. Let Vizro handle colors unless semantic coloring needed
+1. Must return `plotly.graph_objects.Figure`
+1. Chart titles go in `vm.Graph(title=...)`, not in the function
+1. Let Vizro handle colors unless semantic coloring needed
 
 ## Multi-Page Dashboard
 
@@ -461,10 +468,13 @@ Access at `http://localhost:8050`
 # Overview page - KPIs and summary charts
 overview = vm.Page(
     title="Overview",
-    layout=vm.Grid(grid=[
-        [0, 0, 1, 1],           # KPIs: 1 row = 140px
-        *[[2, 2, 2, 2]] * 3,    # Chart: 3 rows = 420px
-    ], row_min_height="140px"),
+    layout=vm.Grid(
+        grid=[
+            [0, 0, 1, 1],  # KPIs: 1 row = 140px
+            *[[2, 2, 2, 2]] * 3,  # Chart: 3 rows = 420px
+        ],
+        row_min_height="140px",
+    ),
     components=[
         vm.Figure(figure=kpi_card(df, "revenue", "Revenue", "${value:,.0f}")),
         vm.Figure(figure=kpi_card(df, "orders", "Orders", "{value:,}")),
@@ -491,26 +501,26 @@ dashboard = vm.Dashboard(pages=[overview, details])
 
 ### Number Formatting Rules
 
-| Type | Format | Example |
-|------|--------|---------|
-| Large numbers | K, M, B notation | 1.2M, 45.3K |
-| Currency | Symbol before, with separators | $1,234,567 |
-| Percentages | 1 decimal place | 45.3% |
-| Decimals | 0-2 places maximum | 12.34 |
-| Thousands | Always use separators | 1,234,567 |
+| Type          | Format                         | Example     |
+| ------------- | ------------------------------ | ----------- |
+| Large numbers | K, M, B notation               | 1.2M, 45.3K |
+| Currency      | Symbol before, with separators | $1,234,567  |
+| Percentages   | 1 decimal place                | 45.3%       |
+| Decimals      | 0-2 places maximum             | 12.34       |
+| Thousands     | Always use separators          | 1,234,567   |
 
 **Format Strings for KPI Cards**:
 
 ```python
 # Currency
-value_format="${value:,.0f}"      # $1,234,567
-value_format="${value:,.2f}"      # $1,234,567.89
+value_format = "${value:,.0f}"  # $1,234,567
+value_format = "${value:,.2f}"  # $1,234,567.89
 
 # Percentages
-value_format="{value:.1f}%"       # 45.3%
+value_format = "{value:.1f}%"  # 45.3%
 
 # Large numbers (manual K/M/B)
-value_format="{value/1000000:.1f}M"  # 1.2M
+value_format = "{value/1000000:.1f}M"  # 1.2M
 ```
 
 ### Label Best Practices
