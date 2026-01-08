@@ -1,6 +1,6 @@
 {
   "name": "vizro-e2e-flow",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "Build Vizro data dashboards from concept to deployment. Enforces a 5-phase workflow covering requirements, layout design, visualization selection, implementation with MCP/Python, and testing.",
   "author": {
     "name": "Vizro Team",
