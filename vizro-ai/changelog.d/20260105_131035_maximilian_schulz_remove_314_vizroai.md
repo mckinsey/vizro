@@ -10,13 +10,18 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+
 ### Removed
 
-- Drop support for Python 3.9. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
+- Drop support for Python 3.14 until dependencies are updated. ([#1529](https://github.com/mckinsey/vizro/pull/1529))
 
+
+<!--
 ### Added
 
-- Add support for Python 3.14. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+
+-->
 <!--
 ### Changed
 

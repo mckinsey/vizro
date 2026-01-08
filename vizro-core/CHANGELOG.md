@@ -11,6 +11,44 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.50'></a>
+
+# 0.1.50 — 2025-12-18
+
+## Highlights ✨
+
+- Add `show_notification` and `update_notification` actions to display notification messages to users. Notifications can be customized with different variants, icons, and timing, and can be triggered by, for example, buttons, graphs, or cards. See the [notification actions user guide](../user-guides/notification-actions.md) for details. ([#1496](https://github.com/mckinsey/vizro/pull/1496))
+
+- Multi-select controls can now be updated by the `set_control` action. For example, you can set controls by using lasso select on a graph or selecting multiple rows on a table. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+
+## Changed
+
+- Set `clickmode="event+select"` as the default for all `plotly.express` charts, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+
+<a id='changelog-0.1.49'></a>
+
+# 0.1.49 — 2025-12-05
+
+## Removed
+
+- Drop support for Python 3.9. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
+
+## Added
+
+- Add support for Python 3.14. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
+
+## Changed
+
+- Add support for `kedro>=1.0.0` and bump optional dependency lower bound to `kedro>=0.19.9`. ([#1493](https://github.com/mckinsey/vizro/pull/1493))
+
+- `project_path` is no longer a required argument for Kedro integration functions `catalog_from_project` and `pipelines_from_project` when your Vizro app is inside the Kedro project. ([#1493](https://github.com/mckinsey/vizro/pull/1493))
+
+## Fixed
+
+- Set minimum width for graphs inside a flex layout. ([#1495](https://github.com/mckinsey/vizro/pull/1495))
+
+- Fix regression that prevented custom controls being nested arbitrarily deep inside `Page.controls` and `Container.controls`. ([#1508](https://github.com/mckinsey/vizro/pull/1508))
+
 <a id='changelog-0.1.48'></a>
 
 # 0.1.48 — 2025-11-14

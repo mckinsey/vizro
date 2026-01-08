@@ -248,7 +248,8 @@ Current logic:
   }
 
   #header,
-  #right-side {
+  #right-side,
+  #vizro-notifications {
     zoom: 80%;
   }
 }

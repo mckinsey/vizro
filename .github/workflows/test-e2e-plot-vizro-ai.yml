@@ -44,9 +44,6 @@ jobs:
           - python-version: "3.13"
             hatch-env: all.py3.13
             os: ubuntu-latest
-          - python-version: "3.14"
-            hatch-env: all.py3.14
-            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: lower-bounds
             os: ubuntu-latest
@@ -66,7 +63,7 @@ jobs:
               label: Windows
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Passed fork step
         run: echo "Success!"
@@ -96,9 +93,6 @@ jobs:
           - python-version: "3.13"
             hatch-env: all.py3.13
             os: ubuntu-latest
-          - python-version: "3.14"
-            hatch-env: all.py3.14
-            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: lower-bounds
             os: ubuntu-latest
@@ -118,7 +112,7 @@ jobs:
               label: Windows
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python ${{ matrix.config.python-version }}
         uses: actions/setup-python@v6

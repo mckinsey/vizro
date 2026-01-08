@@ -5,8 +5,10 @@ import logging
 import re
 import time
 import warnings
+from collections import ChainMap
 from collections.abc import Callable, Collection, Iterable, Mapping
 from pprint import pformat
+from types import SimpleNamespace
 from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
@@ -171,10 +173,16 @@ class _BaseAction(VizroBaseModel):
                 f"'<model_id>.<argument_name>'."
             )
 
+        # Combine builtin components with real models in model_manager (which take priority).
+        builtin_components = {"vizro_download": SimpleNamespace(_action_outputs={"__default__": "vizro_download.data"})}
+
+        # ChainMap is used to avoid unnecessary copying of model_manager.
+        models = ChainMap(model_manager, builtin_components)  # type: ignore[arg-type]
+
         if "." in dependency:
             component_id, component_property = dependency.split(".")
             try:
-                return getattr(model_manager[component_id], attribute_type)[component_property]
+                return getattr(models[component_id], attribute_type)[component_property]
             except (KeyError, AttributeError):
                 # Captures these cases and returns dependency unchanged, as we want to allow the user to target
                 # Dash components, that are not registered in the model_manager (e.g. theme-selector).
@@ -186,21 +194,22 @@ class _BaseAction(VizroBaseModel):
         component_id, component_property = dependency, "__default__"
 
         try:
-            return getattr(model_manager[component_id], attribute_type)[component_property]
-        except (KeyError, AttributeError) as exc:
-            if isinstance(exc, KeyError):
-                if component_property in str(exc):
-                    raise KeyError(
-                        f"Model with ID `{component_id}` has no `{component_property}` key inside its "
-                        f"`{attribute_type}` property. Please specify the {type} explicitly as "
-                        f"`{component_id}.<property>`."
-                    ) from exc
-                raise KeyError(
-                    f"Model with ID `{component_id}` not found. Please provide a valid component ID."
-                ) from exc
+            # component_properties_lookup is the component's _action_outputs/_action_inputs dictionary.
+            component_properties_lookup = getattr(models[component_id], attribute_type)
+        except KeyError as exc:
+            raise KeyError(f"Model with ID `{component_id}` not found. Provide a valid component ID.") from exc
+        except AttributeError as exc:
             raise AttributeError(
                 f"Model with ID '{component_id}' does not have implicit {type} properties defined. "
-                f"Please specify the {type} explicitly as '{component_id}.<property>'."
+                f"Specify the {type} explicitly as '{component_id}.<property>'."
+            ) from exc
+
+        try:
+            return component_properties_lookup[component_property]
+        except KeyError as exc:
+            raise KeyError(
+                f"Model with ID `{component_id}` has no `{component_property}` key inside its "
+                f"`{attribute_type}` property. Specify the {type} explicitly as `{component_id}.<property>`."
             ) from exc
 
     @property
@@ -228,6 +237,7 @@ class _BaseAction(VizroBaseModel):
                 "filter_interaction": self._get_filter_interaction_states(),
             },
             "_trigger": State(*self._first_in_chain_trigger.split(".")),
+            "_controls_store": State("vizro_controls_store", "data"),
         }
 
         # Work out which built in arguments are actually required for this function.
