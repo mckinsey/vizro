@@ -251,7 +251,13 @@ cards = vm.Page(
                 This word will be _**bold and italic**_
             """
         ),
+        vm.Card(
+            text="Commodi repudiandae consequuntur voluptatum.",
+            header="Card header",
+            footer="Card footer",
+        ),
     ],
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5]]),
 )
 
 figure = vm.Page(
@@ -873,6 +879,36 @@ flex_layout = vm.Page(
 
 
 # ACTIONS ---------------------------------------------------------------------
+
+selected_countries = [
+    "Singapore",
+    "Malaysia",
+    "Thailand",
+    "Indonesia",
+    "Philippines",
+    "Vietnam",
+    "Cambodia",
+    "Myanmar",
+]
+
+gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
+
+
+@capture("graph")
+def bump_chart_with_highlight(data_frame, highlight_country=None):
+    """Custom bump chart based on px."""
+    rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
+
+    fig = px.line(data_frame, x="year", y=rank, color="country", markers=True)
+    fig.update_yaxes(title="Rank (1 = Highest lifeExp)", autorange="reversed", dtick=1)
+    fig.update_traces(opacity=0.3, line_width=2)
+
+    if highlight_country is not None:
+        fig.update_traces(selector={"name": highlight_country}, opacity=1, line_width=3)
+
+    return fig
+
+
 export_data_action = vm.Page(
     title="Export data",
     components=[
@@ -881,6 +917,65 @@ export_data_action = vm.Page(
         vm.Button(text="Export data", actions=va.export_data()),
     ],
     controls=[vm.Filter(column="species")],
+)
+
+set_controls_action_cross_filter = vm.Page(
+    title="Set controls - cross filter",
+    components=[
+        vm.Graph(
+            figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species", custom_data="species"),
+            actions=va.set_control(value="species", control="species-filter"),
+        ),
+        vm.Graph(figure=px.histogram(iris, x="petal_length", color="species")),
+    ],
+    controls=[vm.Filter(column="species", id="species-filter", visible=False)],
+)
+
+set_controls_action_cross_parameter = vm.Page(
+    title="Set controls - cross parameter",
+    components=[
+        vm.Graph(
+            figure=px.bar(
+                gapminder.query("year == 2007"),
+                y="country",
+                x="lifeExp",
+                labels={"lifeExp": "lifeExp in 2007"},
+            ),
+            header="💡 Click any bar to highlight that country in the bump chart",
+            actions=va.set_control(control="highlight_parameter", value="y"),
+        ),
+        vm.Graph(
+            id="bump_chart",
+            figure=bump_chart_with_highlight(data_frame=gapminder),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            id="highlight_parameter",
+            targets=["bump_chart.highlight_country"],
+            selector=vm.RadioItems(options=["NONE", *gapminder["country"]]),
+            visible=False,
+        ),
+    ],
+)
+
+notifications = vm.Page(
+    title="Notifications",
+    layout=vm.Flex(),
+    components=[
+        vm.Graph(figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species", custom_data="species")),
+        vm.Button(
+            text="Export data",
+            actions=[
+                va.export_data(),
+                va.show_notification(
+                    text="Data exported successfully!",
+                    variant="success",
+                    icon="download",
+                ),
+            ],
+        ),
+    ],
 )
 
 
@@ -1095,7 +1190,7 @@ kpi_indicators = vm.Page(
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip]
 controls = [filters, parameters, selectors, controls_in_containers]
-actions = [export_data_action]
+actions = [export_data_action, set_controls_action_cross_filter, set_controls_action_cross_parameter, notifications]
 layout = [grid_layout, flex_layout]
 extensions = [custom_charts, custom_tables, custom_figures, custom_components]
 
@@ -1122,7 +1217,12 @@ dashboard = vm.Dashboard(
                         ],
                         "Controls": ["Filters", "Parameters", "Selectors", "Controls in containers"],
                         "Layout": ["Grid layout", "flex-layout"],
-                        "Actions": ["Export data"],
+                        "Actions": [
+                            "Export data",
+                            "Set controls - cross filter",
+                            "Set controls - cross parameter",
+                            "Notifications",
+                        ],
                         "Extensions": [
                             "Custom Charts",
                             "Custom Tables",
