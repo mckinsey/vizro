@@ -97,7 +97,6 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
 }
 
 
-
 def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
     """Get all available models in the vizro.models namespace.
 
