@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import warnings
-from collections.abc import Generator
-from typing import TYPE_CHECKING, Any
+from collections.abc import Generator, Iterable
+from typing import TYPE_CHECKING, Any, cast
 
 from typing_extensions import TypeIs
 
@@ -112,3 +112,16 @@ def get_selector_default_value(selector: SelectorType) -> Any:
         _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
         return default_value
     # Boolean selectors always have a default value specified so no need to handle them here.
+
+
+def get_selector_parent_control(selector: SelectorType) -> ControlType:
+    """Get the parent control of a selector."""
+    from vizro.models import Filter, Parameter
+
+    for candidate_parent in cast(
+        Iterable[ControlType], [*model_manager._get_models(Parameter), *model_manager._get_models(Filter)]
+    ):
+        if selector is candidate_parent.selector:
+            return candidate_parent
+
+    raise ValueError(f"Selector {selector.id} does not have a parent control.")

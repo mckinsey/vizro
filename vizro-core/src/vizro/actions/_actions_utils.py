@@ -61,21 +61,19 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
-    from vizro.actions._filter_action import _filter
+    from vizro.models._controls._controls_utils import get_selector_parent_control
 
     for ctd in ctds_filter:
+        selector_id = ctd["id"]
+        filter_model = get_selector_parent_control(selector=model_manager[selector_id])
+        if target not in filter_model.targets:
+            continue
+
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
-        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
 
-        for action in selector_actions:
-            # TODO-AV2 A 1: simplify this as in
-            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            if not isinstance(action, _filter) or target not in action.targets:
-                continue
-
-            mask = action.filter_function(data_frame[action.column], selector_value)
-            data_frame = data_frame[mask]
+        mask = filter_model._filter_function(data_frame[filter_model.column], selector_value)
+        data_frame = data_frame[mask]
 
     return data_frame
 
@@ -175,7 +173,7 @@ def _get_parametrized_config(
     Returns: keyword-argument dictionary.
 
     """
-    from vizro.actions._parameter_action import _parameter
+    from vizro.models._controls._controls_utils import get_selector_parent_control
 
     if data_frame:
         # This entry is inserted (but will always be empty) even for static data so that the load/_multi_load calls
@@ -189,23 +187,14 @@ def _get_parametrized_config(
         del config["data_frame"]
 
     for ctd in ctds_parameter:
-        # TODO: needs to be refactored so that it is independent of implementation details
-        parameter_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
-        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
+        selector_id = ctd["id"]
+        parent_parameter = get_selector_parent_control(selector=model_manager[selector_id])
 
-        for action in selector_actions:
-            # TODO-AV2 A 1: simplify this as in
-            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be removed so
-            #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
-            #  new interaction functionality anyway.
-            if not isinstance(action, _parameter):
-                continue
-
-            for dot_separated_string in _get_target_dot_separated_strings(action.targets, target, data_frame):
-                config = _update_nested_figure_properties(
-                    figure_config=config, dot_separated_string=dot_separated_string, value=parameter_value
-                )
+        selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
+        for dot_separated_string in _get_target_dot_separated_strings(parent_parameter.targets, target, data_frame):
+            config = _update_nested_figure_properties(
+                figure_config=config, dot_separated_string=dot_separated_string, value=selector_value
+            )
 
     return config
 
