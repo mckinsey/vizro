@@ -18,7 +18,7 @@ POSSIBLE_CHART = ["px.bar", "go.Bar"]
 
 model = OpenAIChatModel(
     "gpt-4o-mini",
-    provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
+    provider=OpenAIProvider(base_url=os.getenv("OPENAI_API_BASE"), api_key=os.getenv("OPENAI_API_KEY")),
 )
 
 
