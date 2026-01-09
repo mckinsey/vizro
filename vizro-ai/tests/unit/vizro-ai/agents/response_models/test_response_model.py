@@ -173,7 +173,7 @@ def custom_chart(data_frame):
     return "foo"
         """,
                 TypeError,
-                "Expected chart code to return a plotly go.Figure object, but got",
+                "Expected chart code to return a plotly `go.Figure` object, but got",
             ),
         ],
     )
