@@ -245,7 +245,7 @@ For more details on using the response model, see the [advanced options guide](.
 
 Congratulations! You have created your first charts with Vizro-AI and you are ready to explore further.
 
-A good place to start would be to review the different how-to guides to learn [the different ways to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create advanced charts](../user-guides/create-advanced-charts.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
+A good place to start would be to review the different how-to guides to learn [the different ways to run Vizro-AI](../user-guides/run-vizro-ai.md), [advanced options](../user-guides/advanced-options.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
 
 !!! tip "Want to create dashboards?"
 

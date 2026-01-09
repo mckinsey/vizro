@@ -1,11 +1,8 @@
 # How to run Vizro-AI
 
-This guide offers insights into different ways of running the `chart_agent` to generate Plotly charts. We cover how to use:
+This guide offers insights into different ways of running the `chart_agent` to generate Plotly charts.
 
-- [synchronous execution](#synchronous-execution)
-- [asynchronous execution](#asynchronous-execution)
-- [streaming responses](#streaming-responses)
-- [integration into an application](#application-integration)
+
 
 ## Synchronous execution
 
