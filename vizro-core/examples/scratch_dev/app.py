@@ -1,170 +1,72 @@
-import vizro.plotly.express as px
+"""This is a test app to test the dashboard layout."""
+
 import vizro.models as vm
-import vizro.actions as va
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
-from time import sleep
+from vizro.managers import data_manager
+
 
 df = px.data.iris()
+data_manager["dynamic_iris"] = lambda number_of_points=10: df.head(number_of_points)
 
-page_1 = vm.Page(
-    title="Test dmc notification system",
-    layout=vm.Flex(),
+
+SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+
+
+page_0_1 = vm.Page(
+    id="page_0_1",
+    title="Smoke test Page",
     components=[
-        vm.Button(
-            icon="check_circle",
-            text="Success Notification",
-            actions=[
-                va.show_notification(
-                    text="Operation completed successfully!",
-                    variant="success",
-                )
-            ],
+        vm.Graph(
+            id="p01_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
         ),
-        vm.Button(
-            icon="warning",
-            text="Warning Notification",
-            actions=[
-                va.show_notification(
-                    text="Please review this warning message.",
-                    variant="warning",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Error Notification",
-            icon="error",
-            actions=[
-                va.show_notification(
-                    text="An error occurred during the operation.",
-                    variant="error",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Info Notification",
-            icon="info",
-            actions=[
-                va.show_notification(
-                    text="Here's some useful information for you.",
-                    variant="info",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Loading Notification",
-            icon="hourglass_empty",
-            actions=[
-                va.show_notification(
-                    text="Processing your request...",
-                    variant="progress",
-                )
-            ],
-        ),
-        vm.Button(
-            text="No Auto-Close",
-            icon="close",
-            actions=[
-                va.show_notification(
-                    text="This notification will stay until you close it manually.",
-                    title="Persistent",
-                    variant="info",
-                    auto_close=False,
-                )
-            ],
-        ),
-        vm.Button(
-            text="Custom Icon",
-            icon="celebration",
-            actions=[
-                va.show_notification(
-                    text="Check out this new feature!",
-                    title="New Feature",
-                    variant="success",
-                    icon="celebration",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Markdown with Link",
-            icon="link",
-            actions=[
-                va.show_notification(
-                    text="Visit the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) for more details!",
-                    title="",
-                    auto_close=False,
-                )
-            ],
-        ),
-        vm.Button(
-            text="1. Show Loading",
-            icon="hourglass_empty",
-            actions=[
-                va.show_notification(
-                    id="update-demo",
-                    text="Processing your request...",
-                    title="Processing",
-                    variant="progress",
-                )
-            ],
-        ),
-        vm.Button(
-            text="2. Update to Complete",
-            icon="done",
-            actions=[
-                va.update_notification(
-                    notification="update-demo",
-                    text="Your request has been processed successfully!",
-                    title="Complete",
-                    variant="success",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Show Navigation Notification",
-            icon="arrow_forward",
-            actions=[
-                va.show_notification(
-                    text="Click [here](/page-two) to go to **Page 2** and explore more features!",
-                    title="Ready to explore?",
-                    variant="info",
-                    auto_close=False,
-                )
-            ],
+        vm.Text(id="p01_text", text="Placeholder"),
+    ],
+    controls=[
+        vm.Filter(id="p01_filter", column="species", selector=vm.RadioItems(), show_in_url=True),
+        vm.Parameter(
+            id="p01_parameter",
+            targets=["p01_graph.data_frame.number_of_points"],
+            selector=vm.Slider(min=10, max=150, step=10, value=10),
+            show_in_url=True,
         ),
     ],
 )
 
 
-page_two = vm.Page(
-    id="page-two",
-    title="Page Two",
-    controls=[vm.Filter(column="species")],
+# ====== **FIX** vm.Filter vs _filter_action ======
+
+page_1_1 = vm.Page(
+    id="page_1_1",
+    title="Apply controls on button click",
     components=[
-        vm.Graph(figure=px.histogram(df, x="sepal_length")),
-        vm.Button(
-            icon="file_download",
-            text="Export data notification",
-            actions=[
-                va.show_notification(
-                    id="export-notif",
-                    text="Export data starting...",
-                    title="",
-                    variant="progress",
-                ),
-                vm.Action(function=capture("action")(lambda: sleep(2.5))()),
-                va.export_data(),
-                va.update_notification(
-                    notification="export-notif",
-                    text="Export data completed successfully!",
-                    variant="success",
-                ),
-            ],
+        vm.Graph(
+            id="p11_graph",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
         ),
+        vm.Text(id="p11_text", text="Placeholder"),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            targets=["p11_graph"],
+            selector=vm.RadioItems(
+                title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                actions=vm.Action(function=capture("action")(lambda _trigger: _trigger)(), outputs="p11_text"),
+            ),
+        ),
+        vm.Parameter(targets=["p11_graph.x"], selector=vm.RadioItems(options=["sepal_width", "sepal_length"])),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_two], title="Test Dashboard")
+
+dashboard = vm.Dashboard(pages=[page_0_1, page_1_1])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
