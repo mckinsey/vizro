@@ -319,7 +319,6 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-
 ### Dependency injection
 
 The `deps` parameter allows you to inject any dependency (in this case, the DataFrame). This enables flexible data handling and can be extended for more complex use cases. See the [Pydantic AI documentation](https://ai.pydantic.dev/agents/) for more details.
@@ -330,7 +329,7 @@ You can extend the `chart_agent` with custom instructions and tools, just like a
 
 ### Web Chat UI
 
-You can create an interactive web chat interface for `chart_agent` using Pydantic AI's built-in Web Chat UI. Install the extra: 
+You can create an interactive web chat interface for `chart_agent` using Pydantic AI's built-in Web Chat UI. Install the extra:
 
 ```bash
 pip install 'pydantic-ai-slim[web]'

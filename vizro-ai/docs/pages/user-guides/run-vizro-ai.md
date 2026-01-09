@@ -14,14 +14,14 @@ The simplest way to run the `chart_agent` is using `run_sync()`, which is perfec
 ### Jupyter Notebook
 
 !!! note "Required for Jupyter Notebooks"
-    
+
     For Vizro-AI to work properly in Jupyter Notebooks, you must add the following two lines at the beginning of your notebook:
-    
+
     ```py
     import nest_asyncio
     nest_asyncio.apply()
     ```
-    
+
     This is required because of conflicts between Jupyter's event loop and Pydantic AI's event loop. For more details, see the [Pydantic AI troubleshooting guide](https://ai.pydantic.dev/troubleshooting/#jupyter-notebook-errors).
 
 To run Vizro-AI code in a Jupyter Notebook, create a new cell and execute the code below to render the described visualization as output.

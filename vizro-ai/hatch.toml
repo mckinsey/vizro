@@ -64,7 +64,7 @@ dependencies = [
   "mkdocs-pycafe",
   "PyGithub",
   "playwright",
-  "click==8.2.1" # until resolved or we move to Zensical (https://github.com/squidfunk/mkdocs-material/issues/8478)
+  "click==8.2.1"  # until resolved or we move to Zensical (https://github.com/squidfunk/mkdocs-material/issues/8478)
 ]
 detached = true
 installer = "uv"

@@ -45,14 +45,14 @@ print(vizro_ai.__version__)
 You should see a return output of the form `x.y.z`.
 
 !!! note "Required for Jupyter Notebooks"
-    
+
     For Vizro-AI to work properly in Jupyter Notebooks, you must add the following two lines at the beginning of your notebook:
-    
+
     ```py
     import nest_asyncio
     nest_asyncio.apply()
     ```
-    
+
     This is required because of conflicts between Jupyter's event loop and Pydantic AI's event loop. For more details, see the [Pydantic AI troubleshooting guide](https://ai.pydantic.dev/troubleshooting/#jupyter-notebook-errors).
 
 <!-- vale off -->
@@ -64,7 +64,7 @@ You should see a return output of the form `x.y.z`.
 Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
 
 !!! tip "API Key Management"
-    
+
     For production use, it's preferable to store your API key in a `.env` file and load it using `python-dotenv` or `os.getenv()`. This keeps your API key secure and out of your code.
 
 Let's go through the code step-by-step. First, we import the necessary modules and set up the model:
@@ -154,8 +154,6 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The chart created is interactive: you can hover over the data for more information.
 
-
-
 <!-- vale off -->
 
 ### 4. Access the response model
@@ -163,7 +161,6 @@ The chart created is interactive: you can hover over the data for more informati
 <!-- vale on -->
 
 The `chart_agent` returns a `BaseChartPlan` object that includes the generated code along with metadata. E.g., you can access the code using `result.output.code` or `result.output.code_vizro` for Vizro-compatible code. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned may be as follows:
-
 
 !!! example "Access response model properties"
 
@@ -178,10 +175,10 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
 
         # Access the code
         print("Code:", result.output.code)
-        
+
         # Access Vizro-compatible code
         print("Vizro code:", result.output.code_vizro)
-        
+
         # Get the figure object
         fig = result.output.get_fig_object(df, vizro=True)
         fig.show()
