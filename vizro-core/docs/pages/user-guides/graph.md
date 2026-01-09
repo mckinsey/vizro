@@ -74,6 +74,16 @@ You will need to create a custom chart if you want to customize the Plotly chart
 
 For more details, refer to our [user guide on custom chart](custom-charts.md) and the [Plotly documentation on updating figures](https://plotly.com/python/creating-and-updating-figures/).
 
+### Control height and width of the Plotly chart
+
+By default, graphs in a flex-row layout have a width of 450px, regardless of available space.
+
+You can increase the width by providing a `width` argument in the `px` chart, but decreasing it below 450px requires specifying both `width` and `height`.
+
+!!! note "Limitations of fixed dimensions"
+
+    Setting both `width` and `height` makes the chart use fixed, non-responsive dimensions. This can reduce flexibility in responsive layouts, may cause overflow on smaller screens, and can limit Plotly’s ability to automatically adjust the plot area or aspect ratio.
+
 ## Interact with other graphs and tables
 
 A graph can act as a source for [interactions with other components](graph-table-actions.md), for example to cross-filter another graph or table when the user clicks on a point.

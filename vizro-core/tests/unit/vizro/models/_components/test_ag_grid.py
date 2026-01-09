@@ -9,6 +9,7 @@ from asserts import STRIP_ALL, assert_component_equal
 from dash import dcc, html
 from pydantic import ValidationError
 
+import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -143,19 +144,35 @@ class TestAgGridInstantiation:
 class TestAgGridGetValueFromTrigger:
     """Tests _get_value_from_trigger models method."""
 
+    @pytest.mark.parametrize("trigger", [None, []])
+    def test_no_trigger_data(self, standard_ag_grid, trigger):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
+        value = ag_grid._get_value_from_trigger(value="continent", trigger=trigger)
+
+        assert value is None
+
     def test_value_valid(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
         value = ag_grid._get_value_from_trigger(
-            "continent", [{"country": "France", "continent": "Europe", "year": 2007}]
+            value="continent", trigger=[{"country": "France", "continent": "Europe", "year": 2007}]
         )
 
-        assert value == "Europe"
+        assert value == ["Europe"]
 
-    def test_trigger_empty_list(self, standard_ag_grid):
+    @pytest.mark.parametrize(
+        "trigger, expected_result",
+        [
+            ([{"continent": "Europe"}], ["Europe"]),
+            ([{"continent": "Europe"}, {"continent": "Europe"}], ["Europe"]),
+            # vm.AgGrid._get_value_from_trigger ensures uniqueness but preserves the order
+            ([{"continent": "Europe"}, {"continent": "Europe"}, {"continent": "Asia"}], ["Europe", "Asia"]),
+        ],
+    )
+    def test_uniqueness_and_order_multiple_points_selected(self, standard_ag_grid, trigger, expected_result):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
-        value = ag_grid._get_value_from_trigger("continent", [])
+        value = ag_grid._get_value_from_trigger(value="continent", trigger=trigger)
 
-        assert value == []
+        assert value == expected_result
 
     def test_value_unknown(self, standard_ag_grid):
         ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid)
@@ -167,7 +184,10 @@ class TestAgGridGetValueFromTrigger:
                 "This action was added to the AgGrid model with ID `ag_grid_id`. "
             ),
         ):
-            ag_grid._get_value_from_trigger("unknown", [{"country": "France", "continent": "Europe", "year": 2007}])
+            ag_grid._get_value_from_trigger(
+                value="unknown",
+                trigger=[{"country": "France", "continent": "Europe", "year": 2007}],
+            )
 
 
 class TestDunderMethodsAgGrid:
@@ -181,7 +201,7 @@ class TestDunderMethodsAgGrid:
         with pytest.raises(KeyError):
             ag_grid["unknown_args"]
 
-    def test_underlying_id_is_auto_generated(self, standard_ag_grid):
+    def test_call_underlying_id_is_auto_generated(self, standard_ag_grid):
         ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid)
         ag_grid.pre_build()
         # ag_grid() is the same as ag_grid.__call__()
@@ -204,7 +224,7 @@ class TestDunderMethodsAgGrid:
             dcc.Store(id="__input_ag_grid_id_guard_actions_chain", data=True),
         )
 
-    def test_underlying_id_is_provided(self, dash_ag_grid_with_id):
+    def test_call_underlying_id_is_provided(self, dash_ag_grid_with_id):
         ag_grid = vm.AgGrid(id="ag_grid_id", figure=dash_ag_grid_with_id)
         ag_grid.pre_build()
         # ag_grid() is the same as ag_grid.__call__()
@@ -225,6 +245,36 @@ class TestDunderMethodsAgGrid:
         assert_component_equal(
             result_ag_grid_guard_store,
             dcc.Store(id="underlying_table_id_guard_actions_chain", data=True),
+        )
+
+    @pytest.mark.parametrize(
+        "ag_grid_actions, checkbox_expected", [([], False), (va.set_control(control="control_id", value=None), True)]
+    )
+    def test_call_checkboxes_appear_when_set_control_added(self, standard_ag_grid, ag_grid_actions, checkbox_expected):
+        ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid, actions=ag_grid_actions)
+        ag_grid.pre_build()
+        # ag_grid() is the same as ag_grid.__call__()
+        result_ag_grid = ag_grid()
+
+        # Assert that the AgGrid.__call__() is the html.Div
+        assert_component_equal(result_ag_grid, html.Div(), keys_to_strip=STRIP_ALL)
+
+        # Assert that html.Div children contains the underlying AgGrid component and guard actions chain store component
+        [result_ag_grid_table, result_ag_grid_guard_store] = result_ag_grid.children
+
+        assert result_ag_grid_table.id == "__input_ag_grid_id"
+        assert_component_equal(
+            result_ag_grid_table,
+            dag.AgGrid(),
+            keys_to_strip=STRIP_ALL,
+        )
+
+        assert result_ag_grid_table.dashGridOptions["rowSelection"]["checkboxes"] is checkbox_expected
+        assert result_ag_grid_table.dashGridOptions["rowSelection"]["headerCheckbox"] is checkbox_expected
+
+        assert_component_equal(
+            result_ag_grid_guard_store,
+            dcc.Store(id="__input_ag_grid_id_guard_actions_chain", data=True),
         )
 
 
@@ -289,7 +339,7 @@ class TestPreBuildAgGrid:
 
 
 class TestBuildAgGrid:
-    def test_ag_grid_build_mandatory_only(self, standard_ag_grid, gapminder):
+    def test_ag_grid_build_mandatory_only(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
