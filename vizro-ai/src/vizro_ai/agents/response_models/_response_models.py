@@ -116,14 +116,28 @@ def _test_execute_chart_code(data_frame: pd.DataFrame):
                 f"alternatively try with a more powerful model."
             )
         if not isinstance(fig, go.Figure):
-            raise TypeError(f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}")
+            raise TypeError(f"Expected chart code to return a plotly `go.Figure` object, but got {type(fig)}")
         return v
 
     return validator_code
 
 
 class BaseChartPlan(BaseModel):
-    """Base chart plan used to generate chart code based on user visualization requirements."""
+    """Base chart plan used to generate chart code based on user visualization requirements.
+
+    This model contains the generated chart code and metadata returned by the `chart_agent`.
+    It provides methods to access the code in different formats and execute it to obtain
+    plotly figure objects.
+
+    Args:
+        chart_type (str): Describes the chart type that best reflects the user request.
+        imports (list[str]): List of import statements required to render the chart defined by the
+            `chart_code` field. Each import statement should be a separate list entry.
+        chart_code (str): Python code that generates a plotly `go.Figure` object. Must be wrapped
+            in a function named `custom_chart`, accept a single argument `data_frame` which
+            is a pandas DataFrame, and return a plotly `go.Figure` object. All data used in
+            the chart must be derived from the data_frame argument.
+    """
 
     chart_type: str = Field(
         description="""
@@ -144,10 +158,10 @@ class BaseChartPlan(BaseModel):
         AfterValidator(_check_chart_code),
         Field(
             description=f"""
-        Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
+        Python code that generates a generates a plotly `go.Figure` object. It must fulfill the following criteria:
         1. Must be wrapped in a function named `{CUSTOM_CHART_NAME}`
         2. Must accept a single argument `data_frame` which is a pandas DataFrame
-        3. Must return a plotly go.Figure object
+        3. Must return a plotly `go.Figure` object
         4. All data used in the chart must be derived from the data_frame argument, all data manipulations
         must be done within the function.
         """,
@@ -156,7 +170,7 @@ class BaseChartPlan(BaseModel):
 
     _additional_vizro_imports: list[str] = PrivateAttr(ADDITIONAL_IMPORTS)
 
-    def _get_imports(self, vizro: bool = False):
+    def _get_imports(self, vizro: bool = False) -> str:
         imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports))  # remove duplicates
         if vizro:  # TODO: improve code of below
             imports = [imp for imp in imports if "import plotly.express as px" not in imp]
@@ -164,7 +178,7 @@ class BaseChartPlan(BaseModel):
             imports = [imp for imp in imports if "vizro" not in imp]
         return "\n".join(imports) + "\n"
 
-    def _get_chart_code(self, chart_name: str | None = None, vizro: bool = False):
+    def _get_chart_code(self, chart_name: str | None = None, vizro: bool = False) -> str:
         chart_code = self.chart_code
         if vizro:
             chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"@capture('graph')\ndef {CUSTOM_CHART_NAME}")
@@ -172,7 +186,7 @@ class BaseChartPlan(BaseModel):
             chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"def {chart_name}")
         return chart_code
 
-    def _get_complete_code(self, chart_name: str | None = None, vizro: bool = False, lint: bool = True):
+    def _get_complete_code(self, chart_name: str | None = None, vizro: bool = False, lint: bool = True) -> str:
         chart_name = chart_name or CUSTOM_CHART_NAME
         imports = self._get_imports(vizro=vizro)
         chart_code = self._get_chart_code(chart_name=chart_name, vizro=vizro)
@@ -187,16 +201,18 @@ class BaseChartPlan(BaseModel):
 
         return unformatted_code
 
-    def get_fig_object(self, data_frame: pd.DataFrame | str, chart_name: str | None = None, vizro=True):
-        """Execute code to obtain the plotly go.Figure object. Be sure to check code to be executed before running.
+    def get_fig_object(
+        self, data_frame: pd.DataFrame | str, chart_name: str | None = None, vizro: bool = True
+    ) -> go.Figure:
+        """Execute code to obtain the plotly `go.Figure` object. Be sure to check code to be executed before running.
 
         Args:
             data_frame: Dataframe or string representation of the dataframe.
-            chart_name: Name of the chart function. Defaults to `None`,
-                in which case it remains as `custom_chart`.
-            vizro: Whether to add decorator to make it `vizro-core` compatible. Defaults to `True`.
+            chart_name: Name of the chart function. If `None`, it remains as `custom_chart`.
+            vizro: Whether to add decorator to make it `vizro-core` compatible.
 
-
+        Returns:
+            Plotly `go.Figure` object.
         """
         chart_name = chart_name or CUSTOM_CHART_NAME
         code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
@@ -206,16 +222,34 @@ class BaseChartPlan(BaseModel):
         return chart(data_frame)
 
     @property
-    def code(self):
+    def code(self) -> str:
+        """Get the generated chart code as a pure Plotly code string."""
         return self._get_complete_code()
 
     @property
-    def code_vizro(self):
+    def code_vizro(self) -> str:
+        """Get the generated chart code formatted for use in Vizro dashboards."""
         return self._get_complete_code(vizro=True)
 
 
 class ChartPlan(BaseChartPlan):
-    """Extended chart plan model with additional explanatory fields."""
+    """Extended chart plan model with additional explanatory fields.
+
+    This model extends `BaseChartPlan` with additional metadata fields that provide
+    insights and explanations about the generated chart.
+
+    Args:
+        chart_type (str): Describes the chart type that best reflects the user request.
+        imports (list[str]): List of import statements required to render the chart defined by the
+            `chart_code` field. Each import statement should be a separate list entry.
+        chart_code (str): Python code that generates a plotly `go.Figure` object. Must be wrapped
+            in a function named `custom_chart`, accept a single argument `data_frame` which
+            is a pandas DataFrame, and return a plotly `go.Figure` object. All data used in
+            the chart must be derived from the data_frame argument.
+        chart_insights (str): Insights explaining what the chart shows or tries to visualize.
+            Ideally concise and between 30 and 60 words.
+        code_explanation (str): Explanation of the code steps used in the `chart_code` field.
+    """
 
     chart_insights: str = Field(
         description="""
@@ -230,7 +264,7 @@ class ChartPlan(BaseChartPlan):
 
 class ChartPlanFactory:
     def __new__(cls, data_frame: pd.DataFrame, chart_plan: type[BaseChartPlan] = ChartPlan) -> type[BaseChartPlan]:
-        """Creates a chart plan model with additional validation.
+        """Creates a chart plan model that executes the chart code as part of the model validation.
 
         Args:
             data_frame: DataFrame to use for validation

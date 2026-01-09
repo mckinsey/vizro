@@ -18,7 +18,7 @@ if os.getenv("LOGFIRE_TOKEN"):
 
 # User can configure model, including usage limits etc
 model = OpenAIChatModel(
-    "gpt-4o-mini",
+    "gpt-5-nano-2025-08-07",
     provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
 )
 # model = AnthropicModel(

@@ -1,72 +1,39 @@
 # How to use Vizro-AI's advanced options
 
-This guide shows you how to use the advanced options of `VizroAI.plot`.
+This guide shows you how to use the advanced features of the [`chart_agent`][vizro_ai.agents.chart_agent], including working with the [`BaseChartPlan`][vizro_ai.agents.response_models.BaseChartPlan] response model and leveraging Pydantic AI agent capabilities.
 
-First we show how to change the input parameters of the function, as follows:
+## Understanding the response model
 
-- control over whether code gets executed,
-- the number of retries of `.plot` when it fails validation,
-- how to request a comprehensive output (when `return_elements=True`).
+When you run `chart_agent.run_sync()` or `chart_agent.run()`, the result contains a [`BaseChartPlan`][vizro_ai.agents.response_models.BaseChartPlan] object in `result.output`. This object contains the generated chart code and metadata.
 
-Second we show how to use this more comprehensive output, enabling control of code generation and `fig` object production.
+## BaseChartPlan properties and methods
 
-## Inputs of `VizroAI.plot`
+### `code_vizro` property
 
-### `user_input`
+Returns the generated chart code formatted for use in Vizro dashboards. The function will include the `@capture("graph")` decorator and use `vizro.plotly.express`.
 
-This is the natural language query from which, together with a data sample, the LLM creates a plotly chart. For the query, you can [use English or a different language](use-different-languages.md). The complexity of the resulting chart [depends on the vendor model capabilities](customize-vizro-ai.md#what-model-to-choose).
-
-### `df`
-
-Supply any `pandas` data frame to base your query on. The LLM will receive a sample of this data frame to form an appropriate graph.
-
-If the option `validate_code` is set to `True` (which it is by default), the LLM created chart code will be evaluated on a sample of this data frame.
-
-If `return_elements` is set to `False`, then the returned `fig` object will be created based on this (entire) data frame.
-
-<!-- vale off -->
-
-### `max_debug_retry`
-
-This number determines how often the tool will try to correct an incorrect response (that fails various validation criteria). Under the hood this is [implemented via pydantic validators](https://docs.pydantic.dev/1.10/usage/validators/). The last response will be re-sent to the LLM together with the validation error(s) in order to receive an improved response. This concept is [inspired by the amazing instructor library](https://github.com/jxnl/instructor).
-
-### `return_elements`
-
-This boolean (by default `False`) determines the return type of `VizroAI.plot`.
-
-If set to `False`, then dynamically generated Python code is executed to produce a `plotly.graph_objects.Figure` object from the LLM response and the user supplied data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like the former, but is ready to be [inserted](add-generated-chart-usecase.md) into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
-
-If set to `True`, a class (pydantic model) is returned from which the `fig` object, but also various other outputs can be generated. (see below)
-
-### `validate_code`
-
-This boolean (by default `True`) determines whether the LLM generated Python code executes with a sample of the data in order to verify that it runs and produces a plotly figure. Be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
-
-<!-- vale on -->
-
-If `return_elements=True` **and** `validate_code=False`, then no code is executed to obtain the return of `VizroAI.plot`. This means that the code string obtained is not validated, but also that no code was executed.
-
-## Output if `return_elements=True`
-
-If `return_elements=True`, then instead of a `fig` object, a class is returned, which enables the following options:
-
-### Obtain `vizro` code string
-
-You can obtain the code string that would produce the answer to the user query as a Vizro dashboard ready figure as follows. The name for the function will be `custom_chart`:
-
-!!! example "Vizro code"
+!!! example "Access the code_vizro property"
 
     === "Code"
 
         ```py
-        from vizro_ai import VizroAI
         import plotly.express as px
+        from pydantic_ai.models.openai import OpenAIChatModel
+        from pydantic_ai.providers.openai import OpenAIProvider
+        from vizro_ai.agents import chart_agent
+
+        model = OpenAIChatModel(
+            "gpt-5-nano-2025-08-07",
+            provider=OpenAIProvider(api_key="your-api-key-here"),
+        )
 
         df = px.data.gapminder()
-        vizro_ai = VizroAI()
-
-        res = vizro_ai.plot(df, "the trend of gdp over years in the US", return_elements=True)
-        print(res.code_vizro)
+        result = chart_agent.run_sync(
+            model=model,
+            user_prompt="the trend of gdp over years in the US",
+            deps=df,
+        )
+        print(result.output.code_vizro)
         ```
 
     === "Result"
@@ -85,23 +52,32 @@ You can obtain the code string that would produce the answer to the user query a
             return fig
         ```
 
-### Obtain `plotly` code string
+### `code` property
 
-You can obtain the code string that would produce the answer to the user query as a pure `plotly.graph_objects.Figure` as follows. The name for the function will be `custom_chart`:
+Returns the generated chart code as a pure Plotly code string. The function will be named `custom_chart`.
 
-!!! example "Plotly code"
+!!! example "Access the code property"
 
     === "Code"
 
         ```py
-        from vizro_ai import VizroAI
         import plotly.express as px
+        from pydantic_ai.models.openai import OpenAIChatModel
+        from pydantic_ai.providers.openai import OpenAIProvider
+        from vizro_ai.agents import chart_agent
+
+        model = OpenAIChatModel(
+            "gpt-5-nano-2025-08-07",
+            provider=OpenAIProvider(api_key="your-api-key-here"),
+        )
 
         df = px.data.gapminder()
-        vizro_ai = VizroAI()
-
-        res = vizro_ai.plot(df, "the trend of gdp over years in the US", return_elements=True)
-        print(res.code)
+        result = chart_agent.run_sync(
+            model=model,
+            user_prompt="the trend of gdp over years in the US",
+            deps=df,
+        )
+        print(result.output.code)
         ```
 
     === "Result"
@@ -118,27 +94,42 @@ You can obtain the code string that would produce the answer to the user query a
             return fig
         ```
 
-### Obtain `fig` object
+### `get_fig_object()` method
 
-You can create the `fig` object using either of the above produced code strings (vizro or plotly), changing the chart name, and using different data. Note that when executing this function, the produced code string will be dynamically executed. Be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
+Executes the generated code to create a Plotly figure object. Note that this dynamically executes code - be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
 
-#### Vizro ready
+**Parameters:**
+
+- `data_frame`: The pandas DataFrame to use for generating the chart
+- `chart_name`: Optional name for the chart function (defaults to `custom_chart`)
+- `vizro`: Whether to generate Vizro-compatible code (defaults to `True`)
+
+#### Vizro-ready figure
 
 This `fig` object is in the standard `vizro_dark` theme, and can [be inserted into a Vizro dashboard](add-generated-chart-usecase.md).
 
-!!! example "Vizro `fig` object"
+!!! example "Get Vizro-ready figure"
 
     === "Code"
 
         ```py
-        from vizro_ai import VizroAI
         import plotly.express as px
+        from pydantic_ai.models.openai import OpenAIChatModel
+        from pydantic_ai.providers.openai import OpenAIProvider
+        from vizro_ai.agents import chart_agent
+
+        model = OpenAIChatModel(
+            "gpt-5-nano-2025-08-07",
+            provider=OpenAIProvider(api_key="your-api-key-here"),
+        )
 
         df = px.data.gapminder()
-        vizro_ai = VizroAI()
-
-        res = vizro_ai.plot(df, "the trend of gdp over years in the US", return_elements=True)
-        fig = res.get_fig_object(data_frame=df, vizro=True)
+        result = chart_agent.run_sync(
+            model=model,
+            user_prompt="the trend of gdp over years in the US",
+            deps=df,
+        )
+        fig = result.output.get_fig_object(data_frame=df, vizro=True)
         fig.show()
         ```
 
@@ -146,23 +137,32 @@ This `fig` object is in the standard `vizro_dark` theme, and can [be inserted in
 
         [![VizroAIChartVizro]][vizroaichartvizro]
 
-#### Pure Plotly/Dash
+#### Pure Plotly figure
 
-This `fig` object is a basic plotly figure.
+This `fig` object is a basic plotly figure without Vizro theming.
 
-!!! example "Plotly `fig` object"
+!!! example "Get pure Plotly figure"
 
     === "Code"
 
         ```py
-        from vizro_ai import VizroAI
         import plotly.express as px
+        from pydantic_ai.models.openai import OpenAIChatModel
+        from pydantic_ai.providers.openai import OpenAIProvider
+        from vizro_ai.agents import chart_agent
+
+        model = OpenAIChatModel(
+            "gpt-5-nano-2025-08-07",
+            provider=OpenAIProvider(api_key="your-api-key-here"),
+        )
 
         df = px.data.gapminder()
-        vizro_ai = VizroAI()
-
-        res = vizro_ai.plot(df, "the trend of gdp over years in the US", return_elements=True)
-        fig = res.get_fig_object(data_frame=df, vizro=False)
+        result = chart_agent.run_sync(
+            model=model,
+            user_prompt="the trend of gdp over years in the US",
+            deps=df,
+        )
+        fig = result.output.get_fig_object(data_frame=df, vizro=False)
         fig.show()
         ```
 
@@ -172,28 +172,33 @@ This `fig` object is a basic plotly figure.
 
 #### Using different data
 
-<!--vale off-->
-
 You can create the `fig` object with different data while ensuring the overall schema remains consistent. You can re-evaluate this function to generate various `fig` objects for different data. For example, the code could be generated using fake or sample data fed into Vizro-AI. When moving to production, you can switch the data source to the complete dataset, as long as the data schema is consistent.
 
-<!--vale on-->
-
-!!! example "Different data"
+!!! example "Use different data"
 
     === "Code"
 
         ```py
-        from vizro_ai import VizroAI
         import plotly.express as px
+        from pydantic_ai.models.openai import OpenAIChatModel
+        from pydantic_ai.providers.openai import OpenAIProvider
+        from vizro_ai.agents import chart_agent
+
+        model = OpenAIChatModel(
+            "gpt-5-nano-2025-08-07",
+            provider=OpenAIProvider(api_key="your-api-key-here"),
+        )
 
         df = px.data.gapminder()
-        vizro_ai = VizroAI()
-
-        res = vizro_ai.plot(df, "the average of gdp for all continents as bar chart", return_elements=True)
+        result = chart_agent.run_sync(
+            model=model,
+            user_prompt="the average of gdp for all continents as bar chart",
+            deps=df,
+        )
 
         # The produced chart could handle many continents, but we choose to filter for the US
         df_us = df[df['country'] == 'United States']
-        fig = res.get_fig_object(chart_name="different_name", data_frame=df_us, vizro=True)
+        fig = result.output.get_fig_object(chart_name="different_name", data_frame=df_us, vizro=True)
         fig.show()
         ```
 
@@ -205,19 +210,28 @@ You can create the `fig` object with different data while ensuring the overall s
 
 This option executes the chart code with the name given under `chart_name`. This can be important when you want to avoid overwriting variables in the namespace.
 
-!!! example "Changing the `chart_name`"
+!!! example "Change the chart name"
 
     === "Code"
 
         ```py
-        from vizro_ai import VizroAI
         import plotly.express as px
+        from pydantic_ai.models.openai import OpenAIChatModel
+        from pydantic_ai.providers.openai import OpenAIProvider
+        from vizro_ai.agents import chart_agent
+
+        model = OpenAIChatModel(
+            "gpt-5-nano-2025-08-07",
+            provider=OpenAIProvider(api_key="your-api-key-here"),
+        )
 
         df = px.data.gapminder()
-        vizro_ai = VizroAI()
-
-        res = vizro_ai.plot(df, "the trend of gdp over years in the US", return_elements=True)
-        fig = res.get_fig_object(chart_name="different_name",data_frame=df, vizro=True)
+        result = chart_agent.run_sync(
+            model=model,
+            user_prompt="the trend of gdp over years in the US",
+            deps=df,
+        )
+        fig = result.output.get_fig_object(chart_name="different_name", data_frame=df, vizro=True)
         print(fig._captured_callable._function)
         ```
 
@@ -226,6 +240,135 @@ This option executes the chart code with the name given under `chart_name`. This
         ```py
         <function different_name at 0x17a18df80>
         ```
+
+## Alternative response models
+
+You can also use [`ChartPlan`][vizro_ai.agents.response_models.ChartPlan] or a model created by [`ChartPlanFactory`][vizro_ai.agents.response_models.ChartPlanFactory] as output types. `ChartPlan` extends `BaseChartPlan` with additional explanatory fields like `chart_insights` and `code_explanation`. `ChartPlanFactory` creates a dynamically validated model class that tests code execution before accepting the response.
+
+```py
+from vizro_ai.agents import chart_agent
+from vizro_ai.agents.response_models import ChartPlan, ChartPlanFactory
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
+import plotly.express as px
+
+df = px.data.gapminder()
+model = OpenAIChatModel("gpt-5-nano-2025-08-07", provider=OpenAIProvider(api_key="your-api-key-here"))
+result = chart_agent.run_sync(model=model, user_prompt="create a bar chart", deps=df, output_type=ChartPlan)
+print(result.output.chart_insights)
+```
+
+## Pydantic-AI agent capabilities
+
+Since `chart_agent` is a Pydantic AI agent, you can leverage all Pydantic AI features:
+
+### Async execution
+
+Use `chart_agent.run()` for async execution:
+
+```py
+import asyncio
+import plotly.express as px
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
+from vizro_ai.agents import chart_agent
+
+model = OpenAIChatModel("gpt-5-nano-2025-08-07", provider=OpenAIProvider(api_key="your-api-key-here"))
+df = px.data.gapminder()
+
+async def main():
+    result = await chart_agent.run(
+        model=model,
+        user_prompt="create a bar chart",
+        deps=df,
+    )
+    fig = result.output.get_fig_object(df, vizro=True)
+    fig.show()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### Streaming
+
+Stream responses as they're generated:
+
+```py
+import asyncio
+import plotly.express as px
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
+from vizro_ai.agents import chart_agent
+
+model = OpenAIChatModel("gpt-5-nano-2025-08-07", provider=OpenAIProvider(api_key="your-api-key-here"))
+df = px.data.gapminder()
+
+async def main():
+    async with chart_agent.run_stream(
+        model=model,
+        user_prompt="create a bar chart",
+        deps=df,
+    ) as response:
+        async for text in response.stream_output():
+            print(text)
+        result = await response.get_output()
+    fig = result.get_fig_object(df, vizro=True)
+    fig.show()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+
+### Dependency injection
+
+The `deps` parameter allows you to inject any dependency (in this case, the DataFrame). This enables flexible data handling and can be extended for more complex use cases. See the [Pydantic AI documentation](https://ai.pydantic.dev/agents/) for more details.
+
+### Custom instructions and tools
+
+You can extend the `chart_agent` with custom instructions and tools, just like any Pydantic AI agent. See the [Pydantic AI documentation](https://ai.pydantic.dev/agents/) for more details.
+
+### Web Chat UI
+
+You can create an interactive web chat interface for `chart_agent` using Pydantic AI's built-in Web Chat UI. Install the extra: 
+
+```bash
+pip install 'pydantic-ai-slim[web]'
+```
+
+!!! example "Create a web chat interface"
+
+    ```py
+    from vizro_ai.agents import chart_agent
+
+    app = chart_agent.to_web()
+    ```
+
+    Run the app with any ASGI server:
+
+    ```bash
+    uvicorn my_module:app --host 127.0.0.1 --port 7932
+    ```
+
+For more details, see the [Pydantic AI Web Chat UI documentation](https://ai.pydantic.dev/web/).
+
+### Agent2Agent (A2A) protocol
+
+The `chart_agent` can participate in agent-to-agent workflows using the A2A protocol.
+
+!!! example "Use chart_agent in an A2A workflow"
+
+    ```py
+    from vizro_ai.agents import chart_agent
+
+    app = chart_agent.to_a2a()
+    ```
+
+For more details, see the [Pydantic AI A2A protocol documentation](https://ai.pydantic.dev/a2a/).
+
+## Learn more
+
+For more information on Pydantic AI agent capabilities, see the [Pydantic AI agents documentation](https://ai.pydantic.dev/agents/).
 
 [vizroaichartplotly]: ../../assets/user_guides/VizroAIPlotly.png
 [vizroaichartvizro]: ../../assets/user_guides/VizroAIVizro.png

@@ -17,7 +17,7 @@ POSSIBLE_AXIS_VALUES = ["count", "gdpPercap", "continent", "avg_gdpPercap", "mea
 POSSIBLE_CHART = ["px.bar", "go.Bar"]
 
 model = OpenAIChatModel(
-    "gpt-4o-mini",
+    "gpt-5-nano-2025-08-07",
     provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
 )
 

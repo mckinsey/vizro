@@ -4,8 +4,6 @@ from pydantic_ai import Agent, RunContext
 
 from .response_models import BaseChartPlan
 
-# from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
-
 chart_agent = Agent[DataFrame, BaseChartPlan](
     deps_type=pd.DataFrame,
     output_type=BaseChartPlan,

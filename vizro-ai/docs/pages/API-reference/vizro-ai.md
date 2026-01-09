@@ -1,10 +1,9 @@
-# VizroAI
+# API Reference
 
-<!-- vale off -->
-::: vizro_ai
+
+::: vizro_ai.agents
     options:
-      merge_init_into_class: false
-      docstring_options:
-        ignore_init_summary: false
+      members:
+        - chart_agent
 
-<!-- vale on -->
+::: vizro_ai.agents.response_models
