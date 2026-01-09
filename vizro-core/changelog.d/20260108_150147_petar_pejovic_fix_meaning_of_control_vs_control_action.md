@@ -34,12 +34,10 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fix that `Filter` and `Parameter` logic is always applied on target figure refresh, even if custom selector actions are defined. ([#1537](https://github.com/mckinsey/vizro/pull/1537))
 
--->
 <!--
 ### Security
 
