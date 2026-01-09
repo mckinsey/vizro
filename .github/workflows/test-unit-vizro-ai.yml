@@ -40,6 +40,9 @@ jobs:
           - python-version: "3.13"
             hatch-env: all.py3.13
             os: ubuntu-latest
+          - python-version: "3.14"
+            hatch-env: all.py3.14
+            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: lower-bounds
             os: ubuntu-latest

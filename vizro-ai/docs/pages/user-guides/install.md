@@ -2,7 +2,7 @@
 
 In this guide you'll learn how to set up the prerequisites needed for Vizro-AI, and how to install it. You'll also find out how to verify the Vizro-AI installation succeeded, find the version of Vizro-AI, and learn how to update it.
 
-Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.9 and later. You can specify the version of Python to use with Vizro-AI when you set up a virtual environment.
+Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.10 and later. You can specify the version of Python to use with Vizro-AI when you set up a virtual environment.
 
 ## Set up a virtual environment
 
@@ -39,13 +39,25 @@ To install Vizro-AI, use [`pip`](https://pip.pypa.io/en/stable/) in your termina
 pip install vizro_ai
 ```
 
-If you would like to use LLM vendors other than [`OpenAI`](https://platform.openai.com/docs/models) you can choose to install it with the optional dependencies `anthropic` and/or `mistral`, e.g.:
+Vizro-AI uses [Pydantic AI](https://ai.pydantic.dev/) for LLM integration. To use specific LLM vendors, install Vizro-AI with the corresponding optional dependencies. For example, to use OpenAI:
 
 ```bash
-pip install vizro_ai[anthropic,mistral]
+pip install vizro_ai[openai]
 ```
 
-Vizro-AI works with more vendors than the above, you can install further partner packages beyond the above optional dependencies. See more in [our detailed guide on model setup](customize-vizro-ai.md).
+For other providers (e.g., Anthropic, Google, Mistral, Bedrock), you can install the corresponding optional dependencies. See the [Pydantic AI model providers documentation](https://ai.pydantic.dev/models/overview/) for a complete list of supported providers and installation instructions. You can also install multiple vendors at once:
+
+```bash
+pip install vizro_ai[openai,anthropic]
+```
+
+If you want to use Vizro-AI charts in Vizro dashboards, or prefer the Vizro theme over the default theme, install with the `vizro` optional dependency:
+
+```bash
+pip install vizro_ai[vizro]
+```
+
+For more details on model setup and configuration, see [our detailed guide on model setup](customize-vizro-ai.md).
 
 ## Confirm a successful installation
 
@@ -61,7 +73,7 @@ You should see a return output of the form `x.y.z`.
 
 ## Set up access to a large language model
 
-Vizro-AI supports **any** model that is available via [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the [`with_structured_output` method](https://python.langchain.com/v0.2/docs/how_to/structured_output/#the-with_structured_output-method) implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation.
+Vizro-AI uses [Pydantic AI](https://ai.pydantic.dev/) for LLM integration and supports models from multiple vendors including OpenAI, Anthropic, Google, and Mistral. See [our detailed guide on model setup](customize-vizro-ai.md) for information on configuring different model providers.
 
 ### Set up access to OpenAI (as an example for any vendor)
 
@@ -73,7 +85,7 @@ There are two common ways to set up the API key in a development environment.
 
 __Method 1: Set an environment variable for a single project__
 
-To make the API key available for a single project, you can create a local `.env` file to store it. Then, you can load the API key from that `.env` file in your development environment.
+To make the API key available for a single project, you can create a local `.env` file to store it. Then, use `python-dotenv` to load the API key from that `.env` file in your development environment.
 
 The `.env` file should look as follows (containing your key rather than `abc123`):
 
@@ -81,27 +93,58 @@ The `.env` file should look as follows (containing your key rather than `abc123`
 OPENAI_API_KEY=abc123
 ```
 
-By default, `vizro-ai` automatically loads the `.env` file, by searching the current directory and, if it does not find `.env`, the search continues upwards through the directory hierarchy.
+Install `python-dotenv` if you haven't already:
 
-If you would like to customize the `.env` file location and name, you can manually customize the search to override the default and specify the path and name of a custom `.env` file.
+```bash
+pip install python-dotenv
+```
 
-??? example "How to override the default location of the .`env` file:"
+Then load the `.env` file and use the API key in your model configuration:
 
-    ```python
-    from dotenv import load_dotenv, find_dotenv
-    from pathlib import Path
+```python
+import os
+from dotenv import load_dotenv
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
 
-    # Specify the exact path to your .env file
-    env_file = Path.cwd() / ".env"  # Adjust the path as needed
+load_dotenv()  # Loads .env from current directory or parent directories
 
-    # Alternatively, specify a different .env file name
-    env_file = find_dotenv(".env.dev")  # Replace ".env.dev" with your file name
+model = OpenAIChatModel(
+    "gpt-5-nano-2025-08-07",
+    provider=OpenAIProvider(api_key=os.getenv("OPENAI_API_KEY")),
+)
+```
 
-    # Load the specified .env file
-    load_dotenv(env_file)
-    ```
+Alternatively, you can use `os.getenv()` directly if the environment variable is already set (e.g., via Method 2):
 
-    Refer to [Python-dotenv documentation](https://saurabh-kumar.com/python-dotenv/reference/) for further information.
+```python
+import os
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
+
+model = OpenAIChatModel(
+    "gpt-5-nano-2025-08-07",
+    provider=OpenAIProvider(api_key=os.getenv("OPENAI_API_KEY")),
+)
+```
+
+If you would like to customize the `.env` file location and name:
+
+```python
+from dotenv import load_dotenv, find_dotenv
+from pathlib import Path
+
+# Specify the exact path to your .env file
+env_file = Path.cwd() / ".env"  # Adjust the path as needed
+
+# Alternatively, specify a different .env file name
+env_file = find_dotenv(".env.dev")  # Replace ".env.dev" with your file name
+
+# Load the specified .env file
+load_dotenv(env_file)
+```
+
+Refer to [Python-dotenv documentation](https://saurabh-kumar.com/python-dotenv/reference/) for further information.
 
 !!! warning "Don't share your secret API key!"
 
@@ -115,7 +158,7 @@ The documentation gives step-by-step instructions for setting up the API key as 
 
 !!! note
 
-    Sometimes setting up the `.env` file can be fiddly. If necessary, you can supply the API key directly to the instantiated model. See [our user guide](./customize-vizro-ai.md#setting-model-via-class-for-additional-configuration) for this option. Remember not to commit this API key to any public space!
+    Sometimes setting up the `.env` file can be fiddly. If necessary, you can supply the API key directly when instantiating the model. See [our user guide](./customize-vizro-ai.md) for examples. Remember not to commit this API key to any public space!
 
 __Set the base URL (optional)__
 
