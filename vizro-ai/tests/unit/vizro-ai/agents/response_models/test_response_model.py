@@ -15,7 +15,7 @@ df = px.data.iris()
 
 
 @pytest.fixture()
-def chart_plan():
+def chart_plan() -> ChartPlan:
     return ChartPlan(
         chart_type="Bubble Chart",
         imports=["import plotly.express as px"],
@@ -28,13 +28,22 @@ def chart_plan():
     )
 
 
+@pytest.fixture()
+def chart_plan_not_linted(chart_plan: ChartPlan) -> ChartPlan:
+    chart_plan.chart_code = """def custom_chart(data_frame) -> go.Figure:
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+"""
+    return chart_plan
+
+
 @pytest.fixture
-def sample_df():
+def sample_df() -> pd.DataFrame:
     return pd.DataFrame({"x": [1, 2, 3], "y": [4, 5, 6]})
 
 
 @pytest.fixture
-def valid_chart_code():
+def valid_chart_code() -> str:
     return """def custom_chart(data_frame):
     import plotly.express as px
     return px.scatter(data_frame, x='x', y='y')"""
@@ -175,6 +184,24 @@ def custom_chart(data_frame):
                 TypeError,
                 "Expected chart code to return a plotly `go.Figure` object, but got",
             ),
+            (
+                """def custom_chart(data_frame):
+    import pandas.nonexistent_submodule
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+        """,
+                ValueError,
+                "No module named 'pandas.nonexistent_submodule'",
+            ),
+            (
+                """def custom_chart(data_frame):
+    import vizro.nonexistent_submodule
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+        """,
+                ValueError,
+                "No module named 'vizro.nonexistent_submodule'",
+            ),
         ],
     )
     def test_execute_chart_code_invalid(self, chart_code, error_type, error_message):
@@ -184,6 +211,46 @@ def custom_chart(data_frame):
                 chart_type="Bubble Chart",
                 imports=["import plotly.express as px"],
                 chart_code=chart_code,
+                chart_insights="Very good insights",
+                code_explanation="Very good explanation",
+            )
+
+    def test_execute_chart_code_vizro_module_not_found(self, mocker):
+        """Test ModuleNotFoundError with vizro in error message (covers lines 66-70)."""
+        # Mock exec to raise ModuleNotFoundError with "vizro" in the message
+        mocker.patch(
+            "vizro_ai.agents.response_models._response_models.exec",
+            side_effect=ModuleNotFoundError("No module named 'vizro'"),
+        )
+        chart_plan_dynamic = ChartPlanFactory(data_frame=px.data.iris())
+        with pytest.raises(ValueError, match="Please install `vizro`"):
+            chart_plan_dynamic(
+                chart_type="Bubble Chart",
+                imports=["import plotly.express as px"],
+                chart_code="""def custom_chart(data_frame):
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+""",
+                chart_insights="Very good insights",
+                code_explanation="Very good explanation",
+            )
+
+    def test_execute_chart_code_generic_module_not_found(self, mocker):
+        """Test ModuleNotFoundError without vizro in error message (covers line 71)."""
+        # Mock exec to raise ModuleNotFoundError without "vizro" in the message
+        mocker.patch(
+            "vizro_ai.agents.response_models._response_models.exec",
+            side_effect=ModuleNotFoundError("No module named 'some_other_module'"),
+        )
+        chart_plan_dynamic = ChartPlanFactory(data_frame=px.data.iris())
+        with pytest.raises(ValueError, match="Failed to execute code"):
+            chart_plan_dynamic(
+                chart_type="Bubble Chart",
+                imports=["import plotly.express as px"],
+                chart_code="""def custom_chart(data_frame):
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+""",
                 chart_insights="Very good insights",
                 code_explanation="Very good explanation",
             )
@@ -390,3 +457,44 @@ def custom_chart(data_frame):
         else:
             result = _check_chart_code(invalid_code)
             assert result.startswith("def custom_chart")
+
+
+class TestGetCompleteCode:
+    """Tests for the _get_complete_code method."""
+
+    def test_get_chart_code_with_none(self, chart_plan):
+        """Test _get_chart_code with chart_name=None."""
+        result = chart_plan._get_chart_code(chart_name=None)
+        assert "def custom_chart(data_frame)" in result
+
+    def test_get_complete_code_lint_true(self, chart_plan_not_linted):
+        """Test _get_complete_code with lint=False."""
+        result = chart_plan_not_linted._get_complete_code(lint=False)
+        assert "import pandas as pd" in result
+        assert "def custom_chart(data_frame)" in result
+
+    def test_get_complete_code_formatting_failure(self, chart_plan, mocker):
+        """Test _get_complete_code when formatting fails."""
+        mocker.patch(
+            "vizro_ai.agents.response_models._response_models._format_and_lint",
+            side_effect=Exception("Format error"),
+        )
+        result = chart_plan._get_complete_code(lint=True)
+        # Should return unformatted code when formatting fails
+        assert "import pandas as pd" in result
+        assert "def custom_chart(data_frame)" in result
+
+
+class TestSafeguardValidation:
+    """Check if safeguard validation is working. Specific tests for safeguard validation in test_safeguard_code.py."""
+
+    def test_safeguard_validation_failure(self, sample_df):
+        """Test safeguard validation failure raises ValueError."""
+        ValidatedModel = ChartPlanFactory(data_frame=sample_df, chart_plan=BaseChartPlan)
+        with pytest.raises(ValueError, match="Produced code failed the safeguard validation"):
+            ValidatedModel(
+                chart_type="scatter",
+                imports=["import plotly.express as px", "import os"],
+                chart_code="""def custom_chart(data_frame):
+    return px.scatter(data_frame, x='x', y='y')""",
+            )
