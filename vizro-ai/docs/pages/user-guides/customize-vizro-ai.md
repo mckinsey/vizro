@@ -59,7 +59,7 @@ To use OpenAI with Vizro-AI, you must have an account with paid-for credits avai
 
 ### Other model providers
 
-Vizro-AI supports all Pydantic AI compatible models. You can install the most common providors (Google, Anthropic, Mistral and OpenAI) directly via an optional dependency as follows (pick any single one or multiple together):
+Vizro-AI supports all Pydantic AI compatible models. You can install the most common providers (Google, Anthropic, Mistral and OpenAI) directly via an optional dependency as follows (pick any single one or multiple together):
 
 ```bash
 pip install vizro_ai[google,anthropic,mistral,openai]

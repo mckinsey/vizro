@@ -35,6 +35,6 @@ class VizroAI:
         return_elements: bool = False,
     ):
         """Creates a Vizro dashboard using english descriptions."""
-        raise RuntimeError("""VizroAI.dashboard is deprecated since version 0.4.0. There is no replacement for this function.
-If you are interested in genAI assisted dashboard generation, please let us know by creating an issue on GitHub or
-use the Vizro MCP server instead.""")
+        raise RuntimeError("""VizroAI.dashboard is deprecated since version 0.4.0. There is no replacement for this
+function. If you are interested in genAI assisted dashboard generation, please let us know by creating an issue on
+GitHub or use the Vizro MCP server instead.""")
