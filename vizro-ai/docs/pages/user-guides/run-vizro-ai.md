@@ -2,8 +2,6 @@
 
 This guide offers insights into different ways of running the `chart_agent` to generate Plotly charts.
 
-
-
 ## Synchronous execution
 
 The simplest way to run the `chart_agent` is using `run_sync()`, which is perfect for scripts and notebooks.
