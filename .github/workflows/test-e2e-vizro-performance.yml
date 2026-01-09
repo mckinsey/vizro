@@ -1,4 +1,4 @@
-name: e2e vizro http requests checks
+name: e2e vizro performance tests
 
 defaults:
   run:
@@ -20,7 +20,7 @@ env:
   PYTHON_VERSION: "3.13"
 
 jobs:
-  test-e2e-vizro-http-requests:
+  test-e2e-vizro-performance-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -36,12 +36,12 @@ jobs:
           hatch run playwright install --with-deps chromium
       - name: Run tests
         run: |
-          hatch run test-e2e-vizro-http-requests
+          hatch run test-e2e-vizro-performance
 
       - name: Create artifacts
         uses: actions/upload-artifact@v5
         if: failure()
         with:
-          name: http-requests-artifacts
+          name: performance-artifacts
           path: |
             /home/runner/work/vizro/vizro/vizro-core/*.png

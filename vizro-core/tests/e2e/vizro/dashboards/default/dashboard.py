@@ -175,4 +175,4 @@ dashboard = vm.Dashboard(
 app = Vizro(assets_folder="../assets").build(dashboard)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
