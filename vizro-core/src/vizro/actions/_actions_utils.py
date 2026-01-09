@@ -61,18 +61,19 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
+    from vizro.models import Filter
     from vizro.models._controls._controls_utils import get_selector_parent_control
 
     for ctd in ctds_filter:
         selector_id = ctd["id"]
-        filter_model = get_selector_parent_control(selector=model_manager[selector_id])
-        if target not in filter_model.targets:
+        parent_filter = cast(Filter, get_selector_parent_control(selector=model_manager[selector_id]))
+        if target not in parent_filter.targets:
             continue
 
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
 
-        mask = filter_model._filter_function(data_frame[filter_model.column], selector_value)
+        mask = parent_filter._filter_function(data_frame[parent_filter.column], selector_value)
         data_frame = data_frame[mask]
 
     return data_frame
@@ -173,6 +174,7 @@ def _get_parametrized_config(
     Returns: keyword-argument dictionary.
 
     """
+    from vizro.models import Parameter
     from vizro.models._controls._controls_utils import get_selector_parent_control
 
     if data_frame:
@@ -188,7 +190,7 @@ def _get_parametrized_config(
 
     for ctd in ctds_parameter:
         selector_id = ctd["id"]
-        parent_parameter = get_selector_parent_control(selector=model_manager[selector_id])
+        parent_parameter = cast(Parameter, get_selector_parent_control(selector=model_manager[selector_id]))
 
         selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
         for dot_separated_string in _get_target_dot_separated_strings(parent_parameter.targets, target, data_frame):
