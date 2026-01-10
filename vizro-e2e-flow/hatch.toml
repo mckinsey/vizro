@@ -1,0 +1,22 @@
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+installer = "uv"
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
+
+[envs.default]
+detached = true
+installer = "uv"
+
+[envs.default.scripts]
+lint = "pre-commit run {args} --all-files"
+prep-release = [
+  "hatch version release",
+  "hatch run changelog:collect",
+  "hatch run changelog:add",
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-e2e-flow $(hatch version)"'
+]
+
+[version]
+path = ".claude-plugin/plugin.json"
+pattern = '''"version":\s*"(?P<version>[^"]+)"'''

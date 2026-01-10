@@ -5,7 +5,7 @@ description: USE THIS SKILL FIRST when user wants to create, design, or build a 
 
 # Building Vizro Dashboards
 
-A structured workflow for creating effective data dashboards with Vizro.
+A structured workflow for creating effective dashboards with Vizro.
 
 ## How to Use This Skill
 

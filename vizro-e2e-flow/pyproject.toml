@@ -1,0 +1,8 @@
+[project]
+authors = [
+  {name = "Vizro Team"}
+]
+description = "Claude Code plugin with skills for end-to-end Vizro dashboard development"
+license-files = {paths = ["LICENSE.txt"]}
+name = "vizro-e2e-flow"
+readme = "README.md"
