@@ -1,0 +1,34 @@
+name: Checks for Vizro E2E Flow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "vizro-e2e-flow/**"
+  pull_request:
+    branches:
+    paths:
+      - "vizro-e2e-flow/**"
+
+jobs:
+  changelog-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Find changed files to see if changelog fragment needed
+        id: changed-files
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "changelog_fragment_added=$(git diff --name-only --no-renames --diff-filter=A HEAD^1 HEAD -- 'vizro-e2e-flow/changelog.d/*.md' | xargs)" >> $GITHUB_OUTPUT
+          echo "skills_changed=$(git diff --name-only HEAD^1 HEAD -- 'vizro-e2e-flow/skills' | xargs)" >> $GITHUB_OUTPUT
+
+      - name: Fail if changelog fragment needed and wasn't added
+        if: ${{ steps.changed-files.outcome != 'skipped' && steps.changed-files.outputs.skills_changed && !steps.changed-files.outputs.changelog_fragment_added }}
+        run: |
+          echo "No changelog fragment .md file within changelog.d was detected. Run 'hatch run changelog:add' in vizro-e2e-flow/ to create such a fragment."
+          echo "If your PR contains changes that should be mentioned in the CHANGELOG in the next release, please uncomment the relevant section in your created fragment and describe the changes to the user."
+          echo "If your changes are not relevant for the CHANGELOG, please save and commit the file as is."
+          exit 1
