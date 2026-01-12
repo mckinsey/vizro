@@ -13,7 +13,17 @@ load_dotenv()
 
 df = px.data.gapminder()
 
-POSSIBLE_AXIS_VALUES = ["count", "gdpPercap", "continent", "avg_gdpPercap", "mean_gdpPercap", "total_gdpPercap", "gdp"]
+POSSIBLE_AXIS_VALUES = [
+    "count",
+    "gdpPercap",
+    "continent",
+    "avg_gdpPercap",
+    "mean_gdpPercap",
+    "total_gdpPercap",
+    "gdp",
+    "avg_gdp_per_capita",
+    "mean_gdp_per_capita",
+]
 POSSIBLE_CHART = ["px.bar", "go.Bar"]
 
 model = OpenAIChatModel(
