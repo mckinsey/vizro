@@ -446,7 +446,7 @@ class Dashboard(VizroBaseModel):
                     className="no-left" if left_hidden else "",
                 ),
                 html.Div(
-                    id="header-right-custom",
+                    id="header-right",
                     children=[header_right],
                     hidden=right_hidden,
                     className="no-left" if right_hidden else "",
@@ -482,7 +482,7 @@ class Dashboard(VizroBaseModel):
 
         # Build header
         header_left = outer_page["header"]
-        header_right = outer_page["header-right-custom"]
+        header_right = outer_page["header-right"]
 
         header_children = (
             [header_left]
@@ -510,7 +510,7 @@ class Dashboard(VizroBaseModel):
             if is_left_nav
             else html.Div(
                 children=header_children,
-                className="custom_header",
+                className="nav_header",
                 style={"display": "flex", "flexDirection": "row"},
             )
         )

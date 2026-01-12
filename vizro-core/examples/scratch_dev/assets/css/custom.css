@@ -12,8 +12,9 @@
   min-height: 0 !important;
 }
 
-.custom_header {
+.nav_header {
   border-bottom: 1px solid var(--bs-border-color);
+  width: 100%;
 }
 
 #header:not(:empty) {
