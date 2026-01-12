@@ -18,7 +18,6 @@ It serves as an extension to Vizro, leveraging natural language capabilities to 
 
 </div>
 
-
 ## Why Vizro-AI?
 
 ### Easy-to-use
