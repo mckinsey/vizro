@@ -19,7 +19,7 @@ dependencies = [
   "plotly",
   "black",
   "autoflake",
-  "pydantic-ai-slim"
+  "pydantic-ai-slim>=1.39.0"
 ]
 description = "Vizro-AI is a tool for generating data visualizations"
 dynamic = ["version"]
