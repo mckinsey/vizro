@@ -10,7 +10,7 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions._filter_action import _filter
+from vizro.actions._update_figures import update_figures
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 
@@ -923,27 +923,59 @@ class TestFilterPreBuildMethod:
         assert filter.selector.options == ["Africa", "Europe"]
 
     @pytest.mark.parametrize(
-        "filtered_column, selector, filter_function",
+        "test_column, test_selector, filter_function",
         [
-            ("lifeExp", None, _filter_between),
-            ("country", None, _filter_isin),
-            ("year", None, _filter_between),
+            ("continent", vm.RadioItems(), _filter_isin),
+            ("continent", vm.Dropdown(multi=False), _filter_isin),
+            ("continent", vm.Dropdown(multi=True), _filter_isin),
+            ("continent", vm.Checklist(), _filter_isin),
+            ("pop", vm.Slider(), _filter_isin),
+            ("pop", vm.RangeSlider(), _filter_between),
             ("year", vm.DatePicker(range=False), _filter_isin),
-            ("is_europe", None, _filter_isin),
+            ("year", vm.DatePicker(range=True), _filter_between),
+            ("is_europe", vm.Switch(), _filter_isin),
         ],
     )
-    def test_set_actions(self, filtered_column, selector, filter_function, managers_one_page_two_graphs):
-        filter = vm.Filter(column=filtered_column, selector=selector)
+    def test_filter_function(self, test_column, test_selector, filter_function, managers_one_page_two_graphs):
+        filter = vm.Filter(column=test_column, selector=test_selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._filter_function is filter_function
+
+    def test_set_actions(self, managers_one_page_two_graphs):
+        filter = vm.Filter(column="country")
+
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         [default_action] = filter.selector.actions
 
-        assert isinstance(default_action, _filter)
+        assert isinstance(default_action, update_figures)
         assert default_action.id == f"__filter_action_{filter.id}"
-        assert default_action.filter_function == filter_function
-        assert default_action.column == filtered_column
         assert default_action.targets == ["scatter_chart", "bar_chart"]
+
+    # @pytest.mark.parametrize(
+    #     "filtered_column, selector, filter_function",
+    #     [
+    #         ("lifeExp", None, _filter_between),
+    #         ("country", None, _filter_isin),
+    #         ("year", None, _filter_between),
+    #         ("year", vm.DatePicker(range=False), _filter_isin),
+    #         ("is_europe", None, _filter_isin),
+    #     ],
+    # )
+    # def test_set_actions(self, filtered_column, selector, filter_function, managers_one_page_two_graphs):
+    #     filter = vm.Filter(column=filtered_column, selector=selector)
+    #     model_manager["test_page"].controls = [filter]
+    #     filter.pre_build()
+    #
+    #     [default_action] = filter.selector.actions
+    #
+    #     assert isinstance(default_action, _filter)
+    #     assert default_action.id == f"__filter_action_{filter.id}"
+    #     assert default_action.filter_function == filter_function
+    #     assert default_action.column == filtered_column
+    #     assert default_action.targets == ["scatter_chart", "bar_chart"]
 
     # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
     #       all other tests. Also add tests for the custom selector that is an entirely new component and adjust docs.
@@ -976,10 +1008,8 @@ class TestFilterPreBuildMethod:
 
         [default_action] = filter.selector.actions
 
-        assert isinstance(default_action, _filter)
+        assert isinstance(default_action, update_figures)
         assert default_action.id == f"__filter_action_{filter.id}"
-        assert default_action.column == "lifeExp"
-        assert default_action.filter_function == _filter_between
         assert default_action.targets == ["scatter_chart", "bar_chart"]
 
     @pytest.mark.usefixtures("managers_one_page_container_controls")
@@ -1056,7 +1086,7 @@ class TestFilterBuild:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize(
-        "test_column ,test_selector",
+        "test_column, test_selector",
         [
             ("continent", vm.Checklist()),
             ("continent", vm.Dropdown()),
