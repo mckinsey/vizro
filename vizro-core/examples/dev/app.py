@@ -46,6 +46,19 @@ df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], 
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
 
+selected_countries = [
+    "Singapore",
+    "Malaysia",
+    "Thailand",
+    "Indonesia",
+    "Philippines",
+    "Vietnam",
+    "Cambodia",
+    "Myanmar",
+]
+
+selected_countries_gapminder = gapminder[gapminder["country"].isin(selected_countries)]
+
 example_cards = [
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
@@ -556,12 +569,17 @@ filters = vm.Page(
                 x="sepal_length",
                 y="petal_width",
                 color="species",
+                color_discrete_map=SPECIES_COLORS,
             )
         ),
         vm.Graph(
             id="scatter_chart2",
             figure=px.scatter(
-                iris, x="petal_length", y="sepal_width", color="species", color_discrete_map=SPECIES_COLORS
+                iris,
+                x="petal_length",
+                y="sepal_width",
+                color="species",
+                color_discrete_map=SPECIES_COLORS,
             ),
         ),
     ],
@@ -880,22 +898,9 @@ flex_layout = vm.Page(
 
 # ACTIONS ---------------------------------------------------------------------
 
-selected_countries = [
-    "Singapore",
-    "Malaysia",
-    "Thailand",
-    "Indonesia",
-    "Philippines",
-    "Vietnam",
-    "Cambodia",
-    "Myanmar",
-]
-
-selected_countries_gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
-
 
 @capture("graph")
-def bump_chart_with_highlight(data_frame, highlight_country=None):
+def bump_chart_with_highlight(data_frame, highlight_countries=None):
     """Custom bump chart based on px."""
     rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
 
@@ -903,8 +908,8 @@ def bump_chart_with_highlight(data_frame, highlight_country=None):
     fig.update_yaxes(title="Rank (1 = Highest lifeExp)", autorange="reversed", dtick=1)
     fig.update_traces(opacity=0.3, line_width=2)
 
-    if highlight_country is not None:
-        for country in highlight_country:
+    if highlight_countries:
+        for country in highlight_countries:
             fig.update_traces(selector={"name": country}, opacity=1, line_width=3)
 
     return fig
@@ -925,8 +930,8 @@ set_controls_action_cross_filter = vm.Page(
     components=[
         vm.Graph(
             figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species", custom_data="species"),
-            header="💡 Click one or more points to filter the histogram below "
-            "(use Box Select or Lasso Select for multiple points)",
+            header="💡 Select one or more points to filter the histogram below "
+            "(use Box Select or Lasso Select to select multiple points)",
             actions=va.set_control(value="species", control="species-filter"),
         ),
         vm.Graph(
@@ -947,7 +952,7 @@ set_controls_action_cross_parameter = vm.Page(
                 x="lifeExp",
                 labels={"lifeExp": "lifeExp in 2007"},
             ),
-            header="💡 Click any bar to highlight that country in the bump chart",
+            header="💡 Click any bar to highlight that country in the bump chart (use Shift + click to add/remove bars)",
             actions=va.set_control(control="highlight_parameter", value="y"),
         ),
         vm.Graph(

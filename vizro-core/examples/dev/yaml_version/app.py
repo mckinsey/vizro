@@ -21,9 +21,10 @@ selected_countries = [
     "Myanmar",
 ]
 
-gapminder_2007 = px.data.gapminder().query("year == 2007")
+gapminder = px.data.gapminder()
+gapminder_2007 = gapminder.query("year == 2007")
 gapminder_2007["is_europe"] = gapminder_2007["continent"] == "Europe"
-selected_countries_gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
+selected_countries_gapminder = gapminder[gapminder["country"].isin(selected_countries)]
 selected_countries_gapminder_2007 = selected_countries_gapminder.query("year == 2007")
 data_manager["iris"] = px.data.iris()
 data_manager["tips"] = px.data.tips()
@@ -47,15 +48,15 @@ def bump_chart_with_highlight(
     x,
     y,
     color,
-    highlight_country=None,
+    highlight_countries=None,
 ):
     """Custom bump chart based on px."""
     fig = px.line(data_frame, x=x, y=y, color=color, markers=True)
     fig.update_yaxes(title="Rank (1 = Highest lifeExp)", autorange="reversed", dtick=1)
     fig.update_traces(opacity=0.3, line_width=2, mode="lines+markers")
 
-    if highlight_country is not None:
-        for country in highlight_country:
+    if highlight_countries:
+        for country in highlight_countries:
             fig.update_traces(selector={"name": country}, opacity=1, line_width=3)
 
     return fig

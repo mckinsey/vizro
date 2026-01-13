@@ -845,7 +845,8 @@ pages:
           color: species
           custom_data: species
         header: |
-          💡 Click one or more points to filter the histogram below (use Box Select or Lasso Select for multiple points)
+          💡 Select one or more points to filter the histogram below
+          (use Box Select or Lasso Select to select multiple points)
         actions:
           - type: set_control
             value: species
@@ -881,7 +882,7 @@ pages:
           labels:
             - lifeExp: lifeExp in 2007
         header: |
-          💡 Click any bar to highlight that country in the bump chart
+          💡 Click any bar to highlight that country in the bump chart (use Shift + click to add/remove bars)
         actions:
           - type: set_control
             value: y
@@ -893,7 +894,7 @@ pages:
           x: year
           y: rank
           color: country
-          highlight_country: ${selected_country}
+          highlight_countries: ${selected_country}
         actions:
           - type: set_control
             value: y
@@ -903,7 +904,7 @@ pages:
     controls:
       - id: highlight_parameter
         targets:
-          - bump_chart.highlight_country
+          - bump_chart.highlight_countries
         visible: false
         selector:
           type: dropdown
