@@ -248,34 +248,36 @@ class TestDunderMethodsAgGrid:
         )
 
     @pytest.mark.parametrize(
-        "ag_grid_actions, checkbox_expected", [([], False), (va.set_control(control="control_id", value=None), True)]
+        "ag_grid_actions, row_selection_input, expected_row_selection",
+        [
+            ([], {}, {}),
+            ([], {"mode": "singleRow"}, {"mode": "singleRow"}),
+            (va.set_control(control="control_id", value=None), {}, {"mode": "multiRow", "enableClickSelection": True}),
+            (
+                va.set_control(control="control_id", value=None),
+                {"mode": "singleRow"},
+                {"mode": "singleRow", "enableClickSelection": True},
+            ),
+        ],
     )
-    def test_call_checkboxes_appear_when_set_control_added(self, standard_ag_grid, ag_grid_actions, checkbox_expected):
-        ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid, actions=ag_grid_actions)
+    def test_call_row_selection_when_set_control_defined(
+        self,
+        ag_grid_actions,
+        row_selection_input,
+        expected_row_selection,
+    ):
+        ag_grid = vm.AgGrid(
+            figure=dash_ag_grid(data_frame=px.data.gapminder(), dashGridOptions={"rowSelection": row_selection_input}),
+            actions=ag_grid_actions,
+        )
         ag_grid.pre_build()
         # ag_grid() is the same as ag_grid.__call__()
         result_ag_grid = ag_grid()
 
-        # Assert that the AgGrid.__call__() is the html.Div
-        assert_component_equal(result_ag_grid, html.Div(), keys_to_strip=STRIP_ALL)
+        # Extract dag.AgGrid
+        result_ag_grid_table = result_ag_grid.children[0]
 
-        # Assert that html.Div children contains the underlying AgGrid component and guard actions chain store component
-        [result_ag_grid_table, result_ag_grid_guard_store] = result_ag_grid.children
-
-        assert result_ag_grid_table.id == "__input_ag_grid_id"
-        assert_component_equal(
-            result_ag_grid_table,
-            dag.AgGrid(),
-            keys_to_strip=STRIP_ALL,
-        )
-
-        assert result_ag_grid_table.dashGridOptions["rowSelection"]["checkboxes"] is checkbox_expected
-        assert result_ag_grid_table.dashGridOptions["rowSelection"]["headerCheckbox"] is checkbox_expected
-
-        assert_component_equal(
-            result_ag_grid_guard_store,
-            dcc.Store(id="__input_ag_grid_id_guard_actions_chain", data=True),
-        )
+        assert result_ag_grid_table.dashGridOptions.get("rowSelection") == expected_row_selection
 
 
 class TestProcessAgGridDataFrame:

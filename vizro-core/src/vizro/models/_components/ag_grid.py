@@ -146,8 +146,20 @@ class AgGrid(VizroBaseModel):
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
 
-        # Enable checkboxes in the AgGrid if any of the actions is a `set_control` action.
-        figure = self.figure(_set_checkboxes=any(isinstance(action, set_control) for action in self.actions), **kwargs)
+        # Set the AgGrid row/header checkboxes if `set_control` action is used and if checkboxes are not explicitly set.
+        # if any(isinstance(action, set_control) for action in self.actions):
+        #     row_sel = kwargs.setdefault("dashGridOptions", {}).setdefault("rowSelection", {})
+        #     row_sel.setdefault("checkboxes", True)
+        #     row_sel.setdefault("headerCheckbox", True)
+
+        figure = self.figure(**kwargs)
+
+        # Set the AgGrid "rowSelection" if `set_control` action is used and if not explicitly set.
+        # Row and header checkboxes will automatically be enabled by AgGrid when "singleRow" or "multiRow" mode is set.
+        if any(isinstance(action, set_control) for action in self.actions) and hasattr(figure, "dashGridOptions"):
+            row_sel = figure.dashGridOptions.setdefault("rowSelection", {})
+            row_sel.setdefault("mode", "multiRow")
+            row_sel.setdefault("enableClickSelection", True)
 
         figure.id = self._inner_component_id
         return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
