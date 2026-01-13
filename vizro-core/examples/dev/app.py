@@ -57,7 +57,7 @@ selected_countries = [
     "Myanmar",
 ]
 
-selected_countries_gapminder = gapminder[gapminder["country"].isin(selected_countries)]
+selected_countries_gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
 
 example_cards = [
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),

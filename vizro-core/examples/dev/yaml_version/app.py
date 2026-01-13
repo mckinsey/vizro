@@ -24,7 +24,7 @@ selected_countries = [
 gapminder = px.data.gapminder()
 gapminder_2007 = gapminder.query("year == 2007")
 gapminder_2007["is_europe"] = gapminder_2007["continent"] == "Europe"
-selected_countries_gapminder = gapminder[gapminder["country"].isin(selected_countries)]
+selected_countries_gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
 selected_countries_gapminder_2007 = selected_countries_gapminder.query("year == 2007")
 data_manager["iris"] = px.data.iris()
 data_manager["tips"] = px.data.tips()
