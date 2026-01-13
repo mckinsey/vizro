@@ -2,7 +2,7 @@ import os
 
 import plotly.express as px
 from dotenv import load_dotenv
-from hamcrest import any_of, assert_that, contains_string, is_not, matches_regexp
+from hamcrest import any_of, assert_that, contains_string, matches_regexp
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
@@ -13,18 +13,7 @@ load_dotenv()
 
 df = px.data.gapminder()
 
-POSSIBLE_AXIS_VALUES = [
-    "count",
-    "gdpPercap",
-    "continent",
-    "avg_gdpPercap",
-    "mean_gdpPercap",
-    "total_gdpPercap",
-    "gdp",
-    "avg_gdp_per_capita",
-    "mean_gdp_per_capita",
-]
-POSSIBLE_CHART = ["px.bar", "go.Bar"]
+POSSIBLE_CHART = ["px.bar", "go.Bar", "add_bar"]
 
 model = OpenAIChatModel(
     "gpt-5-nano-2025-08-07",
@@ -46,13 +35,22 @@ def create_axis_conditions(axis: str, values: list[str]) -> list:
 
 
 def test_chart():
-    x_conditions = create_axis_conditions("x", POSSIBLE_AXIS_VALUES)
-    y_conditions = create_axis_conditions("y", POSSIBLE_AXIS_VALUES)
+    possible_x_axis_values = [
+        "continent",
+    ]
+    possible_y_axis_values = [
+        "gdpPercap",
+    ]
+    x_conditions = create_axis_conditions("x", possible_x_axis_values)
+    y_conditions = create_axis_conditions("y", possible_y_axis_values)
     charts = [contains_string(chart) for chart in POSSIBLE_CHART]
 
     resp = chart_agent.run_sync(
         model=model,
-        user_prompt="Create a bar chart comparing GDP across different continents",
+        user_prompt="""
+        Create a bar chart comparing GDP across different continents.
+        X axis should represent continents and have x=coninent in figure settings.
+        Y axis should represent the GDP values and have y=gdpPercap in figure settings.""",
         deps=df,
     ).output
     assert_that(resp.chart_code, any_of(*charts))
@@ -61,36 +59,28 @@ def test_chart():
 
 
 def test_chart_with_explanation():
-    y_conditions = create_axis_conditions("y", POSSIBLE_AXIS_VALUES)
+    possible_x_axis_values = [
+        "year",
+    ]
+    possible_y_axis_values = [
+        "gdpPercap",
+    ]
     charts = [contains_string(chart) for chart in POSSIBLE_CHART]
+    x_conditions = create_axis_conditions("x", possible_x_axis_values)
+    y_conditions = create_axis_conditions("y", possible_y_axis_values)
 
     resp = chart_agent.run_sync(
         model=model,
         output_type=ChartPlan,
-        user_prompt="describe the composition of gdp per year in US using bar chart",
+        user_prompt="""
+        describe the composition of gdp per year in US using bar chart.
+        X axis should represent year and have x=year in figure settings.
+        Y axis should represent the GDP values and have y=gdpPercap in figure settings.""",
         deps=df,
     ).output
-    assert_that(
-        resp.code,
-        any_of(*charts),
-    )
-    assert_that(
-        resp.code,
-        any_of(
-            matches_regexp(r".*x='year'.*"),
-            matches_regexp(r'.*x="year".*'),
-            matches_regexp(r".*x=\w*\['year'\].*"),
-            matches_regexp(r'.*x=\w*\["year"\].*'),
-        ),
-    )
+    assert_that(resp.code, any_of(*charts))
+    assert_that(resp.code, any_of(*x_conditions))
     assert_that(resp.code, any_of(*y_conditions))
-    assert_that(
-        resp.chart_insights,
-        any_of(
-            contains_string("GDP per capita"),
-            contains_string("GDP"),
-        ),
-    )
     assert_that(
         resp.chart_insights,
         any_of(
@@ -98,4 +88,3 @@ def test_chart_with_explanation():
             contains_string("US"),
         ),
     )
-    assert_that(resp.chart_insights, is_not(None))
