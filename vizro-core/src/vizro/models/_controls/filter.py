@@ -10,7 +10,7 @@ from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_
 from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions._filter_action import _filter
+from vizro.actions import update_figures
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
@@ -285,15 +285,9 @@ class Filter(VizroBaseModel):
         else:
             self._filter_function = _filter_isin
 
+        # TODO AM-PP: If [] or None is set make that the actions are not overwritten. Could be tricky, but doable.
         if not self.selector.actions:
-            self.selector.actions = [
-                _filter(
-                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    column=self.column,
-                    filter_function=self._filter_function,
-                    targets=self.targets,
-                ),
-            ]
+            self.selector.actions = update_figures(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.

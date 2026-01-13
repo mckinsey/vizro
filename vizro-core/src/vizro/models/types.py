@@ -25,7 +25,6 @@ from pydantic import (
     ValidationError,
     ValidationInfo,
 )
-from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
@@ -704,10 +703,8 @@ ActionType = Annotated[
     | Annotated["filter_interaction", Tag("filter_interaction")]
     | Annotated["set_control", Tag("set_control")]
     | Annotated["show_notification", Tag("show_notification")]
-    | Annotated["update_notification", Tag("update_notification")]
-    | SkipJsonSchema[Annotated["_filter", Tag("_filter")]]
-    | SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]]
-    | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
+    | Annotated["update_figures", Tag("update_figures")]
+    | Annotated["update_notification", Tag("update_notification")],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [

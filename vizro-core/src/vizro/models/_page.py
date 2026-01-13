@@ -16,7 +16,7 @@ from pydantic import (
 from typing_extensions import TypedDict
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions._on_page_load import _on_page_load
+from vizro.actions import update_figures
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
@@ -150,7 +150,15 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
+            # TODO AM-PP OQ: Why mypy raises an issue here if a single update_figures object is assigned?
+            # This doesn't happen in other places where we assign a single action to self.actions.
+            self.actions = [update_figures(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
+            # TODO AM-MS-PP OQ: Here's an interesting situation: Implementation like this below relies on that the
+            # update_figures.pre_build would calculate its targets. However, that's not the case as this update_figure
+            # object is added to the model_manager after Vizro._pre_build creates the set(model_managers).
+            # So, with the current implementation, objects that are created as a result of other models' pre_build
+            # methods will never have their pre_build called. Is there any specific reason for this design decision?
+            # self.actions = update_figures(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}")
 
         # Convert generator to list as it's going to be iterated multiple times.
         # Use "root_model=self" as controls can be defined inside a "Container.controls" under the "Page.components".
