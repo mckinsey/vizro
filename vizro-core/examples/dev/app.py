@@ -44,6 +44,8 @@ custom_fig_df = pd.DataFrame(
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
+SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+
 example_cards = [
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
@@ -559,10 +561,7 @@ filters = vm.Page(
         vm.Graph(
             id="scatter_chart2",
             figure=px.scatter(
-                iris,
-                x="petal_length",
-                y="sepal_width",
-                color="species",
+                iris, x="petal_length", y="sepal_width", color="species", color_discrete_map=SPECIES_COLORS
             ),
         ),
     ],
@@ -696,6 +695,7 @@ controls_in_containers = vm.Page(
                                 x="sepal_width",
                                 y="sepal_length",
                                 color="species",
+                                color_discrete_map=SPECIES_COLORS,
                                 marginal_y="violin",
                                 marginal_x="box",
                             ),
@@ -891,7 +891,7 @@ selected_countries = [
     "Myanmar",
 ]
 
-gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
+selected_countries_gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
 
 
 @capture("graph")
@@ -904,7 +904,8 @@ def bump_chart_with_highlight(data_frame, highlight_country=None):
     fig.update_traces(opacity=0.3, line_width=2)
 
     if highlight_country is not None:
-        fig.update_traces(selector={"name": highlight_country}, opacity=1, line_width=3)
+        for country in highlight_country:
+            fig.update_traces(selector={"name": country}, opacity=1, line_width=3)
 
     return fig
 
@@ -924,11 +925,16 @@ set_controls_action_cross_filter = vm.Page(
     components=[
         vm.Graph(
             figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species", custom_data="species"),
+            header="💡 Click one or more points to filter the histogram below "
+            "(use Box Select or Lasso Select for multiple points)",
             actions=va.set_control(value="species", control="species-filter"),
         ),
-        vm.Graph(figure=px.histogram(iris, x="petal_length", color="species")),
+        vm.Graph(
+            id="histogram_chart",
+            figure=px.histogram(iris, x="petal_length", color="species", color_discrete_map=SPECIES_COLORS),
+        ),
     ],
-    controls=[vm.Filter(column="species", id="species-filter", visible=False)],
+    controls=[vm.Filter(column="species", id="species-filter", visible=False, targets=["histogram_chart"])],
 )
 
 set_controls_action_cross_parameter = vm.Page(
@@ -936,7 +942,7 @@ set_controls_action_cross_parameter = vm.Page(
     components=[
         vm.Graph(
             figure=px.bar(
-                gapminder.query("year == 2007"),
+                selected_countries_gapminder.query("year == 2007"),
                 y="country",
                 x="lifeExp",
                 labels={"lifeExp": "lifeExp in 2007"},
@@ -946,14 +952,14 @@ set_controls_action_cross_parameter = vm.Page(
         ),
         vm.Graph(
             id="bump_chart",
-            figure=bump_chart_with_highlight(data_frame=gapminder),
+            figure=bump_chart_with_highlight(data_frame=selected_countries_gapminder),
         ),
     ],
     controls=[
         vm.Parameter(
             id="highlight_parameter",
             targets=["bump_chart.highlight_country"],
-            selector=vm.RadioItems(options=["NONE", *gapminder["country"]]),
+            selector=vm.Dropdown(value=[], options=["NONE", *selected_countries], multi=True),
             visible=False,
         ),
     ],

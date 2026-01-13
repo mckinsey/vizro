@@ -135,7 +135,14 @@ pages:
 
           This word will be _**bold and italic**_
         type: card
+      - text: Commodi repudiandae consequuntur voluptatum
+        header: Card header
+        footer: Card footer
+        type: card
     title: Cards
+    layout:
+      type: grid
+      grid: [[0, 1, 2], [3, 4, 5]]
   - components:
       - figure:
           _target_: kpi_card
@@ -246,6 +253,12 @@ pages:
           x: petal_length
           y: sepal_width
           color: species
+          color_discrete_map:
+            {
+              "setosa": "#00b4ff",
+              "versicolor": "#ff9222",
+              "virginica": "#3949ab",
+            }
         id: scatter_chart2
         type: graph
     controls:
@@ -778,6 +791,12 @@ pages:
               x: sepal_width
               y: sepal_length
               color: species
+              color_discrete_map:
+                {
+                  "setosa": "#00b4ff",
+                  "versicolor": "#ff9222",
+                  "virginica": "#3949ab",
+                }
               marginal_y: violin
               marginal_x: box
             type: graph
@@ -817,6 +836,110 @@ pages:
       grid: [[0, 1]]
       type: grid
     title: Controls in containers
+  - components:
+      - figure:
+          _target_: scatter
+          data_frame: iris
+          x: petal_length
+          y: sepal_length
+          color: species
+          custom_data: species
+        header: |
+          💡 Click one or more points to filter the histogram below (use Box Select or Lasso Select for multiple points)
+        actions:
+          - type: set_control
+            value: species
+            control: species-filter
+        type: graph
+      - figure:
+          _target_: histogram
+          data_frame: iris
+          x: petal_length
+          color: species
+          color_discrete_map:
+            {
+              "setosa": "#00b4ff",
+              "versicolor": "#ff9222",
+              "virginica": "#3949ab",
+            }
+        id: histogram_chart
+        type: graph
+    controls:
+      - column: species
+        id: species-filter
+        targets:
+          - histogram_chart
+        visible: false
+        type: filter
+    title: Set controls - cross filter
+  - components:
+      - figure:
+          _target_: bar
+          data_frame: selected_countries_gapminder_2007
+          x: lifeExp
+          y: country
+          labels:
+            - lifeExp: lifeExp in 2007
+        header: |
+          💡 Click any bar to highlight that country in the bump chart
+        actions:
+          - type: set_control
+            value: y
+            control: highlight_parameter
+        type: graph
+      - figure:
+          _target_: __main__.bump_chart_with_highlight
+          data_frame: selected_countries_gapminder
+          x: year
+          y: rank
+          color: country
+          highlight_country: ${selected_country}
+        actions:
+          - type: set_control
+            value: y
+            control: highlight_parameter
+        id: bump_chart
+        type: graph
+    controls:
+      - id: highlight_parameter
+        targets:
+          - bump_chart.highlight_country
+        visible: false
+        selector:
+          type: dropdown
+          multi: true
+          value: []
+          options:
+            [
+              NONE,
+              "Singapore",
+              "Malaysia",
+              "Thailand",
+              "Indonesia",
+              "Philippines",
+              "Vietnam",
+              "Cambodia",
+              "Myanmar",
+            ]
+        type: parameter
+    title: Set controls - cross parameter
+  - components:
+      - figure:
+          _target_: histogram
+          data_frame: iris
+          x: sepal_length
+        type: graph
+      - type: button
+        text: Export data
+        actions:
+          - type: export_data
+          - type: show_notification
+            text: Data exported successfully!
+            variant: success
+            icon: download
+    title: Notifications
+    layout:
+      type: flex
 navigation:
   nav_selector:
     type: nav_bar
@@ -848,6 +971,9 @@ navigation:
             - Flex layout
           Actions:
             - Export data
+            - Set controls - cross filter
+            - Set controls - cross parameter
+            - Notifications
           Extensions:
             - Custom Charts
             - Custom Tables
