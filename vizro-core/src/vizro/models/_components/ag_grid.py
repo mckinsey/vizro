@@ -146,12 +146,6 @@ class AgGrid(VizroBaseModel):
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
 
-        # Set the AgGrid row/header checkboxes if `set_control` action is used and if checkboxes are not explicitly set.
-        # if any(isinstance(action, set_control) for action in self.actions):
-        #     row_sel = kwargs.setdefault("dashGridOptions", {}).setdefault("rowSelection", {})
-        #     row_sel.setdefault("checkboxes", True)
-        #     row_sel.setdefault("headerCheckbox", True)
-
         figure = self.figure(**kwargs)
 
         # Set the AgGrid "rowSelection" if `set_control` action is used and if not explicitly set.
