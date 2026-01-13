@@ -12,32 +12,25 @@
 <p>
 <font size="+1">
 Vizro-AI is a tool designed for generating data visualizations.
-It serves as an extension to Vizro, leveraging natural language capabilities to empower users in creating both charts and dashboards, making it a comprehensive solution for visual data exploration.
+It serves as an extension to Vizro, leveraging natural language capabilities to empower users in creating interactive charts, making it a comprehensive solution for visual data exploration.
 </font>
 </p>
 
 </div>
 
-## Try out live
-
-| Platform     | Chart creation                                                                                                                                                                            | Dashboard creation                                                                                                                                                                            |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PyCafe       | https://py.cafe/app/vizro-official/vizro-ai-charts                                                                                                                                        |                                                                                                                                                                                               |
-| Google Colab | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/main/vizro-ai/examples/chart_by_vizro_ai.ipynb) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/main/vizro-ai/examples/dashboard_by_vizro_ai.ipynb) |
-
 ## Why Vizro-AI?
 
 ### Easy-to-use
 
-One of the key strengths of Vizro-AI lies in its natural language capabilities, making it accessible to coding novices. Vizro-AI provides a user-friendly interface that allows to create interactive charts and dashboards while offering detailed insights about the data and the generated code.
+One of the key strengths of Vizro-AI lies in its natural language capabilities, making it accessible to coding novices. Vizro-AI provides a user-friendly interface that allows to create interactive charts while offering detailed insights about the data and the generated code.
 
 ### Visually-optimized
 
-Vizro-AI also caters to data practitioners who often find themselves spending more time in formatting rather than actual visualization creation. Vizro-AI enables users to speed up the process of creating visually appealing charts and dashboards by using Vizro's themes which incorporate design best practices by default.
+Vizro-AI also caters to data practitioners who often find themselves spending more time in formatting rather than actual visualization creation. Vizro-AI enables users to speed up the process of creating visually appealing charts by using Vizro's themes which incorporate design best practices by default.
 
 ### End-to-End solution
 
-Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce interactive charts and power of [Vizro](https://github.com/mckinsey/vizro) to create interactive dashboards, making it a complete solution for visual data exploration.
+Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce interactive charts, making it a complete solution for visual data exploration.
 
 ## Disclaimer
 
@@ -49,4 +42,4 @@ For more information, please refer to our [Documentation](https://vizro.readthed
 
 ## Acknowledgment
 
-Vizro-AI is powered by [LangChain](https://github.com/langchain-ai/langchain).
+Vizro-AI is powered by [Pydantic AI](https://ai.pydantic.dev/).

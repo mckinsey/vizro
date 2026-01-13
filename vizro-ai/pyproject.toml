@@ -19,7 +19,7 @@ dependencies = [
   "plotly",
   "black",
   "autoflake",
-  "pydantic-ai-slim"
+  "pydantic-ai-slim>=1.39.0"
 ]
 description = "Vizro-AI is a tool for generating data visualizations"
 dynamic = ["version"]
@@ -66,9 +66,6 @@ filterwarnings = [
   # Ignore `Layout` FutureWarning until vizro 0.2.0 released:
   "ignore:The `Layout` model has been renamed `Grid`:FutureWarning",
   "ignore:The `Layout` model has been renamed",
-  # Ignore langgraph.warnings.LangGraphDeprecatedSinceV10: Importing Send from langgraph.constants is deprecated.
-  # Please use 'from langgraph.types import Send' instead. Deprecated in LangGraph V1.0 to be removed in V2.0.
-  "ignore:Importing Send from langgraph.constants is deprecated",
   # Ignore asyncio event loop deprecation warning from pydantic_ai in Python 3.13+
   "ignore:There is no current event loop:DeprecationWarning"
 ]

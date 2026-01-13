@@ -1,3 +1,5 @@
+"""Deprecated VizroAI class."""
+
 import logging
 
 import pandas as pd
