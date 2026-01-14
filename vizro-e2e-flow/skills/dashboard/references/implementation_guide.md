@@ -8,7 +8,7 @@ Deep guidance for Phase 4: Building the dashboard with MCP tools or Python.
 - MCP Workflow (load data, validate config)
 - Python Implementation (installation, basic structure, imports)
 - Components Reference (Graph, AgGrid, Figure, Card, Container, Tabs)
-- Controls Reference (Filter, Parameter, Button)
+- Controls Reference (Filter, Parameter)
 - Layout Reference (Grid, Flex, Nested)
 - Custom Charts (@capture decorator)
 - Multi-Page Dashboard
@@ -275,7 +275,7 @@ vm.Card(
 ```python
 vm.Container(
     title="Section Title",
-    layout=vm.Grid(grid=[*[[0, 1]] * 3], row_min_height="140px"),  # 3 rows = 420px
+    layout=vm.Grid(grid=[*[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]] * 3], row_min_height="140px"),  # 3 rows = 420px
     components=[
         vm.Graph(figure=px.bar(...)),
         vm.Graph(figure=px.line(...)),
@@ -303,13 +303,31 @@ vm.Tabs(
 ### Filter
 
 ```python
-# Basic filter (auto-detects selector type)
-vm.Filter(column="region")
+# Basic filter
+vm.Filter(column="category")
+```
 
-# With specific selector
-vm.Filter(column="status", selector=vm.Checklist())
-vm.Filter(column="date", selector=vm.DatePicker())
+**IMPORTANT**: Choose the appropriate selector - don't default to Dropdown for everything:
+
+```python
+# RadioItems - for 2-4 mutually exclusive options
+vm.Filter(column="region", selector=vm.RadioItems())  # North, South, East, West
+
+# Checklist - for multi-select or boolean
+vm.Filter(column="status", selector=vm.Checklist())  # Active, Inactive, Pending
+
+# Dropdown - for 5+ options
+vm.Filter(column="product_category", selector=vm.Dropdown())  # Many categories
+
+# RangeSlider - for numeric ranges
 vm.Filter(column="price", selector=vm.RangeSlider(min=0, max=1000))
+
+# Slider - for single numeric value
+vm.Filter(column="year", selector=vm.Slider(min=2020, max=2025))
+
+# DatePicker - for dates
+vm.Filter(column="date", selector=vm.DatePicker())
+vm.Filter(column="date", selector=vm.DatePicker(range=True))  # Date range
 ```
 
 ### Parameter
@@ -327,37 +345,93 @@ vm.Parameter(
 )
 ```
 
-### Button with Export
-
-```python
-import vizro.actions as va
-
-vm.Button(
-    text="Export Data",
-    actions=[va.export_data()],
-)
-```
-
 ## Layout Reference
 
-### Grid Layout
+### Grid Configuration
+
+**Grid Rules**:
+
+- Each sub-list is a row
+- Integers are component indices (0-based, consecutive)
+- Use `-1` for empty cells
+- Components span rectangular areas by repeating their index
+- Always use `row_min_height="140px"`
+- **12 columns recommended** (not enforced) - examples below use 12 columns
 
 ```python
 vm.Page(
     title="Dashboard",
     layout=vm.Grid(
         grid=[
-            [0, 0, 1, 1, 2, 2, 3, 3],  # 4 KPIs
-            [4, 4, 4, 4, 5, 5, 5, 5],  # 2 charts
-            [4, 4, 4, 4, 5, 5, 5, 5],
-            [4, 4, 4, 4, 5, 5, 5, 5],
-            [6, 6, 6, 6, 6, 6, 6, 6],  # Full-width table
-            [6, 6, 6, 6, 6, 6, 6, 6],
+            [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],  # Row 1: Components 0 and 1 (6 cols each)
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],  # Row 2: Component 2 spans full width
+        ],
+        row_min_height="140px",
+    ),
+    components=[comp0, comp1, comp2],
+)
+```
+
+### Standard Grid Pattern
+
+```python
+vm.Page(
+    title="Dashboard",
+    layout=vm.Grid(
+        grid=[
+            [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3],  # 4 KPIs (3 cols each)
+            [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],  # 2 charts (6 cols each)
+            [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
+            [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
+            [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],  # Full-width table
+            [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
         ],
         row_min_height="140px",
     ),
     components=[kpi1, kpi2, kpi3, kpi4, chart1, chart2, table],
 )
+```
+
+### Flexible Width Distributions
+
+12 columns allows uneven widths since 12 has many divisors (1, 2, 3, 4, 6, 12):
+
+```python
+# Equal widths: 3 charts × 4 cols
+[[0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]]
+
+# Emphasis on primary chart: 6 + 3 + 3
+[[0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2]]
+
+# Two-thirds + one-third: 8 + 4
+[[0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1]]
+
+# Half + half: 6 + 6
+[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]]
+```
+
+### Row Height Control
+
+```python
+# Always use 140px row height
+vm.Grid(grid=[...], row_min_height="140px")
+
+# Component height = row_min_height × rows_spanned
+# KPI cards: 1 row = 140px (optimal)
+# Charts: 3 rows = 420px (minimum for proper rendering)
+# Tables: 4+ rows = 560px+ (adjust based on content)
+```
+
+### Creating Taller Components
+
+Use list multiplication for components spanning multiple rows:
+
+```python
+grid = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # Header: 1 row (full width)
+    *[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]] * 3,  # Chart: 3 rows (repeat pattern)
+    *[[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3]] * 4,  # Two charts side-by-side: 4 rows
+]
 ```
 
 ### Flex Layout
@@ -367,6 +441,23 @@ vm.Page(
     title="Simple Page",
     layout=vm.Flex(),  # Automatic vertical stacking
     components=[chart1, chart2, table],
+)
+```
+
+### Container with Grid
+
+```python
+vm.Container(
+    title="Regional Analysis",
+    layout=vm.Grid(grid=[*[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]] * 3], row_min_height="140px"),  # 3 rows = 420px
+    components=[
+        vm.Graph(figure=px.bar(df, x="region", y="sales")),
+        vm.Graph(figure=px.pie(df, values="sales", names="region")),
+    ],
+    controls=[
+        vm.Filter(column="quarter"),  # Only affects this container
+    ],
+    variant="outlined",  # or "filled", "plain"
 )
 ```
 
@@ -380,7 +471,7 @@ vm.Page(
         vm.Graph(figure=px.line(...)),
         vm.Container(
             title="Details",
-            layout=vm.Grid(grid=[[0, 1, 2]]),
+            layout=vm.Grid(grid=[[0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]]),  # 3 charts (4 cols each)
             components=[chart1, chart2, chart3],
         ),
     ],
@@ -470,8 +561,8 @@ overview = vm.Page(
     title="Overview",
     layout=vm.Grid(
         grid=[
-            [0, 0, 1, 1],  # KPIs: 1 row = 140px
-            *[[2, 2, 2, 2]] * 3,  # Chart: 3 rows = 420px
+            [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],  # KPIs: 1 row = 140px (6 cols each)
+            *[[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]] * 3,  # Chart: 3 rows = 420px (full width)
         ],
         row_min_height="140px",
     ),

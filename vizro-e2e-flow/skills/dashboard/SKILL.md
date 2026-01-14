@@ -36,12 +36,7 @@ Dashboard Development Progress:
 
 ## Spec Files: Documenting Decisions
 
-Each phase produces a spec file in the `spec/` directory. These files:
-
-- **Document reasoning**: Capture why decisions were made
-- **Enable collaboration**: Team members can review and provide feedback
-- **Support handover**: New team members can understand the design history
-- **Allow resumption**: Work can continue from spec files in future sessions
+IMPORTANT: Each phase produces a spec file in the `spec/` directory to document reasoning, enable collaboration, and allow resumption in future sessions. Create the `spec/` directory at project start.
 
 Create the `spec/` directory at the start of the project.
 
@@ -62,7 +57,7 @@ Create the `spec/` directory at the start of the project.
 
 - **Limit KPIs**: 5-7 primary metrics per page maximum
 - **Clear hierarchy**: Overview → Detail → Granular (max 3 levels)
-- **Role-based**: Different users may need different views
+- **Persona-based**: Different users may need different views
 - **Decision-focused**: Every metric should inform a decision
 
 ### REQUIRED OUTPUT: spec/1_information_architecture.yaml
@@ -72,18 +67,15 @@ Save this file BEFORE proceeding to Phase 2:
 ```yaml
 # spec/1_information_architecture.yaml
 dashboard:
-  name: [Dashboard Name]
-  purpose: [One sentence describing the main goal]
-
+  name: [Name]
+  purpose: [One sentence goal]
 pages:
   - name: [Page Name]
-    purpose: [What question does this page answer?]
+    purpose: [What question does this answer?]
     kpis: [List of 3-7 key metrics]
-
 data_sources:
   - name: [Source Name]
     type: [csv/database/api]
-
 decisions:
   - decision: [What was decided]
     reasoning: [Why this choice was made]
@@ -127,16 +119,23 @@ Tier 3: Component-level
 **Optimal Grid Configuration**:
 
 - Always use `row_min_height="140px"` (at page or container level)
-- Use **8 or 12 columns** for width control
+- **12 columns recommended** (not enforced) - flexible due to many divisors (1, 2, 3, 4, 6, 12)
 - Control height by giving components **more rows**
 
-**Component Sizing** (height = rows × 140px):
+**Component Sizing** (based on 12-column grid, height = rows × 140px):
 
-| Component | Columns    | Rows | Height |
-| --------- | ---------- | ---- | ------ |
-| KPI cards | 2-3        | 1    | 140px  |
-| Charts    | 3-4        | 3+   | 420px+ |
-| Tables    | Full width | 4+   | 560px+ |
+| Component   | Columns   | Rows | Height    |
+| ----------- | --------- | ---- | --------- |
+| KPI Card    | 3         | 1    | 140px     |
+| Small Chart | 4         | 3    | 420px     |
+| Large Chart | 6         | 4-5  | 560-700px |
+| Table       | 12 (full) | 4-6  | 560-840px |
+
+**Exceptions** - size based on content to render:
+
+- Text-heavy Card → treat like a chart (3+ rows)
+- Small Table (<5 columns) → doesn't need full width
+- Button → 1 row is enough
 
 **Layout Rules**:
 
@@ -145,23 +144,24 @@ Tier 3: Component-level
 - Give charts minimum 3 rows (use `*[[...]] * 3` pattern)
 - Use `-1` for intentional empty cells
 
-### Filter Placement
+### Filter Placement & Selectors
 
 ```
-Is this filter needed across multiple visualizations?
-├─ YES → Page-level filter (left sidebar)
-└─ NO → Container-level filter (above container in main area)
+Filter needed across multiple visualizations?
+├─ YES → Page-level (left sidebar)
+└─ NO → Container-level (top of the container)
 ```
 
-**Page-level filters**: Always in left collapsible sidebar **Container filters**: Above the container they control
+**Choose appropriate selectors** - don't default to Dropdown:
 
-### When to Use Containers
-
-Use `vm.Container` when you need:
-
-- **Logical grouping**: Split page into subsections
-- **Scoped controls**: Filters/parameters for specific sections only
-- **Section titles**: Clear labels to distinguish content areas
+| Data Type      | Selector        | Example                    |
+| -------------- | --------------- | -------------------------- |
+| 2-4 options    | **RadioItems**  | Region (N/S/E/W)           |
+| 5+ options     | Dropdown        | Category (many)            |
+| Numeric range  | **RangeSlider** | Price ($0-$1000)           |
+| Single number  | **Slider**      | Year (2020-2025)           |
+| Date           | **DatePicker**  | Order date                 |
+| Multi-select   | **Checklist**   | Status (Active, Pending)   |
 
 ### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
 
@@ -172,20 +172,17 @@ Save this file BEFORE proceeding to Phase 3:
 pages:
   - name: [Must match Phase 1]
     layout_type: grid  # or flex
-    grid_columns: 8  # or 12
-    grid_pattern: [[0, 1], [2, 3]] # Component placement
+    grid_columns: 12
+    grid_pattern: [[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]] # Component placement
 
     containers:
       - name: [Container Name]
         has_own_filters: true/false
-
     filter_placement:
-      page_level: [column1, column2]
-      container_level: [column3]
-
+      page_level: [columns with selector types]
+      container_level: [columns with selector types]
 wireframe: |
-  [ASCII wireframe for complex pages - optional]
-
+  [ASCII wireframe for ALL pages]
 decisions:
   - decision: [What was decided]
     reasoning: [Why this choice was made]
@@ -195,10 +192,9 @@ decisions:
 
 Before proceeding to Phase 3:
 
-- [ ] Layout follows Vizro constraints (filters in sidebar)
-- [ ] Navigation requires max 3 clicks to any information
+- [ ] Layout follows Vizro constraints
 - [ ] Filter placement is intentional and documented
-- [ ] User has approved the layout structure
+- [ ] User has been presented ASCI wireframes for every page and approved them
 
 → See `references/layout_patterns.md` for wireframe templates and examples
 
@@ -210,22 +206,18 @@ Before proceeding to Phase 3:
 
 ### Chart Type Quick Reference
 
-| Data Question           | Recommended Chart                                     |
-| ----------------------- | ----------------------------------------------------- |
-| Compare categories      | Bar chart (horizontal for 8+ categories)              |
-| Show trend over time    | Line chart (12+ points) or Column chart (\<12 points) |
-| Part-to-whole (simple)  | Pie/donut (2-5 slices ONLY)                           |
-| Part-to-whole (complex) | Stacked bar chart                                     |
-| Distribution            | Histogram or box plot                                 |
-| Correlation             | Scatter plot                                          |
-| Performance vs target   | Bullet chart                                          |
+| Data Question           | Recommended Chart                    |
+| ----------------------- | ------------------------------------ |
+| Compare categories      | Bar chart (horizontal for 8+ items)  |
+| Show trend over time    | Line chart (12+ points)              |
+| Part-to-whole (simple)  | Pie/donut (2-5 slices ONLY)          |
+| Part-to-whole (complex) | Stacked bar chart                    |
+| Distribution            | Histogram or box plot                |
+| Correlation             | Scatter plot                         |
 
 ### Chart Anti-Patterns (Never Use)
 
-- **3D charts**: Distort perception
-- **Pie charts with 6+ slices**: Use bar chart instead
-- **Dual Y-axis**: Confusing, use separate charts
-- **Bar charts not starting at zero**: Misleading
+- 3D charts, Pie charts with 6+ slices, Dual Y-axis, Bar charts not starting at zero
 
 ### Color Strategy
 
@@ -248,13 +240,7 @@ neutral_color = "gray"  # Inactive
 
 ### KPI Card Pattern
 
-Use Vizro built-in `kpi_card` and `kpi_card_reference` from `vizro.figures`:
-
-- `kpi_card()`: Simple metric display with formatting and icons
-- `kpi_card_reference()`: Metric with comparison (auto green/red coloring)
-- Use `reverse_color=True` when lower is better (costs, errors)
-
-→ See `references/implementation_guide.md` for code examples
+Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors).
 
 ### Chart Title Pattern
 
@@ -303,7 +289,7 @@ Before proceeding to Phase 4:
 
 ## Phase 4: Implement Dashboard
 
-**Goal**: Build the working dashboard **strictly following** Phase 1-3 spec files.
+**Goal**: Build the dashboard **strictly following** Phase 1-3 spec files.
 
 **CRITICAL**: Before writing any code, review the spec files:
 
@@ -344,18 +330,14 @@ Use: validate_dashboard_config(dashboard_config={...}, data_infos=[...], custom_
 
 ### Key Implementation Patterns
 
-**Dashboard Structure**: `vm.Dashboard` → `vm.Page` → components + controls
-
+- **Structure**: `vm.Dashboard` → `vm.Page` → components + controls
 **Custom Charts**: Use `@capture("graph")` decorator when you need:
 
 - `update_layout()`, `update_traces()` calls
 - Reference lines or annotations
 - Data manipulation before visualization
-
 **Tables**: Always use `vm.AgGrid` with `dash_ag_grid()` (never `go.Table`)
-
 **Containers**: Use `vm.Container` for scoped filters that only affect grouped components
-
 **Run**: `uv run python app.py` → Access at http://localhost:8050
 
 → See `references/implementation_guide.md` for complete code examples
@@ -391,6 +373,7 @@ Before proceeding to Phase 5, verify against spec files:
 - [ ] All pages from `spec/1_information_architecture.yaml` are implemented
 - [ ] Layout matches `spec/2_interaction_ux.yaml` (grid, filters, containers)
 - [ ] Chart types match `spec/3_visual_design.yaml`
+- [ ] Color usage is consistent and intentional
 - [ ] Dashboard runs without errors
 - [ ] Any deviations are documented in `spec/4_implementation.yaml`
 
@@ -414,21 +397,16 @@ Functional Testing:
 - [ ] No JavaScript errors in browser console
 ```
 
-### Using Playwright MCP (If Available)
-
+### Playwright MCP Testing
 Look for `mcp__*playwright__*` tools.
 
 **Basic Testing Flow**:
 
 1. Navigate to dashboard URL
-1. Take snapshot to verify layout
 1. Click through all pages
-1. Test filter interactions
 1. Check console for errors
-
 ```
 Use: browser_navigate(url="http://localhost:8050")
-Use: browser_snapshot()
 Use: browser_click(element="Page Name", ref="...")
 Use: browser_console_messages()
 ```
@@ -449,19 +427,12 @@ testing:
     all_pages_work: true/false
     issues: []
 
-  controls:
-    filters_work: true/false
-    parameters_work: true/false
-    issues: []
-
   console:
     no_errors: true/false
     errors_found: []
 
 user_acceptance:
   requirements_met: true/false
-  feedback: [User feedback if any]
-
 dashboard_ready: true/false
 ```
 
@@ -475,7 +446,7 @@ Return to Phase 1 requirements:
 
 ### Done When
 
-- Dashboard launches without errors, all controls work, no console errors
+- Dashboard launches without errors, no console errors
 - User confirms requirements are met
 - All 5 spec files saved in `spec/` directory
 
@@ -486,7 +457,7 @@ Return to Phase 1 requirements:
 | File                                     | When to Read                          |
 | ---------------------------------------- | ------------------------------------- |
 | `references/information_architecture.md` | Phase 1: Deep dive on requirements    |
-| `references/layout_patterns.md`          | Phase 2: Wireframes, grid examples    |
+| `references/layout_patterns.md`          | Phase 2: Wireframes, component sizing |
 | `references/chart_selection.md`          | Phase 3: Chart decision trees         |
 | `references/common_mistakes.md`          | Phase 3: Anti-patterns to avoid       |
 | `references/implementation_guide.md`     | Phase 4: Complete Python/MCP examples |
@@ -496,6 +467,6 @@ Return to Phase 1 requirements:
 
 ## Quick Reference: Vizro Components
 
-**Components**: `Dashboard`, `Page`, `Container`, `Tabs`, `Graph`, `Figure`, `AgGrid`, `Card`, `Filter`, `Parameter`, `Button`
+**Components**: `Dashboard`, `Page`, `Container`, `Tabs`, `Graph`, `Figure`, `AgGrid`, `Card`, `Filter`, `Parameter`, `Selector`, `Button`
 
 **Key Imports**: `import vizro.models as vm`, `from vizro import Vizro`, `import vizro.plotly.express as px`, `from vizro.tables import dash_ag_grid`, `from vizro.figures import kpi_card, kpi_card_reference`, `from vizro.models.types import capture`

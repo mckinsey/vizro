@@ -4,108 +4,66 @@ Deep guidance for Phase 2: Designing Layout & Interactions.
 
 ## Contents
 
-- Vizro Layout System (Grid vs Flex)
-- Grid Layout Fundamentals (configuration, sizing, row height)
-- Wireframe Templates (component labels, interaction annotations, guidelines)
-- Container Patterns (when to use, scoped filters, styling)
+- Layout System Overview
+- Component Sizing Guidelines
+- Wireframe Templates
+- Container Patterns
 - Filter and Parameter Placement
-- Visual Hierarchy Principles (F-pattern, Z-pattern)
+- Visual Hierarchy Principles
 - Common Layout Mistakes
 - Vizro-Specific Constraints
-- Reference Links
 
-## Vizro Layout System
+## Layout System Overview
 
 Vizro provides two layout options:
 
-- **Grid**: Precise control over component placement and sizing
-- **Flex**: Automatic vertical stacking with spacing
+- **Grid**: Precise control over component placement and sizing (recommended)
+- **Flex**: Automatic vertical stacking with spacing (simple pages only)
 
-**Recommendation**: Use Grid for most dashboards. Use Flex only for very simple pages.
+**Recommendation**: Use Grid for most dashboards. Use Flex only for very simple single-column pages.
 
-## Grid Layout Fundamentals
+### Grid Concept
 
-### Configuration Structure
+The grid divides page width into columns. Components are placed by specifying which columns they occupy. Height is controlled by how many **rows** a component spans.
 
-```python
-vm.Page(
-    title="Dashboard",
-    layout=vm.Grid(
-        grid=[
-            [0, 0, 1, 1],  # Row 1: Components 0 and 1
-            [2, 2, 2, 2],  # Row 2: Component 2 spans full width
-        ],
-        row_min_height="140px",
-    ),
-    components=[comp0, comp1, comp2],
-)
-```
+**Key principles**:
 
-**Grid Rules**:
+- **12 columns recommended** (not enforced) - provides flexibility with many divisors (1, 2, 3, 4, 6, 12)
+- Any column count works if there's good reason (e.g., 8 columns for simpler layouts)
+- Control height by giving components more rows
+- Each row is 140px tall (use `row_min_height="140px"`)
+- Component height = rows × 140px
 
-- Each sub-list is a row
-- Integers are component indices (0-based, consecutive)
-- Use `-1` for empty cells
-- Components span rectangular areas by repeating their index
+**Note**: All examples in this guide use 12 columns as a comprehensive default, but adapt as needed.
 
-### Optimal Grid Strategy
+## Component Sizing Guidelines
 
-**8-Column Grid** (recommended for most dashboards):
+Based on 12-column grid:
 
-```python
-grid = [
-    [0, 0, 1, 1, 2, 2, 3, 3],  # 4 KPI cards (2 cols each)
-    [4, 4, 4, 5, 5, 5, 6, 6],  # 3 charts
-    [4, 4, 4, 5, 5, 5, 6, 6],
-    [4, 4, 4, 5, 5, 5, 6, 6],
-    [7, 7, 7, 7, 7, 7, 7, 7],  # Full-width table
-    [7, 7, 7, 7, 7, 7, 7, 7],
-]
-```
+| Component   | Columns   | Rows | Min Height |
+| ----------- | --------- | ---- | ---------- |
+| KPI Card    | 3         | 1    | 140px      |
+| Small Chart | 4         | 3    | 420px      |
+| Large Chart | 6         | 4-5  | 560-700px  |
+| Table       | 12 (full) | 4-6  | 560-840px  |
 
-**12-Column Grid** (for finer control):
+**Exceptions** - size based on content to render:
 
-```python
-grid = [
-    [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3],  # 4 KPI cards (3 cols each)
-    [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],  # 3 charts (4 cols each)
-    [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],
-    [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6],
-]
-```
+- Text-heavy Card → treat like a chart (3+ rows)
+- Small Table (<5 columns) → doesn't need full width
+- Button → 1 row is enough
 
-### Component Sizing Guidelines
+**Flexible Width Distributions** (12-column advantage):
 
-| Component   | Columns  | Rows | Min Height |
-| ----------- | -------- | ---- | ---------- |
-| KPI Card    | 2-3      | 1    | 140px      |
-| Small Chart | 3-4      | 3    | 420px      |
-| Large Chart | 4-6      | 4-5  | 560-700px  |
-| Table       | 8 (full) | 4-6  | 560-840px  |
+12 columns allows uneven widths since 12 has many divisors (1, 2, 3, 4, 6, 12):
 
-### Row Height Control
-
-```python
-# Always use 140px row height
-vm.Grid(grid=[...], row_min_height="140px")
-
-# Component height = row_min_height × rows_spanned
-# KPI cards: 1 row = 140px (optimal)
-# Charts: 3 rows = 420px (minimum for proper rendering)
-# Tables: 4+ rows = 560px+ (adjust based on content)
-```
-
-### Creating Taller Components
-
-Use list multiplication for components spanning multiple rows:
-
-```python
-grid = [
-    [0, 0, 0, 0, 0, 0],  # Header: 1 row
-    *[[1, 1, 1, 1, 1, 1]] * 3,  # Chart: 3 rows (repeat pattern)
-    *[[2, 2, 2, 3, 3, 3]] * 4,  # Two charts side-by-side: 4 rows
-]
-```
+| Layout                    | Column Distribution |
+| ------------------------- | ------------------- |
+| 3 equal charts            | 4 + 4 + 4           |
+| Primary + 2 secondary     | 6 + 3 + 3           |
+| Two-thirds + one-third    | 8 + 4               |
+| Two equal charts          | 6 + 6               |
+| 4 KPI cards               | 3 + 3 + 3 + 3       |
 
 ## Wireframe Templates
 
@@ -139,7 +97,7 @@ grid = [
 1. **Full-width charts**: Use ONLY for timeseries line charts
 1. Most charts should be side-by-side (2-3 per row)
 
-### Template 1: KPIs + Chart + Table
+### Template 1: KPIs + Charts + Table
 
 ```
 +--+----------+------------------------------------------------------------------------+
@@ -147,37 +105,25 @@ grid = [
 |  |          +------------------------------------------------------------------------+
 |  |Page 1    |  +-------------+  +-------------+  +-------------+  +-------------+    |
 |  |Page 2    |  | KPI 1       |  | KPI 2       |  | KPI 3       |  | KPI 4       |    |
-|  |Page 3    |  +-------------+  +-------------+  +-------------+  +-------------+    |
-|  |          |                                                                        |
-|  |----------|  +----------------------------------+  +-----------------------------+  |
-|  |FILTERS   |  |                                  |  |                             |  |
-|  |          |  |  CHART: Primary Visualization    |  |  CHART: Secondary           |  |
-|  |Date      |  |  [Bar chart]                     |  |  [Line chart]               |  |
-|  |[v]       |  |                                  |  |                             |  |
-|  |          |  +----------------------------------+  +-----------------------------+  |
-|  |Region    |                                                                        |
-|  |[v]       |  +---------------------------------------------------------------------+|
-|  |          |  |                                                                     ||
-|  |Category  |  |  TABLE: Detail Data                                                 ||
-|  |[v]       |  |  [sortable, filterable]                                             ||
+|  |Page 3    |  | (3 cols)    |  | (3 cols)    |  | (3 cols)    |  | (3 cols)    |    |
+|  |          |  +-------------+  +-------------+  +-------------+  +-------------+    |
+|  |----------|                                                                        |
+|  |FILTERS   |  +----------------------------------+  +-----------------------------+  |
+|  |          |  |                                  |  |                             |  |
+|  |Date      |  |  CHART: Primary Visualization    |  |  CHART: Secondary           |  |
+|  |[v]       |  |  [Bar chart]                     |  |  [Line chart]               |  |
+|  |          |  |  (6 cols, 3 rows)                |  |  (6 cols, 3 rows)           |  |
+|  |Region    |  +----------------------------------+  +-----------------------------+  |
+|  |[v]       |                                                                        |
+|  |          |  +---------------------------------------------------------------------+|
+|  |Category  |  |                                                                     ||
+|  |[v]       |  |  TABLE: Detail Data (12 cols, 2 rows)                               ||
+|  |          |  |  [sortable, filterable]                                             ||
 |  |          |  +---------------------------------------------------------------------+|
 +--+----------+------------------------------------------------------------------------+
 ```
 
-**Grid Pattern**:
-
-```python
-grid = [
-    [0, 0, 1, 1, 2, 2, 3, 3],  # KPIs
-    [4, 4, 4, 4, 5, 5, 5, 5],  # Charts
-    [4, 4, 4, 4, 5, 5, 5, 5],
-    [4, 4, 4, 4, 5, 5, 5, 5],
-    [6, 6, 6, 6, 6, 6, 6, 6],  # Table
-    [6, 6, 6, 6, 6, 6, 6, 6],
-]
-```
-
-### Template 2: Full-Width Timeseries + Details
+### Template 2: Full-Width Timeseries + Container
 
 ```
 +--+----------+------------------------------------------------------------------------+
@@ -186,30 +132,19 @@ grid = [
 |  |Overview  |  +---------------------------------------------------------------------+|
 |  |Details   |  |                                                                     ||
 |  |          |  |  CHART: Revenue Trend [Timeseries Line - Full Width]                ||
-|  |----------|  |  [hover: tooltip | click: drill to detail]                          ||
-|  |FILTERS   |  +---------------------------------------------------------------------+|
-|  |          |                                                                        |
-|  |Year      |  CONTAINER: Regional Breakdown                                         |
-|  |[v]       |  [Container Filters: Region v]                                         |
-|  |          |  +------------------+  +------------------+  +------------------------+|
-|  |Quarter   |  |                  |  |                  |  |                        ||
-|  |[v]       |  |  CHART: By Region|  |  CHART: By Product| |  TABLE: Top Items      ||
+|  |----------|  |  (12 cols, 3 rows)                                                  ||
+|  |FILTERS   |  |  [hover: tooltip | click: drill to detail]                          ||
+|  |          |  +---------------------------------------------------------------------+|
+|  |Year      |                                                                        |
+|  |[v]       |  CONTAINER: Regional Breakdown (12 cols, 3 rows)                       |
+|  |          |  [Container Filter: Region v]                                          |
+|  |Quarter   |  +------------------+  +------------------+  +------------------------+|
+|  |[v]       |  |                  |  |                  |  |                        ||
+|  |          |  |  CHART: By Region|  |  CHART: By Product| |  TABLE: Top Items      ||
 |  |          |  |  [Bar chart]     |  |  [Pie chart]     |  |  [sortable]            ||
+|  |          |  |  (4 cols)        |  |  (4 cols)        |  |  (4 cols)              ||
 |  |          |  +------------------+  +------------------+  +------------------------+|
 +--+----------+------------------------------------------------------------------------+
-```
-
-**Grid Pattern**:
-
-```python
-grid = [
-    [0, 0, 0, 0, 0, 0, 0, 0],  # Full-width timeseries
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1],  # Container (full-width)
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-]
 ```
 
 ### Template 3: Tabs for Multiple Views
@@ -237,80 +172,54 @@ grid = [
 
 ### When to Use Containers
 
-| Scenario                  | Use Container?         |
-| ------------------------- | ---------------------- |
-| Group related charts      | Yes                    |
-| Section needs own filters | Yes                    |
-| Visual separation needed  | Yes                    |
-| Simple sequential layout  | No (use Grid directly) |
+| Scenario                  | Use Container? |
+| ------------------------- | -------------- |
+| Group related charts      | Yes            |
+| Section needs own filters | Yes            |
+| Visual separation needed  | Yes            |
+| Simple sequential layout  | No             |
 
-### Container with Scoped Filters
+### Container Styling Options
 
-```python
-vm.Container(
-    title="Regional Analysis",
-    layout=vm.Grid(grid=[*[[0, 1]] * 3], row_min_height="140px"),  # 3 rows = 420px
-    components=[
-        vm.Graph(figure=px.bar(df, x="region", y="sales")),
-        vm.Graph(figure=px.pie(df, values="sales", names="region")),
-    ],
-    controls=[
-        vm.Filter(column="quarter"),  # Only affects this container
-    ],
-    variant="outlined",
-)
-```
-
-### Container Styling
-
-```python
-# No visual styling (default)
-vm.Container(variant="plain", ...)
-
-# Background fill
-vm.Container(variant="filled", ...)
-
-# Border outline (recommended for major sections)
-vm.Container(variant="outlined", ...)
-```
+| Style    | Use Case                          |
+| -------- | --------------------------------- |
+| Plain    | No visual styling (default)       |
+| Filled   | Background fill for emphasis      |
+| Outlined | Border outline (major sections)   |
 
 ## Filter and Parameter Placement
 
-### Page-Level (Left Sidebar)
+### Decision Tree
 
-```python
-vm.Page(
-    title="Dashboard",
-    components=[...],
-    controls=[
-        vm.Filter(column="date"),
-        vm.Filter(column="region"),
-        vm.Parameter(targets=["chart.metric"], selector=vm.Dropdown(...)),
-    ],
-)
+```
+Is this filter needed across multiple visualizations?
+├─ YES → Page-level filter (left sidebar)
+└─ NO → Container-level filter (above container in main area)
 ```
 
-### Container-Level
+**Page-level filters**: Always in left collapsible sidebar
+**Container filters**: Above the container they control
 
-```python
-vm.Container(
-    title="Section",
-    components=[...],
-    controls=[
-        vm.Filter(column="category"),  # Only affects this container
-    ],
-)
-```
+### Filter Selector Selection
 
-### Filter Type Selection
+**IMPORTANT**: Choose the appropriate selector type based on the data - don't default to Dropdown for everything.
 
-| Options Count | Recommended Selector  |
-| ------------- | --------------------- |
-| 2-3           | Radio buttons         |
-| 4-7           | Dropdown              |
-| 8+            | Dropdown with search  |
-| Range         | Slider or RangeSlider |
-| Date          | DatePicker            |
+| Data Type          | Selector        | When to Use                              |
+| ------------------ | --------------- | ---------------------------------------- |
+| 2-3 options        | **RadioItems**  | Few mutually exclusive choices           |
+| 4-7 options        | Dropdown        | Moderate number of options               |
+| 8+ options         | Dropdown        | Many options (with search)               |
+| Yes/No, On/Off     | **Checklist**   | Boolean or toggle selections             |
+| Numeric range      | **RangeSlider** | Price, quantity, score ranges            |
+| Single number      | **Slider**      | Threshold, limit, single value selection |
+| Date               | **DatePicker**  | Single date or date range selection      |
+
+**Examples**:
+- Region filter (North, South, East, West) → **RadioItems** (4 options, mutually exclusive)
+- Category filter (10+ categories) → Dropdown
+- Price range ($0-$1000) → **RangeSlider**
+- Year filter (2020-2025) → **Slider** or **DatePicker**
+- Active/Inactive status → **RadioItems** or **Checklist**
 
 ## Visual Hierarchy Principles
 
@@ -342,27 +251,31 @@ For sparse layouts with few elements, users scan in a Z-shape:
 
 ### Size Indicates Importance
 
-- **Primary metrics**: Larger cells (3-4 columns)
-- **Secondary metrics**: Medium cells (2-3 columns)
-- **Supporting details**: Smaller cells or tables
+- **Primary metrics**: Larger cells (6 columns, half width)
+- **Secondary metrics**: Medium cells (4 columns, one-third)
+- **Supporting details**: Smaller cells (3 columns, quarter width)
 
 ## Common Layout Mistakes
 
 ### 1. Charts Too Small
 
-**Problem**: Charts crammed into 2×2 cells **Solution**: Minimum 3 columns × 3 rows for any chart
+**Problem**: Charts crammed into small spaces
+**Solution**: Minimum 4 columns × 3 rows for any chart
 
 ### 2. Everything Full-Width
 
-**Problem**: Every chart spans all columns **Solution**: Only timeseries line charts should be full-width
+**Problem**: Every chart spans all columns
+**Solution**: Only timeseries line charts should be full-width
 
 ### 3. No Visual Grouping
 
-**Problem**: 10 charts with no clear sections **Solution**: Use containers to group related content
+**Problem**: 10 charts with no clear sections
+**Solution**: Use containers to group related content
 
 ### 4. Filters in Main Area
 
-**Problem**: Filters placed among charts **Solution**: Page filters in left sidebar; container filters above container
+**Problem**: Filters placed among charts
+**Solution**: Page filters in left sidebar; container filters above container
 
 ## Vizro-Specific Constraints
 
@@ -373,7 +286,7 @@ For sparse layouts with few elements, users scan in a Z-shape:
 1. **Containers**: Can use `Tabs` for organizing content
 1. **Actions**: Export, filter, and parameter actions only
 
-**Important**: Do not use emojis in dashboard implementations. Emojis in wireframes are for documentation only.
+**Important**: Do not use emojis in dashboard implementations.
 
 ## Reference
 

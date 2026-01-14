@@ -154,15 +154,15 @@ Example: Revenue: $1.2M | Oct 2024 | +15% vs last month
 # Good: Charts span 3 rows (420px each)
 vm.Grid(
     grid=[
-        [0, 0, 1, 1],
-        [0, 0, 1, 1],
-        [0, 0, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
     ],
     row_min_height="140px",
 )
 
 # Bad: Charts only 1 row (140px - too small)
-vm.Grid(grid=[[0, 0, 1, 1]], row_min_height="140px")
+vm.Grid(grid=[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]], row_min_height="140px")
 ```
 
 ### 7. Inconsistent Design
