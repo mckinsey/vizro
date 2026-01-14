@@ -148,12 +148,28 @@ class AgGrid(VizroBaseModel):
 
         figure = self.figure(**kwargs)
 
-        # Set the AgGrid "rowSelection" if `set_control` action is used and if not explicitly set.
-        # Row and header checkboxes will automatically be enabled by AgGrid when "singleRow" or "multiRow" mode is set.
-        if any(isinstance(action, set_control) for action in self.actions) and hasattr(figure, "dashGridOptions"):
+        # Ensure "dashGridOptions" property exists as it's needed for setting "rowSelection".
+        if not hasattr(figure, "dashGridOptions"):
+            figure.dashGridOptions = {}
+
+        # Set the AgGrid "rowSelection" if `set_control` action is used and if the "rowSelection" is not explicitly set.
+        if any(isinstance(action, set_control) for action in self.actions):
             row_sel = figure.dashGridOptions.setdefault("rowSelection", {})
             row_sel.setdefault("mode", "multiRow")
             row_sel.setdefault("enableClickSelection", True)
+            row_sel.setdefault("checkboxes", True)
+            row_sel.setdefault("headerCheckbox", True)
+
+        # Set the AgGrid "rowSelection" if `filter_interaction` action is used and if it's not already set.
+        # The "rowSelection" has to be set so that the AgGrid's actions can be triggered.
+        # TODO: Delete setting the "rowSelection" for filter_interaction after
+        #  https://github.com/McK-Internal/vizro-internal/issues/2402
+        if any(isinstance(action, filter_interaction) for action in self.actions):
+            row_sel = figure.dashGridOptions.setdefault("rowSelection", {})
+            row_sel.setdefault("mode", "singleRow")
+            row_sel.setdefault("enableClickSelection", True)
+            row_sel.setdefault("checkboxes", False)
+            row_sel.setdefault("headerCheckbox", False)
 
         figure.id = self._inner_component_id
         return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])

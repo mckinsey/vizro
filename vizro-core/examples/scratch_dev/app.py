@@ -26,7 +26,6 @@ def custom_dash_ag_grid_with_no_kwargs(data_frame, dash_grid_options=None):
 pre = "p1_"
 page_1 = vm.Page(
     title="AgGrid automatic checkboxes test",
-    # layout=vm.Grid(grid=[[0], [0], [1]]),
     components=[
         vm.Tabs(
             tabs=[
@@ -110,8 +109,26 @@ page_1 = vm.Page(
     controls=[vm.Filter(id=f"{pre}filter_1", column="species", targets=[f"{pre}table"])],
 )
 
+pre = "p2_"
+page_2 = vm.Page(
+    title="Test old filter interaction",
+    components=[
+        vm.AgGrid(
+            id=f"{pre}ag_grid_1",
+            title="Source of Filter Interaction",
+            figure=dash_ag_grid(px.data.iris()),
+            actions=va.filter_interaction(targets=[f"{pre}ag_grid_2"]),
+        ),
+        vm.AgGrid(
+            id=f"{pre}ag_grid_2",
+            title="Target of Filter Interaction",
+            figure=dash_ag_grid(px.data.iris()),
+        ),
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page_1], title="Test Dashboard")
+
+dashboard = vm.Dashboard(pages=[page_1, page_2])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
