@@ -889,10 +889,10 @@ pages:
             - lifeExp: lifeExp in 2007
         header: |
           💡 Click any bar to highlight that country in the bump chart (use Shift + click to add/remove bars)
-        actions:
-          - type: set_control
-            value: y
-            control: highlight_parameter
+#        actions:
+#          - type: set_control
+#            value: y
+#            control: highlight_parameter
         type: graph
 #      - figure:
 #          _target_: __main__.bump_chart_with_highlight
