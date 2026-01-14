@@ -57,7 +57,7 @@ selected_countries = [
     "Myanmar",
 ]
 
-selected_countries_gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
+selected_countries_gapminder = px.data.gapminder()[gapminder["country"].isin(selected_countries)]
 
 example_cards = [
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
@@ -952,7 +952,8 @@ set_controls_action_cross_parameter = vm.Page(
                 x="lifeExp",
                 labels={"lifeExp": "lifeExp in 2007"},
             ),
-            header="💡 Click any bar to highlight that country in the bump chart (use Shift + click to add/remove bars)",
+            header="💡 Click any bar to highlight that country in the bump chart "
+            "(use Shift + click to add/remove bars)",
             actions=va.set_control(control="highlight_parameter", value="y"),
         ),
         vm.Graph(
@@ -963,7 +964,7 @@ set_controls_action_cross_parameter = vm.Page(
     controls=[
         vm.Parameter(
             id="highlight_parameter",
-            targets=["bump_chart.highlight_country"],
+            targets=["bump_chart.highlight_countries"],
             selector=vm.Dropdown(value=[], options=["NONE", *selected_countries], multi=True),
             visible=False,
         ),

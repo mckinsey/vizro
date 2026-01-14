@@ -246,6 +246,12 @@ pages:
           x: sepal_length
           y: petal_width
           color: species
+          color_discrete_map:
+            {
+              "setosa": "#00b4ff",
+              "versicolor": "#ff9222",
+              "virginica": "#3949ab",
+            }
         type: graph
       - figure:
           _target_: scatter
