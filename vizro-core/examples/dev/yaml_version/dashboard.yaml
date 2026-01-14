@@ -889,46 +889,46 @@ pages:
             - lifeExp: lifeExp in 2007
         header: |
           💡 Click any bar to highlight that country in the bump chart (use Shift + click to add/remove bars)
-#        actions:
-#          - type: set_control
-#            value: y
-#            control: highlight_parameter
+        #        actions:
+        #          - type: set_control
+        #            value: y
+        #            control: highlight_parameter
         type: graph
-#      - figure:
-#          _target_: __main__.bump_chart_with_highlight
-#          data_frame: selected_countries_gapminder
-#          x: year
-#          y: rank
-#          color: country
-#          highlight_countries: ${selected_country}
-#        actions:
-#          - type: set_control
-#            value: y
-#            control: highlight_parameter
-#        id: bump_chart
-#        type: graph
-#    controls:
-#      - id: highlight_parameter
-#        targets:
-#          - bump_chart.highlight_countries
-#        visible: false
-#        selector:
-#          type: dropdown
-#          multi: true
-#          value: []
-#          options:
-#            [
-#              NONE,
-#              "Singapore",
-#              "Malaysia",
-#              "Thailand",
-#              "Indonesia",
-#              "Philippines",
-#              "Vietnam",
-#              "Cambodia",
-#              "Myanmar",
-#            ]
-#        type: parameter
+    #      - figure:
+    #          _target_: __main__.bump_chart_with_highlight
+    #          data_frame: selected_countries_gapminder
+    #          x: year
+    #          y: rank
+    #          color: country
+    #          highlight_countries: ${selected_country}
+    #        actions:
+    #          - type: set_control
+    #            value: y
+    #            control: highlight_parameter
+    #        id: bump_chart
+    #        type: graph
+    #    controls:
+    #      - id: highlight_parameter
+    #        targets:
+    #          - bump_chart.highlight_countries
+    #        visible: false
+    #        selector:
+    #          type: dropdown
+    #          multi: true
+    #          value: []
+    #          options:
+    #            [
+    #              NONE,
+    #              "Singapore",
+    #              "Malaysia",
+    #              "Thailand",
+    #              "Indonesia",
+    #              "Philippines",
+    #              "Vietnam",
+    #              "Cambodia",
+    #              "Myanmar",
+    #            ]
+    #        type: parameter
     title: Set controls - cross parameter
   - components:
       - figure:
