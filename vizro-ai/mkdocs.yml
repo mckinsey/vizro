@@ -8,7 +8,6 @@ nav:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md
           - Model setup: pages/user-guides/customize-vizro-ai.md
-          - Different languages: pages/user-guides/use-different-languages.md
       - CHARTS:
           - Run chart_agent: pages/user-guides/run-vizro-ai.md
           - Advanced options: pages/user-guides/advanced-options.md

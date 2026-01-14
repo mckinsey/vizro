@@ -4,7 +4,7 @@ This tutorial introduces you to chart generation using Vizro-AI. It explains the
 
 <!-- vale off -->
 
-### 1. Install Vizro-AI and its dependencies
+### 1. Install Vizro-AI and ensure you have an LLM API key (ideally OpenAI)
 
 <!-- vale on -->
 
