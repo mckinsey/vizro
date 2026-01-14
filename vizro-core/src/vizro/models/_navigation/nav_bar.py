@@ -4,14 +4,15 @@ from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import BeforeValidator, Field
 
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
+from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._navigation.nav_link import NavLink
-from vizro.models.types import ModelID
+from vizro.models.types import ModelID, make_discriminated_union
 
 
 def coerce_pages_type(pages: Any) -> Any:
@@ -37,24 +38,29 @@ class NavBar(VizroBaseModel):
     type: Literal["nav_bar"] = "nav_bar"
     pages: Annotated[
         dict[str, list[ModelID]],
-        AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
-    items: list[NavLink] = []
+    items: list[make_discriminated_union(NavLink)] = []
 
     @_log_call
     def pre_build(self):
         from vizro.models import Page
 
+        # TODO[MS]: we may need to validate pages here?
+        # self.pages = _validate_pages(self.pages)
         self.items = self.items or [
-            NavLink(
-                # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
-                # then we prefer to have the title rather than id of that page be used
-                label=cast(Page, model_manager[group_title]).title
-                if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
-                else group_title,
-                pages=pages,
+            _validate_with_tree_context(
+                NavLink(
+                    # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
+                    # then we prefer to have the title rather than id of that page be used
+                    label=cast(Page, model_manager[group_title]).title
+                    if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
+                    else group_title,
+                    pages=pages,
+                ),
+                parent_model=self,
+                field_name="items",
             )
             for group_title, pages in self.pages.items()
         ]

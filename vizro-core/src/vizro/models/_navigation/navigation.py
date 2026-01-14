@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Annotated, cast
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, Field
+from pydantic import Field
 
 from vizro.models import VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.accordion import Accordion
@@ -26,17 +27,22 @@ class Navigation(VizroBaseModel):
 
     """
 
-    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    type: Literal["navigation"] = "navigation"
+    pages: Annotated[
+        NavPagesType,
+        Field(default=[]),
+    ]
     nav_selector: NavSelectorType | None = None
 
     @_log_call
     def pre_build(self):
-        # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
-        # here. Note that not all nav_selectors have pre_build (Accordion does not).
-        self.nav_selector = self.nav_selector or Accordion()
-        self.nav_selector.pages = self.nav_selector.pages or self.pages
-        if hasattr(self.nav_selector, "pre_build"):
-            self.nav_selector.pre_build()
+        # TODO[MS]: Check validate pages properly
+        self.pages = _validate_pages(self.pages)
+        self.nav_selector = self.nav_selector or _validate_with_tree_context(
+            Accordion(pages=self.pages),
+            parent_model=self,
+            field_name="nav_selector",
+        )
 
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
