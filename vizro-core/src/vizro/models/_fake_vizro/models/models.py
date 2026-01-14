@@ -452,6 +452,8 @@ TODOs after moving the real Vizro:
 - try NOT referring to model_manager in a few places (probably take one of each case in the MM summary I once wrote)
 - sort out page validation
 - then bring over tests, and fix existing unit tests
+- fix Jupyter notebooks properly (ie the callback_context issue), and also check if we can run multiple dashboards in 
+parallel?
 
 
 Circular dependency issue:
