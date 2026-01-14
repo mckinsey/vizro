@@ -285,7 +285,7 @@ async def main():
         user_prompt="create a bar chart",
         deps=df,
     )
-    fig = result.output.get_fig_object(df, vizro=True)
+    fig = result.output.get_fig_object(df)
     fig.show()
 
 if __name__ == "__main__":
@@ -315,7 +315,7 @@ async def main():
         async for text in response.stream_output():
             print(text)
         result = await response.get_output()
-    fig = result.get_fig_object(df, vizro=True)
+    fig = result.get_fig_object(df)
     fig.show()
 
 if __name__ == "__main__":
