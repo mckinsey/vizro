@@ -11,6 +11,20 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.50'></a>
+
+# 0.1.50 — 2025-12-18
+
+## Highlights ✨
+
+- Add `show_notification` and `update_notification` actions to display notification messages to users. Notifications can be customized with different variants, icons, and timing, and can be triggered by, for example, buttons, graphs, or cards. See the [notification actions user guide](../user-guides/notification-actions.md) for details. ([#1496](https://github.com/mckinsey/vizro/pull/1496))
+
+- Multi-select controls can now be updated by the `set_control` action. For example, you can set controls by using lasso select on a graph or selecting multiple rows on a table. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+
+## Changed
+
+- Set `clickmode="event+select"` as the default for all `plotly.express` charts, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+
 <a id='changelog-0.1.49'></a>
 
 # 0.1.49 — 2025-12-05

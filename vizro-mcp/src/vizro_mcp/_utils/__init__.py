@@ -7,7 +7,6 @@ from .configs import (
 )
 from .prompts import (
     CHART_INSTRUCTIONS,
-    LAYOUT_INSTRUCTIONS,
     get_chart_prompt,
     get_dashboard_instructions,
     get_dashboard_prompt,
@@ -34,7 +33,6 @@ __all__ = [  # noqa: RUF022
     "VizroCodeAndPreviewLink",
     # Constants
     "CHART_INSTRUCTIONS",
-    "LAYOUT_INSTRUCTIONS",
     "GAPMINDER",
     "IRIS",
     "SAMPLE_DASHBOARD_CONFIG",

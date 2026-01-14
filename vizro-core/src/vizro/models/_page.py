@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from itertools import chain
 from typing import Annotated, cast
 
+import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import (
     AfterValidator,
@@ -234,6 +235,10 @@ class Page(VizroBaseModel):
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),
+                dmc.NotificationContainer(
+                    position="top-right",
+                    id="vizro-notifications",
+                ),
             ]
         )
 

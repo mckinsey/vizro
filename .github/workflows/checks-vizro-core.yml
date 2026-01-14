@@ -23,7 +23,7 @@ jobs:
   checks-vizro-core:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           # Use fetch-depth of 2 to enable the changelog fragment check, which only runs in a pull request, not on push.
           # See https://stackoverflow.com/questions/74265821/get-modified-files-in-github-actions
