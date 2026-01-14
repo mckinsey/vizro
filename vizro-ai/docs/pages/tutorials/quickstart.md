@@ -107,7 +107,7 @@ result = chart_agent.run_sync(
     deps=df,
 )
 
-fig = result.output.get_fig_object(df, vizro=False)
+fig = result.output.get_fig_object(df)
 fig.show()
 ```
 
@@ -152,7 +152,7 @@ And that's it! By passing the prepared data and written visualization request, V
             deps=df,
         )
 
-        fig = result.output.get_fig_object(df, vizro=False)
+        fig = result.output.get_fig_object(df)
         fig.show()
         ```
 
@@ -162,9 +162,9 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The chart created is interactive: you can hover over the data for more information.
 
-!!! note "Curious about `vizro=False`?"
+!!! note "Curious about the `vizro` parameter?"
 
-    The `vizro=False` parameter is used to generate a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, you can set `vizro=True` but you need to ensure that `vizro` is installed: `pip install vizro` or `pip install vizro-ai[vizro]`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
+    By default, `get_fig_object()` generates a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, you can set `vizro=True` but you need to ensure that `vizro` is installed: `pip install vizro` or `pip install vizro-ai[vizro]`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
 
 <!-- vale off -->
 
@@ -192,7 +192,7 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
         print("Vizro code:", result.output.code_vizro)
 
         # Get the figure object
-        fig = result.output.get_fig_object(df, vizro=False)
+        fig = result.output.get_fig_object(df)
         fig.show()
         ```
 

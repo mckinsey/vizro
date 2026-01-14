@@ -55,7 +55,7 @@ To run Vizro-AI code in a Jupyter Notebook, create a new cell and execute the co
             user_prompt="visualize the life expectancy per continent and color each continent",
             deps=df,
         )
-        result.output.get_fig_object(df, vizro=False)
+        result.output.get_fig_object(df)
         ```
 
     === "Result"
@@ -93,7 +93,7 @@ You can use Vizro-AI in any standard development environment by creating a `.py`
             user_prompt="describe life expectancy per continent over time",
             deps=df,
         )
-        fig = result.output.get_fig_object(df, vizro=False)
+        fig = result.output.get_fig_object(df)
         fig.show()
         ```
 

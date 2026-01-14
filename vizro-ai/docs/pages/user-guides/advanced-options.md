@@ -102,7 +102,7 @@ Executes the generated code to create a Plotly figure object. Note that this dyn
 
 - `data_frame`: The pandas DataFrame to use for generating the chart
 - `chart_name`: Optional name for the chart function (defaults to `custom_chart`)
-- `vizro`: Whether to generate Vizro-compatible code (defaults to `True`)
+- `vizro`: Whether to generate Vizro-compatible code (defaults to `False`)
 
 #### Vizro-ready figure
 
@@ -162,7 +162,7 @@ This `fig` object is a basic plotly figure without Vizro theming.
             user_prompt="the trend of gdp over years in the US",
             deps=df,
         )
-        fig = result.output.get_fig_object(data_frame=df, vizro=False)
+        fig = result.output.get_fig_object(data_frame=df)
         fig.show()
         ```
 

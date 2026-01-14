@@ -202,7 +202,7 @@ class BaseChartPlan(BaseModel):
         return unformatted_code
 
     def get_fig_object(
-        self, data_frame: pd.DataFrame | str, chart_name: str | None = None, vizro: bool = True
+        self, data_frame: pd.DataFrame | str, chart_name: str | None = None, vizro: bool = False
     ) -> go.Figure:
         """Execute code to obtain the plotly `go.Figure` object. Be sure to check code to be executed before running.
 
