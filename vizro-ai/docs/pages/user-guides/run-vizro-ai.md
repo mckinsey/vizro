@@ -3,12 +3,13 @@
 This guide offers insights into different ways of running the `chart_agent` to generate Plotly charts.
 
 !!! note "You need to have an API key from a LLM provider"
-    
+
     The examples in this guide assume you have an API key from OpenAI. In this case you need to install Vizro-AI with the `[openai]` extra.
+
     ```bash
     pip install vizro_ai[openai]
     ```
-    
+
     For other LLM providers, you can install Vizro-AI with the corresponding extra. See the [installation guide](install.md) and [model setup guide](customize-vizro-ai.md) for more details.
 
 ## Synchronous execution
