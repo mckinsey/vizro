@@ -895,12 +895,9 @@ pages:
             control: highlight_parameter
         type: graph
       - figure:
-          _target_: __main__.bump_chart_with_highlight
+          _target_: custom_charts.bump_chart_with_highlight
           data_frame: selected_countries_gapminder
-          x: year
-          y: rank
-          color: country
-          highlight_countries: ${selected_country}
+          highlight_countries: null
         actions:
           - type: set_control
             value: y

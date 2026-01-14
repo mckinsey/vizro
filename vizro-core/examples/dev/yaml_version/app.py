@@ -8,7 +8,6 @@ import yaml
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models import Dashboard
-from vizro.models.types import capture
 
 selected_countries = [
     "Singapore",
@@ -40,26 +39,6 @@ SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3
 selected_countries_gapminder["rank"] = selected_countries_gapminder.groupby("year")["lifeExp"].rank(
     method="dense", ascending=False
 )
-
-
-@capture("graph")
-def bump_chart_with_highlight(
-    data_frame,
-    x,
-    y,
-    color,
-    highlight_countries=None,
-):
-    """Custom bump chart based on px."""
-    fig = px.line(data_frame, x=x, y=y, color=color, markers=True)
-    fig.update_yaxes(title="Rank (1 = Highest lifeExp)", autorange="reversed", dtick=1)
-    fig.update_traces(opacity=0.3, line_width=2, mode="lines+markers")
-
-    if highlight_countries:
-        for country in highlight_countries:
-            fig.update_traces(selector={"name": country}, opacity=1, line_width=3)
-
-    return fig
 
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
