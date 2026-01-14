@@ -10,6 +10,12 @@ This tutorial introduces you to chart generation using Vizro-AI. It explains the
 
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
+In order to run the exact code in this tutorial, you will need to install Vizro-AI with the `[openai]` extra. If you want to use a different LLM provider, you can install Vizro-AI with the corresponding extra.
+
+```bash
+pip install vizro_ai[openai]
+```
+
 <!-- vale off -->
 
 ### 2. Open a Jupyter Notebook
@@ -70,10 +76,8 @@ Let's create a chart to illustrate the GDP of various continents while including
 Let's go through the code step-by-step. First, we import the necessary modules and set up the model:
 
 ```python
-import plotly.express as px
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
-from vizro_ai.agents import chart_agent
 
 # Set up the model
 model = OpenAIChatModel(
@@ -85,12 +89,16 @@ model = OpenAIChatModel(
 Next, we create a `pandas` DataFrame using the gapminder data from `plotly express`:
 
 ```python
+import plotly.express as px
+
 df = px.data.gapminder()
 ```
 
 Finally, we run the `chart_agent` with our English language instruction to generate the visualization:
 
 ```python
+from vizro_ai.agents import chart_agent
+
 result = chart_agent.run_sync(
     model=model,
     user_prompt="""create a line graph for GDP per capita since 1950 for
@@ -99,7 +107,7 @@ result = chart_agent.run_sync(
     deps=df,
 )
 
-fig = result.output.get_fig_object(df, vizro=True)
+fig = result.output.get_fig_object(df, vizro=False)
 fig.show()
 ```
 
@@ -144,7 +152,7 @@ And that's it! By passing the prepared data and written visualization request, V
             deps=df,
         )
 
-        fig = result.output.get_fig_object(df, vizro=True)
+        fig = result.output.get_fig_object(df, vizro=False)
         fig.show()
         ```
 
@@ -153,6 +161,10 @@ And that's it! By passing the prepared data and written visualization request, V
         [![LineGraph]][linegraph]
 
 The chart created is interactive: you can hover over the data for more information.
+
+!!! note "Curious about `vizro=False`?"
+
+    The `vizro=False` parameter is used to generate a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, you can set `vizro=True` but you need to ensure that `vizro` is installed: `pip install vizro` or `pip install vizro-ai[vizro]`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
 
 <!-- vale off -->
 
@@ -180,7 +192,7 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
         print("Vizro code:", result.output.code_vizro)
 
         # Get the figure object
-        fig = result.output.get_fig_object(df, vizro=True)
+        fig = result.output.get_fig_object(df, vizro=False)
         fig.show()
         ```
 
