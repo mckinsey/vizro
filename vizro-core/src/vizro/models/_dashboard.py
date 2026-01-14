@@ -206,7 +206,6 @@ class Dashboard(VizroBaseModel):
         # children=[layout] as a list rather than children=layout, so that app.dash.layout.children.append works to
         # easily add things to the Dash layout. In future we might have a neater function for patching components into
         # the Dash layout in which case this could change.
-
         return dmc.MantineProvider(
             children=[layout],
             # Change global mantine settings here. For component specific styling, see Card example below.
