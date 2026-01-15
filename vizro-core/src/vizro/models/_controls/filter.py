@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from contextlib import suppress
 from typing import Any, Literal, cast
 
@@ -119,6 +119,7 @@ class Filter(VizroBaseModel):
     )
 
     _dynamic: bool = PrivateAttr(False)
+    _filter_function: Callable[[pd.Series, Any], pd.Series] = PrivateAttr()
     _selector_properties: set[str] = PrivateAttr(set())
     _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
 
@@ -278,19 +279,18 @@ class Filter(VizroBaseModel):
         # Set default value for the selector if not explicitly provided.
         self.selector.value = get_selector_default_value(self.selector)
 
-        if not self.selector.actions:
-            if isinstance(self.selector, RangeSlider) or (
-                isinstance(self.selector, DatePicker) and self.selector.range
-            ):
-                filter_function = _filter_between
-            else:
-                filter_function = _filter_isin
+        # Set the filter function according to the selector type.
+        if isinstance(self.selector, RangeSlider) or (isinstance(self.selector, DatePicker) and self.selector.range):
+            self._filter_function = _filter_between
+        else:
+            self._filter_function = _filter_isin
 
+        if not self.selector.actions:
             self.selector.actions = [
                 _filter(
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                     column=self.column,
-                    filter_function=filter_function,
+                    filter_function=self._filter_function,
                     targets=self.targets,
                 ),
             ]
