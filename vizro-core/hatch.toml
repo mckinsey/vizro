@@ -94,7 +94,7 @@ test-e2e-vizro-http-requests = [
 test-e2e-vizro-screenshots = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
-  "pytest -vs tests/e2e/vizro/test_screenshots/test_screenshots.py::test_notifications_page --headless {args}"
+  "pytest -vs tests/e2e/vizro/test_screenshots/test_screenshots.py::test_notifications_page_dark_theme --headless {args}"
 ]
 test-integration = "pytest --ctrf ../.ctrf/ctrf-report.json tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
