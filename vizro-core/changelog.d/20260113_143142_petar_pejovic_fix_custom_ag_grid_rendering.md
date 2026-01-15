@@ -36,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- Fix AgGrid `rowSelection` defaults when `actions` argument is defined. ([#1539](https://github.com/mckinsey/vizro/pull/1539))
+- Fix `rowSelection` checkboxes for custom AgGrid with `actions`. ([#1539](https://github.com/mckinsey/vizro/pull/1539))
 
 <!--
 ### Security
