@@ -50,20 +50,20 @@ Based on 12-column grid:
 **Exceptions** - size based on content to render:
 
 - Text-heavy Card → treat like a chart (3+ rows)
-- Small Table (<5 columns) → doesn't need full width
+- Small Table (less than 5 columns) → doesn't need full width
 - Button → 1 row is enough
 
 **Flexible Width Distributions** (12-column advantage):
 
 12 columns allows uneven widths since 12 has many divisors (1, 2, 3, 4, 6, 12):
 
-| Layout                    | Column Distribution |
-| ------------------------- | ------------------- |
-| 3 equal charts            | 4 + 4 + 4           |
-| Primary + 2 secondary     | 6 + 3 + 3           |
-| Two-thirds + one-third    | 8 + 4               |
-| Two equal charts          | 6 + 6               |
-| 4 KPI cards               | 3 + 3 + 3 + 3       |
+| Layout                 | Column Distribution |
+| ---------------------- | ------------------- |
+| 3 equal charts         | 4 + 4 + 4           |
+| Primary + 2 secondary  | 6 + 3 + 3           |
+| Two-thirds + one-third | 8 + 4               |
+| Two equal charts       | 6 + 6               |
+| 4 KPI cards            | 3 + 3 + 3 + 3       |
 
 ## Wireframe Templates
 
@@ -181,11 +181,11 @@ Based on 12-column grid:
 
 ### Container Styling Options
 
-| Style    | Use Case                          |
-| -------- | --------------------------------- |
-| Plain    | No visual styling (default)       |
-| Filled   | Background fill for emphasis      |
-| Outlined | Border outline (major sections)   |
+| Style    | Use Case                        |
+| -------- | ------------------------------- |
+| Plain    | No visual styling (default)     |
+| Filled   | Background fill for emphasis    |
+| Outlined | Border outline (major sections) |
 
 ## Filter and Parameter Placement
 
@@ -197,24 +197,24 @@ Is this filter needed across multiple visualizations?
 └─ NO → Container-level filter (above container in main area)
 ```
 
-**Page-level filters**: Always in left collapsible sidebar
-**Container filters**: Above the container they control
+**Page-level filters**: Always in left collapsible sidebar **Container filters**: Above the container they control
 
 ### Filter Selector Selection
 
 **IMPORTANT**: Choose the appropriate selector type based on the data - don't default to Dropdown for everything.
 
-| Data Type          | Selector        | When to Use                              |
-| ------------------ | --------------- | ---------------------------------------- |
-| 2-3 options        | **RadioItems**  | Few mutually exclusive choices           |
-| 4-7 options        | Dropdown        | Moderate number of options               |
-| 8+ options         | Dropdown        | Many options (with search)               |
-| Yes/No, On/Off     | **Checklist**   | Boolean or toggle selections             |
-| Numeric range      | **RangeSlider** | Price, quantity, score ranges            |
-| Single number      | **Slider**      | Threshold, limit, single value selection |
-| Date               | **DatePicker**  | Single date or date range selection      |
+| Data Type      | Selector        | When to Use                              |
+| -------------- | --------------- | ---------------------------------------- |
+| 2-3 options    | **RadioItems**  | Few mutually exclusive choices           |
+| 4-7 options    | Dropdown        | Moderate number of options               |
+| 8+ options     | Dropdown        | Many options (with search)               |
+| Yes/No, On/Off | **Checklist**   | Boolean or toggle selections             |
+| Numeric range  | **RangeSlider** | Price, quantity, score ranges            |
+| Single number  | **Slider**      | Threshold, limit, single value selection |
+| Date           | **DatePicker**  | Single date or date range selection      |
 
 **Examples**:
+
 - Region filter (North, South, East, West) → **RadioItems** (4 options, mutually exclusive)
 - Category filter (10+ categories) → Dropdown
 - Price range ($0-$1000) → **RangeSlider**
@@ -259,23 +259,19 @@ For sparse layouts with few elements, users scan in a Z-shape:
 
 ### 1. Charts Too Small
 
-**Problem**: Charts crammed into small spaces
-**Solution**: Minimum 4 columns × 3 rows for any chart
+**Problem**: Charts crammed into small spaces **Solution**: Minimum 4 columns × 3 rows for any chart
 
 ### 2. Everything Full-Width
 
-**Problem**: Every chart spans all columns
-**Solution**: Only timeseries line charts should be full-width
+**Problem**: Every chart spans all columns **Solution**: Only timeseries line charts should be full-width
 
 ### 3. No Visual Grouping
 
-**Problem**: 10 charts with no clear sections
-**Solution**: Use containers to group related content
+**Problem**: 10 charts with no clear sections **Solution**: Use containers to group related content
 
 ### 4. Filters in Main Area
 
-**Problem**: Filters placed among charts
-**Solution**: Page filters in left sidebar; container filters above container
+**Problem**: Filters placed among charts **Solution**: Page filters in left sidebar; container filters above container
 
 ## Vizro-Specific Constraints
 

@@ -90,8 +90,7 @@ Before proceeding to Phase 2:
 - [ ] Data sources are accessible
 - [ ] User has confirmed the structure
 
-→ See `references/information_architecture.md` for detailed guidance
-→ See `references/common_mistakes.md` section: Phase 1: Requirements Mistakes
+**Detailed guidance**: See [information_architecture.md](references/information_architecture.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 1: Requirements Mistakes"
 
 ---
 
@@ -135,7 +134,7 @@ Tier 3: Component-level
 **Exceptions** - size based on content to render:
 
 - Text-heavy Card → treat like a chart (3+ rows)
-- Small Table (<5 columns) → doesn't need full width
+- Small Table (\<5 columns) → doesn't need full width
 - Button → 1 row is enough
 
 **Layout Rules**:
@@ -155,14 +154,14 @@ Filter needed across multiple visualizations?
 
 **Choose appropriate selectors** - don't default to Dropdown:
 
-| Data Type      | Selector        | Example                    |
-| -------------- | --------------- | -------------------------- |
-| 2-4 options    | **RadioItems**  | Region (N/S/E/W)           |
-| 5+ options     | Dropdown        | Category (many)            |
-| Numeric range  | **RangeSlider** | Price ($0-$1000)           |
-| Single number  | **Slider**      | Year (2020-2025)           |
-| Date           | **DatePicker**  | Order date                 |
-| Multi-select   | **Checklist**   | Status (Active, Pending)   |
+| Data Type     | Selector        | Example                  |
+| ------------- | --------------- | ------------------------ |
+| 2-4 options   | **RadioItems**  | Region (N/S/E/W)         |
+| 5+ options    | Dropdown        | Category (many)          |
+| Numeric range | **RangeSlider** | Price ($0-$1000)         |
+| Single number | **Slider**      | Year (2020-2025)         |
+| Date          | **DatePicker**  | Order date               |
+| Multi-select  | **Checklist**   | Status (Active, Pending) |
 
 ### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
 
@@ -197,8 +196,7 @@ Before proceeding to Phase 3:
 - [ ] Filter placement is intentional and documented
 - [ ] User has been presented ASCI wireframes for every page and approved them
 
-→ See `references/layout_patterns.md` for wireframe templates and examples
-→ See `references/common_mistakes.md` section: Phase 2: Layout Mistakes
+**Wireframes & examples**: See [layout_patterns.md](references/layout_patterns.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 2: Layout Mistakes"
 
 ---
 
@@ -208,14 +206,14 @@ Before proceeding to Phase 3:
 
 ### Chart Type Quick Reference
 
-| Data Question           | Recommended Chart                    |
-| ----------------------- | ------------------------------------ |
-| Compare categories      | Bar chart (horizontal for 8+ items)  |
-| Show trend over time    | Line chart (12+ points)              |
-| Part-to-whole (simple)  | Pie/donut (2-5 slices ONLY)          |
-| Part-to-whole (complex) | Stacked bar chart                    |
-| Distribution            | Histogram or box plot                |
-| Correlation             | Scatter plot                         |
+| Data Question           | Recommended Chart                   |
+| ----------------------- | ----------------------------------- |
+| Compare categories      | Bar chart (horizontal for 8+ items) |
+| Show trend over time    | Line chart (12+ points)             |
+| Part-to-whole (simple)  | Pie/donut (2-5 slices ONLY)         |
+| Part-to-whole (complex) | Stacked bar chart                   |
+| Distribution            | Histogram or box plot               |
+| Correlation             | Scatter plot                        |
 
 ### Chart Anti-Patterns (Never Use)
 
@@ -285,8 +283,7 @@ Before proceeding to Phase 4:
 - [ ] Custom chart needs are identified
 - [ ] Color usage is consistent and intentional
 
-→ See `references/chart_selection.md` for detailed decision trees
-→ See `references/common_mistakes.md` section: Phase 3: Visualization Mistakes
+**Chart decision trees**: See [chart_selection.md](references/chart_selection.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 3: Visualization Mistakes"
 
 ---
 
@@ -329,8 +326,7 @@ Create JSON config respecting Phase 1-3 decisions.
 Use: vizro-mcp:validate_dashboard_config(dashboard_config={...}, data_infos=[...], custom_charts=[])
 ```
 
-→ See `references/implementation_guide.md` for complete implementation details
-→ See `references/common_mistakes.md` section: Phase 4: Implementation Mistakes
+**Implementation details**: See [implementation_guide.md](references/implementation_guide.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 4: Implementation Mistakes"
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
@@ -367,7 +363,7 @@ Before proceeding to Phase 5, verify against spec files:
 - [ ] Dashboard runs without errors
 - [ ] Any deviations are documented in `spec/4_implementation.yaml`
 
-→ See `references/implementation_guide.md` for complete examples → See `references/data_management.md` for dynamic data and caching
+**Complete examples**: See [implementation_guide.md](references/implementation_guide.md); **Dynamic data & caching**: See [data_management.md](references/data_management.md)
 
 ---
 
@@ -388,6 +384,7 @@ Functional Testing:
 ```
 
 ### Playwright MCP Testing
+
 Look for `mcp__*playwright__*` tools.
 
 **Basic Testing Flow**:
@@ -395,6 +392,7 @@ Look for `mcp__*playwright__*` tools.
 1. Navigate to dashboard URL
 1. Click through all pages
 1. Check console for errors
+
 ```
 Use: playwright:browser_navigate(url="http://localhost:8050")
 Use: playwright:browser_click(element="Page Name", ref="...")
@@ -444,14 +442,14 @@ Return to Phase 1 requirements:
 
 ## Reference Files
 
-| File                                     | When to Read                          |
-| ---------------------------------------- | ------------------------------------- |
-| `references/information_architecture.md` | Phase 1: Deep dive on requirements    |
-| `references/layout_patterns.md`          | Phase 2: Wireframes, component sizing |
-| `references/chart_selection.md`          | Phase 3: Chart decision trees         |
-| `references/implementation_guide.md`     | Phase 4: Complete Python/MCP examples |
-| `references/data_management.md`          | Phase 4: Dynamic data and caching     |
-| `references/common_mistakes.md`          | All phases: Anti-patterns to avoid    |
+| File                                                                  | When to Read                          |
+| --------------------------------------------------------------------- | ------------------------------------- |
+| [information_architecture.md](references/information_architecture.md) | Phase 1: Deep dive on requirements    |
+| [layout_patterns.md](references/layout_patterns.md)                   | Phase 2: Wireframes, component sizing |
+| [chart_selection.md](references/chart_selection.md)                   | Phase 3: Chart decision trees         |
+| [implementation_guide.md](references/implementation_guide.md)         | Phase 4: Complete Python/MCP examples |
+| [data_management.md](references/data_management.md)                   | Phase 4: Dynamic data and caching     |
+| [common_mistakes.md](references/common_mistakes.md)                   | All phases: Anti-patterns to avoid    |
 
 ---
 

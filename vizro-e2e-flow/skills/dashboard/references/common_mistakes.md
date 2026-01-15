@@ -343,4 +343,3 @@ px.scatter(df, x="x", y="y", color="category")
 **Problem**: Broken layout when no data available
 
 **Solution**: Handle empty data gracefully in custom charts
-
