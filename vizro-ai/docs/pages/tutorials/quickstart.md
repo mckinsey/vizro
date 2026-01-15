@@ -67,51 +67,14 @@ You should see a return output of the form `x.y.z`.
 
 <!-- vale on -->
 
-Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
+Let's create a chart to illustrate the GDP per capita trends for each continent over time. We'll use Vizro-AI to generate the visualization by providing a natural language description of what we want.
 
 !!! tip "API Key Management"
 
     For production use, it's preferable to store your API key in a `.env` file and load it using `python-dotenv` or `os.getenv()`. This keeps your API key secure and out of your code.
 
-Let's go through the code step-by-step. First, we import the necessary modules and set up the model:
 
-```python
-from pydantic_ai.models.openai import OpenAIChatModel
-from pydantic_ai.providers.openai import OpenAIProvider
-
-# Set up the model
-model = OpenAIChatModel(
-    "gpt-5-nano-2025-08-07",
-    provider=OpenAIProvider(api_key="your-api-key-here"),
-)
-```
-
-Next, we create a `pandas` DataFrame using the gapminder data from `plotly express`:
-
-```python
-import plotly.express as px
-
-df = px.data.gapminder()
-```
-
-Finally, we run the `chart_agent` with our English language instruction to generate the visualization:
-
-```python
-from vizro_ai.agents import chart_agent
-
-result = chart_agent.run_sync(
-    model=model,
-    user_prompt="""create a line graph for GDP per capita since 1950 for
-    each continent. Mark the x axis as Year, y axis as GDP Per Cap
-    and don't include a title. Make sure to take average over continent.""",
-    deps=df,
-)
-
-fig = result.output.get_fig_object(df)
-fig.show()
-```
-
-!!! warning "Help! The LLM request was unauthorized"
+??? warning "Help! The LLM request was unauthorized"
 
     If you see an error similar to this, your LLM API key is not valid:
 
@@ -123,27 +86,27 @@ fig.show()
 
     The call above makes the API key available from that terminal instance. If you want to access Vizro-AI from a Notebook, you should then run `jupyter notebook` (or just work within that terminal to run your Python script in `app.py`). When you restart the terminal, you'll need to call `export` again.
 
-To learn how to customize the model, check out the guide on [how to customize models](../user-guides/customize-vizro-ai.md).
-
-And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and returns the chart by executing the generated code.
-
-!!! example "Vizro-AI Syntax"
+!!! example "Create your first chart with Vizro-AI"
 
     === "Code for the cell"
 
         ```py
+        # Import required modules
         import plotly.express as px
         from pydantic_ai.models.openai import OpenAIChatModel
         from pydantic_ai.providers.openai import OpenAIProvider
         from vizro_ai.agents import chart_agent
 
+        # Set up the LLM model
         model = OpenAIChatModel(
             "gpt-5-nano-2025-08-07",
             provider=OpenAIProvider(api_key="your-api-key-here"),
         )
 
+        # Load your data
         df = px.data.gapminder()
 
+        # Run chart_agent with your natural language prompt
         result = chart_agent.run_sync(
             model=model,
             user_prompt="""create a line graph for GDP per capita since 1950 for each continent.
@@ -152,6 +115,7 @@ And that's it! By passing the prepared data and written visualization request, V
             deps=df,
         )
 
+        # Get the figure object and display it
         fig = result.output.get_fig_object(df)
         fig.show()
         ```
@@ -160,7 +124,9 @@ And that's it! By passing the prepared data and written visualization request, V
 
         [![LineGraph]][linegraph]
 
-The chart created is interactive: you can hover over the data for more information.
+By passing your data and a natural language description, Vizro-AI generates the necessary code for data manipulation and chart creation, then returns an interactive Plotly chart. The chart created is interactive: you can hover over the data for more information.
+
+To learn how to customize the model, check out the guide on [how to customize models](../user-guides/customize-vizro-ai.md).
 
 !!! note "Curious about the `vizro` parameter?"
 
@@ -179,12 +145,8 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
     === "Code for the cell"
 
         ```py
-        result = chart_agent.run_sync(
-            model=model,
-            user_prompt="show me the geo distribution of life expectancy",
-            deps=df,
-        )
-
+        # Assuming you have a result object from chart_agent.run_sync()
+        
         # Access the code
         print("Code:", result.output.code)
 
@@ -247,8 +209,6 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
             return fig
         ```
 
-For more details on using the response model, see the [advanced options guide](../user-guides/advanced-options.md).
-
 <!-- vale off -->
 
 ### 5. Explore further
@@ -257,7 +217,7 @@ For more details on using the response model, see the [advanced options guide](.
 
 Congratulations! You have created your first charts with Vizro-AI and you are ready to explore further.
 
-A good place to start would be to review the different how-to guides to learn [the different ways to run Vizro-AI](../user-guides/run-vizro-ai.md), [advanced options](../user-guides/advanced-options.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
+A good place to start would be to review the different how-to guides to learn [Vizro-AI function calls and properties](../user-guides/advanced-options.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
 
 !!! tip "Want to create dashboards?"
 
