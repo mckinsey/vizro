@@ -1,16 +1,14 @@
 # Implementation Guide
 
-Deep guidance for Phase 4: Building the dashboard with MCP tools or Python.
+Deep guidance for Phase 4: Building the dashboard with Vizro MCP tools.
 
 ## Contents
 
-- MCP Setup (installation, tools reference)
 - MCP Workflow (load data, validate config)
-- Python Implementation (installation, basic structure, imports)
 - Components Reference (Graph, AgGrid, Figure, Card, Container, Tabs)
 - Controls Reference (Filter, Parameter)
 - Layout Reference (Grid, Flex, Nested)
-- Custom Charts (@capture decorator)
+- Custom Charts (when and how to use @capture decorator)
 - Multi-Page Dashboard
 - Running the Dashboard
 - Common Patterns (Overview + Detail pages)
@@ -18,64 +16,12 @@ Deep guidance for Phase 4: Building the dashboard with MCP tools or Python.
 - Grid Configuration Rules
 - Documentation Links
 
-## MCP Setup
-
-### Checking MCP Availability
-
-Look for `mcp__*vizro-mcp__*` tools in your available tools. If present, skip installation.
-
-### Installing Vizro MCP
-
-**Prerequisites**: [uv](https://docs.astral.sh/uv/getting-started/installation/) must be installed.
-
-**For Claude Code**:
-
-```bash
-claude mcp add --transport stdio vizro-mcp -- uvx vizro-mcp
-```
-
-**Note**: The `--` separates Claude's CLI flags from the MCP server command. If `uvx` is not in PATH, use full path (find with `which uvx`).
-
-**For Other MCP Clients** (Claude Desktop, Cursor, VS Code):
-
-Add to your MCP settings file:
-
-```json
-{
-  "mcpServers": {
-    "vizro-mcp": {
-      "command": "uvx",
-      "args": [
-        "vizro-mcp"
-      ]
-    }
-  }
-}
-```
-
-### Playwright MCP (For UI Testing)
-
-**Claude Code**: `claude mcp add --transport stdio playwright -- npx @playwright/mcp@latest`
-
-**Other clients**: Add `"playwright": {"command": "npx", "args": ["@playwright/mcp@latest"]}` to mcpServers.
-
-### MCP Tools Reference
-
-| Tool                                | Purpose                                         |
-| ----------------------------------- | ----------------------------------------------- |
-| `get_vizro_chart_or_dashboard_plan` | Get instructions for creating charts/dashboards |
-| `get_model_json_schema`             | Get JSON schema for Vizro models                |
-| `get_sample_data_info`              | Get info about built-in sample datasets         |
-| `load_and_analyze_data`             | Load and analyze user's data files              |
-| `validate_dashboard_config`         | Validate config and get Python code             |
-| `validate_chart_code`               | Validate custom chart code                      |
-
 ## MCP Workflow
 
 ### Step 1: Load Data
 
 ```
-Use: load_and_analyze_data(path_or_url="/path/to/data.csv")
+Use: vizro-mcp:load_and_analyze_data(path_or_url="/path/to/data.csv")
 ```
 
 Returns column names, types, and sample values.
@@ -83,9 +29,9 @@ Returns column names, types, and sample values.
 ### Step 2: Get Model Schemas
 
 ```
-Use: get_model_json_schema(model_name="Dashboard")
-Use: get_model_json_schema(model_name="Page")
-Use: get_model_json_schema(model_name="Graph")
+Use: vizro-mcp:get_model_json_schema(model_name="Dashboard")
+Use: vizro-mcp:get_model_json_schema(model_name="Page")
+Use: vizro-mcp:get_model_json_schema(model_name="Graph")
 ```
 
 ### Step 3: Build Configuration
@@ -123,7 +69,7 @@ Create a JSON configuration that matches Phase 1-3 decisions:
 ### Step 4: Validate and Get Code
 
 ```
-Use: validate_dashboard_config(
+Use: vizro-mcp:validate_dashboard_config(
   dashboard_config={...},
   data_infos=[{
     "file_name": "sales.csv",
@@ -135,71 +81,7 @@ Use: validate_dashboard_config(
 )
 ```
 
-Returns Python code and optionally opens PyCafe preview.
-
-## Python Implementation
-
-### Installation
-
-```bash
-uv pip install vizro
-# or
-uv add vizro
-```
-
-### Basic Structure
-
-```python
-import pandas as pd
-import vizro.models as vm
-from vizro import Vizro
-import vizro.plotly.express as px
-from vizro.tables import dash_ag_grid
-
-# Load data
-df = pd.read_csv("data.csv")
-
-# Create page
-page = vm.Page(
-    title="Dashboard",
-    components=[
-        vm.Graph(figure=px.bar(df, x="category", y="value"), title="Sales"),
-    ],
-    controls=[
-        vm.Filter(column="region"),
-    ],
-)
-
-# Create and run dashboard
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
-```
-
-### Key Imports
-
-```python
-# Core
-import vizro.models as vm
-from vizro import Vizro
-
-# Charts
-import vizro.plotly.express as px
-
-# Tables
-from vizro.tables import dash_ag_grid
-
-# KPIs
-from vizro.figures import kpi_card, kpi_card_reference
-
-# Custom components
-from vizro.models.types import capture
-
-# Actions
-import vizro.actions as va
-
-# Data management
-from vizro.managers import data_manager
-```
+Returns Python code.
 
 ## Components Reference
 
@@ -482,9 +364,14 @@ vm.Page(
 
 Use `@capture("graph")` when you need:
 
-- `update_layout()`, `update_xaxes()`, `update_traces()` calls
-- Reference lines or annotations
 - Data manipulation before visualization
+- Build chart types not available in `plotly.express` (waterfall, bullet, etc.)
+- Use plotly update calls: `update_layout()`, `update_xaxes()`, `update_traces()`
+- Add horizontal/vertical reference lines showing targets or benchmarks
+- Create multi-layered visualizations combining different trace types
+- Apply conditional formatting based on data values
+
+### Example: Bar Chart with Target Line
 
 ```python
 from vizro.models.types import capture
@@ -541,12 +428,20 @@ dashboard = vm.Dashboard(
 
 ## Running the Dashboard
 
-```bash
-# With uv
-uv run python app.py
+**Install Vizro first** (if not already installed):
 
-# Standard Python
-python app.py
+```bash
+# Add to project dependencies
+uv add vizro
+
+# Or install in active venv
+uv pip install vizro
+```
+
+**Run the dashboard**:
+
+```bash
+uv run python app.py
 ```
 
 Access at `http://localhost:8050`

@@ -91,6 +91,7 @@ Before proceeding to Phase 2:
 - [ ] User has confirmed the structure
 
 → See `references/information_architecture.md` for detailed guidance
+→ See `references/common_mistakes.md` section: Phase 1: Requirements Mistakes
 
 ---
 
@@ -197,6 +198,7 @@ Before proceeding to Phase 3:
 - [ ] User has been presented ASCI wireframes for every page and approved them
 
 → See `references/layout_patterns.md` for wireframe templates and examples
+→ See `references/common_mistakes.md` section: Phase 2: Layout Mistakes
 
 ---
 
@@ -283,7 +285,8 @@ Before proceeding to Phase 4:
 - [ ] Custom chart needs are identified
 - [ ] Color usage is consistent and intentional
 
-→ See `references/chart_selection.md` for detailed decision trees → See `references/common_mistakes.md` for anti-patterns to avoid
+→ See `references/chart_selection.md` for detailed decision trees
+→ See `references/common_mistakes.md` section: Phase 3: Visualization Mistakes
 
 ---
 
@@ -301,46 +304,33 @@ Implementation must match these specs. Any deviation requires documentation with
 
 ### MCP-First Workflow (Recommended)
 
-**Step 1: Check MCP Availability**
-
-Look for `vizro-mcp` tools in your available tools.
-
-**Step 2: Load and Analyze Data**
+**Step 1: Load and Analyze Data**
 
 ```
-Use: load_and_analyze_data(path_or_url="path/to/data.csv")
+Use: vizro-mcp:load_and_analyze_data(path_or_url="path/to/data.csv")
 ```
 
-**Step 3: Get Model Schemas**
+**Step 2: Get Model Schemas**
+
+Schemas define valid properties, required fields, and available options for each component. Fetch schemas for components you plan to use.
 
 ```
-Use: get_model_json_schema(model_name="Dashboard")
-Use: get_model_json_schema(model_name="Page")
+Use: vizro-mcp:get_model_json_schema(model_name="Dashboard")
+Use: vizro-mcp:get_model_json_schema(model_name="Page")
 ```
 
-**Step 4: Build Dashboard Config**
+**Step 3: Build Dashboard Config**
 
 Create JSON config respecting Phase 1-3 decisions.
 
-**Step 5: Validate and Get Code**
+**Step 4: Validate and Get Code**
 
 ```
-Use: validate_dashboard_config(dashboard_config={...}, data_infos=[...], custom_charts=[])
+Use: vizro-mcp:validate_dashboard_config(dashboard_config={...}, data_infos=[...], custom_charts=[])
 ```
 
-### Key Implementation Patterns
-
-- **Structure**: `vm.Dashboard` → `vm.Page` → components + controls
-**Custom Charts**: Use `@capture("graph")` decorator when you need:
-
-- `update_layout()`, `update_traces()` calls
-- Reference lines or annotations
-- Data manipulation before visualization
-**Tables**: Always use `vm.AgGrid` with `dash_ag_grid()` (never `go.Table`)
-**Containers**: Use `vm.Container` for scoped filters that only affect grouped components
-**Run**: `uv run python app.py` → Access at http://localhost:8050
-
-→ See `references/implementation_guide.md` for complete code examples
+→ See `references/implementation_guide.md` for complete implementation details
+→ See `references/common_mistakes.md` section: Phase 4: Implementation Mistakes
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
@@ -406,9 +396,9 @@ Look for `mcp__*playwright__*` tools.
 1. Click through all pages
 1. Check console for errors
 ```
-Use: browser_navigate(url="http://localhost:8050")
-Use: browser_click(element="Page Name", ref="...")
-Use: browser_console_messages()
+Use: playwright:browser_navigate(url="http://localhost:8050")
+Use: playwright:browser_click(element="Page Name", ref="...")
+Use: playwright:browser_console_messages()
 ```
 
 ### REQUIRED OUTPUT: spec/5_test_report.yaml
@@ -459,9 +449,9 @@ Return to Phase 1 requirements:
 | `references/information_architecture.md` | Phase 1: Deep dive on requirements    |
 | `references/layout_patterns.md`          | Phase 2: Wireframes, component sizing |
 | `references/chart_selection.md`          | Phase 3: Chart decision trees         |
-| `references/common_mistakes.md`          | Phase 3: Anti-patterns to avoid       |
 | `references/implementation_guide.md`     | Phase 4: Complete Python/MCP examples |
 | `references/data_management.md`          | Phase 4: Dynamic data and caching     |
+| `references/common_mistakes.md`          | All phases: Anti-patterns to avoid    |
 
 ---
 

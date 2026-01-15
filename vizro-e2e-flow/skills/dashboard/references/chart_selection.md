@@ -12,6 +12,7 @@ Deep guidance for Phase 3: Selecting appropriate visualizations.
 - RELATIONSHIP Charts (scatter, bubble)
 - PERFORMANCE Charts (bullet, waterfall)
 - Specialized Charts (heatmap, treemap)
+- Custom Charts (when and why to use custom charts)
 - Color Strategy (Vizro palette, semantic colors, accessibility)
 - Anti-Patterns to Avoid
 - Quick Reference Table
@@ -340,6 +341,30 @@ px.density_heatmap(df, x="day", y="hour", z="value")
 ```python
 px.treemap(df, path=["region", "country", "city"], values="sales")
 ```
+
+## Custom Charts
+
+Standard `plotly.express` charts cover basic needs, but custom charts unlock more sophisticated visualizations that can tell a better story.
+
+### When to Use Custom Charts
+
+Use the `@capture("graph")` decorator when you need:
+
+- **Post-update calls**: `update_layout()`, `update_xaxes()`, `update_traces()` to customize appearance
+- **Reference lines or annotations**: Target lines, thresholds, trend lines
+- **Data manipulation**: Calculations or transformations before visualization
+- **Advanced chart types**: Waterfall, bullet charts, or multi-trace `go.Figure()` compositions
+- **Custom styling**: Specific formatting not available in `px` defaults
+
+### What Custom Charts Enable
+
+Custom charts are powerful. They let you:
+
+- Add horizontal/vertical reference lines showing targets or benchmarks
+- Create multi-layered visualizations combining different trace types
+- Apply conditional formatting based on data values
+- Build chart types not available in `plotly.express`
+- Customize every aspect of the visualization
 
 ## Color Strategy
 
