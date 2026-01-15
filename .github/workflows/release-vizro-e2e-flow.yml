@@ -7,6 +7,9 @@ on:
     paths:
       - "vizro-e2e-flow/.claude-plugin/plugin.json"
 
+permissions:
+  contents: read
+
 env:
   PYTHON_VERSION: "3.13"
 
@@ -36,6 +39,8 @@ jobs:
     needs: [check-version]
     if: needs.check-version.outputs.is_release == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
 
