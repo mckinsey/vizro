@@ -1,5 +1,8 @@
 name: Checks for Vizro E2E Flow
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
