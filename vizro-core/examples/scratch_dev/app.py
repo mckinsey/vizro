@@ -116,29 +116,30 @@ page_2 = vm.Page(
         vm.AgGrid(
             id=f"{pre}ag_grid_1",
             title="Source of Filter Interaction",
-            figure=dash_ag_grid(px.data.iris()),
+            figure=dash_ag_grid(df_6),
             actions=va.filter_interaction(targets=[f"{pre}ag_grid_2"]),
         ),
         vm.AgGrid(
             id=f"{pre}ag_grid_2",
             title="Target of Filter Interaction",
-            figure=dash_ag_grid(px.data.iris()),
+            figure=dash_ag_grid(df_6),
         ),
     ],
 )
 
+pre = "p3_"
 page_3 = vm.Page(
     title="Custom action test",
     components=[
         vm.AgGrid(
             title="AgGrid with Custom Action",
-            figure=dash_ag_grid(px.data.iris()),
+            figure=dash_ag_grid(df_6),
             actions=vm.Action(
                 function=capture("action")(lambda _trigger: str(_trigger))(),
-                outputs="text_id",
+                outputs=f"{pre}text_id",
             ),
         ),
-        vm.Text(id="text_id", text="Action Output"),
+        vm.Text(id=f"{pre}text_id", text="Action Output"),
     ],
 )
 
