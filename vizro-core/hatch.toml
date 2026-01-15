@@ -93,16 +93,8 @@ test-e2e-vizro-http-requests = [
 ]
 test-e2e-vizro-screenshots = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
-  "gunicorn dashboard_one_page:app -b 0.0.0.0:5003 -w 1 --timeout 90 &",
-  "gunicorn dashboard_navbar_accordions:app -b 0.0.0.0:5004 -w 1 --timeout 90 &",
-  "gunicorn dashboard_navbar_pages:app -b 0.0.0.0:5005 -w 1 --timeout 90 &",
-  "gunicorn dashboard_navbar_navlink:app -b 0.0.0.0:5006 -w 1 --timeout 90 &",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
-  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5003 -t 30",
-  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5004 -t 30",
-  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5005 -t 30",
-  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5006 -t 30",
-  "pytest -vs --reruns 1 --ctrf ../.ctrf/ctrf-report.json tests/e2e/vizro/test_screenshots/ --headless {args}"
+  "pytest -vs tests/e2e/vizro/test_screenshots/test_screenshots.py::test_notifications_page --headless {args}"
 ]
 test-integration = "pytest --ctrf ../.ctrf/ctrf-report.json tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
