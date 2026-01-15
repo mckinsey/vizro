@@ -37,6 +37,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+vizro-core/cache/*
 
 # macOS
 *.DS_Store
