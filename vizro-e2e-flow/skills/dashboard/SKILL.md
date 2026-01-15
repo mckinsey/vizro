@@ -240,8 +240,7 @@ neutral_color = "gray"  # Inactive
 
 ### KPI Card Pattern
 
-Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER
-put `kpi_card` or `kpi_card_reference` as a custom chart, use the built-in `kpi_card` and `kpi_card_reference` in `Figure` model instead.
+Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER put `kpi_card` or `kpi_card_reference` as a custom chart, use the built-in `kpi_card` and `kpi_card_reference` in `Figure` model instead.
 
 ### Chart Title Pattern
 
@@ -349,6 +348,7 @@ Add the required dependencies as inline dependencies in the `app.py` file, e.g.:
 ```
 
 Then execute the script with the following command:
+
 ```bash
 uv run app.py
 ```

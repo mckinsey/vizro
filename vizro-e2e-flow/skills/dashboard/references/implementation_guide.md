@@ -95,6 +95,7 @@ Add the required dependencies as inline dependencies in the `app.py` file, e.g.:
 ```
 
 Then execute the script with the following command:
+
 ```bash
 uv run python app.py
 ```
@@ -123,6 +124,7 @@ uv run python app.py
 ```
 
 **Notes**:
+
 - `id` is optional, but needed for Parameter targets
 - `title` goes here, NOT in plotly figure
 - `header` and `footer` are optional
@@ -178,8 +180,7 @@ uv run python app.py
 }
 ```
 
-**Note**: Use `reverse_color: true` when lower is better (costs, errors). NEVER add a `kpi_card` or `kpi_card_reference` as a custom chart, only
-use as shown above.
+**Note**: Use `reverse_color: true` when lower is better (costs, errors). NEVER add a `kpi_card` or `kpi_card_reference` as a custom chart, only use as shown above.
 
 ### Other Components
 
@@ -230,23 +231,62 @@ Parameters modify chart arguments (not filter data). Use when you want to change
   "layout": {
     "type": "grid",
     "grid": [
-      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
     ],
     "row_min_height": "140px"
   },
   "components": [
     {
       "type": "graph",
-      "figure": {"_target_": "bar", "data_frame": "sales", "x": "category", "y": "revenue"}
+      "figure": {
+        "_target_": "bar",
+        "data_frame": "sales",
+        "x": "category",
+        "y": "revenue"
+      }
     },
     {
       "type": "graph",
-      "figure": {"_target_": "line", "data_frame": "sales", "x": "date", "y": "revenue"}
+      "figure": {
+        "_target_": "line",
+        "data_frame": "sales",
+        "x": "date",
+        "y": "revenue"
+      }
     },
     {
       "type": "ag_grid",
-      "figure": {"_target_": "dash_ag_grid", "data_frame": "sales"}
+      "figure": {
+        "_target_": "dash_ag_grid",
+        "data_frame": "sales"
+      }
     }
   ]
 }
@@ -261,23 +301,151 @@ Parameters modify chart arguments (not filter data). Use when you want to change
   "layout": {
     "type": "grid",
     "grid": [
-      [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3],
-      [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
-      [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
-      [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
-      [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
-      [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3
+      ],
+      [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
     ],
     "row_min_height": "140px"
   },
   "components": [
-    {"type": "figure", "figure": {"_target_": "kpi_card", "data_frame": "sales", "value_column": "revenue"}},
-    {"type": "figure", "figure": {"_target_": "kpi_card", "data_frame": "sales", "value_column": "orders"}},
-    {"type": "figure", "figure": {"_target_": "kpi_card", "data_frame": "sales", "value_column": "profit"}},
-    {"type": "figure", "figure": {"_target_": "kpi_card", "data_frame": "sales", "value_column": "customers"}},
-    {"type": "graph", "figure": {"_target_": "bar", "data_frame": "sales", "x": "category", "y": "revenue"}},
-    {"type": "graph", "figure": {"_target_": "line", "data_frame": "sales", "x": "date", "y": "revenue"}},
-    {"type": "ag_grid", "figure": {"_target_": "dash_ag_grid", "data_frame": "sales"}}
+    {
+      "type": "figure",
+      "figure": {
+        "_target_": "kpi_card",
+        "data_frame": "sales",
+        "value_column": "revenue"
+      }
+    },
+    {
+      "type": "figure",
+      "figure": {
+        "_target_": "kpi_card",
+        "data_frame": "sales",
+        "value_column": "orders"
+      }
+    },
+    {
+      "type": "figure",
+      "figure": {
+        "_target_": "kpi_card",
+        "data_frame": "sales",
+        "value_column": "profit"
+      }
+    },
+    {
+      "type": "figure",
+      "figure": {
+        "_target_": "kpi_card",
+        "data_frame": "sales",
+        "value_column": "customers"
+      }
+    },
+    {
+      "type": "graph",
+      "figure": {
+        "_target_": "bar",
+        "data_frame": "sales",
+        "x": "category",
+        "y": "revenue"
+      }
+    },
+    {
+      "type": "graph",
+      "figure": {
+        "_target_": "line",
+        "data_frame": "sales",
+        "x": "date",
+        "y": "revenue"
+      }
+    },
+    {
+      "type": "ag_grid",
+      "figure": {
+        "_target_": "dash_ag_grid",
+        "data_frame": "sales"
+      }
+    }
   ]
 }
 ```
@@ -315,6 +483,7 @@ Parameters modify chart arguments (not filter data). Use when you want to change
 ```
 
 **Component height = row_min_height × rows_spanned**:
+
 - KPI cards: 1 row = 140px (optimal)
 - Charts: 3 rows = 420px (minimum for proper rendering)
 - Tables: 4+ rows = 560px+ (adjust based on content)
@@ -328,14 +497,118 @@ Repeat rows in the grid array to make components taller:
   "layout": {
     "type": "grid",
     "grid": [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3],
-      [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3],
-      [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3],
-      [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3]
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
     ],
     "row_min_height": "140px"
   }
@@ -352,9 +625,31 @@ Repeat rows in the grid array to make components taller:
     "type": "flex"
   },
   "components": [
-    {"type": "graph", "figure": {"_target_": "bar", "data_frame": "sales", "x": "category", "y": "revenue"}},
-    {"type": "graph", "figure": {"_target_": "line", "data_frame": "sales", "x": "date", "y": "revenue"}},
-    {"type": "ag_grid", "figure": {"_target_": "dash_ag_grid", "data_frame": "sales"}}
+    {
+      "type": "graph",
+      "figure": {
+        "_target_": "bar",
+        "data_frame": "sales",
+        "x": "category",
+        "y": "revenue"
+      }
+    },
+    {
+      "type": "graph",
+      "figure": {
+        "_target_": "line",
+        "data_frame": "sales",
+        "x": "date",
+        "y": "revenue"
+      }
+    },
+    {
+      "type": "ag_grid",
+      "figure": {
+        "_target_": "dash_ag_grid",
+        "data_frame": "sales"
+      }
+    }
   ]
 }
 ```
@@ -368,9 +663,48 @@ Repeat rows in the grid array to make components taller:
   "layout": {
     "type": "grid",
     "grid": [
-      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
     ],
     "row_min_height": "140px"
   },
@@ -429,14 +763,51 @@ Repeat rows in the grid array to make components taller:
       "layout": {
         "type": "grid",
         "grid": [
-          [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2,
+            2,
+            2
+          ]
         ],
         "row_min_height": "140px"
       },
       "components": [
-        {"type": "graph", "figure": {"_target_": "bar", "data_frame": "sales", "x": "category", "y": "revenue"}},
-        {"type": "graph", "figure": {"_target_": "scatter", "data_frame": "sales", "x": "revenue", "y": "profit"}},
-        {"type": "graph", "figure": {"_target_": "pie", "data_frame": "sales", "values": "revenue", "names": "category"}}
+        {
+          "type": "graph",
+          "figure": {
+            "_target_": "bar",
+            "data_frame": "sales",
+            "x": "category",
+            "y": "revenue"
+          }
+        },
+        {
+          "type": "graph",
+          "figure": {
+            "_target_": "scatter",
+            "data_frame": "sales",
+            "x": "revenue",
+            "y": "profit"
+          }
+        },
+        {
+          "type": "graph",
+          "figure": {
+            "_target_": "pie",
+            "data_frame": "sales",
+            "values": "revenue",
+            "names": "category"
+          }
+        }
       ]
     }
   ]
@@ -501,7 +872,9 @@ def bar_with_target(data_frame, x, y, target=None):
 ```json
 {
   "type": "parameter",
-  "targets": ["sales_chart.target"],
+  "targets": [
+    "sales_chart.target"
+  ],
   "selector": {
     "type": "slider",
     "min": 50000,
@@ -543,10 +916,62 @@ Access at `http://localhost:8050`
   "layout": {
     "type": "grid",
     "grid": [
-      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
     ],
     "row_min_height": "140px"
   },
