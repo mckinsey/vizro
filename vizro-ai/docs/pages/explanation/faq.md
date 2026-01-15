@@ -20,7 +20,7 @@ Vizro-AI uses [Pydantic AI](https://ai.pydantic.dev/) for LLM integration and su
 
 ## Can I use async/streaming with chart_agent?
 
-Yes! Since `chart_agent` is a Pydantic AI agent, you can use all Pydantic AI features including async execution, streaming, and event handling. See the [run guide](../user-guides/run-vizro-ai.md) for examples.
+Yes! Since `chart_agent` is a Pydantic AI agent, you can use all Pydantic AI features including async execution, streaming, and event handling. See the [Vizro-AI function calls and properties](../user-guides/advanced-options.md) for examples.
 
 ## What happened to VizroAI.plot() and VizroAI.dashboard()?
 
