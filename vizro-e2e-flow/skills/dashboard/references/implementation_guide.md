@@ -4,7 +4,7 @@ Deep guidance for Phase 4: Building the dashboard with Vizro MCP tools.
 
 ## Contents
 
-- MCP Workflow (load data, validate config)
+- MCP Workflow (understand MCP server, get schemas, validate config, run dashboard)
 - Components Reference (Graph, AgGrid, Figure, Card, Container, Tabs)
 - Controls Reference (Filter, Parameter)
 - Layout Reference (Grid, Flex, Nested)
@@ -18,25 +18,26 @@ Deep guidance for Phase 4: Building the dashboard with Vizro MCP tools.
 
 ## MCP Workflow
 
-### Step 1: Load Data
+### Step 1: Understand how the MCP server works
 
 ```
-Use: vizro-mcp:load_and_analyze_data(path_or_url="/path/to/data.csv")
+Use: vizro-mcp:get_vizro_chart_or_dashboard_plan(user_plan="dashboard", user_host="ide")
 ```
 
-Returns column names, types, and sample values.
+You can either load data again, or if well enough understood, you can skip this step and proceed to the next step.
 
 ### Step 2: Get Model Schemas
+
+Schemas define valid properties, required fields, and available options for each component. Fetch schemas for components you plan to use.
 
 ```
 Use: vizro-mcp:get_model_json_schema(model_name="Dashboard")
 Use: vizro-mcp:get_model_json_schema(model_name="Page")
-Use: vizro-mcp:get_model_json_schema(model_name="Graph")
 ```
 
-### Step 3: Build Configuration
+### Step 3: Build Dashboard Config
 
-Create a JSON configuration that matches Phase 1-3 decisions:
+Create JSON config respecting Phase 1-3 decisions:
 
 ```json
 {
@@ -69,163 +70,145 @@ Create a JSON configuration that matches Phase 1-3 decisions:
 ### Step 4: Validate and Get Code
 
 ```
-Use: vizro-mcp:validate_dashboard_config(
-  dashboard_config={...},
-  data_infos=[{
-    "file_name": "sales.csv",
-    "file_path_or_url": "/path/to/sales.csv",
-    "file_location_type": "local",
-    "read_function_string": "pd.read_csv"
-  }],
-  custom_charts=[]
-)
+Use: vizro-mcp:validate_dashboard_config(dashboard_config={...}, data_infos=[...], custom_charts=[])
 ```
+
+**CRITICAL**: Call this tool after each iteration to ensure the solution is still valid.
 
 Returns Python code.
 
+### Step 5: Run the Dashboard
+
+Add the required dependencies as inline dependencies in the `app.py` file, e.g.:
+
+```python
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#     "vizro",
+#     "pandas",
+#     <anything else important>
+# ]
+# ///
+
+# The app output from the validation tool!
+```
+
+Then execute the script with the following command:
+```bash
+uv run python app.py
+```
+
 ## Components Reference
+
+**IMPORTANT**: Always fetch component schemas using `vizro-mcp:get_model_json_schema(model_name="ComponentName")` to see all available properties, required fields, and valid options. The examples below show common patterns, but schemas are the source of truth.
 
 ### Graph (Charts)
 
-```python
-vm.Graph(
-    id="my_chart",  # Optional, needed for Parameter targets
-    figure=px.bar(df, x="category", y="value", color="segment"),
-    title="Chart Title",  # Title here, NOT in plotly
-    header="Additional context",  # Optional
-    footer="SOURCE: **Data source**",  # Optional, supports markdown
-)
+```json
+{
+  "type": "graph",
+  "id": "my_chart",
+  "figure": {
+    "_target_": "bar",
+    "data_frame": "sales",
+    "x": "category",
+    "y": "value",
+    "color": "segment"
+  },
+  "title": "Chart Title",
+  "header": "Additional context",
+  "footer": "SOURCE: **Data source**"
+}
 ```
+
+**Notes**:
+- `id` is optional, but needed for Parameter targets
+- `title` goes here, NOT in plotly figure
+- `header` and `footer` are optional
+- `footer` supports markdown
 
 ### AgGrid (Tables)
 
-Always use `vm.AgGrid` with `dash_ag_grid()`:
-
-```python
-from vizro.tables import dash_ag_grid
-
-vm.AgGrid(
-    figure=dash_ag_grid(df),
-    title="Data Table",
-)
+```json
+{
+  "type": "ag_grid",
+  "figure": {
+    "_target_": "dash_ag_grid",
+    "data_frame": "sales"
+  },
+  "title": "Data Table"
+}
 ```
 
 ### Figure (KPIs)
 
-```python
-from vizro.figures import kpi_card, kpi_card_reference
+**Simple KPI**:
 
-# Simple KPI
-vm.Figure(
-    figure=kpi_card(
-        data_frame=df,
-        value_column="revenue",
-        title="Total Revenue",
-        value_format="${value:,.0f}",
-        agg_func="sum",
-        icon="payments",
-    )
-)
-
-# KPI with reference comparison
-vm.Figure(
-    figure=kpi_card_reference(
-        data_frame=df,
-        value_column="revenue",
-        reference_column="previous_revenue",
-        title="Revenue vs Last Month",
-        value_format="${value:,.0f}",
-        reference_format="{delta:+.1f}%",
-        reverse_color=True,  # When lower is better
-    )
-)
+```json
+{
+  "type": "figure",
+  "figure": {
+    "_target_": "kpi_card",
+    "data_frame": "sales",
+    "value_column": "revenue",
+    "title": "Total Revenue",
+    "value_format": "${value:,.0f}",
+    "agg_func": "sum",
+    "icon": "payments"
+  }
+}
 ```
 
-### Card (Text/HTML)
+**KPI with reference comparison**:
 
-```python
-vm.Card(
-    text="""
-    # Welcome
-    This dashboard shows **sales performance**.
-    """,
-)
+```json
+{
+  "type": "figure",
+  "figure": {
+    "_target_": "kpi_card_reference",
+    "data_frame": "sales",
+    "value_column": "revenue",
+    "reference_column": "previous_revenue",
+    "title": "Revenue vs Last Month",
+    "value_format": "${value:,.0f}",
+    "reference_format": "{delta:+.1f}%",
+    "reverse_color": true
+  }
+}
 ```
 
-### Container
+**Note**: Use `reverse_color: true` when lower is better (costs, errors). NEVER add a `kpi_card` or `kpi_card_reference` as a custom chart, only
+use as shown above.
 
-```python
-vm.Container(
-    title="Section Title",
-    layout=vm.Grid(grid=[*[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]] * 3], row_min_height="140px"),  # 3 rows = 420px
-    components=[
-        vm.Graph(figure=px.bar(...)),
-        vm.Graph(figure=px.line(...)),
-    ],
-    controls=[
-        vm.Filter(column="category"),  # Scoped to this container
-    ],
-    variant="outlined",  # or "filled", "plain"
-)
-```
+### Other Components
 
-### Tabs
+**Card**: Use for text content, markdown, or HTML. Supports markdown formatting in `text` field.
 
-```python
-vm.Tabs(
-    tabs=[
-        vm.Container(title="Tab 1", components=[...]),
-        vm.Container(title="Tab 2", components=[...]),
-    ]
-)
-```
+**Container**: Use to group related components with shared filters/parameters. Controls are scoped to the container. Supports `variant` ("outlined", "filled", "plain") and custom layouts.
+
+**Tabs**: Use to organize multiple views/pages within a single page. Each tab is a Container with its own components and controls.
 
 ## Controls Reference
 
+**IMPORTANT**: Always fetch control schemas using `vizro-mcp:get_model_json_schema(model_name="Filter")` or `vizro-mcp:get_model_json_schema(model_name="Parameter")` to see all available properties and options.
+
 ### Filter
 
-```python
-# Basic filter
-vm.Filter(column="category")
-```
+Filters filter data across multiple visualizations. Place at page-level (left sidebar) if needed across multiple components, or container-level if scoped to a specific container.
 
 **IMPORTANT**: Choose the appropriate selector - don't default to Dropdown for everything:
 
-```python
-# RadioItems - for 2-4 mutually exclusive options
-vm.Filter(column="region", selector=vm.RadioItems())  # North, South, East, West
-
-# Checklist - for multi-select or boolean
-vm.Filter(column="status", selector=vm.Checklist())  # Active, Inactive, Pending
-
-# Dropdown - for 5+ options
-vm.Filter(column="product_category", selector=vm.Dropdown())  # Many categories
-
-# RangeSlider - for numeric ranges
-vm.Filter(column="price", selector=vm.RangeSlider(min=0, max=1000))
-
-# Slider - for single numeric value
-vm.Filter(column="year", selector=vm.Slider(min=2020, max=2025))
-
-# DatePicker - for dates
-vm.Filter(column="date", selector=vm.DatePicker())
-vm.Filter(column="date", selector=vm.DatePicker(range=True))  # Date range
-```
+- **RadioItems**: 2-4 mutually exclusive options (e.g., Region: North/South/East/West)
+- **Checklist**: Multi-select or boolean values (e.g., Status: Active/Inactive/Pending)
+- **Dropdown**: 5+ options (e.g., Product Category with many categories)
+- **RangeSlider**: Numeric ranges (e.g., Price: $0-$1000)
+- **Slider**: Single numeric value (e.g., Year: 2020-2025)
+- **DatePicker**: Date selection (use `range: true` for date ranges)
 
 ### Parameter
 
-Parameters modify chart arguments (not filter data):
-
-```python
-vm.Parameter(
-    targets=["chart_id.x"],  # Change x-axis column
-    selector=vm.Dropdown(
-        options=["revenue", "profit", "units"],
-        value="revenue",
-        title="Metric",
-    ),
-)
-```
+Parameters modify chart arguments (not filter data). Use when you want to change what's displayed (e.g., switch x-axis column, change metric) rather than filter the underlying dataset. Requires `targets` array pointing to component IDs and their properties (e.g., `["chart_id.x"]`).
 
 ## Layout Reference
 
@@ -240,38 +223,63 @@ vm.Parameter(
 - Always use `row_min_height="140px"`
 - **12 columns recommended** (not enforced) - examples below use 12 columns
 
-```python
-vm.Page(
-    title="Dashboard",
-    layout=vm.Grid(
-        grid=[
-            [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],  # Row 1: Components 0 and 1 (6 cols each)
-            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],  # Row 2: Component 2 spans full width
-        ],
-        row_min_height="140px",
-    ),
-    components=[comp0, comp1, comp2],
-)
+```json
+{
+  "type": "page",
+  "title": "Dashboard",
+  "layout": {
+    "type": "grid",
+    "grid": [
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+    ],
+    "row_min_height": "140px"
+  },
+  "components": [
+    {
+      "type": "graph",
+      "figure": {"_target_": "bar", "data_frame": "sales", "x": "category", "y": "revenue"}
+    },
+    {
+      "type": "graph",
+      "figure": {"_target_": "line", "data_frame": "sales", "x": "date", "y": "revenue"}
+    },
+    {
+      "type": "ag_grid",
+      "figure": {"_target_": "dash_ag_grid", "data_frame": "sales"}
+    }
+  ]
+}
 ```
 
 ### Standard Grid Pattern
 
-```python
-vm.Page(
-    title="Dashboard",
-    layout=vm.Grid(
-        grid=[
-            [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3],  # 4 KPIs (3 cols each)
-            [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],  # 2 charts (6 cols each)
-            [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
-            [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
-            [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],  # Full-width table
-            [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
-        ],
-        row_min_height="140px",
-    ),
-    components=[kpi1, kpi2, kpi3, kpi4, chart1, chart2, table],
-)
+```json
+{
+  "type": "page",
+  "title": "Dashboard",
+  "layout": {
+    "type": "grid",
+    "grid": [
+      [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3],
+      [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
+      [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
+      [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
+      [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+      [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+    ],
+    "row_min_height": "140px"
+  },
+  "components": [
+    {"type": "figure", "figure": {"_target_": "kpi_card", "data_frame": "sales", "value_column": "revenue"}},
+    {"type": "figure", "figure": {"_target_": "kpi_card", "data_frame": "sales", "value_column": "orders"}},
+    {"type": "figure", "figure": {"_target_": "kpi_card", "data_frame": "sales", "value_column": "profit"}},
+    {"type": "figure", "figure": {"_target_": "kpi_card", "data_frame": "sales", "value_column": "customers"}},
+    {"type": "graph", "figure": {"_target_": "bar", "data_frame": "sales", "x": "category", "y": "revenue"}},
+    {"type": "graph", "figure": {"_target_": "line", "data_frame": "sales", "x": "date", "y": "revenue"}},
+    {"type": "ag_grid", "figure": {"_target_": "dash_ag_grid", "data_frame": "sales"}}
+  ]
+}
 ```
 
 ### Flexible Width Distributions
@@ -294,75 +302,150 @@ vm.Page(
 
 ### Row Height Control
 
-```python
-# Always use 140px row height
-vm.Grid(grid=[...], row_min_height="140px")
+**Always use 140px row height**:
 
-# Component height = row_min_height × rows_spanned
-# KPI cards: 1 row = 140px (optimal)
-# Charts: 3 rows = 420px (minimum for proper rendering)
-# Tables: 4+ rows = 560px+ (adjust based on content)
+```json
+{
+  "layout": {
+    "type": "grid",
+    "grid": [...],
+    "row_min_height": "140px"
+  }
+}
 ```
+
+**Component height = row_min_height × rows_spanned**:
+- KPI cards: 1 row = 140px (optimal)
+- Charts: 3 rows = 420px (minimum for proper rendering)
+- Tables: 4+ rows = 560px+ (adjust based on content)
 
 ### Creating Taller Components
 
-Use list multiplication for components spanning multiple rows:
+Repeat rows in the grid array to make components taller:
 
-```python
-grid = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # Header: 1 row (full width)
-    *[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]] * 3,  # Chart: 3 rows (repeat pattern)
-    *[[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3]] * 4,  # Two charts side-by-side: 4 rows
-]
+```json
+{
+  "layout": {
+    "type": "grid",
+    "grid": [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3],
+      [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3],
+      [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3],
+      [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3]
+    ],
+    "row_min_height": "140px"
+  }
+}
 ```
 
 ### Flex Layout
 
-```python
-vm.Page(
-    title="Simple Page",
-    layout=vm.Flex(),  # Automatic vertical stacking
-    components=[chart1, chart2, table],
-)
+```json
+{
+  "type": "page",
+  "title": "Simple Page",
+  "layout": {
+    "type": "flex"
+  },
+  "components": [
+    {"type": "graph", "figure": {"_target_": "bar", "data_frame": "sales", "x": "category", "y": "revenue"}},
+    {"type": "graph", "figure": {"_target_": "line", "data_frame": "sales", "x": "date", "y": "revenue"}},
+    {"type": "ag_grid", "figure": {"_target_": "dash_ag_grid", "data_frame": "sales"}}
+  ]
+}
 ```
 
 ### Container with Grid
 
-```python
-vm.Container(
-    title="Regional Analysis",
-    layout=vm.Grid(grid=[*[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]] * 3], row_min_height="140px"),  # 3 rows = 420px
-    components=[
-        vm.Graph(figure=px.bar(df, x="region", y="sales")),
-        vm.Graph(figure=px.pie(df, values="sales", names="region")),
+```json
+{
+  "type": "container",
+  "title": "Regional Analysis",
+  "layout": {
+    "type": "grid",
+    "grid": [
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]
     ],
-    controls=[
-        vm.Filter(column="quarter"),  # Only affects this container
-    ],
-    variant="outlined",  # or "filled", "plain"
-)
+    "row_min_height": "140px"
+  },
+  "components": [
+    {
+      "type": "graph",
+      "figure": {
+        "_target_": "bar",
+        "data_frame": "sales",
+        "x": "region",
+        "y": "sales"
+      }
+    },
+    {
+      "type": "graph",
+      "figure": {
+        "_target_": "pie",
+        "data_frame": "sales",
+        "values": "sales",
+        "names": "region"
+      }
+    }
+  ],
+  "controls": [
+    {
+      "type": "filter",
+      "column": "quarter"
+    }
+  ],
+  "variant": "outlined"
+}
 ```
 
 ### Nested Layouts
 
-```python
-vm.Page(
-    title="Mixed Layout",
-    layout=vm.Flex(),
-    components=[
-        vm.Graph(figure=px.line(...)),
-        vm.Container(
-            title="Details",
-            layout=vm.Grid(grid=[[0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]]),  # 3 charts (4 cols each)
-            components=[chart1, chart2, chart3],
-        ),
-    ],
-)
+```json
+{
+  "type": "page",
+  "title": "Mixed Layout",
+  "layout": {
+    "type": "flex"
+  },
+  "components": [
+    {
+      "type": "graph",
+      "figure": {
+        "_target_": "line",
+        "data_frame": "sales",
+        "x": "date",
+        "y": "revenue"
+      }
+    },
+    {
+      "type": "container",
+      "title": "Details",
+      "layout": {
+        "type": "grid",
+        "grid": [
+          [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]
+        ],
+        "row_min_height": "140px"
+      },
+      "components": [
+        {"type": "graph", "figure": {"_target_": "bar", "data_frame": "sales", "x": "category", "y": "revenue"}},
+        {"type": "graph", "figure": {"_target_": "scatter", "data_frame": "sales", "x": "revenue", "y": "profit"}},
+        {"type": "graph", "figure": {"_target_": "pie", "data_frame": "sales", "values": "revenue", "names": "category"}}
+      ]
+    }
+  ]
+}
 ```
 
 ## Custom Charts
 
-Use `@capture("graph")` when you need:
+Use custom charts when you need:
 
 - Data manipulation before visualization
 - Build chart types not available in `plotly.express` (waterfall, bullet, etc.)
@@ -370,8 +453,12 @@ Use `@capture("graph")` when you need:
 - Add horizontal/vertical reference lines showing targets or benchmarks
 - Create multi-layered visualizations combining different trace types
 - Apply conditional formatting based on data values
+- **NEVER** return `kpi_card` or `kpi_card_reference` as a custom chart, use the built-in `kpi_card` and `kpi_card_reference` in `Figure` model instead
+- The function MUST return a `plotly.graph_objects.Figure` object
 
 ### Example: Bar Chart with Target Line
+
+**Python function** (pass to `validate_dashboard_config` in the `custom_charts` parameter):
 
 ```python
 from vizro.models.types import capture
@@ -390,58 +477,55 @@ def bar_with_target(data_frame, x, y, target=None):
             annotation_text=f"Target: {target}",
         )
     return fig
+```
 
+**JSON usage**:
 
-# Usage
-vm.Graph(
-    id="sales_chart",
-    figure=bar_with_target(data_frame=df, x="month", y="revenue", target=100000),
-    title="Monthly Revenue vs Target",
-)
+```json
+{
+  "type": "graph",
+  "id": "sales_chart",
+  "figure": {
+    "_target_": "bar_with_target",
+    "data_frame": "sales",
+    "x": "month",
+    "y": "revenue",
+    "target": 100000
+  },
+  "title": "Monthly Revenue vs Target"
+}
+```
 
-# With Parameter control
-vm.Parameter(
-    targets=["sales_chart.target"],
-    selector=vm.Slider(min=50000, max=200000, value=100000, title="Target"),
-)
+**With Parameter control**:
+
+```json
+{
+  "type": "parameter",
+  "targets": ["sales_chart.target"],
+  "selector": {
+    "type": "slider",
+    "min": 50000,
+    "max": 200000,
+    "value": 100000,
+    "title": "Target"
+  }
+}
 ```
 
 ### Custom Chart Rules
 
 1. Function must accept `data_frame` as first argument
 1. Must return `plotly.graph_objects.Figure`
-1. Chart titles go in `vm.Graph(title=...)`, not in the function
+1. Chart titles go in JSON `title` field, not in the function
 1. Let Vizro handle colors unless semantic coloring needed
-
-## Multi-Page Dashboard
-
-```python
-overview = vm.Page(title="Overview", components=[...])
-details = vm.Page(title="Details", components=[...])
-analysis = vm.Page(title="Analysis", components=[...])
-
-dashboard = vm.Dashboard(
-    pages=[overview, details, analysis],
-    navigation=vm.Navigation(nav_selector=vm.NavBar()),
-)
-```
+1. Reference custom charts in JSON using `"_target_": "function_name"`
 
 ## Running the Dashboard
 
-**Install Vizro first** (if not already installed):
+Add the required dependencies as inline dependencies in the `app.py` file (see Step 5 in MCP Workflow above), then run:
 
 ```bash
-# Add to project dependencies
-uv add vizro
-
-# Or install in active venv
-uv pip install vizro
-```
-
-**Run the dashboard**:
-
-```bash
-uv run python app.py
+uv run app.py
 ```
 
 Access at `http://localhost:8050`
@@ -450,37 +534,121 @@ Access at `http://localhost:8050`
 
 ### Dashboard with Overview and Detail Pages
 
-```python
-# Overview page - KPIs and summary charts
-overview = vm.Page(
-    title="Overview",
-    layout=vm.Grid(
-        grid=[
-            [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],  # KPIs: 1 row = 140px (6 cols each)
-            *[[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]] * 3,  # Chart: 3 rows = 420px (full width)
-        ],
-        row_min_height="140px",
-    ),
-    components=[
-        vm.Figure(figure=kpi_card(df, "revenue", "Revenue", "${value:,.0f}")),
-        vm.Figure(figure=kpi_card(df, "orders", "Orders", "{value:,}")),
-        vm.Graph(figure=px.line(df, x="date", y="revenue"), title="Trend"),
-    ],
-    controls=[vm.Filter(column="region")],
-)
+**Overview page** - KPIs and summary charts:
 
-# Detail page - tables and drill-downs
-details = vm.Page(
-    title="Details",
-    layout=vm.Flex(),
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(df), title="All Data"),
-        vm.Button(text="Export", actions=[va.export_data()]),
+```json
+{
+  "type": "page",
+  "title": "Overview",
+  "layout": {
+    "type": "grid",
+    "grid": [
+      [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
     ],
-    controls=[vm.Filter(column="region"), vm.Filter(column="product")],
-)
+    "row_min_height": "140px"
+  },
+  "components": [
+    {
+      "type": "figure",
+      "figure": {
+        "_target_": "kpi_card",
+        "data_frame": "sales",
+        "value_column": "revenue",
+        "title": "Revenue",
+        "value_format": "${value:,.0f}"
+      }
+    },
+    {
+      "type": "figure",
+      "figure": {
+        "_target_": "kpi_card",
+        "data_frame": "sales",
+        "value_column": "orders",
+        "title": "Orders",
+        "value_format": "{value:,}"
+      }
+    },
+    {
+      "type": "graph",
+      "figure": {
+        "_target_": "line",
+        "data_frame": "sales",
+        "x": "date",
+        "y": "revenue"
+      },
+      "title": "Trend"
+    }
+  ],
+  "controls": [
+    {
+      "type": "filter",
+      "column": "region"
+    }
+  ]
+}
+```
 
-dashboard = vm.Dashboard(pages=[overview, details])
+**Detail page** - tables and drill-downs:
+
+```json
+{
+  "type": "page",
+  "title": "Details",
+  "layout": {
+    "type": "flex"
+  },
+  "components": [
+    {
+      "type": "ag_grid",
+      "figure": {
+        "_target_": "dash_ag_grid",
+        "data_frame": "sales"
+      },
+      "title": "All Data"
+    },
+    {
+      "type": "button",
+      "text": "Export",
+      "actions": [
+        {
+          "_target_": "export_data"
+        }
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "type": "filter",
+      "column": "region"
+    },
+    {
+      "type": "filter",
+      "column": "product"
+    }
+  ]
+}
+```
+
+**Complete dashboard**:
+
+```json
+{
+  "pages": [
+    {
+      "type": "page",
+      "title": "Overview",
+      ...
+    },
+    {
+      "type": "page",
+      "title": "Details",
+      ...
+    }
+  ]
+}
 ```
 
 ## Number Formatting & Typography

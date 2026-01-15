@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: USE THIS SKILL FIRST when user wants to create, design, or build a dashboard. Do NOT jump to MCP tools directly - this skill enforces a 5-phase workflow (requirements, layout, visualization, implementation, testing) that must be followed. MCP tools like vizro-mcp are only used in Phase 4 after completing Phases 1-3 with the user.
+description: USE THIS SKILL FIRST when user wants to create, design, or build a dashboard, ESPECIALLY Vizro dashboards. Do NOT jump to MCP tools directly - this skill enforces a 5-phase workflow (requirements, layout, visualization, implementation, testing) that must be followed. MCP tools like vizro-mcp are only used in Phase 4 after completing Phases 1-3 with the user.
 ---
 
 # Building Vizro Dashboards
@@ -240,7 +240,8 @@ neutral_color = "gray"  # Inactive
 
 ### KPI Card Pattern
 
-Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors).
+Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER
+put `kpi_card` or `kpi_card_reference` as a custom chart, use the built-in `kpi_card` and `kpi_card_reference` in `Figure` model instead.
 
 ### Chart Title Pattern
 
@@ -301,11 +302,13 @@ Implementation must match these specs. Any deviation requires documentation with
 
 ### MCP-First Workflow (Recommended)
 
-**Step 1: Load and Analyze Data**
+**Step 1: Understand how the MCP server works**
 
 ```
-Use: vizro-mcp:load_and_analyze_data(path_or_url="path/to/data.csv")
+Use: vizro-mcp:get_vizro_chart_or_dashboard_plan(user_plan="dashboard", user_host="ide")
 ```
+
+You can either load data again, or if well enough understood, you can skip this step and proceed to the next step.
 
 **Step 2: Get Model Schemas**
 
@@ -324,6 +327,30 @@ Create JSON config respecting Phase 1-3 decisions.
 
 ```
 Use: vizro-mcp:validate_dashboard_config(dashboard_config={...}, data_infos=[...], custom_charts=[])
+```
+
+**CRITICAL**: Call this tool after each iteration to ensure the solution is still valid.
+
+**Step 5: Run the Dashboard**
+
+Add the required dependencies as inline dependencies in the `app.py` file, e.g.:
+
+```python
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#     "vizro",
+#     "pandas",
+#     <anything else important>
+# ]
+# ///
+
+# The app output from the validation tool!
+```
+
+Then execute the script with the following command:
+```bash
+uv run app.py
 ```
 
 **Implementation details**: See [implementation_guide.md](references/implementation_guide.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 4: Implementation Mistakes"
