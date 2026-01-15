@@ -73,7 +73,6 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
 
     For production use, it's preferable to store your API key in a `.env` file and load it using `python-dotenv` or `os.getenv()`. This keeps your API key secure and out of your code.
 
-
 ??? warning "Help! The LLM request was unauthorized"
 
     If you see an error similar to this, your LLM API key is not valid:
@@ -146,7 +145,7 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
 
         ```py
         # Assuming you have a result object from chart_agent.run_sync()
-        
+
         # Access the code
         print("Code:", result.output.code)
 
