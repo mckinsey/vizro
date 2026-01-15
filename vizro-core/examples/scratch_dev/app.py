@@ -127,8 +127,23 @@ page_2 = vm.Page(
     ],
 )
 
+page_3 = vm.Page(
+    title="Custom action test",
+    components=[
+        vm.AgGrid(
+            title="AgGrid with Custom Action",
+            figure=dash_ag_grid(px.data.iris()),
+            actions=vm.Action(
+                function=capture("action")(lambda _trigger: str(_trigger))(),
+                outputs="text_id",
+            ),
+        ),
+        vm.Text(id="text_id", text="Action Output"),
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page_1, page_2])
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

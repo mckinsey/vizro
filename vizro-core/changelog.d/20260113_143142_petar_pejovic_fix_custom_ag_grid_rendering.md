@@ -36,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- Fix AgGrid `rowSelection` defaults to apply only when a `set_control` action is defined. ([#1539](https://github.com/mckinsey/vizro/pull/1539))
+- Fix AgGrid `rowSelection` defaults when `actions` argument is defined. ([#1539](https://github.com/mckinsey/vizro/pull/1539))
 
 <!--
 ### Security
