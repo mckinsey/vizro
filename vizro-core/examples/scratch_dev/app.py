@@ -143,8 +143,25 @@ page_3 = vm.Page(
     ],
 )
 
+pre = "p4_"
+page_4 = vm.Page(
+    title="AgGrid targets single-select control",
+    components=[
+        vm.AgGrid(
+            id=f"{pre}ag_grid_1",
+            title="AgGrid Single-Select Control Test",
+            figure=dash_ag_grid(df_6),
+            actions=va.set_control(control=f"{pre}filter_1", value="species"),
+        ),
+        vm.AgGrid(id=f"{pre}table", title="Control Target", figure=dash_ag_grid(px.data.iris())),
+    ],
+    controls=[
+        vm.Filter(id=f"{pre}filter_1", column="species", targets=[f"{pre}table"], selector=vm.RadioItems()),
+    ]
+)
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
