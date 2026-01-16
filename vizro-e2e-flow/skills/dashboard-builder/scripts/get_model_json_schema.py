@@ -81,9 +81,7 @@ The only difference to the dash version is that:
     )
 
 
-FIGURE_NAMESPACE_FUNCTION_DOCS = {
-    func: vf.__dict__[func].__doc__ for func in vf.__all__
-}
+FIGURE_NAMESPACE_FUNCTION_DOCS = {func: vf.__dict__[func].__doc__ for func in vf.__all__}
 
 
 class FigureEnhanced(vm.Figure):
@@ -137,9 +135,7 @@ def get_model_json_schema(
     if model_name in modified_models:
         return ModelJsonSchemaResults(
             model_name=model_name,
-            json_schema=modified_models[model_name].model_json_schema(
-                schema_generator=NoDefsGenerateJsonSchema
-            ),
+            json_schema=modified_models[model_name].model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
             additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
 that model if necessary.""",
         )
@@ -155,9 +151,7 @@ that model if necessary.""",
     if model_name in {"Grid", "Flex"}:
         return ModelJsonSchemaResults(
             model_name=model_name,
-            json_schema=model_class.model_json_schema(
-                schema_generator=NoDefsGenerateJsonSchema
-            ),
+            json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
             additional_info="""Grid layout: use integers starting from 0 to reference elements.
 Elements can't overlap, must be rectangular, and rows must have equal column counts.""",
         )
@@ -168,9 +162,7 @@ Elements can't overlap, must be rectangular, and rows must have equal column cou
         if hasattr(model_class, "model_json_schema"):
             return ModelJsonSchemaResults(
                 model_name=model_name,
-                json_schema=model_class.model_json_schema(
-                    schema_generator=NoDefsGenerateJsonSchema
-                ),
+                json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
                 additional_info=f"""From {namespace_name}. LLM must remember to replace `$ref` with the actual config. Request the schema of
 that model if necessary.""",
             )
@@ -184,9 +176,7 @@ that model if necessary.""",
 
     return ModelJsonSchemaResults(
         model_name=model_name,
-        json_schema=model_class.model_json_schema(
-            schema_generator=NoDefsGenerateJsonSchema
-        ),
+        json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
         additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
 that model if necessary.""",
     )
@@ -211,7 +201,7 @@ if __name__ == "__main__":
         result = get_model_json_schema(model_name)
 
         print(f"Model: {result.model_name}")
-        print(f"\nJSON Schema:")
+        print("\nJSON Schema:")
         print(json.dumps(result.json_schema, indent=2))
-        print(f"\nAdditional Info:")
+        print("\nAdditional Info:")
         print(result.additional_info)

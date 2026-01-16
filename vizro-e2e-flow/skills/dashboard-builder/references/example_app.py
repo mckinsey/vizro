@@ -6,7 +6,6 @@
 # ]
 # ///
 
-import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -27,16 +26,10 @@ data_manager["iris"] = px.data.iris()
 page = vm.Page(
     title="My first dashboard",
     components=[
-        vm.Graph(
-            figure=px.scatter(
-                "iris", x="sepal_length", y="petal_width", color="species"
-            )
-        ),
+        vm.Graph(figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),
         vm.Graph(
             id="histogram",
-            figure=px.histogram(
-                "iris", x="sepal_width", color="species", marginal="box"
-            ),
+            figure=px.histogram("iris", x="sepal_width", color="species", marginal="box"),
         ),
     ],
     controls=[
