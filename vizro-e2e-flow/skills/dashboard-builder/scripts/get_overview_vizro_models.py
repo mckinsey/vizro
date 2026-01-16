@@ -44,12 +44,8 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
     "additional_info": [vm.Tooltip],
-    "functions available for vm.Figure(...,figure=...) model": [
-        vf.__dict__[func] for func in vf.__all__
-    ],
-    "functions available from vizro.actions namespace": [
-        va.__dict__[action] for action in va.__all__
-    ],
+    "functions available for vm.Figure(...,figure=...) model": [vf.__dict__[func] for func in vf.__all__],
+    "functions available from vizro.actions namespace": [va.__dict__[action] for action in va.__all__],
 }
 
 
@@ -64,9 +60,7 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
         result[category] = [
             {
                 "name": model_class.__name__,
-                "description": (
-                    model_class.__doc__ or "No description available"
-                ).split("\n")[0],
+                "description": (model_class.__doc__ or "No description available").split("\n")[0],
             }
             for model_class in models_list
         ]

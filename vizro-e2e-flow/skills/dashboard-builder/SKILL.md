@@ -1,9 +1,10 @@
 ---
 name: dashboard-build
-description: A skill that should be invoked whenever a user wants to build a Dashboard or simple app. This skill is Phase 2 of an e2e process that covers the user research, layout and interaction design, wireframes, the actual build, and the testing. For Phase 1, look for the dashboard-design skill. 
+description: A skill that should be invoked whenever a user wants to build a Dashboard or simple app. This skill is Phase 2 of an e2e process that covers the user research, layout and interaction design, wireframes, the actual build, and the testing. For Phase 1, look for the dashboard-design skill.
 ---
 
 ## CRITICAL Guidelines for Dashboard Building
+
 - Ideally, do NOT skip Phase 1 (dashboard-design skill) as that ensures a much smoother build process. If the user just wants to build it, explain the value of a design phase first. Check if there is any existing `/spec` directory from Phase 1. If yes, use that to guide your build.
 - Use your native tools to understand the data well, especially if you build custom charts or when you use specific selectors.
 - If the user asks for an example, simply copy the [example app](./references/example_app.py) and run it. Do not include your own data or change the example.
@@ -11,22 +12,17 @@ description: A skill that should be invoked whenever a user wants to build a Das
 - When iterating on the dashboard after completing all steps, do not forget key points from below, especially regarding spec compliance and updating and terminal handling: always keep all specs up to date, and always check if terminal output is clean after each iteration.
 - **ABSOLUTELY NEVER** type ANY commands (including sleep, echo, or anything else) in the terminal where the dashboard app is running, even if you started it with isBackground=true. This WILL kill the dashboard process. The dashboard startup takes time - be patient and let it run undisturbed.
 
-
-
- ## Spec Files: Documenting Decisions
+## Spec Files: Documenting Decisions
 
 IMPORTANT: Each step produces a spec file in the `spec/` directory to document reasoning, enable collaboration, and allow resumption in future sessions. Create the `spec/` directory if it is not already present at the root of the project.
-
 
 ## Step 1: Build dashboard
 
 1. You MUST ALWAYS copy the [example app](./references/example_app.py) over, and modify it - this ensures less errors!
-2. Investigate about the Vizro model  by executing the [schema fetching script](./scripts/get_model_json_schema.py). ALWAYS DO this for all models that you need - do NOT assume you know it. Execute the script like so: `uv run ./scripts/get_model_json_schema.py <model_name> <model_name2> ...` where `<model_name>` is the name of the model you want to get the schema for.
-You can get an overview of what is available by calling the [overview script](./scripts/get_overview_vizro_models.py) like so: `uv run ./scripts/get_overview_vizro_models.py`. This will print out all available models and their brief descriptions.
-Important: Very often normal plotly express charts will not suffice as they are too simple. In that case, refer to the [custom charts guide](./references/custom-charts-guide.md) to create more complex charts. These MUST be added to the correct section in the python app. You can then add them to the `Graph` model.
-3. Run your dashboard app with `uv run your_dashboard_app.py` **CRITICAL**: After running this command, DO NOT run ANY other commands in that terminal. The dashboard takes time to start up (sometimes 10-30 seconds)
-4. You MUST read the terminal to check for any errors, but do not put commands like `sleep` in it. Fix any warnings and even more important errors you encounter. ONLY once you see the dashboard running, inform the user. NEVER run any commands in that terminal after starting the dashboard.
-5. When you iterate, no need to kill the dashboard, as we are using debug mode. Just save the file and it will reload automatically. Check the terminal occasionally for any failures. Once failed, you need to restart the dashboard.
+1. Investigate about the Vizro model by executing the [schema fetching script](./scripts/get_model_json_schema.py). ALWAYS DO this for all models that you need - do NOT assume you know it. Execute the script like so: `uv run ./scripts/get_model_json_schema.py <model_name> <model_name2> ...` where `<model_name>` is the name of the model you want to get the schema for. You can get an overview of what is available by calling the [overview script](./scripts/get_overview_vizro_models.py) like so: `uv run ./scripts/get_overview_vizro_models.py`. This will print out all available models and their brief descriptions. Important: Very often normal plotly express charts will not suffice as they are too simple. In that case, refer to the [custom charts guide](./references/custom-charts-guide.md) to create more complex charts. These MUST be added to the correct section in the python app. You can then add them to the `Graph` model.
+1. Run your dashboard app with `uv run your_dashboard_app.py` **CRITICAL**: After running this command, DO NOT run ANY other commands in that terminal. The dashboard takes time to start up (sometimes 10-30 seconds)
+1. You MUST read the terminal to check for any errors, but do not put commands like `sleep` in it. Fix any warnings and even more important errors you encounter. ONLY once you see the dashboard running, inform the user. NEVER run any commands in that terminal after starting the dashboard.
+1. When you iterate, no need to kill the dashboard, as we are using debug mode. Just save the file and it will reload automatically. Check the terminal occasionally for any failures. Once failed, you need to restart the dashboard.
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
@@ -83,9 +79,9 @@ Use: playwright:browser_console_messages()
 1. Document any discrepancies
 
 Important things to check:
+
 - Line charts are readable, and not a mess due to lack of aggregation
 - Graphs are legible and not squashed due to Layout
-
 
 ### REQUIRED OUTPUT: spec/5_test_report.yaml
 
