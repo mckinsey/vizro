@@ -7,7 +7,7 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.actions import filter_interaction, set_control
+from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
@@ -146,8 +146,17 @@ class AgGrid(VizroBaseModel):
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
 
-        # Enable checkboxes in the AgGrid if any of the actions is a `set_control` action.
-        figure = self.figure(_set_checkboxes=any(isinstance(action, set_control) for action in self.actions), **kwargs)
+        figure = self.figure(**kwargs)
+
+        if self.actions:
+            # Set the AgGrid "rowSelection" if any action is defined and if the "rowSelection" is not explicitly set.
+            # The "rowSelection" has to be set so that the AgGrid's actions can be triggered.
+            # TODO: Revisit after https://github.com/McK-Internal/vizro-internal/issues/2402 is resolved.
+            row_sel = figure.dashGridOptions.setdefault("rowSelection", {})
+            row_sel.setdefault("mode", "multiRow")
+            row_sel.setdefault("enableClickSelection", True)
+            row_sel.setdefault("checkboxes", True)
+            row_sel.setdefault("headerCheckbox", True)
 
         figure.id = self._inner_component_id
         return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
