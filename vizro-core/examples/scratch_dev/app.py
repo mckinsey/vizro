@@ -157,7 +157,7 @@ page_4 = vm.Page(
     ],
     controls=[
         vm.Filter(id=f"{pre}filter_1", column="species", targets=[f"{pre}table"], selector=vm.RadioItems()),
-    ]
+    ],
 )
 
 
