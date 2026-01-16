@@ -2,8 +2,7 @@
 
 This folder contains a Claude Code plugin for end-to-end Vizro dashboard development with a 2-skill workflow:
 
-**Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection
-**Skill 2: dashboard-build** - Implementation and testing phase
+**Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection **Skill 2: dashboard-build** - Implementation and testing phase
 
 The plugin includes pre-configured MCP servers for a seamless workflow:
 
@@ -41,16 +40,19 @@ The plugin includes two skills that work together:
 Use this skill first to design your dashboard. It enforces a 3-step workflow:
 
 **Step 1 - Understand Requirements**:
+
 - Define analytical questions and business context
 - Inventory data sources and map KPIs
 - Design page structure and information flow
 
 **Step 2 - Design Layout & Interactions**:
+
 - Design navigation structure and grid layouts
 - Define filter strategy and placement
 - Create wireframes for complex pages
 
 **Step 3 - Select Visualizations**:
+
 - Select appropriate chart types for each metric
 - Establish visual hierarchy and color strategy
 - Identify custom chart needs
@@ -60,11 +62,13 @@ Use this skill first to design your dashboard. It enforces a 3-step workflow:
 Use this skill after completing dashboard-design to implement and test:
 
 **Step 1 - Build Dashboard**:
+
 - Use Vizro MCP tools or Python implementation
 - Build, integrate data, and configure layouts
 - Implement custom charts as needed
 
 **Step 2 - Test & Verify**:
+
 - Validate launch and navigation
 - Test filter and control functionality
 - Check for console errors
@@ -77,6 +81,7 @@ Use this skill after completing dashboard-design to implement and test:
 - Iterate existing dashboard: Use dashboard-build skill directly
 
 For detailed guidance, see:
+
 - `skills/dashboard-design/SKILL.md` and reference files in `skills/dashboard-design/references/`
 - `skills/dashboard-build/SKILL.md` and reference files in `skills/dashboard-build/references/`
 
