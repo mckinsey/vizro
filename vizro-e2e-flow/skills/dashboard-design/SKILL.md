@@ -1,6 +1,6 @@
 ---
-name: dashboard
-description: USE THIS SKILL FIRST when user wants to create and design a dashboard, ESPECIALLY Vizro dashboards. This skill enforces a 3-step workflow (requirements, layout, visualization) that must be followed before implementation. For implementation and testing, use the dashboard-builder skill after completing Steps 1-3.
+name: dashboard-design
+description: USE THIS SKILL FIRST when user wants to create and design a dashboard, ESPECIALLY Vizro dashboards. This skill enforces a 3-step workflow (requirements, layout, visualization) that must be followed before implementation. For implementation and testing, use the dashboard-build skill after completing Steps 1-3.
 ---
 
 # Building Vizro Dashboards
@@ -9,7 +9,7 @@ A structured workflow for creating effective dashboards with Vizro.
 
 ## How to Use This Skill
 
-**CRITICAL**: Use this skill BEFORE implementation. After completing Steps 1-3, proceed to the dashboard-builder skill for implementation and testing.
+**CRITICAL**: Use this skill BEFORE implementation. After completing Steps 1-3, proceed to the dashboard-build skill for implementation and testing.
 
 **IMPORTANT**: Follow steps sequentially. Each step builds on the previous.
 
@@ -20,7 +20,7 @@ Dashboard Development Progress:
 - [ ] Step 1: Understand Requirements (discuss with user, document decisions)
 - [ ] Step 2: Design Layout & Interactions (wireframes, filter placement)
 - [ ] Step 3: Select Visualizations (chart types, colors, KPIs)
-- [ ] Next: Use dashboard-builder skill for implementation and testing
+- [ ] Next: Use dashboard-build skill for implementation and testing
 ```
 
 **Do not skip steps.** Handle partial context as follows:
@@ -247,7 +247,7 @@ Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use
 
 ### REQUIRED OUTPUT: spec/3_visual_design.yaml
 
-Save this file BEFORE proceeding to implementation (dashboard-builder skill):
+Save this file BEFORE proceeding to implementation (dashboard-build skill):
 
 ```yaml
 # spec/3_visual_design.yaml
@@ -275,7 +275,7 @@ decisions:
 
 ### Validation Checklist
 
-Before proceeding to implementation (dashboard-builder skill):
+Before proceeding to implementation (dashboard-build skill):
 
 - [ ] Chart types match data types (no pie charts for time series)
 - [ ] No anti-patterns used

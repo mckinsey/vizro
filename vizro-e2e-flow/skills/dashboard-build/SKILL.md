@@ -1,6 +1,6 @@
 ---
 name: dashboard-build
-description: A skill that should be invoked whenever a user wants to build a Dashboard or simple app. This skill is Phase 2 of an e2e process that covers the user research, layout and interaction design, wireframes, the actual build, and the testing. For Phase 1, look for the dashboard-design skill.
+description: A skill that should be invoked whenever a user wants to build a Dashboard or simple app. This skill is Phase 2 of an e2e process that covers the actual build and testing. For Phase 1 (requirements, layout design, visualization selection), use the dashboard-design skill.
 ---
 
 ## CRITICAL Guidelines for Dashboard Building
@@ -30,7 +30,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
-Save this file BEFORE proceeding to Phase 5:
+Save this file BEFORE proceeding to Step 2:
 
 ```yaml
 # spec/4_implementation.yaml

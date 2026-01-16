@@ -1,12 +1,9 @@
 # Vizro Flow Plugin
 
-This folder contains a Claude Code plugin for end-to-end Vizro dashboard development with an enforced 5-phase workflow:
+This folder contains a Claude Code plugin for end-to-end Vizro dashboard development with a 2-skill workflow:
 
-1. **Understand Requirements**: Define analytical questions, KPIs, and page structure
-1. **Design Layout & Interactions**: Plan navigation, layouts, and filter placement
-1. **Select Visualizations**: Choose chart types and establish visual hierarchy
-1. **Implement Dashboard**: Build with Vizro MCP tools or Python
-1. **Test & Verify**: Validate functionality with Playwright MCP
+**Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection
+**Skill 2: dashboard-build** - Implementation and testing phase
 
 The plugin includes pre-configured MCP servers for a seamless workflow:
 
@@ -28,60 +25,66 @@ This works well when using Claude Code. It automatically configures both MCP ser
 
 ### Option 2: Upload skill folder
 
-Zip the skill folder and upload it directly to Claude apps (e.g., Claude Desktop):
+Zip the skill folders and upload them directly to Claude apps (e.g., Claude Desktop):
 
-- `/vizro-e2e-flow/skills/dashboard/`
+- `/vizro-e2e-flow/skills/dashboard-design/`
+- `/vizro-e2e-flow/skills/dashboard-build/`
 
 **Important**: This option only uploads the skill files, not the MCP configuration. You'll need to manually configure the MCP servers by adding the `.mcp.json` configuration to your MCP client. See the [.mcp.json file](https://github.com/mckinsey/vizro/blob/main/vizro-e2e-flow/.mcp.json) for the configuration needed for both MCP servers (Vizro MCP, Playwright MCP).
 
 ## Usage
 
-The skill enforces a structured 5-phase workflow. Claude will guide you through each phase sequentially:
+The plugin includes two skills that work together:
 
-**Phase 1 - Understand Requirements**:
+### Skill 1: dashboard-design
 
+Use this skill first to design your dashboard. It enforces a 3-step workflow:
+
+**Step 1 - Understand Requirements**:
 - Define analytical questions and business context
 - Inventory data sources and map KPIs
 - Design page structure and information flow
 
-**Phase 2 - Design Layout & Interactions**:
-
+**Step 2 - Design Layout & Interactions**:
 - Design navigation structure and grid layouts
 - Define filter strategy and placement
 - Create wireframes for complex pages
 
-**Phase 3 - Select Visualizations**:
-
+**Step 3 - Select Visualizations**:
 - Select appropriate chart types for each metric
 - Establish visual hierarchy and color strategy
 - Identify custom chart needs
 
-**Phase 4 - Implement Dashboard**:
+### Skill 2: dashboard-build
 
+Use this skill after completing dashboard-design to implement and test:
+
+**Step 1 - Build Dashboard**:
 - Use Vizro MCP tools or Python implementation
 - Build, integrate data, and configure layouts
 - Implement custom charts as needed
 
-**Phase 5 - Test & Verify**:
-
+**Step 2 - Test & Verify**:
 - Validate launch and navigation
 - Test filter and control functionality
 - Check for console errors
 
 **Flexible Entry Points:**
 
-- Full development: Start at Phase 1
-- Have wireframes: Validate Phase 1, proceed from Phase 2
-- Have designs: Validate Phases 1-2, proceed from Phase 3
-- Iterate existing dashboard: Make direct code edits or start from relevant phase
+- Full development: Start with dashboard-design skill
+- Have wireframes: Validate Step 1, proceed from Step 2
+- Have designs: Validate Steps 1-2, proceed from Step 3
+- Iterate existing dashboard: Use dashboard-build skill directly
 
-For detailed guidance, see `skills/dashboard/SKILL.md` and reference files in `skills/dashboard/references/`.
+For detailed guidance, see:
+- `skills/dashboard-design/SKILL.md` and reference files in `skills/dashboard-design/references/`
+- `skills/dashboard-build/SKILL.md` and reference files in `skills/dashboard-build/references/`
 
 ## Requirements
 
-- **Phases 1-3** (Requirements, Layout, Visualization): No technical dependencies - pure design guidance
-- **Phase 4** (Implementation): Python environment for local Vizro OR public datasets for remote PyCafe previews
-- **Phase 5** (Testing):
+- **dashboard-design skill** (Steps 1-3: Requirements, Layout, Visualization): No technical dependencies - pure design guidance
+- **dashboard-build skill** (Step 1: Implementation): Python environment for local Vizro OR public datasets for remote PyCafe previews
+- **dashboard-build skill** (Step 2: Testing):
     - **Included with plugin**: Playwright MCP for AI-assisted UI testing
     - **Requirements for MCP**: Node.js (for Playwright MCP)
 
