@@ -1,8 +1,4 @@
 {
-  "vizro-mcp": {
-    "command": "uvx",
-    "args": ["vizro-mcp"]
-  },
   "playwright": {
     "command": "npx",
     "args": ["@playwright/mcp@latest"]
