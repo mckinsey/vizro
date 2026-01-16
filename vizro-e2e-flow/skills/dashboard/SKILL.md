@@ -284,12 +284,10 @@ Before proceeding to implementation (dashboard-builder skill):
 
 **Chart decision trees**: See [chart_selection.md](references/chart_selection.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 3: Visualization Mistakes"
 
-
-
 ## Reference Files
 
-| File                                                                  | When to Read                          |
-| --------------------------------------------------------------------- | ------------------------------------- |
+| File                                                                  | When to Read                         |
+| --------------------------------------------------------------------- | ------------------------------------ |
 | [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements    |
 | [layout_patterns.md](references/layout_patterns.md)                   | Step 2: Wireframes, component sizing |
 | [chart_selection.md](references/chart_selection.md)                   | Step 3: Chart decision trees         |

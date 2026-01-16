@@ -136,8 +136,8 @@ dashboard_ready: true/false
 
 ## Reference Files
 
-| File                                                                  | When to Read                          |
-| --------------------------------------------------------------------- | ------------------------------------- |
-| [data_management.md](./references/data_management.md)                | Optimizations: Data loading patterns, static vs dynamic, caching, databases, APIs |
-| [custom-charts-guide.md](./references/custom-charts-guide.md)        | Step 1: Creating complex custom charts when plotly express isn't enough |
-| [example_app.py](./references/example_app.py)                        | Step 1: Starting template for dashboard implementation |
+| File                                                          | When to Read                                                                      |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [data_management.md](./references/data_management.md)         | Optimizations: Data loading patterns, static vs dynamic, caching, databases, APIs |
+| [custom-charts-guide.md](./references/custom-charts-guide.md) | Step 1: Creating complex custom charts when plotly express isn't enough           |
+| [example_app.py](./references/example_app.py)                 | Step 1: Starting template for dashboard implementation                            |
