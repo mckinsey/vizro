@@ -58,17 +58,80 @@ def bar_with_clickmode_event(data_frame, **kwargs):
     return fig
 
 
+@capture("graph")
+def scatter_with_clickmode_event_select(data_frame, **kwargs):
+    fig = px.scatter(data_frame, **kwargs)
+    fig.update_layout(clickmode="event+select")
+    return fig
+
+
+@capture("graph")
+def scatter_with_modebar_set(data_frame, **kwargs):
+    fig = px.scatter(data_frame, **kwargs)
+    fig.update_layout(modebar_remove=[])
+    return fig
+
+
 @capture("figure")
 def text_as_figure(data_frame, text):
     return vm.Text(text=f"Selected countries: {str(text)}").build()
 
 
-page_graph_with_no_actions = vm.Page(
-    title="Graph with no actions",
+pre = "p0_"
+page_graphs_with_overwritten_clickmode_and_modebar = vm.Page(
+    title="Graph with overwritten clickmode and modebar",
     components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Graph with no actions",
+                    components=[
+                        vm.Graph(
+                            title="Expected: ❌clickmode='event+select' set + ❌Select/Lasso in modebar",
+                            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")
+                        ),
+                    ]
+                ),
+                vm.Container(
+                    title="Graph with no actions and clickmode='event+select'",
+                    components=[
+                        vm.Graph(
+                            title="Expected: ✅clickmode='event+select' set + ❌Select/Lasso in modebar",
+                            figure=scatter_with_clickmode_event_select(df, x="sepal_width", y="sepal_length", color="species")
+                        ),
+                    ]
+                ),
+                vm.Container(
+                    title="Graph with actions and clickmode='event'",
+                    components=[
+                        vm.Graph(
+                            title="Expected: ❌clickmode='event+select' set + ✅Select/Lasso in modebar",
+                            figure=bar_with_clickmode_event(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
+                            actions=va.set_control(control=f"{pre}filter_1", value="species"),
+                        ),
+                    ]
+                ),
+                vm.Container(
+                    title="Graph with no actions and modebar set",
+                    components=[
+                        vm.Graph(
+                            title="Expected: ❌clickmode='event+select' set + ✅Select/Lasso in modebar",
+                            figure=scatter_with_modebar_set(df, x="sepal_width", y="sepal_length", color="species"),
+                        )
+                    ]
+                ),
+            ]
+        ),
+        vm.AgGrid(id=f"{pre}table", figure=dash_ag_grid(px.data.iris())),
     ],
-    controls=[vm.Filter(column="species")],
+    controls=[
+        vm.Filter(
+            id=f"{pre}filter_1",
+            column="species",
+            targets=[f"{pre}table"],
+            selector=vm.Dropdown(multi=True),
+        ),
+    ],
 )
 
 pre = "p1_"
@@ -544,7 +607,7 @@ page_10 = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[
-        page_graph_with_no_actions,
+        page_graphs_with_overwritten_clickmode_and_modebar,
         page_1,
         page_2,
         page_3,

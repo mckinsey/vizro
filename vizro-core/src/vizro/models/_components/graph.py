@@ -293,7 +293,13 @@ class Graph(VizroBaseModel):
             fig.update_layout(margin_t=64)
 
         if self.actions and not fig.layout.clickmode:
+            # Set clickmode to "event+select" if there are actions defined but clickmode is not already set.
             fig.update_layout(clickmode="event+select")
+
+        if not self.actions and not fig.layout.modebar.to_plotly_json():
+            # Remove selection tools from modebar if there are no actions defined and modebar_remove is not already set.
+            # TODO: Consider applying the same logic when Graph actions are set_control that targets single selectors.
+            fig.update_layout(modebar_remove=["select2d", "lasso2d"])
 
         return fig
 
