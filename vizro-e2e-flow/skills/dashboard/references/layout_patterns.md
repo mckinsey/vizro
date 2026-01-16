@@ -1,6 +1,6 @@
 # Layout Patterns Guide
 
-Deep guidance for Phase 2: Designing Layout & Interactions.
+Deep guidance for Step 2: Designing Layout & Interactions.
 
 ## Contents
 

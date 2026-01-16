@@ -1,6 +1,6 @@
 # Information Architecture Guide
 
-Deep guidance for Phase 1: Understanding Requirements.
+Deep guidance for Step 1: Understanding Requirements.
 
 ## Contents
 
@@ -178,7 +178,7 @@ Level 3: Detail (individual records, deep analysis via drill-downs)
 
 ## Validation Framework
 
-Before moving to Phase 2, verify:
+Before moving to Step 2, verify:
 
 ```
 Information Architecture Checklist:

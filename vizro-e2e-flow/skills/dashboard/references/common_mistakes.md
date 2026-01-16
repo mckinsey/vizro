@@ -1,18 +1,17 @@
 # Common Dashboard Mistakes
 
-Anti-patterns to avoid, organized by dashboard development phase.
+Anti-patterns to avoid, organized by dashboard development step.
 
 ## Contents
 
-- Phase 1: Requirements Mistakes (information overload, ignoring user workflow)
-- Phase 2: Layout Mistakes (poor hierarchy, cluttered layout)
-- Phase 3: Visualization Mistakes (wrong charts, color misuse, missing context)
-- Phase 4: Implementation Mistakes (Vizro-specific issues)
+- Step 1: Requirements Mistakes (information overload, ignoring user workflow)
+- Step 2: Layout Mistakes (poor hierarchy, cluttered layout)
+- Step 3: Visualization Mistakes (wrong charts, color misuse, missing context)
 - Quick Fixes Reference
 
 ---
 
-## Phase 1: Requirements Mistakes
+## Step 1: Requirements Mistakes
 
 Mistakes in defining WHAT information to show and WHY.
 
@@ -44,7 +43,7 @@ Mistakes in defining WHAT information to show and WHY.
 
 **Solution**:
 
-- Start with Phase 1 requirements gathering
+- Start with Step 1 requirements gathering
 - Create role-specific pages
 - Allow filtering and customization
 - Match metrics to decisions users make
@@ -69,7 +68,7 @@ Mistakes in defining WHAT information to show and WHY.
 
 ---
 
-## Phase 2: Layout Mistakes
+## Step 2: Layout Mistakes
 
 Mistakes in HOW users navigate and explore data.
 
@@ -144,7 +143,7 @@ vm.Grid(grid=[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]], row_min_height="140px")
 
 ---
 
-## Phase 3: Visualization Mistakes
+## Step 3: Visualization Mistakes
 
 Mistakes in chart types, colors, and visual design.
 
@@ -288,58 +287,3 @@ vm.Graph(
 **Problem**: Pretty but not functional
 
 **Solution**: Form follows function; beauty through clarity
-
----
-
-## Phase 4: Implementation Mistakes
-
-Vizro-specific coding mistakes.
-
-### Chart Titles in Wrong Place
-
-**Problem**: Putting title in plotly code instead of vm.Graph
-
-```python
-# WRONG - Title in plotly code
-vm.Graph(figure=px.scatter(df, x="width", y="length", title="Title"))
-
-# CORRECT - Title in vm.Graph
-vm.Graph(
-    figure=px.scatter(df, x="width", y="length", color="species"),
-    title="Chart Title Here",
-    header="Additional context",
-    footer="SOURCE: **Data source**",
-)
-```
-
-### Using go.Table Instead of AgGrid
-
-**Problem**: Using `go.Table` or `vm.Table` for data tables
-
-```python
-# WRONG
-vm.Graph(figure=go.Figure(go.Table(...)))
-
-# CORRECT
-from vizro.tables import dash_ag_grid
-
-vm.AgGrid(figure=dash_ag_grid(df), title="Data Table")
-```
-
-### Specifying Colors Unnecessarily
-
-**Problem**: Setting colors in standard charts when Vizro handles this automatically
-
-```python
-# WRONG - Unnecessary color specification
-px.scatter(df, x="x", y="y", color_discrete_sequence=["red", "blue"])
-
-# CORRECT - Let Vizro handle colors
-px.scatter(df, x="x", y="y", color="category")
-```
-
-### No Empty States
-
-**Problem**: Broken layout when no data available
-
-**Solution**: Handle empty data gracefully in custom charts

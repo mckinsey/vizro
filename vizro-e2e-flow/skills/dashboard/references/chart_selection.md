@@ -1,6 +1,6 @@
 # Chart Selection Guide
 
-Deep guidance for Phase 3: Selecting appropriate visualizations.
+Deep guidance for Step 3: Selecting appropriate visualizations.
 
 ## Contents
 

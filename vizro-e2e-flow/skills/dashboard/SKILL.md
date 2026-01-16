@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: USE THIS SKILL FIRST when user wants to create, design, or build a dashboard, ESPECIALLY Vizro dashboards. Do NOT jump to MCP tools directly - this skill enforces a 5-phase workflow (requirements, layout, visualization, implementation, testing) that must be followed. MCP tools like vizro-mcp are only used in Phase 4 after completing Phases 1-3 with the user.
+description: USE THIS SKILL FIRST when user wants to create and design a dashboard, ESPECIALLY Vizro dashboards. This skill enforces a 3-step workflow (requirements, layout, visualization) that must be followed before implementation. For implementation and testing, use the dashboard-builder skill after completing Steps 1-3.
 ---
 
 # Building Vizro Dashboards
@@ -9,40 +9,39 @@ A structured workflow for creating effective dashboards with Vizro.
 
 ## How to Use This Skill
 
-**CRITICAL**: Use this skill BEFORE any MCP tools. The vizro-mcp tools are only for Phase 4 (Implementation) after you have completed Phases 1-3 with the user.
+**CRITICAL**: Use this skill BEFORE implementation. After completing Steps 1-3, proceed to the dashboard-builder skill for implementation and testing.
 
-**IMPORTANT**: Follow phases sequentially. Each phase builds on the previous.
+**IMPORTANT**: Follow steps sequentially. Each step builds on the previous.
 
 Copy this checklist and track your progress:
 
 ```
 Dashboard Development Progress:
-- [ ] Phase 1: Understand Requirements (discuss with user, document decisions)
-- [ ] Phase 2: Design Layout & Interactions (wireframes, filter placement)
-- [ ] Phase 3: Select Visualizations (chart types, colors, KPIs)
-- [ ] Phase 4: Implement Dashboard (MCP tools or Python code)
-- [ ] Phase 5: Test & Verify (launch, navigation, controls)
+- [ ] Step 1: Understand Requirements (discuss with user, document decisions)
+- [ ] Step 2: Design Layout & Interactions (wireframes, filter placement)
+- [ ] Step 3: Select Visualizations (chart types, colors, KPIs)
+- [ ] Next: Use dashboard-builder skill for implementation and testing
 ```
 
-**Do not skip phases.** Handle partial context as follows:
+**Do not skip steps.** Handle partial context as follows:
 
-- User has data but no requirements → Start at Phase 1
-- User has wireframes → Validate Phase 1 decisions, then proceed from Phase 2
-- User asks to "just build it" → Explain value of phases, offer to streamline but not skip
+- User has data but no requirements → Start at Step 1
+- User has wireframes → Validate Step 1 decisions, then proceed from Step 2
+- User asks to "just build it" → Explain value of steps, offer to streamline but not skip
 
-**For simple dashboards** (single page, \<5 charts): Phases 1-3 can be abbreviated but not skipped entirely.
+**For simple dashboards** (single page, \<5 charts): Steps 1-3 can be abbreviated but not skipped entirely.
 
 ---
 
 ## Spec Files: Documenting Decisions
 
-IMPORTANT: Each phase produces a spec file in the `spec/` directory to document reasoning, enable collaboration, and allow resumption in future sessions. Create the `spec/` directory at project start.
+IMPORTANT: Each step produces a spec file in the `spec/` directory to document reasoning, enable collaboration, and allow resumption in future sessions. Create the `spec/` directory at project start.
 
 Create the `spec/` directory at the start of the project.
 
 ---
 
-## Phase 1: Understand Requirements
+## Step 1: Understand Requirements
 
 **Goal**: Define WHAT information is presented and WHY it matters.
 
@@ -62,7 +61,7 @@ Create the `spec/` directory at the start of the project.
 
 ### REQUIRED OUTPUT: spec/1_information_architecture.yaml
 
-Save this file BEFORE proceeding to Phase 2:
+Save this file BEFORE proceeding to Step 2:
 
 ```yaml
 # spec/1_information_architecture.yaml
@@ -83,18 +82,18 @@ decisions:
 
 ### Validation Checklist
 
-Before proceeding to Phase 2:
+Before proceeding to Step 2:
 
 - [ ] Every page has a clear, distinct purpose
 - [ ] KPIs are measurable and actionable
 - [ ] Data sources are accessible
 - [ ] User has confirmed the structure
 
-**Detailed guidance**: See [information_architecture.md](references/information_architecture.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 1: Requirements Mistakes"
+**Detailed guidance**: See [information_architecture.md](references/information_architecture.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 1: Requirements Mistakes"
 
 ---
 
-## Phase 2: Design Layout & Interactions
+## Step 2: Design Layout & Interactions
 
 **Goal**: Define HOW users navigate and explore data.
 
@@ -165,12 +164,12 @@ Filter needed across multiple visualizations?
 
 ### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
 
-Save this file BEFORE proceeding to Phase 3:
+Save this file BEFORE proceeding to Step 3:
 
 ```yaml
 # spec/2_interaction_ux.yaml
 pages:
-  - name: [Must match Phase 1]
+  - name: [Must match Step 1]
     layout_type: grid  # or flex
     grid_columns: 12
     grid_pattern: [[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]] # Component placement
@@ -190,17 +189,17 @@ decisions:
 
 ### Validation Checklist
 
-Before proceeding to Phase 3:
+Before proceeding to Step 3:
 
 - [ ] Layout follows Vizro constraints
 - [ ] Filter placement is intentional and documented
 - [ ] User has been presented ASCI wireframes for every page and approved them
 
-**Wireframes & examples**: See [layout_patterns.md](references/layout_patterns.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 2: Layout Mistakes"
+**Wireframes & examples**: See [layout_patterns.md](references/layout_patterns.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 2: Layout Mistakes"
 
 ---
 
-## Phase 3: Select Visualizations
+## Step 3: Select Visualizations
 
 **Goal**: Choose appropriate chart types and establish visual consistency.
 
@@ -248,7 +247,7 @@ Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use
 
 ### REQUIRED OUTPUT: spec/3_visual_design.yaml
 
-Save this file BEFORE proceeding to Phase 4:
+Save this file BEFORE proceeding to implementation (dashboard-builder skill):
 
 ```yaml
 # spec/3_visual_design.yaml
@@ -276,207 +275,25 @@ decisions:
 
 ### Validation Checklist
 
-Before proceeding to Phase 4:
+Before proceeding to implementation (dashboard-builder skill):
 
 - [ ] Chart types match data types (no pie charts for time series)
 - [ ] No anti-patterns used
 - [ ] Custom chart needs are identified
 - [ ] Color usage is consistent and intentional
 
-**Chart decision trees**: See [chart_selection.md](references/chart_selection.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 3: Visualization Mistakes"
+**Chart decision trees**: See [chart_selection.md](references/chart_selection.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 3: Visualization Mistakes"
 
----
 
-## Phase 4: Implement Dashboard
-
-**Goal**: Build the dashboard **strictly following** Phase 1-3 spec files.
-
-**CRITICAL**: Before writing any code, review the spec files:
-
-- `spec/1_information_architecture.yaml` → Pages, KPIs, data sources
-- `spec/2_interaction_ux.yaml` → Layout, grid, filter placement
-- `spec/3_visual_design.yaml` → Chart types, colors, custom chart needs
-
-Implementation must match these specs. Any deviation requires documentation with reasoning.
-
-### MCP-First Workflow (Recommended)
-
-**Step 1: Understand how the MCP server works**
-
-```
-Use: vizro-mcp:get_vizro_chart_or_dashboard_plan(user_plan="dashboard", user_host="ide")
-```
-
-You can either load data again, or if well enough understood, you can skip this step and proceed to the next step.
-
-**Step 2: Get Model Schemas**
-
-Schemas define valid properties, required fields, and available options for each component. Fetch schemas for components you plan to use.
-
-```
-Use: vizro-mcp:get_model_json_schema(model_name="Dashboard")
-Use: vizro-mcp:get_model_json_schema(model_name="Page")
-```
-
-**Step 3: Build Dashboard Config**
-
-Create JSON config respecting Phase 1-3 decisions.
-
-**Step 4: Validate and Get Code**
-
-```
-Use: vizro-mcp:validate_dashboard_config(dashboard_config={...}, data_infos=[...], custom_charts=[])
-```
-
-**CRITICAL**: Call this tool after each iteration to ensure the solution is still valid.
-
-**Step 5: Run the Dashboard**
-
-Add the required dependencies as inline dependencies in the `app.py` file, e.g.:
-
-```python
-# /// script
-# requires-python = ">=3.9"
-# dependencies = [
-#     "vizro",
-#     "pandas",
-#     <anything else important>
-# ]
-# ///
-
-# The app output from the validation tool!
-```
-
-Then execute the script with the following command:
-
-```bash
-uv run app.py
-```
-
-**Implementation details**: See [implementation_guide.md](references/implementation_guide.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Phase 4: Implementation Mistakes"
-
-### REQUIRED OUTPUT: spec/4_implementation.yaml
-
-Save this file BEFORE proceeding to Phase 5:
-
-```yaml
-# spec/4_implementation.yaml
-implementation:
-  method: mcp  # or python
-  app_file: app.py
-  data_files:
-    - [list of data files used]
-
-spec_compliance:
-  followed_specs: true/false
-  deviations:
-    - spec_item: [What was specified]
-      actual: [What was implemented]
-      reason: [Why the deviation was necessary]
-
-custom_charts:
-  - name: [Function name]
-    purpose: [What it does]
-```
-
-### Validation Checklist
-
-Before proceeding to Phase 5, verify against spec files:
-
-- [ ] All pages from `spec/1_information_architecture.yaml` are implemented
-- [ ] Layout matches `spec/2_interaction_ux.yaml` (grid, filters, containers)
-- [ ] Chart types match `spec/3_visual_design.yaml`
-- [ ] Color usage is consistent and intentional
-- [ ] Dashboard runs without errors
-- [ ] Any deviations are documented in `spec/4_implementation.yaml`
-
-**Complete examples**: See [implementation_guide.md](references/implementation_guide.md); **Dynamic data & caching**: See [data_management.md](references/data_management.md)
-
----
-
-## Phase 5: Test & Verify
-
-**Goal**: Confirm dashboard works correctly and meets requirements.
-
-### Testing Checklist
-
-```
-Functional Testing:
-- [ ] Dashboard launches at localhost:8050
-- [ ] All pages load without errors
-- [ ] Navigation between pages works
-- [ ] Filters update visualizations correctly
-- [ ] Parameters modify chart behavior
-- [ ] No JavaScript errors in browser console
-```
-
-### Playwright MCP Testing
-
-Look for `mcp__*playwright__*` tools.
-
-**Basic Testing Flow**:
-
-1. Navigate to dashboard URL
-1. Click through all pages
-1. Check console for errors
-
-```
-Use: playwright:browser_navigate(url="http://localhost:8050")
-Use: playwright:browser_click(element="Page Name", ref="...")
-Use: playwright:browser_console_messages()
-```
-
-### REQUIRED OUTPUT: spec/5_test_report.yaml
-
-Save this file to complete the project:
-
-```yaml
-# spec/5_test_report.yaml
-testing:
-  launch:
-    successful: true/false
-    url: http://localhost:8050
-    errors: []
-
-  navigation:
-    all_pages_work: true/false
-    issues: []
-
-  console:
-    no_errors: true/false
-    errors_found: []
-
-user_acceptance:
-  requirements_met: true/false
-dashboard_ready: true/false
-```
-
-### User Acceptance
-
-Return to Phase 1 requirements:
-
-- [ ] Dashboard answers the key questions identified
-- [ ] KPIs are visible and accurate
-- [ ] User confirms it meets their needs
-
-### Done When
-
-- Dashboard launches without errors, no console errors
-- User confirms requirements are met
-- All 5 spec files saved in `spec/` directory
-
----
 
 ## Reference Files
 
 | File                                                                  | When to Read                          |
 | --------------------------------------------------------------------- | ------------------------------------- |
-| [information_architecture.md](references/information_architecture.md) | Phase 1: Deep dive on requirements    |
-| [layout_patterns.md](references/layout_patterns.md)                   | Phase 2: Wireframes, component sizing |
-| [chart_selection.md](references/chart_selection.md)                   | Phase 3: Chart decision trees         |
-| [implementation_guide.md](references/implementation_guide.md)         | Phase 4: Complete Python/MCP examples |
-| [data_management.md](references/data_management.md)                   | Phase 4: Dynamic data and caching     |
-| [common_mistakes.md](references/common_mistakes.md)                   | All phases: Anti-patterns to avoid    |
+| [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements    |
+| [layout_patterns.md](references/layout_patterns.md)                   | Step 2: Wireframes, component sizing |
+| [chart_selection.md](references/chart_selection.md)                   | Step 3: Chart decision trees         |
+| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid    |
 
 ---
 

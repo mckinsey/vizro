@@ -28,6 +28,10 @@ Important: Very often normal plotly express charts will not suffice as they are 
 4. You MUST read the terminal to check for any errors, but do not put commands like `sleep` in it. Fix any warnings and even more important errors you encounter. ONLY once you see the dashboard running, inform the user. NEVER run any commands in that terminal after starting the dashboard.
 5. When you iterate, no need to kill the dashboard, as we are using debug mode. Just save the file and it will reload automatically. Check the terminal occasionally for any failures. Once failed, you need to restart the dashboard.
 
+### Optimizations and common errors
+
+- **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
+
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
 Save this file BEFORE proceeding to Phase 5:
@@ -38,6 +42,12 @@ implementation:
   app_file: <name>.py
   data_files:
     - [list of data files used]
+  data_type: static/dynamic  # static for DataFrames, dynamic for data_manager functions
+  data_sources:
+    - name: [data source name]
+      type: csv/database/api/function
+      caching: true/false
+      refresh_strategy: [if dynamic: cache timeout or refresh trigger]
 
 spec_compliance:
   followed_specs: true/false
@@ -125,3 +135,13 @@ dashboard_ready: true/false
 - Dashboard launches without errors, no console errors
 - User confirms requirements are met
 - All spec files from this Phase 2 saved in `spec/` directory
+
+---
+
+## Reference Files
+
+| File                                                                  | When to Read                          |
+| --------------------------------------------------------------------- | ------------------------------------- |
+| [data_management.md](./references/data_management.md)                | Optimizations: Data loading patterns, static vs dynamic, caching, databases, APIs |
+| [custom-charts-guide.md](./references/custom-charts-guide.md)        | Step 1: Creating complex custom charts when plotly express isn't enough |
+| [example_app.py](./references/example_app.py)                        | Step 1: Starting template for dashboard implementation |
