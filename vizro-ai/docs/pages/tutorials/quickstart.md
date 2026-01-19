@@ -216,7 +216,7 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
 
 Congratulations! You have created your first charts with Vizro-AI and you are ready to explore further.
 
-A good place to start would be to review the different how-to guides to learn [Vizro-AI function calls and properties](../user-guides/advanced-options.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
+A good place to start would be to review the different how-to guides to learn [about advanced options](../user-guides/advanced-options.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
 
 !!! tip "Want to create dashboards?"
 
