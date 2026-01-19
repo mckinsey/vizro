@@ -8,8 +8,8 @@ from vizro.models.types import capture
 from vizro.managers import data_manager
 
 df = px.data.iris()
-df['date_column'] = pd.date_range(start=pd.to_datetime('2024-01-01'), periods=len(df), freq='D')
-df['is_setosa'] = df['species'] == 'setosa'
+df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
+df["is_setosa"] = df["species"] == "setosa"
 
 data_manager["static_df"] = df
 data_manager["dynamic_df"] = lambda number_of_points=10: df.head(number_of_points)
@@ -96,7 +96,7 @@ page_4 = vm.Page(
         vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4, max=8, step=0.1, title="Range Slider")),
         vm.Filter(column="date_column", selector=vm.DatePicker(range=False, title="Single Dropdown")),
         vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
