@@ -2,9 +2,11 @@
 
 This tutorial introduces you to chart generation using Vizro-AI. It explains the basics of creating a plotly chart that can be added to a Vizro dashboard. When you have followed it, you are set up to explore the Vizro and Vizro-AI packages further.
 
+This tutorial assumes your LLM provider is OpenAI. If you are using a different LLM provider, the examples will need to be adapted.
+
 <!-- vale off -->
 
-### 1. Install Vizro-AI and ensure you have an LLM API key (ideally OpenAI)
+### 1. Install Vizro-AI and ensure you have an LLM API key
 
 <!-- vale on -->
 
@@ -32,7 +34,7 @@ A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
     pip install jupyter
     ```
 
-Activate the virtual environment you used to install Vizro, and start a new Notebook as follows:
+Activate the virtual environment you used to install Vizro-AI, and start a new Notebook as follows:
 
 ```bash
 jupyter notebook
@@ -222,4 +224,4 @@ A good place to start would be to review the different how-to guides to learn [a
 
     For dashboard generation, we recommend using [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). It doesn't require an API key and works with familiar LLM applications like VS Code, Cursor, or Claude Desktop.
 
-[linegraph]: ../../assets/tutorials/chart/GDP_Composition_Graph.png
+[linegraph]: ../../assets/tutorials/chart/tutorial_1.png

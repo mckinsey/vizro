@@ -189,6 +189,6 @@ Executing the code below yields the identical dashboard as the example above.
 
         [![VizroDashboard2]][vizrodashboard2]
 
-[vizroaichart]: ../../assets/user_guides/vizro-ai-chart.png
+[vizroaichart]: ../../assets/user_guides/vizro_insert_1.png
 [vizrodashboard]: ../../assets/user_guides/chart_into_dashboard_large.png
 [vizrodashboard2]: ../../assets/user_guides/chart_into_dashboard_large.png

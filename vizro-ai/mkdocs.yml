@@ -8,8 +8,8 @@ nav:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md
           - Model setup: pages/user-guides/customize-vizro-ai.md
-      - CHARTS:
-          - Advanced options and usage: pages/user-guides/advanced-options.md
+      - CHART AGENT:
+          - Usage and advanced options: pages/user-guides/advanced-options.md
           - Add Vizro-AI charts to a Vizro dashboard: pages/user-guides/add-generated-chart-usecase.md
   - API Reference: pages/API-reference/vizro-ai.md
   - Explanation:
