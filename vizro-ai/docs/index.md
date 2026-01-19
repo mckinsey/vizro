@@ -22,7 +22,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md)
 
-    [:octicons-arrow-right-24: How to run Vizro-AI](pages/user-guides/run-vizro-ai.md)
+    [:octicons-arrow-right-24: Vizro-AI function calls and properties](pages/user-guides/advanced-options.md)
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
