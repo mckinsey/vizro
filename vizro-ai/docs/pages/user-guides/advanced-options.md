@@ -313,7 +313,7 @@ For more details, see the [Pydantic AI Web Chat UI documentation](https://ai.pyd
 
 ### Agent2Agent (A2A) protocol
 
-The `chart_agent` can participate in agent-to-agent workflows using the A2A protocol.
+The `chart_agent` can participate in agent-to-agent workflows using [the A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/).
 
 !!! example "Use chart_agent in an A2A workflow"
 

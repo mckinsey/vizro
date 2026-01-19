@@ -88,4 +88,6 @@ logfire.instrument_pydantic_ai()
 # Now chart_agent runs will be logged to Logfire
 ```
 
-To ensure responsible use, review the data privacy and security policies of any observability tools you choose to use.
+!!! warning "Review observability tool policies"
+
+    To ensure responsible use, review the data privacy and security policies of any observability tools you choose to use.

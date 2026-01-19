@@ -22,7 +22,7 @@ It serves as an extension to Vizro, leveraging natural language capabilities to 
 
 ### Easy-to-use
 
-One of the key strengths of Vizro-AI lies in its natural language capabilities, making it accessible to coding novices. Vizro-AI provides a user-friendly interface that allows to create interactive charts while offering detailed insights about the data and the generated code.
+One of the key strengths of Vizro-AI lies in its natural language capabilities, making it accessible to coding novices. Vizro-AI provides a user-friendly way to create interactive charts while offering detailed insights about the data and the generated code.
 
 ### Visually-optimized
 

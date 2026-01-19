@@ -15,7 +15,7 @@ Models are passed directly to the `chart_agent.run_sync()` or `chart_agent.run()
 To use OpenAI models, first install the OpenAI optional dependency:
 
 ```bash
-pip install vizro_ai[openai]
+pip install "vizro_ai[openai]"
 ```
 
 Then set up the model:
@@ -43,7 +43,7 @@ result = chart_agent.run_sync(
 
 You can also set the API key via environment variable `OPENAI_API_KEY` (see [Using environment variables](#using-environment-variables) below).
 
-For custom base URLs (e.g., Azure OpenAI or custom endpoints):
+For custom base URLs (for example, Azure OpenAI or custom endpoints):
 
 ```py
 model = OpenAIChatModel(
@@ -65,7 +65,7 @@ Vizro-AI supports all Pydantic AI compatible models. You can install the most co
 pip install vizro_ai[google,anthropic,mistral,openai]
 ```
 
-or you can choose to install _any_ provider listed on the [Pydantic AI model providers documentation](https://ai.pydantic.dev/models/overview/) via `pydantic-ai-slim`, e.g. Bedrock:
+or you can choose to install _any_ provider listed on the [Pydantic AI model providers documentation](https://ai.pydantic.dev/models/overview/) via `pydantic-ai-slim`, for example Bedrock:
 
 ```bash
 pip install pydantic-ai-slim[bedrock]

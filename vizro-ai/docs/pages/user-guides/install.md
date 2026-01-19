@@ -42,19 +42,19 @@ pip install vizro_ai
 Vizro-AI uses [Pydantic AI](https://ai.pydantic.dev/) for LLM integration. To use specific LLM vendors, install Vizro-AI with the corresponding optional dependencies. For example, to use OpenAI:
 
 ```bash
-pip install vizro_ai[openai]
+pip install "vizro_ai[openai]"
 ```
 
-For other providers (e.g., Anthropic, Google, Mistral, Bedrock), you can install the corresponding optional dependencies. See the [Pydantic AI model providers documentation](https://ai.pydantic.dev/models/overview/) for a complete list of supported providers and installation instructions. You can also install multiple vendors at once:
+For other providers (for example, Anthropic, Google, Mistral, Bedrock), you can install the corresponding optional dependencies. See the [Pydantic AI model providers documentation](https://ai.pydantic.dev/models/overview/) for a complete list of supported providers and installation instructions. You can also install multiple vendors at once:
 
 ```bash
-pip install vizro_ai[openai,anthropic]
+pip install "vizro_ai[openai,anthropic]"
 ```
 
 If you want to use Vizro-AI charts in Vizro dashboards, or prefer the Vizro theme over the default theme, install with the `vizro` optional dependency:
 
 ```bash
-pip install vizro_ai[vizro]
+pip install "vizro_ai[vizro]"
 ```
 
 For more details on model setup and configuration, see [our detailed guide on model setup](customize-vizro-ai.md).
@@ -115,7 +115,7 @@ model = OpenAIChatModel(
 )
 ```
 
-Alternatively, you can use `os.getenv()` directly if the environment variable is already set (e.g., via Method 2):
+Alternatively, you can use `os.getenv()` directly if the environment variable is already set (for example, via Method 2):
 
 ```python
 import os

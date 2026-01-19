@@ -2,7 +2,11 @@
 
 This tutorial introduces you to chart generation using Vizro-AI. It explains the basics of creating a plotly chart that can be added to a Vizro dashboard. When you have followed it, you are set up to explore the Vizro and Vizro-AI packages further.
 
-This tutorial assumes your LLM provider is OpenAI. If you are using a different LLM provider, the examples will need to be adapted.
+This tutorial requires you to:
+- have Python installed
+- have access to an API key by an LLM provider
+
+This tutorial assumes an OpenAI API key. If you are using a different LLM provider, the examples will need to be adapted.
 
 <!-- vale off -->
 
@@ -15,7 +19,7 @@ If you haven't already installed Vizro-AI and set up the API key for OpenAI, fol
 In order to run the exact code in this tutorial, you will need to install Vizro-AI with the `[openai]` extra. If you want to use a different LLM provider, you can install Vizro-AI with the corresponding extra.
 
 ```bash
-pip install vizro_ai[openai]
+pip install "vizro_ai[openai]"
 ```
 
 <!-- vale off -->
@@ -139,7 +143,7 @@ To learn how to customize the model, check out the guide on [how to customize mo
 
 <!-- vale on -->
 
-The `chart_agent` returns a `BaseChartPlan` object that includes the generated code along with metadata. E.g., you can access the code using `result.output.code` or `result.output.code_vizro` for Vizro-compatible code. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned may be as follows:
+The `chart_agent` returns a `BaseChartPlan` object that includes the generated code along with metadata. For example, you can access the code using `result.output.code` or `result.output.code_vizro` for Vizro-compatible code. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned may be as follows:
 
 !!! example "Access response model properties"
 
