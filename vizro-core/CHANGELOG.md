@@ -23,7 +23,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Set `clickmode="event+select"` as the default for all `plotly.express` charts, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+- Set `clickmode="event+select"` as the default for all charts in a dashboard, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
 
 <a id='changelog-0.1.49'></a>
 

@@ -159,7 +159,7 @@ class update_notification(show_notification):
                 ),
             ],
         )
-    ```
+        ```
     """
 
     type: Literal["update_notification"] = "update_notification"  # type: ignore[assignment]
