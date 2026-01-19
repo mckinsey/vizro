@@ -92,7 +92,7 @@ For detailed guidance, see:
 ## Requirements
 
 - **dashboard-design skill** (Steps 1-3: Requirements, Layout, Visualization): No technical dependencies - pure design guidance
-- **dashboard-build skill** (Step 1: Implementation): Python environment for local Vizro OR public datasets for remote PyCafe previews
+- **dashboard-build skill** (Step 1: Implementation): Python environment with `uv` installed
 - **dashboard-build skill** (Step 2: Testing):
     - **Included with plugin**: Playwright MCP for AI-assisted UI testing
     - **Requirements for MCP**: Node.js (for Playwright MCP)
