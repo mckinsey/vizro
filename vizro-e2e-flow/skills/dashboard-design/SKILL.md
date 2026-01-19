@@ -27,6 +27,7 @@ Dashboard Development Progress:
 
 - User has data but no requirements → Start at Step 1
 - User has wireframes → Validate Step 1 decisions, then proceed from Step 2
+- User has visual designs/mockups → Validate Steps 1-2 decisions, then proceed from Step 3
 - User asks to "just build it" → Explain value of steps, offer to streamline but not skip
 
 **For simple dashboards** (single page, \<5 charts): Steps 1-3 can be abbreviated but not skipped entirely.

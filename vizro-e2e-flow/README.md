@@ -2,7 +2,9 @@
 
 This folder contains a Claude Code plugin for end-to-end Vizro dashboard development with a 2-skill workflow:
 
-**Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection **Skill 2: dashboard-build** - Implementation and testing phase
+**Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection 
+
+**Skill 2: dashboard-build** - Implementation and testing phase
 
 The plugin includes pre-configured MCP servers for a seamless workflow:
 
@@ -20,16 +22,16 @@ Install using the plugin command with the `mckinsey/vizro` repository:
 /plugin install vizro-e2e-flow
 ```
 
-This works well when using Claude Code. It automatically configures both MCP servers (Vizro, Playwright) for the complete workflow.
+This works well when using Claude Code. It automatically configures both MCP servers (Playwright) for the complete workflow.
 
 ### Option 2: Upload skill folder
 
-Zip the skill folders and upload them directly to Claude apps (e.g., Claude Desktop):
+Zip the skill folders and upload them directly to Claude apps (e.g., Claude Desktop) or any other new compatible tools (e.g. VS Code):
 
 - `/vizro-e2e-flow/skills/dashboard-design/`
 - `/vizro-e2e-flow/skills/dashboard-build/`
 
-**Important**: This option only uploads the skill files, not the MCP configuration. You'll need to manually configure the MCP servers by adding the `.mcp.json` configuration to your MCP client. See the [.mcp.json file](https://github.com/mckinsey/vizro/blob/main/vizro-e2e-flow/.mcp.json) for the configuration needed for both MCP servers (Vizro MCP, Playwright MCP).
+**Important**: This option only uploads the skill files, not the MCP configuration. You'll need to manually configure the MCP servers by adding the `.mcp.json` configuration to your MCP client. See the [.mcp.json file](https://github.com/mckinsey/vizro/blob/main/vizro-e2e-flow/.mcp.json) for the configuration needed for the Playwright MCP server.
 
 ## Usage
 
@@ -75,10 +77,12 @@ Use this skill after completing dashboard-design to implement and test:
 
 **Flexible Entry Points:**
 
-- Full development: Start with dashboard-design skill
-- Have wireframes: Validate Step 1, proceed from Step 2
-- Have designs: Validate Steps 1-2, proceed from Step 3
-- Iterate existing dashboard: Use dashboard-build skill directly
+All steps below refer to the dashboard-design skill's 3-step workflow:
+
+- Full development: Start with dashboard-design skill (begin at Step 1)
+- Have wireframes: Validate dashboard-design Step 1 (requirements), proceed from Step 2 (layout & interactions)
+- Have visual designs/mockups: Validate dashboard-design Steps 1-2 (requirements & layout), proceed from Step 3 (visualization selection)
+- Iterate existing dashboard: Use `dashboard-build` skill directly
 
 For detailed guidance, see:
 
