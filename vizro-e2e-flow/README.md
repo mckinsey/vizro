@@ -2,7 +2,7 @@
 
 This folder contains a Claude Code plugin for end-to-end Vizro dashboard development with a 2-skill workflow:
 
-**Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection 
+**Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection
 
 **Skill 2: dashboard-build** - Implementation and testing phase
 
