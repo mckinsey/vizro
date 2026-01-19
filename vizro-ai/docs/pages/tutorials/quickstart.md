@@ -3,6 +3,7 @@
 This tutorial introduces you to chart generation using Vizro-AI. It explains the basics of creating a plotly chart that can be added to a Vizro dashboard. When you have followed it, you are set up to explore the Vizro and Vizro-AI packages further.
 
 This tutorial requires you to:
+
 - have Python installed
 - have access to an API key by an LLM provider
 

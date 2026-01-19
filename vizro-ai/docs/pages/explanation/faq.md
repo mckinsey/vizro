@@ -28,16 +28,17 @@ Yes! Since `chart_agent` is a Pydantic AI agent, you can use all Pydantic AI fea
 
 Various method names and the overall API structure have been changed in version `0.4.0`. The `VizroAI` class has been deprecated in favor of the `chart_agent` for chart generation. Where possible, we have retained the deprecated methods with their old names to help ease migration, but calling them will emit deprecation warnings and raise `RuntimeError`.
 
-| Vizro-AI < 0.4.0 | Vizro-AI ≥ 0.4.0 |
-|------------------|------------------|
-| `VizroAI.plot()` | `chart_agent.run_sync()` |
-| `VizroAI.dashboard()` | `chart_agent` (for charts) + [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) (for dashboards) |
-| `VizroAI(model=model)` | `chart_agent.run_sync(model=model, ...)` |
-| Synchronous only | `chart_agent.run_sync()` (sync) or `chart_agent.run()` (async) |
+| Vizro-AI < 0.4.0       | Vizro-AI ≥ 0.4.0                                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `VizroAI.plot()`       | `chart_agent.run_sync()`                                                                                    |
+| `VizroAI.dashboard()`  | `chart_agent` (for charts) + [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) (for dashboards) |
+| `VizroAI(model=model)` | `chart_agent.run_sync(model=model, ...)`                                                                    |
+| Synchronous only       | `chart_agent.run_sync()` (sync) or `chart_agent.run()` (async)                                              |
 
 ### Chart generation migration
 
 **Before (deprecated):**
+
 ```py
 from vizro_ai import VizroAI
 
@@ -47,6 +48,7 @@ fig.show()
 ```
 
 **After (current):**
+
 ```py
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
@@ -61,6 +63,7 @@ fig.show()
 ### Dashboard generation migration
 
 **Before (deprecated):**
+
 ```py
 from vizro_ai import VizroAI
 
@@ -68,10 +71,7 @@ vizro_ai = VizroAI(model="gpt-4")
 dashboard = vizro_ai.dashboard(dfs=[df1, df2], user_input="create a dashboard")
 ```
 
-**After (current):**
-Dashboard generation is no longer supported in Vizro-AI. Use [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead, which doesn't require an API key and works with familiar LLM applications like VS Code, Cursor, or Claude Desktop.
-
-
+**After (current):** Dashboard generation is no longer supported in Vizro-AI. Use [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead, which doesn't require an API key and works with familiar LLM applications like VS Code, Cursor, or Claude Desktop.
 
 ## Why do I get `RuntimeError: This event loop is already running` in Jupyter Notebooks?
 
