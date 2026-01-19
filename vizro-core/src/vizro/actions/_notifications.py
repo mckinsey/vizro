@@ -103,7 +103,7 @@ class show_notification(_AbstractAction):
 
     @property
     def outputs(self) -> _IdOrIdProperty:  # type: ignore[override]
-        return "vizro_notifications.sendNotifications"
+        return "vizro-notifications.sendNotifications"
 
     @_log_call
     def function(self):
@@ -159,7 +159,7 @@ class update_notification(show_notification):
                 ),
             ],
         )
-    ```
+        ```
     """
 
     type: Literal["update_notification"] = "update_notification"  # type: ignore[assignment]

@@ -12,6 +12,7 @@ from e2e.vizro.navigation import (
     page_select,
 )
 from e2e.vizro.paths import (
+    button_id_path,
     dropdown_arrow_path,
     kpi_card_path,
     nav_card_link_path,
@@ -387,6 +388,81 @@ def test_reset_controls_page(dash_br):
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
 
 
+@image_assertion
+def test_notifications_page(dash_br):
+    """Testing static notifications page."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
+    )
+
+    # Trigger notifications with delays to allow each to fully render
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-description"] a', "Filters page"
+    )
+
+
+@image_assertion
+def test_notifications_page_dark_theme(dash_br):
+    """Testing static notifications page with dark theme."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
+    )
+
+    # Switch theme to dark
+    dash_br.multiple_click(theme_toggle_path(), 1)
+
+    # Trigger notifications with delays to allow each to fully render
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-description"] a', "Filters page"
+    )
+
+
 @pytest.mark.mobile_screenshots
 @image_assertion
 def test_homepage_mobile(dash_br):
@@ -412,3 +488,25 @@ def test_filter_interactions_dark_theme_page(dash_br_driver):
     dash_br_driver.multiple_click(theme_toggle_path(), 1)
     check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
     check_theme_color(dash_br_driver, color=cnst.THEME_DARK)
+
+
+@pytest.mark.mobile_screenshots
+@pytest.mark.parametrize(
+    "dash_br_driver", [({"path": f"/{cnst.STATIC_NOTIFICATIONS_PAGE}"})], ids=["mobile"], indirect=["dash_br_driver"]
+)
+@image_assertion
+def test_notifications_page_mobile(dash_br_driver):
+    """Testing static notifications page on mobile."""
+    graph_load_waiter(dash_br_driver)
+
+    # Trigger multiple notifications
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+
+    # Check that the last notification is displayed
+    dash_br_driver.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
+    )

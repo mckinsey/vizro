@@ -4,11 +4,12 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-
+<!--
 ### Highlights ✨
 
-- Add `show_notification` and `update_notification` actions to display notification messages to users. Notifications can be customized with different variants, icons, and timing, and can be triggered by, for example, buttons, graphs, or cards. See the [notification actions user guide](../user-guides/notification-actions.md) for details. ([#1496](https://github.com/mckinsey/vizro/pull/1496))
+- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Removed
 
@@ -33,12 +34,10 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fix `rowSelection` checkboxes for custom AgGrid with `actions`. ([#1539](https://github.com/mckinsey/vizro/pull/1539))
 
--->
 <!--
 ### Security
 

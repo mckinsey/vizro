@@ -29,7 +29,7 @@ class TestShowNotificationInstantiation:
         assert notification.title == "Info"
         assert notification.icon == "info"
         assert notification.auto_close == 4000
-        assert notification.outputs == "vizro_notifications.sendNotifications"
+        assert notification.outputs == "vizro-notifications.sendNotifications"
 
     @pytest.mark.parametrize("field", ["title", "icon", "auto_close"])
     def test_none_value_raises_validation_error(self, field):

@@ -10,31 +10,39 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+
+<!--
 ### Removed
 
-- Drop support for Python 3.9. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
-
-### Added
-
-- Add support for Python 3.14. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
-<!--
-### Changed
-
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+
+<!--
+### Added
+
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+
+-->
+
+### Changed
+
+- Simplified MCP prompts by removing opinionated layout instructions to make the tool more neutral. ([#1535](https://github.com/mckinsey/vizro/pull/1535))
+
 <!--
 ### Deprecated
 
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+
 <!--
 ### Fixed
 
 - A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+
 <!--
 ### Security
 
