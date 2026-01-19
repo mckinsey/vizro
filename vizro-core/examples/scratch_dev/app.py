@@ -79,7 +79,7 @@ def text_as_figure(data_frame, text):
 
 pre = "p0_"
 page_graphs_with_overwritten_clickmode_and_modebar = vm.Page(
-    title="Graph with overwritten clickmode and modebar",
+    title="**NEW**: Graph with overwritten clickmode and modebar",
     components=[
         vm.Tabs(
             tabs=[

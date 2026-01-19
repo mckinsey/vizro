@@ -297,8 +297,8 @@ class Graph(VizroBaseModel):
             fig.update_layout(clickmode="event+select")
 
         if not self.actions and not fig.layout.modebar.to_plotly_json():
-            # Remove selection tools from modebar if there are no actions defined and modebar_remove is not already set.
-            # TODO: Consider applying the same logic when Graph actions are set_control that targets single selectors.
+            # Remove selection tools from modebar if there are no actions defined and the modebar is not already set.
+            # TODO: Consider applying the same logic when Graph actions are set_control that target single selectors.
             fig.update_layout(modebar_remove=["select2d", "lasso2d"])
 
         return fig
