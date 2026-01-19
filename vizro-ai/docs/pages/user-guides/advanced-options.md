@@ -1,4 +1,4 @@
-# Vizro-AI function calls and properties
+# Vizro-AI advanced usage and options
 
 This guide shows you how to use the [`chart_agent`][vizro_ai.agents.chart_agent], including running it, working with the [`BaseChartPlan`][vizro_ai.agents.response_models.BaseChartPlan] response model, and leveraging Pydantic AI agent capabilities.
 
