@@ -7,8 +7,12 @@ from vizro import Vizro
 from vizro.models.types import capture
 from vizro.managers import data_manager
 
-data_manager["static_df"] = px.data.iris()
-data_manager["dynamic_df"] = lambda number_of_points=10: px.data.iris().head(number_of_points)
+df = px.data.iris()
+df['date_column'] = pd.date_range(start=pd.to_datetime('2024-01-01'), periods=len(df), freq='D')
+df['is_setosa'] = df['species'] == 'setosa'
+
+data_manager["static_df"] = df
+data_manager["dynamic_df"] = lambda number_of_points=10: df.head(number_of_points)
 
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
@@ -73,6 +77,28 @@ page_3 = vm.Page(
     controls=[vm.Filter(column="long_string")],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
+page_4 = vm.Page(
+    title="All selectors",
+    components=[
+        vm.Graph(
+            figure=px.scatter(
+                "static_df", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            )
+        )
+    ],
+    controls=[
+        vm.Filter(column="species", selector=vm.RadioItems(title="RadioItems Single")),
+        vm.Filter(column="species", selector=vm.Dropdown(multi=False, title="Dropdown Single")),
+        vm.Filter(column="species", selector=vm.Dropdown(multi=True, title="Dropdown Multi")),
+        vm.Filter(column="species", selector=vm.Checklist(title="Checklist Multi")),
+        vm.Filter(column="is_setosa", selector=vm.Switch(title="Switch Single")),
+        vm.Filter(column="sepal_width", selector=vm.Slider(min=2, max=5, step=0.1, title="Slider Single")),
+        vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4, max=8, step=0.1, title="Range Slider")),
+        vm.Filter(column="date_column", selector=vm.DatePicker(range=False, title="Single Dropdown")),
+        vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
+    ]
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
