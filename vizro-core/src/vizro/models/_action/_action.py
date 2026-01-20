@@ -513,7 +513,7 @@ class Action(_BaseAction):
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy
 
-    _validate_function = field_validator("function", mode="before")(_validate_captured_callable)
+    # _validate_function = field_validator("function", mode="before")(_validate_captured_callable)
 
     @property
     def _parameters(self) -> set[str]:

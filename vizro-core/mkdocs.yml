@@ -219,7 +219,12 @@ plugins:
             merge_init_into_class: true
             docstring_section_style: list
             separate_signature: true
-            #   filters: ["!^_"]
+            unwrap_annotated: true # check effect
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            show_signature_annotations: true
+            filters: ["!^_"]  # Hide private attributes (names starting with underscore)
             show_root_heading: true
             docstring_options:
               ignore_init_summary: true
@@ -232,7 +237,12 @@ plugins:
               - griffe_warnings_deprecated:
                   kind: danger
                   title: Deprecated
+              - griffe_pydantic:
+                  schema: True
           paths: [src]
+          inventories:
+            - https://docs.python.org/3/objects.inv
+            - https://docs.pydantic.dev/latest/objects.inv
   - git-revision-date-localized:
       enable_creation_date: false
 extra_css:

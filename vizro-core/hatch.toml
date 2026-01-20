@@ -125,6 +125,7 @@ dependencies = [
   "linkchecker",
   "mkdocs-open-in-new-tab",
   "mkdocs-pycafe",
+  "griffe-pydantic",
   "PyGithub",
   "playwright"
 ]

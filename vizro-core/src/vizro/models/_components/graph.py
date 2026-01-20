@@ -109,7 +109,7 @@ class Graph(VizroBaseModel):
         ]
     ]
 
-    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
+    # _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

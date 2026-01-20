@@ -123,7 +123,7 @@ class Dropdown(VizroBaseModel):
     _inner_component_properties: list[str] = PrivateAttr(dcc.Dropdown().available_properties)
 
     # Reused validators
-    _validate_options = model_validator(mode="before")(validate_options_dict)
+    # _validate_options = model_validator(mode="before")(validate_options_dict)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
