@@ -2,10 +2,11 @@
 
 ## Overview
 
-Custom charts are Python code that generates a plotly go.Figure object. It must fulfill the following criteria: 0. Must be decorated with the Vizro @capture("graph") decorator, imported from `vizro.models.types`
+Custom charts are Python code that generates a plotly go.Figure object. It must fulfill the following criteria:
 
+1. Must be decorated with the Vizro @capture("graph") decorator, imported from `vizro.models.types`
 1. Must be wrapped in a function that is snake case named appropriately, e.g. `custom_gdp_vs_life_expectancy_chart`
-1. Must accept as first argument argument `data_frame` which is a pandas DataFrame
+1. Must accept `data_frame` as first argument which is a pandas DataFrame
 1. Must return a plotly go.Figure object
 1. All data used in the chart must be derived from the data_frame argument, all data manipulations must be done within the function.
 1. DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for

@@ -21,7 +21,7 @@ class HasNameAndDoc(Protocol):
     __doc__: str | None
 
 
-# This dict is used to give the model and overview of what is available in the vizro.models namespace.
+# This dict is used to give the model an overview of what is available in the vizro.models namespace.
 # It helps it to narrow down the choices when asking for a model.
 MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
     "main": [vm.Dashboard, vm.Page],

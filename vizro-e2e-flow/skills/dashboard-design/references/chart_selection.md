@@ -97,7 +97,7 @@ px.bar(df, x="category", y="value", color="subcategory", barmode="group")
 
 - Limit to 3-5 lines maximum
 - Use distinct colors
-- Full-width layout recommended for timeseries
+- Full-width layout recommended for time-series
 
 ```python
 px.line(df, x="date", y="revenue", color="region")
@@ -213,7 +213,7 @@ px.area(df, x="date", y="value", color="category")
 **Avoid when**:
 
 - Categorical data
-- Small sample sizes (\<30)
+- Small sample sizes (less than 30)
 
 ```python
 px.histogram(df, x="value", nbins=20)

@@ -6,9 +6,8 @@ This folder contains a Claude Code plugin for end-to-end Vizro dashboard develop
 
 **Skill 2: dashboard-build** - Implementation and testing phase
 
-The plugin includes pre-configured MCP servers for a seamless workflow:
+The plugin includes pre-configured Playwright MCP server for a seamless workflow:
 
-- **Vizro MCP**: Dashboard implementation support
 - **Playwright MCP**: Browser automation for functional testing
 
 ## Installation
@@ -65,7 +64,6 @@ Use this skill after completing dashboard-design to implement and test:
 
 **Step 1 - Build Dashboard**:
 
-- Use Vizro MCP tools or Python implementation
 - Build, integrate data, and configure layouts
 - Implement custom charts as needed
 

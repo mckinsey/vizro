@@ -30,15 +30,13 @@ Dashboard Development Progress:
 - User has visual designs/mockups → Validate Steps 1-2 decisions, then proceed from Step 3
 - User asks to "just build it" → Explain value of steps, offer to streamline but not skip
 
-**For simple dashboards** (single page, \<5 charts): Steps 1-3 can be abbreviated but not skipped entirely.
+**For simple dashboards** (single page, less than 5 charts): Steps 1-3 can be abbreviated but not skipped entirely.
 
 ---
 
 ## Spec Files: Documenting Decisions
 
 IMPORTANT: Each step produces a spec file in the `spec/` directory to document reasoning, enable collaboration, and allow resumption in future sessions. Create the `spec/` directory at project start.
-
-Create the `spec/` directory at the start of the project.
 
 ---
 
@@ -140,7 +138,7 @@ Tier 3: Component-level
 **Layout Rules**:
 
 - Place 2-3 charts per row (side-by-side)
-- Full-width ONLY for timeseries line charts
+- Full-width ONLY for time-series line charts
 - Give charts minimum 3 rows (use `*[[...]] * 3` pattern)
 - Use `-1` for intentional empty cells
 
@@ -194,7 +192,7 @@ Before proceeding to Step 3:
 
 - [ ] Layout follows Vizro constraints
 - [ ] Filter placement is intentional and documented
-- [ ] User has been presented ASCI wireframes for every page and approved them
+- [ ] User has been presented ASCII wireframes for every page and approved them
 
 **Wireframes & examples**: See [layout_patterns.md](references/layout_patterns.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 2: Layout Mistakes"
 

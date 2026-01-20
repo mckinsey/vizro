@@ -94,7 +94,7 @@ Based on 12-column grid:
 1. Indicate chart types: `[Line chart]`, `[Bar chart]`, `[Histogram]`
 1. Show hierarchy through box sizes (larger = more important)
 1. Global filters/parameters in left panel, container-specific above containers
-1. **Full-width charts**: Use ONLY for timeseries line charts
+1. **Full-width charts**: Use ONLY for time-series line charts
 1. Most charts should be side-by-side (2-3 per row)
 
 ### Template 1: KPIs + Charts + Table
@@ -123,7 +123,7 @@ Based on 12-column grid:
 +--+----------+------------------------------------------------------------------------+
 ```
 
-### Template 2: Full-Width Timeseries + Container
+### Template 2: Full-Width Time-series + Container
 
 ```
 +--+----------+------------------------------------------------------------------------+
@@ -131,7 +131,7 @@ Based on 12-column grid:
 |  |          +------------------------------------------------------------------------+
 |  |Overview  |  +---------------------------------------------------------------------+|
 |  |Details   |  |                                                                     ||
-|  |          |  |  CHART: Revenue Trend [Timeseries Line - Full Width]                ||
+|  |          |  |  CHART: Revenue Trend [Time-series Line - Full Width]                ||
 |  |----------|  |  (12 cols, 3 rows)                                                  ||
 |  |FILTERS   |  |  [hover: tooltip | click: drill to detail]                          ||
 |  |          |  +---------------------------------------------------------------------+|
@@ -263,7 +263,7 @@ For sparse layouts with few elements, users scan in a Z-shape:
 
 ### 2. Everything Full-Width
 
-**Problem**: Every chart spans all columns **Solution**: Only timeseries line charts should be full-width
+**Problem**: Every chart spans all columns **Solution**: Only time-series line charts should be full-width
 
 ### 3. No Visual Grouping
 
