@@ -5,7 +5,7 @@ import logging
 from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, cast
+from typing import TYPE_CHECKING, Annotated, Any, Literal, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -54,10 +54,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class ExampleModel(BaseModel):
+class ExampleModel(VizroBaseModel):
     """An example model."""
 
-    model_config = ConfigDict(frozen=False)
+    # model_config = ConfigDict(frozen=False)
 
     field_without_default: str
     """Shows the *[Required]* marker in the signature."""

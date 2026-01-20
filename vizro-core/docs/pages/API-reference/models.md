@@ -1,7 +1,6 @@
 # Models
 
 <!-- vale off -->
-::: vizro.models._dashboard.ExampleModel
 
 ::: vizro.models
     options:

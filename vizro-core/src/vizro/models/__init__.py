@@ -12,7 +12,7 @@ from ._navigation.accordion import Accordion
 from ._navigation.navigation import Navigation
 from ._navigation.nav_bar import NavBar
 from ._navigation.nav_link import NavLink
-from ._dashboard import Dashboard
+from ._dashboard import Dashboard, ExampleModel
 from ._grid import Layout, Grid
 from ._page import Page
 from ._flex import Flex
@@ -34,6 +34,7 @@ __all__ = [
     "Graph",
     "Grid",
     "Layout",
+    "ExampleModel",
     "NavBar",
     "NavLink",
     "Navigation",
