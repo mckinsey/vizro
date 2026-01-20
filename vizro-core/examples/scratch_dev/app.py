@@ -84,6 +84,18 @@ page_graphs_with_overwritten_clickmode_and_modebar = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.Container(
+                    title="Graph with actions",
+                    components=[
+                        vm.Graph(
+                            title="Expected: ✅clickmode='event+select' set + ✅Select/Lasso in modebar",
+                            figure=px.scatter(
+                                df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+                            ),
+                            actions=va.set_control(control=f"{pre}filter_1", value="species"),
+                        )
+                    ],
+                ),
+                vm.Container(
                     title="Graph with no actions",
                     components=[
                         vm.Graph(
