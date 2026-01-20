@@ -1,14 +1,14 @@
 from typing import Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, JsonValue, field_validator, model_validator
+from pydantic import AfterValidator, Field, JsonValue, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call, make_actions_chain
-from vizro.models.types import ActionsType, CapturedCallable, _IdProperty, _validate_captured_callable
+from vizro.models.types import ActionsType, CapturedCallable, _IdProperty
 
 
 class Figure(VizroBaseModel):

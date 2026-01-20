@@ -224,7 +224,7 @@ plugins:
             show_symbol_type_toc: true
             signature_crossrefs: true
             show_signature_annotations: true
-            filters: ["!^_"]  # Hide private attributes (names starting with underscore)
+            filters: ["!^_"] # Hide private attributes (names starting with underscore)
             show_root_heading: true
             docstring_options:
               ignore_init_summary: true

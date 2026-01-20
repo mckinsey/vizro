@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
-from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
+from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -27,7 +27,6 @@ from vizro.models.types import (
     OutputsType,
     _IdOrIdProperty,
     _IdProperty,
-    _validate_captured_callable,
 )
 
 logger = logging.getLogger(__name__)

@@ -4,7 +4,7 @@ from typing import Annotated, Literal
 import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
@@ -19,7 +19,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, MultiValueType, _IdProperty, _validate_captured_callable
+from vizro.models.types import ActionsType, CapturedCallable, MultiValueType, _IdProperty
 
 logger = logging.getLogger(__name__)
 

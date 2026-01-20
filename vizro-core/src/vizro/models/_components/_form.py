@@ -13,9 +13,7 @@ from vizro.models.types import LayoutType, _FormComponentType
 
 
 class Form(VizroBaseModel):
-    """Container for all form components to be provided to [`Page`][vizro.models.Page].
-
-    """
+    """Container for all form components to be provided to [`Page`][vizro.models.Page]."""
 
     type: Literal["form"] = "form"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
