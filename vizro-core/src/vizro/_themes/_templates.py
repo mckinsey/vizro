@@ -122,7 +122,6 @@ def create_template_common() -> go.layout.Template:
 
 dashboard_overrides = go.layout.Template(
     layout=go.Layout(
-        clickmode="event+select",
         geo_bgcolor=colors.transparent,
         geo_lakecolor=colors.transparent,
         geo_landcolor=colors.transparent,
