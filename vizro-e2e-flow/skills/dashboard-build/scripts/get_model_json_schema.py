@@ -1,3 +1,5 @@
+"""Script to get JSON schema for Vizro models, figures, and actions."""
+
 # /// script
 # dependencies = [
 #   "vizro"
@@ -8,6 +10,7 @@ import sys
 from dataclasses import dataclass
 from typing import Any
 
+import vizro.actions as va
 import vizro.figures as vf
 import vizro.models as vm
 from pydantic import Field
@@ -96,9 +99,13 @@ Only use arguments from the below mapping of _target_ to figure function documen
     )
 
 
-def get_model_json_schema(
+def get_model_json_schema(  # noqa: PLR0911
     model_name: str = Field(
-        description="Name of the Vizro model/figure/action to get schema for (e.g., 'Card', 'Dashboard', 'Page', 'kpi_card', 'kpi_card_reference' from vizro.figures, or any action from vizro.actions)"
+        description=(
+            "Name of the Vizro model/figure/action to get schema for "
+            "(e.g., 'Card', 'Dashboard', 'Page', 'kpi_card', 'kpi_card_reference' "
+            "from vizro.figures, or any action from vizro.actions)"
+        )
     ),
 ) -> ModelJsonSchemaResults:
     """Get the JSON schema for the specified Vizro model, figure, or action.
@@ -163,15 +170,18 @@ Elements can't overlap, must be rectangular, and rows must have equal column cou
             return ModelJsonSchemaResults(
                 model_name=model_name,
                 json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
-                additional_info=f"""From {namespace_name}. LLM must remember to replace `$ref` with the actual config. Request the schema of
-that model if necessary.""",
+                additional_info=(
+                    f"From {namespace_name}. LLM must remember to replace `$ref` with the actual "
+                    "config. Request the schema of that model if necessary."
+                ),
             )
         else:
             # Return function documentation if no schema available
+            doc = model_class.__doc__ or "No documentation available"
             return ModelJsonSchemaResults(
                 model_name=model_name,
                 json_schema={},
-                additional_info=f"""From {namespace_name}. Documentation: {model_class.__doc__ or "No documentation available"}""",
+                additional_info=f"From {namespace_name}. Documentation: {doc}",
             )
 
     return ModelJsonSchemaResults(
@@ -183,8 +193,8 @@ that model if necessary.""",
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(
+    if len(sys.argv) < 2:  # noqa: PLR2004
+        print(  # noqa: T201
             "Usage: get_model_json_schema.py <model_name> [<model_name2> ...]",
             file=sys.stderr,
         )
@@ -196,12 +206,12 @@ if __name__ == "__main__":
 
     for i, model_name in enumerate(model_names):
         if i > 0:
-            print("\n" + "=" * 80 + "\n")
+            print("\n" + "=" * 80 + "\n")  # noqa: T201
 
         result = get_model_json_schema(model_name)
 
-        print(f"Model: {result.model_name}")
-        print("\nJSON Schema:")
-        print(json.dumps(result.json_schema, indent=2))
-        print("\nAdditional Info:")
-        print(result.additional_info)
+        print(f"Model: {result.model_name}")  # noqa: T201
+        print("\nJSON Schema:")  # noqa: T201
+        print(json.dumps(result.json_schema, indent=2))  # noqa: T201
+        print("\nAdditional Info:")  # noqa: T201
+        print(result.additional_info)  # noqa: T201

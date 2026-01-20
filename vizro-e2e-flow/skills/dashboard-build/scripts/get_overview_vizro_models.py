@@ -1,3 +1,5 @@
+"""Script to get an overview of available Vizro models."""
+
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
@@ -71,4 +73,4 @@ if __name__ == "__main__":
     import json
 
     overview = get_overview_vizro_models()
-    print(json.dumps(overview, indent=2))
+    print(json.dumps(overview, indent=2))  # noqa: T201
