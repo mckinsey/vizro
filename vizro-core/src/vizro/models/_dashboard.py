@@ -134,7 +134,7 @@ class Dashboard(VizroBaseModel):
 
     pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
+        default="vizro_dark", description="Theme to be applied across dashboard."
     )
     navigation: Annotated[
         Navigation | None, AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
@@ -150,7 +150,7 @@ class Dashboard(VizroBaseModel):
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.""",
+            tags.""",
         ),
     ]
 

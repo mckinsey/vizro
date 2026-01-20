@@ -45,7 +45,7 @@ class Card(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon in the top-right corner of the Card.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     extra: SkipJsonSchema[

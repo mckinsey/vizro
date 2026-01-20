@@ -30,8 +30,7 @@ class Button(VizroBaseModel):
     actions: ActionsType = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
-        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
-        "Defaults to `filled`.",
+        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.",
     )
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
@@ -43,7 +42,7 @@ class Button(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the button text.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     extra: SkipJsonSchema[

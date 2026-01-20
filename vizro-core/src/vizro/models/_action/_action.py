@@ -463,7 +463,7 @@ class Action(_BaseAction):
         Field(
             default=[],
             description="""List of inputs provided to the action function. Each input can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
             ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
             deprecations.md#action-model-inputs-argument).""",
         ),

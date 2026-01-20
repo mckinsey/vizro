@@ -20,19 +20,17 @@ class Flex(VizroBaseModel):
     type: Literal["flex"] = "flex"
     direction: Literal["row", "column"] = Field(
         default="column",
-        description="Sets the direction of the flex items inside the container. Options are `row` or `column`."
-        "Defaults to `column`.",
+        description="Sets the direction of the flex items inside the container. Options are `row` or `column`.",
     )
     gap: str = Field(
         default=GAP_DEFAULT,
-        description="Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'. "
-        "Defaults to `24px`.",
+        description="Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.",
         pattern=re.compile(r"^\d+(px|rem|em|%)$"),
     )
     wrap: bool = Field(
         default=False,
         description="Determines whether flex items are forced onto a single line or can wrap onto multiple lines. If "
-        "`False`, all items will be on one line. If `True`, items will wrap onto multiple lines. Defaults to `False`.",
+        "`False`, all items will be on one line. If `True`, items will wrap onto multiple lines.",
     )
 
     @_log_call

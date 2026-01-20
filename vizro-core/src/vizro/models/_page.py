@@ -72,7 +72,7 @@ class Page(VizroBaseModel):
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.""",
+            tags.""",
         ),
     ]
     controls: list[ControlType] = []

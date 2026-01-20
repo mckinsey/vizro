@@ -84,13 +84,13 @@ class Parameter(VizroBaseModel):
     show_in_url: bool = Field(
         default=False,
         description=(
-            "Whether the parameter should be included in the URL query string. Defaults to `False`. "
+            "Whether the parameter should be included in the URL query string. "
             "Useful for bookmarking or sharing dashboards with specific parameter values pre-set."
         ),
     )
     visible: bool = Field(
         default=True,
-        description="Whether the parameter should be visible. Defaults to `True`.",
+        description="Whether the parameter should be visible.",
     )
 
     _selector_properties: set[str] = PrivateAttr(set())

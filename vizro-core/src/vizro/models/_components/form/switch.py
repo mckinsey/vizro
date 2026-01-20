@@ -25,7 +25,7 @@ class Switch(VizroBaseModel):
     value: bool = Field(
         default=False,
         description="""Initial state of the switch. When `True`, the switch is enabled/on.
-        When `False`, the switch is disabled/off. Defaults to `False`.""",
+        When `False`, the switch is disabled/off.""",
     )
     title: str = Field(default="", description="Title/Label to be displayed to the right of the switch.")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
@@ -37,7 +37,7 @@ class Switch(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
