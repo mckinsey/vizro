@@ -14,6 +14,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --Dash-Text-Primary: var(--bs-primary);
   --Dash-Text-Strong: var(--bs-primary-text-emphasis);
   --Dash-Text-Disabled: var(--bs-tertiary-color);
+  --Dash-Text-Weak: var(--bs-body-color);
   --Dash-Fill-Primary-Hover: var(--bs-primary-text-emphasis);
   --Dash-Fill-Primary-Active: var(--bs-primary);
   --Dash-Fill-Disabled: var(--bs-primary-bg-subtle);
@@ -26,10 +27,12 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--bs-tertiary-bg);
   --right-side-bg-iterated: var(--bs-body-bg);
   --hover-bg-subtle: var(--bs-gray-900);
+  --Dash-Fill-Interactive-Weak: var(--bs-dark-bg-subtle);
 }
 
 [data-bs-theme="light"] {
   --left-side-bg: var(--bs-body-bg);
+  --Dash-Fill-Interactive-Weak: var(--bs-light-bg-subtle);
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --right-side-bg-iterated: var(--surfaces-bg-card);

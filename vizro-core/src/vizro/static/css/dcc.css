@@ -14,9 +14,15 @@
 
 .dash-dropdown-search-container:focus-within {
   border-color: var(--bs-focus-ring-color);
+  outline: none;
 }
 
 /* Dropdown tags */
+.dash-dropdown-value {
+  display: flex;
+  gap: 4px;
+}
+
 .dash-dropdown-value > * {
   align-items: center;
   background: var(--text-primary-inverted);
@@ -44,12 +50,35 @@
 
 /* Dropdown Checkboxes */
 
-/* TODO: Try styling checkboxes when rc3 is out */
 .dash-options-list-option-wrapper .dash-options-list-option-checkbox {
-  accent-color: var(--bs-primary-bg-subtle);
-  border-color: var(--bs-secondary);
-  border-radius: var(--bs-border-radius);
+  appearance: none;
+  appearance: none;
+  appearance: none;
+  background: none;
+  background-color: transparent;
+  border: 1px solid var(--bs-secondary);
+  border-radius: 0;
+  cursor: pointer;
+  height: 16px;
+  margin: 0;
   outline-color: var(--bs-secondary);
+  width: 16px;
+}
+
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox:checked {
+  background: none;
+  background-color: transparent;
+  border-color: var(--bs-secondary);
+}
+
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox:checked::before {
+  color: var(--bs-secondary);
+  content: "✓";
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
 }
 
 .dash-options-list-option-text {
@@ -62,7 +91,7 @@
 }
 
 .dash-dropdown-value-count {
-  background: var(--text-primary-inverted);
+  background: none;
   padding: 4px 8px;
 }
 
@@ -76,6 +105,9 @@
 }
 
 .dash-dropdown-option {
+  align-items: center;
+  display: flex;
+  gap: 4px;
   height: 32px;
   padding: 6px 8px;
 }
