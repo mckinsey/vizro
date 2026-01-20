@@ -86,6 +86,7 @@ class Page(VizroBaseModel):
     # This should ideally be a field validator, but we need access to the model_fields_set
     @model_validator(mode="after")
     def validate_path(self):
+        """Validate that the path is unique and clean."""
         if self.path:
             new_path = clean_path(self.path, "-_/")
         elif "id" in self.model_fields_set:

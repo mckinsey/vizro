@@ -66,6 +66,7 @@ class Card(VizroBaseModel):
 
     @model_validator(mode="after")
     def validate_href_and_actions(self):
+        """Validate that `href` and `actions` are not defined together."""
         if self.href and self.actions:
             raise ValueError("Card cannot have both `href` and `actions` defined.")
 

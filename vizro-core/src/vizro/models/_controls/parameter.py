@@ -97,6 +97,7 @@ class Parameter(VizroBaseModel):
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
+        """Check that the parameter has an `id` set if it is shown in the URL."""
         # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self
