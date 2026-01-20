@@ -64,14 +64,15 @@ class DatePicker(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
-            any defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
             ),
         ]
     ]
+    # Using the description field does not show the below in rendered docs
+    """Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
+            any defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`."""
 
     _dynamic: bool = PrivateAttr(False)
     _inner_component_properties: list[str] = PrivateAttr(dmc.DatePickerInput().available_properties)
