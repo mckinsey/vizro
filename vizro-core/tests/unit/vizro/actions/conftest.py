@@ -48,14 +48,18 @@ def scatter_matrix_chart(iris, scatter_matrix_params):
 def target_scatter_filtered_continent(request, gapminder_2007, scatter_params):
     continent = request.param
     data = gapminder_2007[gapminder_2007["continent"].isin(continent)]
-    return px.scatter(data, **scatter_params)
+    fig = px.scatter(data, **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_box_filtered_continent(request, gapminder_2007, box_params):
     continent = request.param
     data = gapminder_2007[gapminder_2007["continent"].isin(continent)]
-    return px.box(data, **box_params)
+    fig = px.box(data, **box_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
