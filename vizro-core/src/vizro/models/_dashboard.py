@@ -132,16 +132,6 @@ class Dashboard(VizroBaseModel):
     Abstract: Usage documentation
         [How to create a dashboard](../user-guides/dashboard.md)
 
-    Args:
-        pages (list[Page]): See [`Page`][vizro.models.Page].
-        theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
-            Defaults to `vizro_dark`.
-        navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-
     """
 
     pages: list[Page]

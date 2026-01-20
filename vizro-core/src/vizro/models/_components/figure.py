@@ -17,10 +17,6 @@ class Figure(VizroBaseModel):
     Abstract: Usage documentation
         [How to use figures](../user-guides/figure.md)
 
-    Args:
-        figure (CapturedCallable): Function that returns a figure-like object. See [`vizro.figures`][vizro.figures].
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-
     """
 
     type: Literal["figure"] = "figure"

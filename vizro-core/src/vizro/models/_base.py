@@ -213,10 +213,6 @@ class VizroBaseModel(BaseModel):
     Abstract: Usage documentation
         [Custom components](../user-guides/custom-components.md)
 
-    Args:
-        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard.
-            When no ID is chosen, ID will be automatically generated.
-
     """
 
     id: Annotated[

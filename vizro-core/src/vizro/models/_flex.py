@@ -15,15 +15,6 @@ class Flex(VizroBaseModel):
     Abstract: Usage documentation
         [How to use the Flex layout](../user-guides/layouts.md#flex-layout)
 
-    Args:
-        direction (Literal["row", "column"]): Sets the direction of the flex items inside the container. Options are
-            `row` or `column`. Defaults to `column`.
-        gap (str): Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.
-            Defaults to `24px`.
-        wrap (bool): Determines whether flex items are forced onto a single line or can wrap onto multiple lines.
-            If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines.
-            Defaults to `False`.
-
     """
 
     type: Literal["flex"] = "flex"

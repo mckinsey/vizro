@@ -66,14 +66,6 @@ class Parameter(VizroBaseModel):
         vm.Parameter(targets=["scatter.x"], selector=vm.Slider(min=0, max=1, default=0.8, title="Bubble opacity"))
         ```
 
-    Args:
-        targets (list[str]): Targets in the form of `<target_component>.<target_argument>`.
-        selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value
-            `"NONE"` into `None` to allow optional parameters.
-        show_in_url (bool): Whether the parameter should be included in the URL query string. Defaults to `False`.
-            Useful for bookmarking or sharing dashboards with specific parameter values pre-set.
-        visible (bool): Whether the parameter should be visible. Defaults to `True`.
-
     """
 
     type: Literal["parameter"] = "parameter"

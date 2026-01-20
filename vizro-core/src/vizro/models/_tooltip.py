@@ -33,15 +33,6 @@ class Tooltip(VizroBaseModel):
         [selectors](../user-guides/selectors.md#add-a-tooltip) and
         [buttons](../user-guides/button.md#add-a-tooltip).
 
-    Args:
-        text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
-            chosen by the Vizro team. This may have unexpected behavior. Visit the
-            [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/tooltip/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
     Example: `Tooltip` on a [`Checklist`][vizro.models.Checklist] selector
         ```python
         import vizro.models as vm

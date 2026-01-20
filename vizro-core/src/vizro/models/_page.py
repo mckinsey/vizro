@@ -56,17 +56,6 @@ class Page(VizroBaseModel):
     Abstract: Usage documentation
         [How to make dashboard pages](../user-guides/pages.md)
 
-    Args:
-        components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
-            has to be provided.
-        title (str): Title of the `Page`.
-        layout (LayoutType | None): Layout to place components in. Defaults to `None`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        path (str): Path to navigate to page. Defaults to `""`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field

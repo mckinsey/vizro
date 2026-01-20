@@ -15,10 +15,6 @@ from vizro.models.types import LayoutType, _FormComponentType
 class Form(VizroBaseModel):
     """Container for all form components to be provided to [`Page`][vizro.models.Page].
 
-    Args:
-        components (list[FormComponentType]): List of components used in the form.
-        layout (LayoutType | None): Defaults to `None`.
-
     """
 
     type: Literal["form"] = "form"

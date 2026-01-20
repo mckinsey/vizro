@@ -19,18 +19,6 @@ class Switch(VizroBaseModel):
     Abstract: Usage documentation
         [How to use boolean selectors](../user-guides/selectors.md/#boolean-selectors)
 
-    Args:
-        value (bool): Initial state of the switch. When `True`, the switch is "on".
-            When `False`, the switch is "off". Defaults to `False`.
-        title (str): Title/Label to be displayed to the right of the switch. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Switch` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["switch"] = "switch"

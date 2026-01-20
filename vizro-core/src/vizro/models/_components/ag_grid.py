@@ -35,17 +35,6 @@ class AgGrid(VizroBaseModel):
     Abstract: Usage documentation
         [How to use an AgGrid](../user-guides/table.md/#ag-grid)
 
-    Args:
-        figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the `AgGrid`. Defaults to `""`.
-        header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["ag_grid"] = "ag_grid"

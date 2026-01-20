@@ -26,21 +26,6 @@ class DatePicker(VizroBaseModel):
     Abstract: Usage documentation
         [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
 
-    Args:
-        min (date | None): Start date for date picker. Defaults to `None`.
-        max (date | None): End date for date picker. Defaults to `None`.
-        value (list[date] | date | None): Default date/dates for date picker. Defaults to `None`.
-        title (str): Title to be displayed. Defaults to `""`.
-        range (bool): Boolean flag for displaying range picker. Defaults to `True`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
-            any defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["date_picker"] = "date_picker"
