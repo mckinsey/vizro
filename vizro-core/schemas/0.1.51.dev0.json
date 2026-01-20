@@ -66,7 +66,7 @@
         },
         "inputs": {
           "default": [],
-          "description": "List of inputs provided to the action function. Each input can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.\n            \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](\n            deprecations.md#action-model-inputs-argument).",
+          "description": "List of inputs provided to the action function. Each input can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.\n            \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](\n            deprecations.md#action-model-inputs-argument).",
           "items": {
             "type": "string"
           },
@@ -120,7 +120,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -217,7 +217,7 @@
         },
         "variant": {
           "default": "filled",
-          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `filled`.",
+          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.",
           "enum": ["plain", "filled", "outlined"],
           "title": "Variant",
           "type": "string"
@@ -232,7 +232,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the button text.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the button text.\n            Hovering over the icon shows a tooltip with the provided description."
         }
       },
       "title": "Button",
@@ -286,7 +286,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon in the top-right corner of the Card.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon in the top-right corner of the Card.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -429,7 +429,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -595,7 +595,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "controls": {
           "default": [],
@@ -711,7 +711,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -866,7 +866,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -1025,13 +1025,13 @@
         },
         "show_in_url": {
           "default": false,
-          "description": "Whether the filter should be included in the URL query string. Defaults to `False`. Useful for bookmarking or sharing dashboards with specific filter values pre-set.",
+          "description": "Whether the filter should be included in the URL query string. Useful for bookmarking or sharing dashboards with specific filter values pre-set.",
           "title": "Show In Url",
           "type": "boolean"
         },
         "visible": {
           "default": true,
-          "description": "Whether the filter should be visible. Defaults to `True`.",
+          "description": "Whether the filter should be visible.",
           "title": "Visible",
           "type": "boolean"
         }
@@ -1057,21 +1057,21 @@
         },
         "direction": {
           "default": "column",
-          "description": "Sets the direction of the flex items inside the container. Options are `row` or `column`.Defaults to `column`.",
+          "description": "Sets the direction of the flex items inside the container. Options are `row` or `column`.",
           "enum": ["row", "column"],
           "title": "Direction",
           "type": "string"
         },
         "gap": {
           "default": "24px",
-          "description": "Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "description": "Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Gap",
           "type": "string"
         },
         "wrap": {
           "default": false,
-          "description": "Determines whether flex items are forced onto a single line or can wrap onto multiple lines. If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines. Defaults to `False`.",
+          "description": "Determines whether flex items are forced onto a single line or can wrap onto multiple lines. If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines.",
           "title": "Wrap",
           "type": "boolean"
         }
@@ -1122,7 +1122,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -1184,28 +1184,28 @@
         },
         "row_gap": {
           "default": "24px",
-          "description": "Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "description": "Specifies the gap between rows. Allowed units: `px`, `rem`, `em`, or `%`.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Row Gap",
           "type": "string"
         },
         "col_gap": {
           "default": "24px",
-          "description": "Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "description": "Specifies the gap between columns. Allowed units: `px`, `rem`, `em`, or `%`.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Col Gap",
           "type": "string"
         },
         "row_min_height": {
           "default": "0px",
-          "description": "Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "description": "Minimum row height in px. Allowed units: `px`, `rem`, `em`, or `%`.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Row Min Height",
           "type": "string"
         },
         "col_min_width": {
           "default": "0px",
-          "description": "Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "description": "Minimum column width in px. Allowed units: `px`, `rem`, `em`, or `%`.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Col Min Width",
           "type": "string"
@@ -1244,28 +1244,28 @@
         },
         "row_gap": {
           "default": "24px",
-          "description": "Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "description": "Specifies the gap between rows. Allowed units: `px`, `rem`, `em`, or `%`.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Row Gap",
           "type": "string"
         },
         "col_gap": {
           "default": "24px",
-          "description": "Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "description": "Specifies the gap between columns. Allowed units: `px`, `rem`, `em`, or `%`.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Col Gap",
           "type": "string"
         },
         "row_min_height": {
           "default": "0px",
-          "description": "Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "description": "Minimum row height in px. Allowed units: `px`, `rem`, `em`, or `%`.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Row Min Height",
           "type": "string"
         },
         "col_min_width": {
           "default": "0px",
-          "description": "Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "description": "Minimum column width in px. Allowed units: `px`, `rem`, `em`, or `%`.",
           "pattern": "^\\d+(px|rem|em|%)$",
           "title": "Col Min Width",
           "type": "string"
@@ -1519,7 +1519,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n            tags. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n            tags."
         },
         "controls": {
           "default": [],
@@ -1647,13 +1647,13 @@
         },
         "show_in_url": {
           "default": false,
-          "description": "Whether the parameter should be included in the URL query string. Defaults to `False`. Useful for bookmarking or sharing dashboards with specific parameter values pre-set.",
+          "description": "Whether the parameter should be included in the URL query string. Useful for bookmarking or sharing dashboards with specific parameter values pre-set.",
           "title": "Show In Url",
           "type": "boolean"
         },
         "visible": {
           "default": true,
-          "description": "Whether the parameter should be visible. Defaults to `True`.",
+          "description": "Whether the parameter should be visible.",
           "title": "Visible",
           "type": "boolean"
         }
@@ -1752,7 +1752,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -1889,7 +1889,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -2022,7 +2022,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -2073,7 +2073,7 @@
         },
         "value": {
           "default": false,
-          "description": "Initial state of the switch. When `True`, the switch is enabled/on.\n        When `False`, the switch is disabled/off. Defaults to `False`.",
+          "description": "Initial state of the switch. When `True`, the switch is enabled/on.\n        When `False`, the switch is disabled/off.",
           "title": "Value",
           "type": "boolean"
         },
@@ -2093,7 +2093,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -2170,7 +2170,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         },
         "actions": {
           "default": [],
@@ -2243,7 +2243,7 @@
             }
           ],
           "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
         }
       },
       "required": ["tabs"],
@@ -2560,7 +2560,7 @@
     },
     "theme": {
       "default": "vizro_dark",
-      "description": "Theme to be applied across dashboard. Defaults to `vizro_dark`.",
+      "description": "Theme to be applied across dashboard.",
       "enum": ["vizro_dark", "vizro_light"],
       "title": "Theme",
       "type": "string"
@@ -2592,7 +2592,7 @@
         }
       ],
       "default": null,
-      "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n            tags. Defaults to `None`."
+      "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n            tags."
     }
   },
   "required": ["pages"],
