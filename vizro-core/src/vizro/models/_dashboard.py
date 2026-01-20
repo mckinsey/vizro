@@ -25,9 +25,7 @@ from dash import (
 from dash.development.base_component import Component
 from pydantic import (
     AfterValidator,
-    BaseModel,
     BeforeValidator,
-    ConfigDict,
     Field,
     ValidationInfo,
     field_validator,
