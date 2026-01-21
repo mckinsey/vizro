@@ -240,7 +240,6 @@ plugins:
                   title: Deprecated
               - griffe_pydantic:
                   schema: true
-              - docs/griffe_extensions.py:FilterPrivateAttrs
           paths: [src]
           inventories:
             - https://docs.python.org/3/objects.inv
