@@ -1,6 +1,6 @@
-# Vizro Flow Plugin
+# Vizro e2e Flow Plugin
 
-This folder contains a Claude Code plugin for end-to-end Vizro dashboard development with a 2-skill workflow:
+Vizro e2e Flow is a Claude Code plugin for end-to-end Vizro dashboard development with a 2-skill workflow:
 
 **Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection
 
@@ -18,10 +18,10 @@ Install using the plugin command with the `mckinsey/vizro` repository:
 
 ```
 /plugin marketplace add mckinsey/vizro
-/plugin install vizro-e2e-flow
+/plugin install vizro-e2e-flow@vizro-marketplace
 ```
 
-This works well when using Claude Code. It automatically configures both MCP servers (Playwright) for the complete workflow.
+This works well when using Claude Code. It automatically configures the Playwright MCP for the complete workflow.
 
 ### Option 2: Upload skill folder
 
@@ -30,7 +30,7 @@ Zip the skill folders and upload them directly to Claude apps (e.g., Claude Desk
 - `/vizro-e2e-flow/skills/dashboard-design/`
 - `/vizro-e2e-flow/skills/dashboard-build/`
 
-**Important**: This option only uploads the skill files, not the MCP configuration. You'll need to manually configure the MCP servers by adding the `.mcp.json` configuration to your MCP client. See the [.mcp.json file](https://github.com/mckinsey/vizro/blob/main/vizro-e2e-flow/.mcp.json) for the configuration needed for the Playwright MCP server.
+**Important**: This option only uploads the skill files, not the MCP configuration. You'll need to manually configure the MCP server by adding the `.mcp.json` configuration to your MCP client. See the [.mcp.json file](https://github.com/mckinsey/vizro/blob/main/vizro-e2e-flow/.mcp.json) for the configuration needed for the Playwright MCP server.
 
 ## Usage
 
@@ -73,20 +73,6 @@ Use this skill after completing dashboard-design to implement and test:
 - Test filter and control functionality
 - Check for console errors
 
-**Flexible Entry Points:**
-
-All steps below refer to the dashboard-design skill's 3-step workflow:
-
-- Full development: Start with dashboard-design skill (begin at Step 1)
-- Have wireframes: Validate dashboard-design Step 1 (requirements), proceed from Step 2 (layout & interactions)
-- Have visual designs/mockups: Validate dashboard-design Steps 1-2 (requirements & layout), proceed from Step 3 (visualization selection)
-- Iterate existing dashboard: Use `dashboard-build` skill directly
-
-For detailed guidance, see:
-
-- `skills/dashboard-design/SKILL.md` and reference files in `skills/dashboard-design/references/`
-- `skills/dashboard-build/SKILL.md` and reference files in `skills/dashboard-build/references/`
-
 ## Requirements
 
 - **dashboard-design skill** (Steps 1-3: Requirements, Layout, Visualization): No technical dependencies - pure design guidance
@@ -97,7 +83,7 @@ For detailed guidance, see:
 
 ## Compatibility
 
-At the time of writing, this plugin is compatible with products which support Claude Skills (https://agentskills.io/). As is often the case with genAI products, we expect this to work with more products in the future.
+At the time of writing, this plugin is compatible with products which support Claude Agent Skills (https://agentskills.io/). As is often the case with GenAI products, we expect this to work with more products in the future.
 
 ## Support
 

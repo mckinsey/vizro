@@ -132,7 +132,7 @@ Tier 3: Component-level
 **Exceptions** - size based on content to render:
 
 - Text-heavy Card → treat like a chart (3+ rows)
-- Small Table (\<5 columns) → doesn't need full width
+- Small Table (less than columns) → doesn't need full width
 - Button → 1 row is enough
 
 **Layout Rules**:

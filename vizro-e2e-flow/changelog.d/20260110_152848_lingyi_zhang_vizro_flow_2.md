@@ -20,7 +20,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Initial release of vizro-e2e-flow Claude Code plugin with `dashboard-design` and `dashboard-build` skills. ([#1481](https://github.com/mckinsey/vizro/pull/1481))
+- Initial release of vizro-e2e-flow Claude Code plugin with `dashboard-design` and `dashboard-build` Agent Skills. ([#1481](https://github.com/mckinsey/vizro/pull/1481))
 
 <!--
 ### Changed
