@@ -68,8 +68,13 @@ class FilterPrivateAttrs(griffe.Extension):
                 elif name.startswith("_") and not name.startswith("__"):
                     cls.del_member(name)
                     filter_logger.info(f"Filtered out private member '{name}' from {cls.path}")
-        except (ImportError, AttributeError, TypeError):
-            pass
+        except (ImportError, AttributeError, TypeError) as error:
+            filter_logger.debug(
+                "Skipping private attribute filtering for %s due to %s: %s",
+                cls.path,
+                type(error).__name__,
+                error,
+            )
 
     def on_class_members(self, *, cls: griffe.Class, **kwargs):
         """Filter out PrivateAttr members when class members are collected."""
