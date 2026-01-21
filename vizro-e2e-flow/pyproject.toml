@@ -1,8 +1,17 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
 [project]
 authors = [
   {name = "Vizro Team"}
 ]
 description = "Claude Code plugin with skills for end-to-end Vizro dashboard development"
+dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro-e2e-flow"
 readme = "README.md"
+
+[tool.hatch.version]
+path = ".claude-plugin/plugin.json"
+pattern = '''"version":\s*"(?P<version>[^"]+)"'''
