@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
-from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter
+from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, ValidationInfo, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -27,6 +27,7 @@ from vizro.models.types import (
     OutputsType,
     _IdOrIdProperty,
     _IdProperty,
+    _validate_captured_callable,
 )
 
 logger = logging.getLogger(__name__)
@@ -505,7 +506,10 @@ class Action(_BaseAction):
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy
 
-    # _validate_function = field_validator("function", mode="before")(_validate_captured_callable)
+    @field_validator("function", mode="before")
+    @classmethod
+    def _validate_function(cls, v: Any, info: ValidationInfo):
+        return _validate_captured_callable(cls, v, info)
 
     @property
     def _parameters(self) -> set[str]:
