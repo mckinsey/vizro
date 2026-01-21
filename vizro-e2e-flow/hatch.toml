@@ -12,9 +12,8 @@ installer = "uv"
 [envs.default.scripts]
 lint = "pre-commit run {args} --all-files"
 prep-release = [
-  "hatch version release",
+  "hatch version patch",
   "hatch run changelog:collect",
-  "hatch run changelog:add",
   'echo "Release $(hatch version) prepared. Commit and push to pass CI checks."'
 ]
 

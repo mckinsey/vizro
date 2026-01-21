@@ -15,37 +15,18 @@ env:
   PYTHON_VERSION: "3.13"
 
 jobs:
-  check-version:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    outputs:
-      is_release: ${{ steps.check.outputs.is_release }}
-      version: ${{ steps.check.outputs.version }}
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Check if release version (no .dev0)
-        id: check
-        run: |
-          VERSION=$(jq -r '.version' vizro-e2e-flow/.claude-plugin/plugin.json)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          if [[ "$VERSION" == *"dev"* ]]; then
-            echo "is_release=false" >> $GITHUB_OUTPUT
-            echo "Version $VERSION is a dev version, skipping release"
-          else
-            echo "is_release=true" >> $GITHUB_OUTPUT
-            echo "Version $VERSION is a release version"
-          fi
-
   create-release:
-    needs: [check-version]
-    if: needs.check-version.outputs.is_release == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v6
+
+      - name: Get version
+        id: check
+        run: |
+          VERSION=$(jq -r '.version' vizro-e2e-flow/.claude-plugin/plugin.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v6
@@ -56,45 +37,15 @@ jobs:
         run: pip install hatch werkzeug
 
       - name: Extract release notes
-        id: extract
         run: |
           formatted_date=$(date +"%Y-%m-%d")
           python tools/extract_release_notes.py \
             "vizro-e2e-flow" \
-            "${{ needs.check-version.outputs.version }} — $formatted_date"
+            "${{ steps.check.outputs.version }} — $formatted_date"
 
       - name: Create GitHub Release
         run: |
           ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
             vizro-e2e-flow \
-            ${{ needs.check-version.outputs.version }} \
+            ${{ steps.check.outputs.version }} \
             release_body.txt
-
-  version-bump:
-    needs: [check-version, create-release]
-    if: needs.check-version.outputs.is_release == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.VIZRO_SVC_PAT }}
-
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install dependencies
-        run: pip install hatch
-
-      - name: Push bumped version to main
-        run: |
-          cd vizro-e2e-flow
-          hatch version patch,dev
-          hatch run changelog:add
-          git config user.email "145135826+vizro-svc@users.noreply.github.com"
-          git config user.name "Vizro Team"
-          git add -A
-          git commit -m "[Release] Bump vizro-e2e-flow to $(hatch version) [skip ci]"
-          git push origin main
