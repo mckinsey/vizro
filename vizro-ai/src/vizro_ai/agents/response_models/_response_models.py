@@ -65,8 +65,8 @@ def _exec_code(code: str, namespace: dict) -> dict:
     except ModuleNotFoundError as e:
         if "vizro" in str(e):
             raise RuntimeError(
-                f"""Failed to execute code: <{e}>. Please install `vizro` to use Vizro features — `pip install vizro`"""
-            )
+                """Failed to execute code. Please install `vizro` to use Vizro features — `pip install vizro`"""
+            ) from e
         raise RuntimeError("Failed to execute code.") from e
     namespace.update(ldict)
     return namespace
