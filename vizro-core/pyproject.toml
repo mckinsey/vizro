@@ -27,7 +27,7 @@ dependencies = [
   "pydantic>=2.7.0",
   "flask_caching>=2",
   "wrapt>=1",
-  "black",
+  "black>=26.1.0",
   "autoflake",
   "packaging",
   "python-box"
