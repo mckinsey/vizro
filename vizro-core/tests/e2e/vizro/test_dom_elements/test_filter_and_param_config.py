@@ -22,4 +22,7 @@ def test_filter_and_parameter(dash_br):
     # select 'setosa' in dropdown filter selector
     clear_dropdown(dash_br, cnst.DROPDOWN_FILTER_AND_PARAM)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_AND_PARAM, value="setosa")
+
+    # Check that graph is loaded and title is still 'red'
     check_graph_is_loaded(dash_br, graph_id=cnst.BOX_FILTER_AND_PARAM_ID)
+    dash_br.wait_for_text_to_equal(".gtitle", "red")
