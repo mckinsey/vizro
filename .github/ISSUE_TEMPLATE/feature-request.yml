@@ -24,6 +24,7 @@ body:
         - vizro
         - vizro-mcp
         - vizro-ai
+        - vizro-e2e-flow
   - type: textarea
     attributes:
       label: What's the problem this feature will solve?

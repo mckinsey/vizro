@@ -1,0 +1,16 @@
+{
+  "name": "vizro-marketplace",
+  "owner": {
+    "name": "Vizro Team",
+    "email": "vizro@mckinsey.com"
+  },
+  "metadata": {
+    "description": "Vizro Marketplace for tooling and skills around dashboard design and implementation"
+  },
+  "plugins": [
+    {
+      "name": "vizro-e2e-flow",
+      "source": "./vizro-e2e-flow"
+    }
+  ]
+}

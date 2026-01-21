@@ -1,0 +1,36 @@
+name: Checks for Vizro E2E Flow
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "vizro-e2e-flow/**"
+
+jobs:
+  release-ready-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check version is release-ready
+        run: |
+          VERSION=$(jq -r '.version' vizro-e2e-flow/.claude-plugin/plugin.json)
+          if [[ "$VERSION" == *"dev"* ]]; then
+            echo "::error::Version $VERSION is a dev version - PR is not release-ready"
+            echo ""
+            echo "Each PR to vizro-e2e-flow must be release-ready before merging."
+            echo ""
+            echo "To prepare for release, run in vizro-e2e-flow/:"
+            echo "  1. hatch run changelog:add     # Create changelog fragment"
+            echo "  2. Edit the fragment in changelog.d/ with your changes"
+            echo "  3. hatch run prep-release      # Collect changelog and bump version"
+            echo ""
+            echo "Then commit and push."
+            exit 1
+          else
+            echo "Version $VERSION is release-ready"
+          fi
