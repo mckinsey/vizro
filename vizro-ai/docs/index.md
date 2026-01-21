@@ -44,6 +44,8 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     ---
 
+    [:new: Agent Skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
+
     [:new: Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
 
     [:octicons-arrow-right-24: Vizro documentation](https://vizro.readthedocs.io/)
