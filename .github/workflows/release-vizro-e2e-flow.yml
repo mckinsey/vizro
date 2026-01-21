@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "vizro-e2e-flow/.claude-plugin/plugin.json"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -52,33 +53,22 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
-        run: pip install hatch
+        run: pip install hatch werkzeug
 
       - name: Extract release notes
         id: extract
         run: |
-          VERSION="${{ needs.check-version.outputs.version }}"
-          cd vizro-e2e-flow
-          # Extract release notes for this version from CHANGELOG.md
-          python -c "
-          import re
-          with open('CHANGELOG.md') as f:
-              content = f.read()
-          # Find the section for this version
-          pattern = rf'# {re.escape(VERSION)}.*?\n(.*?)(?=\n# |\Z)'
-          match = re.search(pattern, content, re.DOTALL)
-          if match:
-              print(match.group(1).strip())
-          " > ../release_body.txt
+          formatted_date=$(date +"%Y-%m-%d")
+          python tools/extract_release_notes.py \
+            "vizro-e2e-flow" \
+            "${{ needs.check-version.outputs.version }} — $formatted_date"
 
       - name: Create GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ needs.check-version.outputs.version }}"
-          gh release create "vizro-e2e-flow-${VERSION}" \
-            --title "vizro-e2e-flow ${VERSION}" \
-            --notes-file release_body.txt
+          ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
+            vizro-e2e-flow \
+            ${{ needs.check-version.outputs.version }} \
+            release_body.txt
 
   version-bump:
     needs: [check-version, create-release]
