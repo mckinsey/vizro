@@ -32,8 +32,4 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
     - No easy way to connect to real data.
 
-- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __Agent Skills__
-
-    If your AI development tools support [Agent Skills](https://agentskills.io/), we offer [dashboard design and build skills](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow) that guide you through a 2-phase workflow: design (requirements, layout, visualization) and build (implementation, testing).
-
 </div>
