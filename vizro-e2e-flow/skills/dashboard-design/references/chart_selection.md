@@ -296,7 +296,6 @@ px.scatter(df, x="x", y="y", size="z", color="category")
 
 ```python
 # Requires custom implementation with @capture("graph")
-# See implementation_guide.md for examples
 ```
 
 ### Waterfall Chart

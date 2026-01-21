@@ -4,34 +4,33 @@ permissions:
   contents: read
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "vizro-e2e-flow/**"
   pull_request:
     branches:
+      - main
     paths:
       - "vizro-e2e-flow/**"
 
 jobs:
-  changelog-check:
+  release-ready-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 2
 
-      - name: Find changed files to see if changelog fragment needed
-        id: changed-files
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Check version is release-ready
         run: |
-          echo "changelog_fragment_added=$(git diff --name-only --no-renames --diff-filter=A HEAD^1 HEAD -- 'vizro-e2e-flow/changelog.d/*.md' | xargs)" >> $GITHUB_OUTPUT
-          echo "skills_changed=$(git diff --name-only HEAD^1 HEAD -- 'vizro-e2e-flow/skills' | xargs)" >> $GITHUB_OUTPUT
-
-      - name: Fail if changelog fragment needed and wasn't added
-        if: ${{ steps.changed-files.outcome != 'skipped' && steps.changed-files.outputs.skills_changed && !steps.changed-files.outputs.changelog_fragment_added }}
-        run: |
-          echo "No changelog fragment .md file within changelog.d was detected. Run 'hatch run changelog:add' in vizro-e2e-flow/ to create such a fragment."
-          echo "If your PR contains changes that should be mentioned in the CHANGELOG in the next release, please uncomment the relevant section in your created fragment and describe the changes to the user."
-          echo "If your changes are not relevant for the CHANGELOG, please save and commit the file as is."
-          exit 1
+          VERSION=$(jq -r '.version' vizro-e2e-flow/.claude-plugin/plugin.json)
+          if [[ "$VERSION" == *"dev"* ]]; then
+            echo "::error::Version $VERSION is a dev version - PR is not release-ready"
+            echo ""
+            echo "Each PR to vizro-e2e-flow must be release-ready before merging."
+            echo ""
+            echo "To prepare for release, run in vizro-e2e-flow/:"
+            echo "  1. hatch run changelog:add     # Create changelog fragment"
+            echo "  2. Edit the fragment in changelog.d/ with your changes"
+            echo "  3. hatch run prep-release      # Collect changelog and bump version"
+            echo ""
+            echo "Then commit and push."
+            exit 1
+          else
+            echo "Version $VERSION is release-ready"
+          fi

@@ -15,7 +15,7 @@ prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
   "hatch run changelog:add",
-  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-e2e-flow $(hatch version)"'
+  'echo "Release $(hatch version) prepared. Commit and push to pass CI checks."'
 ]
 
 [version]
