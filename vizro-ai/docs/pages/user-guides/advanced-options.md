@@ -149,7 +149,7 @@ Executes the generated code to create a Plotly figure object. Note that this dyn
 
 !!! note "Requirements for `vizro=True`"
 
-    By default, `get_fig_object()` generates a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, you can set `vizro=True` but you need to ensure that `vizro` is installed: `pip install vizro` or `pip install vizro-ai[vizro]`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](add-generated-chart-usecase.md).
+    By default, `get_fig_object()` generates a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, you can set `vizro=True` but you need to ensure that `vizro` is installed: `pip install vizro`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](add-generated-chart-usecase.md).
 
 #### `vizro` property
 

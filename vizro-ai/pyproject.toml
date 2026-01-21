@@ -21,7 +21,7 @@ dependencies = [
   "autoflake",
   "pydantic-ai-slim>=1.39.0"
 ]
-description = "Vizro-AI is a tool for generating data visualizations"
+description = "Vizro-AI provides pre-configured agents that help with data visualizations"
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro_ai"
@@ -33,7 +33,6 @@ anthropic = ["pydantic-ai-slim[anthropic]"]
 google = ["pydantic-ai-slim[google]"]
 mistral = ["pydantic-ai-slim[mistral]"]
 openai = ["pydantic-ai-slim[openai]"]
-vizro = ["vizro"]
 
 [tool.coverage.paths]
 vizro = ["src/vizro_ai"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run

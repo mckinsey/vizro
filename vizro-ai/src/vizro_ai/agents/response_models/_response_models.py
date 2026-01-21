@@ -64,11 +64,10 @@ def _exec_code(code: str, namespace: dict) -> dict:
         exec(code, namespace, ldict)  # nosec # noqa: S102
     except ModuleNotFoundError as e:
         if "vizro" in str(e):
-            raise ModuleNotFoundError(
-                f"""Failed to execute code: <{e}>. Please install `vizro` to use Vizro features,
-you can use the `vizro` optional group — `pip install "vizro-ai[vizro]"`"""
+            raise RuntimeError(
+                f"""Failed to execute code: <{e}>. Please install `vizro` to use Vizro features — `pip install vizro`"""
             )
-        raise ModuleNotFoundError(f"Failed to execute code: <{e}>.")
+        raise RuntimeError("Failed to execute code.") from e
     namespace.update(ldict)
     return namespace
 
