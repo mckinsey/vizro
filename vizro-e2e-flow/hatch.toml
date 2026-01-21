@@ -2,7 +2,7 @@
 dependencies = ["scriv"]
 detached = true
 installer = "uv"
-scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
+scripts = {add = "scriv create --add", collect = ["scriv collect", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
 
 [envs.default]
 dependencies = ["pre-commit"]
