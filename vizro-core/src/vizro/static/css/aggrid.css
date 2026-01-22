@@ -24,6 +24,8 @@
   --ag-header-column-resize-handle-color: var(--bs-border-color-translucent);
   --ag-range-selection-border-color: transparent;
   --ag-input-focus-border-color: transparent;
+  --ag-foreground-color: var(--bs-primary);
+  --ag-row-hover-color: var(--bs-primary-bg-subtle);
 }
 
 /* Header ------- */
@@ -179,4 +181,9 @@
     var(--bs-primary);
   color: var(--text-primary-inverted);
   text-decoration-line: underline;
+}
+
+
+.ag-row {
+  border-bottom: 1px solid var(--bs-border-color);
 }
