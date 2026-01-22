@@ -91,6 +91,11 @@ test-e2e-vizro-http-requests = [
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
   "pytest -vs --reruns 1 tests/e2e/vizro/test_http_requests --headless {args}"
 ]
+test-e2e-vizro-performance = [
+  "gunicorn dashboard_performance:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+  "pytest -vs --reruns 1 tests/e2e/vizro/test_performance --headless {args}"
+]
 test-e2e-vizro-screenshots = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
   "gunicorn dashboard_one_page:app -b 0.0.0.0:5003 -w 1 --timeout 90 &",
