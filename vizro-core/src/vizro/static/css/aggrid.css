@@ -201,8 +201,8 @@
 :where(.ag-theme-checkboxStyle-3) {
   & .ag-checkbox-input-wrapper, & .ag-radio-button-input-wrapper {
       &:where(.ag-disabled) {
-        opacity: 1;
         filter: none;
+        opacity: 1;
 
       }
     }

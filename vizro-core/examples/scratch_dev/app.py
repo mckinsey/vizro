@@ -35,7 +35,7 @@ page = vm.Page(
     components=[vm.AgGrid(figure=dash_ag_grid(df))],
     controls=[
         vm.Filter(column="name", selector=vm.Checklist()),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
