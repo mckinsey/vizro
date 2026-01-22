@@ -26,6 +26,16 @@
   --ag-input-focus-border-color: transparent;
   --ag-foreground-color: var(--bs-primary);
   --ag-row-hover-color: var(--bs-primary-bg-subtle);
+  --ag-checkbox-border-width: 1px;
+  --ag-checkbox-checked-background-color: transparent;
+  --ag-checkbox-checked-shape-color: var(--bs-primary);
+  --ag-checkbox-checked-border-color: var(--bs-secondary);
+  --ag-checkbox-unchecked-background-color: transparent;
+  --ag-checkbox-unchecked-border-color: var(--bs-secondary);
+  --ag-checkbox-indeterminate-border-color: var(--bs-secondary);
+  --ag-checkbox-indeterminate-background-color: transparent;
+  --ag-checkbox-indeterminate-shape-color: var(--bs-secondary);
+  --ag-icon-size: 16px;
 }
 
 /* Header ------- */
@@ -186,4 +196,14 @@
 
 .ag-row {
   border-bottom: 1px solid var(--bs-border-color);
+}
+
+:where(.ag-theme-checkboxStyle-3) {
+  & .ag-checkbox-input-wrapper, & .ag-radio-button-input-wrapper {
+      &:where(.ag-disabled) {
+        opacity: 1;
+        filter: none;
+
+      }
+    }
 }
