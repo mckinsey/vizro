@@ -226,6 +226,7 @@ class AgGrid(VizroBaseModel):
             ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
             Output(self._inner_component_id, "className"),
             Input("theme-selector", "value"),
+            hidden=True,
         )
         description = self.description.build().children if self.description else [None]
         return dcc.Loading(
