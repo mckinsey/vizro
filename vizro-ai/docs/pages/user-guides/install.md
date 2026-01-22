@@ -115,19 +115,6 @@ model = OpenAIChatModel(
 )
 ```
 
-Alternatively, you can use `os.getenv()` directly if the environment variable is already set (for example, via Method 2):
-
-```python
-import os
-from pydantic_ai.models.openai import OpenAIChatModel
-from pydantic_ai.providers.openai import OpenAIProvider
-
-model = OpenAIChatModel(
-    "gpt-5-nano-2025-08-07",
-    provider=OpenAIProvider(api_key=os.getenv("OPENAI_API_KEY")),
-)
-```
-
 If you would like to customize the `.env` file location and name:
 
 ```python
