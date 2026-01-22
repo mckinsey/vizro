@@ -1,0 +1,143 @@
+/* DROPDOWN  ------------------------------------------------------------ */
+.dash-dropdown {
+  background: var(--bs-primary-bg-subtle);
+  border: 0;
+  border-radius: var(--bs-border-radius);
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.dash-dropdown-search-container {
+  background: var(--bs-primary-bg-subtle);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+}
+
+.dash-dropdown-search-container:focus-within {
+  border-color: var(--bs-focus-ring-color);
+  outline: none;
+}
+
+/* Dropdown tags */
+.dash-dropdown-value {
+  display: flex;
+  gap: 4px;
+}
+
+.dash-dropdown-value > * {
+  align-items: center;
+  background: var(--text-primary-inverted);
+  box-shadow: var(--bs-box-shadow);
+  color: var(--bs-primary);
+  display: inline-flex;
+  font-size: 14px;
+  height: 24px;
+  padding: 4px 8px;
+}
+
+/* Dropdown menu */
+.dash-dropdown-content {
+  background: var(--bs-primary-bg-subtle);
+  border: 0;
+  border-radius: var(--bs-border-radius);
+  box-shadow: var(--bs-box-shadow-sm);
+  padding-bottom: 4px;
+}
+
+
+
+
+
+
+/* Dropdown Checkboxes */
+
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox {
+  appearance: none;
+  background: none;
+  background-color: transparent;
+  border: 1px solid var(--bs-secondary);
+  border-radius: 0;
+  cursor: pointer;
+  height: 16px;
+  margin: 0;
+  outline-color: var(--bs-secondary);
+  width: 16px;
+}
+
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox:checked {
+  background: none;
+  background-color: transparent;
+  border-color: var(--bs-secondary);
+}
+
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox:checked::before {
+  color: var(--bs-secondary);
+  content: "✓";
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
+}
+
+.dash-options-list-option-text {
+  color: var(--bs-body-color);
+}
+
+/* Hide commas */
+.dash-dropdown-value-item:not(:first-child)::before {
+  content: none;
+}
+
+.dash-dropdown-value-count {
+  background: none;
+  padding: 4px 8px;
+}
+
+.dash-dropdown-clear {
+  height: 8px;
+  width: 8px;
+}
+
+.dash-dropdown-trigger {
+  padding: 0 8px;
+}
+
+.dash-dropdown-option {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  height: 32px;
+  padding: 6px 8px;
+}
+
+.dash-dropdown-actions {
+    border-bottom: 1px solid var(--bs-border-color);
+    display: flex;
+    gap: 16px;
+    padding: 8px;
+}
+
+/* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */
+.dash-slider-track {
+  height: 2px;
+}
+
+.dash-input-container {
+  background: none;
+  border: none;
+  color: var(--bs-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--bs-border-color-translucent);
+}
+
+.dash-slider-thumb {
+  background-color: var(--text-primary-inverted);
+  border-color: var(--bs-primary);
+  border-width: 4px;
+  height: 12px;
+  width: 12px;
+}
+
+.dash-slider-mark-outside-selection {
+  color: var(--bs-body-color);
+}
