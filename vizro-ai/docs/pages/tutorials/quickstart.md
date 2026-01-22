@@ -78,7 +78,7 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
 
 !!! tip "API Key Management"
 
-    For production use, it's preferable to store your API key in a `.env` file and load it using `python-dotenv` or `os.getenv()`. This keeps your API key secure and out of your code.
+    For production use, it's preferable to [store your API key in an environment variable](../user-guides/install.md#set-up-access-to-openai-as-an-example-for-any-vendor). This keeps your API key secure and out of your code.
 
 ??? warning "Help! The LLM request was unauthorized"
 
@@ -105,7 +105,7 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
 
         # Set up the LLM model
         model = OpenAIChatModel(
-            "gpt-5-nano-2025-08-07",
+            "gpt-5-nano-2025-08-07",  # (1)!
             provider=OpenAIProvider(api_key="your-api-key-here"),
         )
 
@@ -125,6 +125,8 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
         fig = result.output.get_fig_object(df)
         fig.show()
         ```
+
+        1. We chose this model as it is cheap but good enough for the task at hand.
 
     === "Result"
 

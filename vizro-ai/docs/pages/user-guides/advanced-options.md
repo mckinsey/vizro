@@ -151,7 +151,7 @@ Executes the generated code to create a Plotly figure object. Note that this dyn
 
     By default, `get_fig_object()` generates a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, you can set `vizro=True` but you need to ensure that `vizro` is installed: `pip install vizro`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](add-generated-chart-usecase.md).
 
-#### `vizro` property
+#### `vizro` parameter
 
 The `fig` object (with `vizro=True`) is in the standard `vizro_dark` theme, and can [be inserted into a Vizro dashboard](add-generated-chart-usecase.md). Otherwise, the `fig` object is a basic plotly figure without Vizro theming by default.
 
@@ -170,7 +170,7 @@ The `fig` object (with `vizro=True`) is in the standard `vizro_dark` theme, and 
 
         [![VizroAIChartVizro]][vizroaichartvizro]
 
-#### `data_frame` property
+#### `data_frame` parameter
 
 You can create the `fig` object with different data while ensuring the overall schema remains consistent. You can re-evaluate this function to generate various `fig` objects for different data. For example, the code could be generated using fake or sample data fed into Vizro-AI. When moving to production, you can switch the data source to the complete dataset, as long as the data schema is consistent.
 
@@ -191,7 +191,7 @@ You can create the `fig` object with different data while ensuring the overall s
 
         [![VizroAINewData]][vizroainewdata]
 
-#### `chart_name` property
+#### `chart_name` parameter
 
 This option executes the chart code with the name given under `chart_name`. This can be important when you want to avoid overwriting variables in the namespace.
 
@@ -272,7 +272,7 @@ async def main():
         async for text in response.stream_output():
             print(text)
         result = await response.get_output()
-    fig = result.output.get_fig_object(df)
+    fig = result.get_fig_object(df)
     fig.show()
 
 if __name__ == "__main__":
@@ -313,7 +313,7 @@ For more details, see the [Pydantic AI Web Chat UI documentation](https://ai.pyd
 
 ### Agent2Agent (A2A) protocol
 
-The `chart_agent` can participate in agent-to-agent workflows using [the A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/).
+The `chart_agent` can participate in agent-to-agent workflows using [the A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/). You will need to install `pip install "pydantic-ai-slim[a2a]"` to use this feature.
 
 !!! example "Use chart_agent in an A2A workflow"
 
