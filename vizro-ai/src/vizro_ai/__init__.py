@@ -1,10 +1,6 @@
 import logging
 import os
 
-from ._vizro_ai import VizroAI
-
-__all__ = ["VizroAI"]
-
 __version__ = "0.4.0.dev0"
 
 # TODO: I think this collides with the VIZRO_LOG_LEVEL setting, as basicConfig can only be set once
