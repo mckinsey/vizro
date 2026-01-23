@@ -158,6 +158,7 @@ class Dashboard(VizroBaseModel):
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
             Input("theme-selector", "value"),
+            hidden=True,
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
@@ -170,6 +171,7 @@ class Dashboard(VizroBaseModel):
                 ],
                 Input("collapse-icon", "n_clicks"),
                 State("collapse-left-side", "is_open"),
+                hidden=True,
             )
 
         layout = html.Div(

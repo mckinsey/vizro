@@ -1,0 +1,51 @@
+name: Release vizro-e2e-flow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "vizro-e2e-flow/.claude-plugin/plugin.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Get version
+        id: check
+        run: |
+          VERSION=$(jq -r '.version' vizro-e2e-flow/.claude-plugin/plugin.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: pip install hatch werkzeug
+
+      - name: Extract release notes
+        run: |
+          formatted_date=$(date +"%Y-%m-%d")
+          python tools/extract_release_notes.py \
+            "vizro-e2e-flow" \
+            "${{ steps.check.outputs.version }} — $formatted_date"
+
+      - name: Create GitHub Release
+        run: |
+          ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
+            vizro-e2e-flow \
+            ${{ steps.check.outputs.version }} \
+            release_body.txt

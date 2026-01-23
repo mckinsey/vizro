@@ -164,4 +164,5 @@ class Checklist(VizroBaseModel):
                 State(f"{self.id}_select_all", "id"),
             ],
             prevent_initial_call="initial_duplicate",
+            hidden=True,
         )

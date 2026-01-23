@@ -383,6 +383,7 @@ class _BaseAction(VizroBaseModel):
                 State(component_guard_id, "data", allow_optional=True),
                 State(trigger_component_id, "id"),
                 prevent_initial_call=self._prevent_initial_call_of_guard,
+                hidden=True,
             )
         else:
             trigger = Input(*self._trigger.split("."))

@@ -139,6 +139,7 @@ class Container(VizroBaseModel):
                 ],
                 inputs=[Input(f"{self.id}_title_content", "n_clicks"), State(f"{self.id}_collapse", "is_open")],
                 prevent_initial_call=True,
+                hidden=True,
             )
 
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}

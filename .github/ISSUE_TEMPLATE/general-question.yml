@@ -39,7 +39,7 @@ body:
         - vizro
         - vizro-mcp
         - vizro-ai
-
+        - vizro-e2e-flow
   - type: checkboxes
     attributes:
       label: Code of Conduct

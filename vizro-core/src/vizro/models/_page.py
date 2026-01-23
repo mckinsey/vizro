@@ -166,6 +166,7 @@ class Page(VizroBaseModel):
                 State("vizro_controls_store", "data"),
                 State(self.id, "id"),  # Assigned to outermost Div in Dashboard._make_page_layout.
                 prevent_initial_call=True,
+                hidden=True,
             )
 
         # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
@@ -195,6 +196,7 @@ class Page(VizroBaseModel):
                 *selector_values_inputs,
                 *control_ids_states,
                 *control_selector_ids_states,
+                hidden=True,
             )
 
     @_log_call

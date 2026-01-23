@@ -312,6 +312,7 @@ class Graph(VizroBaseModel):
                 State("vizro_themes", "data"),
             ],
             prevent_initial_call=True,
+            hidden=True,
         )
 
         clientside_callback(
@@ -322,6 +323,7 @@ class Graph(VizroBaseModel):
             State(self.id, "figure"),
             State(self.id, "id"),
             prevent_initial_call=True,
+            hidden=True,
         )
 
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters

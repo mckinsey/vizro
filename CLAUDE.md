@@ -5,6 +5,7 @@ This is a monorepo containing multiple Vizro packages. The main packages are:
 - `vizro-core/`: The core Vizro dashboard framework
 - `vizro-ai/`: Framework for AI-assisted dashboard development
 - `vizro-mcp/`: Model Context Protocol server for AI-assisted dashboard development
+- `vizro-e2e-flow/`: (Anthropic) Claude Code plugin with skills for end-to-end dashboard development (no `hatch` commands)
 
 ## Development Setup (across all packages)
 
@@ -20,7 +21,7 @@ Navigate to the specific package directory (e.g., `cd vizro-core`) before runnin
 
 Run these from within the package directory (e.g., `vizro-core/`):
 
-- ` hatch run python -c "xxx"` - Run a Python command
+- `hatch run python -c "xxx"` - Run a Python command
 - `hatch run pypath` - Show Python interpreter path
 - `hatch run lint` - Check and fix code quality/formatting
 - `hatch run changelog:add` - Generate changelog fragment (required for PRs)

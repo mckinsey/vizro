@@ -168,7 +168,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
 extra-dependencies = [
-  "dash==3.1.1",
+  "dash==3.4.0",
   "dash-bootstrap-components==2.0.0",
   "dash-ag-grid==31.3.1",
   "dash-mantine-components==2.0.0",

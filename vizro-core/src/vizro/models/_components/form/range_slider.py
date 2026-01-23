@@ -119,6 +119,7 @@ class RangeSlider(VizroBaseModel):
             output=output,
             inputs=inputs,
             prevent_initial_call=True,
+            hidden=True,
         )
 
         current_value = self.value or [min, max]
