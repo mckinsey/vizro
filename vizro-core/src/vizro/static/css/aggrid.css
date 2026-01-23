@@ -118,6 +118,17 @@
   background-color: var(--hover-bg-subtle);
 }
 
+:where(.ag-theme-checkboxStyle-3) {
+  & .ag-checkbox-input-wrapper, & .ag-radio-button-input-wrapper {
+      &:where(.ag-disabled) {
+        filter: none;
+        opacity: 1;
+
+      }
+    }
+}
+
+
 #dashboard-container .ag-radio-button-input-wrapper {
   background-color: var(--bs-primary-bg-subtle);
 }
@@ -195,14 +206,4 @@
 
 .ag-row {
   border-bottom: 1px solid var(--bs-border-color);
-}
-
-:where(.ag-theme-checkboxStyle-3) {
-  & .ag-checkbox-input-wrapper, & .ag-radio-button-input-wrapper {
-      &:where(.ag-disabled) {
-        filter: none;
-        opacity: 1;
-
-      }
-    }
 }
