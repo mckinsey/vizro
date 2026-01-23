@@ -29,7 +29,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 ### Optimizations and common errors
 
 - **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
-- **KPI cards**: Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER put `kpi_card` or `kpi_card_reference` as a custom chart, use the built-in `kpi_card` and `kpi_card_reference` (imported from `vizro.figures`) in `Figure` model instead.
+- **KPI cards**: Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER put `kpi_card` or `kpi_card_reference` as a custom chart or re-build KPI cards as custom charts, use the built-in `kpi_card` and `kpi_card_reference` (imported from `vizro.figures`) in `Figure` model instead. Only accept exceptions for when the KPI card is strictly not possible, for example when dynamically showing text as a KPI card.
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 

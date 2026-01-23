@@ -238,7 +238,7 @@ neutral_color = "gray"  # Inactive
 
 ### KPI Card Pattern
 
-Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER put `kpi_card` or `kpi_card_reference` as a custom chart, use the built-in `kpi_card` and `kpi_card_reference` in `Figure` model instead.
+Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER put `kpi_card` or `kpi_card_reference` as a custom chart or re-build KPI cards as custom charts, use the built-in `kpi_card` and `kpi_card_reference` in `Figure` model instead. Only accept exceptions for when the KPI card is strictly not possible, for example when dynamically showing text as a KPI card.
 
 ### Chart Title Pattern
 

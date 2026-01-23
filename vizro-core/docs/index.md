@@ -36,6 +36,8 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     ---
 
+    [:new: Agent skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
+
     [:fontawesome-solid-star: Vizro-MCP :fontawesome-solid-star:](https://vizro.readthedocs.io/projects/vizro-mcp/)
 
     [Vizro-AI (deprecated)](https://vizro.readthedocs.io/projects/vizro-ai/)
