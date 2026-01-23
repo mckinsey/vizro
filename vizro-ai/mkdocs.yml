@@ -95,7 +95,7 @@ plugins:
             show_source: false #currently doesn't show source at correct level, and not for pydantic models
             docstring_style: google
             merge_init_into_class: true
-            docstring_section_style: list
+            docstring_section_style: table
             separate_signature: true
             #   filters: ["!^_"]
             show_root_heading: true

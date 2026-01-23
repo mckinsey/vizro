@@ -136,7 +136,7 @@ By passing your data and a natural language description, Vizro-AI generates the 
 
 To learn how to customize the model, check out the guide on [how to customize models](../user-guides/customize-vizro-ai.md).
 
-!!! note "Curious about the `vizro` parameter?"
+!!! note "Curious about Vizro charts?"
 
     By default, `chart_function` returns a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, use `vizro_chart_function` and ensure that `vizro` is installed: `pip install vizro`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
 
@@ -165,7 +165,7 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
         fig = result.output.chart_function(df)
         fig.show()
 
-        # Get a reusable chart function (no double parentheses needed)
+        # Get a reusable chart function
         chart_func = result.output.chart_function
         fig = chart_func(df)
 

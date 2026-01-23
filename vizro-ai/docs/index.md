@@ -22,13 +22,13 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md)
 
-    [:octicons-arrow-right-24: Vizro-AI function calls and properties](pages/user-guides/advanced-options.md)
+    [:octicons-arrow-right-24: Vizro-AI installation](pages/user-guides/install.md)
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
     ---
 
-    [:octicons-arrow-right-24: Advanced chart options](pages/user-guides/advanced-options.md)
+    [:octicons-arrow-right-24: Vizro-AI advanced usage and options](pages/user-guides/advanced-options.md)
 
     [:octicons-arrow-right-24: Add charts to a Vizro dashboard](pages/user-guides/add-generated-chart-usecase.md)
 
@@ -36,7 +36,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     ---
 
-    [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md)
+    [:octicons-arrow-right-24: FAQs and migration guide](pages/explanation/faq.md)
 
     [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)
 
@@ -46,7 +46,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     [:new: Agent skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
 
-    [:new: Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
+    [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
 
     [:octicons-arrow-right-24: Vizro documentation](https://vizro.readthedocs.io/)
 

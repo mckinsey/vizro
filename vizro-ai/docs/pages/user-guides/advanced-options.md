@@ -139,7 +139,7 @@ Returns the generated chart code as a pure Plotly code string. The function will
 
 ### `chart_function` property
 
-Returns a reusable callable function that generates a pure Plotly chart (vizro=False). This property returns the generated chart function directly, so any `**kwargs` you pass must be accepted by that function. Since it's a property, you can call it directly without double parentheses.
+Returns a reusable callable function that generates a pure Plotly chart (`vizro=False`). This property returns the generated chart function directly, so any `**kwargs` you pass must be accepted by that function.
 
 **Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
@@ -151,7 +151,7 @@ Returns a reusable callable function that generates a pure Plotly chart (vizro=F
         # Assuming you have a result object from chart_agent.run_sync()
         # For model and data setup, see setup note above.
 
-        # Direct usage (no double parentheses needed)
+        # Direct usage
         fig = result.output.chart_function(df)
         fig.show()
 
@@ -170,7 +170,7 @@ Returns a reusable callable function that generates a pure Plotly chart (vizro=F
 
 ### `vizro_chart_function` property
 
-Returns a reusable callable function that generates a Vizro-compatible chart (vizro=True). This is a convenience property that internally calls `get_chart_function(vizro=True)`. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function. Since it's a property, you can call it directly without double parentheses.
+Returns a reusable callable function that generates a Vizro-compatible chart (vizro=True). This is a convenience property that internally calls `get_chart_function(vizro=True)`. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function.
 
 **Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
@@ -301,7 +301,7 @@ async def main():
         async for text in response.stream_output():
             print(text)
         result = await response.get_output()
-    fig = result.output.chart_function(df)
+    fig = result.chart_function(df)
     fig.show()
 
 if __name__ == "__main__":
