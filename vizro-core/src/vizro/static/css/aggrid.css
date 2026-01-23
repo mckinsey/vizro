@@ -7,7 +7,7 @@
   --ag-data-color: var(--bs-heading-color);
   --ag-header-background-color: transparent;
   --ag-icon-font-family: aggridquartz;
-  --ag-icon-size: 0.875rem;
+  --ag-icon-size: 1rem;
   --ag-row-height: 48px;
   --ag-header-height: 40px;
   --ag-borders: none;
@@ -35,7 +35,6 @@
   --ag-checkbox-indeterminate-border-color: var(--bs-secondary);
   --ag-checkbox-indeterminate-background-color: transparent;
   --ag-checkbox-indeterminate-shape-color: var(--bs-secondary);
-  --ag-icon-size: 16px;
 }
 
 /* Header ------- */
