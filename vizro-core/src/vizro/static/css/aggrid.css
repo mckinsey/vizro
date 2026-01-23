@@ -5,7 +5,7 @@
   --ag-background-color: transparent;
   --ag-odd-row-background-color: transparent;
   --ag-data-color: var(--bs-heading-color);
-  --ag-header-background-color: transparent;
+  --ag-header-background-color: var(--bs-body-bg);
   --ag-icon-font-family: aggridquartz;
   --ag-icon-size: 1rem;
   --ag-row-height: 48px;
