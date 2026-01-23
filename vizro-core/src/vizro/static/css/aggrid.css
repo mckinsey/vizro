@@ -5,9 +5,9 @@
   --ag-background-color: transparent;
   --ag-odd-row-background-color: transparent;
   --ag-data-color: var(--bs-heading-color);
-  --ag-header-background-color: var(--right-side-bg-iterated);
+  --ag-header-background-color: var(--bs-body-bg);
   --ag-icon-font-family: aggridquartz;
-  --ag-icon-size: 0.875rem;
+  --ag-icon-size: 1rem;
   --ag-row-height: 48px;
   --ag-header-height: 40px;
   --ag-borders: none;
@@ -24,6 +24,17 @@
   --ag-header-column-resize-handle-color: var(--bs-border-color-translucent);
   --ag-range-selection-border-color: transparent;
   --ag-input-focus-border-color: transparent;
+  --ag-foreground-color: var(--bs-primary);
+  --ag-row-hover-color: var(--bs-primary-bg-subtle);
+  --ag-checkbox-border-width: 1px;
+  --ag-checkbox-checked-background-color: transparent;
+  --ag-checkbox-checked-shape-color: var(--bs-primary);
+  --ag-checkbox-checked-border-color: var(--bs-secondary);
+  --ag-checkbox-unchecked-background-color: transparent;
+  --ag-checkbox-unchecked-border-color: var(--bs-secondary);
+  --ag-checkbox-indeterminate-border-color: var(--bs-secondary);
+  --ag-checkbox-indeterminate-background-color: transparent;
+  --ag-checkbox-indeterminate-shape-color: var(--bs-secondary);
 }
 
 /* Header ------- */
@@ -107,6 +118,17 @@
   background-color: var(--hover-bg-subtle);
 }
 
+:where(.ag-theme-checkboxStyle-3) {
+  & .ag-checkbox-input-wrapper, & .ag-radio-button-input-wrapper {
+      &:where(.ag-disabled) {
+        filter: none;
+        opacity: 1;
+
+      }
+    }
+}
+
+
 #dashboard-container .ag-radio-button-input-wrapper {
   background-color: var(--bs-primary-bg-subtle);
 }
@@ -179,4 +201,9 @@
     var(--bs-primary);
   color: var(--text-primary-inverted);
   text-decoration-line: underline;
+}
+
+
+.ag-row {
+  border-bottom: 1px solid var(--bs-border-color);
 }
