@@ -40,9 +40,11 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)
 
-- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __Vizro-MCP and Vizro__
+- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __More from Vizro__
 
     ---
+
+    [:new: Agent skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
 
     [:new: Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
 

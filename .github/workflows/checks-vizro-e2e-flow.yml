@@ -1,0 +1,43 @@
+name: Checks for Vizro E2E Flow
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "vizro-e2e-flow/**"
+
+jobs:
+  release-ready-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check version is bumped
+        run: |
+          PR_VERSION=$(jq -r '.version' vizro-e2e-flow/.claude-plugin/plugin.json)
+          MAIN_VERSION=$(git show origin/main:vizro-e2e-flow/.claude-plugin/plugin.json | jq -r '.version')
+
+          echo "PR version: $PR_VERSION"
+          echo "Main version: $MAIN_VERSION"
+
+          if [[ "$PR_VERSION" == "$MAIN_VERSION" ]]; then
+            echo "::error::Version $PR_VERSION is the same as main - PR needs a version bump"
+            echo ""
+            echo "Each PR to vizro-e2e-flow must bump the version before merging."
+            echo ""
+            echo "To prepare for release, run in vizro-e2e-flow/:"
+            echo "  1. hatch run changelog:add     # Create changelog fragment"
+            echo "  2. Edit the fragment in changelog.d/ with your changes"
+            echo "  3. hatch run prep-release      # Bump version and collect changelog"
+            echo ""
+            echo "Then commit and push."
+            exit 1
+          else
+            echo "Version bumped from $MAIN_VERSION to $PR_VERSION"
+          fi

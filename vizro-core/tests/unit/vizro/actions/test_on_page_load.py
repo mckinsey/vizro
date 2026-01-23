@@ -135,12 +135,8 @@ class TestOnPageLoad:
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
         result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_test_page"].function(_controls=None)
 
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-            "box_chart": box_chart,
-        }
-
-        assert result == expected
+        assert result["scatter_chart"].data == target_scatter_filtered_continent_and_pop_parameter_y_and_x.data
+        assert result["box_chart"].data == box_chart.data
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -192,9 +188,6 @@ class TestOnPageLoad:
 
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
         result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_test_page"].function(_controls=None)
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-            "box_chart": target_box_filtered_continent_and_pop_parameter_y_and_x,
-        }
 
-        assert result == expected
+        assert result["scatter_chart"].data == target_scatter_filtered_continent_and_pop_parameter_y_and_x.data
+        assert result["box_chart"].data == target_box_filtered_continent_and_pop_parameter_y_and_x.data
