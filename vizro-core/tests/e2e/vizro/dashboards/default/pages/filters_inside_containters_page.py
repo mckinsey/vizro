@@ -38,7 +38,7 @@ filters_inside_containers_page = vm.Page(
                                         gapminder,
                                         x="year",
                                         y="gdpPercap",
-                                        render_mode='svg',
+                                        render_mode="svg",
                                     ),
                                 ),
                             ],
