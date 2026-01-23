@@ -16,6 +16,7 @@ from e2e.vizro.paths import (
     page_title_path,
 )
 from hamcrest import assert_that, equal_to
+from selenium.webdriver import ActionChains, Keys
 
 
 def test_export_data_no_controls(dash_br):
@@ -503,3 +504,297 @@ def test_default_property_controls(dash_br):
 
     # check that graph 'x' axis changed to 'petal_length'
     dash_br.wait_for_element('text[class="xtitle"][data-unformatted="petal_length"]')
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+def test_set_control_clickmode_event_select(dash_br):
+    """Test cross filter between two graphs with multi select."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+    )
+
+    # select virginica
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
+        0,
+        1,
+    )
+
+    # select versicolor with SHIFT key
+    ActionChains(dash_br.driver).key_down(Keys.SHIFT).click(
+        dash_br.find_element(
+            f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(22)"
+        ),
+    ).key_up(Keys.SHIFT).perform()
+
+    # Check y axis max value is '2.4'
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(
+            graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, axis_value_number="6", axis_value="2.4"
+        ),
+        "2.4",
+    )
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+
+    # unselect all values
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
+        0,
+        1,
+    )
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
+        0,
+        1,
+    )
+
+    # check all values are selected for checklist and setosa is selected for radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        select_all_status=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+def test_set_control_clickmode_event(dash_br):
+    """Test cross filter between two graphs without multi select."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+    )
+
+    # select virginica
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
+        0,
+        1,
+    )
+
+    # Check y axis max value is '2.4'
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(
+            graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, axis_value_number="6", axis_value="2.4"
+        ),
+        "2.4",
+    )
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+
+    # select versicolor with SHIFT key
+    ActionChains(dash_br.driver).key_down(Keys.SHIFT).click(
+        dash_br.find_element(
+            f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(22)"
+        ),
+    ).key_up(Keys.SHIFT).perform()
+
+    # check that only versicolor is selected in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+
+def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
+    """Test cross filter between AgGrid and graph with checkbox multi select."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+    )
+
+    # select setosa and versicolor in ag_grid with checkbox click
+    dash_br.multiple_click(
+        f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='0']  input.ag-checkbox-input", 1
+    )
+    dash_br.multiple_click(
+        f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='1']  input.ag-checkbox-input", 1
+    )
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+    # unselect setosa in ag_grid with checkbox click
+    dash_br.multiple_click(
+        f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='0']  input.ag-checkbox-input", 1
+    )
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+
+def test_set_control_clickmode_aggrid_command_click(dash_br):
+    """Test cross filter between AgGrid and graph with command multi select."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+    )
+
+    # select setosa by clicking on cell
+    dash_br.multiple_click(
+        f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='0']  div[col-id='sepal_length']", 1
+    )
+    # select versicolor with COMMAND key
+    ActionChains(dash_br.driver).key_down(Keys.COMMAND).click(
+        dash_br.find_element(
+            f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='2']  div[col-id='sepal_length']"
+        ),
+    ).key_up(Keys.COMMAND).perform()
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+    # unselect setosa with COMMAND key
+    ActionChains(dash_br.driver).key_down(Keys.COMMAND).click(
+        dash_br.find_element(
+            f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='0']  div[col-id='sepal_length']"
+        ),
+    ).key_up(Keys.COMMAND).perform()
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )

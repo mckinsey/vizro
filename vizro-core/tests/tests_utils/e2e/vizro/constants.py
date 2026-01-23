@@ -278,6 +278,14 @@ SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET = "set-control-drill-through-fil
 SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID = "scatter-2-drill-through-filter-ag_grid-target-id"
 RADIOITEMS_DRILL_THROUGH_FILTER_AG_GRID_ID = "radioitems-drill-through-filter-ag_grid-id"
 
+SET_CONTROL_MULTI_SELECT_PAGE = "set-control-multi-select-page"
+SCATTER_SET_CONTROL_EVENT_SELECT = "scatter_set-control-event-select"
+SCATTER_SET_CONTROL_EVENT = "scatter_set-control-event"
+TABLE_SET_CONTROL_MULTI_SELECT = "table_set-control-multi-select"
+BOX_SET_CONTROL_TARGET_MULTI_SELECT = "box_set_control_target_multi-select"
+CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER = "checklist_set_control_multi_select_filter"
+RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER = "radioitems_set_control_multi_select_filter"
+
 ACTION_MODEL_FIELD_SHORTCUT_PAGE = "graph_aggrid-title_description_header_footer"
 ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID = "action_shortcut_graph_id"
 ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID = "action_shortcut_ag_grid_id"

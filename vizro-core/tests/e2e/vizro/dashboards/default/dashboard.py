@@ -50,6 +50,9 @@ from pages.set_control_drill_through import (
     drill_through_parameter_graph_source_page,
     drill_through_parameter_graph_target_page,
 )
+from pages.set_control_multi_select_pages import (
+    cross_filter_multi_select_page,
+)
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
@@ -108,6 +111,7 @@ dashboard = vm.Dashboard(
         action_ag_grid_underlying_id_shortcut_page,
         action_control_shortcut_page,
         static_notifications_page,
+        cross_filter_multi_select_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -169,6 +173,7 @@ dashboard = vm.Dashboard(
                 cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
                 cnst.ACTION_CONTROL_SHORTCUT_PAGE,
                 cnst.STATIC_NOTIFICATIONS_PAGE,
+                cnst.SET_CONTROL_MULTI_SELECT_PAGE,
             ],
         }
     ),
