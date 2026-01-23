@@ -28,50 +28,16 @@ Yes! Since `chart_agent` is a Pydantic AI agent, you can use all Pydantic AI fea
 
 Various method names and the overall API structure have been changed in version `0.4.0`. The `VizroAI` class has been deprecated in favor of the `chart_agent` for chart generation. Where possible, we have retained the deprecated methods with their old names to help ease migration, but calling them will emit deprecation warnings and raise `RuntimeError`.
 
-| Vizro-AI < 0.4.0       | Vizro-AI ≥ 0.4.0                                                                                            |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `VizroAI.plot()`       | `chart_agent.run_sync()`                                                                                    |
-| `VizroAI.dashboard()`  | `chart_agent` (for charts) + [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) (for dashboards) |
-| `VizroAI(model=model)` | `chart_agent.run_sync(model=model, ...)`                                                                    |
-| Synchronous only       | `chart_agent.run_sync()` (sync) or `chart_agent.run()` (async)                                              |
-
-### Chart generation migration
-
-**Before (deprecated):**
-
-```py
-from vizro_ai import VizroAI
-
-vizro_ai = VizroAI(model="gpt-4")
-fig = vizro_ai.plot(df=df, user_input="create a bar chart")
-fig.show()
-```
-
-**After (current):**
-
-```py
-from pydantic_ai.models.openai import OpenAIChatModel
-from pydantic_ai.providers.openai import OpenAIProvider
-from vizro_ai.agents import chart_agent
-
-model = OpenAIChatModel("gpt-4", provider=OpenAIProvider(api_key="your-key"))
-result = chart_agent.run_sync(model=model, user_prompt="create a bar chart", deps=df)
-fig = result.output.get_fig_object(df)
-fig.show()
-```
-
-### Dashboard generation migration
-
-**Before (deprecated):**
-
-```py
-from vizro_ai import VizroAI
-
-vizro_ai = VizroAI(model="gpt-4")
-dashboard = vizro_ai.dashboard(dfs=[df1, df2], user_input="create a dashboard")
-```
-
-**After (current):** Dashboard generation is no longer supported in Vizro-AI. Use [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead, which doesn't require an API key and works with familiar LLM applications like VS Code, Cursor, or Claude Desktop.
+| Vizro-AI < 0.4.0                                     | Vizro-AI ≥ 0.4.0                                                                                                                            |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VizroAI.plot()`                                     | `chart_agent.run_sync()`                                                                                                                    |
+| `VizroAI.dashboard()`                                | [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) or [Agent skills](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow) |
+| `VizroAI(model=model)`                               | `chart_agent.run_sync(model=model, ...)`                                                                                                    |
+| Synchronous only                                     | `chart_agent.run_sync()` (sync) or `chart_agent.run()` (async)                                                                              |
+| `result_model.get_fig_object(df)`                    | `result_model.chart_function(df)`                                                                                                           |
+| not possible to pass kwargs to the chart function    | `result_model.chart_function(df, **kwargs)` (if the chart function accepts kwargs)                                                          |
+| `result_model.get_fig_object(..., vizro=True)`       | `result_model.vizro_chart_function(...)`                                                                                                    |
+| `result_model.get_fig_object(..., chart_name="...")` | `result_model.get_chart_function(custom_name="...", vizro=True/False)(df)`                                                                  |
 
 ## Why do I get `RuntimeError: This event loop is already running` in Jupyter Notebooks?
 

@@ -65,7 +65,7 @@ Synchronously runs the `chart_agent` to generate a chart based on your prompt.
             user_prompt="the trend of gdp over years in the US",
             deps=df,
         )
-        fig = result.output.get_fig_object(df)
+        fig = result.output.chart_function(df)
         fig.show()
         ```
 
@@ -137,80 +137,109 @@ Returns the generated chart code as a pure Plotly code string. The function will
             return fig
         ```
 
-### `get_fig_object()` method
+### `chart_function` property
 
-Executes the generated code to create a Plotly figure object. Note that this dynamically executes code - be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
+Returns a reusable callable function that generates a pure Plotly chart (vizro=False). This property returns the generated chart function directly, so any `**kwargs` you pass must be accepted by that function. Since it's a property, you can call it directly without double parentheses.
 
-**Parameters:**
+**Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
-- `data_frame`: The pandas DataFrame to use for generating the chart
-- `chart_name`: Optional name for the chart function (defaults to `custom_chart`)
-- `vizro`: Whether to generate Vizro-compatible code (defaults to `False`)
-
-!!! note "Requirements for `vizro=True`"
-
-    By default, `get_fig_object()` generates a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, you can set `vizro=True` but you need to ensure that `vizro` is installed: `pip install vizro`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](add-generated-chart-usecase.md).
-
-#### `vizro` parameter
-
-The `fig` object (with `vizro=True`) is in the standard `vizro_dark` theme, and can [be inserted into a Vizro dashboard](add-generated-chart-usecase.md). Otherwise, the `fig` object is a basic plotly figure without Vizro theming by default.
-
-!!! example "Get Vizro-ready figure"
+!!! example "Use chart_function property"
 
     === "Code"
 
         ```py
         # Assuming you have a result object from chart_agent.run_sync()
         # For model and data setup, see setup note above.
-        fig = result.output.get_fig_object(data_frame=df, vizro=True)
+
+        # Direct usage (no double parentheses needed)
+        fig = result.output.chart_function(df)
         fig.show()
+
+        # Assign to variable for reuse
+        chart_func = result.output.chart_function
+        fig1 = chart_func(df)
+        fig2 = chart_func(df.head(10))  # Different dataframe
+
+        # With kwargs (only if the generated chart function accepts them)
+        fig = result.output.chart_function(df, title="Custom Title")
+        ```
+
+    === "Result"
+
+        \[![VizroAIChart]\][vizroaichart]
+
+### `vizro_chart_function` property
+
+Returns a reusable callable function that generates a Vizro-compatible chart (vizro=True). This is a convenience property that internally calls `get_chart_function(vizro=True)`. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function. Since it's a property, you can call it directly without double parentheses.
+
+**Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
+
+!!! example "Use vizro_chart_function property"
+
+    === "Code"
+
+        ```py
+        # Assuming you have a result object from chart_agent.run_sync()
+        # For model and data setup, see setup note above.
+
+        # Direct usage
+        fig = result.output.vizro_chart_function(df)
+        fig.show()
+
+        # Assign to variable for reuse
+        vizro_func = result.output.vizro_chart_function
+        fig = vizro_func(df, title="Vizro Chart")
         ```
 
     === "Result"
 
         [![VizroAIChartVizro]][vizroaichartvizro]
 
-#### `data_frame` parameter
+### `get_chart_function()` method
 
-You can create the `fig` object with different data while ensuring the overall schema remains consistent. You can re-evaluate this function to generate various `fig` objects for different data. For example, the code could be generated using fake or sample data fed into Vizro-AI. When moving to production, you can switch the data source to the complete dataset, as long as the data schema is consistent.
+Returns a reusable callable function with customizable name and vizro flag. This method allows you to specify a custom function name and whether to generate Vizro-compatible code. The returned function can be called later with different dataframes and optional keyword arguments. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function.
 
-!!! example "Use different data"
+**Parameters:**
 
-    === "Code"
+- `custom_name`: Optional name for the chart function (defaults to `custom_chart`)
+- `vizro`: Whether to generate Vizro-compatible code (defaults to `False`)
 
-        ```py
-        # Assuming you have a result object from chart_agent.run_sync()
-        # For model and data setup, see setup note above.
-        # The produced chart could handle many continents, but we choose to filter for the US
-        df_us = df[df['country'] == 'United States']
-        fig = result.output.get_fig_object(chart_name="different_name", data_frame=df_us, vizro=True)
-        fig.show()
-        ```
+**Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
-    === "Result"
-
-        [![VizroAINewData]][vizroainewdata]
-
-#### `chart_name` parameter
-
-This option executes the chart code with the name given under `chart_name`. This can be important when you want to avoid overwriting variables in the namespace.
-
-!!! example "Change the chart name"
+!!! example "Use get_chart_function method"
 
     === "Code"
 
         ```py
         # Assuming you have a result object from chart_agent.run_sync()
         # For model and data setup, see setup note above.
-        fig = result.output.get_fig_object(chart_name="different_name", data_frame=df, vizro=True)
-        print(fig._captured_callable._function)
+
+        # With custom name
+        chart_func = result.output.get_chart_function(custom_name="my_chart")
+        fig = chart_func(df)
+
+        # With vizro flag
+        vizro_func = result.output.get_chart_function(vizro=True)
+        fig = vizro_func(df)
+
+        # Combined: custom name and vizro
+        chart_func = result.output.get_chart_function(custom_name="my_vizro_chart", vizro=True)
+        fig = chart_func(df, title="Custom Vizro Chart")
+
+        # Reuse with different dataframes
+        fig1 = chart_func(df)
+        fig2 = chart_func(df.head(20))
         ```
 
     === "Result"
 
-        ```py
-        <function different_name at 0x17a18df80>
-        ```
+        \[![VizroAIChart]\][vizroaichart]
+
+!!! note "When to use which method"
+
+    - Use `chart_function` property when you want a simple, reusable Plotly chart function without customization
+    - Use `vizro_chart_function` property when you want a simple, reusable Vizro-compatible chart function
+    - Use `get_chart_function()` method when you need to customize the function name or need more control over the chart generation
 
 ## Alternative response models
 
@@ -248,7 +277,7 @@ async def main():
         user_prompt="create a bar chart",
         deps=df,
     )
-    fig = result.output.get_fig_object(df)
+    fig = result.output.chart_function(df)
     fig.show()
 
 if __name__ == "__main__":
@@ -272,7 +301,7 @@ async def main():
         async for text in response.stream_output():
             print(text)
         result = await response.get_output()
-    fig = result.get_fig_object(df)
+    fig = result.output.chart_function(df)
     fig.show()
 
 if __name__ == "__main__":
@@ -331,4 +360,3 @@ For more information on Pydantic AI agent capabilities, see the [Pydantic AI age
 
 [agent_1]: ../../assets/user_guides/chart_agent_1.png
 [vizroaichartvizro]: ../../assets/user_guides/VizroAIVizro.png
-[vizroainewdata]: ../../assets/user_guides/VizroAINewData.png

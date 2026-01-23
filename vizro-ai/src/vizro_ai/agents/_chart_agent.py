@@ -1,3 +1,5 @@
+import io
+
 import pandas as pd
 from pydantic_ai import Agent, RunContext
 
@@ -16,6 +18,9 @@ chart code."""
 @chart_agent.instructions
 def add_df(ctx: RunContext[pd.DataFrame | None]) -> str:
     """Add the dataframe to the chart plan."""
-    if ctx.deps is None or type(ctx.deps) is not pd.DataFrame:
+    if not isinstance(ctx.deps, pd.DataFrame):
         raise ValueError("DataFrame dependency is required and must be a pandas DataFrame.")
-    return f"A sample of the data is {ctx.deps.sample(5)} and the data info is:\n{ctx.deps.info()}"
+
+    buffer = io.StringIO()
+    ctx.deps.info(buf=buffer)
+    return f"A sample of the data is {ctx.deps.sample(5)} and the data info is:\n{buffer.getvalue()}"

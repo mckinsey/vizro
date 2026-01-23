@@ -122,7 +122,7 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
         )
 
         # Get the figure object and display it
-        fig = result.output.get_fig_object(df)
+        fig = result.output.chart_function(df)
         fig.show()
         ```
 
@@ -138,7 +138,7 @@ To learn how to customize the model, check out the guide on [how to customize mo
 
 !!! note "Curious about the `vizro` parameter?"
 
-    By default, `get_fig_object()` generates a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, you can set `vizro=True` but you need to ensure that `vizro` is installed: `pip install vizro`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
+    By default, `chart_function` returns a pure Plotly figure object. If you would like to generate a Vizro-compatible figure that also has the Vizro theming, use `vizro_chart_function` and ensure that `vizro` is installed: `pip install vizro`. More on this topic in our guide on [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
 
 <!-- vale off -->
 
@@ -162,8 +162,16 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
         print("Vizro code:", result.output.code_vizro)
 
         # Get the figure object
-        fig = result.output.get_fig_object(df)
+        fig = result.output.chart_function(df)
         fig.show()
+
+        # Get a reusable chart function (no double parentheses needed)
+        chart_func = result.output.chart_function
+        fig = chart_func(df)
+
+        # Or get a Vizro-compatible chart function
+        vizro_func = result.output.vizro_chart_function
+        fig = vizro_func(df)
         ```
 
     === "Result"

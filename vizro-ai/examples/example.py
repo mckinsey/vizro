@@ -31,5 +31,5 @@ df_iris = px.data.iris()
 
 # Run the agent - user can choose the data_frame
 result = chart_agent.run_sync(model=model, user_prompt="Create a bar chart", deps=df_iris)
-fig = result.output.get_fig_object(df_iris)
+fig = result.output.chart_function(df_iris)
 fig.show()

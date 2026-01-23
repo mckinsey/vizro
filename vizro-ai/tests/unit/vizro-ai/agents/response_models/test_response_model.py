@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.express as ppx
+import plotly.graph_objects as go
 import pytest
 import vizro.plotly.express as px
 
@@ -25,6 +26,22 @@ def chart_plan() -> ChartPlan:
 """,
         chart_insights="Very good insights",
         code_explanation="Very good explanation",
+    )
+
+
+@pytest.fixture()
+def chart_plan_with_title_kwarg() -> ChartPlan:
+    return ChartPlan(
+        chart_type="Scatter Chart",
+        imports=["import plotly.express as px"],
+        chart_code="""def custom_chart(data_frame, title=None):
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    if title is not None:
+        fig.update_layout(title=title)
+    return fig
+""",
+        chart_insights="Good insights",
+        code_explanation="Good explanation",
     )
 
 
@@ -303,16 +320,100 @@ def {expected_chart_name}(data_frame):
 """
             )
 
-        @pytest.mark.parametrize(
-            "vizro, expected_fig",
-            [
-                (False, ppx.scatter(df, x="sepal_width", y="petal_width")),
-                (True, px.scatter(df, x="sepal_width", y="petal_width")),
-            ],
-        )
-        def test_get_fig_object(self, chart_plan, vizro, expected_fig):
-            fig = chart_plan.get_fig_object(data_frame=df, vizro=vizro)
+    class TestChartFunctionMethods:
+        """Tests for the chart_function, vizro_chart_function, and get_chart_function methods."""
+
+        def test_chart_function_returns_callable(self, chart_plan):
+            """Test that chart_function property returns a callable."""
+            chart_func = chart_plan.chart_function
+            assert callable(chart_func)
+
+        def test_chart_function_execution(self, chart_plan):
+            """Test calling the returned function with a dataframe."""
+            chart_func = chart_plan.chart_function
+            fig = chart_func(df)
+            assert isinstance(fig, go.Figure)
+            expected_fig = ppx.scatter(df, x="sepal_width", y="petal_width")
             assert fig == expected_fig
+
+        def test_chart_function_direct_call(self, chart_plan):
+            """Test that chart_function can be called directly without double parentheses."""
+            fig = chart_plan.chart_function(df)
+            assert isinstance(fig, go.Figure)
+
+        def test_chart_function_with_kwargs(self, chart_plan_with_title_kwarg):
+            """Test that kwargs can be passed when calling the returned function."""
+            chart_func = chart_plan_with_title_kwarg.chart_function
+            fig = chart_func(df, title="Test Title")
+            assert isinstance(fig, go.Figure)
+            assert fig.layout.title.text == "Test Title"
+
+        def test_chart_function_reusability(self, chart_plan):
+            """Test that returned function can be called multiple times with different dataframes."""
+            chart_func = chart_plan.chart_function
+            fig1 = chart_func(df)
+            # Create a different dataframe
+            df2 = df.head(10)
+            fig2 = chart_func(df2)
+            assert isinstance(fig1, go.Figure)
+            assert isinstance(fig2, go.Figure)
+            # They should be different figures
+            assert fig1 != fig2
+
+        def test_vizro_chart_function_returns_callable(self, chart_plan):
+            """Test that vizro_chart_function property returns a callable."""
+            vizro_func = chart_plan.vizro_chart_function
+            assert callable(vizro_func)
+
+        def test_vizro_chart_function_execution(self, chart_plan):
+            """Test calling the returned vizro function with a dataframe."""
+            vizro_func = chart_plan.vizro_chart_function
+            fig = vizro_func(df)
+            assert isinstance(fig, go.Figure)
+            expected_fig = px.scatter(df, x="sepal_width", y="petal_width")
+            assert fig == expected_fig
+
+        def test_vizro_chart_function_direct_call(self, chart_plan):
+            """Test that vizro_chart_function can be called directly."""
+            fig = chart_plan.vizro_chart_function(df)
+            assert isinstance(fig, go.Figure)
+
+        def test_get_chart_function_custom_name(self, chart_plan):
+            """Test get_chart_function with custom name."""
+            chart_func = chart_plan.get_chart_function(custom_name="my_custom_chart")
+            assert callable(chart_func)
+            fig = chart_func(df)
+            assert isinstance(fig, go.Figure)
+
+        def test_get_chart_function_vizro_flag(self, chart_plan):
+            """Test get_chart_function with vizro flag."""
+            chart_func = chart_plan.get_chart_function(vizro=True)
+            assert callable(chart_func)
+            fig = chart_func(df)
+            assert isinstance(fig, go.Figure)
+            expected_fig = px.scatter(df, x="sepal_width", y="petal_width")
+            assert fig == expected_fig
+
+        def test_get_chart_function_with_kwargs(self, chart_plan_with_title_kwarg):
+            """Test get_chart_function returned function with kwargs."""
+            chart_func = chart_plan_with_title_kwarg.get_chart_function(custom_name="test_chart", vizro=False)
+            fig = chart_func(df, title="Custom Title")
+            assert isinstance(fig, go.Figure)
+            assert fig.layout.title.text == "Custom Title"
+
+        def test_chart_function_different_namespaces(self, chart_plan):
+            """Test that different chart functions don't interfere with each other."""
+            chart_func1 = chart_plan.chart_function
+            vizro_func = chart_plan.vizro_chart_function
+            custom_func = chart_plan.get_chart_function(custom_name="different_chart")
+
+            fig1 = chart_func1(df)
+            fig2 = vizro_func(df)
+            fig3 = custom_func(df)
+
+            assert isinstance(fig1, go.Figure)
+            assert isinstance(fig2, go.Figure)
+            assert isinstance(fig3, go.Figure)
 
 
 def test_chart_plan_factory_with_base_chart_plan(sample_df, valid_chart_code):

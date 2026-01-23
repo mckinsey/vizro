@@ -1,6 +1,7 @@
 """Code powering the plot command."""
 
 import logging
+from collections.abc import Callable
 from typing import Annotated
 
 import autoflake
@@ -133,9 +134,10 @@ class BaseChartPlan(BaseModel):
         imports (list[str]): List of import statements required to render the chart defined by the
             `chart_code` field. Each import statement should be a separate list entry.
         chart_code (str): Python code that generates a plotly `go.Figure` object. Must be wrapped
-            in a function named `custom_chart`, accept a single argument `data_frame` which
+            in a function named `custom_chart`, must have as first argument `data_frame` which
             is a pandas DataFrame, and return a plotly `go.Figure` object. All data used in
-            the chart must be derived from the data_frame argument.
+            the chart must be derived from the data_frame argument. Can have additional arguments, but they must be
+            optional.
     """
 
     chart_type: str = Field(
@@ -200,25 +202,78 @@ class BaseChartPlan(BaseModel):
 
         return unformatted_code
 
-    def get_fig_object(
-        self, data_frame: pd.DataFrame | str, chart_name: str | None = None, vizro: bool = False
-    ) -> go.Figure:
-        """Execute code to obtain the plotly `go.Figure` object. Be sure to check code to be executed before running.
-
-        Args:
-            data_frame: Dataframe or string representation of the dataframe.
-            chart_name: Name of the chart function. If `None`, it remains as `custom_chart`.
-            vizro: Whether to add decorator to make it `vizro-core` compatible.
-
-        Returns:
-            Plotly `go.Figure` object.
-        """
-        chart_name = chart_name or CUSTOM_CHART_NAME
+    def _get_chart_function(self, chart_name: str, vizro: bool) -> Callable:
+        """Execute chart code and return the chart function."""
         code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
         namespace = globals()
         namespace = _exec_code(code_to_execute, namespace)
-        chart = namespace[f"{chart_name}"]
-        return chart(data_frame)
+        return namespace[chart_name]
+
+    @property
+    def chart_function(self) -> Callable[[pd.DataFrame, ...], go.Figure]:
+        """Return a callable function that generates a pure Plotly chart.
+
+        This property returns a reusable function that can be called with a dataframe
+        and optional keyword arguments. The function generates a pure Plotly chart
+        (not Vizro-compatible).
+
+        Returns:
+            A callable function that accepts `data_frame` and `**kwargs` and returns
+            a `go.Figure` object.
+
+        Example:
+            ```python
+            chart_func = result.output.chart_function
+            fig = chart_func(df, x="sepal_width")
+            ```
+        """
+        return self._get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=False)
+
+    @property
+    def vizro_chart_function(self) -> Callable[[pd.DataFrame, ...], go.Figure]:
+        """Return a callable function that generates a Vizro-compatible chart.
+
+        This property returns a reusable function that can be called with a dataframe
+        and optional keyword arguments. The function generates a Vizro-compatible chart
+        with the `@capture("graph")` decorator.
+
+        Returns:
+            A callable function that accepts `data_frame` and `**kwargs` and returns
+            a `go.Figure` object.
+
+        Example:
+            ```python
+            vizro_func = result.output.vizro_chart_function
+            fig = vizro_func(df, x="sepal_width")
+            ```
+        """
+        return self._get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=True)
+
+    def get_chart_function(
+        self, custom_name: str | None = None, vizro: bool = False
+    ) -> Callable[[pd.DataFrame, ...], go.Figure]:
+        """Return a callable function with customizable name and vizro flag.
+
+        This method returns a reusable function that can be called with a dataframe
+        and optional keyword arguments. The function name and Vizro compatibility
+        can be customized.
+
+        Args:
+            custom_name: Name of the chart function. If `None`, it remains as `custom_chart`.
+            vizro: Whether to generate Vizro-compatible code (defaults to `False`).
+
+        Returns:
+            A callable function that accepts `data_frame` and `**kwargs` and returns
+            a `go.Figure` object.
+
+        Example:
+            ```python
+            chart_func = result.output.get_chart_function(custom_name="my_chart", vizro=True)
+            fig = chart_func(df, x="sepal_width")
+            ```
+        """
+        chart_name = custom_name or CUSTOM_CHART_NAME
+        return self._get_chart_function(chart_name=chart_name, vizro=vizro)
 
     @property
     def code(self) -> str:
