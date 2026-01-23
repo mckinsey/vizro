@@ -287,3 +287,9 @@ vm.Graph(
 **Problem**: Pretty but not functional
 
 **Solution**: Form follows function; beauty through clarity
+
+### Custom charts as KPI cards
+
+**Problem**: Model uses custom charts as KPI cards. This often happens when the model needs to do some additional data manipulation that cannot be done with the built-in Vizro functions.
+
+**Solution**: Custom charts are not KPI cards. Instead, the model should use the built-in Vizro functions (`kpi_card` or `kpi_card_reference`) and do data manipulation in the data loading/processing step. The only acceptable exception is when the KPI card is strictly not possible, for example when dynamically showing text as a KPI card.
