@@ -1,0 +1,11 @@
+{
+  "name": "vizro-e2e-flow",
+  "version": "0.1.1",
+  "description": "Build Vizro dashboards from concept to deployment. Enforces a 2-phase workflow covering requirements, layout design, visualization selection, implementation with Python, and testing.",
+  "author": {
+    "name": "Vizro Team",
+    "email": "vizro@mckinsey.com"
+  },
+  "homepage": "https://vizro.readthedocs.io",
+  "repository": "https://github.com/mckinsey/vizro/vizro-e2e-flow"
+}

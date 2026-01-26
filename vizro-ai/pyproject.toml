@@ -11,31 +11,28 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13"
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "pandas",
-  "tabulate",
-  "openai>=1.0.0",
-  "langchain>=0.3.0",
-  "langgraph>=0.1.2",
-  "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
-  "vizro>=0.1.32",
-  "pydantic>=2.7.0",
-  "langchain_openai",  # Base dependency, ie minimum model working
+  "plotly",
   "black",
-  "autoflake"
+  "autoflake",
+  "pydantic-ai-slim>=1.39.0"
 ]
-description = "Vizro-AI is a tool for generating data visualizations"
+description = "Vizro-AI provides pre-configured agents that help with data visualizations"
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro_ai"
 readme = "README.md"
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
-anthropic = ["langchain-anthropic"]  # TODO: decide if we want to use this
-mistral = ["langchain-mistralai>=0.1.13"]  # TODO: decide if we want to use this
+anthropic = ["pydantic-ai-slim[anthropic]"]
+google = ["pydantic-ai-slim[google]"]
+mistral = ["pydantic-ai-slim[mistral]"]
+openai = ["pydantic-ai-slim[openai]"]
 
 [tool.coverage.paths]
 vizro = ["src/vizro_ai"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
@@ -46,7 +43,7 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:"
 ]
-fail_under = 45
+fail_under = 100
 show_missing = true
 skip_covered = true
 
@@ -68,9 +65,8 @@ filterwarnings = [
   # Ignore `Layout` FutureWarning until vizro 0.2.0 released:
   "ignore:The `Layout` model has been renamed `Grid`:FutureWarning",
   "ignore:The `Layout` model has been renamed",
-  # Ignore langgraph.warnings.LangGraphDeprecatedSinceV10: Importing Send from langgraph.constants is deprecated.
-  # Please use 'from langgraph.types import Send' instead. Deprecated in LangGraph V1.0 to be removed in V2.0.
-  "ignore:Importing Send from langgraph.constants is deprecated"
+  # Ignore asyncio event loop deprecation warning from pydantic_ai in Python 3.13+
+  "ignore:There is no current event loop:DeprecationWarning"
 ]
 pythonpath = ["../tools/tests"]
 

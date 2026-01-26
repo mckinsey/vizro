@@ -49,7 +49,7 @@ _DATA_TYPE_DEFINITIONS = {
 
 
 @capture("ag_grid")
-def dash_ag_grid(data_frame: pd.DataFrame, _set_checkboxes: bool = False, **kwargs: Any) -> dag.AgGrid:
+def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
     """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid].
 
     Abstract: Usage documentation
@@ -97,12 +97,6 @@ def dash_ag_grid(data_frame: pd.DataFrame, _set_checkboxes: bool = False, **kwar
             "domLayout": "autoHeight",
             "pagination": True,
             "paginationPageSize": 20,
-            "rowSelection": {
-                "mode": "multiRow",
-                "checkboxes": _set_checkboxes,
-                "headerCheckbox": _set_checkboxes,
-                "enableClickSelection": True,
-            },
         },
         "columnSize": "responsiveSizeToFit",
     }

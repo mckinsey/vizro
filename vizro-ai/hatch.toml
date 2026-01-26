@@ -1,7 +1,7 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -17,19 +17,14 @@ dependencies = [
   "pytest-mock",
   "pytest-rerunfailures",
   "toml",
-  "nbformat>=4.2.0",
   "pyhamcrest",
   "jupyter",
-  "dash[testing]",
-  "chromedriver-autoinstaller>=0.6.4",
-  # "urllib3<2.0.0",  # helps to resolve bug with urllib3 timeout from vizro-ai integration tests: https://bugs.launchpad.net/python-jenkins/+bug/2018567
-  # Below dependencies useful to test different models
-  "langchain-community",
-  "langchain_mistralai",
-  "langchain-anthropic",
-  "langchain-aws",
-  "langchain-google-genai",
-  "pre-commit"
+  "pre-commit",
+  "python-dotenv>=1.0.0",
+  "openai",  # to have an easier time trying out models
+  "anthropic",  # to have an easier time trying out models
+  "vizro",  # to get the full functionality out of vizro-ai
+  "logfire"  # for easy logging and testing, free account suffices
 ]
 installer = "uv"
 
@@ -51,8 +46,7 @@ prep-release = [
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 test = "pytest tests {args}"
 # to run dashboard and plot tests please configure base url and api key for the selected model
-test-e2e-dashboard = "pytest -vs tests/e2e/test_dashboard.py --headless {args}"
-test-e2e-plot = "pytest -vs --reruns 1 tests/e2e/test_plot.py --headless {args}"
+test-e2e-plot = "pytest -vs --reruns 1 tests/e2e/test_chart_agent.py {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
   "coverage run -m pytest tests/unit {args}",
@@ -69,7 +63,8 @@ dependencies = [
   "linkchecker",
   "mkdocs-pycafe",
   "PyGithub",
-  "playwright"
+  "playwright",
+  "click==8.2.1"  # until resolved or we move to Zensical (https://github.com/squidfunk/mkdocs-material/issues/8478)
 ]
 detached = true
 installer = "uv"
@@ -85,7 +80,7 @@ pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "mkdocs serve --open"
 
 [envs.lower-bounds]
-extra-dependencies = ["pydantic==2.11.9"]  # required by langchain>=0.3.0 and openai>=1.108.0
+extra-dependencies = ["pydantic-ai-slim==1.39.0"]
 python = "3.10"
 
 [version]

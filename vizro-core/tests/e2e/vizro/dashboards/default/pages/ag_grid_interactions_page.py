@@ -35,6 +35,7 @@ ag_grid_interactions_page = vm.Page(
                 x="year",
                 y="gdpPercap",
                 markers=True,
+                render_mode="svg",
             ),
         ),
     ],
