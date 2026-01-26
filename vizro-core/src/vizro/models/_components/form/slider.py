@@ -77,7 +77,7 @@ class Slider(VizroBaseModel):
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`."""
+            underlying component may change in the future."""
 
     _dynamic: bool = PrivateAttr(False)
     _inner_component_properties: list[str] = PrivateAttr(dcc.Slider().available_properties)

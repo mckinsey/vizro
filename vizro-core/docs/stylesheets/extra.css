@@ -42,6 +42,27 @@ td:not([class]):not(:last-child) {
   border-right: 1px solid lightgrey;
 }
 
+/* Pydantic field table styling */
+.pydantic-field-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  font-size: 0.8em;
+}
+
+.pydantic-field-table th,
+.pydantic-field-table td {
+  padding: 0.4em 0.8em;
+  text-align: left;
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.pydantic-field-table th {
+  font-weight: 600;
+  background: var(--md-default-bg-color--light);
+}
+
 :root {
   --md-admonition-icon--details: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z"/></svg>');
 }
@@ -106,3 +127,4 @@ td:not([class]):not(:last-child) {
     transform: rotate(360deg);
   }
 }
+

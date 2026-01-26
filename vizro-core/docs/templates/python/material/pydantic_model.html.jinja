@@ -1,0 +1,94 @@
+{% extends "_base/class.html.jinja" %}
+
+{% block contents %}
+  {% block bases %}{{ super() }}{% endblock %}
+  {% block docstring %}{{ super() }}{% endblock %}
+
+  {% block schema scoped %}
+    {% if class.extra.griffe_pydantic.schema %}
+      <details><summary>Show JSON schema:</summary>
+        {{ class.extra.griffe_pydantic.schema | highlight(language="json") }}
+      </details>
+    {% endif %}
+  {% endblock schema %}
+
+  {% block config scoped %}
+    {% if class.extra.griffe_pydantic.config %}
+      <p>Config:</p>
+      <ul>
+        {% for name, value in class.extra.griffe_pydantic.config.items() %}
+          <li><code>{{ name }}</code>: {{ value|string|highlight(language="python", inline=True) }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endblock config %}
+
+{% block fields scoped %}
+  {% with fields = class.extra.griffe_pydantic._stored_fields or class.extra.griffe_pydantic.fields() %}
+      {% if fields %}
+        <p><strong>Fields:</strong></p>
+        <table class="pydantic-field-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for name, field in fields.items() %}
+              <tr class="doc-section-item">
+                <td><code>{{ name }}</code></td>
+                <td>{% with expression = field.annotation %}<code>{% include "expression.html.jinja" with context %}</code>{% endwith %}</td>
+                <td>
+                  {% if field.docstring %}
+                    <div class="doc-md-description">
+                      <p>{{ field.docstring.value }}</p>
+                    </div>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if field.extra.vizro_pydantic and field.extra.vizro_pydantic.default_display is not none %}
+                    <code>{{ field.extra.vizro_pydantic.default_display }}</code>
+                  {% elif field.extra.vizro_pydantic and field.extra.vizro_pydantic.required %}
+                    <em>required</em>
+                  {% elif field.value is not none %}
+                    {{ field.value|string|highlight(language="python", inline=True) }}
+                  {% else %}
+                    <em>required</em>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    {% endwith %}
+  {% endblock fields %}
+
+{% block validators scoped %}
+  {% with validators = class.extra.griffe_pydantic.validators() %}
+      {% if validators %}
+        <p>Validators:</p>
+        <ul>
+        {% for name, validator in validators.items() if not name.startswith("_") %}
+            <li>
+              <code><autoref optional hover identifier="{{ validator.path }}">{{ name }}</autoref></code>
+              {% if validator.extra.griffe_pydantic.targets %}
+                &rarr;
+                {% for target in validator.extra.griffe_pydantic.targets %}
+                  <code><autoref optional hover identifier="{{ target.path }}">{{ target.name }}</autoref></code>
+                  {%- if not loop.last %}, {% endif %}
+                {% endfor %}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  {% endblock validators %}
+
+  {% block source %}{{ super() }}{% endblock %}
+  {% block children %}{{ super() }}{% endblock %}
+{% endblock contents %}

@@ -211,6 +211,7 @@ plugins:
           - pages/explanation/schema.md: "The Vizro schema"
           - pages/explanation/authors.md: "Vizro contributor listing"
   - mkdocstrings:
+      custom_templates: docs/templates
       handlers:
         python:
           options:
@@ -218,7 +219,7 @@ plugins:
             show_source: false #currently doesn't show source at correct level, and not for pydantic models
             docstring_style: google
             merge_init_into_class: true
-            docstring_section_style: list
+            docstring_section_style: table
             separate_signature: true
             unwrap_annotated: true # check effect
             show_symbol_type_heading: true
@@ -232,7 +233,7 @@ plugins:
               warn_unknown_params: false
               returns_named_value: false
             extensions:
-              - docs/griffe_extensions.py:
+              - docs/griffe_extensions.py:DynamicallyInspect:
                   paths:
                     [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
               - griffe_warnings_deprecated:
@@ -240,6 +241,7 @@ plugins:
                   title: Deprecated
               - griffe_pydantic:
                   schema: true
+              - docs/griffe_extensions.py:PydanticDocsCleaner
           paths: [src]
           inventories:
             - https://docs.python.org/3/objects.inv

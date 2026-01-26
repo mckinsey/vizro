@@ -89,7 +89,7 @@ class Graph(VizroBaseModel):
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`."""
+            underlying component may change in the future."""
 
     @field_validator("figure", mode="before")
     @classmethod

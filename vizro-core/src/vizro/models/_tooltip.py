@@ -65,7 +65,7 @@ class Tooltip(VizroBaseModel):
             defaults chosen by the Vizro team. This may have unexpected behavior. Visit the
             [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/tooltip/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and
-            the underlying component may change in the future. Defaults to `{}`."""
+            the underlying component may change in the future."""
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:

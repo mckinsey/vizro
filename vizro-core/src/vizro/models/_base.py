@@ -207,6 +207,10 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
+def _generate_model_id() -> str:
+    return str(uuid.UUID(int=rd.getrandbits(128)))
+
+
 class VizroBaseModel(BaseModel):
     """All Vizro models inherit from this class.
 
@@ -218,7 +222,7 @@ class VizroBaseModel(BaseModel):
     id: Annotated[
         ModelID,
         Field(
-            default_factory=lambda: str(uuid.UUID(int=rd.getrandbits(128))),
+            default_factory=_generate_model_id,
             description="ID to identify model. Must be unique throughout the whole dashboard. "
             "When no ID is chosen, ID will be automatically generated.",
             validate_default=True,

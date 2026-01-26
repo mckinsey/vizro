@@ -105,6 +105,9 @@ out/
 .vscode/
 .cursor/
 
+# Claude Code
+.claude/
+
 # PEP 582
 __pypackages__/
 
