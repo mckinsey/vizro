@@ -14,6 +14,7 @@ from e2e.vizro.paths import (
     graph_axis_value_path,
     kpi_card_path,
     page_title_path,
+    select_all_path,
 )
 from hamcrest import assert_that, equal_to
 from selenium.webdriver import ActionChains, Keys
@@ -795,6 +796,277 @@ def test_set_control_clickmode_aggrid_command_click(dash_br):
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+
+
+def test_set_control_button_none(dash_br):
+    """Test set control with 'None' by clicking button."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_BUTTON_CARD,
+    )
+
+    # click button to set 'None' value
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SET_CONTROL_BUTTON_NONE), 1)
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        select_all_status=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+
+def test_set_control_button_empty_list(dash_br):
+    """Test set control with empty list by clicking button."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_BUTTON_CARD,
+    )
+
+    # click button to set empty list value
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SET_CONTROL_BUTTON_EMPTY_LIST), 1)
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        select_all_status=False,
+        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+
+def test_set_control_card_single_value(dash_br):
+    """Test set control with single value by clicking card."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_BUTTON_CARD,
+    )
+
+    # click card to set 'virginica' value
+    dash_br.multiple_click(f"#{cnst.SET_CONTROL_CARD_SINGLE_VALUE}", 1)
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        select_all_status=False,
+        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+
+
+def test_set_control_card_multi_value(dash_br):
+    """Test set control with multi value by clicking card."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_BUTTON_CARD,
+    )
+
+    # click card to set 'versicolor' and 'virginica' values
+    dash_br.multiple_click(f"#{cnst.SET_CONTROL_CARD_MULTI_VALUE}", 1)
+
+    # check selected values in checklist and radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        select_all_status=False,
+        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+def test_filtered_graph_trigger_filter_for_aggrid(dash_br):
+    """Test filter ag_grid by selecting data in graph."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE,
+    )
+
+    # select versicolor in scatter graph
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID}'] "
+        f"g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
+        0,
+        1,
+    )
+
+    # unselect all in checklist for scatter as a source graph
+    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_GRAPH_SET_CONTROL), 1)
+
+    # check selected value in checklist for targeted aggrid did not change
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL,
+        checklist=True,
+        select_all_status=False,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
+
+def test_filtered_aggrid_trigger_filter_for_aggrid(dash_br):
+    """Test filter ag_grid by selecting data in another aggrid."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE,
+    )
+
+    # navigate to AgGrid tab
+    dash_br.multiple_click("a[role='tab'][class='nav-link']", 1)
+
+    # select versicolor by clicking on cell
+    dash_br.multiple_click(
+        f"div[id='{cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID}'] div[row-index='2']  div[col-id='sepal_length']", 1
+    )
+
+    # unselect all in checklist for aggdrid as a source graph
+    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_AGGRID_SET_CONTROL), 1)
+
+    # check selected value in checklist for targeted aggrid did not change
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL,
+        checklist=True,
+        select_all_status=False,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+def test_self_filtered_graph(dash_br):
+    """Test self filter graph by selecting data in the same graph."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SELF_FILTER_SET_CONTROL_PAGE,
+    )
+
+    # select virginica in scatter graph
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.SCATTER_SET_CONTROL_SELF_FILTER}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
+        0,
+        1,
+    )
+
+    # Check y axis max value is '2.4'
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, axis_value_number="6", axis_value="2.4"),
+        "2.4",
+    )
+
+    # check selected value in checklist
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_SET_CONTROL_SELF_FILTER,
+        checklist=True,
+        select_all_status=False,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+
+    # select virginica in scatter graph
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.SCATTER_SET_CONTROL_SELF_FILTER}'] g[class^='trace']:nth-of-type(1) path:nth-of-type(21)",
+        0,
+        1,
+    )
+    # select virginica in scatter graph
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.SCATTER_SET_CONTROL_SELF_FILTER}'] g[class^='trace']:nth-of-type(1) path:nth-of-type(21)",
+        0,
+        1,
+    )
+    # select virginica in scatter graph
+    dash_br.click_at_coord_fractions(
+        f"div[id='{cnst.SCATTER_SET_CONTROL_SELF_FILTER}'] g[class^='trace']:nth-of-type(1) path:nth-of-type(21)",
+        0,
+        1,
+    )
+
+    # check that all values are selected in checklist
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.CHECKLIST_SET_CONTROL_SELF_FILTER,
+        checklist=True,
+        select_all_status=True,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
             {"value": 3, "selected": True, "value_name": "virginica"},
         ],
     )

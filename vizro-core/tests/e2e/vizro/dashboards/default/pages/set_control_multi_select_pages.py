@@ -89,3 +89,138 @@ cross_filter_multi_select_page = vm.Page(
         ),
     ],
 )
+
+
+button_card_trigger_set_control = vm.Page(
+    title=cnst.SET_CONTROL_BUTTON_CARD,
+    components=[
+        vm.Button(
+            id=cnst.SET_CONTROL_BUTTON_NONE,
+            actions=[
+                set_control(control="chl_bc_filter", value=None),
+                set_control(control="ri_bc_filter", value=None),
+            ],
+        ),
+        vm.Button(
+            id=cnst.SET_CONTROL_BUTTON_EMPTY_LIST,
+            actions=[
+                set_control(control="chl_bc_filter", value=[]),
+                set_control(control="ri_bc_filter", value=[]),
+            ],
+        ),
+        vm.Card(
+            id=cnst.SET_CONTROL_CARD_SINGLE_VALUE,
+            text="Set to 'virginica'",
+            actions=[
+                set_control(control="chl_bc_filter", value=["virginica"]),
+                set_control(control="ri_bc_filter", value=["virginica"]),
+            ],
+        ),
+        vm.Card(
+            id=cnst.SET_CONTROL_CARD_MULTI_VALUE,
+            text="Set to 'virginica' and 'versicolor'",
+            actions=[
+                set_control(control="chl_bc_filter", value=["virginica", "versicolor"]),
+                set_control(control="ri_bc_filter", value=["virginica", "versicolor"]),
+            ],
+        ),
+        vm.AgGrid(
+            id=cnst.TABLE_SET_CONTROL_BUTTON_CARD,
+            figure=dash_ag_grid(iris_unique_species),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id="chl_bc_filter",
+            column="species",
+            targets=[cnst.TABLE_SET_CONTROL_BUTTON_CARD],
+            selector=vm.Checklist(id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD),
+        ),
+        vm.Filter(
+            id="ri_bc_filter",
+            column="species",
+            targets=[cnst.TABLE_SET_CONTROL_BUTTON_CARD],
+            selector=vm.RadioItems(id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD),
+        ),
+    ],
+)
+
+
+filtered_graph_aggrid_trigger_set_control = vm.Page(
+    title=cnst.FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE,
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Graph",
+                    controls=[
+                        vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_FT_GRAPH_SET_CONTROL))
+                    ],
+                    components=[
+                        vm.Graph(
+                            id=cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID,
+                            figure=px.scatter(
+                                iris,
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                custom_data=["species"],
+                            ),
+                            actions=set_control(control="chl_ft_filter", value="species"),
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="AgGrid",
+                    controls=[
+                        vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_FT_AGGRID_SET_CONTROL))
+                    ],
+                    components=[
+                        vm.AgGrid(
+                            id=cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID,
+                            figure=dash_ag_grid(iris_unique_species),
+                            actions=set_control(control="chl_ft_filter", value="species"),
+                        ),
+                    ],
+                ),
+            ]
+        ),
+        vm.AgGrid(id=cnst.TARGETED_AGGRID_FROM_FILTERED_GRAPH, figure=dash_ag_grid(iris)),
+    ],
+    controls=[
+        vm.Filter(
+            id="chl_ft_filter",
+            column="species",
+            targets=[cnst.TARGETED_AGGRID_FROM_FILTERED_GRAPH],
+            selector=vm.Checklist(id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL),
+        ),
+    ],
+)
+
+
+self_filter_set_control_page = vm.Page(
+    title=cnst.SELF_FILTER_SET_CONTROL_PAGE,
+    components=[
+        vm.Graph(
+            id=cnst.SCATTER_SET_CONTROL_SELF_FILTER,
+            figure=px.scatter(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
+                custom_data=["species"],
+            ),
+            actions=[
+                set_control(control="chl_self_filter", value="species"),
+            ],
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id="chl_self_filter",
+            column="species",
+            selector=vm.Checklist(id=cnst.CHECKLIST_SET_CONTROL_SELF_FILTER),
+        ),
+    ],
+)
