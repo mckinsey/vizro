@@ -275,7 +275,7 @@ Although this process for handling dependencies is sufficient to get started wit
 gunicorn app:app --workers 4
 ```
 
-The Gunicorn documentation gives [commonly used arguments](https://docs.gunicorn.org/en/stable/run.html#commands) and advice for setting them. Other than `workers`, the most common argument to specify is `bind`, which makes your app accessible. This is often set as `--bind 0.0.0.0:<port>`. Your hosting provider needs to tell you what the correct port to use is. For example, on Hugging Face it is 7860.
+The Gunicorn documentation gives [commonly used arguments](https://gunicorn.org/run/#commands) and advice for setting them. Other than `workers`, the most common argument to specify is `bind`, which makes your app accessible. This is often set as `--bind 0.0.0.0:<port>`. Your hosting provider needs to tell you what the correct port to use is. For example, on Hugging Face it is 7860.
 
 #### Dockerfile
 
