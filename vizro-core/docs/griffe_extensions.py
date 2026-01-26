@@ -51,7 +51,6 @@ class PydanticDocsCleaner(griffe.Extension):
 
     def _filter_private_attrs(self, cls: griffe.Class) -> None:
         """Filter out private members from a Pydantic model class."""
-
         python_obj = griffe.dynamic_import(cls.path)
         if python_obj is None or not issubclass(python_obj, BaseModel):
             return
@@ -84,7 +83,6 @@ class PydanticDocsCleaner(griffe.Extension):
         so we dynamically import the model and extract defaults from model_fields.
         We also record explicit `required` to distinguish from default=None.
         """
-
         python_obj = griffe.dynamic_import(cls.path)
 
         if python_obj is None or not issubclass(python_obj, BaseModel):
