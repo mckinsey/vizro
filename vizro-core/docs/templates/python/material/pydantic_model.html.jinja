@@ -39,12 +39,14 @@
           <tbody>
             {% for name, field in fields.items() %}
               <tr class="doc-section-item">
-                <td><code>{{ name }}</code></td>
+                <td><code><autoref optional hover identifier="{{ field.path }}">{{ name }}</autoref></code></td>
                 <td>{% with expression = field.annotation %}<code>{% include "expression.html.jinja" with context %}</code>{% endwith %}</td>
                 <td>
                   {% if field.docstring %}
                     <div class="doc-md-description">
-                      <p>{{ field.docstring.value }}</p>
+                      {% with autoref_hook = AutorefsHook(field, config) %}
+                        {{ field.docstring.value|convert_markdown(heading_level, field.path, autoref_hook=autoref_hook) }}
+                      {% endwith %}
                     </div>
                   {% endif %}
                 </td>
