@@ -44,23 +44,23 @@ td:not([class]):not(:last-child) {
 
 /* Pydantic field table styling */
 .pydantic-field-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1em 0;
   border: 1px solid var(--md-default-fg-color--lightest);
+  border-collapse: collapse;
   font-size: 0.8em;
+  margin: 1em 0;
+  width: 100%;
 }
 
 .pydantic-field-table th,
 .pydantic-field-table td {
+  border: 1px solid var(--md-default-fg-color--lightest);
   padding: 0.4em 0.8em;
   text-align: left;
-  border: 1px solid var(--md-default-fg-color--lightest);
 }
 
 .pydantic-field-table th {
-  font-weight: 600;
   background: var(--md-default-bg-color--light);
+  font-weight: 600;
 }
 
 :root {
@@ -127,4 +127,3 @@ td:not([class]):not(:last-child) {
     transform: rotate(360deg);
   }
 }
-
