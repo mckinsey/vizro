@@ -5,6 +5,7 @@ import pytest
 import vizro.plotly.express as px
 
 from vizro_ai.agents.response_models._response_models import (
+    CUSTOM_CHART_NAME,
     BaseChartPlan,
     ChartPlan,
     ChartPlanFactory,
@@ -380,14 +381,14 @@ def {expected_chart_name}(data_frame):
 
         def test_get_chart_function_custom_name(self, chart_plan):
             """Test get_chart_function with custom name."""
-            chart_func = chart_plan.get_chart_function(custom_name="my_custom_chart")
+            chart_func = chart_plan.get_chart_function(chart_name="my_custom_chart", vizro=False)
             assert callable(chart_func)
             fig = chart_func(df)
             assert isinstance(fig, go.Figure)
 
         def test_get_chart_function_vizro_flag(self, chart_plan):
             """Test get_chart_function with vizro flag."""
-            chart_func = chart_plan.get_chart_function(vizro=True)
+            chart_func = chart_plan.get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=True)
             assert callable(chart_func)
             fig = chart_func(df)
             assert isinstance(fig, go.Figure)
@@ -396,7 +397,7 @@ def {expected_chart_name}(data_frame):
 
         def test_get_chart_function_with_kwargs(self, chart_plan_with_title_kwarg):
             """Test get_chart_function returned function with kwargs."""
-            chart_func = chart_plan_with_title_kwarg.get_chart_function(custom_name="test_chart", vizro=False)
+            chart_func = chart_plan_with_title_kwarg.get_chart_function(chart_name="test_chart", vizro=False)
             fig = chart_func(df, title="Custom Title")
             assert isinstance(fig, go.Figure)
             assert fig.layout.title.text == "Custom Title"
@@ -405,7 +406,7 @@ def {expected_chart_name}(data_frame):
             """Test that different chart functions don't interfere with each other."""
             chart_func1 = chart_plan.chart_function
             vizro_func = chart_plan.vizro_chart_function
-            custom_func = chart_plan.get_chart_function(custom_name="different_chart")
+            custom_func = chart_plan.get_chart_function(chart_name="different_chart", vizro=False)
 
             fig1 = chart_func1(df)
             fig2 = vizro_func(df)

@@ -188,13 +188,6 @@ class BaseChartPlan(BaseModel):
 
         return unformatted_code
 
-    def _get_chart_function(self, chart_name: str, vizro: bool) -> Callable:
-        """Execute chart code and return the chart function."""
-        code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
-        namespace = globals()
-        namespace = _exec_code(code_to_execute, namespace)
-        return namespace[chart_name]
-
     @property
     def chart_function(self) -> Callable[..., go.Figure]:
         """Return a callable function that generates a pure Plotly chart.
@@ -208,7 +201,7 @@ class BaseChartPlan(BaseModel):
         Returns:
             A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
         """
-        return self._get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=False)
+        return self.get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=False)
 
     @property
     def vizro_chart_function(self) -> Callable[..., go.Figure]:
@@ -223,9 +216,9 @@ class BaseChartPlan(BaseModel):
         Returns:
             A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
         """
-        return self._get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=True)
+        return self.get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=True)
 
-    def get_chart_function(self, custom_name: str | None = None, vizro: bool = False) -> Callable[..., go.Figure]:
+    def get_chart_function(self, chart_name: str, vizro: bool) -> Callable[..., go.Figure]:
         """Return a callable function with customizable name and vizro flag.
 
         This method returns a reusable function that can be called with a dataframe
@@ -233,7 +226,7 @@ class BaseChartPlan(BaseModel):
         can be customized.
 
         Args:
-            custom_name: Name of the chart function. If `None`, it remains as `custom_chart`.
+            chart_name: Name of the chart function.
             vizro: Whether to generate Vizro-compatible code.
 
         Returns:
@@ -241,12 +234,14 @@ class BaseChartPlan(BaseModel):
 
         Example:
             ```python
-            chart_func = result.output.get_chart_function(custom_name="my_chart", vizro=True)
+            chart_func = result.output.get_chart_function(chart_name="my_chart", vizro=True)
             fig = chart_func(df, x="sepal_width")
             ```
         """
-        chart_name = custom_name or CUSTOM_CHART_NAME
-        return self._get_chart_function(chart_name=chart_name, vizro=vizro)
+        code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
+        namespace = globals()
+        namespace = _exec_code(code_to_execute, namespace)
+        return namespace[chart_name]
 
     @property
     def code(self) -> str:

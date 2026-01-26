@@ -37,7 +37,7 @@ Various method names and the overall API structure have been changed in version 
 | `result_model.get_fig_object(df)`                    | `result_model.chart_function(df)`                                                                                                           |
 | not possible to pass kwargs to the chart function    | `result_model.chart_function(df, **kwargs)` (if the chart function accepts kwargs)                                                          |
 | `result_model.get_fig_object(..., vizro=True)`       | `result_model.vizro_chart_function(...)`                                                                                                    |
-| `result_model.get_fig_object(..., chart_name="...")` | `result_model.get_chart_function(custom_name="...", vizro=True/False)(df)`                                                                  |
+| `result_model.get_fig_object(..., chart_name="...")` | `result_model.get_chart_function(chart_name="...", vizro=True/False)(df)`                                                                   |
 
 ## Why do I get `RuntimeError: This event loop is already running` in Jupyter Notebooks?
 

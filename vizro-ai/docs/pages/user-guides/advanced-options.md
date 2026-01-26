@@ -170,7 +170,7 @@ Returns a reusable callable function that generates a pure Plotly chart (`vizro=
 
 ### `vizro_chart_function` property
 
-Returns a reusable callable function that generates a Vizro-compatible chart (vizro=True). This is a convenience property that internally calls `get_chart_function(vizro=True)`. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function.
+Returns a reusable callable function that generates a Vizro-compatible chart (vizro=True). This is a convenience property that internally calls `get_chart_function(chart_name="custom_chart", vizro=True)`. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function.
 
 **Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
@@ -201,8 +201,8 @@ Returns a reusable callable function with customizable name and vizro flag. This
 
 **Parameters:**
 
-- `custom_name`: Optional name for the chart function (defaults to `custom_chart`)
-- `vizro`: Whether to generate Vizro-compatible code (defaults to `False`)
+- `chart_name`: Name for the chart function
+- `vizro`: Whether to generate Vizro-compatible code
 
 **Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
@@ -215,15 +215,15 @@ Returns a reusable callable function with customizable name and vizro flag. This
         # For model and data setup, see setup note above.
 
         # With custom name
-        chart_func = result.output.get_chart_function(custom_name="my_chart")
+        chart_func = result.output.get_chart_function(chart_name="my_chart", vizro=False)
         fig = chart_func(df)
 
         # With vizro flag
-        vizro_func = result.output.get_chart_function(vizro=True)
+        vizro_func = result.output.get_chart_function(chart_name="custom_chart", vizro=True)
         fig = vizro_func(df)
 
         # Combined: custom name and vizro
-        chart_func = result.output.get_chart_function(custom_name="my_vizro_chart", vizro=True)
+        chart_func = result.output.get_chart_function(chart_name="my_vizro_chart", vizro=True)
         fig = chart_func(df, title="Custom Vizro Chart")
 
         # Reuse with different dataframes
