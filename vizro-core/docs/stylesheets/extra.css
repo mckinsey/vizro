@@ -37,11 +37,6 @@
   --md-code-hl-color: #119bec3e;
 }
 
-.md-typeset th,
-td:not([class]):not(:last-child) {
-  border-right: 1px solid lightgrey;
-}
-
 /* Pydantic field table styling */
 .pydantic-field-table {
   border: 1px solid var(--md-default-fg-color--lightest);
@@ -61,6 +56,11 @@ td:not([class]):not(:last-child) {
 .pydantic-field-table th {
   background: var(--md-default-bg-color--light);
   font-weight: 600;
+}
+
+.md-typeset th,
+td:not([class]):not(:last-child) {
+  border-right: 1px solid lightgrey;
 }
 
 :root {
