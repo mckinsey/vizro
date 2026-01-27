@@ -1,16 +1,16 @@
 # Vizro-AI
 
-!!! warning "Vizro-AI has been replaced by Vizro-MCP"
+!!! warning "Vizro-MCP has replaced the dashboard generation functionality of Vizro-AI"
 
-    Vizro-AI dashboard generation is no longer actively developed and is superseded by [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). Vizro-AI supports only chart generation from version 0.4.0.
+    Vizro-AI dashboard generation is no longer actively developed and is superseded by [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). Vizro-AI supports only chart generation from version `0.4.0`.
 
-    **For chart and dashboard generation, we recommend using [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). It doesn’t require an API key and works with familiar LLM applications like VS Code, Cursor, or Claude Desktop, making it simpler to use.**
+Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so you can use instructions in English, or other languages, to effortlessly create interactive charts.
 
-Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so you can use instructions in English, or other languages, to effortlessly create interactive charts and dashboards.
+Built on [Pydantic AI](https://ai.pydantic.dev/), Vizro-AI provides a flexible agent-based architecture that supports async runs, streaming, dependency injection, and integration with [the A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/). The `chart_agent` can be customized and extended just like any Pydantic AI agent.
 
-If you're new to coding, Vizro-AI simplifies both the creation of charts with [Plotly](https://plotly.com/python/) and their layout upon an interactive and easily-distributed dashboard.
+If you're new to coding, Vizro-AI simplifies the creation of charts with [Plotly](https://plotly.com/python/).
 
-Even if you are an experienced data practitioner, Vizro-AI optimizes how you create visually appealing layouts to present detailed insights about your data.
+Even if you are an experienced data practitioner, Vizro-AI optimizes how you create visually appealing charts to present detailed insights about your data.
 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif" alt="Gif to demonstrate vizro-ai">
 
@@ -22,21 +22,21 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md)
 
-    [:octicons-arrow-right-24: How to run Vizro-AI](pages/user-guides/run-vizro-ai.md)
+    [:octicons-arrow-right-24: Vizro-AI installation](pages/user-guides/install.md)
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
     ---
 
-    [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)
+    [:octicons-arrow-right-24: Vizro-AI advanced usage and options](pages/user-guides/advanced-options.md)
 
-    [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)
+    [:octicons-arrow-right-24: Add charts to a Vizro dashboard](pages/user-guides/add-generated-chart-usecase.md)
 
 - :fontawesome-solid-book-open-reader:{ .lg .middle } __Find out more__
 
     ---
 
-    [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md)
+    [:octicons-arrow-right-24: FAQs and migration guide](pages/explanation/faq.md)
 
     [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)
 
@@ -46,7 +46,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     [:new: Agent skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
 
-    [:new: Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
+    [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
 
     [:octicons-arrow-right-24: Vizro documentation](https://vizro.readthedocs.io/)
 
