@@ -38,6 +38,6 @@ page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page], title="Scratch Dev")
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)
