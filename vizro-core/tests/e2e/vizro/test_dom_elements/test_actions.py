@@ -6,7 +6,12 @@ from e2e.vizro.checkers import (
     check_selected_categorical_component,
     check_selected_dropdown,
 )
-from e2e.vizro.navigation import accordion_select, hover_over_element_by_css_selector_selenium, page_select
+from e2e.vizro.navigation import (
+    accordion_select,
+    hover_over_element_by_css_selector_selenium,
+    modifier_click,
+    page_select,
+)
 from e2e.vizro.paths import (
     button_id_path,
     categorical_components_value_path,
@@ -14,10 +19,13 @@ from e2e.vizro.paths import (
     graph_axis_value_path,
     kpi_card_path,
     page_title_path,
+    scatter_point_path,
     select_all_path,
+    table_ag_grid_cell_path_by_row,
+    table_ag_grid_checkbox_path_by_row,
 )
 from hamcrest import assert_that, equal_to
-from selenium.webdriver import ActionChains, Keys
+from selenium.webdriver import Keys
 
 
 def test_export_data_no_controls(dash_br):
@@ -90,9 +98,7 @@ def test_set_control_cross_filter_graph(dash_br):
 
     # click on the 'versicolor' data in scatter graph and check result for box graph
     dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_CROSS_FILTER_ID}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(20)",
-        0,
-        1,
+        scatter_point_path(cnst.SCATTER_SET_CONTROL_CROSS_FILTER_ID, point_number=20), 0, 1
     )
 
     # Check y axis max value is '1.8'
@@ -122,14 +128,12 @@ def test_set_control_cross_filter_ag_grid(dash_br):
 
     # check if column 'country' is available
     dash_br.wait_for_element(
-        f"div[id='{cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID}'] div:nth-of-type(1) div[col-id='country']"
+        table_ag_grid_cell_path_by_row(cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID, row_index=0, col_id="country")
     )
 
     # click on Albania country
     dash_br.multiple_click(
-        f"div[id='{cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID}'] div[class='ag-center-cols-container'] "
-        f"div:nth-of-type(2) div[col-id='country']",
-        1,
+        table_ag_grid_cell_path_by_row(cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID, row_index=1, col_id="country"), 1
     )
 
     # Check y axis max value is '50k'
@@ -279,9 +283,7 @@ def test_drill_through_filter_graph(dash_br):
 
     # click on the 'versicolor' data in scatter graph
     dash_br.click_at_coord_fractions(
-        f"#{cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_SOURCE_ID} g[class^='trace']:nth-of-type(2) path:nth-of-type(20)",
-        0,
-        1,
+        scatter_point_path(cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_SOURCE_ID, point_number=20), 0, 1
     )
 
     # check that new page is opened
@@ -291,7 +293,6 @@ def test_drill_through_filter_graph(dash_br):
     check_selected_categorical_component(
         dash_br,
         component_id=cnst.CHECKLIST_DRILL_THROUGH_FILTER_GRAPH_ID,
-        select_all_status=False,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -318,10 +319,7 @@ def test_drill_through_parameter_graph(dash_br):
 
     # click on the 'versicolor' data in scatter graph
     dash_br.click_at_coord_fractions(
-        f"#{cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE_ID} "
-        f"g[class^='trace']:nth-of-type(2) path:nth-of-type(20)",
-        0,
-        1,
+        scatter_point_path(cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE_ID, point_number=20), 0, 1
     )
 
     # check that new page is opened
@@ -352,14 +350,12 @@ def test_drill_through_filter_ag_grid(dash_br):
 
     # check if column 'Sepal_length' is available
     dash_br.wait_for_element(
-        f"div[id='{cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='sepal_length']"
+        table_ag_grid_cell_path_by_row(cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID, row_index=0, col_id="sepal_length")
     )
 
     # click on the 'versicolor' data in ag_grid
     dash_br.multiple_click(
-        f"div[id='{cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID}'] div[class='ag-center-cols-container'] "
-        f"div:nth-of-type(2) div[col-id='species']",
-        1,
+        table_ag_grid_cell_path_by_row(cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID, row_index=1, col_id="species"), 1
     )
 
     # check that new page is opened
@@ -395,9 +391,7 @@ def test_drill_down_graph(dash_br):
     )
 
     # click on the 'versicolor' data in scatter graph
-    dash_br.click_at_coord_fractions(
-        f"#{cnst.SCATTER_DRILL_DOWN_GRAPH_ID} g[class^='trace']:nth-of-type(2) path:nth-of-type(20)", 0, 1
-    )
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_DRILL_DOWN_GRAPH_ID, point_number=20), 0, 1)
 
     # Check y axis max value is '7'
     dash_br.wait_for_text_to_equal(
@@ -462,14 +456,16 @@ def test_ag_grid_underlying_id_shortcuts(dash_br):
 
     # check if column 'Sepal_length' is available in ag-grid
     dash_br.wait_for_element(
-        f"div[id='{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID}'] "
-        f"div:nth-of-type(1) div[col-id='sepal_length']"
+        table_ag_grid_cell_path_by_row(
+            cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID, row_index=0, col_id="sepal_length"
+        )
     )
 
     # click on 'Sepal_length = 4.9' ag-grid cell
     dash_br.multiple_click(
-        f"div[id='{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID}'] div[class='ag-center-cols-container'] "
-        f"div:nth-of-type(2) div[col-id='sepal_length']",
+        table_ag_grid_cell_path_by_row(
+            cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID, row_index=1, col_id="sepal_length"
+        ),
         1,
     )
 
@@ -517,18 +513,12 @@ def test_set_control_clickmode_event_select(dash_br):
     )
 
     # select virginica
-    dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
-        0,
-        1,
-    )
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 1)
 
     # select versicolor with SHIFT key
-    ActionChains(dash_br.driver).key_down(Keys.SHIFT).click(
-        dash_br.find_element(
-            f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(22)"
-        ),
-    ).key_up(Keys.SHIFT).perform()
+    modifier_click(
+        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=22), key=Keys.SHIFT
+    )
 
     # Check y axis max value is '2.4'
     dash_br.wait_for_text_to_equal(
@@ -560,16 +550,8 @@ def test_set_control_clickmode_event_select(dash_br):
     )
 
     # unselect all values
-    dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
-        0,
-        1,
-    )
-    dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
-        0,
-        1,
-    )
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 1)
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 1)
 
     # check all values are selected for checklist and setosa is selected for radioitems
     check_selected_categorical_component(
@@ -604,11 +586,7 @@ def test_set_control_clickmode_event(dash_br):
     )
 
     # select virginica
-    dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
-        0,
-        1,
-    )
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 1)
 
     # Check y axis max value is '2.4'
     dash_br.wait_for_text_to_equal(
@@ -640,11 +618,9 @@ def test_set_control_clickmode_event(dash_br):
     )
 
     # select versicolor with SHIFT key
-    ActionChains(dash_br.driver).key_down(Keys.SHIFT).click(
-        dash_br.find_element(
-            f"div[id='{cnst.SCATTER_SET_CONTROL_EVENT_SELECT}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(22)"
-        ),
-    ).key_up(Keys.SHIFT).perform()
+    modifier_click(
+        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=22), key=Keys.SHIFT
+    )
 
     # check that only versicolor is selected in checklist and radioitems
     check_selected_categorical_component(
@@ -677,12 +653,8 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
     )
 
     # select setosa and versicolor in ag_grid with checkbox click
-    dash_br.multiple_click(
-        f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='0']  input.ag-checkbox-input", 1
-    )
-    dash_br.multiple_click(
-        f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='1']  input.ag-checkbox-input", 1
-    )
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=0), 1)
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=1), 1)
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
@@ -706,9 +678,7 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
     )
 
     # unselect setosa in ag_grid with checkbox click
-    dash_br.multiple_click(
-        f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='0']  input.ag-checkbox-input", 1
-    )
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=0), 1)
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
@@ -742,14 +712,16 @@ def test_set_control_clickmode_aggrid_command_click(dash_br):
 
     # select setosa by clicking on cell
     dash_br.multiple_click(
-        f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='0']  div[col-id='sepal_length']", 1
+        table_ag_grid_cell_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=0, col_id="sepal_length"), 1
     )
     # select versicolor with COMMAND key
-    ActionChains(dash_br.driver).key_down(Keys.COMMAND).click(
-        dash_br.find_element(
-            f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='2']  div[col-id='sepal_length']"
+    modifier_click(
+        dash_br,
+        selector=table_ag_grid_cell_path_by_row(
+            cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2, col_id="sepal_length"
         ),
-    ).key_up(Keys.COMMAND).perform()
+        key=Keys.COMMAND,
+    )
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
@@ -773,11 +745,13 @@ def test_set_control_clickmode_aggrid_command_click(dash_br):
     )
 
     # unselect setosa with COMMAND key
-    ActionChains(dash_br.driver).key_down(Keys.COMMAND).click(
-        dash_br.find_element(
-            f"div[id='{cnst.TABLE_SET_CONTROL_MULTI_SELECT}'] div[row-index='0']  div[col-id='sepal_length']"
+    modifier_click(
+        dash_br,
+        selector=table_ag_grid_cell_path_by_row(
+            cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=0, col_id="sepal_length"
         ),
-    ).key_up(Keys.COMMAND).perform()
+        key=Keys.COMMAND,
+    )
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
@@ -850,7 +824,6 @@ def test_set_control_button_empty_list(dash_br):
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        select_all_status=False,
         component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -884,7 +857,6 @@ def test_set_control_card_single_value(dash_br):
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        select_all_status=False,
         component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -918,7 +890,6 @@ def test_set_control_card_multi_value(dash_br):
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        select_all_status=False,
         component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -948,10 +919,7 @@ def test_filtered_graph_trigger_filter_for_aggrid(dash_br):
 
     # select versicolor in scatter graph
     dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID}'] "
-        f"g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
-        0,
-        1,
+        scatter_point_path(cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID, point_number=21), 0, 1
     )
 
     # unselect all in checklist for scatter as a source graph
@@ -962,7 +930,6 @@ def test_filtered_graph_trigger_filter_for_aggrid(dash_br):
         dash_br,
         component_id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL,
         checklist=True,
-        select_all_status=False,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -984,7 +951,8 @@ def test_filtered_aggrid_trigger_filter_for_aggrid(dash_br):
 
     # select versicolor by clicking on cell
     dash_br.multiple_click(
-        f"div[id='{cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID}'] div[row-index='2']  div[col-id='sepal_length']", 1
+        table_ag_grid_cell_path_by_row(cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID, row_index=2, col_id="sepal_length"),
+        1,
     )
 
     # unselect all in checklist for aggdrid as a source graph
@@ -995,7 +963,6 @@ def test_filtered_aggrid_trigger_filter_for_aggrid(dash_br):
         dash_br,
         component_id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL,
         checklist=True,
-        select_all_status=False,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -1014,11 +981,7 @@ def test_self_filtered_graph(dash_br):
     )
 
     # select virginica in scatter graph
-    dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_SELF_FILTER}'] g[class^='trace']:nth-of-type(2) path:nth-of-type(21)",
-        0,
-        1,
-    )
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21), 0, 1)
 
     # Check y axis max value is '2.4'
     dash_br.wait_for_text_to_equal(
@@ -1031,7 +994,6 @@ def test_self_filtered_graph(dash_br):
         dash_br,
         component_id=cnst.CHECKLIST_SET_CONTROL_SELF_FILTER,
         checklist=True,
-        select_all_status=False,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -1041,21 +1003,14 @@ def test_self_filtered_graph(dash_br):
 
     # select virginica in scatter graph
     dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_SELF_FILTER}'] g[class^='trace']:nth-of-type(1) path:nth-of-type(21)",
-        0,
-        1,
+        scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 1
     )
-    # select virginica in scatter graph
     dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_SELF_FILTER}'] g[class^='trace']:nth-of-type(1) path:nth-of-type(21)",
-        0,
-        1,
+        scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 1
     )
-    # select virginica in scatter graph
+    # unselect virginica in scatter graph
     dash_br.click_at_coord_fractions(
-        f"div[id='{cnst.SCATTER_SET_CONTROL_SELF_FILTER}'] g[class^='trace']:nth-of-type(1) path:nth-of-type(21)",
-        0,
-        1,
+        scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 1
     )
 
     # check that all values are selected in checklist
