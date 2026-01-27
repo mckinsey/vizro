@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix theme-specific logo visibility when using `logo_dark` and `logo_light` assets. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fix theme-specific logo visibility when using `logo_dark` and `logo_light` assets. ([#1559](https://github.com/mckinsey/vizro/pull/1559))
 
 <!--
 ### Security
