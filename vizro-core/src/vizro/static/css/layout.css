@@ -174,12 +174,16 @@ a:has(#logo-dark),
   display: none;
 }
 
+[data-bs-theme="dark"] a:has(#logo-dark),
 [data-bs-theme="dark"] #logo-dark {
-  display: inline;
+  align-items: center;
+  display: flex;
 }
 
+[data-bs-theme="light"] a:has(#logo-light),
 [data-bs-theme="light"] #logo-light {
-  display: inline;
+  align-items: center;
+  display: flex;
 }
 
 #collapse-icon.material-symbols-outlined {
