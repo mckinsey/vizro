@@ -58,7 +58,7 @@ page1 = vm.Page(
 
 page2 = vm.Page(
     title="Grid",
-    layout=vm.Layout(grid=[[0, -1], [1, 2], [3, 3]]),
+    layout=vm.Grid(grid=[[0, -1], [1, 2], [3, 3]]),
     components=[
         vm.Card(text="""# Good morning!"""),
         vm.Graph(
