@@ -126,6 +126,7 @@ def test_export_action_page(dash_br_driver):
 @image_assertion
 def test_export_action_page_dark_theme(dash_br_driver):
     graph_load_waiter(dash_br_driver)
+    # Change to dark theme, then take the screenshot
     dash_br_driver.multiple_click(theme_toggle_path(), 1, delay=1)
 
 
