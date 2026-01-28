@@ -1,8 +1,9 @@
 import re
-from typing import Literal
+from typing import Annotated, Any, Literal
 
-from dash import html
+import dash_mantine_components as dmc
 from pydantic import Field
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro._constants import GAP_DEFAULT
 from vizro.models import VizroBaseModel
@@ -23,6 +24,11 @@ class Flex(VizroBaseModel):
         wrap (bool): Determines whether flex items are forced onto a single line or can wrap onto multiple lines.
             If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines.
             Defaults to `False`.
+        extra (dict[str, Any]): Extra keyword arguments that are passed to `dmc.Flex` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dmc documentation](https://www.dash-mantine-components.com/components/flex)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
 
     """
 
@@ -43,15 +49,31 @@ class Flex(VizroBaseModel):
         description="Determines whether flex items are forced onto a single line or can wrap onto multiple lines. If "
         "`False`, all items will be on one line. If `True`, items will wrap onto multiple lines. Defaults to `False`.",
     )
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dmc.Flex` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dmc documentation](https://www.dash-mantine-components.com/components/flex)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
 
     @_log_call
     def build(self):
         """Creates empty flex container to later position components in."""
-        bs_wrap = "flex-wrap" if self.wrap else "flex-nowrap"
-        component_container = html.Div(
-            [],
-            style={"gap": self.gap},
-            className=f"d-flex flex-{self.direction} {bs_wrap}",
-            id=self.id,
-        )
-        return component_container
+        wrap_value = "wrap" if self.wrap else "nowrap"
+
+        defaults = {
+            "children": [],
+            "gap": self.gap,
+            "direction": self.direction,
+            "wrap": wrap_value,
+            "id": self.id,
+        }
+
+        return dmc.Flex(**(defaults | self.extra))
