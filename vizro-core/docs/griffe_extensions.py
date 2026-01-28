@@ -136,7 +136,6 @@ class PydanticDocsCleaner(griffe.Extension):
             # Remove from members (prevents TOC listing)
             for name in fields_to_remove:
                 cls.del_member(name)
-                pydantic_logger.info(f"Excluded field '{name}' from TOC for {cls.path}")
 
     def on_package(self, *, pkg: griffe.Module, **kwargs):
         """Process all classes after package is fully loaded (after griffe_pydantic runs)."""

@@ -220,7 +220,7 @@ plugins:
             merge_init_into_class: true
             docstring_section_style: table
             separate_signature: true
-            unwrap_annotated: true # check effect
+            unwrap_annotated: true
             show_symbol_type_heading: true
             show_symbol_type_toc: false
             signature_crossrefs: true
