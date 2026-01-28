@@ -8,6 +8,42 @@ from vizro.tables import dash_ag_grid, dash_data_table
 
 tips = px.data.tips()
 
+
+justify_options = [
+    "flex-start",
+    "flex-end",
+    "center",
+    "space-between",
+    "space-around",
+    "space-evenly",
+]
+
+align_options = [
+    "flex-start",
+    "flex-end",
+    "center",
+    "stretch"
+]
+
+
+
+page0 = vm.Page(
+    title="Different justification option",
+    layout=vm.Flex(direction="column"),
+    components = [
+        vm.Container(
+            layout=vm.Flex(
+                direction="row",
+                extra={"justify": justify, "align": align}
+            ),
+            title=f"{justify=} {align=}",
+            components=[vm.Card(text="text")] * 2 + [vm.Card(text="text\n\ntext")]
+        )
+        for justify in justify_options for align in align_options
+    ]
+)
+
+
 page1 = vm.Page(
     title="Default",
     components=[
@@ -368,6 +404,7 @@ page27 = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[
+        page0,
         page1,
         page2,
         page3,
