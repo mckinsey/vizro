@@ -608,6 +608,81 @@ In this example, there isn’t enough space to fit all three graphs in a single 
 
         [![FlexAdvanced]][flexadvanced]
 
+### Further customization with the `extra` argument
+
+For more advanced control over the flex layout behavior, you can use the `extra` argument to pass additional properties to the underlying `dmc.Flex` component. This is particularly useful for controlling alignment and justification of flex items.
+
+Common properties you can pass through `extra` include:
+
+- `justify`: Controls how flex items are positioned along the main axis (e.g., `"flex-start"`, `"center"`, `"space-between"`, `"space-evenly"`)
+- `align`: Controls how flex items are positioned along the cross axis (e.g., `"flex-start"`, `"center"`, `"flex-end"`, `"stretch"`)
+
+Visit the [dmc.Flex documentation](https://www.dash-mantine-components.com/components/flex) to see all available properties.
+
+!!! warning
+
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
+
+!!! example "Flex with justify and align"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="6"}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Flex with custom alignment",
+            layout=vm.Flex(direction="row", wrap=True, extra={"justify": "space-between", "align": "stretch"}),
+            components=[
+                vm.Card(text="Card 1", extra={"style": {"width": "200px"}}),
+                vm.Card(text="Card 2", extra={"style": {"width": "200px"}}),
+                vm.Card(text="Card 3", extra={"style": {"width": "200px"}}),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```{.yaml hl_lines="6-9"}
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Flex with custom alignment
+            layout:
+              type: flex
+              direction: row
+              wrap: true
+              extra:
+                justify: space-between
+                align: stretch
+            components:
+              - type: card
+                text: Card 1
+                extra:
+                  style:
+                    width: 200px
+              - type: card
+                text: Card 2
+                extra:
+                  style:
+                    width: 200px
+              - type: card
+                text: Card 3
+                extra:
+                  style:
+                    width: 200px
+        ```
+
+    === "Result"
+
+        [![FlexExtra]][flexextra]
+
+The cards will be distributed with equal space between them (`justify="space-between"`) and stretched to fill the container height (`align="stretch"`).
+
 ### Change the size of flex items
 
 There may be times when resizing your flex items is necessary, such as when designing for different screen sizes or combining elements with diverse content types (e.g. charts, text, or images).
@@ -822,6 +897,7 @@ In general, any arbitrarily granular layout can already be achieved using either
 [flexadvanced]: ../../assets/user_guides/layout/flex_advanced.png
 [flexbasic]: ../../assets/user_guides/layout/flex_basic.png
 [flexbasicgridcomparison]: ../../assets/user_guides/layout/flex_basic_grid_comparison.png
+[flexextra]: ../../assets/user_guides/layout/flex_extra.png
 [flexgridcombined]: ../../assets/user_guides/layout/flex_with_grid_combined.png
 [flexitemsizearg]: ../../assets/user_guides/layout/flex_item_size_args.png
 [flexitemsizecss]: ../../assets/user_guides/layout/flex_item_size_css.png
