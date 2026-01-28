@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from pydantic.fields import FieldInfo, PydanticUndefined
 
 logger = griffe.get_logger("griffe_dynamically_inspect")
-pydantic_logger = griffe.get_logger("griffe_pydantic_docs")
+pydantic_logger = griffe.get_logger("griffe_pydantic_docs_cleaner")
 
 
 class DynamicallyInspect(griffe.Extension):
