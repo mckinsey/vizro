@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.4.0'></a>
+
+# 0.4.0 — 2026-01-26
+
+## Highlights ✨
+
+- Complete rewrite of Vizro-AI. It is now based on Pydantic AI and supports async execution, streaming, dependency injection, and integration with the A2A protocol. See the [docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/) for more details and a [migration guide for versions prior to `0.4.0`](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#migration-guide-for-versions-prior-to-040). ([#1533](https://github.com/mckinsey/vizro/pull/1533))
+
 <a id='changelog-0.3.8'></a>
 
 # 0.3.8 — 2026-01-05
