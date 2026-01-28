@@ -16,18 +16,15 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add `extra` argument to `Flex` model to enable passing additional properties (e.g., `justify`, `align`) to the underlying `dmc.Flex` component. ([#1561](https://github.com/mckinsey/vizro/pull/1561))
 
--->
-<!--
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Switch `Flex` model implementation from Bootstrap-based `html.Div` to `dmc.Flex` component from dash-mantine-components. The public API (`direction`, `gap`, `wrap`) remains unchanged. ([#1561](https://github.com/mckinsey/vizro/pull/1561))
 
--->
 <!--
 ### Deprecated
 
