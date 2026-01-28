@@ -37,6 +37,27 @@
   --md-code-hl-color: #119bec3e;
 }
 
+/* Pydantic field table styling */
+.pydantic-field-table {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-collapse: collapse;
+  font-size: 0.8em;
+  margin: 1em 0;
+  width: 100%;
+}
+
+.pydantic-field-table th,
+.pydantic-field-table td {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  padding: 0.4em 0.8em;
+  text-align: left;
+}
+
+.pydantic-field-table th {
+  background: var(--md-default-bg-color--light);
+  font-weight: 600;
+}
+
 .md-typeset th,
 td:not([class]):not(:last-child) {
   border-right: 1px solid lightgrey;

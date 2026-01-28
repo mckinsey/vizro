@@ -27,11 +27,6 @@ class NavBar(VizroBaseModel):
     Abstract: Usage documentation
         [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)
 
-    Args:
-        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
-            Defaults to `{}`.
-        items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
-
     """
 
     type: Literal["nav_bar"] = "nav_bar"

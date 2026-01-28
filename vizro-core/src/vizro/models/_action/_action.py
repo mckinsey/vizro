@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
-from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
+from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, ValidationInfo, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -436,13 +436,6 @@ class Action(_BaseAction):
     Abstract: Usage documentation
         [How to create custom actions](../user-guides/custom-actions.md)
 
-    Args:
-        function (CapturedCallable): Custom action function.
-        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
-            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
-            deprecations.md#action-model-inputs-argument).
-        outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -472,7 +465,7 @@ class Action(_BaseAction):
         Field(
             default=[],
             description="""List of inputs provided to the action function. Each input can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
             ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
             deprecations.md#action-model-inputs-argument).""",
         ),
@@ -514,7 +507,10 @@ class Action(_BaseAction):
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy
 
-    _validate_function = field_validator("function", mode="before")(_validate_captured_callable)
+    @field_validator("function", mode="before")
+    @classmethod
+    def _validate_function(cls, v: Any, info: ValidationInfo):
+        return _validate_captured_callable(cls, v, info)
 
     @property
     def _parameters(self) -> set[str]:

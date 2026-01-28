@@ -8,7 +8,6 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
-    validate_options_dict,
     validate_value,
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
@@ -25,19 +24,6 @@ class RadioItems(VizroBaseModel):
     Abstract: Usage documentation
         [How to use categorical selectors](../user-guides/selectors.md/#categorical-selectors)
 
-    Args:
-        options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (SingleValueType | None): See [`SingleValueType`][vizro.models.types.SingleValueType].
-            Defaults to `None`.
-        title (str): Title to be displayed. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["radio_items"] = "radio_items"
@@ -52,7 +38,7 @@ class RadioItems(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
@@ -61,21 +47,22 @@ class RadioItems(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
             ),
         ]
     ]
+    # Using the description field does not show the below in rendered docs
+    """Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future."""
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
     _inner_component_properties: list[str] = PrivateAttr(dbc.RadioItems().available_properties)
 
     # Reused validators
-    _validate_options = model_validator(mode="before")(validate_options_dict)
+    # _validate_options = model_validator(mode="before")(validate_options_dict)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

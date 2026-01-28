@@ -8,7 +8,6 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
-    validate_options_dict,
     validate_value,
 )
 from vizro.models._models_utils import (
@@ -28,21 +27,6 @@ class Checklist(VizroBaseModel):
     Abstract: Usage documentation
         [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
 
-    Args:
-        options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (MultiValueType | None): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to
-            `None`.
-        title (str): Title to be displayed. Defaults to `""`.
-        show_select_all (bool): Whether to display the 'Select All' option that allows users to select or
-            deselect all available options with a single click. Defaults to `True`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["checklist"] = "checklist"
@@ -63,7 +47,7 @@ class Checklist(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
@@ -72,21 +56,22 @@ class Checklist(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
             ),
         ]
     ]
+    # Using the description field does not show the below in rendered docs
+    """Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/input/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future."""
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
     _inner_component_properties: list[str] = PrivateAttr(dbc.Checklist().available_properties)
 
     # Reused validators
-    _validate_options = model_validator(mode="before")(validate_options_dict)
+    # _validate_options = model_validator(mode="before")(validate_options_dict)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

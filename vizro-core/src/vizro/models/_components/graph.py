@@ -8,7 +8,7 @@ from box import Box, BoxList
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, ValidationInfo, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested
@@ -41,25 +41,6 @@ class Graph(VizroBaseModel):
     Abstract: Usage documentation
         [How to use graphs](../user-guides/graph.md)
 
-    Args:
-        figure (CapturedCallable): Function that returns a graph. Either use
-            [`vizro.plotly.express`](../user-guides/graph.md) or see
-            [`CapturedCallable`][vizro.models.types.CapturedCallable].
-        title (str): Title of the `Graph`. Defaults to `""`.
-        header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["graph"] = "graph"
@@ -91,7 +72,7 @@ class Graph(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
@@ -100,16 +81,20 @@ class Graph(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
             ),
         ]
     ]
+    # Using the description field does not show the below in rendered docs
+    """Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future."""
 
-    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
+    @field_validator("figure", mode="before")
+    @classmethod
+    def _validate_figure(cls, v: Any, info: ValidationInfo):
+        return _validate_captured_callable(cls, v, info)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

@@ -171,13 +171,6 @@ class Grid(VizroBaseModel):
     Abstract: Usage documentation
         [How to use the Grid layout](../user-guides/layouts.md#grid-layout)
 
-    Args:
-        grid (list[list[int]]): Grid specification to arrange components on screen.
-        row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
-        col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
-        row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.
-        col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.
-
     """
 
     type: Literal["grid"] = "grid"
@@ -188,22 +181,22 @@ class Grid(VizroBaseModel):
     ]
     row_gap: str = Field(
         default=GAP_DEFAULT,
-        description="Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+        description="Specifies the gap between rows. Allowed units: `px`, `rem`, `em`, or `%`.",
         pattern=re.compile(r"^\d+(px|rem|em|%)$"),
     )
     col_gap: str = Field(
         default=GAP_DEFAULT,
-        description="Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+        description="Specifies the gap between columns. Allowed units: `px`, `rem`, `em`, or `%`.",
         pattern=re.compile(r"^\d+(px|rem|em|%)$"),
     )
     row_min_height: str = Field(
         default=MIN_DEFAULT,
-        description="Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+        description="Minimum row height in px. Allowed units: `px`, `rem`, `em`, or `%`.",
         pattern=re.compile(r"^\d+(px|rem|em|%)$"),
     )
     col_min_width: str = Field(
         default=MIN_DEFAULT,
-        description="Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+        description="Minimum column width in px. Allowed units: `px`, `rem`, `em`, or `%`.",
         pattern=re.compile(r"^\d+(px|rem|em|%)$"),
     )
     _component_grid_lines: list[ColRowGridLines] | None = PrivateAttr()

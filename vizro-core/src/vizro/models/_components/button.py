@@ -17,21 +17,6 @@ class Button(VizroBaseModel):
     Abstract: Usage documentation
         [How to use buttons](../user-guides/button.md)
 
-    Args:
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
-        text (str): Text to be displayed on button. Defaults to `"Click me!"`.
-        href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
-            `filled` or `outlined`. Defaults to `filled`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the button text.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["button"] = "button"
@@ -45,8 +30,7 @@ class Button(VizroBaseModel):
     actions: ActionsType = []
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="filled",
-        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
-        "Defaults to `filled`.",
+        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.",
     )
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
@@ -58,7 +42,7 @@ class Button(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the button text.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     extra: SkipJsonSchema[
@@ -66,17 +50,19 @@ class Button(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dbc.Button` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
             ),
         ]
     ]
+    # Using the description field does not show the below in rendered docs
+    """Extra keyword arguments that are passed to `dbc.Button` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/button/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future."""
 
     @model_validator(mode="after")
     def validate_text_and_icon(self):
+        """Validate that either `text` or `icon` argument is provided."""
         if not self.text and not self.icon:
             raise ValueError("You must provide either the `text` or `icon` argument.")
 
@@ -84,6 +70,7 @@ class Button(VizroBaseModel):
 
     @model_validator(mode="after")
     def validate_href_and_actions(self):
+        """Validate that `href` and `actions` are not defined together."""
         if self.href and self.actions:
             raise ValueError("Button cannot have both `href` and `actions` defined.")
 

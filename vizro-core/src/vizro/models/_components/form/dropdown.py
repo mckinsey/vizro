@@ -10,7 +10,6 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
-    validate_options_dict,
     validate_value,
 )
 from vizro.models._models_utils import _log_call, make_actions_chain
@@ -60,21 +59,6 @@ class Dropdown(VizroBaseModel):
     Abstract: Usage documentation
         [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
 
-    Args:
-        options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
-        value (SingleValueType | MultiValueType | None): See
-            [`SingleValueType`][vizro.models.types.SingleValueType] and
-            [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
-        multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
-        title (str): Title to be displayed. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["dropdown"] = "dropdown"
@@ -98,7 +82,7 @@ class Dropdown(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
@@ -107,14 +91,15 @@ class Dropdown(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
             ),
         ]
     ]
+    # Using the description field does not show the below in rendered docs
+    """Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future."""
 
     # Consider making the _dynamic public later. The same property could also be used for all other components.
     # For example: vm.Graph could have a dynamic that is by default set on True.
@@ -123,7 +108,7 @@ class Dropdown(VizroBaseModel):
     _inner_component_properties: list[str] = PrivateAttr(dcc.Dropdown().available_properties)
 
     # Reused validators
-    _validate_options = model_validator(mode="before")(validate_options_dict)
+    # _validate_options = model_validator(mode="before")(validate_options_dict)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
