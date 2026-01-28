@@ -18,29 +18,21 @@ justify_options = [
     "space-evenly",
 ]
 
-align_options = [
-    "flex-start",
-    "flex-end",
-    "center",
-    "stretch"
-]
-
+align_options = ["flex-start", "flex-end", "center", "stretch"]
 
 
 page0 = vm.Page(
     title="Different justification option",
     layout=vm.Flex(direction="column"),
-    components = [
+    components=[
         vm.Container(
-            layout=vm.Flex(
-                direction="row",
-                extra={"justify": justify, "align": align}
-            ),
+            layout=vm.Flex(direction="row", extra={"justify": justify, "align": align}),
             title=f"{justify=} {align=}",
-            components=[vm.Card(text="text")] * 2 + [vm.Card(text="text\n\ntext")]
+            components=[vm.Card(text="text")] * 2 + [vm.Card(text="text\n\ntext")],
         )
-        for justify in justify_options for align in align_options
-    ]
+        for justify in justify_options
+        for align in align_options
+    ],
 )
 
 
