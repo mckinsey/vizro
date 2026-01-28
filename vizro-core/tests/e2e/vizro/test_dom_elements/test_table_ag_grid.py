@@ -1,7 +1,12 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_graph_is_loaded, check_table_ag_grid_rows_number
 from e2e.vizro.navigation import accordion_select, page_select
-from e2e.vizro.paths import categorical_components_value_path, slider_value_path, table_ag_grid_cell_value_path
+from e2e.vizro.paths import (
+    categorical_components_value_path,
+    slider_value_path,
+    table_ag_grid_cell_path_by_row,
+    table_ag_grid_cell_value_path,
+)
 
 
 def test_filters(dash_br):
@@ -47,12 +52,13 @@ def test_interactions(dash_br):
     )
 
     # check if column 'country' is available
-    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div:nth-of-type(1) div[col-id='country']")
+    dash_br.wait_for_element(
+        table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_INTERACTIONS_ID, row_index=0, col_id="country")
+    )
 
     # click on Bosnia and Herzegovina country
     dash_br.multiple_click(
-        f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div[class='ag-center-cols-container'] "
-        f"div:nth-of-type(4) div[col-id='country']",
+        table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_INTERACTIONS_ID, row_index=3, col_id="country"),
         1,
     )
     check_graph_is_loaded(dash_br, cnst.LINE_AG_GRID_INTERACTIONS_ID)
