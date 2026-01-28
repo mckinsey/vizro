@@ -582,7 +582,7 @@
             }
           ],
           "default": null,
-          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `plain` (or `outlined` for collapsible container).",
+          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `plain` (or `outlined` for collapsible container). ",
           "title": "Variant"
         },
         "description": {

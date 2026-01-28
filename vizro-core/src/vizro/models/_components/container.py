@@ -58,7 +58,7 @@ class Container(VizroBaseModel):
         Field(
             default=None,
             description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
-            "Defaults to `plain` (or `outlined` for collapsible container).",
+            "Defaults to `plain` (or `outlined` for collapsible container). ",
             validate_default=True,
         ),
     ]

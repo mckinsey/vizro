@@ -176,8 +176,7 @@ extra-dependencies = [
   "pydantic==2.7.0",
   "pandas==2.0.0",
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
-  "kedro==0.19.9",
-  "black==26.1.0"
+  "kedro==0.19.9"
 ]
 python = "3.10"
 
