@@ -17,6 +17,7 @@ from e2e.vizro.paths import (
     kpi_card_path,
     nav_card_link_path,
     switch_path_using_filter_control_id,
+    table_ag_grid_cell_path_by_row,
     table_ag_grid_cell_value_path,
     theme_toggle_path,
 )
@@ -61,7 +62,7 @@ def test_ag_grid_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_PAGE,
     )
     # check if column 'country' is available
-    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='country']")
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=0, col_id="country"))
 
 
 @image_assertion
