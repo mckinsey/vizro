@@ -512,15 +512,16 @@ def test_set_control_clickmode_event_select(dash_br):
         page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
     )
 
-    # select virginica
+    # select virginica - this causes both: checklist and radioitems to be set
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 1)
 
-    # select versicolor with SHIFT key
+    # select versicolor with SHIFT key - this causes only checklist to be set and radioitems
+    # stays unchanged as multiple values are selected and radioItems is single-select control
     modifier_click(
         dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=22), key=Keys.SHIFT
     )
 
-    # Check y axis max value is '2.4'
+    # Check filters target graph is correct - y axis max value is '2.4'
     dash_br.wait_for_text_to_equal(
         graph_axis_value_path(
             graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, axis_value_number="6", axis_value="2.4"
@@ -549,7 +550,7 @@ def test_set_control_clickmode_event_select(dash_br):
         ],
     )
 
-    # unselect all values
+    # unselect all values - this causes target control values to reset
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 1)
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 1)
 
@@ -585,10 +586,10 @@ def test_set_control_clickmode_event(dash_br):
         page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
     )
 
-    # select virginica
+    # select virginica - this causes both: checklist and radioitems to be set
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 1)
 
-    # Check y axis max value is '2.4'
+    # Check target graph is correct - y axis max value is '2.4'
     dash_br.wait_for_text_to_equal(
         graph_axis_value_path(
             graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, axis_value_number="6", axis_value="2.4"
@@ -617,7 +618,8 @@ def test_set_control_clickmode_event(dash_br):
         ],
     )
 
-    # select versicolor with SHIFT key
+    # select versicolor with SHIFT key - this causes that only versicolor is selected as source graph
+    # has clickmode="event"
     modifier_click(
         dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=22), key=Keys.SHIFT
     )
@@ -701,6 +703,31 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
         ],
     )
 
+    # unselect all rows in ag_grid with checkbox click
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=1), 1)
+
+    # check all values are selected for checklist and setosa is selected for radioitems
+    check_selected_categorical_component(
+        dash_br,
+        checklist=True,
+        select_all_status=True,
+        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": True, "value_name": "virginica"},
+        ],
+    )
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
+        ],
+    )
+
 
 def test_set_control_clickmode_aggrid_command_click(dash_br):
     """Test cross filter between AgGrid and graph with command multi select."""
@@ -775,142 +802,114 @@ def test_set_control_clickmode_aggrid_command_click(dash_br):
     )
 
 
-def test_set_control_button_none(dash_br):
-    """Test set control with 'None' by clicking button."""
+@pytest.mark.parametrize(
+    "click_selector,checklist_kwargs,radioitems_kwargs",
+    [
+        # set_control_button_none
+        (
+            button_id_path(btn_id=cnst.SET_CONTROL_BUTTON_NONE),
+            {
+                "checklist": True,
+                "select_all_status": True,
+                "component_id": cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+                "options_value_status": [
+                    {"value": 1, "selected": True, "value_name": "setosa"},
+                    {"value": 2, "selected": True, "value_name": "versicolor"},
+                    {"value": 3, "selected": True, "value_name": "virginica"},
+                ],
+            },
+            {
+                "component_id": cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+                "options_value_status": [
+                    {"value": 1, "selected": True, "value_name": "setosa"},
+                    {"value": 2, "selected": False, "value_name": "versicolor"},
+                    {"value": 3, "selected": False, "value_name": "virginica"},
+                ],
+            },
+        ),
+        # set_control_button_empty_list
+        (
+            button_id_path(btn_id=cnst.SET_CONTROL_BUTTON_EMPTY_LIST),
+            {
+                "checklist": True,
+                "component_id": cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+                "options_value_status": [
+                    {"value": 1, "selected": False, "value_name": "setosa"},
+                    {"value": 2, "selected": False, "value_name": "versicolor"},
+                    {"value": 3, "selected": False, "value_name": "virginica"},
+                ],
+            },
+            {
+                "component_id": cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+                "options_value_status": [
+                    {"value": 1, "selected": True, "value_name": "setosa"},
+                    {"value": 2, "selected": False, "value_name": "versicolor"},
+                    {"value": 3, "selected": False, "value_name": "virginica"},
+                ],
+            },
+        ),
+        # set_control_card_single_value
+        (
+            f"#{cnst.SET_CONTROL_CARD_SINGLE_VALUE}",
+            {
+                "checklist": True,
+                "component_id": cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+                "options_value_status": [
+                    {"value": 1, "selected": False, "value_name": "setosa"},
+                    {"value": 2, "selected": False, "value_name": "versicolor"},
+                    {"value": 3, "selected": True, "value_name": "virginica"},
+                ],
+            },
+            {
+                "component_id": cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+                "options_value_status": [
+                    {"value": 1, "selected": False, "value_name": "setosa"},
+                    {"value": 2, "selected": False, "value_name": "versicolor"},
+                    {"value": 3, "selected": True, "value_name": "virginica"},
+                ],
+            },
+        ),
+        # set_control_card_multi_value
+        (
+            f"#{cnst.SET_CONTROL_CARD_MULTI_VALUE}",
+            {
+                "checklist": True,
+                "component_id": cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+                "options_value_status": [
+                    {"value": 1, "selected": False, "value_name": "setosa"},
+                    {"value": 2, "selected": True, "value_name": "versicolor"},
+                    {"value": 3, "selected": True, "value_name": "virginica"},
+                ],
+            },
+            {
+                "component_id": cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+                "options_value_status": [
+                    {"value": 1, "selected": True, "value_name": "setosa"},
+                    {"value": 2, "selected": False, "value_name": "versicolor"},
+                    {"value": 3, "selected": False, "value_name": "virginica"},
+                ],
+            },
+        ),
+    ],
+)
+def test_set_control_button_card_variants(dash_br, click_selector, checklist_kwargs, radioitems_kwargs):
+    """Test set_control action from button and card with different variants."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.SET_CONTROL_BUTTON_CARD,
-    )
+    page_select(dash_br, page_name=cnst.SET_CONTROL_BUTTON_CARD)
 
-    # click button to set 'None' value
-    dash_br.multiple_click(button_id_path(btn_id=cnst.SET_CONTROL_BUTTON_NONE), 1)
+    # Click the button or card
+    dash_br.multiple_click(click_selector, 1)
 
-    # check selected values in checklist and radioitems
-    check_selected_categorical_component(
-        dash_br,
-        checklist=True,
-        select_all_status=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
-        options_value_status=[
-            {"value": 1, "selected": True, "value_name": "setosa"},
-            {"value": 2, "selected": True, "value_name": "versicolor"},
-            {"value": 3, "selected": True, "value_name": "virginica"},
-        ],
-    )
-    check_selected_categorical_component(
-        dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
-        options_value_status=[
-            {"value": 1, "selected": True, "value_name": "setosa"},
-            {"value": 2, "selected": False, "value_name": "versicolor"},
-            {"value": 3, "selected": False, "value_name": "virginica"},
-        ],
-    )
+    # Check checklist values
+    check_selected_categorical_component(dash_br, **dict(checklist_kwargs))
 
-
-def test_set_control_button_empty_list(dash_br):
-    """Test set control with empty list by clicking button."""
-    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.SET_CONTROL_BUTTON_CARD,
-    )
-
-    # click button to set empty list value
-    dash_br.multiple_click(button_id_path(btn_id=cnst.SET_CONTROL_BUTTON_EMPTY_LIST), 1)
-
-    # check selected values in checklist and radioitems
-    check_selected_categorical_component(
-        dash_br,
-        checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
-        options_value_status=[
-            {"value": 1, "selected": False, "value_name": "setosa"},
-            {"value": 2, "selected": False, "value_name": "versicolor"},
-            {"value": 3, "selected": False, "value_name": "virginica"},
-        ],
-    )
-    check_selected_categorical_component(
-        dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
-        options_value_status=[
-            {"value": 1, "selected": True, "value_name": "setosa"},
-            {"value": 2, "selected": False, "value_name": "versicolor"},
-            {"value": 3, "selected": False, "value_name": "virginica"},
-        ],
-    )
-
-
-def test_set_control_card_single_value(dash_br):
-    """Test set control with single value by clicking card."""
-    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.SET_CONTROL_BUTTON_CARD,
-    )
-
-    # click card to set 'virginica' value
-    dash_br.multiple_click(f"#{cnst.SET_CONTROL_CARD_SINGLE_VALUE}", 1)
-
-    # check selected values in checklist and radioitems
-    check_selected_categorical_component(
-        dash_br,
-        checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
-        options_value_status=[
-            {"value": 1, "selected": False, "value_name": "setosa"},
-            {"value": 2, "selected": False, "value_name": "versicolor"},
-            {"value": 3, "selected": True, "value_name": "virginica"},
-        ],
-    )
-    check_selected_categorical_component(
-        dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
-        options_value_status=[
-            {"value": 1, "selected": False, "value_name": "setosa"},
-            {"value": 2, "selected": False, "value_name": "versicolor"},
-            {"value": 3, "selected": True, "value_name": "virginica"},
-        ],
-    )
-
-
-def test_set_control_card_multi_value(dash_br):
-    """Test set control with multi value by clicking card."""
-    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.SET_CONTROL_BUTTON_CARD,
-    )
-
-    # click card to set 'versicolor' and 'virginica' values
-    dash_br.multiple_click(f"#{cnst.SET_CONTROL_CARD_MULTI_VALUE}", 1)
-
-    # check selected values in checklist and radioitems
-    check_selected_categorical_component(
-        dash_br,
-        checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
-        options_value_status=[
-            {"value": 1, "selected": False, "value_name": "setosa"},
-            {"value": 2, "selected": True, "value_name": "versicolor"},
-            {"value": 3, "selected": True, "value_name": "virginica"},
-        ],
-    )
-    check_selected_categorical_component(
-        dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
-        options_value_status=[
-            {"value": 1, "selected": True, "value_name": "setosa"},
-            {"value": 2, "selected": False, "value_name": "versicolor"},
-            {"value": 3, "selected": False, "value_name": "virginica"},
-        ],
-    )
+    # Check radioitems values
+    check_selected_categorical_component(dash_br, **dict(radioitems_kwargs))
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
-def test_filtered_graph_trigger_filter_for_aggrid(dash_br):
-    """Test filter ag_grid by selecting data in graph."""
+def test_filtered_graph_does_not_trigger_set_control(dash_br):
+    """Test filtered graph does not trigger the set_control again."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
@@ -922,8 +921,8 @@ def test_filtered_graph_trigger_filter_for_aggrid(dash_br):
         scatter_point_path(cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID, point_number=21), 0, 1
     )
 
-    # unselect all in checklist for scatter as a source graph
-    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_GRAPH_SET_CONTROL), 1)
+    # unselect all in checklist that filters a set_control source graph
+    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_GRAPH_SET_CONTROL), 1, delay=0.5)
 
     # check selected value in checklist for targeted aggrid did not change
     check_selected_categorical_component(
@@ -938,8 +937,8 @@ def test_filtered_graph_trigger_filter_for_aggrid(dash_br):
     )
 
 
-def test_filtered_aggrid_trigger_filter_for_aggrid(dash_br):
-    """Test filter ag_grid by selecting data in another aggrid."""
+def test_filtered_aggrid_does_not_trigger_set_control(dash_br):
+    """Test filtered ag_grid does not trigger the set_control again."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
@@ -949,13 +948,14 @@ def test_filtered_aggrid_trigger_filter_for_aggrid(dash_br):
     # navigate to AgGrid tab
     dash_br.multiple_click("a[role='tab'][class='nav-link']", 1)
 
-    # select versicolor by clicking on cell
+    # select virginica by clicking on cell
     dash_br.multiple_click(
         table_ag_grid_cell_path_by_row(cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID, row_index=2, col_id="sepal_length"),
         1,
+        delay=0.5,
     )
 
-    # unselect all in checklist for aggdrid as a source graph
+    # unselect all in checklist that filters a set_control source ag_grid
     dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_AGGRID_SET_CONTROL), 1)
 
     # check selected value in checklist for targeted aggrid did not change
@@ -1008,7 +1008,7 @@ def test_self_filtered_graph(dash_br):
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 1
     )
-    # unselect virginica in scatter graph
+    # TODO: find out why three clicks are needed to unselect the point
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 1
     )

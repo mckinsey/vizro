@@ -75,7 +75,7 @@ def table_ag_grid_cell_path_by_row(table_id, row_index, col_id):
 
 def table_ag_grid_checkbox_path_by_row(table_id, row_index):
     """Path to AG Grid table checkbox input by row index."""
-    return f"div[id='{table_id}'] div[row-index='{row_index}']  input.ag-checkbox-input"
+    return f"div[id='{table_id}'] div[row-index='{row_index}'] input.ag-checkbox-input"
 
 
 def graph_axis_value_path(graph_id, axis_value_number, axis_value):
@@ -88,4 +88,4 @@ def actions_progress_indicator_path():
 
 
 def scatter_point_path(graph_id, point_number, trace_index=2):
-    return f"div[id='{graph_id}'] g[class^='trace']:nth-of-type({trace_index}) path:nth-of-type({point_number}"
+    return f"div[id='{graph_id}'] g[class^='trace']:nth-of-type({trace_index}) path:nth-of-type({point_number})"

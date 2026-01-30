@@ -1,4 +1,5 @@
 import e2e.vizro.constants as cnst
+import numpy as np
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -7,14 +8,9 @@ from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
 iris = px.data.iris()
-
-iris_unique_species = px.data.iris()
-unique_species = iris_unique_species["species"].unique()
-n_species = len(unique_species)
-n_rows = len(iris_unique_species)
-iris_unique_species["species"] = [unique_species[i % n_species] for i in range(n_rows)]
-
-gapminder = px.data.gapminder()
+unique_species = iris["species"].unique()
+iris_species_cycle = iris.copy()
+iris_species_cycle["species"] = np.resize(unique_species, len(iris_species_cycle))
 
 
 @capture("graph")
@@ -58,7 +54,7 @@ cross_filter_multi_select_page = vm.Page(
         ),
         vm.AgGrid(
             id=cnst.TABLE_SET_CONTROL_MULTI_SELECT,
-            figure=dash_ag_grid(iris_unique_species),
+            figure=dash_ag_grid(iris_species_cycle),
             actions=[
                 set_control(control="chl_filter", value="species"),
                 set_control(control="ri_filter", value="species"),
@@ -126,7 +122,7 @@ button_card_trigger_set_control = vm.Page(
         ),
         vm.AgGrid(
             id=cnst.TABLE_SET_CONTROL_BUTTON_CARD,
-            figure=dash_ag_grid(iris_unique_species),
+            figure=dash_ag_grid(iris_species_cycle),
         ),
     ],
     controls=[
@@ -179,7 +175,7 @@ filtered_graph_aggrid_trigger_set_control = vm.Page(
                     components=[
                         vm.AgGrid(
                             id=cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID,
-                            figure=dash_ag_grid(iris_unique_species),
+                            figure=dash_ag_grid(iris_species_cycle),
                             actions=set_control(control="chl_ft_filter", value="species"),
                         ),
                     ],
