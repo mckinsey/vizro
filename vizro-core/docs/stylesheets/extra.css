@@ -43,8 +43,8 @@
   border-collapse: collapse;
   font-size: 0.8em;
   margin: 1em 0;
-  width: 100%;
   table-layout: fixed;
+  width: 100%;
 }
 
 .pydantic-field-table th,
