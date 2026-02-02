@@ -68,7 +68,6 @@ class TestAccordionBuild:
                         item_id="Group",
                     )
                 ],
-                active_item="Group",
                 **common_args,
             ),
         ),
@@ -87,7 +86,6 @@ class TestAccordionBuild:
                         item_id="Group 2",
                     ),
                 ],
-                active_item="Group 1",
                 **common_args,
             ),
         ),
@@ -104,7 +102,6 @@ class TestAccordionBuild:
                         item_id="Select Page",
                     )
                 ],
-                active_item="Select Page",
                 **common_args,
             ),
         ),
