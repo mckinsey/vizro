@@ -43,8 +43,8 @@
   border-collapse: collapse;
   font-size: 0.8em;
   margin: 1em 0;
-  width: 100%;
   table-layout: fixed;
+  width: 100%;
 }
 
 .pydantic-field-table th,
@@ -57,6 +57,11 @@
 .pydantic-field-table th {
   background: var(--md-default-bg-color--light);
   font-weight: 600;
+}
+
+.md-typeset th,
+td:not([class]):not(:last-child) {
+  border-right: 1px solid lightgrey;
 }
 
 /* Pydantic field table column widths */
@@ -78,11 +83,6 @@
 .pydantic-field-table th:nth-child(4),
 .pydantic-field-table td:nth-child(4) {
   width: 15%;
-}
-
-.md-typeset th,
-td:not([class]):not(:last-child) {
-  border-right: 1px solid lightgrey;
 }
 
 :root {
