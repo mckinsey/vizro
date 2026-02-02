@@ -90,7 +90,9 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
     "additional_info - info about the component": [vm.Tooltip],
-    "actions available for the actions argument of a model": [va.__dict__[func] for func in va.__all__],
+    "actions available for the actions argument of a model": [
+        va.__dict__[func] for func in va.__all__ if func != "filter_interaction"
+    ],
     "functions available for vm.Figure(...,figure=...) model": [vf.__dict__[func] for func in vf.__all__],
 }
 
