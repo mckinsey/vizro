@@ -75,10 +75,10 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Container,
         vm.Tabs,
     ],
-    "dynamic components": [vm.Figure, vm.Graph, vm.AgGrid],
+    "dynamic components - ie reactive to controls": [vm.Figure, vm.Graph, vm.AgGrid],
     "layouts": [vm.Grid, vm.Flex],
-    "controls": [vm.Filter, vm.Parameter],
-    "selectors": [
+    "controls - control display of dynamic components": [vm.Filter, vm.Parameter],
+    "selectors - input mechanisms for controls": [
         vm.Dropdown,
         vm.RadioItems,
         vm.Checklist,
@@ -88,7 +88,7 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Switch,
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
-    "additional_info": [vm.Tooltip],
+    "additional_info - info about the component": [vm.Tooltip],
     "actions available for the actions argument of a model": [va.__dict__[func] for func in va.__all__],
     "functions available for vm.Figure(...,figure=...) model": [vf.__dict__[func] for func in vf.__all__],
 }
