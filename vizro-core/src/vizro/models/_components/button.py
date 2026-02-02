@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
 from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, model_validator
 from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import Self
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call, make_actions_chain, validate_icon
@@ -61,7 +62,7 @@ class Button(VizroBaseModel):
             underlying component may change in the future."""
 
     @model_validator(mode="after")
-    def validate_text_and_icon(self):
+    def validate_text_and_icon(self) -> Self:
         """Validate that either `text` or `icon` argument is provided."""
         if not self.text and not self.icon:
             raise ValueError("You must provide either the `text` or `icon` argument.")
@@ -69,7 +70,7 @@ class Button(VizroBaseModel):
         return self
 
     @model_validator(mode="after")
-    def validate_href_and_actions(self):
+    def validate_href_and_actions(self) -> Self:
         """Validate that `href` and `actions` are not defined together."""
         if self.href and self.actions:
             raise ValueError("Button cannot have both `href` and `actions` defined.")

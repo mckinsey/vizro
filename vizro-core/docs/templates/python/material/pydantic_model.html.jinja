@@ -70,26 +70,8 @@
   {% endblock fields %}
 
 {% block validators scoped %}
-  {% with validators = class.extra.griffe_pydantic.validators() %}
-      {% if validators %}
-        <p>Validators:</p>
-        <ul>
-        {% for name, validator in validators.items() if not name.startswith("_") %}
-            <li>
-              <code><autoref optional hover identifier="{{ validator.path }}">{{ name }}</autoref></code>
-              {% if validator.extra.griffe_pydantic.targets %}
-                &rarr;
-                {% for target in validator.extra.griffe_pydantic.targets %}
-                  <code><autoref optional hover identifier="{{ target.path }}">{{ target.name }}</autoref></code>
-                  {%- if not loop.last %}, {% endif %}
-                {% endfor %}
-              {% endif %}
-            </li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-  {% endblock validators %}
+  {# Validators are intentionally not displayed in API docs #}
+{% endblock validators %}
 
   {% block source %}{{ super() }}{% endblock %}
   {% block children %}{{ super() }}{% endblock %}

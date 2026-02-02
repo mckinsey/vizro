@@ -43,13 +43,14 @@ class PydanticDocsCleaner(griffe.Extension):
 
     This extension:
     1. Filters out private members (PrivateAttr, 'type' field, underscore-prefixed methods)
-    2. Excludes pydantic fields from TOC while keeping them renderable in tables
+    2. Filters out validators (after griffe_pydantic labels them)
+    3. Excludes pydantic fields from TOC while keeping them renderable in tables
     """
 
     def __init__(self, **kwargs):
         """Accept kwargs for griffe compatibility."""
 
-    def _filter_private_attrs(self, cls: griffe.Class) -> None:
+    def _filter_private_members(self, cls: griffe.Class) -> None:
         """Filter out private members from a Pydantic model class."""
         python_obj = griffe.dynamic_import(cls.path)
         if python_obj is None or not issubclass(python_obj, BaseModel):
@@ -68,13 +69,13 @@ class PydanticDocsCleaner(griffe.Extension):
                 pydantic_logger.info(f"Filtered out private member '{name}' from {cls.path}")
 
     def on_class_members(self, *, cls: griffe.Class, **kwargs):
-        """Filter out PrivateAttr members when class members are collected."""
-        self._filter_private_attrs(cls)
+        """Filter out private members when class members are collected."""
+        self._filter_private_members(cls)
 
     def on_instance(self, *, obj: griffe.Object, **kwargs):
-        """Filter out PrivateAttr members after all processing is complete."""
+        """Filter out private members after all processing is complete."""
         if isinstance(obj, griffe.Class):
-            self._filter_private_attrs(obj)
+            self._filter_private_members(obj)
 
     def _enrich_field_metadata(self, cls: griffe.Class) -> None:
         """Enrich field metadata for defaults/required from model_fields.
@@ -113,6 +114,13 @@ class PydanticDocsCleaner(griffe.Extension):
             member.extra["vizro_pydantic"]["required"] = required
             member.extra["vizro_pydantic"]["default_display"] = default_display
 
+    def _filter_validators(self, cls: griffe.Class) -> None:
+        """Filter out validators from a Pydantic model class (runs after griffe_pydantic labels them)."""
+        for name, member in list(cls.members.items()):
+            if hasattr(member, "labels") and "pydantic-validator" in member.labels:
+                cls.del_member(name)
+                pydantic_logger.info(f"Filtered out validator '{name}' from {cls.path}")
+
     def _exclude_fields_from_toc(self, cls: griffe.Class) -> None:
         """Store fields and remove from members to exclude from TOC."""
         if "pydantic-model" not in cls.labels:
@@ -147,6 +155,7 @@ class PydanticDocsCleaner(griffe.Extension):
             if isinstance(member, griffe.Alias):
                 continue  # Skip aliases to avoid resolution errors
             if isinstance(member, griffe.Class):
+                self._filter_validators(member)  # Filter validators after griffe_pydantic labels them
                 self._exclude_fields_from_toc(member)
             elif isinstance(member, griffe.Module):
                 self._process_module_recursive(member)

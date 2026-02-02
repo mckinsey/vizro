@@ -6,6 +6,7 @@ from typing import Any
 from dash import html
 from dash.development.base_component import Component
 from pydantic import ValidationInfo
+from typing_extensions import Self
 
 from vizro.managers import model_manager
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
@@ -77,7 +78,7 @@ def _build_inner_layout(layout, components):
     return components_container
 
 
-def validate_icon(icon) -> str:
+def validate_icon(icon: str) -> str:
     return icon.strip().lower().replace(" ", "_")
 
 
@@ -117,7 +118,7 @@ def make_deprecated_field_warning(message: str, /):
     return deprecate_field
 
 
-def make_actions_chain(self):
+def make_actions_chain(self) -> Self:
     """Creates actions chain from a list of actions.
 
     Ideally this would have been implemented as an AfterValidator for the actions field, but we need access to
