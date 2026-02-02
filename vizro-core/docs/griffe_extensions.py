@@ -100,7 +100,10 @@ class PydanticDocsCleaner(griffe.Extension):
             required = field_info.is_required()
             default_display = None
             if not required:
-                if field_info.default is not PydanticUndefined:
+                # Special case: show 'UUID' for id field instead of the factory name
+                if name == "id":
+                    default_display = "generated uuid"
+                elif field_info.default is not PydanticUndefined:
                     default_display = repr(field_info.default)
                 elif field_info.default_factory is not None:
                     factory = field_info.default_factory
@@ -121,6 +124,51 @@ class PydanticDocsCleaner(griffe.Extension):
                 cls.del_member(name)
                 pydantic_logger.info(f"Filtered out validator '{name}' from {cls.path}")
 
+    def _get_inherited_id_field(self, cls: griffe.Class) -> griffe.Attribute | None:
+        """Get the 'id' field from VizroBaseModel if this class inherits from it.
+
+        Returns a synthetic griffe Attribute for the inherited 'id' field, or None if not applicable.
+        """
+        python_obj = griffe.dynamic_import(cls.path)
+        if python_obj is None or not issubclass(python_obj, BaseModel):
+            return None
+
+        # Check if 'id' is inherited (not defined directly in this class) and exists in model_fields
+        if "id" not in python_obj.model_fields:
+            return None
+
+        # Check if 'id' is already a direct member of this class (not inherited)
+        if "id" in cls.members:
+            return None
+
+        # Get the field info from the model
+        field_info = python_obj.model_fields["id"]
+        if not isinstance(field_info, FieldInfo):
+            return None
+
+        # Create a synthetic griffe Attribute for the inherited 'id' field
+        id_attr = griffe.Attribute(
+            name="id",
+            lineno=None,
+            endlineno=None,
+        )
+        id_attr.labels.add("pydantic-field")
+
+        # Set the docstring from the field description
+        if field_info.description:
+            id_attr.docstring = griffe.Docstring(field_info.description)
+
+        # Set annotation to ModelID with full path for cross-referencing
+        parent_expr = griffe.ExprName("vizro.models.types")
+        id_attr.annotation = griffe.ExprName("ModelID", parent=parent_expr)
+
+        # Enrich with vizro_pydantic metadata for default display
+        id_attr.extra.setdefault("vizro_pydantic", {})
+        id_attr.extra["vizro_pydantic"]["required"] = False
+        id_attr.extra["vizro_pydantic"]["default_display"] = "generated uuid"  # hard coded for display
+
+        return id_attr
+
     def _exclude_fields_from_toc(self, cls: griffe.Class) -> None:
         """Store fields and remove from members to exclude from TOC."""
         if "pydantic-model" not in cls.labels:
@@ -136,6 +184,11 @@ class PydanticDocsCleaner(griffe.Extension):
             if hasattr(member, "labels") and "pydantic-field" in member.labels:
                 stored_fields[name] = member
                 fields_to_remove.append(name)
+
+        # Add inherited 'id' field at the top if applicable
+        inherited_id = self._get_inherited_id_field(cls)
+        if inherited_id is not None:
+            stored_fields = {"id": inherited_id, **stored_fields}
 
         if stored_fields:
             # Store fields for template access
