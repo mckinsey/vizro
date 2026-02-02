@@ -71,6 +71,8 @@ nav:
           - Authors: pages/explanation/authors.md
   - Vizro-MCP:
       - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
+  - Vizro-AI:
+      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
