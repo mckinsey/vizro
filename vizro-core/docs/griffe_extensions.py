@@ -151,6 +151,7 @@ class PydanticDocsCleaner(griffe.Extension):
             name="id",
             lineno=None,
             endlineno=None,
+            parent=cls,  # Set parent so path resolves correctly (e.g., Button.id instead of just id)
         )
         id_attr.labels.add("pydantic-field")
 
