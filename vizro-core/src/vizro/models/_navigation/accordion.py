@@ -61,10 +61,9 @@ class Accordion(VizroBaseModel):
                 )
             )
 
-        active_item = next(
-            (page_group for page_group, page_members in self.pages.items() if active_page_id in page_members), None
-        )
-
+        # With always_open=True and persistence=True, user interactions to open/close accordions
+        # will be preserved. We don't set active_item or start_collapsed because these props would
+        # override the persisted state when the component is re-rendered during page navigation.
         return dbc.Nav(
             children=[
                 dbc.Accordion(
@@ -74,9 +73,6 @@ class Accordion(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                     always_open=True,
-                    # `active_item` is required to open the accordion automatically when navigating from a homepage
-                    # to any of the pages in the accordion.
-                    active_item=active_item,
                 )
             ],
             id="nav-panel",
