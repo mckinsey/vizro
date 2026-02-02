@@ -35,13 +35,13 @@ repos:
         exclude_types: [markdown, css]
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-    rev: v2.15.0
+    rev: v2.16.0
     hooks:
       - id: pretty-format-toml
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.10
+    rev: v0.14.14
     hooks:
       - id: ruff
         args: [--fix]
@@ -49,7 +49,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.9.2
+    rev: 1.9.3
     hooks:
       - id: bandit
         args: [-c, pyproject.toml, -ll]
@@ -78,7 +78,7 @@ repos:
   - repo: https://github.com/executablebooks/mdformat
     # mdformat 1.0.0 is incompatible with mdformat-frontmatter (max version 2.0.8 requires
     # mdformat<0.8.0). No way to skip this automatically in pre-commit autoupdate.
-    rev: 0.7.22
+    rev: 1.0.0
     hooks:
       - id: mdformat
         args:
