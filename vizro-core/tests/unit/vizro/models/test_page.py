@@ -116,5 +116,119 @@ class TestPagePreBuildMethod:
         assert default_action._prevent_initial_call_of_guard is False
 
 
-# TODO: Add unit tests for page build method
-# TODO: Add unit tests for private methods in page build
+class TestPageBuildMethod:
+    def test_page_build_returns_correct_structure(self):
+        page = vm.Page(id="test-page", title="Test Page", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        # Page build should return html.Div containing control-panel and page-components
+        assert result.__class__.__name__ == "Div"
+        # Check that children contains exactly two elements (control-panel and page-components)
+        assert len(result.children) == 2
+
+    def test_page_build_control_panel_hidden_when_no_controls(self):
+        page = vm.Page(id="test-page", title="Test Page", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        control_panel = result.children[0]
+        assert control_panel.id == "control-panel"
+        assert control_panel.hidden is True
+
+    def test_page_build_control_panel_visible_when_controls_present(self, standard_px_chart):
+        page = vm.Page(
+            id="test-page",
+            title="Test Page",
+            components=[vm.Graph(id="graph", figure=standard_px_chart)],
+            controls=[vm.Filter(column="continent")],
+        )
+        page.pre_build()
+        result = page.build()
+
+        control_panel = result.children[0]
+        assert control_panel.id == "control-panel"
+        assert control_panel.hidden is False
+        # Control panel should contain the built filter
+        assert len(control_panel.children) == 1
+
+    def test_page_build_page_components_container(self):
+        page = vm.Page(id="test-page", title="Test Page", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        assert page_components.id == "page-components"
+
+    def test_page_build_includes_on_page_load_trigger_store(self):
+        page = vm.Page(id="test-page", title="Test Page", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        # Find dcc.Store with on_page_load trigger id
+        stores = [child for child in page_components.children if hasattr(child, "id") and "on_page_load" in str(child.id)]
+        assert len(stores) >= 1
+
+    def test_page_build_includes_download_component(self):
+        page = vm.Page(id="test-page", title="Test Page", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        # Find dcc.Download component
+        downloads = [
+            child for child in page_components.children if child.__class__.__name__ == "Download" and child.id == "vizro_download"
+        ]
+        assert len(downloads) == 1
+
+    def test_page_build_includes_location_component(self):
+        page = vm.Page(id="test-page", title="Test Page", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        # Find dcc.Location component
+        locations = [
+            child for child in page_components.children if child.__class__.__name__ == "Location" and child.id == "vizro_url"
+        ]
+        assert len(locations) == 1
+
+    def test_page_build_includes_notification_container(self):
+        page = vm.Page(id="test-page", title="Test Page", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        # Find NotificationContainer component
+        notifications = [
+            child
+            for child in page_components.children
+            if child.__class__.__name__ == "NotificationContainer" and child.id == "vizro-notifications"
+        ]
+        assert len(notifications) == 1
+
+    def test_page_build_with_multiple_components(self):
+        page = vm.Page(
+            id="test-page",
+            title="Test Page",
+            components=[vm.Button(id="btn1"), vm.Button(id="btn2"), vm.Card(id="card1", text="Card")],
+            layout=vm.Grid(grid=[[0, 1], [2, 2]]),
+        )
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        assert page_components.id == "page-components"
+
+    def test_page_build_with_graph_component(self, standard_px_chart):
+        page = vm.Page(
+            id="test-page",
+            title="Test Page",
+            components=[vm.Graph(id="test-graph", figure=standard_px_chart)],
+        )
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        assert page_components.id == "page-components"
