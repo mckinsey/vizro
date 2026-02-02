@@ -167,7 +167,9 @@ class TestPageBuildMethod:
 
         page_components = result.children[1]
         # Find dcc.Store with on_page_load trigger id
-        stores = [child for child in page_components.children if hasattr(child, "id") and "on_page_load" in str(child.id)]
+        stores = [
+            child for child in page_components.children if hasattr(child, "id") and "on_page_load" in str(child.id)
+        ]
         assert len(stores) >= 1
 
     def test_page_build_includes_download_component(self):
@@ -178,7 +180,9 @@ class TestPageBuildMethod:
         page_components = result.children[1]
         # Find dcc.Download component
         downloads = [
-            child for child in page_components.children if child.__class__.__name__ == "Download" and child.id == "vizro_download"
+            child
+            for child in page_components.children
+            if child.__class__.__name__ == "Download" and child.id == "vizro_download"
         ]
         assert len(downloads) == 1
 
@@ -190,7 +194,9 @@ class TestPageBuildMethod:
         page_components = result.children[1]
         # Find dcc.Location component
         locations = [
-            child for child in page_components.children if child.__class__.__name__ == "Location" and child.id == "vizro_url"
+            child
+            for child in page_components.children
+            if child.__class__.__name__ == "Location" and child.id == "vizro_url"
         ]
         assert len(locations) == 1
 
