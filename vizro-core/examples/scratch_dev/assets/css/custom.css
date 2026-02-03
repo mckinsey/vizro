@@ -2,25 +2,37 @@
 #logo-dark, #logo-light {
     height: 30px;
 }
+
 #page-header {
     display: none;
 }
 
-/* Check with S. if these should be defaults*/
-/* Should all our container titles actually be bolded?*/
+/* Check with S. if these should be defaults */
+
+/* Should all our container titles actually be bolded? */
 .container-title {
-    padding-bottom: 4px;
     border-bottom: 1px solid var(--bs-border-color);
     font-weight: 500;
+    padding-bottom: 4px;
   }
 
-/* Does a filled container need a border?*/
+/* Does a filled container need a border? */
 .bg-container {
     border: 1px solid var(--bs-border-color);
 }
 
-/* Shall figure titles be smaller than container titles and bolded?*/
+/* Shall figure titles be smaller than container titles and bolded? */
 .figure-title {
     font-size: 16px;
     font-weight: 500;
 }
+
+.card {
+    width: 210px;
+}
+
+/*
+[data-bs-theme="light"] {
+    --left-side-bg: var(--bs-tertiary-bg);
+}
+    */

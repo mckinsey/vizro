@@ -3,8 +3,8 @@
   flex-direction: column;
   gap: 0.5rem;
   height: 100%;
-  padding: 0;
   overflow: auto;
+  padding: 0;
 }
 
 .container-fluid:has(> .collapse:not(.show)) {
@@ -52,13 +52,13 @@
 }
 
 /* If a filled container is detected, then the right-bg color will change to
-the lighter shade, both in dark and light theme.*/
+the lighter shade, both in dark and light theme. */
 #right-side:has(.bg-container) {
   background: var(--right-side-bg-iterated);
 }
 
 #right-side:has(.bg-container) .card {
-  background: var(--left-side-bg);
+  background: var(--right-side-bg-iterated);
 }
 
 .inner-container-title {
