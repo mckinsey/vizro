@@ -681,7 +681,7 @@ Visit the [dmc.Flex documentation](https://www.dash-mantine-components.com/compo
 
         [![FlexExtra]][flexextra]
 
-The cards will be distributed with equal space between them (`justify="space-between"`) and stretched to fill the container height (`align="stretch"`).
+The cards are distributed with equal space between them (`justify="space-between"`) and are stretched to fill the container height (`align="stretch"`).
 
 ### Change the size of flex items
 
