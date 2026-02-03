@@ -88,7 +88,7 @@ cross_filter_multi_select_page = vm.Page(
 
 
 button_card_trigger_set_control = vm.Page(
-    title=cnst.SET_CONTROL_BUTTON_CARD,
+    title=cnst.SET_CONTROL_BUTTON_CARD_PAGE,
     components=[
         vm.Button(
             id=cnst.SET_CONTROL_BUTTON_NONE,
