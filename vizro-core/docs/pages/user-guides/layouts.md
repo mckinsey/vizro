@@ -619,10 +619,6 @@ Common properties you can pass through `extra` include:
 
 Visit the [dmc.Flex documentation](https://www.dash-mantine-components.com/components/flex) to see all available properties.
 
-!!! warning
-
-    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
-
 !!! example "Flex with justify and align"
 
     === "app.py"
