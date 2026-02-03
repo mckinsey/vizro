@@ -15,8 +15,19 @@ security_issues = pd.DataFrame({
 })
 
 top_issues = pd.DataFrame({
-    "Rule": ["OpenAI Service public network access", "Admin principals inactive", "SF - Endpoint Protection", "SF - Kubernetes Cluster"],
-    "Issues": [40, 32, 31, 14]
+    "Rule": [
+        "OpenAI Service public network access",
+        "Admin principals inactive over 90 days",
+        "SF - Endpoint Protection - Microsoft Defender ATP",
+        "SF - Kubernetes Cluster - Wiz Sensor is missing",
+        "AI Service public network access should be restricted",
+        "Storage account should use customer-managed key",
+        "Kubernetes API server should be private",
+        "SQL databases should have vulnerability assessment",
+        "Virtual machines should encrypt temp disks",
+        "Network security groups should restrict inbound traffic",
+    ],
+    "Issues": [40, 32, 31, 14, 13, 12, 11, 10, 9, 8]
 })
 
 secrets_data = pd.DataFrame({
@@ -50,13 +61,13 @@ lifecycle_data = pd.DataFrame({
 
 # Create figures
 
-def create_bar_chart(data_frame, x, y, title, color_seq=None):
-    return px.bar(data_frame, x=x, y=y, title=title, 
-                  color_discrete_sequence=color_seq or ["#1f77b4"])
+def create_bar_chart(data_frame, x, y, color_seq=None):
+    return px.bar(data_frame, x=x, y=y,
+                  color_discrete_sequence=color_seq or ["#1f77b4"], height=400)
 
-def create_donut_chart(data_frame, values, names, title, color_seq=None):
-    return px.pie(data_frame, values=values, names=names, title=title, hole=0.5,
-                  color_discrete_sequence=color_seq or px.colors.qualitative.Set2)
+def create_donut_chart(data_frame, values, names, color_seq=None):
+    return px.pie(data_frame, values=values, names=names, hole=0.5,
+                  color_discrete_sequence=color_seq or px.colors.qualitative.Set2, height=400)
 
 # Page with flex layout
 page = vm.Page(
@@ -66,25 +77,13 @@ page = vm.Page(
         # Left column - Cloud Security
         vm.Container(
             layout=vm.Flex(),
+            description="This is a description of the Cloud Security container.",
             variant="filled",
             title="Cloud Security",
             components=[
                 vm.Text(
                     text="""
-                    ## Wiz Open Issues
-                    
-                    **Critical**: 2 (↓ 25%)
-                    
-                    **High**: 263 (↓ 40%)
-                    
-                    **Medium**: 1,994 (↑ 33%)
-                    
-                    **Low**: 641 (↓ 11%)
-                    """,
-                ),
-                vm.Card(
-                    text="""
-                    ## Wiz Open Issues (Card)
+                    ####
                     
                     **Critical**: 2 (↓ 25%)
                     
@@ -105,12 +104,12 @@ page = vm.Page(
         # Right column container
         vm.Container(
             variant="filled",
+            description="This is a description of the Detection & Analysis container.",
             title="Detection & Analysis",
             layout=vm.Flex(),
             components=[
                 # Secrets Detection KPIs
                 vm.Container(
-                    title="Secrets Detection",
                     layout=vm.Flex(direction="row", wrap=True, gap="30px"),
                     components=[
                         vm.Figure(
@@ -143,14 +142,15 @@ page = vm.Page(
                     ],
                 ),
                 vm.Graph(
-                    figure=create_bar_chart(secrets_data, "Type", "Count", 
-                                           "Top Detectors", ["#00b4d8"])
+                    figure=create_bar_chart(secrets_data, "Type", "Count", ["#00b4d8"]),
+                                           title="Top Detectors"
                 ),
                 
                 vm.Graph(
                     figure=create_donut_chart(composition_data, "Count", "Severity",
-                                             "Software Composition Analysis (SCA)",
-                                             ["#ef476f", "#ffd166", "#06ffa5"])
+                                          
+                                             ["#ef476f", "#ffd166", "#06ffa5"]),
+                                             title="Software Composition Analysis (SCA)"
                 ),
             ],
         ),

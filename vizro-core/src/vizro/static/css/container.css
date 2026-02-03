@@ -4,6 +4,7 @@
   gap: 0.5rem;
   height: 100%;
   padding: 0;
+  overflow: auto;
 }
 
 .container-fluid:has(> .collapse:not(.show)) {
@@ -42,7 +43,7 @@
 }
 
 .bg-container {
-  background: var(--left-side-bg);
+  background: var(--bs-body-bg);
 }
 
 /* Change filled container bg inside filled container */
@@ -50,13 +51,13 @@
   background-color: var(--right-side-bg-iterated);
 }
 
-/* If a filled container is detected, then the right-bg color will change to grey
-and all containers need to have a white background on that page */
-[data-bs-theme="light"] #right-side:has(.bg-container) {
+/* If a filled container is detected, then the right-bg color will change to
+the lighter shade, both in dark and light theme.*/
+#right-side:has(.bg-container) {
   background: var(--right-side-bg-iterated);
 }
 
-[data-bs-theme="light"] #right-side:has(.bg-container) .card {
+#right-side:has(.bg-container) .card {
   background: var(--left-side-bg);
 }
 
