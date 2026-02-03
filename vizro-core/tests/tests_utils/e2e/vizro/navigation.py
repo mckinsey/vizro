@@ -20,8 +20,14 @@ def hover_over_element_by_xpath_selenium(driver, xpath):
     ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.XPATH, xpath)).perform()
 
 
-def hover_over_element_by_css_selector_selenium(driver, xpath):
-    ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.CSS_SELECTOR, xpath)).perform()
+def hover_over_element_by_css_selector_selenium(driver, css_selector):
+    ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.CSS_SELECTOR, css_selector)).perform()
+
+
+def modifier_click(dash_br, selector, key):
+    """Clicking an element while holding a modifier key (like Shift or Ctrl)."""
+    element = dash_br.find_element(selector)
+    ActionChains(dash_br.driver).key_down(key).click(element).key_up(key).perform()
 
 
 def accordion_select(driver, accordion_name):
@@ -73,9 +79,3 @@ def clear_dropdown(driver, dropdown_id):
 def select_dropdown_value(driver, dropdown_id, value):
     """Steps to select value in dropdown."""
     driver.select_dcc_dropdown(f"div[id='{dropdown_id}']", value)
-
-
-def modifier_click(dash_br, selector, key):
-    """Clicking an element while holding a modifier key (like Shift or Ctrl)."""
-    element = dash_br.find_element(selector)
-    ActionChains(dash_br.driver).key_down(key).click(element).key_up(key).perform()
