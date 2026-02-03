@@ -608,9 +608,9 @@ In this example, there isn’t enough space to fit all three graphs in a single 
 
         [![FlexAdvanced]][flexadvanced]
 
-### Further customization with the `extra` argument
+### Aligning and positioning flex items
 
-For more advanced control over the flex layout behavior, you can use the `extra` argument to pass additional properties to the underlying `dmc.Flex` component. This is particularly useful for controlling alignment and justification of flex items.
+For more advanced control over the flex layout behavior, you can use the `extra` argument to pass additional properties to the underlying `dmc.Flex` component. This is particularly useful for controlling how flex items are aligned and positioned.
 
 Common properties you can pass through `extra` include:
 
