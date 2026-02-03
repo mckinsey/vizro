@@ -1035,9 +1035,7 @@ def test_self_filtered_graph(dash_br):
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
-    # after first click delay needed.
-    # sometimes without delay test stuck on the first click
-    # (maybe because graph is not fully loaded and test can't click on the appropriate point using coordinates)
+    # after first click delay is needed to ensure that the graph is loaded so its point can be clicked again.
     time.sleep(0.5)
     # this click does not apply "self-filtering" and it only highlights clicked point.
     dash_br.click_at_coord_fractions(
