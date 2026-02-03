@@ -116,5 +116,153 @@ class TestPagePreBuildMethod:
         assert default_action._prevent_initial_call_of_guard is False
 
 
-# TODO: Add unit tests for page build method
-# TODO: Add unit tests for private methods in page build
+class TestPageBuildMethod:
+    """Tests for the page build method."""
+
+    def test_page_build_returns_html_div(self):
+        from dash import html
+
+        page = vm.Page(id="page-id", title="Page 1", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        assert isinstance(result, html.Div)
+        assert len(result.children) == 2
+
+    def test_page_build_control_panel_structure(self):
+        from dash import html
+
+        page = vm.Page(id="page-id", title="Page 1", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        control_panel = result.children[0]
+        assert isinstance(control_panel, html.Div)
+        assert control_panel.id == "control-panel"
+
+    def test_page_build_control_panel_hidden_without_controls(self):
+        page = vm.Page(id="page-id", title="Page 1", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        control_panel = result.children[0]
+        assert control_panel.hidden is True
+        assert control_panel.children == []
+
+    def test_page_build_control_panel_visible_with_controls(self):
+        page = vm.Page(
+            id="page-id",
+            title="Page 1",
+            components=[vm.Button()],
+            controls=[vm.Filter(column="species", selector=vm.RadioItems(options=["A", "B", "C"], value="A"))],
+        )
+        page.pre_build()
+        result = page.build()
+
+        control_panel = result.children[0]
+        assert control_panel.hidden is False
+        assert len(control_panel.children) == 1
+
+    def test_page_build_control_panel_hidden_when_all_controls_invisible(self):
+        page = vm.Page(
+            id="page-id",
+            title="Page 1",
+            components=[vm.Button()],
+            controls=[
+                vm.Filter(column="species", selector=vm.RadioItems(options=["A", "B", "C"], value="A"), visible=False)
+            ],
+        )
+        page.pre_build()
+        result = page.build()
+
+        control_panel = result.children[0]
+        assert control_panel.hidden is True
+
+    def test_page_build_page_components_structure(self):
+        from dash import html
+
+        page = vm.Page(id="page-id", title="Page 1", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        assert isinstance(page_components, html.Div)
+        assert page_components.id == "page-components"
+
+    def test_page_build_contains_store_component(self):
+        from dash import dcc
+
+        page = vm.Page(id="page-id", title="Page 1", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        store_components = [child for child in page_components.children if isinstance(child, dcc.Store)]
+        store_ids = [store.id for store in store_components]
+        assert f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_page-id" in store_ids
+
+    def test_page_build_contains_download_component(self):
+        from dash import dcc
+
+        page = vm.Page(id="page-id", title="Page 1", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        download_components = [child for child in page_components.children if isinstance(child, dcc.Download)]
+        assert len(download_components) == 1
+        assert download_components[0].id == "vizro_download"
+
+    def test_page_build_contains_location_component(self):
+        from dash import dcc
+
+        page = vm.Page(id="page-id", title="Page 1", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        location_components = [child for child in page_components.children if isinstance(child, dcc.Location)]
+        assert len(location_components) == 1
+        assert location_components[0].id == "vizro_url"
+        assert location_components[0].refresh == "callback-nav"
+
+    def test_page_build_contains_notification_container(self):
+        import dash_mantine_components as dmc
+
+        page = vm.Page(id="page-id", title="Page 1", components=[vm.Button()])
+        page.pre_build()
+        result = page.build()
+
+        page_components = result.children[1]
+        notification_containers = [
+            child for child in page_components.children if isinstance(child, dmc.NotificationContainer)
+        ]
+        assert len(notification_containers) == 1
+        assert notification_containers[0].id == "vizro-notifications"
+        assert notification_containers[0].position == "top-right"
+
+    def test_page_build_with_multiple_components(self):
+        page = vm.Page(
+            id="page-id",
+            title="Page 1",
+            components=[vm.Button(id="button-1"), vm.Button(id="button-2"), vm.Button(id="button-3")],
+        )
+        page.pre_build()
+        result = page.build()
+
+        # Verify the page builds without error and has correct structure
+        assert result.children[0].id == "control-panel"
+        assert result.children[1].id == "page-components"
+
+    def test_page_build_with_custom_layout(self):
+        page = vm.Page(
+            id="page-id",
+            title="Page 1",
+            components=[vm.Button(id="button-1"), vm.Button(id="button-2")],
+            layout=vm.Grid(grid=[[0, 1]]),
+        )
+        page.pre_build()
+        result = page.build()
+
+        # Verify the page builds without error
+        assert result.children[1].id == "page-components"
