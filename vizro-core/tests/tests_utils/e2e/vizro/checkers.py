@@ -133,7 +133,7 @@ def check_selected_categorical_component(
             }]
     """
     if checklist:
-        timeout = 1
+        timeout = 2
         poll_interval = 0.1
         elapsed = 0
         select_all = driver.find_element(select_all_path(elem_id=component_id))

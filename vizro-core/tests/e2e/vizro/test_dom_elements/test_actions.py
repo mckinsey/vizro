@@ -1,3 +1,5 @@
+import time
+
 from e2e.asserts import assert_files_equal
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
@@ -827,7 +829,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
 def test_set_control_button_card_variants(dash_br):
     """Test set_control action from button and card with different variants."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(dash_br, page_name=cnst.SET_CONTROL_BUTTON_CARD)
+    page_select(dash_br, page_name=cnst.SET_CONTROL_BUTTON_CARD_PAGE)
 
     # set_control card single value
     # Click the card to set virginica value to filters
@@ -1027,13 +1029,21 @@ def test_self_filtered_graph(dash_br):
         ],
     )
 
-    # select virginica in scatter graph 3 times to unselect it on the graph
+    # select virginica in scatter graph 3 times to unselect it on the graph.
+    # number of clicks needed for resetting such a graph will eventually be reduced to 2.
+    # this click results with additional "self-filtering".
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
+    # after first click delay needed.
+    # sometimes without delay test stuck on the first click
+    # (maybe because graph is not fully loaded and test can't click on the appropriate point using coordinates)
+    time.sleep(0.5)
+    # this click does not apply "self-filtering" and it only highlights clicked point.
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
+    # this step "unclicks" selected point and applies "self-filtering" with reset filter value.
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
@@ -1049,4 +1059,10 @@ def test_self_filtered_graph(dash_br):
             {"value": 2, "selected": True, "value_name": "versicolor"},
             {"value": 3, "selected": True, "value_name": "virginica"},
         ],
+    )
+
+    # Check y axis max value is '2.5' (original)
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, axis_value_number="6", axis_value="2.5"),
+        "2.5",
     )

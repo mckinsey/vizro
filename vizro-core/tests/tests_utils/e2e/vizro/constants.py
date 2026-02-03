@@ -286,7 +286,7 @@ BOX_SET_CONTROL_TARGET_MULTI_SELECT = "box_set_control_target_multi-select"
 CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER = "checklist_set_control_multi_select_filter"
 RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER = "radioitems_set_control_multi_select_filter"
 
-SET_CONTROL_BUTTON_CARD = "set-control-button-card-page"
+SET_CONTROL_BUTTON_CARD_PAGE = "set-control-button-card-page"
 SET_CONTROL_BUTTON_NONE = "set-control-button-none"
 SET_CONTROL_BUTTON_EMPTY_LIST = "set-control-button-empty-list"
 SET_CONTROL_CARD_SINGLE_VALUE = "set_control_card_single_value"
