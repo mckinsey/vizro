@@ -24,19 +24,13 @@ from vizro.models._models_utils import (
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
-    (
     ActionsType,
-
     CapturedCallable,
-
     ModelID,
-
     MultiValueType,
     _IdProperty,
-
     _validate_captured_callable,
     make_discriminated_union,
-),
 )
 
 logger = logging.getLogger(__name__)
