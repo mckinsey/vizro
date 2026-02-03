@@ -132,6 +132,7 @@ class Slider(VizroBaseModel):
             output=output,
             inputs=inputs,
             prevent_initial_call=True,
+            hidden=True,
         )
 
         current_value = self.value if self.value is not None else min

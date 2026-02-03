@@ -22,7 +22,6 @@ from vizro_mcp._utils import (
     CHART_INSTRUCTIONS,
     GAPMINDER,
     IRIS,
-    LAYOUT_INSTRUCTIONS,
     STOCKS,
     TIPS,
     DFInfo,
@@ -149,7 +148,8 @@ that model if necessary. Do NOT forget to call `validate_dashboard_config` after
         return ModelJsonSchemaResults(
             model_name=model_name,
             json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
-            additional_info=LAYOUT_INSTRUCTIONS,
+            additional_info="""Grid layout: use integers starting from 0 to reference elements.
+Elements can't overlap, must be rectangular, and rows must have equal column counts.""",
         )
 
     return ModelJsonSchemaResults(

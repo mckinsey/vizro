@@ -1,0 +1,22 @@
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+installer = "uv"
+scripts = {add = "scriv create --add", collect = ["scriv collect", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
+
+[envs.default]
+dependencies = ["pre-commit"]
+detached = true
+installer = "uv"
+
+[envs.default.scripts]
+lint = "pre-commit run {args} --all-files"
+prep-release = [
+  "hatch version patch",
+  "hatch run changelog:collect",
+  'echo "Release $(hatch version) prepared. Commit and push to pass CI checks."'
+]
+
+[version]
+path = ".claude-plugin/plugin.json"
+pattern = '''"version":\s*"(?P<version>[^"]+)"'''

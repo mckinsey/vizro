@@ -121,6 +121,16 @@ def test_export_action_page(dash_br_driver):
 
 
 @pytest.mark.parametrize(
+    "dash_br_driver", [({"port": cnst.ONE_PAGE_PORT})], ids=["one_page"], indirect=["dash_br_driver"]
+)
+@image_assertion
+def test_export_action_page_dark_theme(dash_br_driver):
+    graph_load_waiter(dash_br_driver)
+    # Change to dark theme, then take the screenshot
+    dash_br_driver.multiple_click(theme_toggle_path(), 1, delay=1)
+
+
+@pytest.mark.parametrize(
     "dash_br_driver",
     [
         ({"port": cnst.NAVBAR_ACCORDIONS_PORT}),
@@ -397,12 +407,30 @@ def test_notifications_page(dash_br):
         page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
     )
 
-    # Trigger link notification
-    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1, delay=1)
-
-    # Check that the last notification is displayed
+    # Trigger notifications with delays to allow each to fully render
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-description"] a', "Filters page"
     )
 
 
@@ -418,12 +446,30 @@ def test_notifications_page_dark_theme(dash_br):
     # Switch theme to dark
     dash_br.multiple_click(theme_toggle_path(), 1)
 
-    # Trigger success notification
-    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1, delay=1)
-
-    # Check that the last notification is displayed
+    # Trigger notifications with delays to allow each to fully render
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.SUCCESS_NOTIFICATION_TITLE
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-description"] a', "Filters page"
     )
 
 
