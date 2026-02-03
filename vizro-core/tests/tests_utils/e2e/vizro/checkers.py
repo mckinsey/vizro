@@ -133,7 +133,13 @@ def check_selected_categorical_component(
             }]
     """
     if checklist:
+        timeout = 1
+        poll_interval = 0.1
+        elapsed = 0
         select_all = driver.find_element(select_all_path(elem_id=component_id))
+        while select_all.is_selected() != select_all_status and elapsed < timeout:
+            time.sleep(poll_interval)
+            elapsed += poll_interval
         assert_that(select_all.is_selected(), equal_to(select_all_status))
     values = driver.find_elements(f"div[id='{component_id}'] div[class^='form-check']")
     assert_that(len(values), equal_to(len(options_value_status)))

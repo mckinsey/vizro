@@ -8,6 +8,7 @@ from e2e.vizro.checkers import check_graph_color, check_theme_color
 from e2e.vizro.navigation import (
     accordion_select,
     click_element_by_xpath_selenium,
+    hover_over_element_by_css_selector_selenium,
     hover_over_element_by_xpath_selenium,
     page_select,
 )
@@ -317,7 +318,7 @@ def test_collapsible_containers_grid_switched(dash_br):
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 0)
+    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -337,7 +338,7 @@ def test_collapsible_containers_flex_switched(dash_br):
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 0)
+    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -351,7 +352,7 @@ def test_collapsible_subcontainers_flex(dash_br):
     dash_br.multiple_click("#flex_subcontainer_icon", 1)
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 0)
+    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 

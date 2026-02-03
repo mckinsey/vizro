@@ -1027,14 +1027,13 @@ def test_self_filtered_graph(dash_br):
         ],
     )
 
-    # select virginica in scatter graph
+    # select virginica in scatter graph 3 times to unselect it on the graph
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
-    # TODO: find out why three clicks are needed to unselect the point
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
