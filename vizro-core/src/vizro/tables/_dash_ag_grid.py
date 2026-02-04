@@ -73,6 +73,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
         ```
     """
     defaults = {
+        "className": "ag-theme-vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],
         "rowData": data_frame.apply(
             lambda x: (
