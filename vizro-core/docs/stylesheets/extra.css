@@ -53,11 +53,16 @@
 .pydantic-field-item {
   border-top: 1px solid var(--md-default-fg-color--lightest);
   display: flex;
-  padding: 1em 0;
+  padding: 1em 0.5em;
+  transition: background-color 0.2s ease;
 }
 
 .pydantic-field-item:first-of-type {
   border-top: none;
+}
+
+.pydantic-field-item:hover {
+  background-color: var(--md-default-fg-color--lightest);
 }
 
 .pydantic-field-item:last-child {
