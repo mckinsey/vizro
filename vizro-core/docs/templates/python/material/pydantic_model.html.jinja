@@ -1,3 +1,5 @@
+{# Template for rendering Pydantic model documentation. This template extends the base class template and adds Pydantic-specific sections for schema, config, and fields. Fields are stored in class.extra.griffe_pydantic._stored_fields (populated by PydanticDocsCleaner extension) and displayed in a table format. #}
+
 {% extends "_base/class.html.jinja" %}
 
 {% block contents %}

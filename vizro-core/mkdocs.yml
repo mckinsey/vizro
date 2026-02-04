@@ -212,12 +212,12 @@ plugins:
           - pages/explanation/schema.md: "The Vizro schema"
           - pages/explanation/authors.md: "Vizro contributor listing"
   - mkdocstrings:
-      custom_templates: docs/templates
+      custom_templates: docs/templates # includes custom jinja template for Pydantic field rendering
       handlers:
         python:
           options:
             show_bases: false
-            show_source: false #currently doesn't show source at correct level, and not for pydantic models
+            show_source: false # currently doesn't show source at correct level, and not for pydantic models
             docstring_style: google
             merge_init_into_class: true
             docstring_section_style: spacy
