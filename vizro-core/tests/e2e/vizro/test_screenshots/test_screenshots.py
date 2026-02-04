@@ -17,9 +17,11 @@ from e2e.vizro.paths import (
     dropdown_arrow_path,
     kpi_card_path,
     nav_card_link_path,
+    scatter_point_path,
     switch_path_using_filter_control_id,
     table_ag_grid_cell_path_by_row,
     table_ag_grid_cell_value_path,
+    table_ag_grid_checkbox_path_by_row,
     theme_toggle_path,
 )
 from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
@@ -470,6 +472,25 @@ def test_notifications_page_dark_theme(dash_br):
     dash_br.wait_for_text_to_equal(
         f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-description"] a', "Filters page"
     )
+
+
+@image_assertion
+def test_set_control_multi_select_page(dash_br):
+    """Testing set control multi select interactions page."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+    )
+
+    # click on the scatter point to check that the rest of the chat is dimmed
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 0)
+
+    # click on the scatter point to check that the rest of the chat is not changed
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
+
+    # click on the aggrid checkbox
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2), 1)
 
 
 @pytest.mark.mobile_screenshots
