@@ -13,27 +13,29 @@ from vizro.models.types import capture
 import vizro_dash_components as vdc
 
 # Sample data for demonstration
-df = pd.DataFrame({
-    "topic": ["Python", "JavaScript", "SQL", "React"],
-    "description": [
-        "A versatile programming language",
-        "The language of the web",
-        "Database query language",
-        "A JavaScript library for building UIs",
-    ],
-    "code_example": [
-        '```python\ndef hello():\n    return "Hello, World!"\n```',
-        '```javascript\nconst hello = () => "Hello, World!";\n```',
-        '```sql\nSELECT * FROM users WHERE active = true;\n```',
-        '```jsx\nconst App = () => <h1>Hello, World!</h1>;\n```',
-    ],
-    "formula": [
-        r"$f(x) = x^2 + 2x + 1$",
-        r"$y = mx + b$",
-        r"$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$",
-        r"$E = mc^2$",
-    ],
-})
+df = pd.DataFrame(
+    {
+        "topic": ["Python", "JavaScript", "SQL", "React"],
+        "description": [
+            "A versatile programming language",
+            "The language of the web",
+            "Database query language",
+            "A JavaScript library for building UIs",
+        ],
+        "code_example": [
+            '```python\ndef hello():\n    return "Hello, World!"\n```',
+            '```javascript\nconst hello = () => "Hello, World!";\n```',
+            "```sql\nSELECT * FROM users WHERE active = true;\n```",
+            "```jsx\nconst App = () => <h1>Hello, World!</h1>;\n```",
+        ],
+        "formula": [
+            r"$f(x) = x^2 + 2x + 1$",
+            r"$y = mx + b$",
+            r"$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$",
+            r"$E = mc^2$",
+        ],
+    }
+)
 
 
 @capture("figure")
@@ -78,13 +80,15 @@ def markdown_figure(
 *This content updates based on the selected filter.*
 """
 
-    return html.Div([
-        vdc.Markdown(
-            id="dynamic-markdown",
-            children=content,
-            dedent=True,
-        )
-    ])
+    return html.Div(
+        [
+            vdc.Markdown(
+                id="dynamic-markdown",
+                children=content,
+                dedent=True,
+            )
+        ]
+    )
 
 
 @capture("figure")
@@ -120,14 +124,16 @@ Here's a mathematical formula related to {topic}:
 The formula above is rendered using KaTeX.
 """
 
-    return html.Div([
-        vdc.Markdown(
-            id="math-markdown",
-            children=content,
-            mathjax=True,  # Enable math rendering
-            dedent=True,
-        )
-    ])
+    return html.Div(
+        [
+            vdc.Markdown(
+                id="math-markdown",
+                children=content,
+                mathjax=True,  # Enable math rendering
+                dedent=True,
+            )
+        ]
+    )
 
 
 @capture("figure")
@@ -151,11 +157,11 @@ def markdown_documentation(
     sections = []
     for _, row in items.iterrows():
         sections.append(f"""
-### {row['topic']}
+### {row["topic"]}
 
-{row['description']}
+{row["description"]}
 
-{row['code_example']}
+{row["code_example"]}
 """)
 
     content = f"""
@@ -169,13 +175,15 @@ Showing {len(items)} of {len(data_frame)} topics.
 *Adjust the slider to show more or fewer topics.*
 """
 
-    return html.Div([
-        vdc.Markdown(
-            id="docs-markdown",
-            children=content,
-            dedent=True,
-        )
-    ])
+    return html.Div(
+        [
+            vdc.Markdown(
+                id="docs-markdown",
+                children=content,
+                dedent=True,
+            )
+        ]
+    )
 
 
 # Create the Vizro dashboard

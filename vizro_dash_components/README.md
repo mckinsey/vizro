@@ -14,7 +14,7 @@ pip install vizro-dash-components
 
 ## Usage
 
-```python
+````python
 from dash import Dash
 from vizro_dash_components import Markdown
 
@@ -28,12 +28,12 @@ app.layout = Markdown(
     ```python
     print("Hello, World!")
     ```
-    """
+    """,
 )
 
 if __name__ == "__main__":
     app.run(debug=True)
-```
+````
 
 ## Components
 
@@ -43,17 +43,17 @@ A Markdown component that renders markdown content with syntax highlighting for 
 
 #### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | string | - | The ID used to identify this component in Dash callbacks |
-| `children` | string or list | - | A markdown string (or array of strings) to render |
-| `className` | string | - | Class name of the container element |
-| `style` | object | - | A style object for the container element |
-| `dedent` | boolean | `true` | Remove matching leading whitespace from all lines |
-| `dangerously_allow_html` | boolean | `false` | Allow raw HTML in markdown |
-| `link_target` | string | - | Target attribute for links |
-| `mathjax` | boolean | `false` | Enable LaTeX math rendering (uses MathJax) |
-| `highlight_config` | object | - | Config options for syntax highlighting (`{theme: 'dark'}`) |
+| Prop                     | Type           | Default | Description                                                |
+| ------------------------ | -------------- | ------- | ---------------------------------------------------------- |
+| `id`                     | string         | -       | The ID used to identify this component in Dash callbacks   |
+| `children`               | string or list | -       | A markdown string (or array of strings) to render          |
+| `className`              | string         | -       | Class name of the container element                        |
+| `style`                  | object         | -       | A style object for the container element                   |
+| `dedent`                 | boolean        | `true`  | Remove matching leading whitespace from all lines          |
+| `dangerously_allow_html` | boolean        | `false` | Allow raw HTML in markdown                                 |
+| `link_target`            | string         | -       | Target attribute for links                                 |
+| `mathjax`                | boolean        | `false` | Enable LaTeX math rendering (uses MathJax)                 |
+| `highlight_config`       | object         | -       | Config options for syntax highlighting (`{theme: 'dark'}`) |
 
 #### Features
 
@@ -75,13 +75,13 @@ This component is based on `dcc.Markdown` from Plotly Dash. The only intentional
 
 ### Key Differences from dcc.Markdown
 
-| Feature | dcc.Markdown | vizro Markdown |
-|---------|-------------|----------------|
-| Code highlighting | highlight.js (DOM manipulation) | @mantine/code-highlight (React) |
-| Copy button | None | Built-in with CodeHighlight |
-| Math rendering | MathJax (lazy-loaded via webpack chunk) | MathJax (bundled synchronously) |
-| react-markdown | v4.3.1 | v4.3.1 (same) |
-| Internal links | `<DccLink>` component import | Inline pushState routing (same behavior) |
+| Feature           | dcc.Markdown                            | vizro Markdown                           |
+| ----------------- | --------------------------------------- | ---------------------------------------- |
+| Code highlighting | highlight.js (DOM manipulation)         | @mantine/code-highlight (React)          |
+| Copy button       | None                                    | Built-in with CodeHighlight              |
+| Math rendering    | MathJax (lazy-loaded via webpack chunk) | MathJax (bundled synchronously)          |
+| react-markdown    | v4.3.1                                  | v4.3.1 (same)                            |
+| Internal links    | `<DccLink>` component import            | Inline pushState routing (same behavior) |
 
 For a comprehensive explanation of all deviations and their reasons, see [IMPLEMENTATION_NOTES.md](./IMPLEMENTATION_NOTES.md).
 
@@ -119,24 +119,29 @@ vizro_dash_components/
 The following files were copied from [plotly/dash](https://github.com/plotly/dash/tree/dev/components/dash-core-components) and modified:
 
 1. **`src/ts/fragments/Markdown.react.js`** (modified from dcc)
-   - Replaced `MarkdownHighlighter` / `highlightCode()` with Mantine CodeHighlight
-   - Replaced `DccLink` import with inline pushState routing
-   - Imports propTypes from shared `markdownPropTypes.js` (see deviation comment)
-   - All other logic (dedent, regexMath, componentTransforms, className, renderers) is identical
 
-2. **`src/ts/fragments/Math.react.js`** (from dcc, minor change)
-   - Import path updated to `../utils/mathjax` (original: `../utils/LazyLoader/mathjax`)
-   - All rendering logic is identical
+    - Replaced `MarkdownHighlighter` / `highlightCode()` with Mantine CodeHighlight
+    - Replaced `DccLink` import with inline pushState routing
+    - Imports propTypes from shared `markdownPropTypes.js` (see deviation comment)
+    - All other logic (dedent, regexMath, componentTransforms, className, renderers) is identical
 
-3. **`src/ts/utils/LoadingElement.js`** (copied from dcc, no changes)
-   - Loading state wrapper for Dash components
+1. **`src/ts/fragments/Math.react.js`** (from dcc, minor change)
 
-4. **`src/ts/utils/mathjax.js`** (merged from dcc's two files)
-   - Merges original `utils/mathjax.js` and `utils/LazyLoader/mathjax.js`
-   - Imports MathJax synchronously instead of lazy-loading (see deviation comment)
+    - Import path updated to `../utils/mathjax` (original: `../utils/LazyLoader/mathjax`)
+    - All rendering logic is identical
 
-5. **`src/ts/fragments/markdownPropTypes.js`** (new, extracted from dcc)
-   - Shared propTypes/defaultProps to avoid circular dependency (see deviation comment)
+1. **`src/ts/utils/LoadingElement.js`** (copied from dcc, no changes)
+
+    - Loading state wrapper for Dash components
+
+1. **`src/ts/utils/mathjax.js`** (merged from dcc's two files)
+
+    - Merges original `utils/mathjax.js` and `utils/LazyLoader/mathjax.js`
+    - Imports MathJax synchronously instead of lazy-loading (see deviation comment)
+
+1. **`src/ts/fragments/markdownPropTypes.js`** (new, extracted from dcc)
+
+    - Shared propTypes/defaultProps to avoid circular dependency (see deviation comment)
 
 All deviations from the original are marked with `DEVIATION FROM ORIGINAL DCC` comments in the source.
 
@@ -153,51 +158,58 @@ All deviations from the original are marked with `DEVIATION FROM ORIGINAL DCC` c
 ### Getting Started
 
 1. Create and activate a Python environment:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-   ```
 
-2. Install Python dependencies (includes `dash[dev]` for `dash-generate-components`):
-   ```bash
-   pip install -r requirements.txt
-   ```
+    ```bash
+    python -m venv .venv
+    source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+    ```
 
-3. Install npm packages:
-   ```bash
-   npm install
-   ```
+1. Install Python dependencies (includes `dash[dev]` for `dash-generate-components`):
 
-4. Build (**venv must be activated** for `dash-generate-components` to work):
-   ```bash
-   source .venv/bin/activate  # ensure venv is active
-   npm run build
-   ```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-5. Install locally for testing:
-   ```bash
-   pip install -e .
-   ```
+1. Install npm packages:
 
-6. Test:
-   ```bash
-   python usage.py
-   ```
+    ```bash
+    npm install
+    ```
+
+1. Build (**venv must be activated** for `dash-generate-components` to work):
+
+    ```bash
+    source .venv/bin/activate  # ensure venv is active
+    npm run build
+    ```
+
+1. Install locally for testing:
+
+    ```bash
+    pip install -e .
+    ```
+
+1. Test:
+
+    ```bash
+    python usage.py
+    ```
 
 > **Important:** The `npm run build` command calls `dash-generate-components` which is part of `dash[dev]`. The Python virtual environment must be activated before running the build.
 
 ### Build Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run build` | Build JS + generate Python bindings |
-| `npm run build:js` | JavaScript bundle only |
-| `npm run build:backends` | Python bindings only |
-| `npm run watch` | Watch mode (rebuild on changes) |
+| Command                  | Description                         |
+| ------------------------ | ----------------------------------- |
+| `npm run build`          | Build JS + generate Python bindings |
+| `npm run build:js`       | JavaScript bundle only              |
+| `npm run build:backends` | Python bindings only                |
+| `npm run watch`          | Watch mode (rebuild on changes)     |
 
 ### Dependencies
 
 #### JavaScript (npm)
+
 - `@mantine/code-highlight` - Syntax highlighting component with copy button
 - `@mantine/core` - Mantine core components (provides MantineProvider)
 - `@mantine/hooks` - Mantine React hooks
@@ -212,6 +224,7 @@ All deviations from the original are marked with `DEVIATION FROM ORIGINAL DCC` c
 - `process` (dev) - Webpack 5 polyfill for Node.js `process` global
 
 #### Python
+
 - `dash[dev]>=3.0.0` - Required for building (includes dash-generate-components)
 
 ---
@@ -221,30 +234,35 @@ All deviations from the original are marked with `DEVIATION FROM ORIGINAL DCC` c
 ### Create a production build
 
 1. Clean up:
-   ```bash
-   rm -rf dist build
-   ```
 
-2. Build:
-   ```bash
-   npm install
-   npm run build
-   ```
+    ```bash
+    rm -rf dist build
+    ```
 
-3. Build source distribution:
-   ```bash
-   npm run dist
-   ```
+1. Build:
 
-4. Test locally:
-   ```bash
-   pip install vizro_dash_components-<version>.tar.gz
-   ```
+    ```bash
+    npm install
+    npm run build
+    ```
 
-5. Publish to PyPI:
-   ```bash
-   twine upload dist/*
-   ```
+1. Build source distribution:
+
+    ```bash
+    npm run dist
+    ```
+
+1. Test locally:
+
+    ```bash
+    pip install vizro_dash_components-<version>.tar.gz
+    ```
+
+1. Publish to PyPI:
+
+    ```bash
+    twine upload dist/*
+    ```
 
 ---
 

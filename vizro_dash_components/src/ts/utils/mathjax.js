@@ -11,7 +11,7 @@
 // the main JS file.
 // Moved out of LazyLoader/ since it no longer lazy-loads.
 
-import 'mathjax/es5/tex-svg';
+import "mathjax/es5/tex-svg";
 
 window.MathJax.config.startup.typeset = false;
 

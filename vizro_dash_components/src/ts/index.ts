@@ -1,5 +1,3 @@
-import Markdown from './components/Markdown';
+import Markdown from "./components/Markdown";
 
-export {
-    Markdown
-}
+export { Markdown };
