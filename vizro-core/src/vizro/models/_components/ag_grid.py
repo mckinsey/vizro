@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 
 import dash_ag_grid as dag
 import pandas as pd
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from dash import State, dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -220,14 +220,6 @@ class AgGrid(VizroBaseModel):
             )
 
     def build(self):
-        # Most of the theming in AgGrid is controlled through CSS in `aggrid.css`. However, this callback is necessary
-        # to ensure that all grid elements, such as menu icons and filter icons, are consistent with the theme.
-        clientside_callback(
-            ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
-            Output(self._inner_component_id, "className"),
-            Input("theme-selector", "value"),
-            hidden=True,
-        )
         description = self.description.build().children if self.description else [None]
         return dcc.Loading(
             children=html.Div(

@@ -14,11 +14,34 @@ function update_dashboard_theme(theme_selector_checked) {
   return dash_clientside.no_update;
 }
 
-function update_ag_grid_theme(theme_selector_checked) {
-  return theme_selector_checked
-    ? "ag-theme-quartz ag-theme-vizro"
-    : "ag-theme-quartz-dark ag-theme-vizro";
-}
+// Define Vizro theme function for AG Grid using Bootstrap CSS variables and new theming API v33
+// Reference: https://www.ag-grid.com/theme-builder/
+// This theme automatically adapts to light/dark mode via Bootstrap's data-bs-theme attribute
+var dashAgGridFunctions = window.dashAgGridFunctions || {};
+dashAgGridFunctions.vizroTheme = function (theme, agGrid) {
+  return theme.withPart(agGrid.createPart(agGrid.iconSetMaterial)).withParams({
+    accentColor: "var(--bs-border-color-translucent)",
+    backgroundColor: "var(--bs-body-bg)",
+    borderColor: "var(--bs-border-color)",
+    borderRadius: 0,
+    chromeBackgroundColor: "transparent",
+    columnBorder: false,
+    fontFamily: ["inter", "sans-serif", "arial", "serif"],
+    foregroundColor: "var(--bs-body-color)",
+    headerBackgroundColor: "var(--bs-body-bg)",
+    headerFontSize: 14,
+    headerFontWeight: 400,
+    headerRowBorder: true,
+    headerTextColor: "var(--bs-secondary-color)",
+    headerVerticalPaddingScale: 1,
+    rowBorder: true,
+    spacing: 8,
+    wrapperBorder: false,
+    wrapperBorderRadius: 0,
+  });
+};
+
+window.dashAgGridFunctions = dashAgGridFunctions;
 
 function update_graph_theme(figure, theme_selector_checked, vizro_themes) {
   const theme_to_apply = theme_selector_checked ? "vizro_light" : "vizro_dark";
@@ -77,7 +100,6 @@ window.dash_clientside = {
   ...window.dash_clientside,
   dashboard: {
     update_dashboard_theme: update_dashboard_theme,
-    update_ag_grid_theme: update_ag_grid_theme,
     update_graph_theme: update_graph_theme,
     collapse_nav_panel: collapse_nav_panel,
   },

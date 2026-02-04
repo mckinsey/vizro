@@ -73,7 +73,6 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
         ```
     """
     defaults = {
-        "className": "ag-theme-quartz-dark ag-theme-vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],
         "rowData": data_frame.apply(
             lambda x: (
@@ -97,6 +96,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
             "domLayout": "autoHeight",
             "pagination": True,
             "paginationPageSize": 20,
+            "theme": {"function": "vizroTheme(themeQuartz, agGrid)"},
         },
         "columnSize": "responsiveSizeToFit",
     }
