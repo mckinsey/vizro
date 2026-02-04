@@ -1,10 +1,8 @@
-import pytest
 from e2e.vizro import constants as cnst
 from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
 from e2e.vizro.paths import categorical_components_value_path
 
 
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_interactions(dash_br):
     """Test filter interactions between two graphs."""
     page_select(
@@ -13,7 +11,7 @@ def test_interactions(dash_br):
     )
 
     # click on the 'setosa' data in scatter graph and check result for box graph
-    dash_br.click_at_coord_fractions(f"#{cnst.SCATTER_INTERACTIONS_ID} path:nth-of-type(20)", 0, 1)
+    dash_br.click_at_coord_fractions(f"#{cnst.SCATTER_INTERACTIONS_ID} path:nth-of-type(20)", 0, 0)
     dash_br.wait_for_element(f"div[id='{cnst.BOX_INTERACTIONS_ID}'] path[style*='rgb(0, 180, 255)']:nth-of-type(14)")
 
     # select 'setosa' in dropdown filter and check result for box graph
