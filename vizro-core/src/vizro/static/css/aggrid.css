@@ -23,7 +23,6 @@
 .ag-input-field-input {
   background-color: var(--input-field-bg);
   box-shadow: var(--bs-box-shadow-sm);
-  background-color: var(--input-field-bg);
 }
 
 [data-bs-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
