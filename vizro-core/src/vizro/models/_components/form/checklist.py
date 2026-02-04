@@ -8,6 +8,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
+    validate_options_dict,
     validate_value,
 )
 from vizro.models._models_utils import (
@@ -71,7 +72,7 @@ class Checklist(VizroBaseModel):
     _inner_component_properties: list[str] = PrivateAttr(dbc.Checklist().available_properties)
 
     # Reused validators
-    # _validate_options = model_validator(mode="before")(validate_options_dict)
+    _validate_options = model_validator(mode="before")(validate_options_dict)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

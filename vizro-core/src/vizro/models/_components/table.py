@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Any, Literal
+from typing import Annotated, Literal
 
 import pandas as pd
 from dash import State, dcc, html
@@ -8,7 +8,6 @@ from pydantic import (
     BeforeValidator,
     Field,
     PrivateAttr,
-    ValidationInfo,
     field_validator,
     model_validator,
 )
@@ -75,10 +74,7 @@ class Table(VizroBaseModel):
 
     _inner_component_id: str = PrivateAttr()
 
-    @field_validator("figure", mode="before")
-    @classmethod
-    def _validate_figure(cls, v: Any, info: ValidationInfo):
-        return _validate_captured_callable(cls, v, info)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

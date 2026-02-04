@@ -8,7 +8,7 @@ from box import Box, BoxList
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, ValidationInfo, field_validator, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested
@@ -91,10 +91,7 @@ class Graph(VizroBaseModel):
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future."""
 
-    @field_validator("figure", mode="before")
-    @classmethod
-    def _validate_figure(cls, v: Any, info: ValidationInfo):
-        return _validate_captured_callable(cls, v, info)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

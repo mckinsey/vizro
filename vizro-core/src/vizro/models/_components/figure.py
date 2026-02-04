@@ -1,7 +1,7 @@
-from typing import Annotated, Any, Literal
+from typing import Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, JsonValue, ValidationInfo, field_validator, model_validator
+from pydantic import AfterValidator, Field, JsonValue, field_validator, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers import data_manager
@@ -30,10 +30,7 @@ class Figure(VizroBaseModel):
     ]
     actions: ActionsType = []
 
-    @field_validator("figure", mode="before")
-    @classmethod
-    def _validate_figure(cls, v: Any, info: ValidationInfo):
-        return _validate_captured_callable(cls, v, info)
+    _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
