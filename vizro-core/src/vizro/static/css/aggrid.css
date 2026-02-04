@@ -7,3 +7,8 @@
   justify-content: flex-start;
   padding: 0.5rem 0 0.75rem;
 }
+
+.ag-filter-condition {
+  justify-content: flex-start;
+  padding: 0.5rem 0.25rem;
+}
