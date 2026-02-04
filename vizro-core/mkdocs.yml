@@ -220,7 +220,7 @@ plugins:
             show_source: false #currently doesn't show source at correct level, and not for pydantic models
             docstring_style: google
             merge_init_into_class: true
-            docstring_section_style: table
+            docstring_section_style: spacy
             separate_signature: true
             unwrap_annotated: true
             show_symbol_type_heading: true

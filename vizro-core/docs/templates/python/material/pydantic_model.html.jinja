@@ -27,44 +27,42 @@
   {% with fields = class.extra.griffe_pydantic._stored_fields or class.extra.griffe_pydantic.fields() %}
       {% if fields %}
         <p><strong>Fields:</strong></p>
-        <table class="pydantic-field-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Description</th>
-              <th>Default</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for name, field in fields.items() %}
-              <tr class="doc-section-item">
-                <td><code><autoref optional hover identifier="{{ field.path }}">{{ name }}</autoref></code></td>
-                <td>{% with expression = field.annotation %}<code>{% include "expression.html.jinja" with context %}</code>{% endwith %}</td>
-                <td>
-                  {% if field.docstring %}
-                    <div class="doc-md-description">
-                      {% with autoref_hook = AutorefsHook(field, config) %}
-                        {{ field.docstring.value|convert_markdown(heading_level, field.path, autoref_hook=autoref_hook) }}
-                      {% endwith %}
-                    </div>
-                  {% endif %}
-                </td>
-                <td>
-                  {% if field.extra.vizro_pydantic and field.extra.vizro_pydantic.default_display is not none %}
-                    <code>{{ field.extra.vizro_pydantic.default_display }}</code>
-                  {% elif field.extra.vizro_pydantic and field.extra.vizro_pydantic.required %}
-                    <em>required</em>
-                  {% elif field.value is not none %}
-                    {{ field.value|string|highlight(language="python", inline=True) }}
-                  {% else %}
-                    <em>required</em>
-                  {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        <div class="pydantic-field-spacy">
+          <div class="pydantic-field-header">
+            <div class="field-name">Name</div>
+            <div class="field-content">Description</div>
+          </div>
+          {% for name, field in fields.items() %}
+            <div class="pydantic-field-item">
+              <div class="field-name">
+                <code><autoref optional hover identifier="{{ field.path }}">{{ name }}</autoref></code>
+              </div>
+              <div class="field-content">
+                {% if field.docstring %}
+                  <div class="field-description">
+                    {% with autoref_hook = AutorefsHook(field, config) %}
+                      {{ field.docstring.value|convert_markdown(heading_level, field.path, autoref_hook=autoref_hook) }}
+                    {% endwith %}
+                  </div>
+                {% endif %}
+                <div class="field-meta">
+                  <span class="field-type"><strong>TYPE:</strong> {% with expression = field.annotation %}<code>{% include "expression.html.jinja" with context %}</code>{% endwith %}</span>
+                  <span class="field-default"><strong>DEFAULT:</strong>
+                    {% if field.extra.vizro_pydantic and field.extra.vizro_pydantic.default_display is not none %}
+                      <code>{{ field.extra.vizro_pydantic.default_display }}</code>
+                    {% elif field.extra.vizro_pydantic and field.extra.vizro_pydantic.required %}
+                      <em>required</em>
+                    {% elif field.value is not none %}
+                      {{ field.value|string|highlight(language="python", inline=True) }}
+                    {% else %}
+                      <em>required</em>
+                    {% endif %}
+                  </span>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       {% endif %}
     {% endwith %}
   {% endblock fields %}
