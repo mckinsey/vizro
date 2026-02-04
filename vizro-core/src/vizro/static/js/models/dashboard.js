@@ -42,7 +42,7 @@ dashAgGridFunctions.vizroTheme = function (theme, agGrid) {
     buttonTextColor: "var(--text-primary-inverted)",
     buttonVerticalPadding: 4,
     buttonHorizontalPadding: 8,
-    cellHorizontalPaddingScale: 0.75,    
+    cellHorizontalPaddingScale: 0.75,
     checkboxCheckedBackgroundColor: "var(--bs-body-bg)",
     checkboxCheckedBorderColor: "var(--bs-primary)",
     checkboxCheckedShapeColor: "var(--bs-primary)",
