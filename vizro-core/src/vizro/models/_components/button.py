@@ -8,7 +8,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call, make_actions_chain, validate_icon
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty, make_discriminated_union
 
 
 class Button(VizroBaseModel):
@@ -51,7 +51,7 @@ class Button(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         # AfterValidator(warn_description_without_title) is not needed here because either 'text' or 'icon' argument
         # is mandatory.

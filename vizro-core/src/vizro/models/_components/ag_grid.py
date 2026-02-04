@@ -19,7 +19,14 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, MultiValueType, _IdProperty, _validate_captured_callable
+from vizro.models.types import (
+    ActionsType,
+    CapturedCallable,
+    MultiValueType,
+    _IdProperty,
+    _validate_captured_callable,
+    make_discriminated_union,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +78,7 @@ class AgGrid(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

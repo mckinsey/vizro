@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import Annotated, cast
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -9,6 +9,7 @@ from pydantic import AfterValidator, Field, PrivateAttr
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.accordion import Accordion
@@ -28,7 +29,11 @@ class NavLink(VizroBaseModel):
 
     """
 
-    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    type: Literal["nav_link"] = "nav_link"
+    pages: Annotated[
+        NavPagesType,
+        Field(default=[]),
+    ]
     label: str = Field(description="Text description of the icon for use in tooltip.")
     icon: Annotated[
         str,
@@ -39,9 +44,13 @@ class NavLink(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        from vizro.models._navigation.accordion import Accordion
-
-        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        # TODO[MS]: Check validate pages properly
+        self.pages = _validate_pages(self.pages)
+        self._nav_selector = _validate_with_tree_context(
+            Accordion(pages=self.pages),
+            parent_model=self,
+            field_name="_nav_selector",
+        )
 
     @_log_call
     def build(self, *, active_page_id=None):

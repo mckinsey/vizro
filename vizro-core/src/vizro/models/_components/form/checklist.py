@@ -17,7 +17,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, MultiValueType, OptionsType, _IdProperty
+from vizro.models.types import ActionsType, MultiValueType, OptionsType, _IdProperty, make_discriminated_union
 
 
 class Checklist(VizroBaseModel):
@@ -57,7 +57,7 @@ class Checklist(VizroBaseModel):
         "options with a single click.",
     )
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(

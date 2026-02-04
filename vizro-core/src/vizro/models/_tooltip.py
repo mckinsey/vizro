@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
@@ -53,6 +53,7 @@ class Tooltip(VizroBaseModel):
         ```
     """
 
+    type: Literal["tooltip"] = "tooltip"
     text: str = Field(
         description="Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec."
     )

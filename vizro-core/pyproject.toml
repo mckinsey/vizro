@@ -30,7 +30,8 @@ dependencies = [
   "black",
   "autoflake",
   "packaging",
-  "python-box"
+  "python-box",
+  "nutree"
 ]
 description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
