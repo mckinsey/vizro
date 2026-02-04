@@ -34,7 +34,7 @@ page = vm.Page(
     title="Data",
     components=[vm.AgGrid(figure=dash_ag_grid(df))],
     controls=[
-        vm.Filter(column="name", selector=vm.Checklist()),
+        vm.Filter(column="name"),
     ],
 )
 
