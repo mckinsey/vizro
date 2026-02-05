@@ -1,0 +1,35 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-nodejs-version>=0.3.2"]
+
+[project]
+authors = [
+  {name = "Vizro Team"}
+]
+classifiers = [
+  "Framework :: Dash"
+]
+dependencies = [
+  "dash>=3.0.0"
+]
+description = "Custom Dash components for Vizro with enhanced Markdown rendering"
+dynamic = ["version"]
+license = "Apache-2.0"
+name = "vizro_dash_components"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = [
+  "dash[dev]>=3.0.0",  # provides dash-generate-components, required by `npm run build`
+  "vizro"
+]
+
+[project.urls]
+Source = "https://github.com/mckinsey/vizro"
+
+[tool.hatch.build.targets.wheel]
+packages = ["vizro_dash_components"]
+
+[tool.hatch.version]
+source = "nodejs"

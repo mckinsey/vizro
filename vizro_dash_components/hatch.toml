@@ -1,0 +1,35 @@
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+installer = "uv"
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
+
+[envs.default]
+dependencies = [
+  "pre-commit"
+]
+detached = true
+installer = "uv"
+
+[envs.default.scripts]
+lint = "pre-commit run {args} --all-files"
+prep-release = [
+  "npm version {args} --no-git-tag-version",
+  "hatch run changelog:collect",
+  "hatch run changelog:add",
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro_dash_components"'
+]
+
+# Detached env for npm commands. Requires dash[dev] on PATH for build:backends
+# (install via `pip install -e ".[dev]"`).
+[envs.frontend]
+detached = true
+
+[envs.frontend.scripts]
+build = "npm run build"
+build-backends = "npm run build:backends"
+build-js = "npm run build:js"
+fmt = "npm run fmt:js"
+install = "npm install"
+lint = "npm run lint:js"
+watch = "npm run build:js::dev -- --watch"

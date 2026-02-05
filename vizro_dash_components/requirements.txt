@@ -1,3 +1,0 @@
-dash[dev]>=3.0.0
-wheel
-build

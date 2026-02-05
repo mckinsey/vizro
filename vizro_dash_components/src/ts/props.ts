@@ -17,5 +17,6 @@ export type DashComponentProps = {
   /**
    * Update props to trigger callbacks.
    */
+  // biome-ignore lint/suspicious/noExplicitAny: Dash standard interface for triggering callbacks
   setProps: (props: Record<string, any>) => void;
 };
