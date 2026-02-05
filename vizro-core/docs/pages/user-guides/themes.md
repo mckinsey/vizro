@@ -267,7 +267,7 @@ For more comprehensive customizations, you can modify multiple template properti
 
 ### Chart-specific styling takes precedence
 
-When styling charts, it's important to understand the order of precedence. Arguments specified directly in chart functions (such as `color_discrete_map`, `color_discrete_sequence`, or `color_continuous_scale`) will always take precedence over template settings.
+When styling charts, it's important to understand the order of precedence. Arguments specified directly in chart functions (such as `color_discrete_map`, `color_discrete_sequence`, or `color_continuous_scale`) always take precedence over template settings.
 
 This allows you to apply a global template while still having fine-grained control over individual charts.
 
