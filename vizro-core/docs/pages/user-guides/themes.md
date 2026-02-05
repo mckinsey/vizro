@@ -167,7 +167,7 @@ px.scatter_matrix(
 
 You can customize the built-in `vizro_dark` and `vizro_light` themes by modifying their properties directly. This is useful when you want to keep most of the Vizro styling but adjust specific elements like colors, fonts, or other visual properties.
 
-Since Vizro templates are automatically registered to `plotly.io.templates`, you can access and modify them like any other Plotly template.
+Vizro templates are automatically registered to `plotly.io.templates` so you can access and modify them like any other Plotly template.
 
 !!! example "Modify template color scheme"
 
