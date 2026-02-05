@@ -210,21 +210,41 @@ page2 = vm.Page(
 )
 
 page3 = vm.Page(
-    title="Container Titles",
+    title="Container Variants",
     controls=[
         vm.Filter(column="Severity"),
     ],
-    layout=vm.Grid(grid=[[0, 1]]),
+    layout=vm.Grid(grid=[[0, 1], [2, 3]]),
     components=[
         vm.Container(
-            title="Security Reports",
+            variant="filled",
+            title="Filled",
             components=[
                 vm.Graph(figure=create_bar_chart(secrets_data, "Type", "Count", ["#00b4d8"]), title="Top Detectors")
             ],
-            collapsed=True,
         ),
         vm.Container(
-            title="Security Reports",
+            variant="filled",
+            title="Filled",
+            components=[
+                vm.Graph(figure=create_bar_chart(secrets_data, "Type", "Count", ["#00b4d8"])),
+                vm.Container(
+                    variant="filled",
+                    title="Filled Nested",
+                    components=[vm.Graph(figure=create_bar_chart(secrets_data, "Type", "Count", ["#00b4d8"]))],
+                ),
+            ],
+        ),
+        vm.Container(
+            variant="outlined",
+            title="Outlined",
+            components=[
+                vm.Graph(figure=create_bar_chart(secrets_data, "Type", "Count", ["#00b4d8"]), title="Top Detectors")
+            ],
+        ),
+        vm.Container(
+            variant="plain",
+            title="Plain",
             components=[
                 vm.Graph(
                     figure=create_donut_chart(composition_data, "Count", "Severity", ["#ef476f", "#ffd166", "#06ffa5"]),
