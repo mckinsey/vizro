@@ -614,7 +614,7 @@ For more advanced control over the flex layout behavior, use the `extra` argumen
 
 Common properties you can pass through `extra` include:
 
-- `justify`: Controls how flex items are positioned along the main axis (e.g., `"flex-start"`, `"center"`, `"space-between"`, `"space-evenly"`)
+- `justify`: Controls how flex items are positioned along the main axis given by `direction`, for example `"flex-start"`, `"center"`, `"space-between"`
 - `align`: Controls how flex items are positioned along the cross axis (e.g., `"flex-start"`, `"center"`, `"flex-end"`, `"stretch"`)
 
 
