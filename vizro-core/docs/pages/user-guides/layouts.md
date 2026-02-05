@@ -610,7 +610,7 @@ In this example, there isn’t enough space to fit all three graphs in a single 
 
 ### Aligning and positioning flex items
 
-For more advanced control over the flex layout behavior, use the `extra` argument to pass additional properties to the underlying `dmc.Flex` component. This is particularly useful for controlling how flex items are aligned and positioned.
+For more advanced control over the flex layout behavior, use the `extra` argument to pass additional properties to the [underlying `dmc.Flex` component](https://www.dash-mantine-components.com/components/flex). This is particularly useful for controlling how flex items are aligned and positioned.
 
 Common properties you can pass through `extra` include:
 
