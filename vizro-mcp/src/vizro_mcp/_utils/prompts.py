@@ -66,6 +66,7 @@ class HasNameAndDoc(Protocol):
 
 # This dict is used to give the model and overview of what is available in the vizro.models namespace.
 # It helps it to narrow down the choices when asking for a model.
+# Intentionally omitted: Accordion, Action, Table, Layout and VizroBaseModel
 MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
     "main": [vm.Dashboard, vm.Page],
     "static components": [
@@ -75,10 +76,10 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Container,
         vm.Tabs,
     ],
-    "dynamic components": [vm.Figure, vm.Graph, vm.AgGrid],
+    "dynamic components - ie reactive to controls": [vm.Figure, vm.Graph, vm.AgGrid],
     "layouts": [vm.Grid, vm.Flex],
-    "controls": [vm.Filter, vm.Parameter],
-    "selectors": [
+    "controls - control display of dynamic components": [vm.Filter, vm.Parameter],
+    "selectors - input mechanisms for controls": [
         vm.Dropdown,
         vm.RadioItems,
         vm.Checklist,
@@ -88,12 +89,11 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Switch,
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
-    "additional_info": [vm.Tooltip],
+    "additional_info - info about the component": [vm.Tooltip],
     "actions available for the actions argument of a model": [
-        va.export_data,
-        va.set_control,
+        getattr(va, func) for func in va.__all__ if not hasattr(getattr(va, func), "__deprecated__")
     ],
-    "functions available for vm.Figure(...,figure=...) model": [vf.__dict__[func] for func in vf.__all__],
+    "functions available for vm.Figure(...,figure=...) model": [getattr(vf, func) for func in vf.__all__],
 }
 
 

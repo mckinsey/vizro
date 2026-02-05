@@ -278,6 +278,35 @@ SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET = "set-control-drill-through-fil
 SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID = "scatter-2-drill-through-filter-ag_grid-target-id"
 RADIOITEMS_DRILL_THROUGH_FILTER_AG_GRID_ID = "radioitems-drill-through-filter-ag_grid-id"
 
+SET_CONTROL_MULTI_SELECT_PAGE = "set-control-multi-select-page"
+SCATTER_SET_CONTROL_EVENT_SELECT = "scatter_set-control-event-select"
+SCATTER_SET_CONTROL_EVENT = "scatter_set-control-event"
+TABLE_SET_CONTROL_MULTI_SELECT = "table_set-control-multi-select"
+BOX_SET_CONTROL_TARGET_MULTI_SELECT = "box_set_control_target_multi-select"
+CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER = "checklist_set_control_multi_select_filter"
+RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER = "radioitems_set_control_multi_select_filter"
+
+SET_CONTROL_BUTTON_CARD_PAGE = "set-control-button-card-page"
+SET_CONTROL_BUTTON_NONE = "set-control-button-none"
+SET_CONTROL_BUTTON_EMPTY_LIST = "set-control-button-empty-list"
+SET_CONTROL_CARD_SINGLE_VALUE = "set_control_card_single_value"
+SET_CONTROL_CARD_MULTI_VALUE = "set_control_card_multi_value"
+TABLE_SET_CONTROL_BUTTON_CARD = "table_set_control_button_card"
+CHECKLIST_SET_CONTROL_BUTTON_CARD = "checklist_set_control_button_card"
+RADIOITEMS_SET_CONTROL_BUTTON_CARD = "radioitems_set_control_button_card"
+
+FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE = "filtered-graph-aggrid-trigger-set-control-page"
+FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID = "filtered_scatter_trigger_set_control"
+CHECKLIST_FT_GRAPH_SET_CONTROL = "checklist_ft_graph_set_control"
+FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID = "filtered_aggrid_trigger_set_control"
+CHECKLIST_FT_AGGRID_SET_CONTROL = "checklist_ft_aggrid_set_control"
+TARGETED_AGGRID_FROM_FILTERED_GRAPH = "targeted_aggrid_from_filtered_graph"
+CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL = "checklist_filtered_graph_target_aggrid_set_control"
+
+SELF_FILTER_SET_CONTROL_PAGE = "self-filter-set-control-page"
+SCATTER_SET_CONTROL_SELF_FILTER = "scatter_set_control_self_filter"
+CHECKLIST_SET_CONTROL_SELF_FILTER = "checklist_set_control_self_filter"
+
 ACTION_MODEL_FIELD_SHORTCUT_PAGE = "graph_aggrid-title_description_header_footer"
 ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID = "action_shortcut_graph_id"
 ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID = "action_shortcut_ag_grid_id"
@@ -372,8 +401,7 @@ THEME_LIGHT = "light"
 RGBA_TRANSPARENT = "rgba(0, 0, 0, 0)"
 STYLE_TRANSPARENT = "background: rgba(0, 0, 0, 0);"
 STYLE_TRANSPARENT_FIREFOX = "background: none;"
-AG_GRID_DARK = "ag-theme-quartz-dark ag-theme-vizro"
-AG_GRID_LIGHT = "ag-theme-quartz ag-theme-vizro"
+AG_GRID = "ag-theme-vizro"
 
 # Configs
 
