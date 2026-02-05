@@ -32,12 +32,27 @@ df = pd.DataFrame(data)
 
 page = vm.Page(
     title="Data",
-    components=[vm.AgGrid(figure=dash_ag_grid(df))],
+    components=[
+        vm.AgGrid(id="grid-1", figure=dash_ag_grid(df)),
+        vm.AgGrid(figure=dash_ag_grid(df), actions=va.set_control(control="filter-id", value="name")),
+    ],
     controls=[
-        vm.Filter(column="name"),
+        vm.Filter(id="filter-id", column="name", targets=["grid-1"]),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page], title="Scratch Dev")
+page_flex = vm.Page(
+    title="Data flex",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.AgGrid(id="flex-grid-1", figure=dash_ag_grid(df)),
+        vm.AgGrid(figure=dash_ag_grid(df), actions=va.set_control(control="flex-filter-id", value="name")),
+    ],
+    controls=[
+        vm.Filter(id="flex-filter-id", column="name", targets=["flex-grid-1"]),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_flex], title="Scratch Dev")
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)
