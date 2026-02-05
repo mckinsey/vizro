@@ -263,7 +263,7 @@ For more comprehensive customizations, you can modify multiple template properti
     - Plotly Express applying its own styling defaults
     - Vizro dashboard-specific overwrites that ensure charts have a uniform appearance across the dashboard
 
-    Properties like `font`, `colorway`, and grid styling typically work well, while background colors and font-colors be overridden.
+    Properties like `font`, `colorway`, and grid styling typically work well, while background colors and font-colors may be overridden. To customize these properties on individual charts, you can apply chart-specific styling as described in the next section [Style charts without changing the global template](#style-charts-without-changing-the-global-template).
 
 ### Style charts without changing the global template
 
@@ -273,19 +273,33 @@ You can apply a global template while still having fine-grained control over ind
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="6 24"}
+        ```{.python pycafe-link hl_lines="7 13-22 46"}
         import plotly.io as pio
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
+        from vizro.models.types import capture
 
         pio.templates["vizro_dark"].layout.colorway = ["#6929c4", "#2d9fea", "#de6da9"]
 
         df = px.data.iris()
 
+        # Custom chart with update_layout to modify properties that may not
+        # take effect through template modifications
+        @capture("graph")
+        def custom_background_chart(data_frame):
+            return px.scatter(
+                data_frame,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
+            ).update_layout(
+                plot_bgcolor="black",
+            )
+
         page = vm.Page(
             title="Color precedence example",
-            layout=vm.Layout(grid=[[0], [1]]),
+            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(
                     figure=px.histogram(
@@ -304,6 +318,10 @@ You can apply a global template while still having fine-grained control over ind
                     ),
                     title="Graph with custom colors"
                 ),
+                vm.Graph(
+                    figure=custom_background_chart(data_frame=df),
+                    title="Graph with custom background"
+                ),
             ],
         )
 
@@ -315,13 +333,13 @@ You can apply a global template while still having fine-grained control over ind
 
         [![ColorPrecedence]][colorprecedence]
 
-In the example above, the first chart uses the colors defined in the modified template, while the second chart uses the colors specified in `color_discrete_sequence`, ignoring the template's color scheme.
+In the example above, the first chart uses the colors defined in the modified template, the second chart uses the colors specified in `color_discrete_sequence` (ignoring the template's color scheme), and the third chart uses `.update_layout()` to customize the plot background color.
 
 This principle applies to various styling arguments:
 
 - `color_discrete_map` and `color_discrete_sequence` override template color schemes for discrete colors
 - `color_continuous_scale` overrides template color scales for continuous colors
-- Chart-specific layout properties (e.g., `title`, `labels`) override template layout settings
+- Chart-specific layout properties (e.g., `.update_layout()` with `paper_bgcolor`, `plot_bgcolor`) override template layout settings
 
 ## Vizro Bootstrap for pure Dash app
 
