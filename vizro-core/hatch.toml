@@ -170,7 +170,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 extra-dependencies = [
   "dash==3.4.0",
   "dash-bootstrap-components==2.0.0",
-  "dash-ag-grid==31.3.1",
+  "dash-ag-grid==33.3.3",
   "dash-mantine-components==2.0.0",
   "plotly==5.24.0",
   "pydantic==2.7.0",
