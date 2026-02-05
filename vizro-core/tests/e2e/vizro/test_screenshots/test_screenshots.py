@@ -483,14 +483,30 @@ def test_set_control_multi_select_page(dash_br):
         page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
     )
 
-    # click on the scatter point to check that the rest of the chat is dimmed
+    # click on the scatter point to check that the rest of the chart is dimmed
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 0)
 
-    # click on the scatter point to check that the rest of the chat is not changed
+    # click on the scatter point to check that the rest of the chart is not changed
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
 
     # click on the aggrid checkbox
     dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2), 1)
+
+
+@image_assertion
+def test_aggrid_click_without_set_control(dash_br):
+    """Testing aggrid cell click without set_control action."""
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TABLE_AG_GRID_PAGE,
+    )
+
+    # click on the aggrid cell
+    dash_br.multiple_click(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=2, col_id="continent"), 1)
+
+    # move mouse to different location to see what exactly was selected on aggrid
+    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
 
 
 @pytest.mark.mobile_screenshots
