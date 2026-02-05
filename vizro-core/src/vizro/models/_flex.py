@@ -24,11 +24,6 @@ class Flex(VizroBaseModel):
         wrap (bool): Determines whether flex items are forced onto a single line or can wrap onto multiple lines.
             If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines.
             Defaults to `False`.
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dmc.Flex` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dmc documentation](https://www.dash-mantine-components.com/components/flex)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
 
     """
 
