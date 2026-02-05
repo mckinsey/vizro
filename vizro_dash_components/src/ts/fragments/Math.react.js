@@ -24,7 +24,7 @@ export default class DashMath extends Component {
 
   renderMath() {
     const current = this.span_element.current;
-    loadMathJax().then(function () {
+    loadMathJax().then(() => {
       window.MathJax.typeset([current]);
     });
   }

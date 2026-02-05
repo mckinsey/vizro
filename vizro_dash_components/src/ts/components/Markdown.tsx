@@ -1,7 +1,8 @@
+// biome-ignore lint/style/useImportType: React must be a value import for JSX with classic transform ("jsx": "react")
 import React from "react";
 import DashMarkdown from "../fragments/Markdown.react";
-import { propTypes, defaultProps } from "../fragments/markdownPropTypes";
-import { DashComponentProps } from "../props";
+import { defaultProps, propTypes } from "../fragments/markdownPropTypes";
+import type { DashComponentProps } from "../props";
 
 type Props = {
   /**
@@ -78,7 +79,6 @@ const Markdown = (props: Props) => {
   return (
     <DashMarkdown
       id={id}
-      children={children}
       className={className}
       style={style}
       dangerously_allow_html={dangerously_allow_html}
@@ -86,7 +86,9 @@ const Markdown = (props: Props) => {
       mathjax={mathjax}
       dedent={dedent}
       highlight_config={highlight_config}
-    />
+    >
+      {children}
+    </DashMarkdown>
   );
 };
 

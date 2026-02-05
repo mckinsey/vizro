@@ -1,14 +1,13 @@
-import React, { Component } from "react";
+import { CodeHighlight } from "@mantine/code-highlight";
+import { MantineProvider } from "@mantine/core";
 import { isNil, mergeDeepRight, pick, type } from "ramda";
+import { Component } from "react";
 import JsxParser from "react-jsx-parser";
 import Markdown from "react-markdown";
 import RemarkMath from "remark-math";
-import { MantineProvider } from "@mantine/core";
-import { CodeHighlight } from "@mantine/code-highlight";
-
-import Math from "./Math.react";
-import { propTypes } from "./markdownPropTypes";
 import LoadingElement from "../utils/LoadingElement";
+import DashMath from "./Math.react";
+import { propTypes } from "./markdownPropTypes";
 
 // Import Mantine styles
 import "@mantine/core/styles.css";
@@ -24,7 +23,7 @@ export default class DashMarkdown extends Component {
     const lines = text.split(/\r\n|\r|\n/);
     let commonPrefix = null;
     for (const line of lines) {
-      const preMatch = line && line.match(/^\s*(?=\S)/);
+      const preMatch = line?.match(/^\s*(?=\S)/);
       if (preMatch) {
         const prefix = preMatch[0];
         if (commonPrefix !== null) {
@@ -113,14 +112,16 @@ export default class DashMarkdown extends Component {
           )}
         />
       ),
-      dashMathjax: (props) => <Math tex={props.value} inline={props.inline} />,
+      dashMathjax: (props) => (
+        <DashMath tex={props.value} inline={props.inline} />
+      ),
     };
 
     // Regex to convert $...$ and $$...$$ math notation to dashMathjax components
     const regexMath = (value) => {
       const newValue = value.replace(
         /(\${1,2})((?:\\.|[^$])+)\1/g,
-        function (m, tag, src) {
+        (_m, tag, src) => {
           const inline = tag.length === 1 || src.indexOf("\n") === -1;
           return `<dashMathjax value='${src}' inline='${inline}'/>`;
         },
@@ -155,13 +156,9 @@ export default class DashMarkdown extends Component {
           }}
           style={style}
           className={
-            ((highlight_config && highlight_config.theme) || className) &&
+            (highlight_config?.theme || className) &&
             `${className ? className : ""} ${
-              highlight_config &&
-              highlight_config.theme &&
-              highlight_config.theme === "dark"
-                ? "hljs-dark"
-                : ""
+              highlight_config?.theme === "dark" ? "hljs-dark" : ""
             }`
           }
         >
@@ -172,10 +169,12 @@ export default class DashMarkdown extends Component {
             plugins={mathjax ? [RemarkMath] : []}
             renderers={{
               // Math block rendering (when mathjax is enabled)
-              math: (props) => <Math tex={props.value} inline={false} />,
+              math: (props) => <DashMath tex={props.value} inline={false} />,
 
               // Inline math rendering (when mathjax is enabled)
-              inlineMath: (props) => <Math tex={props.value} inline={true} />,
+              inlineMath: (props) => (
+                <DashMath tex={props.value} inline={true} />
+              ),
 
               // Code block rendering using Mantine CodeHighlight
               // This is the ONLY deviation from original Dash

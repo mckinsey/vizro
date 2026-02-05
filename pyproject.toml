@@ -14,7 +14,7 @@ exclude_dirs = ["tests"]
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
 ignore-words-list = "grey,ned,sav,Thur"
-skip = "*.min.css.map,*.min.css,.vale/*, *assets/*,.github/*"
+skip = "*.min.css.map,*.min.css,.vale/*, *assets/*,.github/*,*/package-lock.json"
 
 [tool.mypy]
 # strict checks : strict = true
