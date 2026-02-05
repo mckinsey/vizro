@@ -28,9 +28,10 @@
 .ag-header-cell {
   border-bottom: 1px solid transparent;
 }
+
 .ag-header-cell:hover {
-  color: var(--bs-primary);
   border-bottom: 1px solid var(--bs-primary);
+  color: var(--bs-primary);
 }
 
 [data-bs-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
