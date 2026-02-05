@@ -617,7 +617,6 @@ Common properties you can pass through `extra` include:
 - `justify`: Controls how flex items are positioned along the main axis (e.g., `"flex-start"`, `"center"`, `"space-between"`, `"space-evenly"`)
 - `align`: Controls how flex items are positioned along the cross axis (e.g., `"flex-start"`, `"center"`, `"flex-end"`, `"stretch"`)
 
-Visit the [dmc.Flex documentation](https://www.dash-mantine-components.com/components/flex) to see all available properties.
 
 !!! example "Flex with justify and align"
 
