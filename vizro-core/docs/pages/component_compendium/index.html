@@ -1,0 +1,2465 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vizro Components & Features</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-python.min.js"></script>
+    <script src="assets/js/script.js" defer></script>
+    <!-- Prism.js Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <!-- Python Language Support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <!-- Line Highlight Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+    <!-- Prism.js Theme -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <!-- Line Highlight Plugin CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Mobile nav toggle -->
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+
+    <div class="page-layout">
+      <!-- Left Navigation -->
+      <nav class="left-nav" id="leftNav">
+        <div class="nav-section">
+          <div class="nav-section-title">Overview</div>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#new-features" class="nav-link">
+                <span class="nav-icon">✨</span>
+                New Features
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+
+          <!-- Components Category -->
+          <div class="nav-category">
+            <div class="nav-category-header" onclick="toggleNavCategory(this)">
+              <span>Components</span>
+            </div>
+            <ul class="nav-list nav-category-content">
+              <li class="nav-item">
+                <a href="#graph" class="nav-link nav-link-sub">Graph</a>
+              </li>
+              <li class="nav-item">
+                <a href="#card" class="nav-link nav-link-sub">Card</a>
+              </li>
+              <li class="nav-item">
+                <a href="#aggrid" class="nav-link nav-link-sub">AgGrid</a>
+              </li>
+              <li class="nav-item">
+                <a href="#button" class="nav-link nav-link-sub">Button</a>
+              </li>
+              <li class="nav-item">
+                <a href="#figure" class="nav-link nav-link-sub">Figure</a>
+              </li>
+              <li class="nav-item">
+                <a href="#text" class="nav-link nav-link-sub">Text</a>
+              </li>
+              <li class="nav-item">
+                <a href="#container" class="nav-link nav-link-sub">Container</a>
+              </li>
+              <li class="nav-item">
+                <a href="#tabs" class="nav-link nav-link-sub">Tabs</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Layout Category -->
+          <div class="nav-category">
+            <div class="nav-category-header" onclick="toggleNavCategory(this)">
+              <span>Layout</span>
+            </div>
+            <ul class="nav-list nav-category-content">
+              <li class="nav-item">
+                <a href="#grid" class="nav-link nav-link-sub">Grid</a>
+              </li>
+              <li class="nav-item">
+                <a href="#flex" class="nav-link nav-link-sub">Flex</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Controls Category -->
+          <div class="nav-category">
+            <div class="nav-category-header" onclick="toggleNavCategory(this)">
+              <span>Controls</span>
+            </div>
+            <ul class="nav-list nav-category-content">
+              <li class="nav-item">
+                <a href="#filter" class="nav-link nav-link-sub">Filter</a>
+              </li>
+              <li class="nav-item">
+                <a href="#parameter" class="nav-link nav-link-sub">Parameter</a>
+              </li>
+              <li class="nav-item">
+                <div
+                  class="nav-subcategory-header"
+                  onclick="toggleNavSubcategory(this)"
+                >
+                  <span>Selectors</span>
+                </div>
+                <ul class="nav-list nav-subcategory-content">
+                  <li class="nav-item">
+                    <a href="#dropdown" class="nav-link nav-link-sub"
+                      >Dropdown</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="#checklist" class="nav-link nav-link-sub"
+                      >Checklist</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="#radioitems" class="nav-link nav-link-sub"
+                      >RadioItems</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="#slider" class="nav-link nav-link-sub">Slider</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#rangeslider" class="nav-link nav-link-sub"
+                      >RangeSlider</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="#datepicker" class="nav-link nav-link-sub"
+                      >DatePicker</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="#daterangepicker" class="nav-link nav-link-sub"
+                      >DateRangePicker</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="#switch" class="nav-link nav-link-sub">Switch</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Actions Category -->
+          <div class="nav-category">
+            <div class="nav-category-header" onclick="toggleNavCategory(this)">
+              <span>Actions</span>
+            </div>
+            <ul class="nav-list nav-category-content">
+              <li class="nav-item">
+                <a href="#export-data" class="nav-link nav-link-sub"
+                  >Export data</a
+                >
+              </li>
+              <li class="nav-item">
+                <a href="#set-control" class="nav-link nav-link-sub"
+                  >Graph & table interactions</a
+                >
+              </li>
+              <li class="nav-item">
+                <a href="#notifications" class="nav-link nav-link-sub"
+                  >Notifications</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Resources</div>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#demos" class="nav-link"> Demos </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Main Content Wrapper -->
+      <div class="main-wrapper">
+        <!-- Header Section -->
+        <header class="header">
+          <div class="container">
+            <div class="container-title-main">
+              <div class="header-utilities">
+                <div class="utility-bar">
+                  <a
+                    href="https://vizro.readthedocs.io/"
+                    target="_blank"
+                    class="utility-btn"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                      <path
+                        d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                      ></path>
+                    </svg>
+                    Docs
+                  </a>
+                  <a
+                    href="https://github.com/mckinsey/vizro"
+                    target="_blank"
+                    class="utility-btn"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
+                      ></path>
+                      <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                    </svg>
+                    GitHub
+                  </a>
+                </div>
+              </div>
+              <div class="title-wrapper">
+                <div class="logo-badge">
+                  <img src="assets/images/logo.svg" alt="Vizro Logo" />
+                </div>
+                <h1>Vizro Components & Features</h1>
+              </div>
+              <p class="header__subtitle">
+                A comprehensive guide to building interactive dashboards with
+                Vizro.
+              </p>
+              <div class="version-banner">
+                <div class="version-info">
+                  <span class="version-badge">v0.1.51</span>
+                </div>
+                <div class="version-divider"></div>
+                <div class="version-links">
+                  <!--                        <a href="https://github.com/mckinsey/vizro/releases" class="version-link">Changelog</a>-->
+                  <a
+                    href="https://github.com/mckinsey/vizro/releases/latest"
+                    class="version-link"
+                    >Release Notes</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- New & Updated Features Carousel -->
+        <section class="carousel-section" id="new-features">
+          <div class="container">
+            <div class="carousel-header">
+              <span class="section-badge">What's New</span>
+              <h2 class="section-title">New & Updated Features</h2>
+            </div>
+            <div class="carousel">
+              <button
+                class="carousel__button carousel__button--left"
+                aria-label="Scroll left"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+
+              <div class="carousel__track-container">
+                <div class="carousel__track">
+                  <!-- Carousel Item 1 -->
+                  <div class="carousel__item">
+                    <div class="carousel__item-content">
+                      <div class="carousel__item-image">
+                        <img
+                          src="assets/images/notifications.gif"
+                          alt="Notifications"
+                        />
+                      </div>
+                      <div class="carousel-content">
+                        <h3 class="carousel__item-title">Notifications</h3>
+                        <p class="carousel__item-description">
+                          The show_notification action displays a temporary
+                          message to the user.
+                          <br />
+
+                          Notifications appear at the top-right of the screen
+                          and are customizable with options for content and
+                          styling .
+                        </p>
+                        <div class="view-btn">
+                          <a
+                            href="https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/"
+                            class="version-link"
+                            >View Notifications</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Carousel Item 2 -->
+                  <div class="carousel__item">
+                    <div class="carousel__item-content">
+                      <div class="carousel__item-image">
+                        <img src="assets/images/card.png" alt="Cards" />
+                      </div>
+                      <div class="carousel-content">
+                        <h3 class="carousel__item-title">Cards</h3>
+                        <p class="carousel__item-description">
+                          New cards features.
+                        </p>
+                        <div class="view-btn">
+                          <a
+                            href="https://vizro.readthedocs.io/en/stable/pages/user-guides/card/"
+                            class="version-link"
+                            >View new Card features</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Carousel Item 3 -->
+                  <div class="carousel__item">
+                    <div class="carousel__item-content">
+                      <div class="carousel__item-image">
+                        <img
+                          src="assets/images/controls_in_containers.gif"
+                          alt="Controls in containers"
+                        />
+                      </div>
+                      <div class="carousel-content">
+                        <h3 class="carousel__item-title">
+                          Controls in containers
+                        </h3>
+                        <p class="carousel__item-description">
+                          The Container has a controls argument where you can
+                          define container-specific controls such as filters and
+                          parameters. Controls can only target components inside
+                          their own container.
+                        </p>
+                        <div class="view-btn">
+                          <a
+                            href="https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container"
+                            class="version-link"
+                            >View controls in Container</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Carousel Item 4 -->
+                  <div class="carousel__item">
+                    <div class="carousel__item-content">
+                      <div class="carousel__item-image">
+                        <img
+                          src="assets/images/cross_highlight.gif"
+                          alt="Set controls"
+                        />
+                      </div>
+                      <div class="carousel-content">
+                        <h3 class="carousel__item-title">
+                          New action set_controls
+                        </h3>
+                        <p class="carousel__item-description">
+                          Configure interactions between graphs and tables, as
+                          is commonly done in business intelligence (BI) tools.
+                        </p>
+                        <div class="view-btn">
+                          <a
+                            href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/"
+                            class="version-link"
+                            >View new Actions</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                class="carousel__button carousel__button--right"
+                aria-label="Scroll right"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Components Compendium Section -->
+        <section class="compendium-section" id="components">
+          <div class="container">
+            <div class="container-header">
+              <h2 class="section-title">Vizro components</h2>
+              <div class="search-box">
+                <svg
+                  class="search-box__icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input
+                  type="text"
+                  class="search-box__input"
+                  id="component-search"
+                  placeholder="Search components..."
+                  aria-label="Search components"
+                />
+                <button
+                  class="search-box__clear"
+                  id="search-clear"
+                  aria-label="Clear search"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="search-container">
+              <div class="search-results" id="search-results"></div>
+            </div>
+
+            <!-- Components Category -->
+            <div class="category">
+              <h3 class="category__title">
+                <span class="category__title-text">Components</span>
+                <svg
+                  class="category__title-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </h3>
+              <div class="category__content">
+                <!-- Component: Graph -->
+                <div class="component" id="graph">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Graph</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Graph documentation</span
+                        >
+                      </a>
+                    </div>
+                    <div class="component-img">
+                      <img
+                        src="assets/images/charts.png"
+                        alt="Bar chart visualization example"
+                      />
+                    </div>
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                        onclick="copyCode(this)"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="10-16"
+                      ><code class="language-python">import vizro.plotly.express as px
+from vizro import Vizro
+import vizro.models as vm
+
+df = px.data.gapminder()
+
+page = vm.Page(
+    title="Bar Chart Example",
+    components=[
+        vm.Graph(
+            figure=px.bar(
+                df,
+                x="continent",
+                y="pop",
+                color="continent"
+            )
+        )
+    ]
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Component: Card -->
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Card</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/card/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Card documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/card_component.png"
+                      alt="Line chart visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="7-14"
+                      ><code class="language-python">from vizro import Vizro
+import vizro.models as vm
+
+page = vm.Page(
+    title="Vizro Card example",
+    components=[
+        vm.Card(
+            text="""Lorem ipsum dolor sit amet,
+             consectetur adipiscing elit, sed do
+             eiusmod tempor incididunt ut labore
+             et dolore magna aliqua.""",
+            header="Card header",
+            footer="Card footer",
+        )
+    ]
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Component: AgGrid -->
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">AgGrid</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/table/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view AgGrid documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/aggrid.png"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="11-13"
+                      ><code class="language-python">import vizro.plotly.express as px
+import vizro.models as vm
+from vizro import Vizro
+from vizro.tables import dash_ag_grid
+
+df = px.data.gapminder()
+
+page = vm.Page(
+    title="Default Dash AG Grid",
+    components=[
+        vm.AgGrid(
+            figure=dash_ag_grid(data_frame=df)
+        )
+    ]
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Button</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/button/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Button documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/buttons.png"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="8-28"
+                      ><code class="language-python">from vizro import Vizro
+import vizro.models as vm
+
+page = vm.Page(
+    title="Vizro buttons",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.Button(
+            text="filled"
+        ),
+        vm.Button(
+            text="outlined",
+            variant="outlined"
+        ),
+        vm.Button(
+            text="plain",
+            variant="plain"
+        ),
+        vm.Button(
+            text="Click me!",
+            description="Start the process.",
+        ),
+        vm.Button(
+            text="Vist Google",
+            href="https://www.google.com",
+            icon="Link",
+            variant="outlined",
+        ),
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Figure</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/button/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Figure documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/kpi_reference_card.png"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="17-25"
+                      ><code class="language-python">import pandas as pd
+from vizro import Vizro
+import vizro.models as vm
+from vizro.figures import kpi_card_reference
+
+df_kpi = pd.DataFrame(
+    {
+        "Actual": [100, 200, 700],
+        "Reference": [100, 300, 500],
+        "Category": ["A", "B", "C"]
+    }
+)
+
+page = vm.Page(
+    title="KPI reference card",
+    components=[
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference with icon",
+                icon="Shopping Cart",
+            )
+        )
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Text</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/text/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Text documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/text.png"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="8-15"
+                      ><code class="language-python">import vizro.plotly.express as px
+from vizro import Vizro
+import vizro.models as vm
+
+page = vm.Page(
+    title="Text",
+    components=[
+        vm.Text(
+            text="""
+                ## Lorem ipsum
+                Neque porro quisquam est qui
+                dolorem ipsum quia dolor sit
+                amet, consectetur adipisci.
+            """,
+        )
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Container</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/container/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Container documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/container.png"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="8-15"
+                      ><code class="language-python">import vizro.plotly.express as px
+import vizro.models as vm
+from vizro import Vizro
+
+iris = px.data.iris()
+
+page = vm.Page(
+    title="Containers",
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Container(
+            title="Container with background color",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species"
+                    )
+                )
+            ],
+            variant="filled",
+        ),
+        vm.Container(
+            title="Container with borders",
+            components=[
+                vm.Graph(
+                    figure=px.box(
+                        iris,
+                        x="species",
+                        y="sepal_length",
+                        color="species"
+                    )
+                )
+            ],
+            variant="outlined",
+        )
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Tabs</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/tabs/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Tabs documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/tabs.gif"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="10-43"
+                      ><code class="language-python">import vizro.plotly.express as px
+from vizro import Vizro
+import vizro.models as vm
+
+gapminder = px.data.gapminder()
+
+page = vm.Page(
+    title="Tabs",
+    components=[
+        vm.Tabs(
+            title="Tabs Title",
+            tabs=[
+                vm.Container(
+                    title="Tab I",
+                    components=[
+                        vm.Graph(
+                            figure=px.bar(
+                                gapminder,
+                                title="Graph 1",
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="Tab II",
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(
+                                gapminder,
+                                title="Graph 3",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Layout Category -->
+            <div class="category" id="layout">
+              <h3 class="category__title">
+                <span class="category__title-text">Layout</span>
+                <svg
+                  class="category__title-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </h3>
+              <div class="category__content">
+                <!-- Component: Container -->
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Grid</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#grid-layout"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Grid documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/grid_layout.png"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="6-11"
+                      ><code class="language-python">import vizro.models as vm
+from vizro import Vizro
+
+page = vm.Page(
+    title="Grid layout",
+    layout=vm.Grid(
+        grid=[
+            [0, 1, 3, 4],
+            [2, 2, 3, 4]
+        ]
+    ),
+    components=[
+        vm.Card(text="Card 1"),
+        vm.Card(text="Card 2"),
+        vm.Card(text="Card 3"),
+        vm.Card(text="Card 4"),
+        vm.Card(text="Card 5"),
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Flex</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Flex documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/flex_layout.png"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="9-13"
+                      ><code class="language-python">import vizro.models as vm
+from vizro import Vizro
+import vizro.plotly.express as px
+
+tips = px.data.tips()
+
+page = vm.Page(
+    title="Flex layout",
+    layout=vm.Flex(
+        direction="row",
+        gap="40px",
+        wrap=True
+    ),
+    components=[
+        vm.Graph(
+            figure=px.violin(
+                tips,
+                y="tip",
+                x="day",
+                color="day"
+            )
+        ) for i in range(3)
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls Category -->
+            <div class="category" id="controls">
+              <h3 class="category__title">
+                <span class="category__title-text">Controls</span>
+                <svg
+                  class="category__title-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </h3>
+              <div class="category__content">
+                <!-- Component: Filter -->
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Filter</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Filter documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/filters.gif"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="20"
+                      ><code class="language-python">import vizro.plotly.express as px
+from vizro import Vizro
+import vizro.models as vm
+
+iris = px.data.iris()
+
+page = vm.Page(
+    title="Filter",
+    components=[
+        vm.Graph(
+            figure=px.scatter(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Parameter</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Parameter documentation</span
+                        >
+                      </a>
+                    </div>
+                    <img
+                      src="assets/images/parameter.gif"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="22-31"
+                      ><code class="language-python">import vizro.plotly.express as px
+from vizro import Vizro
+import vizro.models as vm
+
+iris = px.data.iris()
+
+page = vm.Page(
+    title="Parameter",
+    components=[
+        vm.Graph(
+            id="scatter_chart",
+            figure=px.scatter(
+                iris,
+                title="My scatter chart",
+                x="sepal_length",
+                y="petal_width",
+                color="species"
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["scatter_chart.title"],
+            selector=vm.Dropdown(
+                options=[
+                    "My scatter chart",
+                    "A better title!"
+                ],
+                multi=False,
+            ),
+        ),
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="component_selectors" id="selectors">
+                  <div class="component_selectors_header">
+                    <div class="component_title">
+                      <h4 class="component__name">Selectors</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Selectors documentation</span
+                        >
+                      </a>
+                    </div>
+                    <p class="component__description">
+                      The Filter or the Parameter model accept the selector
+                      argument, where a selector model can be entered to choose
+                      how the user should input their choices for the respective
+                      models.
+                    </p>
+                    <div class="component_content_selectors">
+                      <div class="component_card">
+                        <h3 class="component_card_title">Dropdown</h3>
+                        <img
+                          src="assets/images/dropdown.png"
+                          alt="Dropdown selector"
+                        />
+                        <div class="code-block">
+                          <button
+                            class="code-block__copy-button"
+                            aria-label="Copy code to clipboard"
+                          >
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"
+                              ></rect>
+                              <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                              ></path>
+                            </svg>
+                            <span class="code-block__copy-text">Copy</span>
+                          </button>
+                          <pre><code class="language-python">controls=[
+    vm.Filter(
+        column="species",
+        selector=vm.Dropdown(
+            title="Species"
+        )
+    )
+]</code></pre>
+                        </div>
+                      </div>
+                      <div class="component_card">
+                        <h3 class="component_card_title">Checklist</h3>
+                        <div class="component_card_content">
+                          <img
+                            src="assets/images/checklist.png"
+                            alt="Scatter plot visualization example"
+                          />
+                          <div class="code-block">
+                            <button
+                              class="code-block__copy-button"
+                              aria-label="Copy code to clipboard"
+                            >
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <path
+                                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                ></path>
+                              </svg>
+                              <span class="code-block__copy-text">Copy</span>
+                            </button>
+                            <pre><code class="language-python">controls=[
+    vm.Filter(
+        column="species",
+        selector=vm.Checklist(
+            title="Species"
+        )
+    )
+]</code></pre>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="component_card">
+                        <h3 class="component_card_title">RadioItems</h3>
+                        <div class="component_card_content">
+                          <img
+                            src="assets/images/radioitems.png"
+                            alt="Scatter plot visualization example"
+                          />
+                          <div class="code-block">
+                            <button
+                              class="code-block__copy-button"
+                              aria-label="Copy code to clipboard"
+                            >
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <path
+                                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                ></path>
+                              </svg>
+                              <span class="code-block__copy-text">Copy</span>
+                            </button>
+                            <pre><code class="language-python">controls=[
+    vm.Filter(
+        column="species",
+        selector=vm.RadioItems(
+            title="Species"
+        )
+    )
+]</code></pre>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="component_card">
+                        <h3 class="component_card_title">Slider</h3>
+                        <div class="component_card_content">
+                          <img
+                            src="assets/images/slider.png"
+                            alt="Scatter plot visualization example"
+                          />
+                          <div class="code-block">
+                            <button
+                              class="code-block__copy-button"
+                              aria-label="Copy code to clipboard"
+                            >
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <path
+                                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                ></path>
+                              </svg>
+                              <span class="code-block__copy-text">Copy</span>
+                            </button>
+                            <pre><code class="language-python">controls=[
+    vm.Filter(
+        column="size",
+        selector=vm.Slider(
+            title="Slider (Tips - size)",
+            step=1,
+            value=2
+        ),
+    ),
+]</code></pre>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="component_card">
+                        <h3 class="component_card_title">RangeSlider</h3>
+                        <div class="component_card_content">
+                          <img
+                            src="assets/images/rangeslider.png"
+                            alt="Scatter plot visualization example"
+                          />
+                          <div class="code-block">
+                            <button
+                              class="code-block__copy-button"
+                              aria-label="Copy code to clipboard"
+                            >
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <path
+                                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                ></path>
+                              </svg>
+                              <span class="code-block__copy-text">Copy</span>
+                            </button>
+                            <pre><code class="language-python">controls=[
+    vm.Filter(
+        column="lifeExp",
+        selector=vm.RangeSlider(
+            title="Range Slider (Gapminder - lifeExp)",
+            step=1,
+            marks=None
+        ),
+    )
+]</code></pre>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="component_card">
+                        <h3 class="component_card_title">DatePicker</h3>
+                        <div class="component_card_content">
+                          <img
+                            src="assets/images/datepicker.png"
+                            alt="Scatter plot visualization example"
+                          />
+                          <div class="code-block">
+                            <button
+                              class="code-block__copy-button"
+                              aria-label="Copy code to clipboard"
+                            >
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <path
+                                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                ></path>
+                              </svg>
+                              <span class="code-block__copy-text">Copy</span>
+                            </button>
+                            <pre><code class="language-python">controls=[
+    vm.Filter(
+        column="date",
+        selector=vm.DatePicker(
+            title="Date Picker (Stocks - date)",
+            range=False,
+        )
+    ),
+]</code></pre>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="component_card">
+                        <h3 class="component_card_title">DateRangePicker</h3>
+                        <div class="component_card_content">
+                          <img
+                            src="assets/images/daterangepicker.png"
+                            alt="Scatter plot visualization example"
+                          />
+                          <div class="code-block">
+                            <button
+                              class="code-block__copy-button"
+                              aria-label="Copy code to clipboard"
+                            >
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <path
+                                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                ></path>
+                              </svg>
+                              <span class="code-block__copy-text">Copy</span>
+                            </button>
+                            <pre><code class="language-python">controls=[
+    vm.Filter(
+        column="date",
+        selector=vm.DatePicker(
+            title="Date Picker (Stocks - date)",
+        )
+    ),
+]</code></pre>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="component_card">
+                        <h3 class="component_card_title">Switch</h3>
+                        <img
+                          src="assets/images/switch.png"
+                          alt="Scatter plot visualization example"
+                        />
+                        <div class="code-block">
+                          <button
+                            class="code-block__copy-button"
+                            aria-label="Copy code to clipboard"
+                          >
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"
+                              ></rect>
+                              <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                              ></path>
+                            </svg>
+                            <span class="code-block__copy-text">Copy</span>
+                          </button>
+                          <pre
+                            data-line="16"
+                          ><code class="language-python">controls=[
+    vm.Filter(
+        column="species",
+        selector=vm.Switch(title="Is Europe?"),
+    )
+]</code></pre>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Actions Category -->
+            <div class="category" id="actions">
+              <h3 class="category__title">
+                <span class="category__title-text">Actions</span>
+                <svg
+                  class="category__title-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </h3>
+              <div class="category__content">
+                <!-- Component: Filter -->
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Export data</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data-actions/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Export data documentation</span
+                        >
+                      </a>
+                    </div>
+                    <p class="component__description">
+                      Use the <b>export_data</b> action to download all data
+                      shown on a dashboard page, including graphs, tables, and
+                      figures. Exported files reflect filters and dynamic
+                      parameters applied to the page, but not interactions made
+                      directly within charts or tables (such as zooming or
+                      in-chart filters).
+                    </p>
+                    <img
+                      src="assets/images/export_data.gif"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="16"
+                      ><code class="language-python">import vizro.plotly.express as px
+import vizro.actions as va
+import vizro.models as vm
+from vizro import Vizro
+
+df = px.data.iris()
+
+page = vm.Page(
+    title="Actions - export_data",
+    components=[
+        vm.Graph(
+            figure=px.histogram(df, x="sepal_length")
+        ),
+        vm.Button(
+            text="Export data",
+            actions=va.export_data()
+        ),
+    ],
+    controls=[vm.Filter(column="species")],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">
+                        Graph & table interactions
+                      </h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Graph & table interactions
+                          documentation</span
+                        >
+                      </a>
+                    </div>
+                    <p class="component__description">
+                      In Vizro, interactions between components are enabled
+                      through an explicitly defined intermediate control.
+                      Cross-filtering, cross-parameter updates, and
+                      cross-highlighting all use the <b>set_control</b> action,
+                      providing a flexible and powerful way to link components.
+                    </p>
+                    <img
+                      src="assets/images/cross_filter_from_graph_1.gif"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="10-16"
+                      ><code class="language-python">import vizro.plotly.express as px
+import vizro.actions as va
+import vizro.models as vm
+from vizro import Vizro
+from vizro.tables import dash_ag_grid
+
+tips = px.data.tips()
+
+page = vm.Page(
+    title="Cross-filter from table to graph",
+    components=[
+        vm.AgGrid(
+            title="""Click on a row to use that row's
+            sex to filter graph""",
+            figure=dash_ag_grid(tips),
+            actions=va.set_control(
+                control="sex_filter", value="sex"
+            ),
+        ),
+        vm.Graph(
+            id="tips_graph",
+            figure=px.histogram(tips, x="tip")
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id="sex_filter",
+            column="sex",
+            targets=["tips_graph"]
+        )
+    ],
+)
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="component">
+                  <div class="component__visual">
+                    <div class="component_title">
+                      <h4 class="component__name">Notifications</h4>
+                      <a
+                        href="https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/"
+                        target="_blank"
+                        class="icon-link"
+                      >
+                        <span class="material-icons"
+                          >integration_instructions</span
+                        >
+                        <span class="tooltip"
+                          >Click to view Notifications documentation</span
+                        >
+                      </a>
+                    </div>
+                    <p class="component__description">
+                      The <b>show_notification</b> action displays a temporary
+                      message in the top-right of the screen to inform users
+                      about successes, warnings, errors, information, or loading
+                      states. Notifications can be customized with a title,
+                      text, and styling options such as variants and icons.
+                    </p>
+                    <img
+                      src="assets/images/notifications.gif"
+                      alt="Scatter plot visualization example"
+                    />
+                  </div>
+                  <div class="component__content">
+                    <div class="code-block">
+                      <button
+                        class="code-block__copy-button"
+                        aria-label="Copy code to clipboard"
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                          ></path>
+                        </svg>
+                        <span class="code-block__copy-text">Copy</span>
+                      </button>
+                      <pre
+                        data-line="10-16"
+                      ><code class="language-python">import vizro.plotly.express as px
+import vizro.actions as va
+import vizro.models as vm
+from vizro import Vizro
+
+df = px.data.iris()
+
+page = vm.Page(
+    title="Export with notification",
+    layout=vm.Flex(),
+    components=[
+        vm.Graph(
+            figure=px.histogram(df, x="sepal_length")
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[
+                va.export_data(),
+                va.show_notification(
+                    text="Data exported successfully!",
+                    variant="success",
+                    icon="download",
+                ),
+            ],
+        ),
+    ],
+)
+
+Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Explore Demos Section -->
+        <section class="section demo-section" id="demos">
+          <div class="container">
+            <div class="section-header">
+              <span class="section-badge">Try It Live</span>
+              <h2 class="section-title">Explore Demos</h2>
+            </div>
+
+            <div class="demo-grid">
+              <a
+                href="https://py.cafe/vizro-official/vizro-iris-analysis"
+                target="_blank"
+                class="demo-card"
+              >
+                <div class="demo-preview">
+                  <img
+                    src="assets/images/basic_dashboard.png"
+                    alt="Scatter plot visualization example"
+                  />
+                </div>
+                <div class="demo-content">
+                  <div class="demo-header">
+                    <h3 class="demo-title">Basic Dashboard</h3>
+                    <span class="demo-platform platform-pycafe">PyCafe</span>
+                  </div>
+                  <div class="demo-action">
+                    Try it live
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary"
+                target="_blank"
+                class="demo-card"
+              >
+                <div class="demo-preview">
+                  <img
+                    src="assets/images/visual_vocabulary.png"
+                    alt="Scatter plot visualization example"
+                  />
+                </div>
+                <div class="demo-content">
+                  <div class="demo-header">
+                    <h3 class="demo-title">Visual Vocabulary</h3>
+                    <span class="demo-platform platform-huggingface"
+                      >Hugging Face</span
+                    >
+                  </div>
+                  <div class="demo-action">
+                    Try it live
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://huggingface.co/spaces/vizro/BI-dashboard"
+                target="_blank"
+                class="demo-card"
+              >
+                <div class="demo-preview">
+                  <img
+                    src="assets/images/bi_dashboard.png"
+                    alt="Scatter plot visualization example"
+                  />
+                </div>
+                <div class="demo-content">
+                  <div class="demo-header">
+                    <h3 class="demo-title">BI Dashboard</h3>
+                    <span class="demo-platform platform-pycafe"
+                      >Hugging Face</span
+                    >
+                  </div>
+                  <div class="demo-action">
+                    Try it live
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://huggingface.co/spaces/vizro/call-center-dashboard"
+                target="_blank"
+                class="demo-card"
+              >
+                <div class="demo-preview">
+                  <img
+                    src="assets/images/call_center_dashboard.png"
+                    alt="Scatter plot visualization example"
+                  />
+                </div>
+                <div class="demo-content">
+                  <div class="demo-header">
+                    <h3 class="demo-title">Call Center Dashboard</h3>
+                    <span class="demo-platform platform-huggingface"
+                      >Hugging Face</span
+                    >
+                  </div>
+                  <div class="demo-action">
+                    Try it live
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://huggingface.co/spaces/vizro/demo-kpi"
+                target="_blank"
+                class="demo-card"
+              >
+                <div class="demo-preview">
+                  <img
+                    src="assets/images/kpi_dashboard.png"
+                    alt="Scatter plot visualization example"
+                  />
+                </div>
+                <div class="demo-content">
+                  <div class="demo-header">
+                    <h3 class="demo-title">KPI Dashboard</h3>
+                    <span class="demo-platform platform-huggingface"
+                      >Hugging Face</span
+                    >
+                  </div>
+                  <div class="demo-action">
+                    Try it live
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://huggingface.co/spaces/vizro/demo-features"
+                target="_blank"
+                class="demo-card"
+              >
+                <div class="demo-preview">
+                  <img
+                    src="assets/images/features_dashboard.png"
+                    alt="Scatter plot visualization example"
+                  />
+                </div>
+                <div class="demo-content">
+                  <div class="demo-header">
+                    <h3 class="demo-title">Features Dashboard</h3>
+                    <span class="demo-platform platform-huggingface"
+                      >Hugging Face</span
+                    >
+                  </div>
+                  <div class="demo-action">
+                    Try it live
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
