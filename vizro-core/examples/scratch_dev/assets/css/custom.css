@@ -7,20 +7,7 @@
     display: none;
 }
 
-/* Check with S. if these should be defaults */
-
-/* Should all our container titles actually be bolded? */
-.container-title {
-    border-bottom: 1px solid var(--bs-border-color);
-    padding-bottom: 4px;
-  }
-
 /* Does a filled container need a border? */
 .bg-container {
     border: 1px solid var(--bs-border-color);
-}
-
-/* Shall figure titles be smaller than container titles and bolded? */
-.figure-title {
-    font-size: 16px;
 }
