@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 
 import dash_ag_grid as dag
 import pandas as pd
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from dash import State, dcc, html
 from pydantic import (
     AfterValidator,
     BeforeValidator,
