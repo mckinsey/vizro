@@ -16,7 +16,7 @@ from typing_extensions import Self
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
-from vizro.managers import data_manager, model_manager
+from vizro.managers import data_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Dashboard, Filter
 from vizro.models.types import FigureType
@@ -139,10 +139,17 @@ class Vizro:
         pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
-        # TMP: Set the tree
+        # Build the tree - this attaches _tree to every model
         dashboard = dashboard.__class__.model_validate(dashboard, context={"build_tree": True})
-        model_manager._dashboard_tree = dashboard._tree
-        self._pre_build()
+
+        # HACK: Populate the global model_manager for backward compatibility during migration.
+        # This allows runtime callbacks to still work while we transition build-time code to use self._tree.
+        # TODO: Remove this hack once all runtime code is migrated to use local tree access.
+        from vizro.managers import model_manager as global_model_manager
+
+        global_model_manager._dashboard_tree = dashboard._tree
+
+        self._pre_build(dashboard)
         self.dash.layout = dashboard.build()
 
         # Store the dashboard object for later use in the run method.
@@ -170,7 +177,7 @@ class Vizro:
             [How to develop in Python script](../user-guides/run-deploy.md#develop-in-python-script)
         """
         data_manager._frozen_state = True
-        model_manager._frozen_state = True
+        # TODO: _frozen_state was on ModelManager - consider if we still need this concept
 
         # Check if there are undefined captured callables in the dashboard.
         # TODO: In the future we may want to try importing these, do users don't have to create an entirely
@@ -178,7 +185,8 @@ class Vizro:
         _undefined_captured_callables: set[str] = {
             model.figure._function
             for model in cast(
-                Iterable[FigureType], model_manager._get_models(root_model=self._dashboard, model_type=FIGURE_MODELS)
+                Iterable[FigureType],
+                self._dashboard._tree.get_models(model_type=FIGURE_MODELS, root_model=self._dashboard),
             )
             if model.figure._prevent_run
         }
@@ -199,17 +207,17 @@ Provide a valid import path for these in your dashboard configuration."""
         self.dash.run(**kwargs)
 
     @staticmethod
-    def _pre_build():
-        """Runs pre_build method on all models in the model_manager."""
-        # Note that a pre_build method can itself add a model (e.g. an Action) to the model manager, and so we need to
-        # iterate through set(model_manager) rather than model_manager itself or we loop through something that
+    def _pre_build(dashboard: Dashboard):
+        """Runs pre_build method on all models in the dashboard."""
+        # Note that a pre_build method can itself add a model (e.g. an Action) to the tree, and so we need to
+        # iterate through a snapshot (set/list) rather than the iterator itself or we loop through something that
         # changes size.
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
         # In future may add a second pre_build loop after the first one.
 
         # TODO: Things fail here because the MM copy of the model is outdated - fix in next iteration
         # This is also the reason why this is not replicated in fake Vizro
-        for filter in cast(Iterable[Filter], model_manager._get_models(Filter)):
+        for filter in cast(Iterable[Filter], dashboard._tree.get_models(Filter)):
             # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
             # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
             # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
@@ -218,8 +226,8 @@ Provide a valid import path for these in your dashboard configuration."""
             # It's also essential for filters to be pre-built before Container.pre_build runs or otherwise
             # control.selector won't be set.
             filter.pre_build()
-        for model_id in set(model_manager):
-            model = model_manager[model_id]
+        for model_id in set(dashboard._tree.iter_model_ids()):
+            model = dashboard._tree.get_model(model_id)
             if hasattr(model, "pre_build") and not isinstance(model, Filter):
                 model.pre_build()
 
@@ -237,8 +245,12 @@ Provide a valid import path for these in your dashboard configuration."""
         This deliberately does not clear the data manager cache - see comments in data_manager._clear for
         explanation.
         """
+        # Import global model_manager for backward compatibility during reset
+        # TODO: Once model_manager is fully local, this import can be removed
+        from vizro.managers import model_manager as global_model_manager
+
         data_manager._clear()
-        model_manager._clear()
+        global_model_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
         dash._callback.GLOBAL_CALLBACK_MAP = {}
         dash._callback.GLOBAL_INLINE_SCRIPTS = []
@@ -315,7 +327,14 @@ def _make_resource_spec(path: Path) -> _ResourceType:
 
 """FURTHER PLAN OF ACTION
 
-- convert MM from dictionary to just tree reference, populate at correct moment
-- then replace all methods with tree lookups
-- then remove the MM from its global state
+- [DONE] convert MM from dictionary to just tree reference, populate at correct moment
+- [DONE] replace all methods with tree lookups
+- [IN PROGRESS] remove the MM from its global state
+  - ModelManager is now instantiated locally in build() and stored on self._model_manager
+  - Next steps:
+    1. All other files still import the global model_manager - need to update them to either:
+       a. Access via model._tree (for build-time operations where we have a model instance)
+       b. Access via Vizro instance (for runtime callbacks - this is the hard part)
+    2. For runtime callbacks: either store Vizro._current_instance or pass model_manager through context
+    3. Eventually remove the global model_manager singleton entirely
 """

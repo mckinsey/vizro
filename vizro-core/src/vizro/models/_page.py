@@ -17,7 +17,6 @@ from typing_extensions import TypedDict
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
-from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._base import _validate_with_tree_context
@@ -142,11 +141,11 @@ class Page(VizroBaseModel):
         #  get_all_targets_on_page() that's used in many actions. So maybe it makes sense to put it in the action for
         #  on_page_load/filter/parameter too.
         figure_targets = [
-            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model=self))
+            model.id for model in cast(Iterable[FigureType], self._tree.get_models(FIGURE_MODELS, root_model=self))
         ]
         filter_targets = [
             filter.id
-            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, root_model=self))
+            for filter in cast(Iterable[Filter], self._tree.get_models(Filter, root_model=self))
             if filter._dynamic
         ]
         targets = figure_targets + filter_targets
@@ -165,7 +164,7 @@ class Page(VizroBaseModel):
 
         # Convert generator to list as it's going to be iterated multiple times.
         # Use "root_model=self" as controls can be defined inside a "Container.controls" under the "Page.components".
-        controls = list(cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), root_model=self)))
+        controls = list(cast(Iterable[ControlType], self._tree.get_models((Filter, Parameter), root_model=self)))
 
         if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
@@ -237,7 +236,7 @@ class Page(VizroBaseModel):
         action_components = list(
             chain.from_iterable(
                 action._dash_components
-                for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction, root_model=self))
+                for action in cast(Iterable[_BaseAction], self._tree.get_models(_BaseAction, root_model=self))
             )
         )
 

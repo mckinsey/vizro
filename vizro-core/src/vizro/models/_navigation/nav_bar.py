@@ -6,7 +6,6 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import BeforeValidator, Field
 
-from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._base import _validate_with_tree_context
 from vizro.models._models_utils import _log_call
@@ -54,8 +53,8 @@ class NavBar(VizroBaseModel):
                 NavLink(
                     # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
                     # then we prefer to have the title rather than id of that page be used
-                    label=cast(Page, model_manager[group_title]).title
-                    if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
+                    label=cast(Page, self._tree.get_model(group_title)).title
+                    if group_title in [page.id for page in self._tree.get_models(model_type=Page)]
                     else group_title,
                     pages=pages,
                 ),

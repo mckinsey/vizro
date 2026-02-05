@@ -9,7 +9,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
-from vizro.managers import data_manager, model_manager
+from vizro.managers import data_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
@@ -215,11 +215,11 @@ class AgGrid(VizroBaseModel):
         # Check if any other Vizro model or CapturedCallable has the same input component ID
         all_inner_component_ids = {  # type: ignore[var-annotated]
             model._inner_component_id
-            for model in model_manager._get_models()
+            for model in self._tree.get_models()
             if hasattr(model, "_inner_component_id") and model.id != self.id
         }
 
-        if self._inner_component_id in set(model_manager) | all_inner_component_ids:
+        if self._inner_component_id in set(self._tree.iter_model_ids()) | all_inner_component_ids:
             raise DuplicateIDError(
                 f"CapturedCallable with id={self._inner_component_id} has an id that is "
                 "already in use by another Vizro model or CapturedCallable. "

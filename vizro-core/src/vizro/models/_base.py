@@ -11,7 +11,6 @@ from typing import Annotated, Any, Literal, Self, TypeVar, Union, cast, get_args
 
 import autoflake
 import black
-from nutree.typed_tree import TypedTree
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -29,6 +28,7 @@ from pydantic.fields import FieldInfo
 from pydantic_core.core_schema import ValidationInfo
 
 from vizro.managers import model_manager
+from vizro.managers._model_manager import VizroTree
 from vizro.models._models_utils import REPLACEMENT_STRINGS
 from vizro.models.types import ModelID
 
@@ -267,7 +267,7 @@ class VizroBaseModel(BaseModel):
             validate_default=True,
         ),
     ]
-    _tree: TypedTree | None = PrivateAttr(None)  # initialised in model_after
+    _tree: VizroTree | None = PrivateAttr(None)  # initialised in build_tree_model_wrap
 
     # Next TODO:
     # why do we end up with ._tree = None
@@ -396,7 +396,7 @@ class VizroBaseModel(BaseModel):
                         SimpleNamespace(id=model_id), kind=info.context["field_stack"][-1]
                     )
                 elif "tree" not in info.context:
-                    tree = TypedTree("Root", calc_data_id=lambda tree, data: data.id)
+                    tree = VizroTree("Root", calc_data_id=lambda tree, data: data.id)
                     tree.add(SimpleNamespace(id=model_id), kind="dashboard")  # TODO: make this more general
                     info.context["tree"] = tree
                 else:

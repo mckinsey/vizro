@@ -29,7 +29,6 @@ from typing_extensions import TypedDict
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes._templates import dashboard_overrides
-from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
 from vizro.models._controls import Filter, Parameter
@@ -158,7 +157,8 @@ class Dashboard(VizroBaseModel):
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
         # Define callbacks when the dashboard is built but not every time the page is changed.
-        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
+        # Use tree-based iteration instead of global model_manager
+        for action in cast(Iterable[_BaseAction], self._tree.get_models(_BaseAction)):
             action._define_callback()
 
         clientside_callback(
@@ -198,7 +198,8 @@ class Dashboard(VizroBaseModel):
                     data={
                         control.id: {"originalValue": control.selector.value, "pageId": page.id}
                         for page in self.pages
-                        for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), page))
+                        # Use tree-based iteration instead of global model_manager
+                        for control in cast(Iterable[ControlType], self._tree.get_models((Filter, Parameter), page))
                     },
                 ),
                 dash.page_container,
@@ -312,9 +313,8 @@ class Dashboard(VizroBaseModel):
         page_header_content = [page_title]
         page_header = html.Div(id="page-header", children=page_header_content)
 
-        has_page_controls = bool(
-            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
-        )
+        # Use tree-based iteration instead of global model_manager
+        has_page_controls = bool([*self._tree.get_models(Parameter, page), *self._tree.get_models(Filter, page)])
 
         # Page header controls that appear on the right side of the header.
         action_progress_indicator = dcc.Loading(

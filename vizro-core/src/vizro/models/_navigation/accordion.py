@@ -6,7 +6,6 @@ from dash import get_relative_path
 from pydantic import BeforeValidator, Field
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
-from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID
@@ -92,7 +91,7 @@ class Accordion(VizroBaseModel):
         nav_links = []
 
         for page_id in pages:
-            page = cast(Page, model_manager[page_id])
+            page = cast(Page, self._tree.get_model(page_id))
             nav_links.append(
                 dbc.NavLink(
                     children=page.title,

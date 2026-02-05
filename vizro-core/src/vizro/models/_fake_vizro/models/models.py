@@ -449,7 +449,7 @@ pre-build and/or pre and post tree building?
 TODOs after moving the real Vizro:
 ------------------------------------------------------------------------------------------------------------------------
 - trial the model manager with the real Vizro and tree - DONE (dev example now works, notebooks not yet)
-- try NOT referring to model_manager in a few places (probably take one of each case in the MM summary I once wrote)
+- try NOT referring to model_manager in a few places (probably take one of each case in the MM summary I once wrote) - CURRENT TASK
 - sort out page validation
 - then bring over tests, and fix existing unit tests
 - fix Jupyter notebooks properly (ie the callback_context issue), and also check if we can run multiple dashboards in

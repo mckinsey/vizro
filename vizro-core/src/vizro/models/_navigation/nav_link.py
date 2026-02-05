@@ -7,7 +7,6 @@ import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
 from pydantic import AfterValidator, Field, PrivateAttr
 
-from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._base import _validate_with_tree_context
 from vizro.models._models_utils import _log_call, validate_icon
@@ -62,7 +61,7 @@ class NavLink(VizroBaseModel):
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
-        first_page = cast(Page, model_manager[first_page_id])
+        first_page = cast(Page, self._tree.get_model(first_page_id))
 
         nav_link = dbc.NavLink(
             [
