@@ -69,6 +69,7 @@ dashAgGridFunctions.vizroTheme = function (theme, agGrid) {
     inputFocusBorder: false,
     inputIconColor: "var(--bs-secondary)",
     invalidColor: "var(--bs-form-invalid-color)",
+    listItemHeight: 36,
     menuBackgroundColor: "var(--bs-tertiary-bg)",
     menuBorder: true,
     menuSeparatorColor: "var(--bs-border-color)",
