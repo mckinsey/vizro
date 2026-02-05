@@ -25,10 +25,6 @@ class Accordion(VizroBaseModel):
     Abstract: Usage documentation
         [How to use an accordion](../user-guides/navigation.md/#group-pages)
 
-    Args:
-        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
-            Defaults to `{}`.
-
     """
 
     type: Literal["accordion"] = "accordion"
