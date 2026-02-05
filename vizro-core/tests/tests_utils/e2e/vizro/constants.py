@@ -401,8 +401,7 @@ THEME_LIGHT = "light"
 RGBA_TRANSPARENT = "rgba(0, 0, 0, 0)"
 STYLE_TRANSPARENT = "background: rgba(0, 0, 0, 0);"
 STYLE_TRANSPARENT_FIREFOX = "background: none;"
-AG_GRID_DARK = "ag-theme-quartz-dark ag-theme-vizro"
-AG_GRID_LIGHT = "ag-theme-quartz ag-theme-vizro"
+AG_GRID = "ag-theme-vizro"
 
 # Configs
 

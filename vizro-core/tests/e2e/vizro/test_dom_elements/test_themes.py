@@ -70,18 +70,18 @@ def test_ag_grid_themes(dash_br_driver, dashboard_id):
     )
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
         # dashboard loaded with light theme
-        check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_LIGHT)
+        check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID)
 
         # switch theme to dark
         dash_br_driver.multiple_click(theme_toggle_path(), 1)
-        check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_DARK)
+        check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID)
     else:
         # dashboard loaded with dark theme
-        check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_DARK)
+        check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID)
 
         # switch theme to light
         dash_br_driver.multiple_click(theme_toggle_path(), 1)
-        check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_LIGHT)
+        check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID)
 
 
 @pytest.mark.parametrize(

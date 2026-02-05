@@ -7,6 +7,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--bs-tertiary-bg);
   --right-side-bg-iterated: var(--bs-body-bg);
   --hover-bg-subtle: var(--bs-gray-900);
+  --input-field-bg: var(--bs-primary-bg-subtle);
 }
 
 [data-bs-theme="light"] {
@@ -16,6 +17,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --right-side-bg-iterated: var(--surfaces-bg-card);
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --hover-bg-subtle: var(--bs-gray-300);
+  --input-field-bg: var(--bs-body-bg);
 }
 
 /* Override Mantine's default CSS variables with Bootstrap's here */
