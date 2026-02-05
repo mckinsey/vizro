@@ -53,12 +53,6 @@ class set_control(_AbstractAction):
     * [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a
     literal value to set `control` to.
 
-    Args:
-        control (ModelID): Control whose value is set. If this is on a different page from the trigger then it must have
-            `show_in_url=True`. The control's selector must be categorical (e.g. Dropdown, RadioItems, Checklist).
-        value (JsonValue): Value taken from trigger to set `control`. Format depends on the source model that triggers
-            `set_control`.
-
     Example: `AgGrid` as trigger
         ```python
         import vizro.actions as va

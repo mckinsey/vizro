@@ -66,14 +66,6 @@ class Parameter(VizroBaseModel):
         vm.Parameter(targets=["scatter.x"], selector=vm.Slider(min=0, max=1, default=0.8, title="Bubble opacity"))
         ```
 
-    Args:
-        targets (list[str]): Targets in the form of `<target_component>.<target_argument>`.
-        selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value
-            `"NONE"` into `None` to allow optional parameters.
-        show_in_url (bool): Whether the parameter should be included in the URL query string. Defaults to `False`.
-            Useful for bookmarking or sharing dashboards with specific parameter values pre-set.
-        visible (bool): Whether the parameter should be visible. Defaults to `True`.
-
     """
 
     type: Literal["parameter"] = "parameter"
@@ -92,19 +84,20 @@ class Parameter(VizroBaseModel):
     show_in_url: bool = Field(
         default=False,
         description=(
-            "Whether the parameter should be included in the URL query string. Defaults to `False`. "
+            "Whether the parameter should be included in the URL query string. "
             "Useful for bookmarking or sharing dashboards with specific parameter values pre-set."
         ),
     )
     visible: bool = Field(
         default=True,
-        description="Whether the parameter should be visible. Defaults to `True`.",
+        description="Whether the parameter should be visible.",
     )
 
     _selector_properties: set[str] = PrivateAttr(set())
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
+        """Check that the parameter has an `id` set if it is shown in the URL."""
         # If the parameter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self

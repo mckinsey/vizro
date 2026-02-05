@@ -19,11 +19,6 @@ class Navigation(VizroBaseModel):
     Abstract: Usage documentation
         [How to customize the navigation](../user-guides/navigation.md)
 
-    Args:
-        pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
-        nav_selector (NavSelectorType | None): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
-            Defaults to `None`.
-
     """
 
     pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
