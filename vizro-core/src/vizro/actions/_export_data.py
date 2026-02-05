@@ -1,3 +1,4 @@
+from time import sleep
 import importlib.util
 from collections.abc import Iterable
 from typing import Any, Literal, cast
@@ -10,7 +11,7 @@ from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, _Controls
+from vizro.models.types import ActionNotificationType, FigureType, ModelID, _Controls
 
 
 class export_data(_AbstractAction):
@@ -45,6 +46,10 @@ class export_data(_AbstractAction):
         default="csv", description="Format of downloaded files. Defaults to `'csv'`."
     )
 
+    # TODO PP NOW: See how to predefine this for built-in actions. Should we convert it to method instead or just
+    #  validate differently (like adjusting action notification keys) per action and use as a field?
+    notifications: ActionNotificationType  # type: ignore[misc]
+
     @_log_call
     def pre_build(self):
         # Set targets to all figures on the page if not already set. In this case we don't need to check the targets
@@ -77,6 +82,12 @@ class export_data(_AbstractAction):
 
     def function(self, _controls: _Controls) -> dict[str, Any]:
         """Exports data after applying _controls."""
+        # TODO IMPORTANT: REMOVE SLEEP AFTER TESTING
+        sleep(2)
+        import random
+        if random.random() > 0.5:
+            raise Exception("Random error occurred during data export!")
+
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880

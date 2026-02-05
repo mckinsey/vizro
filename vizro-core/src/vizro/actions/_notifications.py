@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, model_validator
+from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -92,6 +92,8 @@ class show_notification(_AbstractAction):
             info/success/warning/error, `False` for progress.""",
     )
 
+    _is_conditional: bool = PrivateAttr(False)
+
     # This should ideally be replaced with default_factory once we bump to pydantic>=2.10.0.
     @model_validator(mode="after")
     def set_variant_defaults(self):
@@ -118,6 +120,14 @@ class show_notification(_AbstractAction):
             "loading": self.variant == "progress",
         }
         return [notification]
+
+    @property
+    def _dash_components(self) -> list[dcc.Download]:
+        return [] if self._is_conditional else super()._dash_components
+
+    def _define_callback(self):
+        if not self._is_conditional:
+            super()._define_callback()
 
 
 class update_notification(show_notification):

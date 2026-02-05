@@ -15,6 +15,7 @@ from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_c
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
+    AfterValidator,
     BeforeValidator,
     Discriminator,
     Field,
@@ -98,6 +99,31 @@ def _coerce_to_list(value: Any) -> Any:
     if isinstance(value, (list, dict)):
         return value
     return [value]
+
+
+def _set_conditional_notification_flag(value):
+    # Mark action notifications as _is_conditional = True
+    for conditional_notification in value.values():
+        if conditional_notification is not None:
+            conditional_notification._is_conditional = True
+
+    return value
+
+
+def _set_default_error_notification(value):
+    # Default the action.notification for the "error" key
+    from vizro.actions import show_notification, update_notification
+
+    defaults = dict(text="Action failed.", variant="error")
+    if "progress" in value:
+        notification = update_notification(**defaults, notification=value["progress"].id)
+    else:
+        notification = show_notification(**defaults)
+
+    notification._is_conditional = True
+
+    value.setdefault("error", notification)
+    return value
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -726,6 +752,16 @@ OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_l
 """List or dictionary of outputs modified by the action function. Accepts either a single string,
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
+
+
+# TODO OQ: What to do with AfterValidator, discriminator and the description here?
+ActionNotificationType = Annotated[
+    "dict[str, show_notification | update_notification | None]",
+    AfterValidator(_set_conditional_notification_flag),
+    AfterValidator(_set_default_error_notification),
+    Field(default_factory=dict, description="Conditional notifications", validate_default=True),
+]
+
 
 # Extra type groups used only for static type checking, not at runtime.
 FigureWithFilterInteractionType: TypeAlias = "Graph | Table | AgGrid"
