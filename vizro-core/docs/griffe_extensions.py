@@ -129,51 +129,81 @@ class PydanticDocsCleaner(griffe.Extension):
                 cls.del_member(name)
                 pydantic_logger.info(f"Filtered out validator '{name}' from {cls.path}")
 
-    def _get_inherited_id_field(self, cls: griffe.Class) -> griffe.Attribute | None:
-        """Get the 'id' field from VizroBaseModel if this class inherits from it.
-
-        Returns a synthetic griffe Attribute for the inherited 'id' field, or None if not applicable.
-        """
-        python_obj = griffe.dynamic_import(cls.path)
-        if python_obj is None or not issubclass(python_obj, BaseModel):
+    def _get_default_display(self, field_name: str, field_info: FieldInfo) -> str | None:
+        """Get the default display string for a field."""
+        if field_info.is_required():
             return None
 
-        # Check if 'id' is inherited (not defined directly in this class) and exists in model_fields
-        if "id" not in python_obj.model_fields:
-            return None
+        # Special case: show 'generated uuid' for id field
+        if field_name == "id":
+            return "generated uuid"
+        if field_info.default is not PydanticUndefined:
+            return repr(field_info.default)
+        if field_info.default_factory is not None:
+            factory = field_info.default_factory
+            factory_name = getattr(factory, "__name__", None)
+            return f"default_factory={factory_name}" if factory_name else f"default_factory={factory!r}"
+        return None
 
-        # Check if 'id' is already a direct member of this class (not inherited)
-        if "id" in cls.members:
-            return None
-
-        # Get the field info from the model
-        field_info = python_obj.model_fields["id"]
-        if not isinstance(field_info, FieldInfo):
-            return None
-
-        # Create a synthetic griffe Attribute for the inherited 'id' field
-        id_attr = griffe.Attribute(
-            name="id",
+    def _create_inherited_attribute(
+        self, cls: griffe.Class, field_name: str, field_info: FieldInfo
+    ) -> griffe.Attribute:
+        """Create a synthetic griffe Attribute for an inherited field."""
+        attr = griffe.Attribute(
+            name=field_name,
             lineno=None,
             endlineno=None,
-            parent=cls,  # Set parent so path resolves correctly (e.g., Button.id instead of just id)
+            parent=cls,  # Set parent so path resolves correctly
         )
-        id_attr.labels.add("pydantic-field")
+        attr.labels.add("pydantic-field")
 
         # Set the docstring from the field description
         if field_info.description:
-            id_attr.docstring = griffe.Docstring(field_info.description)
+            attr.docstring = griffe.Docstring(field_info.description)
 
-        # Set annotation to ModelID with full path for cross-referencing
-        parent_expr = griffe.ExprName("vizro.models.types")
-        id_attr.annotation = griffe.ExprName("ModelID", parent=parent_expr)
+        # Try to get the annotation from the field
+        if field_info.annotation is not None:
+            annotation_type = field_info.annotation
+            type_name = getattr(annotation_type, "__name__", str(annotation_type))
+            module_name = getattr(annotation_type, "__module__", None)
 
-        # Enrich with vizro_pydantic metadata for default display
-        id_attr.extra.setdefault("vizro_pydantic", {})
-        id_attr.extra["vizro_pydantic"]["required"] = False
-        id_attr.extra["vizro_pydantic"]["default_display"] = "generated uuid"  # hard coded for display
+            if module_name:
+                parent_expr = griffe.ExprName(module_name)
+                attr.annotation = griffe.ExprName(type_name, parent=parent_expr)
+            else:
+                attr.annotation = griffe.ExprName(type_name)
 
-        return id_attr
+        # Enrich with vizro_pydantic metadata
+        attr.extra.setdefault("vizro_pydantic", {})
+        attr.extra["vizro_pydantic"]["required"] = field_info.is_required()
+        attr.extra["vizro_pydantic"]["default_display"] = self._get_default_display(field_name, field_info)
+
+        return attr
+
+    def _get_inherited_fields(self, cls: griffe.Class) -> dict[str, griffe.Attribute]:
+        """Get all inherited fields from parent classes that are not directly defined in this class.
+
+        Returns a dict of synthetic griffe Attributes for inherited fields.
+        """
+        python_obj = griffe.dynamic_import(cls.path)
+        if python_obj is None or not issubclass(python_obj, BaseModel):
+            return {}
+
+        inherited_fields = {}
+
+        # Get fields defined directly on this class (not inherited)
+        own_fields = set(python_obj.__annotations__.keys()) if hasattr(python_obj, "__annotations__") else set()
+
+        for field_name, field_info in python_obj.model_fields.items():
+            # Skip if field is defined directly on this class or already a member
+            if field_name in own_fields or field_name in cls.members:
+                continue
+            if not isinstance(field_info, FieldInfo):
+                continue
+
+            inherited_fields[field_name] = self._create_inherited_attribute(cls, field_name, field_info)
+
+        return inherited_fields
 
     def _exclude_fields_from_toc(self, cls: griffe.Class) -> None:
         """Store fields and remove from members to exclude from TOC."""
@@ -191,10 +221,10 @@ class PydanticDocsCleaner(griffe.Extension):
                 stored_fields[name] = member
                 fields_to_remove.append(name)
 
-        # Add inherited 'id' field at the top if applicable
-        inherited_id = self._get_inherited_id_field(cls)
-        if inherited_id is not None:
-            stored_fields = {"id": inherited_id, **stored_fields}
+        # Add inherited fields at the top (e.g., 'id' from VizroBaseModel)
+        inherited_fields = self._get_inherited_fields(cls)
+        if inherited_fields:
+            stored_fields = {**inherited_fields, **stored_fields}
 
         if stored_fields:
             # Store fields for template access
