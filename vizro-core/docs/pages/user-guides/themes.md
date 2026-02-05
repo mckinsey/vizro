@@ -265,7 +265,7 @@ For more comprehensive customizations, you can modify multiple template properti
 
     Properties like `font`, `colorway`, and grid styling typically work well, while background colors and font-colors be overridden.
 
-### Chart-specific styling takes precedence
+### Style specific charts without changing the global template
 
 When styling charts, it's important to understand the order of precedence. Arguments specified directly in chart functions (such as `color_discrete_map`, `color_discrete_sequence`, or `color_continuous_scale`) always take precedence over template settings.
 
