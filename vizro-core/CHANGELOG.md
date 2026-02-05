@@ -11,6 +11,20 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.51'></a>
+
+# 0.1.51 — 2026-01-23
+
+## Changed
+
+- Simplify chart UI when graph is not an action trigger. ([#1544](https://github.com/mckinsey/vizro/pull/1544))
+
+- Hide all internal Vizro callbacks in the Dash dev tools callback graph. ([#1502](https://github.com/mckinsey/vizro/pull/1502))
+
+## Fixed
+
+- Fix `rowSelection` checkboxes for custom AgGrid with `actions`. ([#1539](https://github.com/mckinsey/vizro/pull/1539))
+
 <a id='changelog-0.1.50'></a>
 
 # 0.1.50 — 2025-12-18
@@ -23,7 +37,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Set `clickmode="event+select"` as the default for all `plotly.express` charts, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+- Set `clickmode="event+select"` as the default for all charts in a dashboard, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
 
 <a id='changelog-0.1.49'></a>
 

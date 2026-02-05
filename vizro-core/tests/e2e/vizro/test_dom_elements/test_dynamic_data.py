@@ -452,7 +452,6 @@ def test_checklist_filter_select_all_value(dash_br):
         dash_br,
         component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
         checklist=True,
-        select_all_status=False,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -504,7 +503,6 @@ def test_checklist_filter_select_all_value(dash_br):
         dash_br,
         component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
         checklist=True,
-        select_all_status=False,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},

@@ -68,6 +68,16 @@ def table_ag_grid_cell_value_path(table_id, row_number, column_number):
     )
 
 
+def table_ag_grid_cell_path_by_row(table_id, row_index, col_id):
+    """Path to AG Grid table cell by row index and column id."""
+    return f"div[id='{table_id}'] div[row-index='{row_index}'] div[col-id='{col_id}']"
+
+
+def table_ag_grid_checkbox_path_by_row(table_id, row_index):
+    """Path to AG Grid table checkbox input by row index."""
+    return f"div[id='{table_id}'] div[row-index='{row_index}'] input.ag-checkbox-input"
+
+
 def graph_axis_value_path(graph_id, axis_value_number, axis_value):
     """Path to x or y axis values of the graph according to axis_value_number."""
     return f"div[id='{graph_id}'] g:nth-of-type({axis_value_number}) text[data-unformatted='{axis_value}']"
@@ -75,3 +85,7 @@ def graph_axis_value_path(graph_id, axis_value_number, axis_value):
 
 def actions_progress_indicator_path():
     return 'span[class="material-symbols-outlined progress-indicator"]'
+
+
+def scatter_point_path(graph_id, point_number, trace_index=2):
+    return f"div[id='{graph_id}'] g[class^='trace']:nth-of-type({trace_index}) path:nth-of-type({point_number})"

@@ -17,7 +17,7 @@ pio.templates["vizro_dark"] = json.loads((base_path / "vizro_dark.json").read_te
 pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_text())
 
 __all__ = ["Vizro"]
-__version__ = "0.1.51.dev0"
+__version__ = "0.1.52.dev0"
 
 # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
 # to main instead, but this can be manually overridden to the current feature branch name if required.

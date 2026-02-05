@@ -4,10 +4,17 @@ from typing import Annotated, Literal
 import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.actions import filter_interaction, set_control
+from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
@@ -35,17 +42,6 @@ class AgGrid(VizroBaseModel):
     Abstract: Usage documentation
         [How to use an AgGrid](../user-guides/table.md/#ag-grid)
 
-    Args:
-        figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the `AgGrid`. Defaults to `""`.
-        header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["ag_grid"] = "ag_grid"
@@ -77,11 +73,12 @@ class AgGrid(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
+
     _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
@@ -146,8 +143,17 @@ class AgGrid(VizroBaseModel):
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
 
-        # Enable checkboxes in the AgGrid if any of the actions is a `set_control` action.
-        figure = self.figure(_set_checkboxes=any(isinstance(action, set_control) for action in self.actions), **kwargs)
+        figure = self.figure(**kwargs)
+
+        if self.actions:
+            # Set the AgGrid "rowSelection" if any action is defined and if the "rowSelection" is not explicitly set.
+            # The "rowSelection" has to be set so that the AgGrid's actions can be triggered.
+            # TODO: Revisit after https://github.com/McK-Internal/vizro-internal/issues/2402 is resolved.
+            row_sel = figure.dashGridOptions.setdefault("rowSelection", {})
+            row_sel.setdefault("mode", "multiRow")
+            row_sel.setdefault("enableClickSelection", True)
+            row_sel.setdefault("checkboxes", True)
+            row_sel.setdefault("headerCheckbox", True)
 
         figure.id = self._inner_component_id
         return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
@@ -217,6 +223,7 @@ class AgGrid(VizroBaseModel):
             ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
             Output(self._inner_component_id, "className"),
             Input("theme-selector", "value"),
+            hidden=True,
         )
         description = self.description.build().children if self.description else [None]
         return dcc.Loading(

@@ -30,22 +30,6 @@ class RangeSlider(VizroBaseModel):
     Abstract: Usage documentation
         [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)
 
-    Args:
-        min (float | None): Start value for slider. Defaults to `None`.
-        max (float | None): End value for slider. Defaults to `None`.
-        step (float | None): Step-size for marks on slider. Defaults to `None`.
-        marks (dict[float, str]): Marks to be displayed on slider. Defaults to `{}`.
-        value (list[float] | None): Default start and end value for slider. Must be 2 items. Defaults to `None`.
-        title (str): Title to be displayed. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["range_slider"] = "range_slider"
@@ -75,7 +59,7 @@ class RangeSlider(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
@@ -85,10 +69,10 @@ class RangeSlider(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
+defaults chosen by the Vizro team. This may have unexpected behavior.
+Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)
+to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+underlying component may change in the future.""",
             ),
         ]
     ]
@@ -134,6 +118,7 @@ class RangeSlider(VizroBaseModel):
             output=output,
             inputs=inputs,
             prevent_initial_call=True,
+            hidden=True,
         )
 
         current_value = self.value or [min, max]

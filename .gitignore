@@ -37,6 +37,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+vizro-core/cache/*
 
 # macOS
 *.DS_Store
@@ -67,6 +68,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+.playwright-mcp/
 
 # Translations
 *.mo
@@ -102,6 +104,9 @@ out/
 # Vscode
 .vscode/
 .cursor/
+
+# Claude Code
+.claude/
 
 # PEP 582
 __pypackages__/
