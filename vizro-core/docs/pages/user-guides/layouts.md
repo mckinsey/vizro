@@ -617,7 +617,6 @@ Common properties you can pass through `extra` include:
 - `justify`: Controls how flex items are positioned along the main axis given by `direction`, for example `"flex-start"`, `"center"`, `"space-between"`
 - `align`: Controls how flex items are positioned perpendicular to the main axis given by `direction`, for example `"flex-start"`, `"center"`, `"flex-end"`, `"stretch"`
 
-
 !!! example "Flex with justify and align"
 
     === "app.py"
