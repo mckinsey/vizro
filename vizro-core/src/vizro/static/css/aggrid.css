@@ -37,3 +37,10 @@
 [data-bs-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
+
+
+.ag-select-list,
+[id^="ag-select-list-"] {
+  max-height: 150px !important;
+  overflow: auto;
+}
