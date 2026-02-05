@@ -484,7 +484,7 @@ def test_set_control_multi_select_page(dash_br):
     )
 
     # click on the scatter point to check that the rest of the chart is dimmed
-    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 0)
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 1)
 
     # click on the scatter point to check that the rest of the chart is not changed
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
