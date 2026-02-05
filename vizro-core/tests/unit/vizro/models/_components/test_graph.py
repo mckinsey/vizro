@@ -341,7 +341,7 @@ class TestBuildGraph:
             html.Div(
                 [
                     dcc.Store(id="graph_id_action_trigger"),
-                    html.H3([html.Span("Title"), None], className="figure-title"),
+                    html.H4([html.Span("Title"), None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     dcc.Graph(
                         id="graph_id",
@@ -390,7 +390,7 @@ class TestBuildGraph:
             html.Div(
                 [
                     dcc.Store(id="graph_id_action_trigger"),
-                    html.H3([html.Span("Title"), *expected_description], className="figure-title"),
+                    html.H4([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     dcc.Graph(
                         id="graph_id",
@@ -429,7 +429,7 @@ class TestBuildGraph:
             html.Div(
                 [
                     dcc.Store(id="graph_id_action_trigger"),
-                    html.H3([html.Span("Title"), None], className="figure-title"),
+                    html.H4([html.Span("Title"), None], className="figure-title"),
                     None,
                     dcc.Graph(
                         id="graph_id",

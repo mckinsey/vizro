@@ -209,8 +209,34 @@ page2 = vm.Page(
     ],
 )
 
+page3 = vm.Page(
+    title="Container Titles",
+    controls=[
+        vm.Filter(column="Severity"),
+    ],
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Container(
+            title="Security Reports",
+            components=[
+                vm.Graph(figure=create_bar_chart(secrets_data, "Type", "Count", ["#00b4d8"]), title="Top Detectors")
+            ],
+            collapsed=True,
+        ),
+        vm.Container(
+            title="Security Reports",
+            components=[
+                vm.Graph(
+                    figure=create_donut_chart(composition_data, "Count", "Severity", ["#ef476f", "#ffd166", "#06ffa5"]),
+                    title="Software Composition Analysis (SCA)",
+                )
+            ],
+        ),
+    ],
+)
+
 dashboard = vm.Dashboard(
-    pages=[page2, page], title="Security Dashboard", navigation=vm.Navigation(nav_selector=vm.NavBar())
+    pages=[page2, page, page3], title="Security Dashboard", navigation=vm.Navigation(nav_selector=vm.NavBar())
 )
 
 if __name__ == "__main__":

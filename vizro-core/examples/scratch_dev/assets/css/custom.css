@@ -24,13 +24,3 @@
 .figure-title {
     font-size: 16px;
 }
-
-.card {
-    width: 210px;
-}
-
-/*
-[data-bs-theme="light"] {
-    --left-side-bg: var(--bs-tertiary-bg);
-}
-    */
