@@ -117,6 +117,11 @@ class PydanticDocsCleaner(griffe.Extension):
             member.extra["vizro_pydantic"]["required"] = required
             member.extra["vizro_pydantic"]["default_display"] = default_display
 
+            # Set docstring from Field(description=...) if no docstring already exists
+            # This handles patterns like SkipJsonSchema[Annotated[..., Field(description=...)]]
+            if member.docstring is None and field_info.description:
+                member.docstring = griffe.Docstring(field_info.description)
+
     def _filter_validators(self, cls: griffe.Class) -> None:
         """Filter out validators from a Pydantic model class (runs after griffe_pydantic labels them)."""
         for name, member in list(cls.members.items()):

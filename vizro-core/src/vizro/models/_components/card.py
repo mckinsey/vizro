@@ -53,15 +53,14 @@ class Card(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
+                description="""Extra keyword arguments that are passed to `dbc.Card` and overwrite any
+defaults chosen by the Vizro team. This may have unexpected behavior.
+Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
+to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+underlying component may change in the future.""",
             ),
         ]
     ]
-    # Using the description field does not show the below in rendered docs
-    """Extra keyword arguments that are passed to `dbc.Card` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future."""
     actions: ActionsType = []
 
     @model_validator(mode="after")
