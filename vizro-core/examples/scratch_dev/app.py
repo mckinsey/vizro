@@ -1,433 +1,452 @@
 """Dev app to try things out."""
 
+import pandas as pd
+import plotly.graph_objects as go
+from vizro.themes import palettes
+from vizro import Vizro
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.figures import kpi_card
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.figures import kpi_card, kpi_card_reference
+from vizro.models._components.form._text_area import TextArea
+from vizro.models._components.form._user_input import UserInput
+from vizro.models.types import capture
+from vizro.tables import dash_ag_grid
 
+iris = px.data.iris()
 tips = px.data.tips()
+stocks = px.data.stocks(datetimes=True)
+gapminder_2007 = px.data.gapminder().query("year == 2007")
+df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+
+waterfall_data = pd.DataFrame(
+    {
+        "x": [
+            "Sales",
+            "Consulting",
+            "Net revenue",
+            "Purchases",
+            "Other expenses",
+            "Profit before tax",
+        ],
+        "y": [60, 80, 0, -40, -20, 0],
+        "measure": [
+            "relative",
+            "relative",
+            "total",
+            "relative",
+            "relative",
+            "total",
+        ],
+    }
+)
+
+vm.Container.add_type("components", vm.Dropdown)
+vm.Container.add_type("components", vm.RadioItems)
+vm.Container.add_type("components", vm.Checklist)
+vm.Container.add_type("components", vm.Slider)
+vm.Container.add_type("components", vm.RangeSlider)
+vm.Container.add_type("components", vm.DatePicker)
+vm.Container.add_type("components", vm.Text)
+vm.Container.add_type("components", vm.Card)
+vm.Container.add_type("components", UserInput)
+vm.Container.add_type("components", TextArea)
+vm.Container.add_type("components", vm.Button)
 
 
-justify_options = [
-    "flex-start",
-    "flex-end",
-    "center",
-    "space-between",
-    "space-around",
-    "space-evenly",
+@capture("graph")
+def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]):
+    """Custom waterfall chart."""
+    fig = go.Figure(
+        data=go.Waterfall(
+            x=data_frame[x],
+            y=data_frame[y],
+            measure=data_frame[measure],
+            showlegend=False,
+        ),
+    )
+    fig.update_layout(showlegend=False)
+    return fig
+
+
+# PAGES ------------------------------------------------------------------
+
+avg_lifeExp = (gapminder_2007["lifeExp"] * gapminder_2007["pop"]).sum() / gapminder_2007["pop"].sum()
+
+continuous_color_scales = vm.Page(
+    title="Continuous color scales",
+    layout=vm.Grid(grid=[[0, 1, 2]]),
+    components=[
+        vm.Graph(
+            title="Global Life Expectancy Distribution",
+            figure=px.choropleth(gapminder_2007, locations="iso_alpha", color="lifeExp"),
+            footer="Source: Plotly Gapminder data set, 2024",
+        ),
+        vm.Graph(
+            title="Global Life Expectancy Distribution",
+            figure=px.choropleth(
+                gapminder_2007,
+                locations="iso_alpha",
+                color="lifeExp",
+                color_continuous_scale=palettes.diverging_red_cyan,
+                color_continuous_midpoint=avg_lifeExp,
+            ),
+            footer="Source: Plotly Gapminder data set, 2024",
+        ),
+        vm.Graph(
+            title="Global Life Expectancy Distribution",
+            figure=px.choropleth(
+                gapminder_2007,
+                locations="iso_alpha",
+                color="lifeExp",
+                color_continuous_scale=palettes.diverging_orange_teal,
+                color_continuous_midpoint=avg_lifeExp,
+            ),
+            footer="Source: Plotly Gapminder data set, 2024",
+        ),
+    ],
+)
+
+
+form = vm.Page(
+    title="Form",
+    layout=vm.Grid(grid=[[0, 1]], col_gap="80px"),
+    components=[
+        vm.Container(
+            layout=vm.Flex(gap="40px"),
+            components=[
+                UserInput(title="User Input", placeholder="Enter your name"),
+                TextArea(title="Text Area", placeholder="Enter your multi-line text"),
+                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Multi-select Dropdown"),
+                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Single-select Dropdown", multi=False),
+                vm.RadioItems(options=["Option 1", "Option 2", "Option 3"], title="Radio Items"),
+                vm.Checklist(options=["Option 1", "Option 2", "Option 3"], title="Checklist"),
+            ],
+        ),
+        vm.Container(
+            layout=vm.Flex(gap="30px"),
+            components=[
+                vm.Slider(min=0, max=10, step=1, title="Slider"),
+                vm.RangeSlider(min=0, max=10, step=1, title="Range Slider"),
+                vm.DatePicker(title="Date Picker", min="2025-01-01", max="2025-01-31"),
+                vm.Container(
+                    title="Buttons",
+                    layout=vm.Flex(direction="row"),
+                    components=[
+                        vm.Button(text="PRIMARY BUTTON", variant="filled"),
+                        vm.Button(text="SECONDARY BUTTON", variant="outlined"),
+                        vm.Button(text="TERTIARY BUTTON", variant="plain"),
+                    ],
+                ),
+                vm.Card(
+                    text="""
+                    ### Card
+
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+                    ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
+
+                    """
+                ),
+                vm.Text(
+                    text="""
+
+                    ### Markdown
+
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+                    * Item A
+                        * Sub Item 1
+                        * Sub Item 2
+                    * Item B
+
+
+
+                    """
+                ),
+            ],
+        ),
+    ],
+)
+
+graphs = vm.Page(
+    title="Graphs",
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    components=[
+        vm.Graph(
+            figure=px.scatter(
+                gapminder_2007,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                size_max=60,
+                color="continent",
+            )
+        ),
+        vm.Graph(figure=px.box(tips, y="total_bill", x="day", color="day")),
+        vm.Graph(figure=px.histogram(tips, x="total_bill")),
+        vm.Graph(
+            figure=px.histogram(
+                tips,
+                y="day",
+                x="total_bill",
+                color="sex",
+                barmode="group",
+                orientation="h",
+            )
+        ),
+        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f")),
+        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="day")),
+        vm.Graph(figure=waterfall(waterfall_data, x="x", y="y", measure="measure")),
+        vm.Graph(figure=px.pie(tips, values="tip", names="day", hole=0.5)),
+        vm.Graph(
+            figure=px.bar(
+                gapminder_2007.query("country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"),
+                x="pop",
+                y="country",
+                orientation="h",
+            )
+        ),
+    ],
+)
+
+ag_grid = vm.Page(
+    title="AG Grid",
+    components=[
+        vm.AgGrid(
+            figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
+            title="Gapminder Data Insights",
+            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+        )
+    ],
+)
+
+cards = vm.Page(
+    title="Cards",
+    components=[
+        vm.Card(
+            text="""
+                # Header level 1 <h1>
+
+                ## Header level 2 <h2>
+
+                ### Header level 3 <h3>
+
+                #### Header level 4 <h4>
+            """
+        ),
+        vm.Card(
+            text="""
+                 ### Paragraphs
+                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+
+                 Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+
+                 Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+
+                 Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Block Quotes
+
+                >
+                > A block quote is a long quotation, indented to create a separate block of text.
+                >
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Lists
+
+                * Item A
+                    * Sub Item 1
+                    * Sub Item 2
+                * Item B
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Emphasis
+
+                This word will be *italic*
+
+                This word will be **bold**
+
+                This word will be _**bold and italic**_
+            """
+        ),
+    ],
+)
+
+example_cards = [
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
+    kpi_card(
+        data_frame=df_kpi,
+        value_column="Actual",
+        title="KPI with formatting",
+        value_format="${value:.2f}",
+    ),
+    kpi_card(
+        data_frame=df_kpi,
+        value_column="Actual",
+        title="KPI with icon",
+        icon="shopping_cart",
+    ),
 ]
 
-align_options = ["flex-start", "flex-end", "center", "stretch"]
+example_reference_cards = [
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference (pos)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        agg_func="median",
+        title="KPI reference (neg)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference with formatting",
+        value_format="{value:.2f}$",
+        reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference with icon",
+        icon="shopping_cart",
+    ),
+]
+
+figure = vm.Page(
+    title="Figure",
+    layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
+    controls=[vm.Filter(column="Category")],
+)
 
 
-page0 = vm.Page(
-    title="Different justification option",
-    layout=vm.Flex(direction="column"),
+containers = vm.Page(
+    title="Containers",
     components=[
         vm.Container(
-            layout=vm.Flex(direction="row", extra={"justify": justify, "align": align}),
-            title=f"{justify=} {align=}",
-            components=[vm.Card(text="text")] * 2 + [vm.Card(text="text\n\ntext")],
-        )
-        for justify in justify_options
-        for align in align_options
-    ],
-)
-
-
-page1 = vm.Page(
-    title="Default",
-    components=[
-        vm.Card(text="""# Good morning!"""),
-        vm.Graph(
-            title="Where do we get more tips?",
-            figure=px.bar(tips, y="tip", x="day"),
-        ),
-        vm.Graph(
-            title="Is the average driven by a few outliers?",
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-        ),
-        vm.Graph(
-            title="Which group size is more profitable?",
-            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
-        ),
-    ],
-    controls=[vm.Filter(column="day")],
-)
-
-page2 = vm.Page(
-    title="Grid",
-    layout=vm.Grid(grid=[[0, -1], [1, 2], [3, 3]]),
-    components=[
-        vm.Card(text="""# Good morning!"""),
-        vm.Graph(
-            title="Where do we get more tips?",
-            figure=px.bar(tips, y="tip", x="day"),
-        ),
-        vm.Graph(
-            title="Is the average driven by a few outliers?",
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-        ),
-        vm.Graph(
-            title="Which group size is more profitable?",
-            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
-        ),
-    ],
-    controls=[vm.Filter(column="day")],
-)
-
-
-page3 = vm.Page(
-    title="Flex - default",
-    layout=vm.Flex(),
-    components=[
-        vm.Card(
-            text="""
-               # Lorem Ipsum
-
-               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
-               In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
-               Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
-           """
-        )
-        for i in range(6)
-    ],
-)
-
-
-page4 = vm.Page(
-    title="Flex - gap",
-    layout=vm.Flex(gap="40%"),
-    components=[
-        vm.Card(
-            text="""
-            # Lorem Ipsum
-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
-            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
-            Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
-        """
-        )
-        for i in range(6)
-    ],
-)
-
-page5 = vm.Page(
-    title="Flex - row",
-    layout=vm.Flex(direction="row"),
-    components=[
-        vm.Card(
-            text="""
-            # Lorem Ipsum
-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
-            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
-            Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
-        """
-        )
-        for i in range(6)
-    ],
-)
-
-page6 = vm.Page(
-    id="page-flex-wrap-row",
-    title="Flex - row/wrap",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[
-        vm.Card(
-            text="""
-            # Lorem Ipsum
-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
-            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
-            Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
-        """
-        )
-        for i in range(6)
-    ],
-)
-
-page7 = vm.Page(
-    title="Flex - default - graphs",
-    layout=vm.Flex(),
-    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
-)
-
-
-page8 = vm.Page(
-    title="Flex - gap - graphs",
-    layout=vm.Flex(gap="40px"),
-    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
-)
-
-page9 = vm.Page(
-    title="Flex - row - graphs",
-    layout=vm.Flex(direction="row"),
-    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
-)
-
-page10 = vm.Page(
-    id="page-flex-wrap-row-graphs",
-    title="Flex - row/wrap - graphs",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
-)
-
-page11 = vm.Page(
-    title="Flex - default - aggrid",
-    layout=vm.Flex(),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
-)
-
-
-page12 = vm.Page(
-    title="Flex - gap - aggrid",
-    layout=vm.Flex(gap="40px"),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
-)
-
-page13 = vm.Page(
-    title="Flex - row - aggrid",
-    layout=vm.Flex(direction="row"),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
-)
-
-page14 = vm.Page(
-    title="Flex - default - table",
-    layout=vm.Flex(),
-    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
-)
-
-
-page15 = vm.Page(
-    title="Flex - gap - table",
-    layout=vm.Flex(gap="40px"),
-    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
-)
-
-page16 = vm.Page(
-    title="Flex - row - table",
-    layout=vm.Flex(direction="row"),
-    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
-)
-
-page17 = vm.Page(
-    title="Flex - default - button",
-    layout=vm.Flex(),
-    components=[vm.Button() for i in range(9)],
-)
-
-
-page18 = vm.Page(
-    title="Flex - gap - button",
-    layout=vm.Flex(gap="40px"),
-    components=[vm.Button() for i in range(9)],
-)
-
-page19 = vm.Page(
-    title="Flex - row - button",
-    layout=vm.Flex(direction="row"),
-    components=[vm.Button() for i in range(9)],
-)
-
-
-page20 = vm.Page(
-    title="Flex - Graphs with Card",
-    layout=vm.Flex(),
-    components=[
-        vm.Card(text="""# Good morning!"""),
-        vm.Graph(
-            title="Where do we get more tips?",
-            figure=px.bar(tips, y="tip", x="day"),
-        ),
-        vm.Graph(
-            title="Is the average driven by a few outliers?",
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-        ),
-        vm.Graph(
-            title="Which group size is more profitable?",
-            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
-        ),
-    ],
-    controls=[vm.Filter(column="day")],
-)
-
-page21 = vm.Page(
-    title="Flex - Container",
-    components=[
-        vm.Container(
-            title="Container inside grid with Flex",
-            layout=vm.Flex(),
+            title="Container I",
+            layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.Graph(
-                    title="Where do we get more tips?",
-                    figure=px.bar(tips, y="tip", x="day"),
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="species",
+                        title="Container I - Scatter",
+                    )
                 ),
                 vm.Graph(
-                    title="Is the average driven by a few outliers?",
-                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-                ),
-                vm.Graph(
-                    title="Which group size is more profitable?",
-                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
+                    figure=px.bar(
+                        iris,
+                        x="sepal_length",
+                        y="sepal_width",
+                        color="species",
+                        title="Container I - Bar",
+                    )
                 ),
             ],
-        )
-    ],
-    controls=[vm.Filter(column="day")],
-)
-
-page22 = vm.Page(
-    title="Flex - Container with card",
-    components=[
+        ),
         vm.Container(
-            title="Container inside grid with Flex with card",
-            layout=vm.Flex(),
+            title="Container II",
             components=[
-                vm.Card(text="""# Good morning!"""),
                 vm.Graph(
-                    title="Where do we get more tips?",
-                    figure=px.bar(tips, y="tip", x="day"),
-                ),
-                vm.Graph(
-                    title="Is the average driven by a few outliers?",
-                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-                ),
-                vm.Graph(
-                    title="Which group size is more profitable?",
-                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
-                ),
-            ],
-        )
-    ],
-    controls=[vm.Filter(column="day")],
-)
-
-page23 = vm.Page(
-    id="page-flex-inside-flex",
-    title="Flex inside flex",
-    layout=vm.Flex(),
-    components=[
-        vm.Container(
-            title="KPI Banner",
-            layout=vm.Flex(direction="row"),
-            components=[
-                vm.Figure(
-                    figure=kpi_card(
-                        data_frame=tips,
-                        value_column="total_bill",
-                        agg_func="mean",
-                        value_format="${value:.2f}",
-                        title="Average Bill",
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        marginal_y="violin",
+                        marginal_x="box",
+                        title="Container II - Scatter",
                     )
                 )
-                for i in range(4)
-            ],
-        ),
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="Total Bill ($)",
-                    components=[
-                        vm.Graph(figure=px.histogram(tips, x="total_bill")),
-                    ],
-                ),
-                vm.Container(
-                    title="Total Tips ($)",
-                    components=[
-                        vm.Graph(figure=px.histogram(tips, x="tip")),
-                    ],
-                ),
             ],
         ),
     ],
-    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
 )
 
-
-page24 = vm.Page(
-    title="Page with tabs and content- grid",
+collapsible_container = vm.Page(
+    title="Collapsible containers",
+    layout=vm.Flex(),
     components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="tab1",
-                    layout=vm.Flex(direction="row"),
-                    components=[
-                        vm.Card(text="This is card inside first tab!"),
-                        vm.Graph(figure=px.histogram(tips, x="tip")),
-                    ],
-                ),
-                vm.Container(
-                    title="tab2",
-                    layout=vm.Flex(direction="row"),
-                    components=[
-                        vm.Card(text="This is card inside second tab!"),
-                        vm.Graph(figure=px.bar(tips, y="tip", x="day")),
-                    ],
-                ),
-            ]
+        vm.Container(
+            title="Initially collapsed container",
+            components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+            collapsed=True,
         ),
-        vm.Card(text="This is card below the tabs!"),
-        vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)),
+        vm.Container(
+            title="Initially expanded container",
+            components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+            collapsed=False,
+        ),
     ],
 )
 
-
-page25 = vm.Page(
-    title="FlexItem - dimension - graphs",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True, width=300)) for i in range(6)],
+tab_1 = vm.Container(
+    title="Tab I",
+    components=[
+        vm.Graph(
+            figure=px.histogram(
+                gapminder_2007,
+                title="Graph 1",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.box(
+                gapminder_2007,
+                title="Graph 2",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+    ],
 )
 
-page26 = vm.Page(
-    title="FlexItem - dimension - tables",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
+tab_2 = vm.Container(
+    title="Tab II",
+    components=[
+        vm.Graph(
+            figure=px.scatter(
+                gapminder_2007,
+                title="Graph 3",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+    ],
 )
 
-page27 = vm.Page(
-    title="FlexItem - dimension - aggrid",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
-)
+tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls=[vm.Filter(column="continent")])
 
 
+# DASHBOARD -------------------------------------------------------------------
 dashboard = vm.Dashboard(
-    pages=[
-        page0,
-        page1,
-        page2,
-        page3,
-        page4,
-        page5,
-        page6,
-        page7,
-        page8,
-        page9,
-        page10,
-        page11,
-        page12,
-        page13,
-        page14,
-        page15,
-        page16,
-        page17,
-        page18,
-        page19,
-        page20,
-        page21,
-        page22,
-        page23,
-        page24,
-        page25,
-        page26,
-        page27,
-    ],
-    title="Test out Flex/Grid",
+    title="Charts",
+    pages=[graphs, continuous_color_scales, ag_grid, cards, figure, containers, collapsible_container, tabs, form],
 )
-
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
