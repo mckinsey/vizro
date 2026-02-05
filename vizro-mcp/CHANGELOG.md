@@ -1,4 +1,14 @@
-<a id='changelog-0.1.3'></a>
+<a id='changelog-0.1.4'></a>
+
+# 0.1.4 — 2026-02-04
+
+## Added
+
+- Add support for Python 3.14. ([#1484](https://github.com/mckinsey/vizro/pull/1484))
+
+## Changed
+
+- Simplified MCP prompts by removing opinionated layout instructions to make the tool more neutral. ([#1535](https://github.com/mckinsey/vizro/pull/1535)) <a id='changelog-0.1.3'></a>
 
 # 0.1.3 — 2025-09-29
 
