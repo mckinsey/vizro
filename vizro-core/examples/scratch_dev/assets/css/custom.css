@@ -12,7 +12,6 @@
 /* Should all our container titles actually be bolded? */
 .container-title {
     border-bottom: 1px solid var(--bs-border-color);
-    font-weight: 500;
     padding-bottom: 4px;
   }
 
@@ -24,7 +23,6 @@
 /* Shall figure titles be smaller than container titles and bolded? */
 .figure-title {
     font-size: 16px;
-    font-weight: 500;
 }
 
 .card {
