@@ -8,6 +8,7 @@ from e2e.vizro.checkers import check_graph_color, check_theme_color
 from e2e.vizro.navigation import (
     accordion_select,
     click_element_by_xpath_selenium,
+    hover_over_element_by_css_selector_selenium,
     hover_over_element_by_xpath_selenium,
     page_select,
 )
@@ -17,6 +18,7 @@ from e2e.vizro.paths import (
     kpi_card_path,
     nav_card_link_path,
     switch_path_using_filter_control_id,
+    table_ag_grid_cell_path_by_row,
     table_ag_grid_cell_value_path,
     theme_toggle_path,
 )
@@ -61,7 +63,7 @@ def test_ag_grid_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_PAGE,
     )
     # check if column 'country' is available
-    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='country']")
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=0, col_id="country"))
 
 
 @image_assertion
@@ -306,7 +308,6 @@ def test_collapsible_containers_grid(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
 
 
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @image_assertion
 def test_collapsible_containers_grid_switched(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
@@ -317,7 +318,7 @@ def test_collapsible_containers_grid_switched(dash_br):
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -327,7 +328,6 @@ def test_collapsible_containers_flex(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
 
 
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @image_assertion
 def test_collapsible_containers_flex_switched(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
@@ -338,11 +338,10 @@ def test_collapsible_containers_flex_switched(dash_br):
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @image_assertion
 def test_collapsible_subcontainers_flex(dash_br):
     """Test that after closing subcontainer the parent container is still open."""
@@ -353,7 +352,7 @@ def test_collapsible_subcontainers_flex(dash_br):
     dash_br.multiple_click("#flex_subcontainer_icon", 1)
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 

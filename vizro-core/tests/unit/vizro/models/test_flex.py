@@ -1,6 +1,6 @@
+import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
-from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -35,20 +35,22 @@ class TestFlexInstantiation:
 class TestFlexBuild:
     def test_flex_build_default(self):
         result = vm.Flex(id="flex").build()
-        expected = html.Div(
-            [],
-            style={"gap": GAP_DEFAULT},
-            className="d-flex flex-column flex-nowrap",
+        expected = dmc.Flex(
+            children=[],
+            gap=GAP_DEFAULT,
+            direction="column",
+            wrap="nowrap",
             id="flex",
         )
         assert_component_equal(result, expected)
 
     def test_flex_build_optional(self):
         result = vm.Flex(id="flex", direction="row", gap="40px", wrap=True).build()
-        expected = html.Div(
-            [],
-            style={"gap": "40px"},
-            className="d-flex flex-row flex-wrap",
+        expected = dmc.Flex(
+            children=[],
+            gap="40px",
+            direction="row",
+            wrap="wrap",
             id="flex",
         )
         assert_component_equal(result, expected)
