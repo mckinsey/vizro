@@ -23,7 +23,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Switch `Flex` model implementation from Bootstrap-based `html.Div` to `dmc.Flex` component from dash-mantine-components. The public API (`direction`, `gap`, `wrap`) remains unchanged. ([#1561](https://github.com/mckinsey/vizro/pull/1561))
+- Switch `Flex` model implementation from Bootstrap-based `html.Div` to [`dmc.Flex`](https://www.dash-mantine-components.com/components/flex). ([#1561](https://github.com/mckinsey/vizro/pull/1561))
 
 <!--
 ### Deprecated
