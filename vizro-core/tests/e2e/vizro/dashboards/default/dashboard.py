@@ -181,7 +181,7 @@ dashboard = vm.Dashboard(
                 cnst.STATIC_NOTIFICATIONS_PAGE,
                 cnst.SET_CONTROL_MULTI_SELECT_PAGE,
                 cnst.SET_CONTROL_BUTTON_CARD_PAGE,
-                cnst.FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE,
+                cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
                 cnst.SELF_FILTER_SET_CONTROL_PAGE,
             ],
         }
