@@ -4,14 +4,12 @@ for a pure Dash app.
 
 All the HEX values starting with --text-code are taken from the Github code highlighting style. */
 [data-bs-theme="dark"] {
-  --right-side-bg-iterated: var(--bs-tertiary-bg);
   --hover-bg-subtle: var(--bs-gray-900);
   --input-field-bg: var(--bs-primary-bg-subtle);
 }
 
 [data-bs-theme="light"] {
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
-  --right-side-bg-iterated: var(--bs-tertiary-bg);
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --hover-bg-subtle: var(--bs-gray-300);
   --input-field-bg: var(--bs-body-bg);
