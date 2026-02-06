@@ -248,12 +248,8 @@ Provide a valid import path for these in your dashboard configuration."""
         This deliberately does not clear the data manager cache - see comments in data_manager._clear for
         explanation.
         """
-        # Import global model_manager for backward compatibility during reset
-        # TODO: Once model_manager is fully local, this import can be removed
-        from vizro.managers import model_manager as global_model_manager
 
         data_manager._clear()
-        global_model_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
         dash._callback.GLOBAL_CALLBACK_MAP = {}
         dash._callback.GLOBAL_INLINE_SCRIPTS = []
@@ -332,12 +328,14 @@ def _make_resource_spec(path: Path) -> _ResourceType:
 
 - [DONE] convert MM from dictionary to just tree reference, populate at correct moment
 - [DONE] replace all methods with tree lookups
-- [IN PROGRESS] remove the MM from its global state
-  - ModelManager is now instantiated locally in build() and stored on self._model_manager
-  - Next steps:
-    1. All other files still import the global model_manager - need to update them to either:
-       a. Access via model._tree (for build-time operations where we have a model instance)
-       b. Access via Vizro instance (for runtime callbacks - this is the hard part)
-    2. For runtime callbacks: either store Vizro._current_instance or pass model_manager through context
-    3. Eventually remove the global model_manager singleton entirely
+- [DONE] remove the MM from its global state
+  - Global model_manager singleton no longer imported or used in src/
+  - Build-time: models access tree via self._tree
+  - Runtime (callbacks): models access tree via get_tree() -> dash.get_app().vizro_tree
+  - Tree stored on Dash app instance (Option 5)
+- [TODO] update tests to work without global model_manager
+- [TODO] clean up ModelManager class and deprecation shims in _model_manager.py
+- [TODO] Dash PAGE_REGISTRY is global and not cleared between
+  dashboard instances, causing "duplicate paths" error when building a second dashboard in the same
+  notebook.
 """
