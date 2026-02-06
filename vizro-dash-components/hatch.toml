@@ -8,7 +8,6 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 dependencies = [
   "pre-commit"
 ]
-detached = true
 installer = "uv"
 
 [envs.default.scripts]
