@@ -1,5 +1,8 @@
 name: Checks for vizro-dash-components
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: vizro-dash-components
