@@ -9,7 +9,7 @@ from dash import get_relative_path, no_update
 from pydantic import Field, JsonValue
 
 from vizro.actions._abstract_action import _AbstractAction
-from vizro.managers import model_manager
+from vizro.managers._model_manager import ModelNotFoundError, get_tree
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ControlType, ModelID
 
@@ -145,8 +145,13 @@ class set_control(_AbstractAction):
             )
 
         # Validate that action's control exists in the dashboard.
-        control_model = cast(ControlType, model_manager[self.control]) if self.control in model_manager else None
-        control_model_page = model_manager._get_model_page(control_model) if control_model else None
+        tree = self._tree
+        try:
+            control_model = cast(ControlType, tree.get_model(self.control))
+            control_model_page = tree.get_model_page(control_model)
+        except ModelNotFoundError:
+            control_model = control_model_page = None
+
         if control_model is None or control_model_page is None:
             raise ValueError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action not found in the "
@@ -160,7 +165,7 @@ class set_control(_AbstractAction):
                 f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
             )
 
-        if control_model_page == model_manager._get_model_page(self):
+        if control_model_page == tree.get_model_page(self):
             self._same_page = True
         else:
             # Validate that control on different page has `show_in_url=True`.
@@ -181,7 +186,8 @@ class set_control(_AbstractAction):
             value = _controls_store[self.control]["originalValue"]
 
         # Normalize returned value based on target selector type.
-        selector = cast(ControlType, model_manager[self.control]).selector
+        tree = get_tree()
+        selector = cast(ControlType, tree.get_model(self.control)).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
         if is_multi:
             value = value if isinstance(value, list) else [value]
@@ -204,7 +210,7 @@ class set_control(_AbstractAction):
         if self._same_page:
             return value
 
-        page_path = model_manager._get_model_page(model_manager[self.control]).path
+        page_path = tree.get_model_page(tree.get_model(self.control)).path
         url_query_params = f"?{self.control}={_encode_to_base64(value)}"
         return get_relative_path(page_path), url_query_params
 

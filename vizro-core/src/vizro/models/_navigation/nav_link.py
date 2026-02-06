@@ -44,7 +44,7 @@ class NavLink(VizroBaseModel):
     @_log_call
     def pre_build(self):
         # TODO[MS]: Check validate pages properly
-        self.pages = _validate_pages(self.pages)
+        self.pages = _validate_pages(self.pages, self._tree)
         self._nav_selector = _validate_with_tree_context(
             Accordion(pages=self.pages),
             parent_model=self,

@@ -7,7 +7,7 @@ from typing_extensions import deprecated
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import FIGURE_MODELS, model_manager
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, _Controls
 
@@ -39,11 +39,12 @@ class filter_interaction(_AbstractAction):
         #  filter_interaction given that will disappear but possibly relevant to other actions. Do we even want to
         #  keep behavior that not specifying targets downloads everything on the page? We'd still want the validation
         #  using the model_manager though.
+        tree = self._tree
         figure_ids_on_page = [
             model.id
             for model in cast(
                 Iterable[FigureType],
-                model_manager._get_models(FIGURE_MODELS, root_model=model_manager._get_model_page(self)),
+                tree.get_models(FIGURE_MODELS, root_model=tree.get_model_page(self)),
             )
         ]
 

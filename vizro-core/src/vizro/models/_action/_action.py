@@ -17,7 +17,7 @@ from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_val
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
-from vizro.managers._model_manager import model_manager
+from vizro.managers._model_manager import ModelNotFoundError
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call, make_deprecated_field_warning
 from vizro.models.types import (
@@ -115,17 +115,17 @@ class _BaseAction(VizroBaseModel):
         # string that is then transformed to State inside _transformed_inputs. This would prevent us from using
         # pattern-matching callback here though.
         # Maybe want to revisit this as part of TODO-AV2 A 1.
-        page = model_manager._get_model_page(self)
+        page = self._tree.get_model_page(self)
         return [
             State(*control.selector._action_inputs["__default__"].split("."))
-            for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page))
+            for control in cast(Iterable[ControlType], self._tree.get_models(control_type, page))
         ]
 
     def _get_filter_interaction_states(self) -> list[dict[str, State]]:
         """Gets list of `States` for selected chart interaction `filter_interaction`."""
         from vizro.actions import filter_interaction
 
-        page = model_manager._get_model_page(self)
+        page = self._tree.get_model_page(self)
 
         # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
         # the filter_interaction model itself, hence needing to lookup action._parent_model.
@@ -135,11 +135,10 @@ class _BaseAction(VizroBaseModel):
         # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
             cast(FigureWithFilterInteractionType, action._parent_model)._filter_interaction_input
-            for action in model_manager._get_models(filter_interaction, page)
+            for action in self._tree.get_models(filter_interaction, page)
         ]
 
-    @staticmethod
-    def _transform_dependency(dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
+    def _transform_dependency(self, dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
         """Transform a component dependency into its mapped property value.
 
         This method handles two formats of component dependencies:
@@ -158,7 +157,7 @@ class _BaseAction(VizroBaseModel):
             The mapped property value for implicit format, or the original dependency for explicit format
 
         Raises:
-            KeyError: If component does not exist in model_manager
+            KeyError: If component does not exist in tree
             KeyError: If component exists but has no "__default__" key in its _action_outputs/_action_inputs
             AttributeError: If component exists but has no _action_outputs/_action_inputs property defined
             ValueError: If dependency format is invalid (e.g. "id.prop.prop" or "id..prop")
@@ -173,20 +172,27 @@ class _BaseAction(VizroBaseModel):
                 f"'<model_id>.<argument_name>'."
             )
 
-        # Combine builtin components with real models in model_manager (which take priority).
+        # Combine builtin components with tree models (which take priority).
         builtin_components = {"vizro_download": SimpleNamespace(_action_outputs={"__default__": "vizro_download.data"})}
 
-        # ChainMap is used to avoid unnecessary copying of model_manager.
-        models = ChainMap(model_manager, builtin_components)  # type: ignore[arg-type]
+        tree = self._tree
+
+        # TODO: check bellow
+        class _TreeDictWrapper:
+            def __getitem__(self, key):
+                return tree.get_model(key)
+
+        # ChainMap looks up in _TreeDictWrapper first, then falls back to builtin_components.
+        models = ChainMap(_TreeDictWrapper(), builtin_components)  # type: ignore[arg-type]
 
         if "." in dependency:
             component_id, component_property = dependency.split(".")
             try:
                 return getattr(models[component_id], attribute_type)[component_property]
-            except (KeyError, AttributeError):
+            except (KeyError, AttributeError, ModelNotFoundError):
                 # Captures these cases and returns dependency unchanged, as we want to allow the user to target
-                # Dash components, that are not registered in the model_manager (e.g. theme-selector).
-                # 1. component_id is not in model_manager
+                # Dash components that are not registered in the tree (e.g. theme-selector).
+                # 1. component_id is not in tree
                 # 2. component doesn't have _action_outputs/_action_inputs defined
                 # 3. component_property is not in the _action_outputs/inputs dictionary
                 return dependency
@@ -196,7 +202,7 @@ class _BaseAction(VizroBaseModel):
         try:
             # component_properties_lookup is the component's _action_outputs/_action_inputs dictionary.
             component_properties_lookup = getattr(models[component_id], attribute_type)
-        except KeyError as exc:
+        except (KeyError, ModelNotFoundError) as exc:
             raise KeyError(f"Model with ID `{component_id}` not found. Provide a valid component ID.") from exc
         except AttributeError as exc:
             raise AttributeError(
@@ -496,7 +502,7 @@ class Action(_BaseAction):
             # a new type of action. For the case that there's no arguments and no inputs, this gives legacy=False.
             try:
                 legacy = not all(
-                    re.fullmatch("[^.]+[.][^.]+", arg_val) or arg_val in model_manager
+                    re.fullmatch("[^.]+[.][^.]+", arg_val) or self._tree.has_model(arg_val)
                     for arg_val in self._runtime_args.values()
                 )
             except TypeError:

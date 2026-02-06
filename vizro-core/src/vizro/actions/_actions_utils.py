@@ -9,9 +9,9 @@ from typing import Any, Literal, TypedDict, cast
 import pandas as pd
 
 from vizro._constants import NONE_OPTION
-from vizro.managers import data_manager, model_manager
+from vizro.managers import data_manager
 from vizro.managers._data_manager import DataSourceName
-from vizro.managers._model_manager import FIGURE_MODELS
+from vizro.managers._model_manager import FIGURE_MODELS, get_tree
 from vizro.models.types import (
     FigureType,
     FigureWithFilterInteractionType,
@@ -66,7 +66,7 @@ def _apply_filter_controls(
     for ctd in ctds_filter:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
-        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
+        selector_actions = cast(SelectorType, get_tree().get_model(ctd["id"])).actions
 
         for action in selector_actions:
             # TODO-AV2 A 1: simplify this as in
@@ -82,7 +82,7 @@ def _apply_filter_controls(
 
 def _get_triggered_model(input_component_id: str) -> FigureType:
     # Goes directly from input_component_id to the model (like AgGrid).
-    for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS)):
+    for model in cast(Iterable[FigureType], get_tree().get_models(FIGURE_MODELS)):
         if hasattr(model, "_inner_component_id") and model._inner_component_id == input_component_id:
             return model
     raise KeyError(f"No triggered Vizro model found for {input_component_id=}.")
@@ -108,7 +108,7 @@ def _apply_filter_interaction(
     # would mean we can remove modelID from the states, but given that filter_interaction will be removed it's not worth
     # rewriting now.
     for ctd_filter_interaction in ctds_filter_interaction:
-        triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
+        triggered_model = get_tree().get_model(ctd_filter_interaction["modelID"]["id"])
         data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
             data_frame=data_frame,
             target=target,
@@ -185,13 +185,13 @@ def _get_parametrized_config(
     else:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely. This might mean not being able to address nested parameters.
-        config = deepcopy(cast(FigureType, model_manager[target]).figure._arguments)
+        config = deepcopy(cast(FigureType, get_tree().get_model(target)).figure._arguments)
         del config["data_frame"]
 
     for ctd in ctds_parameter:
         # TODO: needs to be refactored so that it is independent of implementation details
         parameter_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
-        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
+        selector_actions = cast(SelectorType, get_tree().get_model(ctd["id"])).actions
 
         for action in selector_actions:
             # TODO-AV2 A 1: simplify this as in
@@ -240,7 +240,7 @@ def _get_unfiltered_data(
         dynamic_data_load_params = _get_parametrized_config(
             ctds_parameter=ctds_parameter, target=target, data_frame=True
         )
-        data_source_name = cast(FigureType, model_manager[target])["data_frame"]
+        data_source_name = cast(FigureType, get_tree().get_model(target))["data_frame"]
         multi_data_source_name_load_kwargs.append((data_source_name, dynamic_data_load_params["data_frame"]))
 
     return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
@@ -259,10 +259,11 @@ def _get_modified_page_figures(
 
     outputs: dict[ModelID, Any] = {}
 
+    tree = get_tree()
     control_targets = []
     figure_targets = []
     for target in targets:
-        if isinstance(model_manager[target], Filter):
+        if isinstance(tree.get_model(target), Filter):
             control_targets.append(target)
         else:
             figure_targets.append(target)
@@ -274,13 +275,13 @@ def _get_modified_page_figures(
     #  Consider restructuring ctds to a more convenient form to make this possible.
     for target, unfiltered_data in target_to_data_frame.items():
         filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
-        outputs[target] = cast(FigureType, model_manager[target])(
+        outputs[target] = cast(FigureType, tree.get_model(target))(
             data_frame=filtered_data,
             **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),
         )
 
     for target in control_targets:
-        target_model = cast(Filter, model_manager[target])
+        target_model = cast(Filter, tree.get_model(target))
         ctd_filter = [item for item in ctds_filter if item["id"] == cast(SelectorType, target_model.selector).id]
 
         # This only covers the case of cross-page actions when Filter in an output, but is not an input of the action.

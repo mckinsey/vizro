@@ -5,7 +5,7 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, model_validator
 
 from vizro.actions._abstract_action import _AbstractAction
-from vizro.managers import model_manager
+from vizro.managers._model_manager import ModelNotFoundError
 from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models.types import ModelID, _IdOrIdProperty
 
@@ -169,7 +169,10 @@ class update_notification(show_notification):
 
     @_log_call
     def pre_build(self):
-        notification = model_manager[self.notification] if self.notification in model_manager else None
+        try:
+            notification = self._tree.get_model(self.notification)
+        except ModelNotFoundError:
+            notification = None
 
         # Use type rather than isinstance to rule out subclasses like update_notification itself.
         if type(notification) is not show_notification:

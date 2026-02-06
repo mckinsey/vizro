@@ -109,11 +109,7 @@ class VizroTree(TypedTree):
                 yield model  # type: ignore[misc]
 
     def get_model_page(self, model: Model) -> Page | None:
-        """Get the page containing `model`.
-
-        Returns:
-            The Page containing the model, or None if not found.
-        """
+        """Get the page containing `model`."""
         # Imported inside method to avoid circular imports at module level.
         from vizro.models import Page
 
@@ -128,53 +124,41 @@ class VizroTree(TypedTree):
 
         return None
 
+    def has_model(self, model_id: ModelID) -> bool:
+        """Check if a model with the given ID exists in the tree."""
+        return self.find_first(data_id=model_id) is not None
 
-class ModelManager:
-    """Backward-compatible wrapper around VizroTree for runtime callback access.
+    def remove_model(self, model_id: ModelID) -> None:
+        """Remove a model from the tree by its ID.
 
-    This class delegates to the VizroTree stored in _dashboard_tree. During the migration period,
-    it serves as the global singleton that runtime callbacks can access. Once migration is complete,
-    code should access models via model._tree directly.
+        Args:
+            model_id: The ID of the model to remove.
 
-    TODO: Remove this class once all runtime code is migrated to use local tree access.
+        Note:
+            If the model is not found, this is a no-op.
+        """
+        node = self.find_first(data_id=model_id)
+        if node is not None:
+            node.remove()
+
+
+def get_tree() -> VizroTree:
+    """Get the VizroTree for the current Dash app.
+
+    This function is used at runtime (inside Dash callbacks) to access models.
+    The tree is stored on the Dash app instance during `Vizro.build()`.
     """
+    from dash import get_app
 
-    def __init__(self):
-        self._frozen_state = False
-        self._dashboard_tree: VizroTree | None = None
+    try:
+        app = get_app()
+    except RuntimeError as e:
+        raise RuntimeError(
+            "get_tree() must be called within a Dash callback context. "
+            "If you're in build-time code, use model._tree instead."
+        ) from e
 
-    def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
-        return self._dashboard_tree.get_model(model_id)
+    if not hasattr(app, "vizro_tree"):
+        raise RuntimeError("VizroTree not found on Dash app. Make sure Vizro.build() has been called.")
 
-    def __iter__(self) -> Generator[ModelID, None, None]:
-        """Iterates through all models.
-
-        Note this yields model IDs rather key/value pairs to match the interface for a dictionary.
-        """
-        # TODO: should this yield models rather than model IDs? Should model_manager be more like set with a special
-        #  lookup by model ID or more like dictionary?
-        return self._dashboard_tree.iter_model_ids()
-
-    def _get_models(
-        self,
-        model_type: type[Model] | tuple[type[Model], ...] | type[FIGURE_MODELS] | None = None,
-        root_model: VizroBaseModel | Mapping[str, Model] | Collection[Model] | None = None,
-    ) -> Generator[Model, None, None]:
-        """Iterates through all models of type `model_type` (including subclasses).
-
-        Delegates to VizroTree.get_models().
-        """
-        return self._dashboard_tree.get_models(model_type=model_type, root_model=root_model)
-
-    def _get_model_page(self, model: Model) -> Page | None:
-        """Gets the page containing `model`.
-
-        Delegates to VizroTree.get_model_page().
-        """
-        return self._dashboard_tree.get_model_page(model)
-
-    def _clear(self):
-        self.__init__()  # type: ignore[misc]
-
-
-model_manager = ModelManager()
+    return app.vizro_tree

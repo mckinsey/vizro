@@ -27,8 +27,7 @@ from pydantic import (
 from pydantic.fields import FieldInfo
 from pydantic_core.core_schema import ValidationInfo
 
-from vizro.managers import model_manager
-from vizro.managers._model_manager import VizroTree
+from vizro.managers._model_manager import VizroTree, get_tree
 from vizro.models._models_utils import REPLACEMENT_STRINGS
 from vizro.models.types import ModelID
 
@@ -119,9 +118,11 @@ def _dict_to_python(object: Any) -> str:
 def _extract_captured_callable_source() -> set[str]:
     from vizro.models.types import CapturedCallable
 
+    # TODO: This will not work unless the tree is build!! Hence we need to find an alternative!
+    tree = get_tree()
     captured_callable_sources = set()
-    for model_id in model_manager:
-        for _, value in model_manager[model_id]:
+    for model_id in tree.iter_model_ids():
+        for _, value in tree.get_model(model_id):
             if (
                 isinstance(value, CapturedCallable)
                 and not any(
@@ -148,10 +149,12 @@ def _extract_captured_callable_source() -> set[str]:
 def _extract_captured_callable_data_info() -> set[str]:
     from vizro.models.types import CapturedCallable
 
+    # TODO: This will not work unless the tree is build!! Hence we need to find an alternative!
+    tree = get_tree()
     return {
         f'# data_manager["{value["data_frame"]}"] = ===> Fill in here <==='
-        for model_id in model_manager
-        for _, value in model_manager[model_id]
+        for model_id in tree.iter_model_ids()
+        for _, value in tree.get_model(model_id)
         if isinstance(value, CapturedCallable)
         if "data_frame" in value._arguments
     }

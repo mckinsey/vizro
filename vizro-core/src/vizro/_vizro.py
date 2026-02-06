@@ -142,12 +142,15 @@ class Vizro:
         # Build the tree - this attaches _tree to every model
         dashboard = dashboard.__class__.model_validate(dashboard, context={"build_tree": True})
 
-        # HACK: Populate the global model_manager for backward compatibility during migration.
-        # This allows runtime callbacks to still work while we transition build-time code to use self._tree.
-        # TODO: Remove this hack once all runtime code is migrated to use local tree access.
-        from vizro.managers import model_manager as global_model_manager
-
-        global_model_manager._dashboard_tree = dashboard._tree
+        # Store the tree on the Dash app for runtime access via get_tree().
+        # This is the primary way runtime callbacks should access models.
+        # Options considered for runtime tree storage, not tried all of course:
+        #   1. Dashboard model (self._dashboard) - requires navigating from action to dashboard
+        #   2. Vizro instance (self) - no clean way to access from callbacks
+        #   3. Flask current_app - probably best alternative, but Dash-level is more appropriate
+        #   4. Flask g - per-request, wrong lifecycle for app-scoped tree
+        #   5. Dash app (get_app()) - CHOSEN as it seems the correct scope and callback-friendly
+        self.dash.vizro_tree = dashboard._tree
 
         self._pre_build(dashboard)
         self.dash.layout = dashboard.build()

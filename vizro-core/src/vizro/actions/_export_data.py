@@ -7,7 +7,6 @@ from pydantic import Field
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
-from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, _Controls
@@ -55,11 +54,12 @@ class export_data(_AbstractAction):
 
         # TODO-AV2 G 1: work out how this should work if export_data button is inside a container. Should it download
         #  everything in that container or everything in the page.
+        tree = self._tree
         figure_ids_on_page = [
             model.id
             for model in cast(
                 Iterable[FigureType],
-                model_manager._get_models(FIGURE_MODELS, root_model=model_manager._get_model_page(self)),
+                tree.get_models(FIGURE_MODELS, root_model=tree.get_model_page(self)),
             )
         ]
 
