@@ -90,11 +90,7 @@ filterwarnings = [
   # Ignore kedro warnings. Note you can't use kedro.*Warning as categories here since pytest would then import kedro#
   # and trigger the 3.14 error before it can be ignored.
   "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`",
-  "ignore:Kedro is not yet fully compatible with this Python version.",
-  # Ignore move_to_element_with_offset() currently tries to use the top left corner of the element as the origin;
-  # in Selenium 4.3 it will use the in-view center point of the element as the origin.
-  # This is a temporary workaround because sometimes tests need to use offsets from the top-left corner.
-  "ignore:move_to_element_with_offset():DeprecationWarning"
+  "ignore:Kedro is not yet fully compatible with this Python version."
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"
