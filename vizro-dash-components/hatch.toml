@@ -13,7 +13,7 @@ installer = "uv"
 
 [envs.default.scripts]
 example = "hatch run examples:example"
-lint = "pre-commit run {args} --all-files"
+lint = ["hatch run npm:lint", "pre-commit run {args} --all-files"]
 prep-release = [
   "npm version {args} --no-git-tag-version",
   "hatch run changelog:collect",
@@ -28,7 +28,7 @@ installer = "uv"
 [envs.examples.scripts]
 example = "python usage.py"
 
-# Detached env for npm commands. Requires dash[dev] on PATH for build:backends
+# Detached env for npm commands. Requires dash[dev] on PATH for `npm run build`
 # (install via `pip install -e ".[dev]"`).
 [envs.npm]
 detached = true
@@ -36,5 +36,5 @@ detached = true
 [envs.npm.scripts]
 build = "npm run build"
 fmt = "npm run fmt:js"
-install = "npm install"
+install = "npm install --legacy-peer-deps"
 lint = "npm run lint:js"
