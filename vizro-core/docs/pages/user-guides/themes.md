@@ -204,7 +204,7 @@ For more comprehensive customizations, you can modify multiple template properti
     === "Result"
 
         [![ModifiedProperties]][modifiedproperties]
-        
+
 You can achieve fine-grained control over individual charts by using arguments specified directly in chart functions, such as `color_discrete_map`, `color_discrete_sequence`, or `color_continuous_scale`. These always take precedence over template settings.
 
 !!! example "Template colors vs chart-specific colors"
