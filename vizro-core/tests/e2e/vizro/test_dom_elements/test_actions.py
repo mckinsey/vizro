@@ -942,7 +942,7 @@ def test_filtered_graph_does_not_trigger_set_control(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE,
+        page_name=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
     )
 
     # select versicolor in scatter graph
@@ -971,7 +971,7 @@ def test_filtered_aggrid_does_not_trigger_set_control(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE,
+        page_name=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
     )
 
     # navigate to AgGrid tab

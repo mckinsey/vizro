@@ -17,6 +17,10 @@ from pages.set_control_drill_through import (
     drill_through_parameter_graph_source_page,
     drill_through_parameter_graph_target_page,
 )
+from pages.set_control_multi_select_pages import (
+    filtered_graph_aggrid_trigger_set_control,
+    self_filter_set_control_page,
+)
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -298,6 +302,8 @@ dashboard = vm.Dashboard(
         drill_down_graph_page,
         ag_grid_interactions_page,
         filters_inside_containers_page,
+        filtered_graph_aggrid_trigger_set_control,
+        self_filter_set_control_page,
     ]
 )
 
