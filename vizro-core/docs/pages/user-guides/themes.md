@@ -116,7 +116,7 @@ Vizro is primarily built out of [Dash Bootstrap components](https://www.dash-boo
 
 ## Vizro themes for plotly charts
 
-Vizro registers two new [plotly themes](https://plotly.com/python/templates/), `vizro_dark` and `vizro_light`, that are used in a Vizro dashboard. You can [modify these themes](#modify-vizro-plotly-themes) globally or for indvidual charts. The themes can also be [used outside a Vizro dashboard](#charts-outside-a-dashboard) for standalone charts.
+Vizro registers two new [plotly themes](https://plotly.com/python/templates/), `vizro_dark` and `vizro_light`, that are used in a Vizro dashboard. You can [modify these themes](#modify-vizro-plotly-themes) globally or for individual charts. The themes can also be [used outside a Vizro dashboard](#charts-outside-a-dashboard) for standalone charts.
 
 ### Modify Vizro plotly themes
 
