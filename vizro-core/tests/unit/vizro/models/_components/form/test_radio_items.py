@@ -92,6 +92,14 @@ class TestRadioItemsInstantiation:
         with pytest.raises(ValidationError, match="Field required"):
             RadioItems(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
+    def test_validate_options_dict_produces_clean_errors(self):
+        """Test that _validate_options produces 2 clean errors instead of 8 messy ones."""
+        with pytest.raises(ValidationError) as exc_info:
+            RadioItems(options=[{"hello": "A", "world": "A"}])
+
+        # With validator: 2 errors (label, value). Without: 8 errors with nested paths.
+        assert len(exc_info.value.errors()) == 2
+
     @pytest.mark.parametrize(
         "test_value, options",
         [
