@@ -232,7 +232,7 @@ def test_flex_layout_wrap_and_ag_grid(dash_br):
     page_select(dash_br, page_name=cnst.LAYOUT_FLEX_WRAP_AND_AG_GRID, graph_check=False)
 
     # check if column 'Total_bill' is available
-    dash_br.wait_for_element("div[class='ag-theme-quartz ag-theme-vizro'] div:nth-of-type(1) div[col-id='total_bill']")
+    dash_br.wait_for_element("div[class='ag-theme-vizro'] div:nth-of-type(1) div[col-id='total_bill']")
 
 
 @image_assertion
