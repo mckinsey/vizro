@@ -179,7 +179,7 @@ class Table(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H4([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
+                    html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
                     dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
