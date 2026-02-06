@@ -33,7 +33,7 @@ jobs:
           - browser: chrome_mobile
             command: "-m mobile_screenshots"
           - browser: firefox
-            command: "--webdriver Firefox -m 'not mobile_screenshots'"
+            command: "--webdriver Firefox -m 'not chrome_screenshots and not mobile_screenshots'"
 
     steps:
       - uses: actions/checkout@v6
