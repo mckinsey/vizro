@@ -28,7 +28,7 @@ def custom_background_chart(data_frame):
 
 page = vm.Page(
     title="Template properties test",
-    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+    layout=vm.Grid(grid=[[0, 1], [2, 2]]),
     components=[
         vm.Graph(
             figure=px.histogram(
