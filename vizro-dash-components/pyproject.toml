@@ -15,14 +15,13 @@ dependencies = [
 description = "Custom Dash components for Vizro with enhanced Markdown rendering"
 dynamic = ["version"]
 license = "Apache-2.0"
-name = "vizro_dash_components"
+name = "vizro-dash-components"
 readme = "README.md"
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
 dev = [
   "dash[dev]>=3.0.0",  # provides dash-generate-components, required by `npm run build`
-  "vizro"
 ]
 
 [project.urls]

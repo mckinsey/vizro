@@ -18,7 +18,7 @@ prep-release = [
   "npm version {args} --no-git-tag-version",
   "hatch run changelog:collect",
   "hatch run changelog:add",
-  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro_dash_components"'
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-dash-components"'
 ]
 
 [envs.examples]

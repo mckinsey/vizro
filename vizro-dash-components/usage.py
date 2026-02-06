@@ -1,9 +1,8 @@
 """Test usage of vizro_dash_components.Markdown with all features."""
 
 import dash
-from dash import Input, Output, clientside_callback, html
-
 import vizro_dash_components
+from dash import Input, Output, clientside_callback, html
 
 app = dash.Dash(__name__)
 
