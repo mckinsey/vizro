@@ -474,29 +474,26 @@ def test_notifications_page_dark_theme(dash_br):
     )
 
 
+@pytest.mark.chrome_screenshots
 @image_assertion
 def test_set_control_multi_select_page(dash_br):
     """Testing set control multi select interactions page."""
-    # There is some weird behavior on firefox with scatter points selection and aggrid checkbox click on this page,
-    # so we skip these interactions for firefox because they don't affect the appearance of the page and can
-    # cause flakiness in screenshots.
-    if os.getenv("BROWSER") != "firefox":
-        accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-        page_select(
-            dash_br,
-            page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
-        )
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+    )
 
-        # click on the scatter point to check that the rest of the chart is dimmed
-        dash_br.click_at_coord_fractions(
-            scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21, trace_index=1), 0, 0
-        )
+    # click on the scatter point to check that the rest of the chart is dimmed
+    dash_br.click_at_coord_fractions(
+        scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21, trace_index=1), 0, 0
+    )
 
-        # click on the scatter point to check that the rest of the chart is not changed
-        dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
+    # click on the scatter point to check that the rest of the chart is not changed
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
 
-        # click on the aggrid checkbox
-        dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2), 1)
+    # click on the aggrid checkbox
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2), 1)
 
 
 @image_assertion
