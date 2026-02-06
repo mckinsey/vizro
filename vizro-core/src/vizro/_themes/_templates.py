@@ -134,5 +134,7 @@ dashboard_overrides = go.layout.Template(
         ternary_bgcolor=colors.transparent,
         title_pad_l=0,
         title_pad_r=0,
+        xaxis_title_font_size=14,
+        yaxis_title_font_size=14,
     )
 )

@@ -18,7 +18,7 @@
 }
 
 #left-side {
-  background-color: var(--left-side-bg);
+  background-color: var(--bs-tertiary-bg);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -43,7 +43,7 @@
 }
 
 #header {
-  background-color: var(--left-side-bg);
+  background-color: var(--bs-tertiary-bg);
   display: flex;
   height: 60px;
   justify-content: space-between;
@@ -187,7 +187,7 @@ a:has(#logo-dark),
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--left-side-bg);
+  background-color: var(--bs-tertiary-bg);
   border: 1px solid var(--bs-border-color);
   border-radius: 50%;
   color: var(--bs-tertiary-color);

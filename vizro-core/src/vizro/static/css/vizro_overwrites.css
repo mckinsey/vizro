@@ -4,20 +4,16 @@ for a pure Dash app.
 
 All the HEX values starting with --text-code are taken from the Github code highlighting style. */
 [data-bs-theme="dark"] {
-  --left-side-bg: var(--bs-tertiary-bg);
-  --right-side-bg-iterated: var(--bs-body-bg);
   --hover-bg-subtle: var(--bs-gray-900);
   --input-field-bg: var(--bs-primary-bg-subtle);
 }
 
 [data-bs-theme="light"] {
-  --left-side-bg: var(--bs-body-bg);
-
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
-  --right-side-bg-iterated: var(--surfaces-bg-card);
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --hover-bg-subtle: var(--bs-gray-300);
   --input-field-bg: var(--bs-body-bg);
+  --bs-primary-bg-subtle: #FAFAFB;
 }
 
 /* Override Mantine's default CSS variables with Bootstrap's here */
@@ -30,7 +26,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
 .navbar {
-  background: var(--left-side-bg) !important;
+  background: var(--bs-tertiary-bg) !important;
   border: none;
   flex-wrap: nowrap;
 }
