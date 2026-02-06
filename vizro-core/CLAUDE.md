@@ -59,6 +59,22 @@ Vizro().build(dashboard).run()
 - Examples: `examples/`
 - Changelog: `changelog.d/` and `CHANGELOG.md`
 
+## Developing with local vizro-dash-components
+
+`vizro-core` depends on `vizro-dash-components`. To use a local (editable) copy:
+
+1. Build the component in `vizro-dash-components/`: `hatch run npm:build`
+1. Install it into vizro-core's examples env:
+    ```bash
+    # From vizro-core/, find the env's Python path:
+    hatch run examples:pypath
+    # Then install editable:
+    uv pip install -e ../vizro-dash-components --python "<path from above>"
+    ```
+1. Run the scratch dev app: `hatch run example`
+
+After modifying JS/TS source in `vizro-dash-components/`, rebuild (`hatch run npm:build` there) and restart the Vizro app.
+
 ## Workspace structure
 
 - `pyproject.toml`: Package configuration for vizro-core with dependencies

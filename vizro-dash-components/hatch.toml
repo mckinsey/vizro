@@ -30,14 +30,11 @@ example = "python usage.py"
 
 # Detached env for npm commands. Requires dash[dev] on PATH for build:backends
 # (install via `pip install -e ".[dev]"`).
-[envs.frontend]
+[envs.npm]
 detached = true
 
-[envs.frontend.scripts]
+[envs.npm.scripts]
 build = "npm run build"
-build-backends = "npm run build:backends"
-build-js = "npm run build:js"
 fmt = "npm run fmt:js"
 install = "npm install"
 lint = "npm run lint:js"
-watch = "npm run build:js::dev -- --watch"
