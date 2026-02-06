@@ -21,7 +21,7 @@ requires-python = ">=3.10"
 
 [project.optional-dependencies]
 dev = [
-  "dash[dev]>=3.0.0",  # provides dash-generate-components, required by `npm run build`
+  "dash[dev]>=3.0.0"  # provides dash-generate-components, required by `npm run build`
 ]
 
 [project.urls]
