@@ -1,6 +1,6 @@
 {
   "name": "vizro-dash-components",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Custom Dash components for Vizro with enhanced Markdown rendering",
   "main": "index.ts",
   "scripts": {

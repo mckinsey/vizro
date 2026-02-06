@@ -13,6 +13,7 @@ installer = "uv"
 [envs.default.scripts]
 example = "hatch run examples:example"
 lint = ["hatch run npm:lint", "pre-commit run {args} --all-files"]
+pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
   "npm version {args} --no-git-tag-version",
   "hatch run changelog:collect",

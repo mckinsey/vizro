@@ -7,14 +7,20 @@ authors = [
   {name = "Vizro Team"}
 ]
 classifiers = [
-  "Framework :: Dash"
+  "Framework :: Dash",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "dash>=3.0.0"
 ]
-description = "Custom Dash components for Vizro with enhanced Markdown rendering"
+description = "Custom Dash components that can be used in any Dash app"
 dynamic = ["version"]
-license = "Apache-2.0"
+license-files = {paths = ["LICENSE.txt"]}
 name = "vizro-dash-components"
 readme = "README.md"
 requires-python = ">=3.10"
