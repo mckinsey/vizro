@@ -2,3 +2,18 @@
   background: var(--bs-primary-bg-subtle);
   color: unset;
 }
+
+/* Override Mantine CodeHighlight's default background to match Vizro's theme. */
+.mantine-CodeHighlight-root {
+  --code-background: var(--bs-primary-bg-subtle);
+}
+
+/* Fix copy button positioning in the Vizro context. The vizro_dash_components bundle has correct
+   CSS order (code-highlight after core), but Vizro also loads dash_mantine_components (dmc) which
+   brings a second copy of @mantine/core/styles.css. That re-applies ActionIcon's `position: relative`
+   after the bundle's `position: absolute`, breaking the copy button placement. */
+.mantine-CodeHighlight-copy {
+  inset-inline-end: 5px;
+  position: absolute;
+  top: 5px;
+}
