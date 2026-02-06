@@ -15,14 +15,6 @@ class Text(VizroBaseModel):
     Abstract: Usage documentation
         [How to add text to your page](../user-guides/text.md)
 
-    Args:
-        text (str): Markdown string to create text that should adhere to the CommonMark Spec.
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `vdc.Markdown` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/markdown/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["text"] = "text"
@@ -35,10 +27,10 @@ class Text(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `vdc.Markdown` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/markdown/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
+defaults chosen by the Vizro team. This may have unexpected behavior.
+Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/markdown/)
+to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+underlying component may change in the future.""",
             ),
         ]
     ]
