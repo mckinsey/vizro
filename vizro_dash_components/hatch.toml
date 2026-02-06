@@ -12,6 +12,7 @@ detached = true
 installer = "uv"
 
 [envs.default.scripts]
+example = "hatch run examples:example"
 lint = "pre-commit run {args} --all-files"
 prep-release = [
   "npm version {args} --no-git-tag-version",
@@ -19,6 +20,13 @@ prep-release = [
   "hatch run changelog:add",
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro_dash_components"'
 ]
+
+[envs.examples]
+features = ["dev"]
+installer = "uv"
+
+[envs.examples.scripts]
+example = "python usage.py"
 
 # Detached env for npm commands. Requires dash[dev] on PATH for build:backends
 # (install via `pip install -e ".[dev]"`).

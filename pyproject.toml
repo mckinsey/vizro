@@ -39,6 +39,12 @@ warn_unused_ignores = true
 disable_error_code = "name-defined"
 module = "vizro.models.types"
 
+# vizro_dash_components has no type stubs. Pre-commit's isolated mypy env finds the source directory
+# in this monorepo but can't resolve the auto-generated wildcard imports, causing attr-defined errors.
+[[tool.mypy.overrides]]
+follow_imports = "skip"
+module = "vizro_dash_components"
+
 [tool.pydantic-mypy]
 init_forbid_extra = true
 init_typed = true

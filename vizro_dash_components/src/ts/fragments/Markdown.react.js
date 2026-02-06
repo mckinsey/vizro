@@ -120,7 +120,7 @@ export default class DashMarkdown extends Component {
     // Regex to convert $...$ and $$...$$ math notation to dashMathjax components
     const regexMath = (value) => {
       const newValue = value.replace(
-        /(\${1,2})((?:\\.|[^$])+)\1/g,
+        /(\${1,2})((?:\\\$|[^$\\]|\\(?!\$))+)\1/g,
         (_m, tag, src) => {
           const inline = tag.length === 1 || src.indexOf("\n") === -1;
           return `<dashMathjax value='${src}' inline='${inline}'/>`;
@@ -145,10 +145,14 @@ export default class DashMarkdown extends Component {
     };
 
     // DEVIATION FROM ORIGINAL DCC:
-    // MantineProvider is required for Mantine CodeHighlight to function.
-    // The original has no wrapper here.
+    // MantineProvider is required as a React context ancestor for CodeHighlight.
+    // forceColorScheme prevents the provider from writing to <html>'s
+    // data-mantine-color-scheme attribute. The actual visual theming is handled
+    // entirely by CSS attribute selectors on <html>, so the forced value here
+    // is irrelevant for appearance. The host app (e.g. Vizro) is responsible
+    // for setting data-mantine-color-scheme on <html>.
     return (
-      <MantineProvider>
+      <MantineProvider forceColorScheme="light">
         <LoadingElement
           id={id}
           ref={(node) => {

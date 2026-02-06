@@ -1,7 +1,8 @@
 from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
-from dash import dcc, get_relative_path, html
+import vizro_dash_components as vdc
+from dash import get_relative_path, html
 from pydantic import BeforeValidator, Field, JsonValue, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -135,7 +136,7 @@ class Card(VizroBaseModel):
 
     def _build_card_text(self):
         """Wrap text in NavLink if href is provided."""
-        text = dcc.Markdown(
+        text = vdc.Markdown(
             id=f"{self.id}-text", children=self.text, dangerously_allow_html=False, className="card-text"
         )
         if not self.href:
@@ -149,7 +150,7 @@ class Card(VizroBaseModel):
         if not self.header:
             return None
 
-        children = [dcc.Markdown(children=self.header, dangerously_allow_html=False)]
+        children = [vdc.Markdown(children=self.header, dangerously_allow_html=False)]
 
         # Add description to header if it exists
         if description is not None:
@@ -176,5 +177,5 @@ class Card(VizroBaseModel):
             return None
 
         return dbc.CardFooter(
-            id=f"{self.id}_footer", children=dcc.Markdown(children=self.footer, dangerously_allow_html=False)
+            id=f"{self.id}_footer", children=vdc.Markdown(children=self.footer, dangerously_allow_html=False)
         )
