@@ -335,3 +335,61 @@ def test_reset_controls_page(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_filtered_graph_does_not_trigger_set_control(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # set_control - click on the scatter point to filter the aggrid (2 http)
+    element = page.locator('path[class="point plotly-customdata"]').nth(20)
+    box = element.bounding_box()
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # unselect all in checklist that filters a set_control source graph (1 http)
+    page.get_by_text("Select All").nth(1).click()
+    check_http_requests_count(page, http_requests_paths, 5, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_filtered_aggrid_does_not_trigger_set_control(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # change page tab - click on the aggrid tab (0 http)
+    page.locator("a", has_text="AgGrid").nth(1).click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # set_control - click on the versicolor row in aggrid (2 http)
+    page.get_by_role("gridcell", name="versicolor").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # unselect all in checklist that filters a set_control source ag_grid (1 http)
+    page.get_by_text("Select All").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 5, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_self_filtered_graph(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SELF_FILTER_SET_CONTROL_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # set_control - click on the scatter point to filter the same graph (2 http)
+    element = page.locator('path[class="point plotly-customdata"]').nth(20)
+    box = element.bounding_box()
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    check_http_requests_count(page, http_requests_paths, 4, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)

@@ -93,7 +93,8 @@ filterwarnings = [
   "ignore:Kedro is not yet fully compatible with this Python version."
 ]
 markers = [
-  "mobile_screenshots: marks tests for chrome mobile screenshots"
+  "mobile_screenshots: marks tests for chrome mobile screenshots",
+  "chrome_screenshots: marks tests for chrome screenshots"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils", "tests/e2e/vizro/custom_components"]
