@@ -474,6 +474,7 @@ def test_notifications_page_dark_theme(dash_br):
     )
 
 
+@pytest.mark.chrome_screenshots
 @image_assertion
 def test_set_control_multi_select_page(dash_br):
     """Testing set control multi select interactions page."""
