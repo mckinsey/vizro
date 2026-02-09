@@ -97,7 +97,7 @@ Here's a mathematical formula related to {topic}:
 
 {formula}
 
-The formula above is rendered using KaTeX.
+The formula above is rendered using MathJax.
 """
 
     return html.Div(
