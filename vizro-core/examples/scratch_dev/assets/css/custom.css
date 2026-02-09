@@ -6,8 +6,3 @@
 #page-header {
     display: none;
 }
-
-/* Does a filled container need a border? */
-.bg-container {
-    border: 1px solid var(--bs-border-color);
-}
