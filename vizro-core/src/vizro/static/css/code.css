@@ -2,3 +2,85 @@
   background: var(--bs-primary-bg-subtle);
   color: unset;
 }
+
+/* Override Mantine CodeHighlight's default background to match Vizro's theme. */
+.mantine-CodeHighlight-root {
+  --code-background: var(--bs-primary-bg-subtle);
+}
+
+/* Override Mantine CodeHighlight's theme-dependent colors.
+   Mantine uses :where([data-mantine-color-scheme]) selectors which have zero specificity.
+   Vizro also loads dash_mantine_components (dmc) which brings a second copy of
+   @mantine/core/styles.css that can override the code-highlight theme variables.
+   Using [data-bs-theme] selectors ensures correct colors regardless of load order. */
+[data-bs-theme="light"] .mantine-CodeHighlight-root {
+  --code-text-color: var(--mantine-color-gray-7);
+  --code-comment-color: var(--mantine-color-gray-6);
+  --code-keyword-color: var(--mantine-color-violet-8);
+  --code-tag-color: var(--mantine-color-red-9);
+  --code-literal-color: var(--mantine-color-blue-6);
+  --code-string-color: var(--mantine-color-blue-9);
+  --code-variable-color: var(--mantine-color-lime-9);
+  --code-class-color: var(--mantine-color-orange-9);
+}
+
+[data-bs-theme="dark"] .mantine-CodeHighlight-root {
+  --code-text-color: var(--mantine-color-dark-1);
+  --code-comment-color: var(--mantine-color-dark-3);
+  --code-keyword-color: var(--mantine-color-violet-3);
+  --code-tag-color: var(--mantine-color-yellow-4);
+  --code-literal-color: var(--mantine-color-blue-4);
+  --code-string-color: var(--mantine-color-green-6);
+  --code-variable-color: var(--mantine-color-blue-2);
+  --code-class-color: var(--mantine-color-orange-5);
+}
+
+/* Fix copy button in the Vizro context. The vizro_dash_components bundle has correct CSS order
+   (code-highlight after core), but Vizro also loads dash_mantine_components (dmc) which brings a
+   second copy of @mantine/core/styles.css. That re-applies ActionIcon's `position: relative`,
+   background-color, and hover styles after the bundle's overrides.
+   The color uses [data-bs-theme] selectors because --mantine-color-dimmed is itself theme-dependent
+   (resolved via data-mantine-color-scheme) and can be out of sync with the actual Vizro theme. */
+.mantine-CodeHighlight-copy {
+  background-color: transparent;
+  inset-inline-end: 5px;
+  position: absolute;
+  top: 5px;
+}
+
+[data-bs-theme="light"] .mantine-CodeHighlight-copy {
+  color: var(--mantine-color-gray-6);
+}
+
+[data-bs-theme="dark"] .mantine-CodeHighlight-copy {
+  color: var(--mantine-color-dark-2);
+}
+
+@media (hover: hover) {
+  .mantine-CodeHighlight-copy:hover {
+    background-color: transparent;
+    opacity: 1;
+  }
+
+  [data-bs-theme="light"] .mantine-CodeHighlight-copy:hover {
+    color: var(--mantine-color-gray-6);
+  }
+
+  [data-bs-theme="dark"] .mantine-CodeHighlight-copy:hover {
+    color: var(--mantine-color-dark-2);
+  }
+}
+
+/* Override Mantine Tooltip theme colors for the copy button tooltip.
+   Mantine Tooltip uses :where([data-mantine-color-scheme]) to flip between dark-on-light and
+   light-on-dark styles. When data-mantine-color-scheme is out of sync with the actual Vizro theme,
+   the tooltip becomes invisible (e.g. dark tooltip on a dark page). */
+[data-bs-theme="light"] .mantine-Tooltip-tooltip {
+  background-color: var(--tooltip-bg, var(--mantine-color-gray-9));
+  color: var(--tooltip-color, var(--mantine-color-white));
+}
+
+[data-bs-theme="dark"] .mantine-Tooltip-tooltip {
+  background-color: var(--tooltip-bg, var(--mantine-color-gray-2));
+  color: var(--tooltip-color, var(--mantine-color-black));
+}
