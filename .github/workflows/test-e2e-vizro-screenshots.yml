@@ -29,7 +29,7 @@ jobs:
       matrix:
         config:
           - browser: chrome
-            command: "-m 'chrome_screenshots and not mobile_screenshots'"
+            command: "-m 'not mobile_screenshots'"
           - browser: chrome_mobile
             command: "-m mobile_screenshots"
           - browser: firefox
