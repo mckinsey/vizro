@@ -41,25 +41,6 @@ class Graph(VizroBaseModel):
     Abstract: Usage documentation
         [How to use graphs](../user-guides/graph.md)
 
-    Args:
-        figure (CapturedCallable): Function that returns a graph. Either use
-            [`vizro.plotly.express`](../user-guides/graph.md) or see
-            [`CapturedCallable`][vizro.models.types.CapturedCallable].
-        title (str): Title of the `Graph`. Defaults to `""`.
-        header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["graph"] = "graph"
@@ -91,7 +72,7 @@ class Graph(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
@@ -101,10 +82,10 @@ class Graph(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
+defaults chosen by the Vizro team. This may have unexpected behavior.
+Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
+to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+underlying component may change in the future.""",
             ),
         ]
     ]
@@ -272,8 +253,7 @@ class Graph(VizroBaseModel):
 
         return data_frame
 
-    @staticmethod
-    def _optimise_fig_layout_for_dashboard(fig):
+    def _optimise_fig_layout_for_dashboard(self, fig):
         """Post layout updates to visually enhance charts used inside dashboard."""
         # Determine if a title is present
         has_title = bool(fig.layout.title.text)
@@ -292,6 +272,14 @@ class Graph(VizroBaseModel):
         if has_title and fig.layout.margin.t is None:
             # Reduce `margin_t` if not explicitly set.
             fig.update_layout(margin_t=64)
+
+        if self.actions and not fig.layout.clickmode:
+            # Set clickmode to "event+select" if there are actions defined and clickmode is not already set.
+            fig.update_layout(clickmode="event+select")
+
+        if not self.actions and fig.layout.modebar.remove is None:
+            # Remove selection tools from modebar if there's no actions defined and the modebar.remove isn't already set
+            fig.update_layout(modebar_remove=["select2d", "lasso2d"])
 
         return fig
 
@@ -320,6 +308,7 @@ class Graph(VizroBaseModel):
                 State("vizro_themes", "data"),
             ],
             prevent_initial_call=True,
+            hidden=True,
         )
 
         clientside_callback(
@@ -330,6 +319,7 @@ class Graph(VizroBaseModel):
             State(self.id, "figure"),
             State(self.id, "id"),
             prevent_initial_call=True,
+            hidden=True,
         )
 
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters

@@ -4,29 +4,19 @@ nav:
   - Vizro-AI: index.md
   - Tutorials:
       - Chart generation: pages/tutorials/quickstart.md
-      - Dashboard generation: pages/tutorials/quickstart-dashboard.md
-      - Goodreads tutorial: pages/tutorials/goodreads-tutorial.md
   - How-to guides:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md
           - Model setup: pages/user-guides/customize-vizro-ai.md
-          - Different languages: pages/user-guides/use-different-languages.md
-      - CHARTS:
-          - Run vizro_ai.plot: pages/user-guides/run-vizro-ai.md
-          - Advanced options: pages/user-guides/advanced-options.md
-          - Advanced charts: pages/user-guides/create-advanced-charts.md
+      - CHART AGENT:
+          - Usage and advanced options: pages/user-guides/advanced-options.md
           - Add Vizro-AI charts to a Vizro dashboard: pages/user-guides/add-generated-chart-usecase.md
-          - Use Vizro-AI methods as Langchain tools: pages/user-guides/vizro-ai-langchain-guide.md
-      - DASHBOARDS:
-          - Run vizro_ai.dashboard: pages/user-guides/run-vizro-ai-dashboard.md
-          - Advanced dashboards: pages/user-guides/create-complex-dashboard.md
   - API Reference: pages/API-reference/vizro-ai.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
-      - Why use Vizro-AI: pages/explanation/why-use-vizro-ai.md
   #- Contribute:
   #      - Contributing: pages/contribute/contributing.md
   - Vizro: https://vizro.readthedocs.io
@@ -85,7 +75,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.49
+                vizro==0.1.51
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -105,7 +95,7 @@ plugins:
             show_source: false #currently doesn't show source at correct level, and not for pydantic models
             docstring_style: google
             merge_init_into_class: true
-            docstring_section_style: list
+            docstring_section_style: table
             separate_signature: true
             #   filters: ["!^_"]
             show_root_heading: true

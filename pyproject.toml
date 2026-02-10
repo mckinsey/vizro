@@ -85,6 +85,8 @@ select = [
 "__init__.py" = ["E402", "F401"]
 # Ignore secutiy violations in tools.
 "tools/**" = ["S"]
+# Example app is read by LLM, keep it clean
+"vizro-e2e-flow/skills/dashboard-build/references/example_app.py" = ["D100"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

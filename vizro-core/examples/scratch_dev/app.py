@@ -1,5 +1,9 @@
-import vizro.plotly.express as px
+"""Dev app to try things out."""
+
 import vizro.models as vm
+import vizro.plotly.express as px
+from vizro.models.types import capture
+
 from vizro import Vizro
 
 df = px.data.iris()
@@ -51,4 +55,4 @@ dashboard = vm.Dashboard(
 )
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)

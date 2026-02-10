@@ -15,9 +15,9 @@ classifiers = [
   "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
-  "dash>=3.1.1,<4",  # temporary upper bound to avoid breaking changes in Dash v4
+  "dash>=3.4.0,<4",  # temporary upper bound to avoid breaking changes in Dash v4
   "dash_bootstrap_components>=2",  # 2.0.0 needed to support dash>=3.0.0
-  "dash-ag-grid>=31.3.1",  # 31.3.1 needed to support dash>=3.0.0
+  "dash-ag-grid>=33.3.3",  # to leverage new theme API
   "dash_mantine_components>=2.0.0",  # 2.0.0 needed to support dmc.NotificationContainer
   "pandas>=2",
   "plotly>=5.24.0",
@@ -93,7 +93,8 @@ filterwarnings = [
   "ignore:Kedro is not yet fully compatible with this Python version."
 ]
 markers = [
-  "mobile_screenshots: marks tests for chrome mobile screenshots"
+  "mobile_screenshots: marks tests for chrome mobile screenshots",
+  "chrome_screenshots: marks tests for chrome screenshots"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils", "tests/e2e/vizro/custom_components"]

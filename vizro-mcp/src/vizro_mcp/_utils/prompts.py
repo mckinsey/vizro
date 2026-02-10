@@ -32,7 +32,7 @@ IMPORTANT:
 - IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt, OTHERWISE:
 - make a plan of what components you would like to use, then request all necessary schemas using the `get_model_json_schema` tool
   - start with `Dashboard`, don't forget `Graph`,
-  - MUST explicitly use `Flex` (layout setting is NOT optional, contrary to what schema says); use `Grid` only if asked for precise placement or no scroll
+  - MUST explicitly set layout (layout setting is NOT optional, contrary to what schema says)
 - assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code to the user until you have validated the solution
 - ALWAYS validate the dashboard configuration using the `validate_dashboard_config` tool
 - using `custom_chart` is encouraged for advanced visualizations, no need to call the planner tool in advanced mode
@@ -66,6 +66,7 @@ class HasNameAndDoc(Protocol):
 
 # This dict is used to give the model and overview of what is available in the vizro.models namespace.
 # It helps it to narrow down the choices when asking for a model.
+# Intentionally omitted: Accordion, Action, Table, Layout and VizroBaseModel
 MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
     "main": [vm.Dashboard, vm.Page],
     "static components": [
@@ -75,10 +76,10 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Container,
         vm.Tabs,
     ],
-    "dynamic components": [vm.Figure, vm.Graph, vm.AgGrid],
+    "dynamic components - ie reactive to controls": [vm.Figure, vm.Graph, vm.AgGrid],
     "layouts": [vm.Grid, vm.Flex],
-    "controls": [vm.Filter, vm.Parameter],
-    "selectors": [
+    "controls - control display of dynamic components": [vm.Filter, vm.Parameter],
+    "selectors - input mechanisms for controls": [
         vm.Dropdown,
         vm.RadioItems,
         vm.Checklist,
@@ -88,36 +89,12 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Switch,
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
-    "additional_info": [vm.Tooltip],
+    "additional_info - info about the component": [vm.Tooltip],
     "actions available for the actions argument of a model": [
-        va.export_data,
-        va.set_control,
+        getattr(va, func) for func in va.__all__ if not hasattr(getattr(va, func), "__deprecated__")
     ],
-    "functions available for vm.Figure(...,figure=...) model": [vf.__dict__[func] for func in vf.__all__],
+    "functions available for vm.Figure(...,figure=...) model": [getattr(vf, func) for func in vf.__all__],
 }
-
-LAYOUT_INSTRUCTIONS = """Some extra information about Layout in Vizro:
-Overall:
-- Use Flex for most dashboards, use Grid only for cases below
-- Great tip: group elements in a `Container` and decide on appropriate layout inside the container and
-  outside the container
-
-Flex (Recommended in ALMOST ALL cases, definitely as default unless asked otherwise!):
-- use wrap=True if direction="row" to avoid horizontal scroll
-- Sizing of components: use min/max widths only to prevent items from shrinking too small
-    - Graph example: vm.Graph(figure=px.violin(..., width=900)).
-    - AgGrid example: vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 900})).
-
-Grid (Use only if asked):
-- Use when:
-  - you need precise alignment across both rows and columns
-  - you want a component (often charts) to fill a concrete part of the page, e.g. when asked to fill one row, or a column
-- ALWAYS opt for `Grid` to make components fill space instead of playing with `width` and `height`
-- NEVER use collapsible containers inside `Grid`
-- IMPORTANT: you must use integers to refer to the elements, starting from 0, every element must be referenced,
-  elements can't overlap and must be rectangular, and you must use the same number of columns and rows for each row
-
-Do NOT forget to call `validate_dashboard_config` after each iteration."""
 
 
 def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:

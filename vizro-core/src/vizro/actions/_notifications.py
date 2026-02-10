@@ -33,19 +33,6 @@ class show_notification(_AbstractAction):
     Abstract: Usage documentation
         [Notifications](../user-guides/notification-actions.md)
 
-    Args:
-        text (str): Markdown text for the main notification message. Follows the CommonMark specification.
-        variant (Literal["info", "success", "warning", "error", "progress"]): Variant that determines color and
-            default icon. If `progress`, the notification will show a loading spinner instead of an icon.
-            Defaults to "info".
-        title (str): Notification title. Set to `""` to hide the title. Defaults to the capitalized variant name,
-            for example `"Info"` for `variant="info"`.
-        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Ignored if
-            `variant="progress"`. Defaults to the variant-specific icon, for example 'info' for 'info' variant.
-        auto_close (bool | int): Auto-close duration in milliseconds. Set to `False` to keep the notification
-            open until the user closes it manually. Default value depends on variant: `4000` for
-            info/success/warning/error, `False` for progress.
-
     Example:
         ```python
         import vizro.actions as va
@@ -67,8 +54,8 @@ class show_notification(_AbstractAction):
     )
     variant: Literal["info", "success", "warning", "error", "progress"] = Field(
         default="info",
-        description="""Variant that determines color and default icon.
-        If `progress`, the notification will show a loading spinner instead of an icon.""",
+        description="Variant that determines color and default icon. "
+        "If `progress`, the notification will show a loading spinner instead of an icon.",
     )
 
     # TODO: title, icon and auto_close could use default_factory once we bump to pydantic>=2.10.0.
@@ -76,20 +63,20 @@ class show_notification(_AbstractAction):
     # Placeholder defaults are used to satisfy type checking; actual defaults are set in the validator.
     title: str = Field(
         default="",
-        description="""Notification title. Set to `""` to hide the title. Defaults to the capitalized
-            variant name, for example `"Info"` for `variant="info"`""",
+        description='Notification title. Set to `""` to hide the title. '
+        'Defaults to the capitalized variant name, for example `"Info"` for `variant="info"`.',
     )
     icon: Annotated[str, AfterValidator(validate_icon)] = Field(
         default="",
-        description="""Icon name from the [Google Material Icon Library](https://fonts.google.com/icons).
-            Ignored if `variant="progress"`. Defaults to the variant-specific icon, for example
-            'info' for 'info' variant.""",
+        description="Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). "
+        "Ignored if `variant='progress'`. Defaults to the variant-specific icon, for example 'info' for 'info' "
+        "variant.",
     )
     auto_close: bool | int = Field(
         default=4000,
-        description="""Auto-close duration in milliseconds. Set to `False` to keep the notification
-            open until the user closes it manually. Default value depends on variant: `4000` for
-            info/success/warning/error, `False` for progress.""",
+        description="Auto-close duration in milliseconds. Set to `False` to keep the notification "
+        "open until the user closes it manually. Default value depends on variant: `4000` for "
+        "info/success/warning/error, `False` for progress.",
     )
 
     # This should ideally be replaced with default_factory once we bump to pydantic>=2.10.0.
@@ -103,7 +90,7 @@ class show_notification(_AbstractAction):
 
     @property
     def outputs(self) -> _IdOrIdProperty:  # type: ignore[override]
-        return "vizro_notifications.sendNotifications"
+        return "vizro-notifications.sendNotifications"
 
     @_log_call
     def function(self):
@@ -130,20 +117,6 @@ class update_notification(show_notification):
     Abstract: Usage documentation
         [Update notification](../user-guides/notification-actions.md#update-existing-notification)
 
-    Args:
-        notification (ModelID): Notification to update. Must match the id of the original `show_notification` action.
-        text (str): Markdown text for the main notification message. Follows the CommonMark specification.
-        variant (Literal["info", "success", "warning", "error", "progress"]): Variant that determines color and
-            default icon. If `progress`, the notification will show a loading spinner instead of an icon.
-            Defaults to "info".
-        title (str): Notification title. Set to `""` to hide the title. Defaults to the capitalized variant name,
-            for example `"Info"` for `variant="info"`.
-        icon (str): Icon name from the [Google Material Icon Library](https://fonts.google.com/icons). Ignored if
-            `variant="progress"`. Defaults to the variant-specific icon, for example 'info' for 'info' variant.
-        auto_close (bool | int): Auto-close duration in milliseconds. Set to `False` to keep the notification
-            open until the user closes it manually. Default value depends on variant: `4000` for
-            info/success/warning/error, `False` for progress.
-
     Example:
         ```python
         import vizro.actions as va
@@ -159,7 +132,7 @@ class update_notification(show_notification):
                 ),
             ],
         )
-    ```
+        ```
     """
 
     type: Literal["update_notification"] = "update_notification"  # type: ignore[assignment]

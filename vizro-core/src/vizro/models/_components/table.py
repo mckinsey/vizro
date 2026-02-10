@@ -3,7 +3,14 @@ from typing import Annotated, Literal
 
 import pandas as pd
 from dash import State, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
@@ -29,17 +36,6 @@ class Table(VizroBaseModel):
     Abstract: Usage documentation
         [How to use tables](../user-guides/table.md)
 
-    Args:
-        figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the `Table`. Defaults to `""`.
-        header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["table"] = "table"
@@ -71,12 +67,13 @@ class Table(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
 
     _inner_component_id: str = PrivateAttr()
+
     _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")

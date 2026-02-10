@@ -1,182 +1,46 @@
-.ag-theme-quartz.ag-theme-vizro,
-.ag-theme-quartz-dark.ag-theme-vizro {
-  --ag-font-family: inter, sans-serif, arial, serif;
-  --ag-active-color: var(--bs-border-color-translucent);
-  --ag-background-color: transparent;
-  --ag-odd-row-background-color: transparent;
-  --ag-data-color: var(--bs-heading-color);
-  --ag-header-background-color: var(--right-side-bg-iterated);
-  --ag-icon-font-family: aggridquartz;
-  --ag-icon-size: 0.875rem;
-  --ag-row-height: 48px;
-  --ag-header-height: 40px;
-  --ag-borders: none;
-  --ag-border-radius: 0;
-  --ag-border-color: transparent;
-  --ag-row-border-style: solid;
-  --ag-row-border-color: var(--bs-border-color);
-  --ag-row-border-width: 1px;
-  --ag-selected-row-background-color: var(--bs-primary-bg-subtle);
-  --ag-checkbox-checked-color: var(--bs-primary);
-  --ag-header-column-resize-handle-display: block;
-  --ag-header-column-resize-handle-height: 30%;
-  --ag-header-column-resize-handle-width: 1px;
-  --ag-header-column-resize-handle-color: var(--bs-border-color-translucent);
-  --ag-range-selection-border-color: transparent;
-  --ag-input-focus-border-color: transparent;
-}
 
-/* Header ------- */
-#dashboard-container .ag-header-row {
-  align-items: flex-start;
-  border-bottom: 1px solid var(--bs-border-color-translucent);
-  display: flex;
-}
-
-#dashboard-container .ag-header-cell {
-  align-items: center;
-  display: flex;
-  padding: 0 0.75rem;
-}
-
-#dashboard-container .ag-header-cell-text {
-  letter-spacing: -0.112px;
-  line-height: 1rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#dashboard-container .ag-header-cell:hover {
-  border-bottom: 1px solid var(--bs-primary);
-  color: var(--bs-primary);
-}
-
-/* Rows ------- */
-#dashboard-container .ag-cell {
-  padding: 0 0.75rem;
-}
-
-#dashboard-container .ag-cell-focus {
-  border: none;
-}
-
-#dashboard-container .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
-  background: var(--bs-primary-bg-subtle);
-}
-
-/* Pop up menu ----- */
-#dashboard-container .ag-menu {
-  background-color: var(--bs-tertiary-bg);
-  border: 1px solid var(--bs-border-color-translucent);
-  color: var(--bs-primary);
-}
-
-#dashboard-container .ag-ltr .ag-filter-filter input {
-  background-color: var(--bs-primary-bg-subtle);
-  box-shadow: var(--bs-box-shadow-sm);
-  display: flex;
-  font-size: 0.875rem;
-  font-weight: 400;
-  letter-spacing: -0.112px;
-  line-height: 1rem;
-  text-overflow: ellipsis;
-}
-
-/* Filter fields and pagination */
-#dashboard-container .ag-picker-field-wrapper {
-  border: none;
+.ag-picker-field-wrapper {
+  background-color: var(--input-field-bg);
   border-radius: 0;
-  box-shadow: none;
-  font-size: 0.875rem;
-}
-
-#dashboard-container .ag-filter-select .ag-picker-field-wrapper {
-  background-color: var(--bs-primary-bg-subtle);
   box-shadow: var(--bs-box-shadow-sm);
 }
 
-#dashboard-container .ag-select-list {
-  background-color: var(--bs-primary-bg-subtle);
-  box-shadow: var(--bs-box-shadow-sm);
-  color: var(--bs-primary);
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-}
-
-#dashboard-container .ag-select-list-item.ag-active-item {
-  background-color: var(--hover-bg-subtle);
-}
-
-#dashboard-container .ag-radio-button-input-wrapper {
-  background-color: var(--bs-primary-bg-subtle);
-}
-
-#dashboard-container .ag-radio-button-input-wrapper:focus-within {
+.ag-picker-field-wrapper.ag-picker-collapsed[aria-label="Page Size"] {
+  background-color: transparent !important;
   box-shadow: none;
 }
 
-#dashboard-container .ag-text-field-input::placeholder {
-  color: var(--bs-body-color);
-}
-
-#dashboard-container .ag-filter-apply-panel {
+.ag-filter-apply-panel {
   justify-content: flex-start;
   padding: 0.5rem 0 0.75rem;
 }
 
-#dashboard-container .ag-filter-condition {
+.ag-filter-condition {
   justify-content: flex-start;
   padding: 0.5rem 0.25rem;
 }
 
-/* Scroll Bar */
-#dashboard-container .ag-body-horizontal-scroll-viewport {
-  height: 4px !important;
-  max-height: 4px !important;
-  min-height: 4px !important;
-}
-
-.ag-theme-quartz.ag-theme-vizro .ag-header-cell-menu-button,
-.ag-theme-quartz-dark.ag-theme-vizro .ag-header-cell-menu-button,
-.ag-theme-quartz.ag-theme-vizro .ag-floating-filter-button-button,
-.ag-theme-quartz-dark.ag-theme-vizro .ag-floating-filter-button-button {
-  --ag-quartz-icon-hover-color: transparent;
-}
-
-/* Floating Filter */
-#dashboard-container .ag-floating-filter-input {
-  color: var(--bs-primary);
-  height: 40px;
-}
-
-#dashboard-container
-  .ag-floating-filter-input
-  input[class^="ag-"][type="text"] {
-  padding-left: 0;
-}
-
-#dashboard-container .ag-standard-button {
-  background: var(--bs-primary);
-  border: none;
-  border-radius: 0;
+.ag-input-field-input {
+  background-color: var(--input-field-bg);
   box-shadow: var(--bs-box-shadow-sm);
-  color: var(--text-primary-inverted);
-  font-size: 0.875rem;
-  font-weight: 600;
-  height: 32px;
-  letter-spacing: -0.028px;
-  line-height: 1.5rem;
-  padding: 0.25rem 0.75rem;
-  text-transform: none;
 }
 
-/* TODO: Remove stateOverlays here once we've figured out how to simplify buttons */
-#dashboard-container .ag-standard-button:hover {
-  background: linear-gradient(
-      var(--stateOverlays-hover-inverted),
-      var(--stateOverlays-hover-inverted)
-    ),
-    var(--bs-primary);
-  color: var(--text-primary-inverted);
-  text-decoration-line: underline;
+.ag-header-cell {
+  border-bottom: 1px solid transparent;
+}
+
+.ag-header-cell:hover {
+  border-bottom: 1px solid var(--bs-primary);
+  color: var(--bs-primary);
+}
+
+[data-bs-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+
+.ag-select-list,
+[id^="ag-select-list-"] {
+  max-height: 150px !important;
+  overflow: auto;
 }

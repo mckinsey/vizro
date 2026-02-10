@@ -32,7 +32,6 @@ class NavBar(VizroBaseModel):
             Defaults to `{}`.
         items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
         position (str): Position of the NavBar. Defaults to `"left"`.
-
     """
 
     type: Literal["nav_bar"] = "nav_bar"
