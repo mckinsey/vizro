@@ -30,7 +30,7 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes._templates import dashboard_overrides
 from vizro.managers import model_manager
-from vizro.models import Navigation, Tooltip, VizroBaseModel
+from vizro.models import Accordion, Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
 from vizro.models._controls import Filter, Parameter
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
@@ -394,7 +394,9 @@ class Dashboard(VizroBaseModel):
                 left-side (collapsible), and the collapse icon container.
         """
         #  Navigation position
-        is_left_nav = self.navigation.nav_selector.position == "left"
+        is_left_nav = (
+            isinstance(self.navigation.nav_selector, Accordion) or self.navigation.nav_selector.position == "left"
+        )
 
         # Inner page containers used to construct outer page containers
         header_left = inner_page["header-left"]
@@ -473,7 +475,9 @@ class Dashboard(VizroBaseModel):
         Returns:
             html.Div: The complete Dash layout for the page, ready to render.
         """
-        is_left_nav = self.navigation.nav_selector.position == "left"
+        is_left_nav = (
+            isinstance(self.navigation.nav_selector, Accordion) or self.navigation.nav_selector.position == "left"
+        )
 
         nav_bar = outer_page["nav-bar"]
         collapse_left_side = outer_page["collapse-left-side"]
@@ -491,11 +495,7 @@ class Dashboard(VizroBaseModel):
                 header_left,
                 html.Div(
                     [nav_bar, header_right],
-                    style={
-                        "display": "flex",
-                        "flexDirection": "row",
-                        "justifyContent": "space-between",
-                    },
+                    className="header-right-content",
                 ),
             ]
         )

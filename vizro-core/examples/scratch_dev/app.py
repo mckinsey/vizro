@@ -35,14 +35,20 @@ navigation = vm.Navigation(
         #     "Second": ["Page Three"]
         # },
         items=[
-            vm.NavLink(pages=["Page One", "Page Two"], label="First"),
-            vm.NavLink(pages=["Page Three"], label="Second"),
+            vm.NavLink(pages=["Page One", "Page Two"], label="First Tab"),
+            vm.NavLink(pages=["Page Three"], label="Second Tab"),
         ],
         position="top",
     ),
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_two, page_three], navigation=navigation, title="Dashboard title")
+dashboard = vm.Dashboard(
+    # pages=[page_1],
+    pages=[page_1, page_two, page_three],
+    navigation=navigation,
+    # title="Dashboard title",
+    title="This is a very long dashboard title",
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

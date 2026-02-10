@@ -66,6 +66,7 @@
   display: flex;
   gap: 8px;
   height: 100%;
+  width: max-content;
 }
 
 #header-controls {
@@ -356,4 +357,12 @@ Current logic:
 
 .card-wrapper-actions > .card:hover {
   border: 1px solid var(--bs-border-color);
+}
+
+.header-right-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-right: 20px;
+  width: fill-available;
 }
