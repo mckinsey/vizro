@@ -368,5 +368,27 @@ Current logic:
   flex-direction: row;
   justify-content: space-between;
   padding-right: 20px;
-  width: fill-available;
+  width: inherit;
+}
+
+.header-right-content #nav-bar {
+  border-right: none !important;
+  display: flex;
+  flex-direction: row !important;
+  max-width: 1200px;
+  padding: 0;
+}
+
+.nav_header {
+  background-color: var(--left-side-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+  display: flex;
+  height: 60px;
+  justify-content: space-between;
+  min-height: 0;
+  width: 100%;
+}
+
+.navbar .nav-link {
+  width: fit-content !important;
 }
