@@ -50,7 +50,8 @@ dashboard = vm.Dashboard(
     pages=[page_1, page_two, page_three],
     navigation=navigation,
     # title="Dashboard title",
-    title="This is a very long dashboard title",
+    # title="This is a very long dashboard title",
+    title="QB",
 )
 
 if __name__ == "__main__":

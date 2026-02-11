@@ -26,12 +26,6 @@ class NavBar(VizroBaseModel):
 
     Abstract: Usage documentation
         [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)
-
-    Args:
-        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs/titles.
-            Defaults to `{}`.
-        items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
-        position (str): Position of the NavBar. Defaults to `"left"`.
     """
 
     type: Literal["nav_bar"] = "nav_bar"
@@ -92,9 +86,9 @@ class NavBar(VizroBaseModel):
             # Active page is not in navigation at all, so hide navigation panel.
             nav_panel = dbc.Nav(id="nav-panel", className="d-none invisible")
 
-        # `flex-column` ensures that we return a vertical NavBar. In the future, we could use that className
-        # to create a horizontal NavBar.
-        return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className="flex-column"), nav_panel])
+        # `flex-column` ensures that we return a vertical NavBar. For top position, we use `navbar-top` className.
+        navbar_class = "navbar-top" if self.position == "top" else "flex-column"
+        return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className=navbar_class), nav_panel])
 
     def _alter_items(self):
         nav_position = self.position

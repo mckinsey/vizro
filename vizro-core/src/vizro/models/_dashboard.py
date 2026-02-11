@@ -296,7 +296,16 @@ class Dashboard(VizroBaseModel):
             id="header-custom", children=custom_header_content, hidden=_all_hidden(custom_header_content)
         )
 
+        # Check if navigation is in top position
+        is_top_nav = not (
+            isinstance(self.navigation.nav_selector, Accordion) or self.navigation.nav_selector.position == "left"
+        )
+
         header_left_content = [logo, logo_dark, logo_light, dashboard_title]
+        # Add nav-bar to header_left for top navigation
+        if is_top_nav:
+            header_left_content.append(nav_bar)
+
         header_left = html.Div(id="header-left", children=header_left_content, hidden=_all_hidden(header_left_content))
         header_right_content = [custom_header]
 
@@ -427,36 +436,17 @@ class Dashboard(VizroBaseModel):
         right_hidden = _all_hidden([header_right])
         both_hidden = left_hidden and right_hidden
 
-        header_blocks = (
-            [
-                html.Div(
-                    id="header",
-                    children=[header_left, header_right],
-                    hidden=both_hidden,
-                    className="no-left" if left_hidden else "",
-                )
-            ]
-            if is_left_nav
-            else [
-                html.Div(
-                    id="header",
-                    children=[header_left],
-                    hidden=left_hidden,
-                    className="no-left" if left_hidden else "",
-                ),
-                html.Div(
-                    id="header-right",
-                    children=[header_right],
-                    hidden=right_hidden,
-                    className="no-left" if right_hidden else "",
-                ),
-            ]
+        header = html.Div(
+            id="header",
+            children=[header_left, header_right],
+            hidden=both_hidden,
+            className="no-left" if left_hidden else "",
         )
 
         return html.Div(
             [
-                *header_blocks,
-                nav_bar,
+                header,
+                nav_bar if is_left_nav else None,
                 right_side,
                 collapse_left_side,
                 collapse_icon_outer,
@@ -482,34 +472,12 @@ class Dashboard(VizroBaseModel):
         right_side = outer_page["right-side"]
 
         # Build header
-        header_left = outer_page["header"]
-        header_right = outer_page["header-right"]
-
-        header_children = (
-            [header_left]
-            if is_left_nav
-            else [
-                header_left,
-                html.Div(
-                    [nav_bar, header_right],
-                    className="header-right-content",
-                ),
-            ]
-        )
+        header = outer_page["header"]
 
         page_main_children = (
             [nav_bar, collapse_left_side, collapse_icon_outer, right_side]
             if is_left_nav
             else [collapse_left_side, collapse_icon_outer, right_side]
-        )
-        header = (
-            header_left
-            if is_left_nav
-            else html.Div(
-                children=header_children,
-                className="nav_header",
-                style={"display": "flex", "flexDirection": "row"},
-            )
         )
         page_main = html.Div(
             id="page-main",
