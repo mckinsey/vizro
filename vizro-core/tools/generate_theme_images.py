@@ -27,13 +27,6 @@ def _get_text_color(hex_color):
     return "white" if brightness < BRIGHTNESS_THRESHOLD else "black"
 
 
-def _create_colorscale(palette):
-    """Create colorscale from palette colors."""
-    if len(palette) == 1:
-        return [[0, palette[0]], [1, palette[0]]]
-    return [[i / (len(palette) - 1), color] for i, color in enumerate(palette)]
-
-
 def _save_image(fig, output_path):
     """Save figure to image file."""
     fig.write_image(output_path, width=fig.layout.width, height=fig.layout.height, scale=2)
@@ -76,7 +69,7 @@ def make_color_swatches(color_groups, cols, labels):
         width=max(counts) * (1 + GAP) * BOX_SIZE + 50,
         height=len(groups) * (1 + GAP) * BOX_SIZE + 60,
         margin={"l": 10, "r": 10, "t": 10, "b": 10},
-        xaxis={"visible": False, "range": [-1.5, max(counts) * (1 + GAP) - 0.5]},
+        xaxis={"visible": False},
         yaxis={"visible": False, "autorange": "reversed", "scaleanchor": "x", "scaleratio": 1},
         plot_bgcolor="white",
         paper_bgcolor="white",
@@ -131,9 +124,17 @@ def make_palette_gradients(palette_groups, theme="light"):
 
     fig = go.Figure()
 
-    # Create gradient bar for each palette
+    # Create gradient bar for each palette and collect y positions for labels
+    y_tickvals = []
+    y_ticktext = []
+
     for idx, (name, palette) in enumerate(palette_groups.items()):
         y_pos = idx * (BAR_HEIGHT + GAP)
+        y_center = y_pos + BAR_HEIGHT / 2
+
+        # Store position and name for y-axis labels
+        y_tickvals.append(y_center)
+        y_ticktext.append(name)
 
         # Create 2D gradient data
         gradient_data = np.tile(np.linspace(0, 1, NUM_COLS), (NUM_ROWS, 1))
@@ -143,7 +144,7 @@ def make_palette_gradients(palette_groups, theme="light"):
                 z=gradient_data,
                 y=np.linspace(y_pos, y_pos + BAR_HEIGHT, NUM_ROWS),
                 x=np.linspace(0, BAR_WIDTH, NUM_COLS),
-                colorscale=_create_colorscale(palette),
+                colorscale=[[i / (len(palette) - 1), color] for i, color in enumerate(palette)],
                 showscale=False,
                 hoverinfo="skip",
                 zmin=0,
@@ -151,23 +152,22 @@ def make_palette_gradients(palette_groups, theme="light"):
             )
         )
 
-        # Add palette name
-        fig.add_annotation(
-            x=-15,
-            y=y_pos + BAR_HEIGHT / 2,
-            text=name,
-            showarrow=False,
-            font={"size": 20, "color": text_color},
-            xanchor="right",
-            yanchor="middle",
-        )
-
     fig.update_layout(
         width=left_margin + BAR_WIDTH + 40,
         height=total_height,
         margin={"l": left_margin, "r": 40, "t": 20, "b": 20},
         xaxis={"visible": False, "range": [-20, BAR_WIDTH + 10]},
-        yaxis={"visible": False, "range": [-10, total_height - 30]},
+        yaxis={
+            "visible": True,
+            "range": [-10, total_height - 30],
+            "tickmode": "array",
+            "tickvals": y_tickvals,
+            "ticktext": y_ticktext,
+            "tickfont": {"size": 24, "color": text_color},
+            "side": "left",
+            "showgrid": False,
+            "zeroline": False,
+        },
         plot_bgcolor=bg_color,
         paper_bgcolor=bg_color,
         showlegend=False,
@@ -193,23 +193,24 @@ def make_qualitative_palette(palette, theme="light"):
         )
     )
 
-    # Add label
-    fig.add_annotation(
-        x=-0.6,
-        y=0,
-        text="qualitative",
-        showarrow=False,
-        font={"size": 24, "color": text_color},
-        xanchor="right",
-        yanchor="middle",
-    )
-
     fig.update_layout(
         width=num_colors * (1 + GAP) * BOX_SIZE + 260,
         height=140,
         margin={"l": 220, "r": 10, "t": 20, "b": 20},
-        xaxis={"visible": False, "range": [-1.5, num_colors * (1 + GAP) - 0.5]},
-        yaxis={"visible": False, "range": [-0.6, 0.6], "scaleanchor": "x", "scaleratio": 1},
+        xaxis={"visible": False},
+        yaxis={
+            "visible": True,
+            "range": [-0.6, 0.6],
+            "scaleanchor": "x",
+            "scaleratio": 1,
+            "tickmode": "array",
+            "tickvals": [0],
+            "ticktext": ["qualitative"],
+            "tickfont": {"size": 24, "color": text_color},
+            "side": "left",
+            "showgrid": False,
+            "zeroline": False,
+        },
         plot_bgcolor=bg_color,
         paper_bgcolor=bg_color,
         showlegend=False,
