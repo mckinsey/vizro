@@ -1,10 +1,24 @@
 """Generate color and palette reference images for documentation."""
 
+import json
 from pathlib import Path
 
+import numpy as np
 import plotly.graph_objects as go
 
 from vizro.themes import colors, palettes
+
+
+def _load_theme_colors(theme):
+    """Load background and text colors from Plotly template JSON files."""
+    template_file = Path(__file__).parent.parent / "src" / "vizro" / "themes" / f"vizro_{theme}.json"
+    with open(template_file) as f:
+        template = json.load(f)
+    
+    bg_color = template["layout"]["plot_bgcolor"]
+    text_color = template["layout"]["font"]["color"]
+    
+    return bg_color, text_color
 
 
 def _get_text_color(hex_color):
@@ -123,10 +137,8 @@ def generate_colors_image(output_path):
 def make_palette_gradients(palette_groups, show_group_names=True, theme="light"):
     """Create continuous gradient bars for palettes using heatmap."""
     import numpy as np
-
-    # Theme settings
-    bg_color = "white" if theme == "light" else "#0e1117"
-    text_color = "black" if theme == "light" else "white"
+    
+    bg_color, text_color = _load_theme_colors(theme)
 
     BAR_HEIGHT = 80  # Height of each bar in pixels
     BAR_WIDTH = 600
@@ -216,9 +228,7 @@ def make_palette_gradients(palette_groups, show_group_names=True, theme="light")
 
 def make_qualitative_palette(palette, show_label=True, theme="light"):
     """Create discrete color boxes for qualitative palette."""
-    # Theme settings
-    bg_color = "white" if theme == "light" else "#0e1117"
-    text_color = "black" if theme == "light" else "white"
+    bg_color, text_color = _load_theme_colors(theme)
 
     BOX_SIZE = 80
     GAP = 0.15
