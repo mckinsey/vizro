@@ -78,29 +78,27 @@ continuous_color_scales = vm.Page(
     layout=vm.Grid(grid=[[0, 1, 2]]),
     components=[
         vm.Graph(
-            title="Global Life Expectancy Distribution",
+            title="Sequential",
             figure=px.choropleth(gapminder_2007, locations="iso_alpha", color="lifeExp"),
             footer="Source: Plotly Gapminder data set, 2024",
         ),
         vm.Graph(
-            title="Global Life Expectancy Distribution",
+            title="Sequential Minus",
             figure=px.choropleth(
                 gapminder_2007,
                 locations="iso_alpha",
                 color="lifeExp",
-                color_continuous_scale=palettes.diverging_red_cyan,
+                color_continuous_scale=palettes.sequential_pink,
                 color_continuous_midpoint=avg_lifeExp,
             ),
             footer="Source: Plotly Gapminder data set, 2024",
         ),
         vm.Graph(
-            title="Global Life Expectancy Distribution",
+            title="Diverging",
             figure=px.choropleth(
                 gapminder_2007,
                 locations="iso_alpha",
                 color="lifeExp",
-                color_continuous_scale=palettes.diverging_orange_teal,
-                color_continuous_midpoint=avg_lifeExp,
             ),
             footer="Source: Plotly Gapminder data set, 2024",
         ),

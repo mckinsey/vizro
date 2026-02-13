@@ -46,9 +46,9 @@ def create_template_common() -> go.layout.Template:
             # automatically if `coloraxis_autocolorscale=True`. Otherwise, they have no
             # effect, and the default for continuous color scales will be the color
             # sequence applied to ["colorscale"]["sequential"].
-            colorscale_diverging=palettes.diverging_red_cyan,
-            colorscale_sequential=palettes.sequential_cyan,
-            colorscale_sequentialminus=palettes.sequential_red[::-1],
+            # colorscale_diverging=palettes.diverging_red_cyan,
+            colorscale_sequential=palettes.sequential_blue,
+            colorscale_sequentialminus=palettes.sequential_pink[::-1],
             colorway=palettes.qualitative,
             font_family="Inter, sans-serif, Arial",
             font_size=14,
