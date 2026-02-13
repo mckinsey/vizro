@@ -13,22 +13,22 @@ def test_import_colors_and_palettes():
 
 def test_access_color():
     """Test individual colors can be accessed."""
-    assert colors.cyan == "#00B4FF"
+    assert colors.blue == "#097DFE"
 
 
 def test_access_default_qualitative_palette():
     """Test qualitative palette can be accessed."""
     assert palettes.qualitative == [
-        "#00B4FF",
-        "#FF9222",
-        "#3949AB",
-        "#FF5267",
-        "#08BDBA",
-        "#FDC935",
-        "#689F38",
-        "#976FD1",
-        "#F781BF",
-        "#52733E",
+        "#097DFE",
+        "#6F39E3",
+        "#05D0F0",
+        "#0F766E",
+        "#8C8DE9",
+        "#11B883",
+        "#E77EC2",
+        "#C84189",
+        "#C0CA33",
+        "#3E495B",
     ]
 
 

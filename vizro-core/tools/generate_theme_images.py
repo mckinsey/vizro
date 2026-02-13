@@ -92,16 +92,16 @@ def generate_colors_image(output_path):
     """Generate colors reference image."""
     color_groups = {
         "Qualitative": [
-            "cyan",
-            "orange",
-            "indigo",
-            "red",
-            "teal",
-            "yellow",
-            "green",
-            "purple",
-            "pink",
+            "blue",
+            "dark_purple",
+            "turquoise",
             "dark_green",
+            "light_purple",
+            "light_green",
+            "light_pink",
+            "dark_pink",
+            "yellow",
+            "grey",
         ],
         "Cyan": [f"cyan_{i}00" for i in range(1, 10)],
         "Orange": [f"orange_{i}00" for i in range(1, 10)],
@@ -109,7 +109,7 @@ def generate_colors_image(output_path):
         "Yellow": [f"yellow_{i}00" for i in range(1, 10)],
         "Teal": [f"teal_{i}00" for i in range(1, 10)],
         "Red": [f"red_{i}00" for i in range(1, 10)],
-        "Grey": [f"grey_{i}00" for i in range(1, 10)],
+        "Grey": [f"gray_{i}00" for i in range(1, 10)],
         "Special": ["transparent", "white", "black"],
     }
 
