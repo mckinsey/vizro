@@ -28,7 +28,6 @@ if TYPE_CHECKING:
     from _typeshed.wsgi import StartResponse, WSGIEnvironment
 
 
-# Dummy change
 class Vizro:
     """Vizro app."""
 
