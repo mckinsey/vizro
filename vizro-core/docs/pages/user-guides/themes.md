@@ -116,73 +116,166 @@ Vizro is primarily built out of [Dash Bootstrap components](https://www.dash-boo
 
         [![BootstrapDark]][bootstrapdark]
 
-### Vizro theme in Dash
+## Vizro themes for plotly charts
 
-Vizro apps use the [Dash Bootstrap Components](https://www.dash-bootstrap-components.com/) library of Bootstrap components for Dash. If you have a pure Dash app and want to use Vizro's themes, you can apply Vizro's Bootstrap stylesheet in a [similar way to other Dash Bootstrap themes](https://www.dash-bootstrap-components.com/docs/themes/) through the `vizro.bootstrap` variable:
+Vizro registers two new [plotly themes](https://plotly.com/python/templates/), `vizro_dark` and `vizro_light`, that are used in a Vizro dashboard. You can [modify these themes](#modify-vizro-plotly-themes) globally or for individual charts. The themes can also be [used outside a Vizro dashboard](#charts-outside-a-dashboard) for standalone charts.
 
-```python
-import vizro
-from dash import Dash
+### Modify Vizro plotly themes
 
-app = Dash(external_stylesheets=[vizro.bootstrap])
-```
+You can customize the built-in `vizro_dark` and `vizro_light` themes by modifying their properties directly. This is useful when you want to keep most of the Vizro styling but adjust specific elements like colors, fonts, or other visual properties. Vizro templates are automatically registered to `plotly.io.templates` so you can [access and modify them like any other Plotly template](https://plotly.com/python/templates/).
 
-Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some Dash components that are used in Vizro but are not part of Bootstrap (for example, [`DatePicker`][vizro.models.DatePicker] is based on [Dash Mantine Components](https://www.dash-mantine-components.com/)). If you would like your pure Dash app to look as close to Vizro as possible then you will also need [this extra CSS](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
+!!! example "Modify template color scheme"
 
-??? note "Apply Vizro Bootstrap theme to charts and other components"
+    === "app.py"
 
-    To apply the Vizro theme to Plotly charts, refer to the above section [Vizro themes in Plotly charts](#vizro-plotly-templates). This is possible with or without Vizro Bootstrap.
+        ```{.python pycafe-link hl_lines="7-11"}
+        import plotly.io as pio
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
 
-    If you want to style your entire Dash app with Vizro Bootstrap so that your Plotly figures automatically match, we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples in the [documentation about styling Plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
+        # Modify the template's color scheme
+        pio.templates["vizro_dark"].layout.colorway = [
+            "#6929c4",  # Purple
+            "#2d9fea",  # Cyan
+            "#de6da9",  # Pink
+        ]
 
-## Vizro Plotly templates
+        df = px.data.iris()
 
-You can also use our templates for Plotly charts outside the dashboard. This is useful in a few contexts:
+        page = vm.Page(
+            title="Modified color scheme",
+            components=[
+                vm.Graph(
+                    figure=px.histogram(df, x="sepal_width", color="species"),
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+        [![ModifiedColors]][modifiedcolors]
+
+!!! note "Color scheme applies to both light and dark themes"
+
+    When you modify the `colorway` of the `vizro_dark` template, the change applies to both light and dark theme in a Vizro dashboard. When users toggle between themes, layout properties (backgrounds, fonts) update, but data colors remain the same.
+
+For more comprehensive customizations, you can modify multiple template properties at once using dictionary updates.
+
+!!! example "Modify multiple template properties"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="7-12"}
+        import plotly.io as pio
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        # Modify multiple properties of vizro_dark using dictionary update
+        pio.templates["vizro_dark"].layout.update({
+            "font": {"family": "Courier New, monospace"},
+            "xaxis": {"gridcolor": "yellow", "showgrid": True},
+            "yaxis": {"gridcolor": "yellow", "showgrid": True},
+            "colorway": ["#6929c4", "#2d9fea", "#de6da9"],
+        })
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="Multiple property modifications",
+            components=[
+                vm.Graph(
+                    figure=px.histogram(
+                        df,
+                        x="sepal_width",
+                        color="species",
+                    ),
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+        [![ModifiedProperties]][modifiedproperties]
+
+You can achieve fine-grained control over individual charts by using arguments specified directly in chart functions, such as `color_discrete_map`, `color_discrete_sequence`, or `color_continuous_scale`. These always take precedence over template settings.
+
+!!! example "Template colors vs chart-specific colors"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="7 27"}
+        import plotly.io as pio
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.models.types import capture
+
+        pio.templates["vizro_dark"].layout.colorway = ["#6929c4", "#2d9fea", "#de6da9"]
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="Color precedence example",
+            components=[
+                vm.Graph(
+                    figure=px.histogram(
+                        df,
+                        x="sepal_width",
+                        color="species",
+                    ),
+                    title="Graph with template colors"
+                ),
+                vm.Graph(
+                    figure=px.histogram(
+                        df,
+                        x="sepal_width",
+                        color="species",
+                        color_discrete_sequence=["#E7E247", "#4D5061", "#5C80BC"]
+                    ),
+                    title="Graph with custom colors"
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+        [![ColorPrecedence]][colorprecedence]
+
+### Charts outside a dashboard
+
+You can also use our `vizro_dark` and `vizro_light` [templates for plotly charts](https://plotly.com/python/templates) outside the dashboard. This is useful in a few contexts:
 
 - Creation of standalone charts to be used independently of a Vizro dashboard.
 - Rapid development of charts for eventual use in a Vizro dashboard, for example in a Jupyter Notebook.
 
 !!! note
 
-    Using `import vizro.plotly.express as px` is equal to using `import plotly.express as px`, but with the added benefit of being able to integrate the resulting chart code into a Vizro dashboard. Vizro offers a minimal layer on top of Plotly's existing charting library, allowing you to seamlessly use all the existing charts and functionalities provided by plotly.express without any modifications.
+    Using `import vizro.plotly.express as px` is the same as using `import plotly.express as px`, but with the added benefit of being able to integrate the resulting chart code into a Vizro dashboard. Vizro offers a minimal layer on top of Plotly's existing charting library, allowing you to seamlessly use all the existing charts and functionalities provided by plotly.express without any modifications. Also, by default, plots imported from `vizro.plotly.express` have the `vizro_dark` theme applied.
 
-Our `vizro_dark` and `vizro_light` themes are automatically registered to `plotly.io.templates` when importing Vizro. Consult the Plotly documentation for [more details on how templates work in plotly](https://plotly.com/python/templates/#theming-and-templates).
-
-By default, plots imported from `vizro.plotly.express` have the `vizro_dark` theme applied. This can be altered either globally or for individual plots.
-
-### Set themes for all charts
-
-To change the theme to `vizro_light` for all charts, run:
+The `vizro_dark` and `vizro_light` themes are automatically registered to `plotly.io.templates` when importing Vizro. To change the theme to `vizro_light` for all charts, run:
 
 ```python
 import plotly.io as pio
 import vizro.plotly.express as px
 
 pio.templates.default = "vizro_light"
-
-df = px.data.iris()
-px.scatter_matrix(
-    df,
-    dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"],
-    color="species",
-)
 ```
 
-### Set themes for selected charts
-
-To change the template for a selected chart only, use the `template` parameter and run:
-
-```python
-import vizro.plotly.express as px
-
-df = px.data.iris()
-px.scatter_matrix(
-    df,
-    dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"],
-    color="species",
-    template="vizro_light",
-)
-```
+To change the template for a single Plotly Express chart, use the argument `template="vizro_light"`.
 
 ## Vizro colors and palettes
 
@@ -268,5 +361,8 @@ Pre-configured color palettes can be accessed through `vizro.themes.palettes`. T
 
 [bootstrapdark]: ../../assets/user_guides/themes/bootstrap_dark.png
 [bootstraplight]: ../../assets/user_guides/themes/bootstrap_light.png
+[colorprecedence]: ../../assets/user_guides/themes/color_precedence.png
 [dark]: ../../assets/user_guides/themes/dark.png
 [light]: ../../assets/user_guides/themes/light.png
+[modifiedcolors]: ../../assets/user_guides/themes/modified_colors.png
+[modifiedproperties]: ../../assets/user_guides/themes/modified_properties.png

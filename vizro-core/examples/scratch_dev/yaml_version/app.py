@@ -35,7 +35,7 @@ def my_custom_table(chosen_columns: list[str], data_frame=None):
 def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
     """Custom Dash AgGrid."""
     defaults = {
-        "className": "ag-theme-quartz-dark ag-theme-vizro",
+        "className": "ag-theme-vizro",
         "defaultColDef": {
             "resizable": True,
             "sortable": True,

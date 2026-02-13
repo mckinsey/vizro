@@ -143,7 +143,7 @@ button_card_trigger_set_control = vm.Page(
 
 
 filtered_graph_aggrid_trigger_set_control = vm.Page(
-    title=cnst.FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE,
+    title=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
     layout=vm.Grid(grid=[[0, 1]]),
     components=[
         vm.Tabs(

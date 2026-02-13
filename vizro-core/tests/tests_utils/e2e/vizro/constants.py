@@ -295,7 +295,7 @@ TABLE_SET_CONTROL_BUTTON_CARD = "table_set_control_button_card"
 CHECKLIST_SET_CONTROL_BUTTON_CARD = "checklist_set_control_button_card"
 RADIOITEMS_SET_CONTROL_BUTTON_CARD = "radioitems_set_control_button_card"
 
-FILTERED_GRAPH_AGGRID_TRIGGER_SET_CONTROL_PAGE = "filtered-graph-aggrid-trigger-set-control-page"
+FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE = "filtered-graph-or-aggrid-not-trigger-set-control-page"
 FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID = "filtered_scatter_trigger_set_control"
 CHECKLIST_FT_GRAPH_SET_CONTROL = "checklist_ft_graph_set_control"
 FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID = "filtered_aggrid_trigger_set_control"
@@ -401,8 +401,7 @@ THEME_LIGHT = "light"
 RGBA_TRANSPARENT = "rgba(0, 0, 0, 0)"
 STYLE_TRANSPARENT = "background: rgba(0, 0, 0, 0);"
 STYLE_TRANSPARENT_FIREFOX = "background: none;"
-AG_GRID_DARK = "ag-theme-quartz-dark ag-theme-vizro"
-AG_GRID_LIGHT = "ag-theme-quartz ag-theme-vizro"
+AG_GRID = "ag-theme-vizro"
 
 # Configs
 
