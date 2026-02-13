@@ -288,7 +288,7 @@ For a complete list of available colors and palettes, refer to the [API referenc
 Individual colors are accessible via `vizro.themes.colors`. The color system is organized into three categories:
 
 - **Qualitative colors**: Ten distinct colors designed for categorical data visualization. Examples include `blue`, `dark_purple`, `turquoise`, `dark_green`, `light_purple`, `light_green`, `light_pink`, `dark_pink`, `yellow`, and `gray`.
-- **Sequential colors**: Organized into seven color families (blue, purple, turquoise, green, pink, yellow, and grey), each containing 11 shades numbered from 50 (lightest) to 950 (darkest).
+- **Sequential colors**: Organized into seven color families (blue, purple, turquoise, green, pink, yellow, and grey), each containing 9 shades numbered from 100 (lightest) to 900 (darkest).
 - **Utility colors**: Basic colors including `white`, `black`, and `transparent` for special styling needs.
 
 !!! example "Use Vizro colors"

@@ -16,7 +16,6 @@ qualitative = [
 ]
 
 sequential_blue = [
-    colors.blue_50,
     colors.blue_100,
     colors.blue_200,
     colors.blue_300,
@@ -26,11 +25,9 @@ sequential_blue = [
     colors.blue_700,
     colors.blue_800,
     colors.blue_900,
-    colors.blue_950,
 ]
 
 sequential_purple = [
-    colors.purple_50,
     colors.purple_100,
     colors.purple_200,
     colors.purple_300,
@@ -40,11 +37,9 @@ sequential_purple = [
     colors.purple_700,
     colors.purple_800,
     colors.purple_900,
-    colors.purple_950,
 ]
 
 sequential_turquoise = [
-    colors.turquoise_50,
     colors.turquoise_100,
     colors.turquoise_200,
     colors.turquoise_300,
@@ -54,11 +49,9 @@ sequential_turquoise = [
     colors.turquoise_700,
     colors.turquoise_800,
     colors.turquoise_900,
-    colors.turquoise_950,
 ]
 
 sequential_green = [
-    colors.green_50,
     colors.green_100,
     colors.green_200,
     colors.green_300,
@@ -68,11 +61,9 @@ sequential_green = [
     colors.green_700,
     colors.green_800,
     colors.green_900,
-    colors.green_950,
 ]
 
 sequential_pink = [
-    colors.pink_50,
     colors.pink_100,
     colors.pink_200,
     colors.pink_300,
@@ -82,11 +73,9 @@ sequential_pink = [
     colors.pink_700,
     colors.pink_800,
     colors.pink_900,
-    colors.pink_950,
 ]
 
 sequential_yellow = [
-    colors.yellow_50,
     colors.yellow_100,
     colors.yellow_200,
     colors.yellow_300,
@@ -96,11 +85,9 @@ sequential_yellow = [
     colors.yellow_700,
     colors.yellow_800,
     colors.yellow_900,
-    colors.yellow_950,
 ]
 
 sequential_gray = [
-    colors.gray_50,
     colors.gray_100,
     colors.gray_200,
     colors.gray_300,
@@ -110,7 +97,6 @@ sequential_gray = [
     colors.gray_700,
     colors.gray_800,
     colors.gray_900,
-    colors.gray_950,
 ]
 
 # These are necessarily the same for dark and light themes.
