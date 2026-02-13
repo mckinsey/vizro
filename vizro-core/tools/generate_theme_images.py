@@ -120,13 +120,168 @@ def generate_colors_image(output_path):
     _save_image(fig, output_path)
 
 
-def generate_palettes_image(output_path):
-    """Generate palettes reference image."""
-    palette_groups = {name: getattr(palettes, name) for name in vars(palettes)}
-    labels = [f"{name}[{i}]" for name, palette in palette_groups.items() for i in range(len(palette))]
-    cols = [color for palette in palette_groups.values() for color in palette]
+def make_palette_gradients(palette_groups, show_group_names=True, theme="light"):
+    """Create continuous gradient bars for palettes using heatmap."""
+    import numpy as np
+    
+    # Theme settings
+    bg_color = "white" if theme == "light" else "#0e1117"
+    text_color = "black" if theme == "light" else "white"
+    
+    BAR_HEIGHT = 80  # Height of each bar in pixels
+    BAR_WIDTH = 600
+    GAP = 10
+    
+    groups = list(palette_groups.keys())
+    num_palettes = len(groups)
+    
+    # Calculate dimensions
+    left_margin = 220 if show_group_names else 10
+    total_height = num_palettes * (BAR_HEIGHT + GAP) - GAP + 40
+    
+    fig = go.Figure()
+    
+    # Create gradient bar for each palette using heatmap
+    for idx, (name, palette) in enumerate(palette_groups.items()):
+        y_pos = idx * (BAR_HEIGHT + GAP)
+        
+        # Create colorscale from palette
+        if len(palette) == 1:
+            colorscale = [[0, palette[0]], [1, palette[0]]]
+        else:
+            colorscale = [[i / (len(palette) - 1), color] for i, color in enumerate(palette)]
+        
+        # Create a 2D heatmap with multiple rows to fill vertical space
+        # Rows determine the height, columns determine the gradient
+        num_rows = 50  # More rows = better fill
+        num_cols = 500  # More columns = smoother gradient
+        
+        # Create gradient data: each row has the same gradient values
+        gradient_row = np.linspace(0, 1, num_cols)
+        gradient_data = np.tile(gradient_row, (num_rows, 1))
+        
+        # Create y coordinates that span the bar height
+        y_coords = np.linspace(y_pos, y_pos + BAR_HEIGHT, num_rows)
+        x_coords = np.linspace(0, BAR_WIDTH, num_cols)
+        
+        # Add heatmap trace
+        fig.add_trace(
+            go.Heatmap(
+                z=gradient_data,
+                y=y_coords,
+                x=x_coords,
+                colorscale=colorscale,
+                showscale=False,
+                hoverinfo="skip",
+                zmin=0,
+                zmax=1,
+            )
+        )
+    
+    # Add group names on side
+    if show_group_names:
+        for idx, name in enumerate(groups):
+            y_pos = idx * (BAR_HEIGHT + GAP) + BAR_HEIGHT / 2
+            fig.add_annotation(
+                x=-15,
+                y=y_pos,
+                text=name,
+                showarrow=False,
+                font={"size": 14, "color": text_color},
+                xanchor="right",
+                yanchor="middle",
+            )
+    
+    # Configure layout
+    fig.update_layout(
+        width=left_margin + BAR_WIDTH + 40,
+        height=total_height,
+        margin={"l": left_margin, "r": 40, "t": 20, "b": 20},
+        xaxis={
+            "visible": False,
+            "range": [-20, BAR_WIDTH + 10],
+        },
+        yaxis={
+            "visible": False,
+            "range": [-10, total_height - 30],
+        },
+        plot_bgcolor=bg_color,
+        paper_bgcolor=bg_color,
+        font={"color": text_color, "size": 12},
+        showlegend=False,
+    )
+    
+    return fig
 
-    fig = make_color_swatches(palette_groups, cols, labels, show_labels_in_boxes=False, show_group_names=True)
+
+def make_qualitative_palette(palette, show_label=True, theme="light"):
+    """Create discrete color boxes for qualitative palette."""
+    # Theme settings
+    bg_color = "white" if theme == "light" else "#0e1117"
+    text_color = "black" if theme == "light" else "white"
+    
+    BOX_SIZE = 80
+    GAP = 0.15
+    
+    num_colors = len(palette)
+    
+    # Generate coordinates
+    xs = [i * (1 + GAP) for i in range(num_colors)]
+    ys = [0] * num_colors
+    
+    # Create figure with colored squares
+    fig = go.Figure(
+        go.Scatter(
+            x=xs,
+            y=ys,
+            mode="markers",
+            marker={"symbol": "square", "size": BOX_SIZE, "color": palette, "line": {"width": 0}},
+            hoverinfo="skip",
+        )
+    )
+    
+    # Add label on the side
+    if show_label:
+        fig.add_annotation(
+            x=-0.6,
+            y=0,
+            text="qualitative",
+            showarrow=False,
+            font={"size": 14, "color": text_color},
+            xanchor="right",
+            yanchor="middle",
+        )
+    
+    # Configure layout
+    left_margin = 220 if show_label else 10
+    fig.update_layout(
+        width=num_colors * (1 + GAP) * BOX_SIZE + left_margin + 40,
+        height=140,
+        margin={"l": left_margin, "r": 10, "t": 20, "b": 20},
+        xaxis={"visible": False, "range": [-1.5, num_colors * (1 + GAP) - 0.5]},
+        yaxis={"visible": False, "range": [-0.6, 0.6], "scaleanchor": "x", "scaleratio": 1},
+        plot_bgcolor=bg_color,
+        paper_bgcolor=bg_color,
+        font={"color": text_color, "size": 12},
+        showlegend=False,
+    )
+    
+    return fig
+
+
+def generate_qualitative_palette_image(output_path, theme="light"):
+    """Generate qualitative palette reference image with discrete boxes."""
+    qualitative = palettes.qualitative
+    fig = make_qualitative_palette(qualitative, show_label=True, theme=theme)
+    _save_image(fig, output_path)
+
+
+def generate_palettes_image(output_path, theme="light"):
+    """Generate palettes reference image with continuous gradients (excluding qualitative)."""
+    # Get all palettes except qualitative
+    palette_groups = {name: getattr(palettes, name) for name in vars(palettes) if name != "qualitative"}
+    
+    fig = make_palette_gradients(palette_groups, show_group_names=True, theme=theme)
     _save_image(fig, output_path)
 
 
@@ -137,7 +292,15 @@ def main():
 
     print("Generating theme reference images...")  # noqa: T201
     generate_colors_image(output_dir / "colors.png")
-    generate_palettes_image(output_dir / "palettes.png")
+    
+    # Generate light theme palette images
+    generate_qualitative_palette_image(output_dir / "palette_qualitative_light.png", theme="light")
+    generate_palettes_image(output_dir / "palettes_light.png", theme="light")
+    
+    # Generate dark theme palette images
+    generate_qualitative_palette_image(output_dir / "palette_qualitative_dark.png", theme="dark")
+    generate_palettes_image(output_dir / "palettes_dark.png", theme="dark")
+    
     print("\n✅ All theme images generated successfully!")  # noqa: T201
 
 
