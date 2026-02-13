@@ -12,7 +12,7 @@ qualitative = [
     colors.light_pink,
     colors.dark_pink,
     colors.yellow,
-    colors.grey,
+    colors.gray,
 ]
 
 sequential_cyan = [

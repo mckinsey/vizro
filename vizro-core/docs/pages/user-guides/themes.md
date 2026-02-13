@@ -291,7 +291,7 @@ Individual colors can be accessed through `vizro.themes.colors`. These include:
 - **Sequential colors**: Organized in shades from light (100) to dark (900) for ordinal data (e.g., `cyan_100` through `cyan_900`)
 - **Special colors**: Including `white`, `black`, and `transparent`
 
-Sequential colors are available in multiple families: cyan, orange, indigo, yellow, teal, red, and grey. Each family contains 9 shades numbered from 100 (lightest) to 900 (darkest).
+Sequential colors are available in multiple families: cyan, orange, indigo, yellow, teal, red, and gray. Each family contains 9 shades numbered from 100 (lightest) to 900 (darkest).
 
 !!! example "Use Vizro colors"
 

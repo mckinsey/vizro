@@ -12,7 +12,7 @@ colors = SimpleNamespace(
     light_pink="#E77EC2",
     dark_pink="#C84189",
     yellow="#C0CA33",
-    grey="#3E495B",
+    gray="#3E495B",
     # Sequential/Diverging
     cyan_100="#AFE7F9",
     cyan_200="#8BD0F6",
