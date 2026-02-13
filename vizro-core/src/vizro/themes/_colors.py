@@ -3,16 +3,16 @@ from types import SimpleNamespace
 # Reference: See Figma file for DS color palettes
 colors = SimpleNamespace(
     # Qualitative
-    cyan="#00B4FF",
-    orange="#FF9222",
-    indigo="#3949AB",
-    red="#FF5267",
-    teal="#08BDBA",
-    yellow="#FDC935",
-    green="#689F38",
-    purple="#976FD1",
-    pink="#F781BF",
-    dark_green="#52733E",
+    blue="#097DFE",
+    dark_purple="#6F39E3",
+    turquoise="#05D0F0",
+    dark_green="#0F766E",
+    light_purple="#8C8DE9",
+    light_green="#11B883",
+    light_pink="#E77EC2",
+    dark_pink="#C84189",
+    yellow="#C0CA33",
+    grey="#3E495B",
     # Sequential/Diverging
     cyan_100="#AFE7F9",
     cyan_200="#8BD0F6",

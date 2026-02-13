@@ -17,12 +17,12 @@
         },
         "decreasing": {
           "marker": {
-            "color": "#FF9222"
+            "color": "#6F39E3"
           }
         },
         "increasing": {
           "marker": {
-            "color": "#00B4FF"
+            "color": "#097DFE"
           }
         },
         "textposition": "outside",
@@ -126,16 +126,16 @@
       ]
     },
     "colorway": [
-      "#00B4FF",
-      "#FF9222",
-      "#3949AB",
-      "#FF5267",
-      "#08BDBA",
-      "#FDC935",
-      "#689F38",
-      "#976FD1",
-      "#F781BF",
-      "#52733E"
+      "#097DFE",
+      "#6F39E3",
+      "#05D0F0",
+      "#0F766E",
+      "#8C8DE9",
+      "#11B883",
+      "#E77EC2",
+      "#C84189",
+      "#C0CA33",
+      "#3E495B"
     ],
     "font": {
       "family": "Inter, sans-serif, Arial",

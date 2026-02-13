@@ -3,16 +3,16 @@ from types import SimpleNamespace
 from ._colors import colors
 
 qualitative = [
-    colors.cyan,
-    colors.orange,
-    colors.indigo,
-    colors.red,
-    colors.teal,
-    colors.yellow,
-    colors.green,
-    colors.purple,
-    colors.pink,
+    colors.blue,
+    colors.dark_purple,
+    colors.turquoise,
     colors.dark_green,
+    colors.light_purple,
+    colors.light_green,
+    colors.light_pink,
+    colors.dark_pink,
+    colors.yellow,
+    colors.grey,
 ]
 
 sequential_cyan = [
