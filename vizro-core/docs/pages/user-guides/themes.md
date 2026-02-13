@@ -285,13 +285,11 @@ For a complete list of available colors and palettes, refer to the [API referenc
 
 ### Colors
 
-Individual colors can be accessed through `vizro.themes.colors`. These include:
+Individual colors are accessible via `vizro.themes.colors`. The color system is organized into three categories:
 
-- **Qualitative colors**: Used for categorical data (e.g., `blue`, `dark_purple`, `turquoise`, `dark_green`, `light_purple`, `light_green`, `light_pink`, `dark_pink`, `yellow`, `gray`)
-- **Sequential colors**: Organized in shades from light (100) to dark (900) for ordinal data (e.g., `cyan_100` through `cyan_900`)
-- **Special colors**: Including `white`, `black`, and `transparent`
-
-Sequential colors are available in multiple families: cyan, orange, indigo, yellow, teal, red, and gray. Each family contains 9 shades numbered from 100 (lightest) to 900 (darkest).
+- **Qualitative colors**: Ten distinct colors designed for categorical data visualization. Examples include `blue`, `dark_purple`, `turquoise`, `dark_green`, `light_purple`, `light_green`, `light_pink`, `dark_pink`, `yellow`, and `gray`.
+- **Sequential colors**: Organized into seven color families (blue, purple, turquoise, green, pink, yellow, and grey), each containing 11 shades numbered from 50 (lightest) to 950 (darkest).
+- **Utility colors**: Basic colors including `white`, `black`, and `transparent` for special styling needs.
 
 !!! example "Use Vizro colors"
 
@@ -310,15 +308,15 @@ Sequential colors are available in multiple families: cyan, orange, indigo, yell
 
 ### Palettes
 
-Pre-configured color palettes can be accessed through `vizro.themes.palettes`. These are ready-to-use color scales ideal for different data visualization needs:
+Pre-configured color palettes are accessible via `vizro.themes.palettes`. These multi-color scales are optimized for different visualization patterns:
 
-- **Qualitative palette**: A single palette with distinct colors for categorical data (`palettes.qualitative`)
-- **Sequential palettes**: Sequential colors are available in multiple families: blue, purple, turquoise, green, pink, yellow, and grey. Each family contains 11 shades numbered from 50 (lightest) to 950 (darkest).
-- **Diverging palettes**: Diverging color scale for data with a meaningful midpoint (e.g. `palettes.diverging_red_cyan` is the default).
+- **Qualitative palette**: A carefully curated sequence of distinct colors (`palettes.qualitative`) for representing categorical data with multiple categories.
+- **Sequential palettes**: Seven color families (blue, purple, turquoise, green, pink, yellow, and grey) provide gradual color progressions for ordered or continuous data. Access them as `palettes.sequential_<color>` (e.g., `palettes.sequential_red`).
+- **Diverging palettes**: Two-tone color scales designed for data with a meaningful center point (e.g., `palettes.diverging_red_cyan`).
 
-!!! note "Default palettes in Vizro themes"
+!!! note "Default palette behavior"
 
-    When using Vizro's `vizro_dark` or `vizro_light` themes in Plotly charts, the `palettes.qualitative` is automatically applied to categorical data, and the `palettes.sequential` is used for all numerical sequences. You can override these defaults by explicitly specifying `color_discrete_sequence` or `color_continuous_scale` in your Plotly chart.
+    When using Vizro's `vizro_dark` or `vizro_light` themes, Plotly charts automatically apply `palettes.qualitative` to categorical data and `palettes.sequential` to continuous numerical data. Override these defaults by explicitly setting `color_discrete_sequence` or `color_continuous_scale` parameters in your chart function.
 
 !!! example "Use Vizro palettes"
 
