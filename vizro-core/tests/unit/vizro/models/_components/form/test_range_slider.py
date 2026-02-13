@@ -18,7 +18,6 @@ def expected_range_slider_default():
                 id="range_slider",
                 min=None,
                 max=None,
-                step=None,
                 marks=None,
                 dots=True,
                 value=[None, None],
