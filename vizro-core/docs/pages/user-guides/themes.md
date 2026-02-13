@@ -313,8 +313,8 @@ Sequential colors are available in multiple families: cyan, orange, indigo, yell
 Pre-configured color palettes can be accessed through `vizro.themes.palettes`. These are ready-to-use color scales ideal for different data visualization needs:
 
 - **Qualitative palette**: A single palette with distinct colors for categorical data (`palettes.qualitative`)
-- **Sequential palettes**: Seven different color gradients for ordered data (`palettes.sequential_blue`, `palettes.sequential_purple`, `palettes.sequential_turquoise`, `palettes.sequential_green`, `palettes.sequential_pink`, `palettes.sequential_yellow`, `palettes.sequential_gray`), with `palettes.sequential` as the default (blue)
-- **Diverging palettes**: Diverging color scales for data with a meaningful midpoint (e.g. `palettes.diverging_red_cyan` is the default)
+- **Sequential palettes**: Sequential colors are available in multiple families: blue, purple, turquoise, green, pink, yellow, and grey. Each family contains 11 shades numbered from 50 (lightest) to 950 (darkest).
+- **Diverging palettes**: Diverging color scale for data with a meaningful midpoint (e.g. `palettes.diverging_red_cyan` is the default).
 
 !!! note "Default palettes in Vizro themes"
 
