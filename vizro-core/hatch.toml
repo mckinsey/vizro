@@ -50,7 +50,6 @@ installer = "uv"
 python = "3.13"
 
 [envs.default.env-vars]
-# PYTHONPATH needed for gunicorn processes in e2e tests to import dashboard modules (pytest pythonpath in pyproject.toml only affects pytest)
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
 
 [envs.default.scripts]

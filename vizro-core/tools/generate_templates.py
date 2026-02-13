@@ -42,13 +42,13 @@ def create_template_common() -> go.layout.Template:
             coloraxis_colorbar_ticks="outside",
             coloraxis_colorbar_tickwidth=1,
             coloraxis_colorbar_title_font_size=14,
-            # Diverging, sequential and sequentialminus colorscale will only be applied
+            # Diverging, sequential and sequential_minus colorscale will only be applied
             # automatically if `coloraxis_autocolorscale=True`. Otherwise, they have no
             # effect, and the default for continuous color scales will be the color
             # sequence applied to ["colorscale"]["sequential"].
             # colorscale_diverging=palettes.diverging_red_cyan,
             colorscale_sequential=palettes.sequential,
-            colorscale_sequentialminus=palettes.sequentialminus,
+            colorscale_sequentialminus=palettes.sequential_minus,
             colorway=palettes.qualitative,
             font_family="Inter, sans-serif, Arial",
             font_size=14,
@@ -121,9 +121,9 @@ def create_template_common() -> go.layout.Template:
             # defined in this script.
             waterfall=[
                 go.Waterfall(
-                    decreasing_marker_color=palettes.qualitative[1],
-                    increasing_marker_color=palettes.qualitative[0],
-                    totals_marker_color=colors.gray_400,
+                    decreasing_marker_color=colors.dark_purple,
+                    increasing_marker_color=colors.blue,
+                    totals_marker_color=colors.gray,
                     textposition="outside",
                     connector_line_width=1,
                 )
