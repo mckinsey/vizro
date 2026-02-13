@@ -20,7 +20,10 @@ Below is a visual reference of all available Vizro colors and palettes. Each col
 
 **Palettes**
 
-![Palette reference](../../assets/user_guides/themes/palettes.png)
+| Dark Theme | Light Theme |
+|------------|-------------|
+| ![Qualitative Palette Dark](../../assets/user_guides/themes/palette_qualitative_dark.png) | ![Qualitative Palette Light](../../assets/user_guides/themes/palette_qualitative_light.png) |
+| ![Palettes Dark](../../assets/user_guides/themes/palettes_dark.png) | ![Palettes Light](../../assets/user_guides/themes/palettes_light.png) |
 
 
 

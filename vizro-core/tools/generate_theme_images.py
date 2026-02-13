@@ -80,7 +80,6 @@ def make_color_swatches(color_groups, cols, labels):
         yaxis={"visible": False, "autorange": "reversed", "scaleanchor": "x", "scaleratio": 1},
         plot_bgcolor="white",
         paper_bgcolor="white",
-        font={"color": "black", "size": 12},
         showlegend=False,
     )
 
@@ -127,7 +126,7 @@ def make_palette_gradients(palette_groups, theme="light"):
     NUM_ROWS, NUM_COLS = 50, 500
 
     groups = list(palette_groups.keys())
-    left_margin = 220
+    left_margin = 260
     total_height = len(groups) * (BAR_HEIGHT + GAP) - GAP + 40
 
     fig = go.Figure()
@@ -158,7 +157,7 @@ def make_palette_gradients(palette_groups, theme="light"):
             y=y_pos + BAR_HEIGHT / 2,
             text=name,
             showarrow=False,
-            font={"size": 14, "color": text_color},
+            font={"size": 20, "color": text_color},
             xanchor="right",
             yanchor="middle",
         )
@@ -171,7 +170,6 @@ def make_palette_gradients(palette_groups, theme="light"):
         yaxis={"visible": False, "range": [-10, total_height - 30]},
         plot_bgcolor=bg_color,
         paper_bgcolor=bg_color,
-        font={"color": text_color, "size": 12},
         showlegend=False,
     )
 
@@ -201,7 +199,7 @@ def make_qualitative_palette(palette, theme="light"):
         y=0,
         text="qualitative",
         showarrow=False,
-        font={"size": 14, "color": text_color},
+        font={"size": 24, "color": text_color},
         xanchor="right",
         yanchor="middle",
     )
@@ -214,7 +212,6 @@ def make_qualitative_palette(palette, theme="light"):
         yaxis={"visible": False, "range": [-0.6, 0.6], "scaleanchor": "x", "scaleratio": 1},
         plot_bgcolor=bg_color,
         paper_bgcolor=bg_color,
-        font={"color": text_color, "size": 12},
         showlegend=False,
     )
 

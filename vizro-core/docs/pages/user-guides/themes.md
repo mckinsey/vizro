@@ -287,7 +287,7 @@ For a complete list of available colors and palettes, refer to the [API referenc
 
 Individual colors can be accessed through `vizro.themes.colors`. These include:
 
-- **Qualitative colors**: Used for categorical data (e.g., `cyan`, `orange`, `indigo`, `red`, `teal`, `yellow`, `green`, `purple`, `pink`, `dark_green`)
+- **Qualitative colors**: Used for categorical data (e.g., `blue`, `dark_purple`, `turquoise`, `dark_green`, `light_purple`, `light_green`, `light_pink`, `dark_pink`, `yellow`, `gray`)
 - **Sequential colors**: Organized in shades from light (100) to dark (900) for ordinal data (e.g., `cyan_100` through `cyan_900`)
 - **Special colors**: Including `white`, `black`, and `transparent`
 
@@ -357,7 +357,12 @@ Pre-configured color palettes can be accessed through `vizro.themes.palettes`. T
         fig.show()
         ```
 
-**Palette reference** ![Palette reference](../../assets/user_guides/themes/palettes.png)
+**Palette reference** 
+
+| Dark Theme | Light Theme |
+|------------|-------------|
+| ![Qualitative Palette Dark](../../assets/user_guides/themes/palette_qualitative_dark.png) | ![Qualitative Palette Light](../../assets/user_guides/themes/palette_qualitative_light.png) |
+| ![Palettes Dark](../../assets/user_guides/themes/palettes_dark.png) | ![Palettes Light](../../assets/user_guides/themes/palettes_light.png) |
 
 [bootstrapdark]: ../../assets/user_guides/themes/bootstrap_dark.png
 [bootstraplight]: ../../assets/user_guides/themes/bootstrap_light.png
