@@ -34,14 +34,16 @@ def test_access_default_qualitative_palette():
 
 def test_access_default_sequential_palette():
     """Test sequential palette can be accessed (used for all numerical sequences)."""
-    assert palettes.sequential_cyan == [
-        "#AFE7F9",
-        "#8BD0F6",
-        "#6CBAEC",
-        "#52A3DD",
-        "#3B8DCB",
-        "#2777B7",
-        "#1661A2",
-        "#074C8C",
-        "#003875",
+    assert palettes.sequential_blue == [
+        "#EFF6FE",
+        "#DBEBFE",
+        "#BDDCFE",
+        "#8CC6FF",
+        "#4BA5FF",
+        "#097DFE",
+        "#0063F6",
+        "#004DE0",
+        "#0B40B4",
+        "#163B8B",
+        "#142654",
     ]

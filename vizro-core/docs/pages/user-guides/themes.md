@@ -313,12 +313,12 @@ Sequential colors are available in multiple families: cyan, orange, indigo, yell
 Pre-configured color palettes can be accessed through `vizro.themes.palettes`. These are ready-to-use color scales ideal for different data visualization needs:
 
 - **Qualitative palette**: Distinct colors for categorical data (`palettes.qualitative`)
-- **Sequential palettes**: Sequential color gradients for ordered data (e.g. `palettes.sequential_cyan`)
+- **Sequential palettes**: Sequential color gradients for ordered data (e.g. `palettes.sequential_blue`)
 - **Diverging palettes**: Diverging color scales for data with a meaningful midpoint (e.g. `palettes.diverging_red_cyan`)
 
 !!! note "Default palettes in Vizro themes"
 
-    When using Vizro's `vizro_dark` or `vizro_light` themes in Plotly charts, the `palettes.qualitative` is automatically applied to categorical data, and the `palettes.sequential_cyan` is used for all numerical sequences. You can override these defaults by explicitly specifying `color_discrete_sequence` or `color_continuous_scale` in your Plotly chart.
+    When using Vizro's `vizro_dark` or `vizro_light` themes in Plotly charts, the `palettes.qualitative` is automatically applied to categorical data, and the `palettes.sequential_blue` is used for all numerical sequences. You can override these defaults by explicitly specifying `color_discrete_sequence` or `color_continuous_scale` in your Plotly chart.
 
 !!! example "Use Vizro palettes"
 
