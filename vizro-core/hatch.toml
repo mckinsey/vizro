@@ -125,6 +125,7 @@ dependencies = [
   "linkchecker",
   "mkdocs-open-in-new-tab",
   "mkdocs-pycafe",
+  "griffe-pydantic",
   "PyGithub",
   "playwright"
 ]
@@ -135,7 +136,7 @@ template = "docs"  # Can't be detached = true since griffe_extensions:Dynamicall
 build = "mkdocs build --strict"
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file.
-link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.ploomber.io/register --ignore-url=https://huggingface.co/join --ignore-url=https://www.ag-grid.com/"
+link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.ploomber.io/register --ignore-url=https://huggingface.co/join --ignore-url=https://www.ag-grid.com/ --ignore-url=https://cursor.com/"
 # Check if link to QB logo is not deleted from the docs.
 logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/install.md"
 pip = '"{env:HATCH_UV}" pip {args}'
@@ -169,7 +170,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 extra-dependencies = [
   "dash==4.0.0",
   "dash-bootstrap-components==2.0.0",
-  "dash-ag-grid==31.3.1",
+  "dash-ag-grid==33.3.3",
   "dash-mantine-components==2.0.0",
   "plotly==5.24.0",
   "pydantic==2.7.0",

@@ -15,12 +15,6 @@ class TextArea(VizroBaseModel):
 
     Based on the underlying [`dbc.TextArea`](https://www.dash-bootstrap-components.com/docs/components/input/).
 
-    Args:
-        title (str): Title to be displayed. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["text_area"] = "text_area"
@@ -33,7 +27,7 @@ class TextArea(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     placeholder: str = Field(default="", description="Default text to display in input field")
