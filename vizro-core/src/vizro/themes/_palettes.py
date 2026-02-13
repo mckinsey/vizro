@@ -15,43 +15,78 @@ qualitative = [
     colors.gray,
 ]
 
-sequential_cyan = [
-    colors.cyan_100,
-    colors.cyan_200,
-    colors.cyan_300,
-    colors.cyan_400,
-    colors.cyan_500,
-    colors.cyan_600,
-    colors.cyan_700,
-    colors.cyan_800,
-    colors.cyan_900,
+sequential_blue = [
+    colors.blue_50,
+    colors.blue_100,
+    colors.blue_200,
+    colors.blue_300,
+    colors.blue_400,
+    colors.blue_500,
+    colors.blue_600,
+    colors.blue_700,
+    colors.blue_800,
+    colors.blue_900,
+    colors.blue_950,
 ]
 
-sequential_orange = [
-    colors.orange_100,
-    colors.orange_200,
-    colors.orange_300,
-    colors.orange_400,
-    colors.orange_500,
-    colors.orange_600,
-    colors.orange_700,
-    colors.orange_800,
-    colors.orange_900,
+sequential_purple = [
+    colors.purple_50,
+    colors.purple_100,
+    colors.purple_200,
+    colors.purple_300,
+    colors.purple_400,
+    colors.purple_500,
+    colors.purple_600,
+    colors.purple_700,
+    colors.purple_800,
+    colors.purple_900,
+    colors.purple_950,
 ]
 
-sequential_indigo = [
-    colors.indigo_100,
-    colors.indigo_200,
-    colors.indigo_300,
-    colors.indigo_400,
-    colors.indigo_500,
-    colors.indigo_600,
-    colors.indigo_700,
-    colors.indigo_800,
-    colors.indigo_900,
+sequential_turquoise = [
+    colors.turquoise_50,
+    colors.turquoise_100,
+    colors.turquoise_200,
+    colors.turquoise_300,
+    colors.turquoise_400,
+    colors.turquoise_500,
+    colors.turquoise_600,
+    colors.turquoise_700,
+    colors.turquoise_800,
+    colors.turquoise_900,
+    colors.turquoise_950,
+]
+
+sequential_green = [
+    colors.green_50,
+    colors.green_100,
+    colors.green_200,
+    colors.green_300,
+    colors.green_400,
+    colors.green_500,
+    colors.green_600,
+    colors.green_700,
+    colors.green_800,
+    colors.green_900,
+    colors.green_950,
+]
+
+sequential_pink = [
+    colors.pink_50,
+    colors.pink_100,
+    colors.pink_200,
+    colors.pink_300,
+    colors.pink_400,
+    colors.pink_500,
+    colors.pink_600,
+    colors.pink_700,
+    colors.pink_800,
+    colors.pink_900,
+    colors.pink_950,
 ]
 
 sequential_yellow = [
+    colors.yellow_50,
     colors.yellow_100,
     colors.yellow_200,
     colors.yellow_300,
@@ -61,33 +96,11 @@ sequential_yellow = [
     colors.yellow_700,
     colors.yellow_800,
     colors.yellow_900,
-]
-
-sequential_teal = [
-    colors.teal_100,
-    colors.teal_200,
-    colors.teal_300,
-    colors.teal_400,
-    colors.teal_500,
-    colors.teal_600,
-    colors.teal_700,
-    colors.teal_800,
-    colors.teal_900,
-]
-
-sequential_red = [
-    colors.red_100,
-    colors.red_200,
-    colors.red_300,
-    colors.red_400,
-    colors.red_500,
-    colors.red_600,
-    colors.red_700,
-    colors.red_800,
-    colors.red_900,
+    colors.yellow_950,
 ]
 
 sequential_gray = [
+    colors.gray_50,
     colors.gray_100,
     colors.gray_200,
     colors.gray_300,
@@ -97,72 +110,7 @@ sequential_gray = [
     colors.gray_700,
     colors.gray_800,
     colors.gray_900,
-]
-
-diverging_indigo_orange = [
-    colors.indigo_900,
-    colors.indigo_800,
-    colors.indigo_700,
-    colors.indigo_600,
-    colors.indigo_500,
-    colors.indigo_400,
-    colors.indigo_300,
-    colors.indigo_200,
-    colors.indigo_100,
-    colors.gray_100,
-    colors.orange_100,
-    colors.orange_200,
-    colors.orange_300,
-    colors.orange_400,
-    colors.orange_500,
-    colors.orange_600,
-    colors.orange_700,
-    colors.orange_800,
-    colors.orange_900,
-]
-
-diverging_orange_teal = [
-    colors.orange_900,
-    colors.orange_800,
-    colors.orange_700,
-    colors.orange_600,
-    colors.orange_500,
-    colors.orange_400,
-    colors.orange_300,
-    colors.orange_200,
-    colors.orange_100,
-    colors.gray_100,
-    colors.teal_100,
-    colors.teal_200,
-    colors.teal_300,
-    colors.teal_400,
-    colors.teal_500,
-    colors.teal_600,
-    colors.teal_700,
-    colors.teal_800,
-    colors.teal_900,
-]
-
-diverging_red_cyan = [
-    colors.red_900,
-    colors.red_800,
-    colors.red_700,
-    colors.red_600,
-    colors.red_500,
-    colors.red_400,
-    colors.red_300,
-    colors.red_200,
-    colors.red_100,
-    colors.gray_100,
-    colors.cyan_100,
-    colors.cyan_200,
-    colors.cyan_300,
-    colors.cyan_400,
-    colors.cyan_500,
-    colors.cyan_600,
-    colors.cyan_700,
-    colors.cyan_800,
-    colors.cyan_900,
+    colors.gray_950,
 ]
 
 # These are necessarily the same for dark and light themes.
@@ -171,14 +119,11 @@ diverging_red_cyan = [
 # updates to fig.layout.template (e.g. in the clientside callback we currently use).
 palettes = SimpleNamespace(
     qualitative=qualitative,
-    sequential_cyan=sequential_cyan,
-    sequential_orange=sequential_orange,
-    sequential_indigo=sequential_indigo,
+    sequential_blue=sequential_blue,
+    sequential_purple=sequential_purple,
+    sequential_turquoise=sequential_turquoise,
+    sequential_green=sequential_green,
+    sequential_pink=sequential_pink,
     sequential_yellow=sequential_yellow,
-    sequential_teal=sequential_teal,
-    sequential_red=sequential_red,
     sequential_gray=sequential_gray,
-    diverging_indigo_orange=diverging_indigo_orange,
-    diverging_orange_teal=diverging_orange_teal,
-    diverging_red_cyan=diverging_red_cyan,
 )
