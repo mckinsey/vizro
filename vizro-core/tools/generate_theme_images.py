@@ -34,7 +34,7 @@ def _save_image(fig, output_path):
 
 def make_color_swatches(color_groups, cols, labels):
     """Create color swatch visualization."""
-    BOX_SIZE, GAP = 70, 0.15
+    BOX_SIZE, GAP = 100, 0.15
     counts = [len(group) for group in color_groups.values()]
 
     # Generate coordinates
@@ -58,13 +58,13 @@ def make_color_swatches(color_groups, cols, labels):
             y=y,
             text=label,
             showarrow=False,
-            font={"size": 10, "color": _get_text_color(col)},
+            font={"size": 12, "color": _get_text_color(col)},
         )
 
     fig.update_layout(
         width=max(counts) * (1 + GAP) * BOX_SIZE + 50,
         height=len(counts) * (1 + GAP) * BOX_SIZE + 60,
-        margin={"l": 10, "r": 10, "t": 10, "b": 10},
+        margin={"l": 0, "r": 0, "t": 10, "b": 10},
         xaxis={"visible": False},
         yaxis={"visible": False, "autorange": "reversed", "scaleanchor": "x", "scaleratio": 1},
         plot_bgcolor="white",
