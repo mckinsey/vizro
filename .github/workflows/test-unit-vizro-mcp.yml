@@ -1,5 +1,8 @@
 name: Unit tests for Vizro MCP
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: vizro-mcp
