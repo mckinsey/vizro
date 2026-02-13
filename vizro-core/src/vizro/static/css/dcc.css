@@ -122,10 +122,18 @@
   height: 2px;
 }
 
+.dash-slider-container{
+  gap: 4px !important;
+  min-width: 200px;
+}
+
 .dash-input-container {
   background: none;
   border: none;
   color: var(--bs-primary);
+
+  /* Required to override the default hiding of the input value elements when sliders width is less than 300px */
+  display: block !important;
   text-decoration: underline;
   text-decoration-color: var(--bs-border-color-translucent);
 }

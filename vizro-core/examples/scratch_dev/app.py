@@ -17,7 +17,6 @@ data_manager["dynamic_df"] = lambda number_of_points=10: df.head(number_of_point
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
 
-
 page_1 = vm.Page(
     title="Single/Multi static DD",
     components=[
@@ -87,8 +86,8 @@ page_4 = vm.Page(
                 vm.Filter(column="species", selector=vm.Dropdown(multi=True, title="Dropdown Multi")),
                 vm.Filter(column="species", selector=vm.Checklist(title="Checklist Multi")),
                 vm.Filter(column="is_setosa", selector=vm.Switch(title="Switch Single")),
-                vm.Filter(column="sepal_width", selector=vm.Slider(min=2, max=5, step=0.1, title="Slider Single")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4, max=8, step=0.1, title="Range Slider")),
+                vm.Filter(column="sepal_width", selector=vm.Slider(title="Slider Single")),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="Range Slider")),
                 vm.Filter(column="date_column", selector=vm.DatePicker(range=False, title="Single Dropdown")),
                 vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
             ],
@@ -111,13 +110,13 @@ page_4 = vm.Page(
         vm.Filter(column="species", selector=vm.Dropdown(multi=True, title="Dropdown Multi")),
         vm.Filter(column="species", selector=vm.Checklist(title="Checklist Multi")),
         vm.Filter(column="is_setosa", selector=vm.Switch(title="Switch Single")),
-        vm.Filter(column="sepal_width", selector=vm.Slider(min=2, max=5, step=0.1, title="Slider Single")),
-        vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4, max=8, step=0.1, title="Range Slider")),
+        vm.Filter(column="sepal_width", selector=vm.Slider(title="Slider Single")),
+        vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="Range Slider")),
         vm.Filter(column="date_column", selector=vm.DatePicker(range=False, title="Single Dropdown")),
         vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
+dashboard = vm.Dashboard(pages=[page_4])
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

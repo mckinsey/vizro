@@ -662,7 +662,6 @@ selectors = vm.Page(
         vm.Filter(
             targets=["table-gapminder"],
             column="lifeExp",
-            # TODO PP NOW: Fix so it works and looks good
             selector=vm.RangeSlider(title="Range Slider (Gapminder - lifeExp)", step=1, marks=None),
         ),
         vm.Filter(
@@ -1046,7 +1045,6 @@ custom_charts = vm.Page(
         ),
     ],
     controls=[
-        # TODO PP NOW: Fix so it works and looks good
         vm.Filter(column="petal_width", targets=["custom_scatter"]),
         vm.Filter(
             column="x",
