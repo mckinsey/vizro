@@ -357,12 +357,12 @@ Pre-configured color palettes can be accessed through `vizro.themes.palettes`. T
         fig.show()
         ```
 
-**Palette reference** 
+**Palette reference**
 
-| Dark Theme | Light Theme |
-|------------|-------------|
+| Dark Theme                                                                                | Light Theme                                                                                 |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | ![Qualitative Palette Dark](../../assets/user_guides/themes/palette_qualitative_dark.png) | ![Qualitative Palette Light](../../assets/user_guides/themes/palette_qualitative_light.png) |
-| ![Palettes Dark](../../assets/user_guides/themes/palettes_dark.png) | ![Palettes Light](../../assets/user_guides/themes/palettes_light.png) |
+| ![Palettes Dark](../../assets/user_guides/themes/palettes_dark.png)                       | ![Palettes Light](../../assets/user_guides/themes/palettes_light.png)                       |
 
 [bootstrapdark]: ../../assets/user_guides/themes/bootstrap_dark.png
 [bootstraplight]: ../../assets/user_guides/themes/bootstrap_light.png
