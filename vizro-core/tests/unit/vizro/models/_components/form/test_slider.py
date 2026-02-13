@@ -13,29 +13,7 @@ import vizro.models as vm
 def expected_slider():
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="slider_id_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=1.0,
-                                value=5.0,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
             dcc.Slider(
                 id="slider_id",
                 min=0.0,
@@ -46,6 +24,7 @@ def expected_slider():
                 included=False,
                 persistence=True,
                 persistence_type="session",
+                dots=True,
                 className="slider-track-with-marks",
             ),
         ]
@@ -56,29 +35,7 @@ def expected_slider():
 def expected_slider_extra():
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="slider_id_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=1.0,
-                                value=5.0,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
             dcc.Slider(
                 id="overridden_id",
                 min=0.0,
@@ -89,6 +46,7 @@ def expected_slider_extra():
                 included=False,
                 persistence=True,
                 persistence_type="session",
+                dots=True,
                 className="slider-track-with-marks",
                 tooltip={"placement": "bottom", "always_visible": True},
             ),
@@ -109,31 +67,9 @@ def expected_slider_with_description():
     ]
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label(
-                        [html.Span("Title", id="slider_id_title"), *expected_description],
-                        html_for="slider_id",
-                    ),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="slider_id_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=1.0,
-                                value=5.0,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
+            dbc.Label(
+                [html.Span("Title", id="slider_id_title"), *expected_description],
+                html_for="slider_id",
             ),
             dcc.Slider(
                 id="slider_id",
@@ -145,6 +81,7 @@ def expected_slider_with_description():
                 included=False,
                 persistence=True,
                 persistence_type="session",
+                dots=True,
                 className="slider-track-with-marks",
             ),
         ]

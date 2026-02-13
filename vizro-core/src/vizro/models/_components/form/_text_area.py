@@ -13,7 +13,7 @@ from vizro.models.types import ActionsType, _IdProperty
 class TextArea(VizroBaseModel):
     """Multi-line text input component `TextArea`.
 
-    Based on the underlying [`dcc.TextArea`](https://dash.plotly.com/dash-core-components/textarea).
+    Based on the underlying [`dbc.TextArea`](https://www.dash-bootstrap-components.com/docs/components/input/).
 
     """
 

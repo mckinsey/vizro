@@ -13,48 +13,13 @@ import vizro.models as vm
 def expected_range_slider_default():
     return html.Div(
         [
-            html.Div(
-                [
-                    None,
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="range_slider_start_value",
-                                type="number",
-                                placeholder="min",
-                                min=None,
-                                max=None,
-                                step=None,
-                                value=None,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                            html.Span("-", className="slider-text-input-range-separator"),
-                            dcc.Input(
-                                id="range_slider_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=None,
-                                max=None,
-                                step=None,
-                                value=None,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            None,
             dcc.RangeSlider(
                 id="range_slider",
                 min=None,
                 max=None,
-                step=None,
                 marks=None,
+                dots=True,
                 value=[None, None],
                 persistence=True,
                 persistence_type="session",
@@ -68,42 +33,7 @@ def expected_range_slider_default():
 def expected_range_slider_with_optional():
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="range_slider_start_value",
-                                type="number",
-                                placeholder="min",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][0],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                            html.Span("-", className="slider-text-input-range-separator"),
-                            dcc.Input(
-                                id="range_slider_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][1],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
             dcc.RangeSlider(
                 id="range_slider",
                 min=0.0,
@@ -113,6 +43,7 @@ def expected_range_slider_with_optional():
                 value=[0, 10],
                 persistence=True,
                 persistence_type="session",
+                dots=True,
                 className="slider-track-with-marks",
             ),
         ]
@@ -123,42 +54,7 @@ def expected_range_slider_with_optional():
 def expected_range_slider_with_extra():
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="range_slider_start_value",
-                                type="number",
-                                placeholder="min",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][0],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                            html.Span("-", className="slider-text-input-range-separator"),
-                            dcc.Input(
-                                id="range_slider_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][1],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
             dcc.RangeSlider(
                 id="overridden_id",
                 min=0.0,
@@ -168,6 +64,7 @@ def expected_range_slider_with_extra():
                 value=[0, 10],
                 persistence=True,
                 persistence_type="session",
+                dots=True,
                 className="slider-track-with-marks",
                 tooltip={"placement": "bottom", "always_visible": True},
                 pushable=20,
@@ -189,44 +86,9 @@ def expected_range_slider_with_description():
     ]
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label(
-                        [html.Span("Title", id="range_slider_title"), *expected_description],
-                        html_for="range_slider",
-                    ),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="range_slider_start_value",
-                                type="number",
-                                placeholder="min",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][0],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                            html.Span("-", className="slider-text-input-range-separator"),
-                            dcc.Input(
-                                id="range_slider_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][1],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
+            dbc.Label(
+                [html.Span("Title", id="range_slider_title"), *expected_description],
+                html_for="range_slider",
             ),
             dcc.RangeSlider(
                 id="range_slider",
@@ -235,6 +97,7 @@ def expected_range_slider_with_description():
                 step=2.0,
                 marks={1: "1", 5: "5", 10: "10"},
                 value=[0, 10],
+                dots=True,
                 persistence=True,
                 persistence_type="session",
                 className="slider-track-with-marks",
