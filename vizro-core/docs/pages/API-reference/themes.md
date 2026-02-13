@@ -12,7 +12,7 @@ The `vizro.themes` module provides `colors` and `palettes` that can be imported 
 
 **Visual reference**
 
-Below is a visual reference of all available Vizro colors and palettes. Each color and palette is labeled with its access name, e.g. `colors.cyan_100` for individual colors or `palettes.sequential_blue` for complete palettes.
+Below is a visual reference of all available Vizro colors and palettes. Each color and palette is labeled with its access name, e.g. `colors.blue_100` for individual colors or `palettes.sequential_blue` for complete palettes.
 
 **Colors**
 

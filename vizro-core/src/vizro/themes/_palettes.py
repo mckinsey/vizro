@@ -119,6 +119,8 @@ sequential_gray = [
 # updates to fig.layout.template (e.g. in the clientside callback we currently use).
 palettes = SimpleNamespace(
     qualitative=qualitative,
+    sequential=sequential_blue,
+    sequentialminus=sequential_pink[::-1],
     sequential_blue=sequential_blue,
     sequential_purple=sequential_purple,
     sequential_turquoise=sequential_turquoise,

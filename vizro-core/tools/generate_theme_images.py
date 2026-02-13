@@ -149,6 +149,7 @@ def make_palette_gradients(palette_groups, theme="light"):
             "tickfont": {"size": 24, "color": text_color},
             "showgrid": False,
             "zeroline": False,
+            "autorange": "reversed",
         },
         plot_bgcolor=bg_color,
         paper_bgcolor=bg_color,

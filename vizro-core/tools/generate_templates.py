@@ -47,8 +47,8 @@ def create_template_common() -> go.layout.Template:
             # effect, and the default for continuous color scales will be the color
             # sequence applied to ["colorscale"]["sequential"].
             # colorscale_diverging=palettes.diverging_red_cyan,
-            colorscale_sequential=palettes.sequential_blue,
-            colorscale_sequentialminus=palettes.sequential_pink[::-1],
+            colorscale_sequential=palettes.sequential,
+            colorscale_sequentialminus=palettes.sequentialminus,
             colorway=palettes.qualitative,
             font_family="Inter, sans-serif, Arial",
             font_size=14,
