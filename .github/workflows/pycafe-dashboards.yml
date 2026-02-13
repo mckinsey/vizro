@@ -1,5 +1,8 @@
 name: PyCafe Playground Links
 
+permissions:
+  contents: read
+
 on:
   workflow_run:
     workflows: [Build]
