@@ -35,7 +35,7 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes._templates import dashboard_overrides
 from vizro.managers import model_manager
-from vizro.models import Navigation, Tooltip, VizroBaseModel
+from vizro.models import Accordion, Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
 from vizro.models._controls import Filter, Parameter
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
@@ -296,7 +296,16 @@ class Dashboard(VizroBaseModel):
             id="header-custom", children=custom_header_content, hidden=_all_hidden(custom_header_content)
         )
 
+        # Check if navigation is in top position
+        is_top_nav = not (
+            isinstance(self.navigation.nav_selector, Accordion) or self.navigation.nav_selector.position == "left"
+        )
+
         header_left_content = [logo, logo_dark, logo_light, dashboard_title]
+        # Add nav-bar to header_left for top navigation
+        if is_top_nav:
+            header_left_content.append(nav_bar)
+
         header_left = html.Div(id="header-left", children=header_left_content, hidden=_all_hidden(header_left_content))
         header_right_content = [custom_header]
 
@@ -390,6 +399,11 @@ class Dashboard(VizroBaseModel):
             _OuterPageContentType: A dictionary with the outer containers, including header, right-side,
                 left-side (collapsible), and the collapse icon container.
         """
+        #  Navigation position
+        is_left_nav = (
+            isinstance(self.navigation.nav_selector, Accordion) or self.navigation.nav_selector.position == "left"
+        )
+
         # Inner page containers used to construct outer page containers
         header_left = inner_page["header-left"]
         header_right = inner_page["header-right"]
@@ -397,15 +411,8 @@ class Dashboard(VizroBaseModel):
         page_components = inner_page["page-components"]
         nav_bar = inner_page["nav-bar"]
         nav_control_panel = inner_page["nav-control-panel"]
-
-        # Construct outer page containers
-        header = html.Div(
-            id="header",
-            children=[header_left, header_right],
-            hidden=_all_hidden([header_left, header_right]),
-            className="no-left" if _all_hidden(header_left) else "",
-        )
         right_side = html.Div(id="right-side", children=[page_header, page_components])
+
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
             children=html.Div(id="left-side", children=[nav_control_panel]),
@@ -425,10 +432,21 @@ class Dashboard(VizroBaseModel):
             id="collapse-icon-outer",
             hidden=_all_hidden([nav_control_panel]),
         )
+        left_hidden = _all_hidden([header_left])
+        right_hidden = _all_hidden([header_right])
+        both_hidden = left_hidden and right_hidden
+
+        header = html.Div(
+            id="header",
+            children=[header_left, header_right],
+            hidden=both_hidden,
+            className="no-left" if left_hidden else "",
+        )
+
         return html.Div(
             [
                 header,
-                nav_bar,
+                nav_bar if is_left_nav else None,
                 right_side,
                 collapse_left_side,
                 collapse_icon_outer,
@@ -444,13 +462,28 @@ class Dashboard(VizroBaseModel):
         Returns:
             html.Div: The complete Dash layout for the page, ready to render.
         """
+        is_left_nav = (
+            isinstance(self.navigation.nav_selector, Accordion) or self.navigation.nav_selector.position == "left"
+        )
+
         nav_bar = outer_page["nav-bar"]
         collapse_left_side = outer_page["collapse-left-side"]
         collapse_icon_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
+
+        # Build header
         header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side])
+        page_main_children = (
+            [nav_bar, collapse_left_side, collapse_icon_outer, right_side]
+            if is_left_nav
+            else [collapse_left_side, collapse_icon_outer, right_side]
+        )
+        page_main = html.Div(
+            id="page-main",
+            children=page_main_children,
+        )
+
         page_main_outer = html.Div(
             children=[header, page_main],
             className="page-main-outer no-left" if _all_hidden(collapse_icon_outer) else "page-main-outer",

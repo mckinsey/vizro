@@ -33,6 +33,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   background: var(--left-side-bg) !important;
   border: none;
   flex-wrap: nowrap;
+  min-height: 0 !important;
 }
 
 .nav-link {
