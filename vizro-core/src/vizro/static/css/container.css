@@ -72,7 +72,7 @@ and all containers need to have a white background on that page */
   flex-wrap: wrap;
   gap: 24px;
   justify-content: start;
-  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .tab-content .container-controls-panel {
