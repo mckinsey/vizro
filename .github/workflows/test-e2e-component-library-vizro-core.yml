@@ -1,5 +1,8 @@
 name: e2e tests of component library for Vizro
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: vizro-core

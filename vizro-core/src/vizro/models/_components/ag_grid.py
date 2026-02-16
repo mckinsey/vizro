@@ -3,8 +3,15 @@ from typing import Annotated, Literal
 
 import dash_ag_grid as dag
 import pandas as pd
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
+from dash import State, dcc, html
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
@@ -35,17 +42,6 @@ class AgGrid(VizroBaseModel):
     Abstract: Usage documentation
         [How to use an AgGrid](../user-guides/table.md/#ag-grid)
 
-    Args:
-        figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the `AgGrid`. Defaults to `""`.
-        header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["ag_grid"] = "ag_grid"
@@ -77,11 +73,12 @@ class AgGrid(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
     _inner_component_id: str = PrivateAttr()
+
     _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
@@ -220,13 +217,6 @@ class AgGrid(VizroBaseModel):
             )
 
     def build(self):
-        # Most of the theming in AgGrid is controlled through CSS in `aggrid.css`. However, this callback is necessary
-        # to ensure that all grid elements, such as menu icons and filter icons, are consistent with the theme.
-        clientside_callback(
-            ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
-            Output(self._inner_component_id, "className"),
-            Input("theme-selector", "value"),
-        )
         description = self.description.build().children if self.description else [None]
         return dcc.Loading(
             children=html.Div(

@@ -20,11 +20,6 @@ class export_data(_AbstractAction):
     Abstract: Usage documentation
         [How to export data](../user-guides/data-actions.md#export-data)
 
-    Args:
-        targets (list[ModelID]): List of target component ids for which to download data. If none are given then
-            download data from all components on the page.
-        file_format (Literal["csv", "xlsx"]): Format of downloaded files. Defaults to `"csv"`.
-
     Example:
         ```python
         import vizro.actions as va
@@ -42,9 +37,7 @@ class export_data(_AbstractAction):
         description="List of target component ids for which to download data. If none are given then "
         "download data from all components on the page.",
     )
-    file_format: Literal["csv", "xlsx"] = Field(
-        default="csv", description="Format of downloaded files. Defaults to `'csv'`."
-    )
+    file_format: Literal["csv", "xlsx"] = Field(default="csv", description="Format of downloaded files.")
 
     # TODO PP NOW: See how to predefine this for built-in actions. Should we convert it to method instead or just
     #  validate differently (like adjusting action notification keys) per action and use as a field?

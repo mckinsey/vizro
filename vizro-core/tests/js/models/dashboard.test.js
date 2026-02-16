@@ -116,32 +116,6 @@ describe("dashboard.js functions", () => {
     });
   });
 
-  describe("update_ag_grid_theme", () => {
-    test("should return light theme classes when theme_selector_checked is true", () => {
-      const result =
-        global.dash_clientside.dashboard.update_ag_grid_theme(true);
-      expect(result).toBe("ag-theme-quartz ag-theme-vizro");
-    });
-
-    test("should return dark theme classes when theme_selector_checked is false", () => {
-      const result =
-        global.dash_clientside.dashboard.update_ag_grid_theme(false);
-      expect(result).toBe("ag-theme-quartz-dark ag-theme-vizro");
-    });
-
-    test("should handle null theme_selector_checked as falsy", () => {
-      const result =
-        global.dash_clientside.dashboard.update_ag_grid_theme(null);
-      expect(result).toBe("ag-theme-quartz-dark ag-theme-vizro");
-    });
-
-    test("should handle undefined theme_selector_checked as falsy", () => {
-      const result =
-        global.dash_clientside.dashboard.update_ag_grid_theme(undefined);
-      expect(result).toBe("ag-theme-quartz-dark ag-theme-vizro");
-    });
-  });
-
   describe("update_graph_theme", () => {
     const mockFigure = {
       data: [{ x: [1, 2, 3], y: [4, 5, 6] }],

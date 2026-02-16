@@ -81,15 +81,6 @@ class Filter(VizroBaseModel):
     Abstract: Usage documentation
         [How to use filters](../user-guides/filters.md)
 
-    Args:
-        column (str): Column of `DataFrame` to filter.
-        targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
-            on the page that use `column`. Defaults to `[]`.
-        selector (SelectorType | None): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
-        show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
-            Useful for bookmarking or sharing dashboards with specific filter values pre-set.
-        visible (bool): Whether the filter should be visible. Defaults to `True`.
-
     Example:
         ```python
         import vizro.models as vm
@@ -109,13 +100,13 @@ class Filter(VizroBaseModel):
     show_in_url: bool = Field(
         default=False,
         description=(
-            "Whether the filter should be included in the URL query string. Defaults to `False`. "
+            "Whether the filter should be included in the URL query string. "
             "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
         ),
     )
     visible: bool = Field(
         default=True,
-        description="Whether the filter should be visible. Defaults to `True`.",
+        description="Whether the filter should be visible.",
     )
 
     _dynamic: bool = PrivateAttr(False)
@@ -124,6 +115,7 @@ class Filter(VizroBaseModel):
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
+        """Check that the filter has an `id` set if it is shown in the URL."""
         # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self

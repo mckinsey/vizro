@@ -56,17 +56,6 @@ class Page(VizroBaseModel):
     Abstract: Usage documentation
         [How to make dashboard pages](../user-guides/pages.md)
 
-    Args:
-        components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
-            has to be provided.
-        title (str): Title of the `Page`.
-        layout (LayoutType | None): Layout to place components in. Defaults to `None`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        path (str): Path to navigate to page. Defaults to `""`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
@@ -83,7 +72,7 @@ class Page(VizroBaseModel):
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.""",
+            tags.""",
         ),
     ]
     controls: list[ControlType] = []
@@ -97,6 +86,7 @@ class Page(VizroBaseModel):
     # This should ideally be a field validator, but we need access to the model_fields_set
     @model_validator(mode="after")
     def validate_path(self):
+        """Validate that the path is unique and clean."""
         if self.path:
             new_path = clean_path(self.path, "-_/")
         elif "id" in self.model_fields_set:
@@ -176,6 +166,7 @@ class Page(VizroBaseModel):
                 State("vizro_controls_store", "data"),
                 State(self.id, "id"),  # Assigned to outermost Div in Dashboard._make_page_layout.
                 prevent_initial_call=True,
+                hidden=True,
             )
 
         # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
@@ -205,6 +196,7 @@ class Page(VizroBaseModel):
                 *selector_values_inputs,
                 *control_ids_states,
                 *control_selector_ids_states,
+                hidden=True,
             )
 
     @_log_call

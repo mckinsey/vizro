@@ -1,5 +1,8 @@
 name: github-repo-stats
 
+permissions:
+  contents: read
+
 on:
   schedule:
     # Run this once per day, towards the end of the day for keeping the most
