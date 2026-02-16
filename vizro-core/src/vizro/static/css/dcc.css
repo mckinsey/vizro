@@ -6,6 +6,11 @@
   box-shadow: var(--bs-box-shadow-sm);
 }
 
+.dash-dropdown:focus-within {
+  border: none;
+  outline: none;
+}
+
 .dash-dropdown-search-container {
   background: var(--bs-primary-bg-subtle);
   border: 1px solid var(--bs-border-color);
@@ -78,6 +83,10 @@
   color: var(--bs-body-color);
 }
 
+.dash-options-list-option-text:hover {
+  color: var(--bs-primary-text-emphasis);
+}
+
 /* Hide commas */
 .dash-dropdown-value-item:not(:first-child)::before {
   content: none;
@@ -85,7 +94,7 @@
 
 .dash-dropdown-value-count {
   background: none;
-  padding: 4px 8px;
+  padding: 0;
 }
 
 .dash-dropdown-clear {
