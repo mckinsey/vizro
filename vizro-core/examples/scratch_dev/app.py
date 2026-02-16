@@ -2,9 +2,7 @@ import numpy as np
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash_ag_grid import AgGrid
 from vizro import Vizro
-from vizro.models.types import capture
 from vizro.managers import data_manager
 
 df = px.data.iris()
