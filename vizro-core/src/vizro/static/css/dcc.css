@@ -110,7 +110,7 @@
   align-items: center;
   display: flex;
   gap: 4px;
-  height: 32px;
+  min-height: 32px;
   padding: 6px 8px;
 }
 
