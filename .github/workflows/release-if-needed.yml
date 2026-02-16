@@ -1,5 +1,8 @@
 name: Release if needed
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
