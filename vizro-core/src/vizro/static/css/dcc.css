@@ -140,6 +140,13 @@
   display: block !important;
   text-decoration: underline;
   text-decoration-color: var(--bs-border-color-translucent);
+  padding:0;
+  text-align: right;
+}
+
+/* When there are two inputs in a range slider: left-align the first one */
+.dash-slider-container .dash-input-container:first-of-type:nth-last-of-type(2) {
+  text-align: left;
 }
 
 .dash-slider-thumb {
@@ -152,4 +159,8 @@
 
 .dash-slider-mark-outside-selection {
   color: var(--bs-body-color);
+}
+
+.dash-slider-thumb:focus {
+  outline: none;
 }
