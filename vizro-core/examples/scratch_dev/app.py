@@ -35,7 +35,9 @@ SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3
 
 # Custom mock pipeline with set or random success/failure
 @capture("action")
-def random_pipeline(switch_successfulness: bool = False, return_action_notification: bool = False, exit_path_slider: int = 1) -> str:
+def random_pipeline(
+    switch_successfulness: bool = False, return_action_notification: bool = False, exit_path_slider: int = 1
+) -> str:
     sleep(sleep_duration := random.uniform(a=1, b=2))
 
     if switch_successfulness:
@@ -85,11 +87,15 @@ page_0 = vm.Page(
                     layout=vm.Flex(),
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
-                        vm.Button(text="Run pipeline data", actions=vm.Action(
-                            function=random_pipeline(f"{pre}_raise_exc_switch"), outputs=f"{pre}_text",
-                        )),
+                        vm.Button(
+                            text="Run pipeline data",
+                            actions=vm.Action(
+                                function=random_pipeline(f"{pre}_raise_exc_switch"),
+                                outputs=f"{pre}_text",
+                            ),
+                        ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Export (2s) (50% to fail)",
@@ -103,12 +109,12 @@ page_0 = vm.Page(
                                 color_discrete_map=SPECIES_COLORS,
                             )
                         ),
-                        vm.Button(text="Export data", actions=export_data())
-                    ]
+                        vm.Button(text="Export data", actions=export_data()),
+                    ],
                 ),
             ]
         )
-    ]
+    ],
 )
 
 
@@ -124,17 +130,22 @@ page_1 = vm.Page(
                     layout=vm.Flex(),
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
-                        vm.Button(text="Run pipeline data", actions=[
-                            show_notification(id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."),
-                            vm.Action(function=random_pipeline(f"{pre}_raise_exc_switch"), outputs=f"{pre}_text"),
-                            update_notification(
-                                notification=f"{pre}_progress_2",
-                                variant="info",
-                                text="Pipeline action finished. No results about action's successfulness",
-                            ),
-                        ]),
+                        vm.Button(
+                            text="Run pipeline data",
+                            actions=[
+                                show_notification(
+                                    id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."
+                                ),
+                                vm.Action(function=random_pipeline(f"{pre}_raise_exc_switch"), outputs=f"{pre}_text"),
+                                update_notification(
+                                    notification=f"{pre}_progress_2",
+                                    variant="info",
+                                    text="Pipeline action finished. No results about action's successfulness",
+                                ),
+                            ],
+                        ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Progress - Export (2s) (50% to fail) - Info",
@@ -148,23 +159,24 @@ page_1 = vm.Page(
                                 color_discrete_map=SPECIES_COLORS,
                             )
                         ),
-                        vm.Button(text="Export data", actions=[
-                            show_notification(id=f"{pre}_progress_1", variant="progress", text="Exporting data..."),
-                            export_data(),
-                            update_notification(
-                                notification=f"{pre}_progress_1",
-                                variant="info",
-                                text="Exporting action finished. No results about action's successfulness",
-                            ),
-                        ])
-                    ]
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                show_notification(id=f"{pre}_progress_1", variant="progress", text="Exporting data..."),
+                                export_data(),
+                                update_notification(
+                                    notification=f"{pre}_progress_1",
+                                    variant="info",
+                                    text="Exporting action finished. No results about action's successfulness",
+                                ),
+                            ],
+                        ),
+                    ],
                 ),
             ]
         )
     ],
-    controls=[
-        vm.Filter(column="species")
-    ]
+    controls=[vm.Filter(column="species")],
 )
 
 
@@ -180,21 +192,26 @@ page_2 = vm.Page(
                     layout=vm.Flex(),
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
-                        vm.Button(text="Run pipeline data", actions=[
-                            show_notification(id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."),
-                            vm.Action(
-                                function=random_pipeline(f"{pre}_raise_exc_switch"),
-                                outputs=f"{pre}_text",
-                                notifications={"error": None},
-                            ),
-                            update_notification(
-                                notification=f"{pre}_progress_2",
-                                variant="info",
-                                text="Pipeline action finished. No results about action's successfulness",
-                            ),
-                        ]),
+                        vm.Button(
+                            text="Run pipeline data",
+                            actions=[
+                                show_notification(
+                                    id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."
+                                ),
+                                vm.Action(
+                                    function=random_pipeline(f"{pre}_raise_exc_switch"),
+                                    outputs=f"{pre}_text",
+                                    notifications={"error": None},
+                                ),
+                                update_notification(
+                                    notification=f"{pre}_progress_2",
+                                    variant="info",
+                                    text="Pipeline action finished. No results about action's successfulness",
+                                ),
+                            ],
+                        ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Progress - Export (2s) (50% to fail) - Info",
@@ -208,23 +225,24 @@ page_2 = vm.Page(
                                 color_discrete_map=SPECIES_COLORS,
                             )
                         ),
-                        vm.Button(text="Export data", actions=[
-                            show_notification(id=f"{pre}_progress_1", variant="progress", text="Exporting data..."),
-                            export_data(notifications={"error": None}),
-                            update_notification(
-                                notification=f"{pre}_progress_1",
-                                variant="info",
-                                text="Exporting action finished. No results about action's successfulness",
-                            ),
-                        ])
-                    ]
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                show_notification(id=f"{pre}_progress_1", variant="progress", text="Exporting data..."),
+                                export_data(notifications={"error": None}),
+                                update_notification(
+                                    notification=f"{pre}_progress_1",
+                                    variant="info",
+                                    text="Exporting action finished. No results about action's successfulness",
+                                ),
+                            ],
+                        ),
+                    ],
                 ),
             ]
         )
     ],
-    controls=[
-        vm.Filter(column="species")
-    ]
+    controls=[vm.Filter(column="species")],
 )
 
 
@@ -240,31 +258,34 @@ page_3 = vm.Page(
                     layout=vm.Flex(),
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
-                        vm.Button(text="Run pipeline", actions=[
-                            vm.Action(
-                                function=random_pipeline(f"{pre}_raise_exc_switch"),
-                                outputs=f"{pre}_text",
-                                notifications={
-                                    "progress": va.show_notification(
-                                        id=f"{pre}_progress_2",
-                                        text="Running custom pipeline...",
-                                        variant="progress",
-                                    ),
-                                    "success": va.update_notification(
-                                        notification=f"{pre}_progress_2",
-                                        text="Custom pipeline completed!",
-                                        variant="success",
-                                    ),
-                                    "error": va.update_notification(
-                                        notification=f"{pre}_progress_2",
-                                        text="Custom pipeline failed!",
-                                        variant="error",
-                                    ),
-                                }
-                            )
-                        ]),
+                        vm.Button(
+                            text="Run pipeline",
+                            actions=[
+                                vm.Action(
+                                    function=random_pipeline(f"{pre}_raise_exc_switch"),
+                                    outputs=f"{pre}_text",
+                                    notifications={
+                                        "progress": va.show_notification(
+                                            id=f"{pre}_progress_2",
+                                            text="Running custom pipeline...",
+                                            variant="progress",
+                                        ),
+                                        "success": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            text="Custom pipeline completed!",
+                                            variant="success",
+                                        ),
+                                        "error": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            text="Custom pipeline failed!",
+                                            variant="error",
+                                        ),
+                                    },
+                                )
+                            ],
+                        ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Progress - Export (2s) (50% to fail) - Success/Error",
@@ -278,35 +299,36 @@ page_3 = vm.Page(
                                 color_discrete_map=SPECIES_COLORS,
                             )
                         ),
-                        vm.Button(text="Export data", actions=[
-                            va.export_data(
-                                notifications={
-                                    "progress": va.show_notification(
-                                        id=f"{pre}_progress_1",
-                                        text="Exporting data...",
-                                        variant="progress",
-                                    ),
-                                    "success": va.update_notification(
-                                        notification=f"{pre}_progress_1",
-                                        text="Data exported successfully!",
-                                        variant="success",
-                                    ),
-                                    "error": va.update_notification(
-                                        notification=f"{pre}_progress_1",
-                                        text="Export failed!",
-                                        variant="error",
-                                    ),
-                                }
-                            )
-                        ]),
-                    ]
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                va.export_data(
+                                    notifications={
+                                        "progress": va.show_notification(
+                                            id=f"{pre}_progress_1",
+                                            text="Exporting data...",
+                                            variant="progress",
+                                        ),
+                                        "success": va.update_notification(
+                                            notification=f"{pre}_progress_1",
+                                            text="Data exported successfully!",
+                                            variant="success",
+                                        ),
+                                        "error": va.update_notification(
+                                            notification=f"{pre}_progress_1",
+                                            text="Export failed!",
+                                            variant="error",
+                                        ),
+                                    }
+                                )
+                            ],
+                        ),
+                    ],
                 ),
             ]
         )
     ],
-    controls=[
-        vm.Filter(column="species")
-    ]
+    controls=[vm.Filter(column="species")],
 )
 
 pre = "p4"
@@ -321,33 +343,40 @@ page_4 = vm.Page(
                     layout=vm.Flex(),
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
-                        vm.Switch(id=f"{pre}_return_action_notification", value=False, title="Return notification from action"),
-                        vm.Button(text="Run pipeline", actions=[
-                            vm.Action(
-                                function=random_pipeline(f"{pre}_raise_exc_switch", f"{pre}_return_action_notification"),
-                                outputs=f"{pre}_text",
-                                notifications={
-                                    "progress": va.show_notification(
-                                        id=f"{pre}_progress_2",
-                                        text="Running custom pipeline. Exception will happen: {{switch_successfulness}}.",
-                                        variant="progress",
+                        vm.Switch(
+                            id=f"{pre}_return_action_notification", value=False, title="Return notification from action"
+                        ),
+                        vm.Button(
+                            text="Run pipeline",
+                            actions=[
+                                vm.Action(
+                                    function=random_pipeline(
+                                        f"{pre}_raise_exc_switch", f"{pre}_return_action_notification"
                                     ),
-                                    "success": va.update_notification(
-                                        notification=f"{pre}_progress_2",
-                                        text="Custom pipeline completed! {{result}}",
-                                        variant="success",
-                                    ),
-                                    "error": va.update_notification(
-                                        notification=f"{pre}_progress_2",
-                                        # TODO OQ: Should we use {{error_msg}}, {{result}} or something else here?
-                                        text="Custom pipeline failed! Exception: {{error_msg}}",
-                                        variant="error",
-                                    ),
-                                }
-                            )
-                        ]),
+                                    outputs=f"{pre}_text",
+                                    notifications={
+                                        "progress": va.show_notification(
+                                            id=f"{pre}_progress_2",
+                                            text="Running custom pipeline. Exception will happen: {{switch_successfulness}}.",
+                                            variant="progress",
+                                        ),
+                                        "success": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            text="Custom pipeline completed! {{result}}",
+                                            variant="success",
+                                        ),
+                                        "error": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            # TODO OQ: Should we use {{error_msg}}, {{result}} or something else here?
+                                            text="Custom pipeline failed! Exception: {{error_msg}}",
+                                            variant="error",
+                                        ),
+                                    },
+                                )
+                            ],
+                        ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Progress - Export (2s) (50% to fail) - Success/Error{{error_msg}}",
@@ -361,38 +390,39 @@ page_4 = vm.Page(
                                 color_discrete_map=SPECIES_COLORS,
                             )
                         ),
-                        vm.Button(text="Export data", actions=[
-                            va.export_data(
-                                notifications={
-                                    "progress": va.show_notification(
-                                        id=f"{pre}_progress_1",
-                                        text="Exporting data...",
-                                        variant="progress",
-                                    ),
-                                    # TODO OQ: To show for example how many rows were exported, users should rewrite the
-                                    #  export_data.function method to return that info as additional output, and then
-                                    #  use {{result}} template variable here. Is that ok?
-                                    "success": va.update_notification(
-                                        notification=f"{pre}_progress_1",
-                                        text="Data exported successfully!",
-                                        variant="success",
-                                    ),
-                                    "error": va.update_notification(
-                                        notification=f"{pre}_progress_1",
-                                        text="Export failed! {{error_msg}}",
-                                        variant="error",
-                                    ),
-                                }
-                            )
-                        ]),
-                    ]
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                va.export_data(
+                                    notifications={
+                                        "progress": va.show_notification(
+                                            id=f"{pre}_progress_1",
+                                            text="Exporting data...",
+                                            variant="progress",
+                                        ),
+                                        # TODO OQ: To show for example how many rows were exported, users should rewrite the
+                                        #  export_data.function method to return that info as additional output, and then
+                                        #  use {{result}} template variable here. Is that ok?
+                                        "success": va.update_notification(
+                                            notification=f"{pre}_progress_1",
+                                            text="Data exported successfully!",
+                                            variant="success",
+                                        ),
+                                        "error": va.update_notification(
+                                            notification=f"{pre}_progress_1",
+                                            text="Export failed! {{error_msg}}",
+                                            variant="error",
+                                        ),
+                                    }
+                                )
+                            ],
+                        ),
+                    ],
                 ),
             ]
         )
     ],
-    controls=[
-        vm.Filter(column="species")
-    ]
+    controls=[vm.Filter(column="species")],
 )
 
 pre = "p5"
@@ -406,52 +436,65 @@ page_5 = vm.Page(
                     title="Progress{{switch_successfulness}}{{exit_path}} - Pipeline (1->2s) (Choose to fail) -> Info{{}}/Success1/2/3{{}}Error 1/2/3{{}}",
                     layout=vm.Flex(),
                     components=[
-                        vm.Slider(id=f"{pre}_exit_path_slider", title="Choose exit path", min=1, max=3, step=1,
-                                  value=1, extra=dict(className="cond-notification-slider")),
+                        vm.Slider(
+                            id=f"{pre}_exit_path_slider",
+                            title="Choose exit path",
+                            min=1,
+                            max=3,
+                            step=1,
+                            value=1,
+                            extra=dict(className="cond-notification-slider"),
+                        ),
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
-                        vm.Switch(id=f"{pre}_return_action_notification", value=True,
-                                  title="Return custom success/warning/info notification from action"),
-                        vm.Button(text="Run pipeline", actions=[
-                            vm.Action(
-                                function=random_pipeline(
-                                    switch_successfulness=f"{pre}_raise_exc_switch",
-                                    return_action_notification=f"{pre}_return_action_notification",
-                                    exit_path_slider=f"{pre}_exit_path_slider",
-                                ),
-                                outputs=f"{pre}_text",
-                                notifications={
-                                    "progress": va.show_notification(
-                                        id=f"{pre}_progress_2",
-                                        text="Running custom pipeline.\n\n Exception will happen: {{switch_successfulness}}.\n\n Exit path: {{exit_path_slider}}",
-                                        variant="progress",
+                        vm.Switch(
+                            id=f"{pre}_return_action_notification",
+                            value=True,
+                            title="Return custom success/warning/info notification from action",
+                        ),
+                        vm.Button(
+                            text="Run pipeline",
+                            actions=[
+                                vm.Action(
+                                    function=random_pipeline(
+                                        switch_successfulness=f"{pre}_raise_exc_switch",
+                                        return_action_notification=f"{pre}_return_action_notification",
+                                        exit_path_slider=f"{pre}_exit_path_slider",
                                     ),
-                                    # TODO OQ: We might need to introduce the hide_notification(notification=modelId).
-                                    #  Could be useful if users don't want success message after progress for example.
-                                    "success": va.update_notification(
-                                        notification=f"{pre}_progress_2",
-                                        text="Custom pipeline completed! {{result}}",
-                                        variant="success",
-                                    ),
-                                    "my_info": va.update_notification(
-                                        notification=f"{pre}_progress_2",
-                                        text="Pipeline is redirected and will be manually handled! Call GHD to get the status.",
-                                        variant="info",
-                                    ),
-                                    "my_warning": va.update_notification(
-                                        notification=f"{pre}_progress_2",
-                                        text="Pipeline completed, neither success nor failure! {{result}}",
-                                        variant="warning",
-                                    ),
-                                    "error": va.update_notification(
-                                        notification=f"{pre}_progress_2",
-                                        text="Custom pipeline failed! Exception: {{error_msg}}",
-                                        variant="error",
-                                    ),
-                                }
-                            )
-                        ]),
+                                    outputs=f"{pre}_text",
+                                    notifications={
+                                        "progress": va.show_notification(
+                                            id=f"{pre}_progress_2",
+                                            text="Running custom pipeline.\n\n Exception will happen: {{switch_successfulness}}.\n\n Exit path: {{exit_path_slider}}",
+                                            variant="progress",
+                                        ),
+                                        # TODO OQ: We might need to introduce the hide_notification(notification=modelId).
+                                        #  Could be useful if users don't want success message after progress for example.
+                                        "success": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            text="Custom pipeline completed! {{result}}",
+                                            variant="success",
+                                        ),
+                                        "my_info": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            text="Pipeline is redirected and will be manually handled! Call GHD to get the status.",
+                                            variant="info",
+                                        ),
+                                        "my_warning": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            text="Pipeline completed, neither success nor failure! {{result}}",
+                                            variant="warning",
+                                        ),
+                                        "error": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            text="Custom pipeline failed! Exception: {{error_msg}}",
+                                            variant="error",
+                                        ),
+                                    },
+                                )
+                            ],
+                        ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Progress - Export (2s) (50% to fail) - Success/Error{{error_msg}}",
@@ -465,46 +508,40 @@ page_5 = vm.Page(
                                 color_discrete_map=SPECIES_COLORS,
                             )
                         ),
-                        vm.Button(text="Export data", actions=[
-                            va.export_data(
-                                notifications={
-                                    "progress": va.show_notification(
-                                        id=f"{pre}_progress_1",
-                                        text="Exporting data...",
-                                        variant="progress",
-                                    ),
-                                    "success": va.update_notification(
-                                        notification=f"{pre}_progress_1",
-                                        text="Data exported successfully!",
-                                        variant="success",
-                                    ),
-                                    "error": va.update_notification(
-                                        notification=f"{pre}_progress_1",
-                                        text="Export failed! {{error_msg}}",
-                                        variant="error",
-                                    ),
-                                }
-                            )
-                        ]),
-                    ]
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                va.export_data(
+                                    notifications={
+                                        "progress": va.show_notification(
+                                            id=f"{pre}_progress_1",
+                                            text="Exporting data...",
+                                            variant="progress",
+                                        ),
+                                        "success": va.update_notification(
+                                            notification=f"{pre}_progress_1",
+                                            text="Data exported successfully!",
+                                            variant="success",
+                                        ),
+                                        "error": va.update_notification(
+                                            notification=f"{pre}_progress_1",
+                                            text="Export failed! {{error_msg}}",
+                                            variant="error",
+                                        ),
+                                    }
+                                )
+                            ],
+                        ),
+                    ],
                 ),
             ]
         )
     ],
-    controls=[
-        vm.Filter(column="species")
-    ]
+    controls=[vm.Filter(column="species")],
 )
 
 
-dashboard = vm.Dashboard(pages=[
-    page_0,
-    page_1,
-    page_2,
-    page_3,
-    page_4,
-    page_5
-])
+dashboard = vm.Dashboard(pages=[page_0, page_1, page_2, page_3, page_4, page_5])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

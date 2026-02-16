@@ -1,6 +1,6 @@
-from time import sleep
 import importlib.util
 from collections.abc import Iterable
+from time import sleep
 from typing import Any, Literal, cast
 
 from dash import Output, ctx, dcc
@@ -78,6 +78,7 @@ class export_data(_AbstractAction):
         # TODO IMPORTANT: REMOVE SLEEP AFTER TESTING
         sleep(2)
         import random
+
         if random.random() > 0.5:
             raise Exception("Random error occurred during data export!")
 

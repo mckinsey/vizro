@@ -9,11 +9,11 @@ from collections import ChainMap
 from collections.abc import Callable, Collection, Iterable, Mapping
 from pprint import pformat
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, TypeAlias, cast
+from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
-from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator, AfterValidator, ValidationInfo
+from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -21,10 +21,10 @@ from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call, make_deprecated_field_warning
 from vizro.models.types import (
+    ActionNotificationType,
     CapturedCallable,
     ControlType,
     FigureWithFilterInteractionType,
-    ActionNotificationType,
     OutputsType,
     _IdOrIdProperty,
     _IdProperty,
@@ -34,7 +34,7 @@ from vizro.models.types import (
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from vizro.actions import export_data, filter_interaction, show_notification, update_notification
+    from vizro.actions import export_data, filter_interaction
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
@@ -49,13 +49,7 @@ class ControlsStates(TypedDict):
 #  and notification. See other todos how to improve it. For example consider the last string as notification only if it
 #  matches a key in notifications and if length of outputs matches length of return_value -1.
 def _is_action_notification_type(value: Any) -> bool:
-    return isinstance(value, str) or isinstance(value, tuple) and len(value) == 2 and isinstance(value[0], str)
-
-
-
-
-
-
+    return isinstance(value, str) or (isinstance(value, tuple) and len(value) == 2 and isinstance(value[0], str))
 
 
 class _BaseAction(VizroBaseModel):
@@ -102,13 +96,14 @@ class _BaseAction(VizroBaseModel):
             dash_components.append(dcc.Store(id=f"{self.id}_guarded_trigger"))
 
         if hasattr(self, "notifications") and "progress" in self.notifications:
-            dash_components.extend([
-                dcc.Store(
-                    id=f"{self.id}_progress_notification_object",
-                    data=self.notifications["progress"].function()
-                ),
-                dcc.Store(id=f"{self.id}_action_parameters", data=list(self._transformed_inputs.keys()))
-            ])
+            dash_components.extend(
+                [
+                    dcc.Store(
+                        id=f"{self.id}_progress_notification_object", data=self.notifications["progress"].function()
+                    ),
+                    dcc.Store(id=f"{self.id}_action_parameters", data=list(self._transformed_inputs.keys())),
+                ]
+            )
 
         return dash_components
 
@@ -333,17 +328,6 @@ class _BaseAction(VizroBaseModel):
         else:
             return_value = self.function(**inputs)  # type: ignore[arg-type]
 
-
-
-
-
-
-
-
-
-
-
-
         external_notification = None
         # Delegate all handling of the return_value and mapping to appropriate outputs to Dash - we don't modify
         # return_value to reshape it in any way. All we do is do some error checking to raise clearer error messages.
@@ -472,20 +456,9 @@ class _BaseAction(VizroBaseModel):
         # TODO OQ: MAYBE we can use set_props and callback output, but it semantically doesn't feel right. For example:
         # What notification will show first and what second if show_notification finishes successfully?
         if hasattr(self, "notifications"):
-            callback_outputs["internal"]["vizro_notification"] = Output(
-                "vizro-notifications", "sendNotifications", allow_duplicate=True
-            ),
-
-
-
-
-
-
-
-
-
-
-
+            callback_outputs["internal"]["vizro_notification"] = (
+                Output("vizro-notifications", "sendNotifications", allow_duplicate=True),
+            )
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
         # This allows the action function to return None and match correctly on to the callback_outputs dictionary
@@ -528,20 +501,9 @@ class _BaseAction(VizroBaseModel):
                 if isinstance(callback_outputs["external"], list):
                     external_return = [no_update] * len(callback_outputs["external"])
                 elif isinstance(callback_outputs["external"], dict):
-                    external_return = {key: no_update for key in callback_outputs["external"]}
+                    external_return = dict.fromkeys(callback_outputs["external"], no_update)
                 else:
                     external_return = no_update
-
-
-
-
-
-
-
-
-
-
-
 
             return_value = {
                 "internal": {
@@ -556,10 +518,10 @@ class _BaseAction(VizroBaseModel):
 
                     # TODO OQ: Should I replace {{key}} with '' or keep it as it is. I suggest replacing with ''.
                     #  That's more user friendly in my opinion.
-                    notification_result = notification_result or ''
+                    notification_result = notification_result or ""
                     notification[0]["message"].children = notification[0]["message"].children.replace(
-                        '{{error_msg}}' if notification_key == "error" else '{{result}}',
-                        str(notification_result))
+                        "{{error_msg}}" if notification_key == "error" else "{{result}}", str(notification_result)
+                    )
 
                     return_value["internal"]["vizro_notification"] = [notification]
                 else:
