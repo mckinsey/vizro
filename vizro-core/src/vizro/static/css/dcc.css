@@ -164,3 +164,8 @@
 .dash-slider-thumb:focus {
   outline: none;
 }
+
+.dash-slider-dot {
+  height: 6px;
+  width: 6px;
+}

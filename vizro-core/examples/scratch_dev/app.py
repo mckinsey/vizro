@@ -49,7 +49,7 @@ page_2 = vm.Page(
         vm.Filter(column="species", selector=vm.Dropdown(multi=True)),
         vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
         vm.Parameter(
-            targets=["graph_2.data_frame.number_of_points"], selector=vm.Slider(min=10, max=150, step=10, value=10)
+            targets=["graph_2.data_frame.number_of_points"], selector=vm.Slider(min=10, max=150, step=20, value=10)
         ),
     ],
 )
