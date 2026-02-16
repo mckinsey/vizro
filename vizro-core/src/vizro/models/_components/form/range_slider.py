@@ -114,7 +114,6 @@ underlying component may change in the future.""",
             "persistence": True,
             "persistence_type": "session",
             "dots": True,
-            "className": "slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
         }
 
         description = self.description.build().children if self.description else [None]
