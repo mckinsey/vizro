@@ -315,7 +315,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     None,
@@ -355,7 +354,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
@@ -404,7 +402,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     None,
@@ -443,7 +440,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                             "displayModeBar": False,
                         },
                         className="test",
