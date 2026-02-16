@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import Annotated, cast
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -31,7 +31,7 @@ class NavLink(VizroBaseModel):
         Field(default="", description="Icon name from Google Material icons library."),
     ]
     _nav_selector: Accordion = PrivateAttr()
-    nav_position: str = "left"
+    _nav_position: Literal["left", "top"] = PrivateAttr(default="left")
 
     @_log_call
     def pre_build(self):
@@ -46,7 +46,7 @@ class NavLink(VizroBaseModel):
         # from homepage to a page within the Accordion and there are several Accordions within the page.
         from vizro.models import Page
 
-        is_left_nav = self.nav_position == "left"
+        is_left_nav = self._nav_position == "left"
 
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]

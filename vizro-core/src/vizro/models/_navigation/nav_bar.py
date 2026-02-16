@@ -36,26 +36,17 @@ class NavBar(VizroBaseModel):
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
     items: list[NavLink] = []
-    position: str = "left"
+    position: Literal["left", "top"] = Field(
+        default="left", description="Position of the navigation bar, either on the left sidebar or top header."
+    )
 
     @_log_call
     def pre_build(self):
-        from vizro.models import Page
+        self.items = self.items or self._create_items_from_pages()
 
-        self.items = self._alter_items()
-
-        self.items = self.items or [
-            NavLink(
-                # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
-                # then we prefer to have the title rather than id of that page be used
-                label=cast(Page, model_manager[group_title]).title
-                if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
-                else group_title,
-                pages=pages,
-                nav_position=self.position,
-            )
-            for group_title, pages in self.pages.items()
-        ]
+        # Sets nav position for items
+        for nav_link in self.items:
+            nav_link._nav_position = self.position
 
         for position, item in enumerate(self.items, 1):
             # The default icons are named filter_1, filter_2, etc. up to filter_9.
@@ -90,10 +81,20 @@ class NavBar(VizroBaseModel):
         navbar_class = "navbar-top" if self.position == "top" else "flex-column"
         return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className=navbar_class), nav_panel])
 
-    def _alter_items(self):
-        nav_position = self.position
+    def _create_items_from_pages(self):
+        """Creates items from pages."""
+        from vizro.models import Page
 
-        for nav_link in self.items:
-            nav_link.nav_position = nav_position
-
-        return self.items
+        return [
+            NavLink(
+                # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
+                # then we prefer to have the title rather than id of that page be used
+                label=(
+                    cast(Page, model_manager[group_title]).title
+                    if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
+                    else group_title
+                ),
+                pages=pages,
+            )
+            for group_title, pages in self.pages.items()
+        ]
