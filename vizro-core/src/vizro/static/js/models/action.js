@@ -46,9 +46,72 @@ function guard_action_chain(trigger_value, guard_data, trigger_component_id) {
   return trigger_value;
 }
 
+// TODO PP NOW: Add tests. (Test it manually first and make it robust on different inputs)
+/**
+ * Replaces template variables in the format {{key}} within the given text with corresponding values from valuesMap.
+ *
+ * @param {string} text - The text containing template variables.
+ * @param {Object} valuesMap - An object mapping keys to their replacement values.
+ * @returns {string} The text with template variables replaced by their corresponding values.
+ */
+function replaceTemplateVariables(text, valuesMap) {
+  if (typeof text !== "string") return text;
+
+  return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+    if (Object.prototype.hasOwnProperty.call(valuesMap, key)) {
+      return String(valuesMap[key]);
+    }
+
+    // leave {{key}} unchanged
+    return match;
+  });
+}
+
+/**
+ * Shows a progress notification which textual content can be adjusted based on action runtime arguments.
+ *
+ * @param {*} trigger - The trigger value (not used in this function).
+ * @param {Array} notificationObject - The notification object to be displayed.
+ * @param {Array} actionParameters - The list of action function parameter names.
+ * @param {...*} actionRuntimeArguments - The current runtime values of the action function parameters.
+ * @returns {void} - This function does not return a value. It updates the notification component directly using set_props instead to avoid duplication callback output dash exception.
+ */
+// TODO OQ: Should we clear notifications from the page before the new actions chain is triggered?
+// TODO OQ: This would generally improve the UX. This comment is added here but should happen before progress is shown.
+function show_progress_notification(
+  trigger,
+  notificationObject,
+  actionParameters,
+  ...actionRuntimeArguments
+) {
+  console.debug("Showing progress notification");
+
+  // Map of action function parameter names and the current runtime values. For example: {"btn_n_clicks": 10}
+  const actionParameterToRuntimeValueMap = Object.fromEntries(
+    actionParameters.map((key, i) => [key, actionRuntimeArguments[i]]),
+  );
+
+  // Deep copy notificationObject to avoid mutating the original object.
+  const copyNotificationObject = structuredClone(notificationObject);
+
+  // Replace template in copyNotificationObject text with actual values from actionParameterToRuntimeValueMap.
+  // It looks for patterns like {{key}} (where `key` represents an action parameter name) and replaces them with
+  // the corresponding runtime value from actionParameterToRuntimeValueMap.
+  copyNotificationObject[0].message.props.children = replaceTemplateVariables(
+    copyNotificationObject[0].message.props.children,
+    actionParameterToRuntimeValueMap,
+  );
+
+  // set_props used to avoid the duplication callback output dash exception.
+  dash_clientside.set_props("vizro-notifications", {
+    sendNotifications: copyNotificationObject,
+  });
+}
+
 window.dash_clientside = {
   ...window.dash_clientside,
   action: {
     guard_action_chain: guard_action_chain,
+    show_progress_notification: show_progress_notification,
   },
 };

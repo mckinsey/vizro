@@ -1,4 +1,5 @@
 /* Custom CSS  */
-#logo-dark, #logo-light {
-    height: 40px;
+
+.cond-notification-slider {
+  width: 300px;
 }
