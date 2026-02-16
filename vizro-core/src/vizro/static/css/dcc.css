@@ -138,10 +138,10 @@
 
   /* Required to override the default hiding of the input value elements when sliders width is less than 300px */
   display: block !important;
-  text-decoration: underline;
-  text-decoration-color: var(--bs-border-color-translucent);
   padding:0;
   text-align: right;
+  text-decoration: underline;
+  text-decoration-color: var(--bs-border-color-translucent);
 }
 
 /* When there are two inputs in a range slider: left-align the first one */
