@@ -57,6 +57,10 @@ class Dropdown(VizroBaseModel):
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
+    variant: Literal["plain", "filled"] = Field(
+        default="filled",
+        description="Predefined styles to choose from. Options are `filled` or `plain`.",
+    )
     description: Annotated[
         Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
@@ -111,6 +115,7 @@ underlying component may change in the future.""",
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
+        variants = {"filled": "dropdown", "plain": "dropdown--plain"}
         dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
 
         value = self.value if self.value is not None else default_value
@@ -126,7 +131,7 @@ underlying component may change in the future.""",
             "persistence": True,
             "persistence_type": "session",
             "placeholder": "Select option",
-            "className": "dropdown",
+            "className": variants[self.variant],
             "clearable": self.multi,  # Set clearable=False only for single-select dropdowns
         }
 

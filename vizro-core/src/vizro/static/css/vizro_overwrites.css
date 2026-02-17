@@ -95,7 +95,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   padding-left: 0;
 }
 
-.container-controls-panel .dropdown {
+.container-controls-panel .dropdown, .dropdown-plain {
   max-width: 240px;
   min-width: 160px;
 }
@@ -136,4 +136,20 @@ div.form-check.form-switch {
 
 legend {
   font-size: inherit;
+}
+
+.dropdown--plain {
+  background: transparent;
+  border-bottom: 1px solid var(--bs-border-color);
+  box-shadow: none;
+}
+
+.dropdown--plain:hover {
+  border-bottom-color: var(--border-subtleAlpha03);
+}
+
+.dropdown--plain:focus,
+.dropdown--plain:focus-within,
+.dropdown--plain:active {
+  border-bottom-color: var(--bs-border-color);
 }

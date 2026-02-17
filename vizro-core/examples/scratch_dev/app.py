@@ -22,10 +22,27 @@ page_1 = vm.Page(
             figure=px.scatter(
                 "static_df", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
             )
-        )
+        ),
+        vm.Container(
+            title="Container title",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        "static_df",
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        color_discrete_map=SPECIES_COLORS,
+                    )
+                ),
+            ],
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain")),
+            ],
+        ),
     ],
     controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True)),
+        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain")),
         vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
     ],
 )
