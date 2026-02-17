@@ -130,7 +130,8 @@
   text-align: right;
 }
 
-.dash-slider-container:has(.has-marks) .dash-range-slider-max-input {
+.dash-slider-container:has(.has-marks) .dash-range-slider-max-input,
+.dash-slider-container:has(.has-marks) .dash-range-slider-min-input  {
   margin-top: -10px;
 }
 
