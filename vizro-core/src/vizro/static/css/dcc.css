@@ -106,8 +106,8 @@
   font-size: 12px;
   font-weight: 600;
   height: 16px;
-  width: 16px;
   justify-content: center;
+  width: 16px;
 }
 
 .dash-dropdown-clear {
@@ -121,11 +121,11 @@
 
 .dash-dropdown-option {
   align-items: center;
+  box-shadow: none;
   display: flex;
   gap: 4px;
   min-height: 32px;
   padding: 6px 8px;
-  box-shadow: none;
 }
 
 .dash-dropdown-actions {
