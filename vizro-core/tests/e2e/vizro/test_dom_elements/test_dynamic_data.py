@@ -832,15 +832,21 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
 
     # select 'virginica' value and check scatter graph point color
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=3), 1)
-    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)")
-    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)")
+    dash_br.wait_for_element(
+        f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)"
+    )
+    dash_br.wait_for_element(
+        f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)"
+    )
 
     # select '10' points for slider which is showing only 'setosa' data and check that scatter graph
     # with dynamic data is empty and that scatter graph with static data is the same
     select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
-    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)")
+    dash_br.wait_for_element(
+        f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)"
+    )
 
     # Check that "setosa" and "virginica" is the only listed options
     check_selected_categorical_component(
@@ -858,7 +864,9 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
 
     # check that dynamic data graph is empty and static data graph stays the same
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
-    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)")
+    dash_br.wait_for_element(
+        f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)"
+    )
 
     # Check that "setosa" and "virginica" is the only listed options
     check_selected_categorical_component(
@@ -872,7 +880,9 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
 
     # select 'setosa' value and check dynamic scatter graph point color and that static scatter graph is empty
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=1), 1)
-    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='{cnst.COLOR_QUALITATIVE_FIRST}']:nth-of-type(1)")
+    dash_br.wait_for_element(
+        f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='{cnst.COLOR_QUALITATIVE_FIRST}']:nth-of-type(1)"
+    )
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
 
     # Check that "setosa" and "virginica" is the only listed options
