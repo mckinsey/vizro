@@ -6,6 +6,11 @@
   box-shadow: var(--bs-box-shadow-sm);
 }
 
+.dash-dropdown:focus-within {
+  border: none;
+  outline: none;
+}
+
 .dash-dropdown-search-container {
   background: var(--bs-primary-bg-subtle);
   border: 1px solid var(--bs-border-color);
@@ -15,23 +20,6 @@
 .dash-dropdown-search-container:focus-within {
   border-color: var(--bs-focus-ring-color);
   outline: none;
-}
-
-/* Dropdown tags */
-.dash-dropdown-value {
-  display: flex;
-  gap: 4px;
-}
-
-.dash-dropdown-value > * {
-  align-items: center;
-  background: var(--text-primary-inverted);
-  box-shadow: var(--bs-box-shadow);
-  color: var(--bs-primary);
-  display: inline-flex;
-  font-size: 14px;
-  height: 24px;
-  padding: 4px 8px;
 }
 
 /* Dropdown menu */
@@ -44,7 +32,6 @@
 }
 
 /* Dropdown Checkboxes */
-
 .dash-options-list-option-wrapper .dash-options-list-option-checkbox {
   appearance: none;
   background: none;
@@ -78,14 +65,16 @@
   color: var(--bs-body-color);
 }
 
-/* Hide commas */
-.dash-dropdown-value-item:not(:first-child)::before {
-  content: none;
+.dash-options-list-option-text:hover {
+  color: var(--bs-primary-text-emphasis);
 }
 
+/* Style the count bubble */
 .dash-dropdown-value-count {
-  background: none;
-  padding: 4px 8px;
+  background: var(--bs-body-bg);
+  border-radius: 0;
+  box-shadow: var(--bs-box-shadow-sm);
+  font-size: 12px;
 }
 
 .dash-dropdown-clear {
@@ -99,9 +88,10 @@
 
 .dash-dropdown-option {
   align-items: center;
+  box-shadow: none;
   display: flex;
   gap: 4px;
-  height: 32px;
+  min-height: 32px;
   padding: 6px 8px;
 }
 
@@ -118,6 +108,7 @@
 }
 
 .dash-slider-container{
+  align-items: start;
   gap: 4px !important;
   min-width: 200px;
 }
@@ -129,8 +120,19 @@
 
   /* Required to override the default hiding of the input value elements when sliders width is less than 300px */
   display: block !important;
+  padding:0;
+  text-align: left;
   text-decoration: underline;
   text-decoration-color: var(--bs-border-color-translucent);
+}
+
+.dash-range-slider-max-input {
+  text-align: right;
+}
+
+.dash-slider-container:has(.has-marks) .dash-range-slider-max-input,
+.dash-slider-container:has(.has-marks) .dash-range-slider-min-input  {
+  margin-top: -10px;
 }
 
 .dash-slider-thumb {
@@ -143,4 +145,13 @@
 
 .dash-slider-mark-outside-selection {
   color: var(--bs-body-color);
+}
+
+.dash-slider-thumb:focus {
+  outline: none;
+}
+
+.dash-slider-dot {
+  height: 6px;
+  width: 6px;
 }

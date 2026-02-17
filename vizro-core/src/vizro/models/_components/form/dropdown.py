@@ -154,7 +154,9 @@ underlying component may change in the future.""",
         # because placeholder for the Dropdown can't be the dropdown itself. The reason is that the Dropdown value can
         # be unexpectedly changed when the new options are added. This is developed as the dash feature
         # https://github.com/plotly/dash/pull/1970.
-        plh_model, plh_options = (dcc.Checklist, self.value) if self.multi else (dbc.RadioItems, [self.value])
+        placeholder_model, placeholder_options = (
+            (dcc.Checklist, self.value) if self.multi else (dbc.RadioItems, [self.value])
+        )
 
         description = self.description.build().children if self.description else [None]
         return html.Div(
@@ -162,9 +164,9 @@ underlying component may change in the future.""",
                 dbc.Label(
                     children=[html.Span(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
                 ),
-                plh_model(
+                placeholder_model(
                     id=self.id,
-                    options=plh_options,
+                    options=placeholder_options,
                     value=self.value,
                     persistence=True,
                     persistence_type="session",
