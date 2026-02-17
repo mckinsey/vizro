@@ -15,7 +15,7 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
@@ -308,17 +308,12 @@ class Filter(VizroBaseModel):
         if not self._dynamic:
             return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
-        # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
-        # Other components, such as the title, remain visible because of the configuration:
-        # overlay_style={"visibility": "visible"} in dcc.Loading.
-        # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
-        # so the "className" attribute is used to apply custom CSS for visibility control.
-        # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
+        # Temporarily hide the selector during the filter reloading process. Other components, such as the title,
+        # remain visible because of the configuration: overlay_style={"visibility": "visible"} in dcc.Loading.
+        # If the selector is a Checklist with show_select_all=True, then hide the select all checkbox too.
         selector_build_obj[selector.id].className = "invisible"
-        if f"{selector.id}_start_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
-        if f"{selector.id}_end_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
+        if isinstance(selector, Checklist) and selector.show_select_all:
+            selector_build_obj[f"{selector.id}_select_all"].className = "invisible"
 
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
