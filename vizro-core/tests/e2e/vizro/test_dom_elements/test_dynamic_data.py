@@ -22,7 +22,6 @@ from e2e.vizro.navigation import (
 from e2e.vizro.paths import (
     actions_progress_indicator_path,
     categorical_components_value_path,
-    dropdown_arrow_path,
     graph_axis_value_path,
     slider_value_path,
 )
@@ -75,13 +74,10 @@ def test_dropdown_values_not_disappear(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa"],
         expected_unselected_options=[],
     )
@@ -89,37 +85,28 @@ def test_dropdown_values_not_disappear(dash_br):
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=10)
     dynamic_filters_data_config_manipulation(key="virginica", set_value=15)
     dash_br.driver.refresh()
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are present and only "setosa" selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=False,
         expected_selected_options=["setosa"],
-        expected_unselected_options=["SelectAll", "versicolor", "virginica"],
+        expected_unselected_options=["versicolor", "virginica"],
     )
     # Choose "versicolor" and "virginica"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
     dash_br.driver.refresh()
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are still selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
@@ -202,14 +189,11 @@ def test_dropdown_filter_multi(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-
-    # open dropdown and check selected and unselected values
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
         expected_selected_options=["versicolor"],
-        expected_unselected_options=["SelectAll", "virginica"],
+        expected_unselected_options=["virginica"],
     )
 
 
@@ -227,23 +211,19 @@ def test_dropdown_filter_select_all_value(dash_br):
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=15)
     dynamic_filters_data_config_manipulation(key="virginica", set_value=10)
     dash_br.driver.refresh()
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
     # -------- END: code block --------
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
-    # delete last options 'versicolor' and 'virginica'
-    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
-    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
+    # delete options 'versicolor' and 'virginica'
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
     # Remove "versicolor" and "virginica" from the dynamic data
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
     dynamic_filters_data_config_manipulation(key="virginica", set_value=0)
@@ -256,12 +236,10 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that only "setosa" selected and listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa"],
         expected_unselected_options=[],
     )
@@ -275,23 +253,19 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that "setosa" is selected and "versicolor" just listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=False,
         expected_selected_options=["setosa"],
-        expected_unselected_options=["SelectAll", "versicolor"],
+        expected_unselected_options=["versicolor"],
     )
     # Choose "versicolor"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that only "setosa" and "versicolor" selected and listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=[],
     )
@@ -305,24 +279,21 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that only "setosa" and "versicolor" selected and listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=[],
     )
-    # delete last option 'versicolor'
-    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
+    # delete option 'versicolor'
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     # Check that "setosa" is selected and "versicolor" just listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=False,
         expected_selected_options=["setosa"],
-        expected_unselected_options=["SelectAll", "versicolor"],
+        expected_unselected_options=["versicolor"],
     )
     # Simulate refreshing the page
     page_select(
@@ -333,12 +304,10 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that only "setosa" selected and listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa"],
         expected_unselected_options=[],
     )
@@ -369,14 +338,11 @@ def test_dropdown_filter(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-
-    # open dropdown and check selected and unselected values
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID,
         expected_selected_options=["versicolor"],
-        expected_unselected_options=["versicolor", "virginica"],
+        expected_unselected_options=["virginica"],
     )
 
 

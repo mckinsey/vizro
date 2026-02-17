@@ -45,12 +45,20 @@ def kpi_card_path():
 
 
 def select_all_path(elem_id):
-    """Select All option path for checklist and dropdown."""
+    """Select All option path for checklist."""
     return f"input[id='{elem_id}_select_all']"
 
 
-def dropdown_arrow_path(dropdown_id):
-    return f"div[id='{dropdown_id}'] .Select-arrow"
+def dropdown_id_path(dropdown_id):
+    return f"button[id='{dropdown_id}']"
+
+
+def dropdown_select_all_path(dropdown_id):
+    return f"{dropdown_id_path(dropdown_id)} + div .dash-dropdown-action-button:nth-of-type(1)"
+
+
+def dropdown_deselect_all_path(dropdown_id):
+    return f"{dropdown_id_path(dropdown_id)} + div .dash-dropdown-action-button:nth-of-type(2)"
 
 
 def button_id_path(btn_id):

@@ -8,10 +8,16 @@ from e2e.vizro.checkers import (
     check_slider_value,
     check_table_ag_grid_rows_number,
 )
-from e2e.vizro.navigation import clear_dropdown, click_element_by_xpath_selenium, page_select, select_dropdown_value
+from e2e.vizro.navigation import (
+    clear_dropdown,
+    click_element_by_xpath_selenium,
+    page_select,
+    select_dropdown_deselect_all,
+    select_dropdown_select_all,
+    select_dropdown_value,
+)
 from e2e.vizro.paths import (
     categorical_components_value_path,
-    dropdown_arrow_path,
     graph_axis_value_path,
     kpi_card_path,
     select_all_path,
@@ -23,36 +29,28 @@ from e2e.vizro.waiters import graph_load_waiter
 from hamcrest import assert_that, equal_to
 
 
-def test_dropdown_select_all_value(dash_br):
-    """Test interacts with Select All checkbox in dropdown.
+def test_dropdown_select_all(dash_br):
+    """Test interacts with Select All and Deselect All options in dropdown.
 
-    1. Click 'Select All'. It will clear all chosen options.
+    1. Click 'Deselect All'. It will clear all chosen options.
     2. Check how options in dropdown looks like.
     3. Click 'Select All'. It will make all options chosen.
     4. Check how options in dropdown looks like.
     """
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # click dropdown arrow to open the list
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
-    # unselect 'Select All'
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}_select_all", 1)
+    select_dropdown_deselect_all(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        all_value=False,
         expected_selected_options=[],
-        expected_unselected_options=["SelectAll", "setosa", "versicolor", "virginica"],
+        expected_unselected_options=["setosa", "versicolor", "virginica"],
     )
-    # select 'Select All'
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}_select_all", 1)
+    select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
@@ -67,24 +65,21 @@ def test_dropdown_options_value(dash_br):
     4. Check how options in dropdown looks like.
     """
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # delete last option 'virginica'
-    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_FILTER_FILTERS_PAGE}']")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    check_selected_dropdown(
-        dash_br,
-        dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        all_value=False,
-        expected_selected_options=["setosa", "versicolor"],
-        expected_unselected_options=["SelectAll", "virginica"],
-    )
-    # choose one option 'virginica'
+    # uncheck 'virginica'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    dash_br.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        all_value=True,
+        expected_selected_options=["setosa", "versicolor"],
+        expected_unselected_options=["virginica"],
+    )
+    # choose 'virginica' again
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
+    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
@@ -93,29 +88,25 @@ def test_dropdown_options_value(dash_br):
 def test_dropdown_persistence_with_two_values(dash_br):
     """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # delete last option 'virginica'
-    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_FILTER_FILTERS_PAGE}']")
+    # uncheck 'virginica'
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    dash_br.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        all_value=False,
         expected_selected_options=["setosa", "versicolor"],
-        expected_unselected_options=["SelectAll", "virginica"],
+        expected_unselected_options=["virginica"],
     )
 
 
 def test_dropdown_persistence_with_all_values(dash_br):
     """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # delete all options
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    # select all options
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}_select_all", 1)
+    select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
         graph_axis_value_path(graph_id=cnst.SCATTER_GRAPH_ID, axis_value_number="4", axis_value="1"),
@@ -123,11 +114,9 @@ def test_dropdown_persistence_with_all_values(dash_br):
     )
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    dash_br.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
@@ -136,18 +125,15 @@ def test_dropdown_persistence_with_all_values(dash_br):
 def test_dropdown_persistence_with_no_values(dash_br):
     """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # delete all options
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    dash_br.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
-        all_value=False,
         expected_selected_options=[],
-        expected_unselected_options=["SelectAll", "setosa", "versicolor", "virginica"],
+        expected_unselected_options=["setosa", "versicolor", "virginica"],
     )
 
 
@@ -349,6 +335,9 @@ def test_dropdown_multi_false_homepage(dash_br):
     # select 'versicolor'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE, value="versicolor")
     check_graph_is_loaded(dash_br, cnst.AREA_GRAPH_ID)
+    check_selected_dropdown(
+        dash_br, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE, expected_selected_options=["versicolor"], multi=False
+    )
 
 
 def test_dropdown_kpi_indicators_page(dash_br):
@@ -379,7 +368,7 @@ def test_dropdown_kpi_indicators_page(dash_br):
     )
 
     # select 'B' value
-    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE, value="B")
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_KPI_CTRL_ID, value="B")
 
     # wait for cards value is loaded and checking its values
     dash_br.wait_for_text_to_equal(kpi_card_path(), "6434")

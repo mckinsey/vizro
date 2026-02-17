@@ -5,8 +5,14 @@ from e2e.vizro.checkers import (
     check_selected_dropdown,
     check_slider_value,
 )
-from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
-from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, select_all_path, slider_value_path
+from e2e.vizro.navigation import (
+    clear_dropdown,
+    page_select,
+    select_dropdown_deselect_all,
+    select_dropdown_select_all,
+    select_dropdown_value,
+)
+from e2e.vizro.paths import categorical_components_value_path, select_all_path, slider_value_path
 
 
 def test_sliders_state(dash_br):
@@ -138,34 +144,28 @@ def test_dropdown_with_two_values(dash_br):
     dash_br.wait_for_element(
         f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='gdpPercap'][class='dash-header column-1 cell--right-last ']"
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_PARAM_MULTI), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_PARAM_MULTI,
-        all_value=False,
         expected_selected_options=["pop", "gdpPercap"],
-        expected_unselected_options=["SelectAll", "country", "continent", "year", "lifeExp", "iso_alpha", "iso_num"],
+        expected_unselected_options=["country", "continent", "year", "lifeExp", "iso_alpha", "iso_num"],
     )
 
 
 def test_dropdown_select_all_value(dash_br):
     """Checks parametrizing with multiple params by selecting columns for the table."""
     page_select(dash_br, page_path=cnst.PARAMETERS_MULTI_PAGE_PATH, page_name=cnst.PARAMETERS_MULTI_PAGE)
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_PARAM_MULTI), 1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_PARAM_MULTI}_select_all", 1)
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_PARAM_MULTI), 1, delay=0.1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_PARAM_MULTI}_select_all", 1)
+    select_dropdown_deselect_all(dash_br, dropdown_id=cnst.DROPDOWN_PARAM_MULTI)
+    select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_PARAM_MULTI)
     # check if table column 'pop' is available
     dash_br.wait_for_element(f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='pop']")
     # check if table column 'iso_num' is available and no other column appears on the right
     dash_br.wait_for_element(
         f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='iso_num'][class='dash-header column-7 cell--right-last ']"
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_PARAM_MULTI), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_PARAM_MULTI,
-        all_value=True,
         expected_selected_options=[
             "country",
             "continent",
