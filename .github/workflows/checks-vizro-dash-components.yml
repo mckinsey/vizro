@@ -1,0 +1,61 @@
+name: Checks for vizro-dash-components
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: vizro-dash-components
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "vizro-dash-components/**"
+  pull_request:
+    branches:
+    paths:
+      - "vizro-dash-components/**"
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  checks-vizro-dash-components:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Use fetch-depth of 2 to enable the changelog fragment check, which only runs in a pull request, not on push.
+          # See https://stackoverflow.com/questions/74265821/get-modified-files-in-github-actions
+          fetch-depth: 2
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Show dependency tree
+        run: hatch run pip tree
+
+      - name: Find changed files to see if changelog fragment needed
+        id: changed-files
+        if: ${{ github.event_name == 'pull_request' }}
+        # --no-renames is required so that an empty changelog file added in a release PR always counts as added rather
+        # than a renamed version of an already-existing empty changelog file.
+        run: |
+          echo "changelog_fragment_added=$(git diff --name-only --no-renames --diff-filter=A HEAD^1 HEAD -- 'changelog.d/*.md' | xargs)" >> $GITHUB_OUTPUT
+          echo "source_code_changed=$(git diff --name-only HEAD^1 HEAD -- 'src' | xargs)" >> $GITHUB_OUTPUT
+
+      - name: Fail if changelog fragment needed and wasn't added
+        if: ${{ steps.changed-files.outcome != 'skipped' && steps.changed-files.outputs.source_code_changed && !steps.changed-files.outputs.changelog_fragment_added}}
+        run: |
+          echo "No changelog fragment .md file within changelog.d was detected. Run 'hatch run changelog:add' to create such a fragment."
+          echo "If your PR contains changes that should be mentioned in the CHANGELOG in the next release, please uncomment the relevant section in your created fragment and describe the changes to the user."
+          echo "If your changes are not relevant for the CHANGELOG, please save and commit the file as is."
+          exit 1
