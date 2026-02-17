@@ -12,7 +12,7 @@ Examples:
     ```python
     from vizro.themes import colors, palettes
 
-    print(colors.cyan_100)
+    print(colors.blue_100)
     print(palettes.qualitative)
     ```
 """
