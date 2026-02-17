@@ -1,10 +1,10 @@
 <a id='changelog-0.1.2'></a>
 
-# 0.1.2 — 2026-02-16
+# 0.1.2 — 2026-02-17
 
 ## Changed
 
-- Update readme based on feedback and add instruction for Cursor setup. ([#1580](https://github.com/mckinsey/vizro/pull/1580)) <a id='changelog-0.1.1'></a>
+- Add instruction for Cursor setup. ([#1580](https://github.com/mckinsey/vizro/pull/1580)) <a id='changelog-0.1.1'></a>
 
 # 0.1.1 — 2026-01-23
 
