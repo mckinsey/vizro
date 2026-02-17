@@ -1,6 +1,6 @@
 /* Outer layout for dash dropdown */
 div.dash-dropdown {
-  background-color: var(--bs-primary-bg-subtle);
+  background-color: var(--bs-body-bg);
   border: none;
   border-radius: 0;
   box-shadow: var(--bs-box-shadow-sm);
@@ -9,7 +9,7 @@ div.dash-dropdown {
 
 /* Dropdown menu when clicking on expand arrow */
 div.Select-menu-outer {
-  background-color: var(--bs-primary-bg-subtle);
+  background-color: var(--bs-body-bg);
   border: none;
   border-radius: 0;
   box-shadow: var(--bs-box-shadow-sm);
@@ -39,7 +39,7 @@ div.Select-control {
 }
 
 div.Select.is-focused > .Select-control {
-  background-color: var(--bs-primary-bg-subtle);
+  background-color: var(--bs-body-bg);
 }
 
 /* User input */
@@ -66,7 +66,7 @@ div.Select--single .Select-value {
 
 /* Tags --------------------------- */
 div.Select--multi .Select-value {
-  background-color: var(--bs-tertiary-bg);
+  background-color: var(--bs-secondary-bg);
   border: 0;
   border-radius: 0;
   box-shadow: var(--bs-box-shadow-sm);
