@@ -151,5 +151,5 @@ legend {
 .dropdown--plain:focus,
 .dropdown--plain:focus-within,
 .dropdown--plain:active {
-  border-bottom-color: var(--bs-border-color);
+  border-bottom: 1px solid var(--bs-border-color);
 }

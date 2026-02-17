@@ -37,7 +37,7 @@ page_1 = vm.Page(
                 ),
             ],
             controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain")),
+                vm.Filter(column="species", selector=vm.Dropdown(multi=True)),
             ],
         ),
     ],

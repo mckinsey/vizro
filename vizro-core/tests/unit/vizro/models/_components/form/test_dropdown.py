@@ -23,6 +23,7 @@ class TestDropdownInstantiation:
         assert dropdown.value is None
         assert dropdown.multi is True
         assert dropdown.title == ""
+        assert dropdown.variant == "filled"
         assert dropdown.description is None
         assert dropdown.actions == []
         assert dropdown._action_triggers == {"__default__": f"{dropdown.id}.value"}
@@ -36,6 +37,7 @@ class TestDropdownInstantiation:
             value="A",
             multi=False,
             title="Title",
+            variant="plain",
             description=Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
 
@@ -45,6 +47,7 @@ class TestDropdownInstantiation:
         assert dropdown.value == "A"
         assert dropdown.multi is False
         assert dropdown.title == "Title"
+        assert dropdown.variant == "plain"
         assert dropdown.actions == []
         assert isinstance(dropdown.description, Tooltip)
         assert dropdown._action_triggers == {"__default__": "dropdown-id.value"}
@@ -260,6 +263,29 @@ class TestDropdownBuild:
                     persistence_type="session",
                     placeholder="Select option",
                     className="dropdown",
+                ),
+            ]
+        )
+
+        assert_component_equal(dropdown, expected_dropdown)
+
+    def test_dropdown_build_with_variant(self):
+        dropdown = Dropdown(
+            id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title", variant="plain"
+        ).build()
+        expected_dropdown = html.Div(
+            [
+                dbc.Label([html.Span("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                    value="A",
+                    multi=False,
+                    clearable=False,
+                    placeholder="Select option",
+                    persistence=True,
+                    persistence_type="session",
+                    className="dropdown--plain",
                 ),
             ]
         )
