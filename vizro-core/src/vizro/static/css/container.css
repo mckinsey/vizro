@@ -55,11 +55,6 @@
   background: var(--bs-body-bg);
 }
 
-/* Change filled container bg inside filled container */
-.bg-container .bg-container {
-  background-color: var(--bs-tertiary-bg);
-}
-
 /* If a filled container is detected, then the right-bg color will change to
 the lighter shade, both in dark and light theme. */
 #right-side:has(.bg-container) {
