@@ -10,6 +10,7 @@ from vizro.models._components.form._text_area import TextArea
 from vizro.models._components.form._user_input import UserInput
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
+from vizro.themes import palettes
 
 iris = px.data.iris()
 tips = px.data.tips()
@@ -76,27 +77,31 @@ continuous_color_scales = vm.Page(
     layout=vm.Grid(grid=[[0, 1, 2]]),
     components=[
         vm.Graph(
-            title="Global Life Expectancy Distribution",
-            figure=px.choropleth(gapminder_2007, locations="iso_alpha", color="lifeExp"),
-            footer="Source: Plotly Gapminder data set, 2024",
-        ),
-        vm.Graph(
-            title="Global Life Expectancy Distribution",
+            title="Sequential",
             figure=px.choropleth(
-                gapminder_2007,
-                locations="iso_alpha",
-                color="lifeExp",
-                color_continuous_midpoint=avg_lifeExp,
+                gapminder_2007, locations="iso_alpha", color="lifeExp", color_continuous_scale=palettes.sequential
             ),
             footer="Source: Plotly Gapminder data set, 2024",
         ),
         vm.Graph(
-            title="Global Life Expectancy Distribution",
+            title="Sequential Minus",
             figure=px.choropleth(
                 gapminder_2007,
                 locations="iso_alpha",
                 color="lifeExp",
                 color_continuous_midpoint=avg_lifeExp,
+                color_continuous_scale=palettes.sequential_minus,
+            ),
+            footer="Source: Plotly Gapminder data set, 2024",
+        ),
+        vm.Graph(
+            title="Diverging",
+            figure=px.choropleth(
+                gapminder_2007,
+                locations="iso_alpha",
+                color="lifeExp",
+                color_continuous_midpoint=avg_lifeExp,
+                color_continuous_scale=palettes.diverging,
             ),
             footer="Source: Plotly Gapminder data set, 2024",
         ),

@@ -99,6 +99,20 @@ sequential_gray = [
     colors.gray_900,
 ]
 
+diverging_pink_blue = [
+    colors.pink_900,
+    colors.pink_800,
+    colors.pink_700,
+    colors.pink_600,
+    colors.pink_500,
+    colors.gray_300,
+    colors.blue_500,
+    colors.blue_600,
+    colors.blue_700,
+    colors.blue_800,
+    colors.blue_900,
+]
+
 # These are necessarily the same for dark and light themes.
 # For plotly express plots, some colors are taken from the template's palettes and stored in
 # fig.data rather than fig.layout. This means they cannot be changed consistently by post-fig
@@ -114,4 +128,5 @@ palettes = SimpleNamespace(
     sequential_pink=sequential_pink,
     sequential_yellow=sequential_yellow,
     sequential_gray=sequential_gray,
+    diverging=diverging_pink_blue,
 )
