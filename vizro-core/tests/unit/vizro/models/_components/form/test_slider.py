@@ -21,11 +21,9 @@ def expected_slider():
                 step=1.0,
                 marks={},
                 value=5.0,
-                included=False,
                 persistence=True,
                 persistence_type="session",
                 dots=True,
-                className="slider-track-with-marks",
             ),
         ]
     )
@@ -43,11 +41,9 @@ def expected_slider_extra():
                 step=1.0,
                 marks={},
                 value=5.0,
-                included=False,
                 persistence=True,
                 persistence_type="session",
                 dots=True,
-                className="slider-track-with-marks",
                 tooltip={"placement": "bottom", "always_visible": True},
             ),
         ]
@@ -78,11 +74,9 @@ def expected_slider_with_description():
                 step=1.0,
                 marks={},
                 value=5.0,
-                included=False,
                 persistence=True,
                 persistence_type="session",
                 dots=True,
-                className="slider-track-with-marks",
             ),
         ]
     )
@@ -207,22 +201,21 @@ class TestSliderInstantiation:
         assert slider.marks == expected
 
     @pytest.mark.parametrize(
-        "step, marks, expected_marks, expected_class",
+        "step, marks, expected_marks",
         [
-            (1, None, None, "slider-track-without-marks"),
-            (None, {}, None, "slider-track-without-marks"),
-            (None, None, None, "slider-track-without-marks"),
-            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
-            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
+            (1, None, None),
+            (None, {}, None),
+            (None, None, None),
+            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
+            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
             # This case might be unintuitive, as the resulting marks are an empty dict. However, marks will
-            # be drawn by the dash component, so we need to check for the className here on top.
-            (1, {}, {}, "slider-track-with-marks"),
+            # be drawn by the dash component.
+            (1, {}, {}),
         ],
     )
-    def test_set_step_and_marks(self, step, marks, expected_marks, expected_class):
+    def test_set_step_and_marks(self, step, marks, expected_marks):
         slider = vm.Slider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
         assert slider["slider-id"].marks == expected_marks
-        assert slider["slider-id"].className == expected_class
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
