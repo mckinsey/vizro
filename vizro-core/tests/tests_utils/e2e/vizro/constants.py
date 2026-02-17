@@ -403,6 +403,15 @@ STYLE_TRANSPARENT = "background: rgba(0, 0, 0, 0);"
 STYLE_TRANSPARENT_FIREFOX = "background: none;"
 AG_GRID = "ag-theme-vizro"
 
+# Theme colors (RGB values for E2E testing)
+# Qualitative colors - used for categorical/discrete data in charts
+COLOR_QUALITATIVE_FIRST = "rgb(9, 125, 254)"  # 1st color in colorway (currently: blue)
+COLOR_QUALITATIVE_SECOND = "rgb(111, 57, 227)"  # 2nd color in colorway (currently: dark purple)
+COLOR_QUALITATIVE_THIRD = "rgb(5, 208, 240)"  # 3rd color in colorway (currently: turquoise)
+
+# Sequential colors - used for continuous numerical data
+COLOR_SEQUENTIAL_MID = "rgb(9, 125, 254)"  # Middle position (0.5) in sequential palette
+
 # Configs
 
 DYNAMIC_FILTERS_DATA_CONFIG = "tests/e2e/vizro/dashboards/default/dynamic_filters_data.yaml"

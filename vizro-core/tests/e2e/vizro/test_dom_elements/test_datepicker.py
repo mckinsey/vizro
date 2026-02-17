@@ -19,7 +19,7 @@ def test_single_date(dash_br):
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_SINGLE_ID}"]', "May 17, 2016")
 
     # check bar graph has bar with light blue color
-    dash_br.wait_for_element(f"div[id='{cnst.BAR_POP_DATE_ID}'] path[style*='rgb(59, 141, 203)']:nth-of-type(1)")
+    dash_br.wait_for_element(f"div[id='{cnst.BAR_POP_DATE_ID}'] path[style*='{cnst.COLOR_SEQUENTIAL_MID}']:nth-of-type(1)")
 
     # check that date in the row is correct
     # we're using 'row_number=2' because the first row is a header
