@@ -12,74 +12,106 @@ The plugin includes pre-configured Playwright MCP server for a seamless workflow
 
 ## Installation
 
-### Option 1: Install from repository as a plugin
+### Option 1: Claude Code (Plugin Marketplace)
 
-Install using the plugin command with the `mckinsey/vizro` repository:
+Open your terminal and start Claude Code:
+
+```bash
+claude
+```
+
+Register the `mckinsey/vizro` repository as a plugin marketplace:
 
 ```
 /plugin marketplace add mckinsey/vizro
+```
+
+Then install the plugin:
+
+```
 /plugin install vizro-e2e-flow@vizro-marketplace
 ```
 
-This works well when using Claude Code. It automatically configures the Playwright MCP for the complete workflow.
+Validate the installation by running:
 
-### Option 2: Upload skill folder
+```
+/plugins
+```
 
-Zip the skill folders and upload them directly to Claude apps (e.g., Claude Desktop) or any other new compatible tools (e.g. VS Code):
+You should see `vizro-e2e-flow` listed with its skills (`dashboard-design`, `dashboard-build`) and the Playwright MCP connected:
 
-- `/vizro-e2e-flow/skills/dashboard-design/`
-- `/vizro-e2e-flow/skills/dashboard-build/`
+```
+playwright MCP · ✔ connected
+```
 
-**Important**: This option only uploads the skill files, not the MCP configuration. You'll need to manually configure the MCP server by adding the `.mcp.json` configuration to your MCP client. See the [.mcp.json file](https://github.com/mckinsey/vizro/blob/main/vizro-e2e-flow/.mcp.json) for the configuration needed for the Playwright MCP server.
+### Option 2: Cursor
 
-## Usage
+1. **Import skills from GitHub**:
 
-The plugin includes two skills that work together:
+    - Open **Cursor Settings → Rules**
+    - In the **Project Rules** section, click **Add Rule**
+    - Select **Remote Rule (Github)**
+    - Enter the GitHub repository URL: `https://github.com/mckinsey/vizro`
 
-### Skill 1: dashboard-design
+    For more details, see [Cursor Skills documentation](https://cursor.com/docs/context/skills#installing-skills-from-github).
 
-Use this skill first to design your dashboard. It enforces a 3-step workflow:
+1. **Verify skills are available** by opening Cursor and asking:
 
-**Step 1 - Understand Requirements**:
+    - "What skills do you have available?"
+    - Look for skills related to dashboard design and dashboard build
 
-- Define analytical questions and business context
-- Inventory data sources and map KPIs
-- Design page structure and information flow
+1. **Configure the Playwright MCP** for browser testing. In Cursor, go to **Settings > MCP** and add the following server configuration:
 
-**Step 2 - Design Layout & Interactions**:
+    ```json
+    {
+      "mcpServers": {
+        "playwright": {
+          "command": "npx",
+          "args": [
+            "@playwright/mcp@latest"
+          ]
+        }
+      }
+    }
+    ```
 
-- Design navigation structure and grid layouts
-- Define filter strategy and placement
-- Create wireframes for complex pages
+## Quick Start Tutorial
 
-**Step 3 - Select Visualizations**:
+Once the skills and Playwright MCP are installed, here's how to build your first dashboard end-to-end.
 
-- Select appropriate chart types for each metric
-- Establish visual hierarchy and color strategy
-- Identify custom chart needs
+### Step 1: Start the design phase
 
-### Skill 2: dashboard-build
+The skills are automatically triggered when you mention keywords like "dashboard" in your message. For example:
 
-Use this skill after completing dashboard-design to implement and test:
+> "I have a CSV of monthly sales data with columns for region, product, revenue, and units sold. I want to build a dashboard to track sales performance."
 
-**Step 1 - Build Dashboard**:
+This invokes the **dashboard-design** skill, which guides you through three sub-steps:
 
-- Build, integrate data, and configure layouts
-- Implement custom charts as needed
+1. **Understand Requirements** - Agent will ask about your analytical questions, data sources, KPIs, and page structure.
 
-**Step 2 - Test & Verify**:
+1. **Design Layout & Interactions** - Agent proposes a grid layout, navigation structure, and filter strategy. You review and iterate together.
 
-- Validate launch and navigation
-- Test filter and control functionality
-- Check for console errors
+1. **Select Visualizations** - Agent recommends chart types for each metric and establishes a visual hierarchy. You approve or adjust.
+
+At the end of this phase, you'll have a complete design spec ready for implementation.
+
+### Step 2: Build and test the dashboard
+
+Once you're happy with the design, indicate you want to build it. For example:
+
+> "Build the dashboard based on the design spec. Use Playwright MCP to test the dashboard."
+
+This invokes the **dashboard-build** skill, which:
+
+1. **Builds the Dashboard** - Agent writes the Python code using Vizro, integrates your data, and configures layouts based on the design spec from Step 1.
+
+1. **Tests & Verifies** - Agent launches the dashboard and uses the Playwright MCP to automatically test it in a browser: validating navigation, filters, controls, and checking for console errors.
 
 ## Requirements
 
-- **dashboard-design skill** (Steps 1-3: Requirements, Layout, Visualization): No technical dependencies - pure design guidance
-- **dashboard-build skill** (Step 1: Implementation): Python environment with `uv` installed
-- **dashboard-build skill** (Step 2: Testing):
-    - **Included with plugin**: Playwright MCP for AI-assisted UI testing
-    - **Requirements for MCP**: Node.js (for Playwright MCP)
+- **dashboard-design skill**: No technical dependencies - pure design guidance
+- **dashboard-build skill (build)**: Python environment with [uv](https://docs.astral.sh/uv/) installed
+- **dashboard-build skill (test)**: [Node.js](https://nodejs.org/) is required for the Playwright MCP.
 
 ## Compatibility
 
