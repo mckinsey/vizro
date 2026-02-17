@@ -92,7 +92,7 @@ page_3 = vm.Page(
 )
 
 page_4 = vm.Page(
-    title="All selectors",
+    title="All dynamic selectors",
     components=[
         vm.Container(
             controls=[
@@ -108,18 +108,23 @@ page_4 = vm.Page(
             ],
             components=[
                 vm.Graph(
+                    id="graph_4",
                     figure=px.scatter(
-                        "static_df",
+                        "dynamic_df",
                         x="sepal_width",
                         y="sepal_length",
                         color="species",
                         color_discrete_map=SPECIES_COLORS,
-                    )
+                    ),
                 )
             ],
         )
     ],
     controls=[
+        vm.Parameter(
+            targets=["graph_4.data_frame.number_of_points"],
+            selector=vm.Slider(min=10, max=150, step=20, value=150, title="DataFrame Parameter"),
+        ),
         vm.Filter(column="species", selector=vm.RadioItems(title="RadioItems Single")),
         vm.Filter(column="species", selector=vm.Dropdown(multi=False, title="Dropdown Single")),
         vm.Filter(column="species", selector=vm.Dropdown(multi=True, title="Dropdown Multi")),
@@ -132,6 +137,127 @@ page_4 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
+page_5 = vm.Page(
+    title="Sliders stress-test",
+    components=[
+        vm.Container(
+            controls=[
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="No Config")),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=0, max=10, title="Min/Max")),
+                vm.Filter(
+                    column="sepal_length", selector=vm.RangeSlider(min=0.13, max=10.13, title="Min-flot/Max-float")
+                ),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=1, title="Step")),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=0.5, title="Step-float")),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(marks={5: "5", 6.1: "6.1", 7.2: "7.2"}, title="Marks"),
+                ),
+                vm.Filter(
+                    column="sepal_length", selector=vm.RangeSlider(min=0, max=10, step=0.5, title="Min/Max/Step-float")
+                ),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(min=0.13, max=10.13, step=1, title="Min-float/Max-float/Step"),
+                ),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(min=0.13, max=10.13, step=0.5, title="Min-float/Max-float/Step-float"),
+                ),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(min=0, max=10, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Marks"),
+                ),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(
+                        min=0.13,
+                        max=10.13,
+                        marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
+                        title="Min-float/Max-float/Marks-float",
+                    ),
+                ),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(
+                        min=0, max=10, step=1, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Step/Marks"
+                    ),
+                ),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(
+                        min=0.13,
+                        max=10.13,
+                        step=0.5,
+                        marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
+                        title="Min-float/Max-float/Step-float/Marks-float",
+                    ),
+                ),
+            ],
+            components=[
+                vm.Graph(
+                    id="graph_5",
+                    figure=px.scatter(
+                        "dynamic_df",
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        color_discrete_map=SPECIES_COLORS,
+                    ),
+                )
+            ],
+        )
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["graph_5.data_frame.number_of_points"],
+            selector=vm.Slider(min=10, max=150, step=20, value=10, title="DataFrame Parameter"),
+        ),
+        vm.Filter(column="sepal_length", selector=vm.Slider(title="No Config")),
+        vm.Filter(column="sepal_length", selector=vm.Slider(min=0, max=10, title="Min/Max")),
+        vm.Filter(column="sepal_length", selector=vm.Slider(min=0.13, max=10.13, title="Min-flot/Max-float")),
+        vm.Filter(column="sepal_length", selector=vm.Slider(step=1, title="Step")),
+        vm.Filter(column="sepal_length", selector=vm.Slider(step=0.5, title="Step-float")),
+        vm.Filter(column="sepal_length", selector=vm.Slider(marks={5: "5", 6.1: "6.1", 7.2: "7.2"}, title="Marks")),
+        vm.Filter(column="sepal_length", selector=vm.Slider(min=0, max=10, step=0.5, title="Min/Max/Step-float")),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(min=0.13, max=10.13, step=1, title="Min-float/Max-float/Step"),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(min=0.13, max=10.13, step=0.5, title="Min-float/Max-float/Step-float"),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(min=0, max=10, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Marks"),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(
+                min=0.13,
+                max=10.13,
+                marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
+                title="Min-float/Max-float/Marks-float",
+            ),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(min=0, max=10, step=1, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Step/Marks"),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(
+                min=0.13,
+                max=10.13,
+                step=0.5,
+                marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
+                title="Min-float/Max-float/Step-float/Marks-float",
+            ),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5])
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
