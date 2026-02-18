@@ -40,40 +40,6 @@ waterfall_data = pd.DataFrame(
     }
 )
 
-sankey_data = pd.DataFrame(
-    {
-        "source": [
-            "Production",
-            "Production",
-            "Imports",
-            "Renewables",
-            "Fossil",
-            "Nuclear",
-            "Renewables",
-            "Fossil",
-            "Nuclear",
-            "Industry",
-            "Heating",
-            "Transport",
-        ],
-        "target": [
-            "Renewables",
-            "Fossil",
-            "Fossil",
-            "Industry",
-            "Industry",
-            "Industry",
-            "Heating",
-            "Heating",
-            "Heating",
-            "Losses",
-            "Losses",
-            "Losses",
-        ],
-        "value": [15, 45, 10, 12, 35, 8, 10, 12, 5, 25, 22, 23],
-    }
-)
-
 vm.Container.add_type("components", vm.Dropdown)
 vm.Container.add_type("components", vm.RadioItems)
 vm.Container.add_type("components", vm.Checklist)
@@ -105,17 +71,17 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]):
 @capture("graph")
 def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str):
     """Custom Sankey diagram."""
-    labels = list(pd.unique(data_frame[[source, target]].values.ravel("K")))
-    node_indices = {label: i for i, label in enumerate(labels)}
     fig = go.Figure(
-        data=go.Sankey(
-            node=dict(label=labels),
-            link=dict(
-                source=[node_indices[s] for s in data_frame[source]],
-                target=[node_indices[t] for t in data_frame[target]],
-                value=data_frame[value],
-            ),
-        ),
+        data=[
+            go.Sankey(
+                node={"label": ["A1", "A2", "B1", "B2", "C1", "C2"]},
+                link={
+                    "source": [0, 1, 0, 2, 3, 3],  # indices correspond to labels, eg A1, A2, A1, B1, ...
+                    "target": [2, 3, 3, 4, 4, 5],
+                    "value": [8, 4, 2, 8, 4, 2],
+                },
+            )
+        ]
     )
     return fig
 
@@ -267,7 +233,7 @@ sankey_page = vm.Page(
     components=[
         vm.Graph(
             title="Energy flow",
-            figure=sankey(sankey_data, source="source", target="target", value="value"),
+            figure=sankey(pd.DataFrame(), source="source", target="target", value="value"),
             footer="Sample energy flow from sources to sectors.",
         ),
     ],
