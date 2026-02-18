@@ -46,6 +46,14 @@
         },
         "type": "bar"
       }
+    ],
+    "sankey": [
+      {
+        "link": {
+          "color": "rgba(20, 23, 33, 0.3019607843)"
+        },
+        "type": "sankey"
+      }
     ]
   },
   "layout": {
