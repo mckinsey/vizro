@@ -75,7 +75,7 @@ def test_theme_color(chrome_driver, dash_br):
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, theme_toggle_path()))
     ).click()
-    check_graph_color_selenium(chrome_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color_selenium(chrome_driver, style_background=cnst.STYLE_DARK, color=cnst.RGBA_DARK)
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.presence_of_element_located((By.CSS_SELECTOR, f"html[data-bs-theme='{cnst.THEME_DARK}']"))
     )
@@ -83,7 +83,7 @@ def test_theme_color(chrome_driver, dash_br):
     # change slider value for the second user and check that theme is default ('light')
     select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
     check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
-    check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br, style_background=cnst.STYLE_LIGHT, color=cnst.RGBA_LIGHT)
     check_theme_color(dash_br, color=cnst.THEME_LIGHT)
 
 
