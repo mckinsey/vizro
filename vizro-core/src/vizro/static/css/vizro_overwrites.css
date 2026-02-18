@@ -137,19 +137,3 @@ div.form-check.form-switch {
 legend {
   font-size: inherit;
 }
-
-.dropdown--plain {
-  background: transparent;
-  border-bottom: 1px solid var(--bs-border-color);
-  box-shadow: none;
-}
-
-.dropdown--plain:hover {
-  border-bottom-color: var(--border-subtleAlpha03);
-}
-
-.dropdown--plain:focus,
-.dropdown--plain:focus-within,
-.dropdown--plain:active {
-  border-bottom: 1px solid var(--bs-border-color);
-}

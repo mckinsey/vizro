@@ -15,6 +15,8 @@
   background: var(--bs-primary-bg-subtle);
   border: 1px solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
+  margin: 4px 8px;
+  padding: 2px 4px;
 }
 
 .dash-dropdown-search-container:focus-within {
@@ -73,8 +75,14 @@
 .dash-dropdown-value-count {
   background: var(--bs-body-bg);
   border-radius: 0;
-  box-shadow: var(--bs-box-shadow-sm);
+  border-radius: 4px;
+  box-shadow: none;
   font-size: 12px;
+  padding: 2px 4px;
+}
+
+.dropdown-plain .dash-dropdown-value-count {
+  background: var(--bs-primary-bg-subtle);
 }
 
 .dash-dropdown-clear {
@@ -101,6 +109,28 @@
     gap: 16px;
     padding: 8px;
 }
+
+.dash-dropdown-trigger-icon, .dash-dropdown-clear {
+  color: var(--bs-secondary);
+}
+
+
+.dash-dropdown-trigger-icon:hover, .dash-dropdown-clear:hover {
+  color: var(--bs-primary);
+}
+
+
+.dropdown-plain {
+  background: inherit;
+  border-bottom: 1px solid var(--bs-border-color);
+  box-shadow: none;
+}
+
+.dropdown-plain:hover {
+  border-bottom-color: var(--bs-border-color-translucent);
+}
+
+
 
 /* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */
 .dash-slider-track {

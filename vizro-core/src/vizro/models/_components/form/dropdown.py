@@ -115,7 +115,7 @@ underlying component may change in the future.""",
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
-        variants = {"filled": "dropdown", "plain": "dropdown--plain"}
+        variants = {"filled": "", "plain": "dropdown-plain"}
         dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
 
         value = self.value if self.value is not None else default_value
