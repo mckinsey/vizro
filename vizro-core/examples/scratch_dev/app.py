@@ -282,6 +282,50 @@ page_5 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5])
+page_6 = vm.Page(
+    title="Dropdown variants",
+    components=[
+        vm.Container(
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain", title="Single Plain")),
+                vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="filled", title="Single Filled")),
+                vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain", title="Multi Plain")),
+                vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="filled", title="Multi Filled")),
+                vm.Filter(column="long_string", selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain")),
+                vm.Filter(column="long_string", selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled")),
+                vm.Filter(column="long_string", selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain")),
+                vm.Filter(column="long_string", selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled")),
+            ],
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        "static_df",
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        color_discrete_map=SPECIES_COLORS,
+                    ),
+                ),
+                vm.Graph(figure=px.scatter(long_df, x="x", y="y"))
+            ],
+        )
+    ],
+    controls=[
+        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain", title="Plain")),
+        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="filled", title="Filled")),
+        vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain", title="Plain")),
+        vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="filled", title="Filled")),
+        vm.Filter(column="long_string",
+                  selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain")),
+        vm.Filter(column="long_string",
+                  selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled")),
+        vm.Filter(column="long_string",
+                  selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain")),
+        vm.Filter(column="long_string",
+                  selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled")),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6])
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
