@@ -7,11 +7,11 @@ from e2e.vizro.navigation import (
     page_select,
     select_dropdown_select_all,
     select_dropdown_value,
+    select_slider_value,
 )
 from e2e.vizro.paths import (
     categorical_components_value_path,
     dropdown_id_path,
-    slider_value_path,
     switch_path_using_filter_control_id,
 )
 from hamcrest import assert_that, equal_to
@@ -38,10 +38,10 @@ def test_reset_controls_header(dash_br):
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECK_LIST_INSIDE_CONTAINERS, value=2), 1)
     # radioitems change from "setosa" to "versicolor"
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIO_ITEMS_INSIDE_CONTAINERS, value=2), 1)
-    # slider change from "0.1" to "0.6"
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value=2), 1)
-    # range_slider change from "4.3 - 7.9" to "4 - 7"
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value=4), 1)
+    # slider change from "0.1" to "1.1"
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="1.1")
+    # range_slider change from "4.3 - 7.9" to "4.3 - 7"
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value="7.3")
     # date_picker change from "2024/01/01 - 2024/05/29" to "2024/01/10 - 2024/01/26"
     dash_br.multiple_click(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')

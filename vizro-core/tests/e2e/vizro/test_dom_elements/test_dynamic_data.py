@@ -17,14 +17,9 @@ from e2e.vizro.navigation import (
     clear_dropdown,
     page_select,
     select_dropdown_value,
-    select_slider_handler,
+    select_slider_value,
 )
-from e2e.vizro.paths import (
-    actions_progress_indicator_path,
-    categorical_components_value_path,
-    graph_axis_value_path,
-    slider_value_path,
-)
+from e2e.vizro.paths import actions_progress_indicator_path, categorical_components_value_path, graph_axis_value_path
 from e2e.vizro.waiters import callbacks_finish_waiter
 
 
@@ -130,22 +125,22 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
         page_name=cnst.DYNAMIC_DATA_PAGE,
     )
 
-    # move slider to value '20'
-    select_slider_handler(dash_br, elem_id=slider_id, value=2)
+    # move slider to value '40'
+    select_slider_value(dash_br, elem_id=slider_id, value="40")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(first_screen)
 
-    # move slider to value '60'
-    select_slider_handler(dash_br, elem_id=slider_id, value=6)
+    # move slider to value '70'
+    select_slider_value(dash_br, elem_id=slider_id, value="70")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(second_screen)
 
-    # move slider to value '20'
-    select_slider_handler(dash_br, elem_id=slider_id, value=2)
+    # move slider to value '40'
+    select_slider_value(dash_br, elem_id=slider_id, value="40")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
@@ -591,16 +586,16 @@ def test_numerical_filters(dash_br):
     )
 
     # Check slider value
-    check_slider_value(dash_br, expected_end_value="6", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    check_slider_value(dash_br, elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, expected_end_value="6")
     # Check range slider values
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="6", expected_end_value="7"
     )
 
     # Change "min" slider and range slider values to "5"
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, value="5")
     check_graph_is_loaded(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value="5")
     check_graph_is_loaded(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
 
     # Check slider value
@@ -801,9 +796,9 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
 
-    # select '10' points for slider which is showing only 'setosa' data and check that scatter graph
+    # select '50' points for slider which is showing only 'setosa' data and check that scatter graph
     # with dynamic data is empty and that scatter graph with static data is the same
-    select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value="50")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")

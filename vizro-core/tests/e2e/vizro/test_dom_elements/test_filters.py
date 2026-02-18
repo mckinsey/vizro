@@ -15,13 +15,13 @@ from e2e.vizro.navigation import (
     select_dropdown_deselect_all,
     select_dropdown_select_all,
     select_dropdown_value,
+    select_slider_value,
 )
 from e2e.vizro.paths import (
     categorical_components_value_path,
     graph_axis_value_path,
     kpi_card_path,
     select_all_path,
-    slider_value_path,
     switch_path_using_filter_control_id,
     table_ag_grid_cell_value_path,
 )
@@ -306,22 +306,15 @@ def test_checklist_persistence(dash_br, value_paths, select_all_status, options_
 def test_slider(dash_br):
     """Test simple slider filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-
-    # select value '0.6'
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=2), 1)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value="1.1")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    check_slider_value(dash_br, expected_end_value="0.6", elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE)
+    check_slider_value(dash_br, expected_end_value="1.1", elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE)
 
 
-@pytest.mark.xfail(reason="Should be fixed later in vizro by Petar")
-# Right now is failing with the next error:
-# AssertionError: Element number is '4', but expected number is '4.3'
 def test_range_slider(dash_br):
     """Test simple range slider filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-
-    # select min value '4.3'
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, value=4), 1)
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, value="7.3")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, expected_start_value="4.3", expected_end_value="7"
