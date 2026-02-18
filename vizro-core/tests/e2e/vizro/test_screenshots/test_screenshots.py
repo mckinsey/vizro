@@ -14,7 +14,7 @@ from e2e.vizro.navigation import (
 )
 from e2e.vizro.paths import (
     button_id_path,
-    dropdown_arrow_path,
+    dropdown_id_path,
     kpi_card_path,
     nav_card_link_path,
     scatter_point_path,
@@ -389,14 +389,14 @@ def test_reset_controls_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
     )
     # change dropdown controls on the page
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
     dash_br.multiple_click(f"#{cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID}_select_all", 1)
 
     # click reset controls button
     dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
 
     # open dropdown menu to check on the screenshot if select_all is unchecked
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
 
 
 @image_assertion

@@ -2,7 +2,14 @@ import time
 
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_accordion_active
-from e2e.vizro.paths import page_title_path, slider_handler_path, slider_value_path
+from e2e.vizro.paths import (
+    dropdown_deselect_all_path,
+    dropdown_id_path,
+    dropdown_select_all_path,
+    page_title_path,
+    slider_handler_path,
+    slider_value_path,
+)
 from e2e.vizro.waiters import graph_load_waiter
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -70,12 +77,28 @@ def select_slider_handler(driver, elem_id, value, handler_class="rc-slider-handl
 
 
 def clear_dropdown(driver, dropdown_id):
-    selected_options = driver.find_elements(f"div[id='{dropdown_id}'] span[class='Select-value-label']")
-    selected_options_list = ["".join(option.text.split()) for option in selected_options]
-    for option in range(0, len(selected_options_list)):
-        driver.clear_input(f"div[id='{dropdown_id}']")
+    driver.multiple_click(f"{dropdown_id_path(dropdown_id)} .dash-dropdown-clear", 1)
 
 
 def select_dropdown_value(driver, dropdown_id, value):
     """Steps to select value in dropdown."""
-    driver.select_dcc_dropdown(f"div[id='{dropdown_id}']", value)
+    # if dropdown is open, close it to avoid errors with selecting value
+    if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='true']"):
+        driver.multiple_click(dropdown_id_path(dropdown_id), 1)
+    driver.select_dcc_dropdown(dropdown_id_path(dropdown_id), value)
+
+
+def select_dropdown_select_all(driver, dropdown_id):
+    """Steps to select Select All value in dropdown."""
+    # if dropdown is closed, open it to avoid errors with selecting value
+    if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='false']"):
+        driver.multiple_click(dropdown_id_path(dropdown_id), 1)
+    driver.multiple_click(dropdown_select_all_path(dropdown_id), 1)
+
+
+def select_dropdown_deselect_all(driver, dropdown_id):
+    """Steps to select Deselect All value in dropdown."""
+    # if dropdown is open, close it to avoid errors with selecting value
+    if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='false']"):
+        driver.multiple_click(dropdown_id_path(dropdown_id), 1)
+    driver.multiple_click(dropdown_deselect_all_path(dropdown_id), 1)

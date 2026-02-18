@@ -16,7 +16,6 @@ from e2e.vizro.navigation import (
 from e2e.vizro.paths import (
     button_id_path,
     categorical_components_value_path,
-    dropdown_arrow_path,
     graph_axis_value_path,
     kpi_card_path,
     page_title_path,
@@ -104,15 +103,11 @@ def test_set_control_cross_filter_graph(dash_br):
         graph_axis_value_path(graph_id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID, axis_value_number="5", axis_value="1.8"),
         "1.8",
     )
-
-    # open dropdown and check values
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_SET_CONTROL_CROSS_FILTER), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_SET_CONTROL_CROSS_FILTER,
-        all_value=False,
         expected_selected_options=["versicolor"],
-        expected_unselected_options=["SelectAll", "setosa", "virginica"],
+        expected_unselected_options=["setosa", "virginica"],
     )
 
 
@@ -151,13 +146,11 @@ def test_set_control_filter_kpi_card(dash_br):
     dash_br.multiple_click(f"#{cnst.CLICKABLE_KPI_CARD_REFERENCE_ID}", 1, delay=0.1)
 
     # check dropdown filter value
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE,
-        all_value=False,
         expected_selected_options=["C"],
-        expected_unselected_options=["A", "B", "C"],
+        expected_unselected_options=["A", "B"],
     )
 
     # check kpi_card values
@@ -186,13 +179,11 @@ def test_set_control_filter_kpi_card(dash_br):
     dash_br.multiple_click(f"#{cnst.CLICKABLE_KPI_CARD_ID}", 1, delay=0.1)
 
     # check dropdown filter value
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE,
-        all_value=False,
         expected_selected_options=["B"],
-        expected_unselected_options=["A", "B", "C"],
+        expected_unselected_options=["A", "C"],
     )
 
     # check kpi_card values

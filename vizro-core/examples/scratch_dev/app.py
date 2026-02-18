@@ -10,7 +10,7 @@ df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=le
 df["is_setosa"] = df["species"] == "setosa"
 
 data_manager["static_df"] = df
-data_manager["dynamic_df"] = lambda number_of_points=10: df.head(number_of_points)
+data_manager["dynamic_df"] = lambda number_of_points=150: df.head(number_of_points)
 
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
@@ -193,6 +193,18 @@ page_5 = vm.Page(
                         title="Min-float/Max-float/Step-float/Marks-float",
                     ),
                 ),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider(marks=None, title="Marks=None")),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=1, marks=None, title="Step/Marks=None")),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(
+                        min=0.13,
+                        max=10.13,
+                        step=0.5,
+                        marks=None,
+                        title="Min-float/Max-float/Step-float/Marks=None",
+                    ),
+                ),
             ],
             components=[
                 vm.Graph(
@@ -211,7 +223,7 @@ page_5 = vm.Page(
     controls=[
         vm.Parameter(
             targets=["graph_5.data_frame.number_of_points"],
-            selector=vm.Slider(min=10, max=150, step=20, value=10, title="DataFrame Parameter"),
+            selector=vm.Slider(min=10, max=150, step=20, value=150, title="DataFrame Parameter"),
         ),
         vm.Filter(column="sepal_length", selector=vm.Slider(title="No Config")),
         vm.Filter(column="sepal_length", selector=vm.Slider(min=0, max=10, title="Min/Max")),
@@ -253,6 +265,18 @@ page_5 = vm.Page(
                 step=0.5,
                 marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
                 title="Min-float/Max-float/Step-float/Marks-float",
+            ),
+        ),
+        vm.Filter(column="sepal_length", selector=vm.Slider(marks=None, title="Marks=None")),
+        vm.Filter(column="sepal_length", selector=vm.Slider(step=1, marks=None, title="Step/Marks=None")),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(
+                min=0.13,
+                max=10.13,
+                step=0.5,
+                marks=None,
+                title="Min-float/Max-float/Step-float/Marks=None",
             ),
         ),
     ],

@@ -21,6 +21,7 @@ def test_custom_dropdown(dash_br):
         dash_br,
         dropdown_id=cnst.CUSTOM_DROPDOWN_ID,
         expected_selected_options=["versicolor"],
+        multi=False,
     )
 
 

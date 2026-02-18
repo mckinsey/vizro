@@ -6,6 +6,7 @@ import e2e.vizro.constants as cnst
 from e2e.vizro.paths import (
     categorical_components_value_name_path,
     categorical_components_value_path,
+    dropdown_id_path,
     graph_axis_value_path,
     select_all_path,
 )
@@ -152,18 +153,29 @@ def check_selected_categorical_component(
 
 
 def check_selected_dropdown(
-    driver, dropdown_id, expected_selected_options, expected_unselected_options=False, all_value=False
+    driver, dropdown_id, expected_selected_options, expected_unselected_options=False, multi=True
 ):
-    selected_options = driver.find_elements(f"div[id='{dropdown_id}'] span[class='Select-value-label']")
+    # if dropdown is closed, open it to avoid errors with values checking
+    if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='false']"):
+        driver.multiple_click(dropdown_id_path(dropdown_id), 1)
+    if multi is False:
+        selected_options = driver.find_elements(f"{dropdown_id_path(dropdown_id)} .dash-dropdown-value-item span")
+    if multi is True:
+        selected_options = driver.find_elements(
+            f"{dropdown_id_path(dropdown_id)} + div "
+            f"label[class='dash-options-list-option selected dash-dropdown-option'] "
+            f".dash-options-list-option-text span"
+        )
     selected_options_list = ["".join(option.text.split()) for option in selected_options]
     assert_that(selected_options_list, equal_to(expected_selected_options))
     if expected_unselected_options:
-        unselected_options = driver.find_elements(f"div[id='{dropdown_id}'] .VirtualizedSelectOption")
+        unselected_options = driver.find_elements(
+            f"{dropdown_id_path(dropdown_id)} + div "
+            f"label[class='dash-options-list-option dash-dropdown-option'] "
+            f".dash-options-list-option-text span"
+        )
         unselected_options_list = ["".join(option.text.split()) for option in unselected_options]
         assert_that(unselected_options_list, equal_to(expected_unselected_options))
-    if all_value:
-        status = driver.find_element(select_all_path(elem_id=dropdown_id))
-        assert_that(status.is_selected(), equal_to(all_value))
 
 
 def check_exported_file_exists(exported_file):

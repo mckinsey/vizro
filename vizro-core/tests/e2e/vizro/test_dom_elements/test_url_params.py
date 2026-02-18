@@ -5,7 +5,6 @@ from e2e.vizro.checkers import check_selected_categorical_component, check_selec
 from e2e.vizro.navigation import accordion_select, clear_dropdown, page_select, select_dropdown_value
 from e2e.vizro.paths import (
     categorical_components_value_path,
-    dropdown_arrow_path,
     slider_value_path,
     switch_path_using_filter_control_id,
 )
@@ -172,7 +171,6 @@ def test_different_url_parameters(dash_br_driver, expected_decoded_map, dropdown
         options_value_status=radio_items_values,
     )
     # check that dropdown control have correct values
-    dash_br_driver.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br_driver,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
