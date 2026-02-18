@@ -65,18 +65,12 @@ def check_graph_is_empty(driver, graph_id):
 
 
 def check_slider_value(driver, elem_id, expected_end_value, expected_start_value=None):
-    end_value = driver.find_element(f"input[id='{elem_id}_end_value']").get_attribute("value")
-    assert_that(
-        end_value,
-        equal_to(expected_end_value),
-        reason=f"Element number is '{end_value}', but expected number is '{expected_end_value}'",
+    driver.wait_for_element(
+        f"div[id='{elem_id}'] input[class$='dash-range-slider-max-input'][value='{expected_end_value}']"
     )
     if expected_start_value:
-        start_value = driver.find_element(f"input[id='{elem_id}_start_value']").get_attribute("value")
-        assert_that(
-            start_value,
-            equal_to(expected_start_value),
-            reason=f"Element number is '{start_value}', but expected number is '{expected_start_value}'",
+        driver.wait_for_element(
+            f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input'][value='{expected_start_value}']"
         )
 
 

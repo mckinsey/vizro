@@ -25,7 +25,7 @@ def nav_card_link_path(href):
 
 
 def slider_value_path(elem_id, value):
-    return f"div[id='{elem_id}'] div div span:nth-of-type({value})"
+    return f"div[id='{elem_id}'] div div:nth-of-type({value})"
 
 
 def slider_handler_path(elem_id, handler_class="rc-slider-handle"):

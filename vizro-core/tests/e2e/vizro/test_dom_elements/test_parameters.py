@@ -11,8 +11,9 @@ from e2e.vizro.navigation import (
     select_dropdown_deselect_all,
     select_dropdown_select_all,
     select_dropdown_value,
+    select_slider_value,
 )
-from e2e.vizro.paths import categorical_components_value_path, select_all_path, slider_value_path
+from e2e.vizro.paths import categorical_components_value_path, select_all_path
 
 
 def test_sliders_state(dash_br):
@@ -23,11 +24,9 @@ def test_sliders_state(dash_br):
         page_name=cnst.PARAMETERS_PAGE,
     )
 
-    # change slider value to '0.4'
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
     check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
-    # change range slider max value to '7'
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_PARAMETERS, value=4), 1)
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, value="7.3")
     check_graph_is_loaded(dash_br, graph_id=cnst.HISTOGRAM_GRAPH_ID)
 
     # refresh the page
@@ -39,7 +38,7 @@ def test_sliders_state(dash_br):
     )
 
     # check that slider value still '0.4'
-    check_slider_value(dash_br, expected_end_value="0.4", elem_id=cnst.SLIDER_PARAMETERS)
+    check_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, expected_end_value="0.4")
     # check that range slider max value still '7'
     check_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, expected_start_value="4", expected_end_value="7")
 

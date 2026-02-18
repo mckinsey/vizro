@@ -1,9 +1,8 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_graph_is_loaded, check_table_ag_grid_rows_number
-from e2e.vizro.navigation import accordion_select, page_select
+from e2e.vizro.navigation import accordion_select, page_select, select_slider_value
 from e2e.vizro.paths import (
     categorical_components_value_path,
-    slider_value_path,
     table_ag_grid_cell_path_by_row,
     table_ag_grid_cell_value_path,
 )
@@ -19,12 +18,13 @@ def test_filters(dash_br):
 
     # select 'Africa'
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_AGGRID_FILTER, value=2), 1)
-    # select '5000000' as min value
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGESLIDER_AGGRID_FILTER, value=5), 1)
+    # select '6000000' as max value
+    select_slider_value(dash_br, elem_id=cnst.RANGESLIDER_TABLE_FILTER, value="6M")
 
     # check data for the 2nd row
     dash_br.wait_for_text_to_equal(
-        table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=1), "Burundi"
+        table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=1),
+        "Central African Republic",
     )
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=2), "Africa"
@@ -33,14 +33,15 @@ def test_filters(dash_br):
         table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=3), "2007"
     )
     dash_br.wait_for_text_to_equal(
-        table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=4), "49.58"
+        table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=4),
+        "44.74100000000001",
     )
     dash_br.wait_for_text_to_equal(
-        table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=5), "8390505"
+        table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=5), "4369038"
     )
 
-    # check that number of rows with data is 8
-    check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_AG_GRID_ID, expected_rows_num=8)
+    # check that number of rows with data is 14
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_AG_GRID_ID, expected_rows_num=14)
 
 
 def test_interactions(dash_br):

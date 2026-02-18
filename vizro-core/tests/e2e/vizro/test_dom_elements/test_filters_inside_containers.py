@@ -1,8 +1,8 @@
 import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import check_graph_is_loaded, check_slider_value
-from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
-from e2e.vizro.paths import categorical_components_value_path, graph_axis_value_path, slider_value_path
+from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value, select_slider_value
+from e2e.vizro.paths import categorical_components_value_path, graph_axis_value_path
 
 
 def test_dropdown(dash_br):
@@ -38,24 +38,17 @@ def test_slider(dash_br):
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
-
-    # select value '0.6'
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value=2), 1)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="1.1")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
-    check_slider_value(dash_br, expected_end_value="0.6", elem_id=cnst.SLIDER_INSIDE_CONTAINERS)
+    check_slider_value(dash_br, expected_end_value="1.1", elem_id=cnst.SLIDER_INSIDE_CONTAINERS)
 
 
-@pytest.mark.xfail(reason="Should be fixed later in vizro by Petar")
-# Right now is failing with the next error:
-# AssertionError: Element number is '4', but expected number is '4.3'
 def test_range_slider(dash_br):
     """Test simple range slider filter."""
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
-
-    # select min value '4.3'
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value=4), 1)
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value="7.3")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_start_value="4.3", expected_end_value="7"

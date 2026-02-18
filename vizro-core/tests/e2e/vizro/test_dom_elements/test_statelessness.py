@@ -9,7 +9,12 @@ from e2e.vizro.checkers import (
     check_graph_is_loading_selenium,
     check_theme_color,
 )
-from e2e.vizro.navigation import page_select, page_select_selenium
+from e2e.vizro.navigation import (
+    hover_over_and_click_by_css_selector_selenium,
+    page_select,
+    page_select_selenium,
+    select_slider_value,
+)
 from e2e.vizro.paths import button_id_path, categorical_components_value_path, slider_value_path, theme_toggle_path
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -45,7 +50,7 @@ def test_parameters_title(chrome_driver, dash_br):
     )
 
     # change slider value from the second user and check that bar graph title is default ('blue')
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
     check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
     dash_br.wait_for_text_to_equal(".gtitle", "blue")
 
@@ -70,15 +75,15 @@ def test_theme_color(chrome_driver, dash_br):
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, theme_toggle_path()))
     ).click()
-    check_graph_color_selenium(chrome_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color_selenium(chrome_driver, style_background=cnst.STYLE_DARK, color=cnst.RGBA_DARK)
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.presence_of_element_located((By.CSS_SELECTOR, f"html[data-bs-theme='{cnst.THEME_DARK}']"))
     )
 
     # change slider value for the second user and check that theme is default ('light')
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
     check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
-    check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br, style_background=cnst.STYLE_LIGHT, color=cnst.RGBA_LIGHT)
     check_theme_color(dash_br, color=cnst.THEME_LIGHT)
 
 
@@ -99,11 +104,11 @@ def test_export_action(chrome_driver, dash_br):
     )
 
     # change slider values for scatter graph for the first user
+    slider_path = slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=1)
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
-        expected_conditions.element_to_be_clickable(
-            (By.CSS_SELECTOR, slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=3))
-        )
-    ).click()
+        expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, slider_path))
+    )
+    hover_over_and_click_by_css_selector_selenium(dash_br, slider_path)
     check_graph_is_loading_selenium(chrome_driver, graph_id=cnst.SCATTER_GRAPH_ID)
 
     # export scatter data for the second user without changing anything and check if data is correct

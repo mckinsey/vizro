@@ -7,8 +7,6 @@ from e2e.vizro.paths import (
     dropdown_id_path,
     dropdown_select_all_path,
     page_title_path,
-    slider_handler_path,
-    slider_value_path,
 )
 from e2e.vizro.waiters import graph_load_waiter
 from selenium.webdriver import ActionChains
@@ -24,11 +22,18 @@ def click_element_by_xpath_selenium(driver, xpath):
 
 
 def hover_over_element_by_xpath_selenium(driver, xpath):
-    ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.XPATH, xpath)).perform()
+    element = driver.driver.find_element(By.XPATH, xpath)
+    ActionChains(driver.driver).move_to_element(element).perform()
 
 
 def hover_over_element_by_css_selector_selenium(driver, css_selector):
-    ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.CSS_SELECTOR, css_selector)).perform()
+    element = driver.driver.find_element(By.CSS_SELECTOR, css_selector)
+    ActionChains(driver.driver).move_to_element(element).perform()
+
+
+def hover_over_and_click_by_css_selector_selenium(driver, css_selector):
+    element = driver.driver.find_element(By.CSS_SELECTOR, css_selector)
+    ActionChains(driver.driver).move_to_element(element).click().perform()
 
 
 def modifier_click(dash_br, selector, key):
@@ -71,9 +76,11 @@ def page_select_selenium(driver, page_path, page_name, timeout=cnst.SELENIUM_WAI
         )
 
 
-def select_slider_handler(driver, elem_id, value, handler_class="rc-slider-handle"):
-    driver.multiple_click(slider_value_path(elem_id=elem_id, value=value), 1)
-    driver.multiple_click(slider_handler_path(elem_id=elem_id, handler_class=handler_class), 1)
+def select_slider_value(driver, elem_id, value):
+    slider_values = driver.find_elements(f"div[id='{elem_id}'] div div")
+    for slider_value in slider_values:
+        if slider_value.text == value:
+            driver.click_at_coord_fractions(slider_value, fx=0, fy=0)
 
 
 def clear_dropdown(driver, dropdown_id):
