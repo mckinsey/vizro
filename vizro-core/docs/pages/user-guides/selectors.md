@@ -25,6 +25,62 @@ If you have binary data (such as `False`/`True` or `0`/`1`), you might prefer to
 
     The later is required if you want to provide different display labels to your option values or in case you want to provide boolean values as options. In this case, you need to provide a string label for your boolean values as boolean values cannot be displayed properly as labels in the underlying Dash components.
 
+### Styled dropdown
+
+There are two predefined dropdown styles that can be customized using the variant argument. If no `variant` is specified, the default style applied is `variant="filled"`.
+
+!!! example "Styled dropdown"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="13"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Styled dropdown",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown(variant="plain")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color: species
+                type: graph
+            controls:
+              - column: species
+                selector:
+                  type: dropdown
+                  variant: plain
+                type: filter
+            title: Styled dropdown
+        ```
+
+    === "Result"
+
+        [![Dropdown]][dropdown]
+
 ## Numerical selectors
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
@@ -192,5 +248,6 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
+[dropdown]: ../../assets/user_guides/selectors/dropdown.png
 [infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png

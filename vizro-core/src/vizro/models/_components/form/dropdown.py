@@ -55,12 +55,12 @@ class Dropdown(VizroBaseModel):
         Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
     ]
     title: str = Field(default="", description="Title to be displayed")
-    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
-    #  but this requires pydantic >= 2.9.
     variant: Literal["plain", "filled"] = Field(
         default="filled",
         description="Predefined styles to choose from. Options are `filled` or `plain`.",
     )
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
     description: Annotated[
         Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
