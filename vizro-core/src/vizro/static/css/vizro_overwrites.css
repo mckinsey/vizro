@@ -95,8 +95,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   padding-left: 0;
 }
 
-.container-controls-panel .dropdown, .dropdown-plain {
-  max-width: 240px;
+.container-controls-panel .dash-dropdown {
   min-width: 160px;
 }
 
