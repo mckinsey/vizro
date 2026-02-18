@@ -1,7 +1,5 @@
 from plotly import graph_objects as go
 
-from vizro.themes import colors
-
 dashboard_overrides = go.layout.Template(
     layout=go.Layout(
         margin_b=16,
