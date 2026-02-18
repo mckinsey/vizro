@@ -291,10 +291,22 @@ page_6 = vm.Page(
                 vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="filled", title="Single Filled")),
                 vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain", title="Multi Plain")),
                 vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="filled", title="Multi Filled")),
-                vm.Filter(column="long_string", selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain")),
-                vm.Filter(column="long_string", selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled")),
-                vm.Filter(column="long_string", selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain")),
-                vm.Filter(column="long_string", selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled")),
+                vm.Filter(
+                    column="long_string",
+                    selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain"),
+                ),
+                vm.Filter(
+                    column="long_string",
+                    selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled"),
+                ),
+                vm.Filter(
+                    column="long_string",
+                    selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain"),
+                ),
+                vm.Filter(
+                    column="long_string",
+                    selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled"),
+                ),
             ],
             components=[
                 vm.Graph(
@@ -306,7 +318,7 @@ page_6 = vm.Page(
                         color_discrete_map=SPECIES_COLORS,
                     ),
                 ),
-                vm.Graph(figure=px.scatter(long_df, x="x", y="y"))
+                vm.Graph(figure=px.scatter(long_df, x="x", y="y")),
             ],
         )
     ],
@@ -315,14 +327,19 @@ page_6 = vm.Page(
         vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="filled", title="Filled")),
         vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain", title="Plain")),
         vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="filled", title="Filled")),
-        vm.Filter(column="long_string",
-                  selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain")),
-        vm.Filter(column="long_string",
-                  selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled")),
-        vm.Filter(column="long_string",
-                  selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain")),
-        vm.Filter(column="long_string",
-                  selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled")),
+        vm.Filter(
+            column="long_string", selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain")
+        ),
+        vm.Filter(
+            column="long_string",
+            selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled"),
+        ),
+        vm.Filter(
+            column="long_string", selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain")
+        ),
+        vm.Filter(
+            column="long_string", selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled")
+        ),
     ],
 )
 
