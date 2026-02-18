@@ -341,7 +341,6 @@ underlying component may change in the future.""",
             ),
             "config": {
                 "frameMargins": 0,
-                "modeBarButtonsToRemove": ["toImage"],
             },
         }
         # While most components fully override defaults with values from `extra`,
