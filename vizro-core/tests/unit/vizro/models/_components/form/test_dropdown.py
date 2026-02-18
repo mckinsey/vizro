@@ -182,7 +182,7 @@ class TestDropdownBuild:
                     placeholder="Select option",
                     persistence=True,
                     persistence_type="session",
-                    className="dropdown",
+                    className="",
                 ),
             ]
         )
@@ -216,7 +216,7 @@ class TestDropdownBuild:
                     persistence=True,
                     persistence_type="session",
                     placeholder="Select option",
-                    className="dropdown",
+                    className="",
                     clearable=True,
                 ),
             ]
@@ -262,7 +262,7 @@ class TestDropdownBuild:
                     persistence=True,
                     persistence_type="session",
                     placeholder="Select option",
-                    className="dropdown",
+                    className="",
                 ),
             ]
         )
@@ -285,7 +285,7 @@ class TestDropdownBuild:
                     placeholder="Select option",
                     persistence=True,
                     persistence_type="session",
-                    className="dropdown--plain",
+                    className="dropdown-plain",
                 ),
             ]
         )
