@@ -113,8 +113,10 @@ form = vm.Page(
             components=[
                 UserInput(title="User Input", placeholder="Enter your name"),
                 TextArea(title="Text Area", placeholder="Enter your multi-line text"),
-                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Multi-select Dropdown"),
-                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Single-select Dropdown", multi=False),
+                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Multi-select dropdown"),
+                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Single-select dropdown", multi=False),
+                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Multi-select inline dropdown", variant="plain"),
+                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Single-select inline dropdown", multi=False, variant="plain"),
                 vm.RadioItems(options=["Option 1", "Option 2", "Option 3"], title="Radio Items"),
                 vm.Checklist(options=["Option 1", "Option 2", "Option 3"], title="Checklist"),
             ],
