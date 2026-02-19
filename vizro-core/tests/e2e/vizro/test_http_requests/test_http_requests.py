@@ -66,8 +66,8 @@ def test_page_with_one_chart(page, http_requests_paths):
     page.locator(f"a[href='/{cnst.PAGE_WITH_ONE_CHART}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # delete one value from filter (1 http)
-    page.get_by_text("×").nth(0).click()  # noqa RUF001
+    # clear filter (1 http)
+    page.locator(".dash-dropdown-clear").click()
     check_http_requests_count(page, http_requests_paths, 3)
 
     # checking that no additional http has occurred
@@ -151,8 +151,8 @@ def test_dynamic_parametrisation(page, http_requests_paths):
     check_http_requests_count(page, http_requests_paths, 5)
 
     # check that "Oceania" present in dropdown filter and select it (1 http)
-    page.locator(".Select-arrow").click()
-    page.locator('div[class="VirtualizedSelectOption"]').get_by_text("Oceania").click()
+    page.locator(".dash-dropdown").click()
+    page.locator('div[class="dash-options-list dash-dropdown-options"]').get_by_text("Oceania").click()
     check_http_requests_count(page, http_requests_paths, 6)
 
     # checking that no additional http has occurred

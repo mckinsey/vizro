@@ -42,9 +42,13 @@ def test_slider(dash_br):
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="1.1")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
-    check_slider_value(dash_br, expected_end_value="1.1", elem_id=cnst.SLIDER_INSIDE_CONTAINERS)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="0.6")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, axis_value_number="5", axis_value="6")
+    check_slider_value(
+        dash_br,
+        elem_id=cnst.SLIDER_INSIDE_CONTAINERS,
+        expected_end_value="0.6",
+    )
 
 
 def test_range_slider(dash_br):

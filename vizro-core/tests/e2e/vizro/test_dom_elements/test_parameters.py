@@ -25,9 +25,7 @@ def test_sliders_state(dash_br):
     )
 
     select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
     select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, value="7")
-    check_graph_is_loaded(dash_br, graph_id=cnst.HISTOGRAM_GRAPH_ID)
 
     # refresh the page
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)

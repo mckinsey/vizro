@@ -3,6 +3,7 @@ import pytest
 from e2e.vizro.checkers import (
     check_graph_is_empty,
     check_graph_is_loaded,
+    check_graph_x_axis_value,
     check_graph_y_axis_value,
     check_selected_categorical_component,
     check_selected_dropdown,
@@ -301,9 +302,13 @@ def test_checklist_persistence(dash_br, value_paths, select_all_status, options_
 def test_slider(dash_br):
     """Test simple slider filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value="1.1")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    check_slider_value(dash_br, expected_end_value="1.1", elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value="0.6")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, axis_value_number="5", axis_value="6")
+    check_slider_value(
+        dash_br,
+        elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE,
+        expected_end_value="0.6",
+    )
 
 
 def test_range_slider(dash_br):
