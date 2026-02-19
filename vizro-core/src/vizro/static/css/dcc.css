@@ -32,7 +32,7 @@
 .dash-dropdown-content {
   background: var(--bs-dropdown-bg);
   border-radius: var(--bs-border-radius);
-  box-shadow: var(--bs-box-shadow-sm);
+  box-shadow: none;
   padding-bottom: 4px;
 }
 
