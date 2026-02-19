@@ -11,9 +11,9 @@
 [data-bs-theme="dark"] {
     --bs-body-bg: #141721; /* QBDS: --surface-bg-accent, applied to main content area */
     --bs-tertiary-bg: #181b26; /* QBDS: --surface-bg-primary, applied to side navigation */
-    --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3, used for fill colors */
-    --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover */
-    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent */
+    --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3, used for fill colors e.g dropdown, cards, form inputs  */
+    --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover, used for hover effects */
+    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent, used for focus effects */
     --bs-card-bg: var(--bs-primary-bg-subtle);
     --bs-dropdown-bg: var(--bs-primary-bg-subtle);
   }
@@ -21,9 +21,9 @@
   [data-bs-theme="light"] {
     --bs-body-bg: #ffffff; /* QBDS: --surface-primary , applied to main content area */
     --bs-tertiary-bg: #F5F6F6; /* QBDS: --surface-accent , applied to side navigation */
-    --bs-primary-bg-subtle: #f5f6f6; /* QBDS: --fill-onsurface-ui-3, used for fill colors */
-    --bs-highlight-bg: #14172114; /* QBDS: --stateslayer-overlay-hover */
-    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent */
+    --bs-primary-bg-subtle: #f5f6f6; /* QBDS: --fill-onsurface-ui-3, used for fill colors e.g dropdown, cards, form inputs  */
+    --bs-highlight-bg: #14172114; /* QBDS: --stateslayer-overlay-hover, used for hover effects */
+    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent, used for focus effects */
     --bs-card-bg: var(--bs-primary-bg-subtle);
     --bs-dropdown-bg: var(--bs-body-bg);
   }
