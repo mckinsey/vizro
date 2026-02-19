@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import Annotated, cast
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -31,12 +31,18 @@ class NavLink(VizroBaseModel):
         Field(default="", description="Icon name from Google Material icons library."),
     ]
     _nav_selector: Accordion = PrivateAttr()
+    _nav_position: Literal["left", "top"] = PrivateAttr(default="left")
 
     @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
         self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+
+        if self.icon and self._nav_position == "top":
+            raise ValueError(
+                "You cannot use icons with top navigation. Icons are only supported for the left navigation."
+            )
 
     @_log_call
     def build(self, *, active_page_id=None):
@@ -45,12 +51,14 @@ class NavLink(VizroBaseModel):
         # from homepage to a page within the Accordion and there are several Accordions within the page.
         from vizro.models import Page
 
+        is_left_nav = self._nav_position == "left"
+
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
         first_page = cast(Page, model_manager[first_page_id])
 
-        nav_link = dbc.NavLink(
+        nav_link_children = (
             [
                 html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-tooltip-target"),
                 dbc.Tooltip(
@@ -58,11 +66,16 @@ class NavLink(VizroBaseModel):
                     placement="right",
                     target=f"{self.id}-tooltip-target",
                 ),
-            ],
+            ]
+            if is_left_nav
+            else [
+                html.Span(self.label),
+            ]
+        )
+        nav_link = dbc.NavLink(
+            nav_link_children,
             id=self.id,
             href=get_relative_path(first_page.path),
-            # `active` is required to keep the icon highlighted when navigating through different pages inside
-            # the nested accordion
             active=item_active,
         )
 

@@ -26,7 +26,6 @@ class NavBar(VizroBaseModel):
 
     Abstract: Usage documentation
         [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)
-
     """
 
     type: Literal["nav_bar"] = "nav_bar"
@@ -37,28 +36,25 @@ class NavBar(VizroBaseModel):
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
     items: list[NavLink] = []
+    position: Literal["left", "top"] = Field(
+        default="left", description="Position of the navigation bar, either on the left sidebar or top header."
+    )
 
     @_log_call
     def pre_build(self):
-        from vizro.models import Page
+        self.items = self.items or self._create_items_from_pages()
 
-        self.items = self.items or [
-            NavLink(
-                # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
-                # then we prefer to have the title rather than id of that page be used
-                label=cast(Page, model_manager[group_title]).title
-                if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
-                else group_title,
-                pages=pages,
-            )
-            for group_title, pages in self.pages.items()
-        ]
+        # Sets nav position for items
+        for nav_link in self.items:
+            nav_link._nav_position = self.position
 
         for position, item in enumerate(self.items, 1):
-            # The default icons are named filter_1, filter_2, etc. up to filter_9.
-            # If there are more than 9 items, then the 10th and all subsequent items are named filter_9+.
-            icon_default = f"filter_{position}" if position <= 9 else "filter_9+"  # noqa: PLR2004
-            item.icon = item.icon or icon_default
+            # The default icons are added only when position == "left"
+            if self.position == "left":
+                # The default icons are named filter_1, filter_2, etc. up to filter_9.
+                # If there are more than 9 items, then the 10th and all subsequent items are named filter_9+.
+                icon_default = f"filter_{position}" if position <= 9 else "filter_9+"  # noqa: PLR2004
+                item.icon = item.icon or icon_default
 
         # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
         # here.
@@ -83,6 +79,24 @@ class NavBar(VizroBaseModel):
             # Active page is not in navigation at all, so hide navigation panel.
             nav_panel = dbc.Nav(id="nav-panel", className="d-none invisible")
 
-        # `flex-column` ensures that we return a vertical NavBar. In the future, we could use that className
-        # to create a horizontal NavBar.
-        return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className="flex-column"), nav_panel])
+        # `flex-column` ensures that we return a vertical NavBar. For top position, we use `navbar-top` className.
+        navbar_class = "navbar-top" if self.position == "top" else "flex-column"
+        return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className=navbar_class), nav_panel])
+
+    def _create_items_from_pages(self):
+        """Creates items from pages."""
+        from vizro.models import Page
+
+        return [
+            NavLink(
+                # If the group title is a page ID (as is the case if you do `NavBar(pages=["page_1_id", "page_2_id"])`,
+                # then we prefer to have the title rather than id of that page be used
+                label=(
+                    cast(Page, model_manager[group_title]).title
+                    if group_title in [page.id for page in model_manager._get_models(model_type=Page)]
+                    else group_title
+                ),
+                pages=pages,
+            )
+            for group_title, pages in self.pages.items()
+        ]

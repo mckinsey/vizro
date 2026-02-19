@@ -66,6 +66,7 @@
   display: flex;
   gap: 8px;
   height: 100%;
+  width: max-content;
 }
 
 #header-controls {
@@ -360,4 +361,31 @@ Current logic:
 
 .card-wrapper-actions > .card:hover {
   border: 1px solid var(--bs-border-color);
+}
+
+#header-left .navbar-top {
+  border: none;
+  display: flex;
+  gap: 2rem;
+  height: 100%;
+  padding: 0;
+  padding-left: 24px;
+}
+
+#header-left .navbar-top .nav-link {
+  border-bottom: 1px solid transparent;
+  font-size: 1rem;
+  padding: 0;
+  white-space: nowrap;
+  width: unset;
+}
+
+#header-left .navbar-top .nav-link:hover {
+  border-bottom: 1px solid var(--bs-primary) !important;
+}
+
+#header-left .navbar-top .nav-link:active,
+#header-left .navbar-top .nav-link.active {
+  border-bottom: 1px solid var(--bs-primary) !important;
+  color: var(--bs-primary) !important;
 }
