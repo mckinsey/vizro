@@ -1,5 +1,8 @@
 name: Checks for Vizro
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: vizro-core

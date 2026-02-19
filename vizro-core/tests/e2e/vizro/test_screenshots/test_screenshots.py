@@ -1,4 +1,3 @@
-import os
 import time
 
 import pytest
@@ -169,14 +168,14 @@ def test_container_variants_light_theme(dash_br):
 
 @image_assertion
 def test_container_variants_dark_theme(dash_br):
-    style_background = cnst.STYLE_TRANSPARENT_FIREFOX if os.getenv("BROWSER") == "firefox" else cnst.STYLE_TRANSPARENT
+    style_background = cnst.STYLE_DARK
     accordion_select(dash_br, accordion_name=cnst.CONTAINER_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.CONTAINER_VARIANTS_PAGE,
     )
     dash_br.multiple_click(theme_toggle_path(), 1)
-    check_graph_color(dash_br, style_background=style_background, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br, style_background=style_background, color=cnst.RGBA_DARK)
     check_theme_color(dash_br, color=cnst.THEME_DARK)
 
 
@@ -535,7 +534,7 @@ def test_filter_interactions_page(dash_br_driver):
 def test_filter_interactions_dark_theme_page(dash_br_driver):
     graph_load_waiter(dash_br_driver)
     dash_br_driver.multiple_click(theme_toggle_path(), 1)
-    check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br_driver, style_background=cnst.STYLE_DARK, color=cnst.RGBA_DARK)
     check_theme_color(dash_br_driver, color=cnst.THEME_DARK)
 
 

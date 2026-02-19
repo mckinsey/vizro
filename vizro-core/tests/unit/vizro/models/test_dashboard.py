@@ -328,6 +328,9 @@ class TestDashboardBuild:
             ternary_bgcolor="rgba(0, 0, 0, 0)",
             title_pad_l=0,
             title_pad_r=0,
+            title_font_size=16,
+            xaxis_title_font_size=14,
+            yaxis_title_font_size=14,
         )
         dashboard_vizro_light = pio.templates["vizro_light"]
         dashboard_vizro_light.layout.update(
@@ -344,6 +347,9 @@ class TestDashboardBuild:
             ternary_bgcolor="rgba(0, 0, 0, 0)",
             title_pad_l=0,
             title_pad_r=0,
+            title_font_size=16,
+            xaxis_title_font_size=14,
+            yaxis_title_font_size=14,
         )
 
         expected_dashboard_container = dmc.MantineProvider(
