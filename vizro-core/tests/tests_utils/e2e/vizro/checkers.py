@@ -170,21 +170,25 @@ def check_selected_categorical_component(
 
 
 def check_selected_dropdown(
-    driver, dropdown_id, expected_selected_options, expected_unselected_options=False, multi=True
+    driver, dropdown_id, expected_selected_options, expected_unselected_options=None, multi=True
 ):
     # if dropdown is closed, open it to avoid errors with values checking
     if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='false']"):
         driver.multiple_click(dropdown_id_path(dropdown_id), 1)
-    if multi is False:
-        selected_options = driver.find_elements(f"{dropdown_id_path(dropdown_id)} .dash-dropdown-value-item span")
-    if multi is True:
+    if multi:
         selected_options = driver.find_elements(
             f"{dropdown_id_path(dropdown_id)} + div "
-            f"label[class='dash-options-list-option selected dash-dropdown-option'] "
-            f".dash-options-list-option-text span"
+            "label[class='dash-options-list-option selected dash-dropdown-option'] "
+            ".dash-options-list-option-text span"
         )
+    else:
+        selected_options = driver.find_elements(f"{dropdown_id_path(dropdown_id)} .dash-dropdown-value-item span")
+
+    # creating list of selected options
     selected_options_list = ["".join(option.text.split()) for option in selected_options]
+    # comparing selected options with expected
     assert_that(selected_options_list, equal_to(expected_selected_options))
+
     if expected_unselected_options:
         unselected_options = driver.find_elements(
             f"{dropdown_id_path(dropdown_id)} + div "

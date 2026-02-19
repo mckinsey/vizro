@@ -124,7 +124,6 @@ def test_reset_controls_page(dash_br):
         dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID,
         expected_selected_options=["2007"],
         expected_unselected_options=[
-            "SelectAll",
             "1952",
             "1957",
             "1962",

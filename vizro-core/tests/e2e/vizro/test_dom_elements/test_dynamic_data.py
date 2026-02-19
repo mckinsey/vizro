@@ -88,7 +88,7 @@ def test_dropdown_values_not_disappear(dash_br):
         expected_selected_options=["setosa"],
         expected_unselected_options=["versicolor", "virginica"],
     )
-    # Choose "versicolor" and "virginica"
+    # Select "versicolor" and "virginica"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
     # Check that all values are selected
@@ -169,8 +169,8 @@ def test_dropdown_filter_multi(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
 
-    # Choose "versicolor" value and check that graph is reloaded
     clear_dropdown(dash_br, cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID)
+    # Select "versicolor" value and check that graph is reloaded
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
@@ -217,7 +217,7 @@ def test_dropdown_filter_select_all_value(dash_br):
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
-    # delete options 'versicolor' and 'virginica'
+    # unselect 'versicolor' and 'virginica'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
     # Remove "versicolor" and "virginica" from the dynamic data
@@ -256,7 +256,7 @@ def test_dropdown_filter_select_all_value(dash_br):
         expected_selected_options=["setosa"],
         expected_unselected_options=["versicolor"],
     )
-    # Choose "versicolor"
+    # Select "versicolor"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     # Check that only "setosa" and "versicolor" selected and listed
     check_selected_dropdown(
@@ -282,9 +282,9 @@ def test_dropdown_filter_select_all_value(dash_br):
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=[],
     )
-    # delete option 'versicolor'
+    # unselect 'versicolor'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
-    # Check that "setosa" is selected and "versicolor" just listed
+    # check that "setosa" is selected and "versicolor" just listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
@@ -319,7 +319,7 @@ def test_dropdown_filter(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
 
-    # Choose "versicolor" value and check that graph is reloaded
+    # Select "versicolor" value and check that graph is reloaded
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID, value="versicolor")
     check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
@@ -500,7 +500,7 @@ def test_checklist_filter(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
 
-    # Choose "versicolor" value and check that graph is reloaded
+    # Select "versicolor" value and check that graph is reloaded
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=1), 1)
     # TODO: change value to 3 after fixing https://github.com/McK-Internal/vizro-internal/issues/1356
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1)
@@ -539,7 +539,7 @@ def test_radio_items_filter(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
 
-    # Choose "versicolor" value and check that graph is reloaded
+    # Select "versicolor" value and check that graph is reloaded
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID, value=2), 1)
     check_graph_is_loaded(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
 
@@ -638,7 +638,7 @@ def test_datepicker_range_filters(dash_br):
         dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="1", axis_value="0"
     )
     check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="4", axis_value="6"
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="7", axis_value="6"
     )
 
     # check current date values
@@ -660,7 +660,7 @@ def test_datepicker_range_filters(dash_br):
         dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="6", axis_value="5"
     )
 
-    # open datepicker calendar and choose dates from 6 to 10 March 2024
+    # open datepicker calendar and select dates from 6 to 10 March 2024
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
@@ -724,7 +724,7 @@ def test_datepicker_single_filters(dash_br):
         dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="4"
     )
 
-    # open datepicker calendar and choose 6 March 2024
+    # open datepicker calendar and select 6 March 2024
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)

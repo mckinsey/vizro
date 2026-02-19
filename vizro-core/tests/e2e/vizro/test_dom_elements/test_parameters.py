@@ -56,7 +56,7 @@ def test_none_parameter(dash_br):
         f"div[id='{cnst.BAR_GRAPH_ID}'] g:nth-of-type(3) g:nth-of-type(45) path[style*='(0, 0, 255)'"
     )
 
-    # choose NONE parameter
+    # select NONE parameter
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_PARAMETERS_TWO, value="NONE")
     check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
 

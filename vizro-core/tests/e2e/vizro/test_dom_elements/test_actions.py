@@ -449,7 +449,7 @@ def test_default_property_controls(dash_br):
         page_name=cnst.ACTION_CONTROL_SHORTCUT_PAGE,
     )
 
-    # choose 'petal_length' for filter
+    # select 'petal_length'
     dash_br.multiple_click(
         categorical_components_value_path(elem_id=cnst.ACTION_CONTROL_SHORTCUT_FILTER_ID, value=2), 1, delay=0.1
     )

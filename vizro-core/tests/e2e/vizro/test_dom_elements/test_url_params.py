@@ -250,7 +250,7 @@ def test_url_params_encoding_and_page_refresh_datepicker(dash_br):
         dash_br,
         page_name=cnst.DATEPICKER_PAGE,
     )
-    # open datepicker calendar and choose dates from 17 to 18 May 2016
+    # open datepicker calendar and select dates from 17 to 18 May 2016
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)

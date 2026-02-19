@@ -14,7 +14,7 @@ def test_custom_dropdown(dash_br):
         dash_br,
         page_name=cnst.CUSTOM_COMPONENTS_PAGE,
     )
-    # choose 'versicolor' value
+    # select 'versicolor'
     select_dropdown_value(dash_br, dropdown_id=cnst.CUSTOM_DROPDOWN_ID, value="versicolor")
     check_graph_y_axis_value(
         dash_br, graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID, axis_value_number="5", axis_value="1.8"

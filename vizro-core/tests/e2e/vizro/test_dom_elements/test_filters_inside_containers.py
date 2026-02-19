@@ -1,6 +1,10 @@
 import e2e.vizro.constants as cnst
 import pytest
-from e2e.vizro.checkers import check_graph_is_loaded, check_graph_y_axis_value, check_slider_value
+from e2e.vizro.checkers import (
+    check_graph_is_loaded,
+    check_graph_x_axis_value,
+    check_slider_value,
+)
 from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value, select_slider_value
 from e2e.vizro.paths import categorical_components_value_path
 
@@ -60,11 +64,10 @@ def test_range_datepicker(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
 
-    # open datepicker calendar and choose dates from 10 to 26 January 2024
+    # open datepicker calendar and select dates from 10 to 26 January 2024
     dash_br.multiple_click(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="10 January 2024"]', 1)
     dash_br.multiple_click('button[aria-label="26 January 2024"]', 1)
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', "2024/01/10 – 2024/01/26")  # noqa: RUF001
-
-    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, axis_value_number="7", axis_value="4.4")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, axis_value_number="7", axis_value="4.9")

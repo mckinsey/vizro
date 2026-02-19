@@ -59,13 +59,13 @@ def test_dropdown_select_all(dash_br):
 def test_dropdown_options_value(dash_br):
     """Test interacts with options values in dropdown.
 
-    1. Delete 'virginica' option.
+    1. Unselect 'virginica' option.
     2. Check how options in dropdown looks like.
     3. Select 'virginica' again.
     4. Check how options in dropdown looks like.
     """
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # uncheck 'virginica'
+    # unselect 'virginica'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_selected_dropdown(
@@ -74,7 +74,7 @@ def test_dropdown_options_value(dash_br):
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=["virginica"],
     )
-    # choose 'virginica' again
+    # select 'virginica'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_selected_dropdown(
@@ -88,7 +88,7 @@ def test_dropdown_options_value(dash_br):
 def test_dropdown_persistence_with_two_values(dash_br):
     """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # uncheck 'virginica'
+    # unselect 'virginica'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
@@ -209,11 +209,11 @@ def test_categorical_filters(dash_br, filter_id):
         ),
     ],
     ids=[
-        "unchecked one option",
-        "unchecked all options",
-        "unchecked 'Select All' only",
-        "checked 'Select All' only",
-        "check all options manually",
+        "unselected one option",
+        "unselected all options",
+        "unselected 'Select All' only",
+        "selected 'Select All' only",
+        "selected all options manually",
     ],
 )
 def test_checklist(dash_br, value_paths, select_all_status, options_value_status):
@@ -271,9 +271,9 @@ def test_checklist(dash_br, value_paths, select_all_status, options_value_status
         ),
     ],
     ids=[
-        "unchecked one option",
-        "unchecked all options",
-        "checked 'Select All' only",
+        "unselected one option",
+        "unselected all options",
+        "selected 'Select All' only",
     ],
 )
 def test_checklist_persistence(dash_br, value_paths, select_all_status, options_value_status):
@@ -284,7 +284,6 @@ def test_checklist_persistence(dash_br, value_paths, select_all_status, options_
         page_path=cnst.FILTERS_PAGE_PATH,
         page_name=cnst.FILTERS_PAGE,
     )
-    # dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=2), 1)
     for path in value_paths:
         dash_br.multiple_click(path, 1)
     check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
