@@ -118,6 +118,67 @@ Vizro is primarily built out of [Dash Bootstrap components](https://www.dash-boo
 
 Vizro registers two new [plotly themes](https://plotly.com/python/templates/), `vizro_dark` and `vizro_light`, that are used in a Vizro dashboard. You can [modify these themes](#modify-vizro-plotly-themes) globally or for individual charts. The themes can also be [used outside a Vizro dashboard](#charts-outside-a-dashboard) for standalone charts.
 
+### Palettes
+
+Vizro's plotly themes define their own default [qualitative](https://plotly.com/python/discrete-color/) and [continuous](https://plotly.com/python/colorscales/) palettes. These are used automatically in a Vizro dashboard or when using the Vizro themes outside a dashboard.
+
+[`vizro.themes`][vizro.themes] provides direct access to these palettes, alternatives, and the underlying color system. Each color has been carefully selected to ensure visual consistency, professional aesthetics, and accessibility. All our color palettes are colorblind-safe.
+
+The [API reference][vizro.themes.palettes] shows all the available palettes, split into three categories:
+
+- Qualitative (`palettes.qualitative`): 10 discrete colors for representing categorical data.
+- Sequential (`palettes.sequential_*`): gradual color progressions for ordered or continuous data.
+- Diverging (`palettes.diverging_*`): two-tone color scales designed for data with a meaningful center point.
+
+All the colors that make up the palettes and our color system are available through [`vizro.themes.colors`][vizro.themes.colors].
+
+!!! note "Default palette behavior"
+
+    Plotly charts automatically apply `palettes.qualitative` to categorical data and `palettes.sequential` to continuous numerical data. Override these defaults by explicitly setting `color_discrete_sequence` or `color_continuous_scale` parameters in your chart function.
+
+!!! example "Use Vizro palettes"
+
+    === "Qualitative palette"
+
+        ```python
+        from vizro.themes import palettes
+        import vizro.plotly.express as px
+
+        df = px.data.iris()
+        px.scatter(df, x="sepal_length", y="petal_width", color="species", color_discrete_sequence=palettes.qualitative)
+        ```
+
+    === "Sequential palette"
+
+        ```python
+        from vizro.themes import palettes
+        import vizro.plotly.express as px
+
+        df = px.data.tips()
+        px.density_heatmap(df, x="total_bill", y="tip", color_continuous_scale=palettes.sequential_red)
+        ```
+
+    === "Diverging palette"
+
+        ```python
+        from vizro.themes import palettes
+        import vizro.plotly.express as px
+        import numpy as np
+
+        # Create data with positive and negative values
+        data = np.random.randn(20, 20)
+        px.imshow(data, color_continuous_scale=palettes.diverging_red_cyan, color_continuous_midpoint=0)
+
+    === "Single color"
+
+        ```python
+        from vizro.themes import colors
+        import vizro.plotly.express as px
+
+        df = px.data.gapminder().query("year == 2007")
+        px.bar(df.nlargest(10, "pop"), x="country", y="pop", color_discrete_sequence=[colors.dark_purple])
+        ```
+
 ### Modify Vizro plotly themes
 
 You can customize the built-in `vizro_dark` and `vizro_light` themes by modifying their properties directly. This is useful when you want to keep most of the Vizro styling but adjust specific elements like colors, fonts, or other visual properties. Vizro templates are automatically registered to `plotly.io.templates` so you can [access and modify them like any other Plotly template](https://plotly.com/python/templates/).
@@ -294,90 +355,7 @@ Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some 
 
     If you want to style your entire Dash app with Vizro Bootstrap and have your plotly figures automatically match then we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples of how to do this in their [documentation on styling plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
 
-## Vizro colors and palettes
 
-The `vizro.themes` module provides direct access to Vizro's color system. Each color has been carefully selected by our design team to ensure visual consistency, professional aesthetics, and accessibility. All color palettes are colorblind-safe, making your visualizations accessible to a wider audience.
-
-For a complete list of available colors and palettes, refer to the [API reference for themes](../API-reference/themes.md).
-
-### Colors
-
-Individual colors are accessible via `vizro.themes.colors`. The color system is organized into three categories:
-
-- **Qualitative colors**: Ten distinct colors designed for categorical data visualization. Examples include `blue`, `dark_purple`, `turquoise`, `dark_green`, `light_purple`, `light_green`, `light_pink`, `dark_pink`, `yellow`, and `gray`.
-- **Sequential colors**: Organized into seven color families (blue, purple, turquoise, green, pink, yellow, and grey), each containing 9 shades numbered from 100 (lightest) to 900 (darkest).
-- **Utility colors**: Basic colors including `white`, `black`, and `transparent` for special styling needs.
-
-!!! example "Use Vizro colors"
-
-    === "Single color"
-
-        ```python
-        from vizro.themes import colors
-        import plotly.express as px
-
-        df = px.data.gapminder().query("year == 2007")
-        fig = px.bar(df.nlargest(10, "pop"), x="country", y="pop", color_discrete_sequence=[colors.indigo])
-        fig.show()
-        ```
-
-**Color reference** ![Color reference](../../assets/user_guides/themes/colors.png)
-
-### Palettes
-
-Pre-configured color palettes are accessible via `vizro.themes.palettes`. These multi-color scales are optimized for different visualization patterns:
-
-- **Qualitative palette**: A carefully curated sequence of distinct colors (`palettes.qualitative`) for representing categorical data with multiple categories.
-- **Sequential palettes**: Seven color families (blue, purple, turquoise, green, pink, yellow, and grey) provide gradual color progressions for ordered or continuous data. Access them as `palettes.sequential_<color>` (e.g., `palettes.sequential_red`).
-- **Diverging palettes**: Two-tone color scales designed for data with a meaningful center point (e.g., `palettes.diverging_red_cyan`).
-
-!!! note "Default palette behavior"
-
-    When using Vizro's `vizro_dark` or `vizro_light` themes, Plotly charts automatically apply `palettes.qualitative` to categorical data and `palettes.sequential` to continuous numerical data. Override these defaults by explicitly setting `color_discrete_sequence` or `color_continuous_scale` parameters in your chart function.
-
-!!! example "Use Vizro palettes"
-
-    === "Qualitative palette"
-
-        ```python
-        from vizro.themes import palettes
-        import plotly.express as px
-
-        df = px.data.iris()
-        fig = px.scatter(df, x="sepal_length", y="petal_width", color="species", color_discrete_sequence=palettes.qualitative)
-        fig.show()
-        ```
-
-    === "Sequential palette"
-
-        ```python
-        from vizro.themes import palettes
-        import plotly.express as px
-
-        df = px.data.tips()
-        fig = px.density_heatmap(df, x="total_bill", y="tip", color_continuous_scale=palettes.sequential_red)
-        fig.show()
-        ```
-
-    === "Diverging palette"
-
-        ```python
-        from vizro.themes import palettes
-        import plotly.express as px
-        import numpy as np
-
-        # Create data with positive and negative values
-        data = np.random.randn(20, 20)
-        fig = px.imshow(data, color_continuous_scale=palettes.diverging_red_cyan, color_continuous_midpoint=0)
-        fig.show()
-        ```
-
-**Palette reference**
-
-| Dark Theme                                                                                | Light Theme                                                                                 |
-| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| ![Qualitative Palette Dark](../../assets/user_guides/themes/palette_qualitative_dark.png) | ![Qualitative Palette Light](../../assets/user_guides/themes/palette_qualitative_light.png) |
-| ![Palettes Dark](../../assets/user_guides/themes/palettes_dark.png)                       | ![Palettes Light](../../assets/user_guides/themes/palettes_light.png)                       |
 
 [bootstrapdark]: ../../assets/user_guides/themes/bootstrap_dark.png
 [bootstraplight]: ../../assets/user_guides/themes/bootstrap_light.png

@@ -130,3 +130,17 @@ palettes = SimpleNamespace(
     sequential_gray=sequential_gray,
     diverging=diverging_pink_blue,
 )
+"""Qualitative, sequential and diverging palettes. This includes the core palettes used by the Vizro plotly templates (`qualitative`, `sequential`, `sequential_minus` and `diverging`) as well as alternative palettes.
+
+Examples:
+    ```python
+    from vizro.themes import palettes
+    palettes.sequential_blue
+    # gives ["#DBEBFE", "#BDDCFE", "#8CC6FF", "#4BA5FF", "#097DFE", "#0063F6", "#004DE0", "#0B40B4", "#163B8B"]
+    ```
+
+| Dark Theme | Light Theme |
+| --- | --- |
+| ![Qualitative Palette Dark](../../assets/user_guides/themes/palette_qualitative_dark.png) | ![Qualitative Palette Light](../../assets/user_guides/themes/palette_qualitative_light.png) |
+| ![Continuous Palettes Dark](../../assets/user_guides/themes/palettes_continuous_dark.png) | ![Continuous Palettes Light](../../assets/user_guides/themes/palettes_continuous_light.png) |
+"""

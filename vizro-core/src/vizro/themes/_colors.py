@@ -79,6 +79,17 @@ colors = SimpleNamespace(
     gray_900="#1D222E",
     # Special colors
     transparent="rgba(0, 0, 0, 0)",
-    white="#ffffff",
+    white="#FFFFFF",
     black="#000000",
 )
+"""Colors used by palettes, plus additional colors.
+
+Examples:
+    ```python
+    from vizro.themes import colors
+    colors.dark_green
+    # gives "#0F766E"
+    ```
+
+![Colors](../../assets/user_guides/themes/colors.png)
+"""

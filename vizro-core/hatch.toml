@@ -55,7 +55,7 @@ PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml
 [envs.default.scripts]
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
-generate-color-images = "python tools/generate_theme_images.py"
+generate-docs-images = "python tools/generate_docs_images.py"
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [

@@ -221,7 +221,7 @@ def main():
 
     for theme in ["light", "dark"]:
         generate_qualitative_palette_image(output_dir / f"palette_qualitative_{theme}.png", theme)
-        generate_palettes_image(output_dir / f"palettes_{theme}.png", theme)
+        generate_palettes_image(output_dir / f"palettes_continuous_{theme}.png", theme)
 
     print("\n✅ All theme images generated successfully!")  # noqa: T201
 
