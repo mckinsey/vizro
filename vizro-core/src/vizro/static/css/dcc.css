@@ -134,6 +134,18 @@
 }
 
 
+#right-side .dash-dropdown {
+  background: var(--bs-primary-bg-subtle);
+}
+
+#right-side .dash-dropdown-content {
+  background: var(--bs-primary-bg-subtle);
+}
+
+#right-side .dash-dropdown-search-container {
+  background: var(--bs-primary-bg-subtle);
+}
+
 
 /* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */
 .dash-slider-track {
