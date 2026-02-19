@@ -1,6 +1,6 @@
 /* DROPDOWN  ------------------------------------------------------------ */
 .dash-dropdown {
-  background: var(--bs-primary-bg-subtle);
+  background: var(--bs-dropdown-bg);
   border: 0;
   border-radius: var(--bs-border-radius);
   box-shadow: var(--bs-box-shadow-sm);
@@ -11,8 +11,12 @@
   outline: none;
 }
 
+.dash-dropdown:focus, .dash-dropdown.focus {
+  box-shadow: 0 0 0 1px var(--bs-focus-ring-color) inset;
+}
+
 .dash-dropdown-search-container {
-  background: var(--bs-primary-bg-subtle);
+  background: var(--bs-dropdown-bg);
   border: 1px solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
   margin: 4px 8px;
@@ -26,8 +30,7 @@
 
 /* Dropdown menu */
 .dash-dropdown-content {
-  background: var(--bs-primary-bg-subtle);
-  border: 0;
+  background: var(--bs-dropdown-bg);
   border-radius: var(--bs-border-radius);
   box-shadow: var(--bs-box-shadow-sm);
   padding-bottom: 4px;
@@ -124,6 +127,11 @@
 
 .dropdown-plain:hover {
   border-bottom-color: var(--bs-border-color-translucent);
+}
+
+.dropdown-plain:focus, .dropdown-plain.focus {
+  border-bottom: 1px solid var(--bs-focus-ring-color);
+  box-shadow: none;
 }
 
 

@@ -1,76 +1,50 @@
-/* Custom CSS  */
+/* Guidelines for CSS variables
+
+--bs-body-bg: Applied to main content area (right-side)
+--bs-tertiary-bg: Applied to side navigation (Applied to navbar, sidebar and header)
+--bs-primary-bg-subtle: Applied to dropdown fill, cards fill, form inputs fill color
+--bs-highlight-bg: Applied to hover effects (hover effect on e.g. dropdown, form inputs, navigation links)
+--bs-focus-ring-color: Applied to focus effects (focus effect on e.g. dropdown, form inputs, navigation links)
+--bs-card-bg: Applied to cards (cards fill color)
+--bs-dropdown-bg: Applied to dropdown on left-side (dropdown bg color)
+
+Currently not applied, but we could use it + any component specific bg colors:
+--bs-secondary-bg
+--bs-secondary-bg-subtle
+--bs-success-bg-subtle
+--bs-info-bg-subtle
+--bs-warning-bg-subtle
+--bs-danger-bg-subtle
+--bs-light-bg-subtle
+--bs-dark-bg-subtle
+*/
+
 #logo-dark, #logo-light {
     height: 30px;
 }
 
-#page-header {
-    display: none;
-}
-
-
+/* Change HEX codes below to apply different colors */
 [data-bs-theme="dark"] {
-    --bs-body-bg: #141721; /* QBDS: --surface-bg-accent, applied to main content area */
-    --bs-tertiary-bg: #181b26; /* QBDS: --surface-bg-primary, applied to side navigation */
-    --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3, used for fill colors e.g dropdown, cards, form inputs  */
-    --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover, used for hover effects */
-    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent, used for focus effects */
+    --bs-body-bg: #141721; /* QBDS: --surface-bg-accent */
+    --bs-tertiary-bg: #181b26; /* QBDS: --surface-bg-primary */
+    --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3  */
+    --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover */
+    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent */
     --bs-card-bg: var(--bs-primary-bg-subtle);
-    --bs-dropdown-bg: var(--bs-primary-bg-subtle);
+    --bs-dropdown-bg: var(--bs-primary-bg-subtle); /* Dropdown bg on left-side */
   }
 
-  [data-bs-theme="light"] {
-    --bs-body-bg: #ffffff; /* QBDS: --surface-primary , applied to main content area */
-    --bs-tertiary-bg: #F5F6F6; /* QBDS: --surface-accent , applied to side navigation */
-    --bs-primary-bg-subtle: #f5f6f6; /* QBDS: --fill-onsurface-ui-3, used for fill colors e.g dropdown, cards, form inputs  */
-    --bs-highlight-bg: #14172114; /* QBDS: --stateslayer-overlay-hover, used for hover effects */
-    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent, used for focus effects */
+[data-bs-theme="light"] {
+    --bs-body-bg: #ffffff;
+    --bs-tertiary-bg: #F5F6F6;
+    --bs-primary-bg-subtle: #f5f6f6;
+    --bs-highlight-bg: #14172114;
+    --bs-focus-ring-color: #00a9f4;
     --bs-card-bg: var(--bs-primary-bg-subtle);
-    --bs-dropdown-bg: var(--bs-body-bg);
-  }
-
-  /* NEW QBDS - take over to bootstrap */
-  .form-control {
-    box-shadow: none;
-  }
-
-  .form-control:focus, .form-control.focus, .input-group-text:focus, .input-group-text.focus {
-    background-color: var(--bs-body-bg);
-  }
-
-  .form-control:hover:not(:focus), .form-control.hover:not(:focus), .input-group-text:hover:not(:focus), .input-group-text.hover:not(:focus) {
-    background-color: var(--bs-highlight-bg);
-  }
-
-  .card {
-    background-color: var(--bs-card-bg);
-  }
-
-  .accordion-item .nav-link:active, .accordion-item .nav-link.active {
-    background: var(--bs-highlight-bg);
+    --bs-dropdown-bg: var(--bs-body-bg); /* Dropdown bg on left-side */
 }
 
-.accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
-    background: var(--bs-highlight-bg);
-}
-
-
-.dash-dropdown {
-    background: var(--bs-dropdown-bg);
-}
-
-.dash-dropdown-content {
-    background: var(--bs-dropdown-bg);
-}
-
-.dash-dropdown:focus, .dash-dropdown.focus {
-    box-shadow: 0 0 0 1px var(--bs-focus-ring-color) inset;
-}
-
-.dropdown-plain:focus, .dropdown-plain.focus {
-    border-bottom: 1px solid var(--bs-focus-ring-color);
-    box-shadow: none;
-}
-
+/* Dropdown bg on right-side */
 #right-side .dash-dropdown {
     background: var(--bs-primary-bg-subtle);
 }
