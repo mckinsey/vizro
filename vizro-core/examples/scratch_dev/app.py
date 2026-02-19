@@ -70,10 +70,15 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]):
 # PAGES ------------------------------------------------------------------
 
 
-
 form = vm.Page(
     title="Form",
     layout=vm.Grid(grid=[[0, 1]], col_gap="80px"),
+    controls=[
+        vm.Filter(column="species"),
+        vm.Filter(column="sepal_width", selector=vm.RangeSlider(min=0, max=10, step=1)),
+        vm.Filter(column="species", selector=vm.Dropdown(variant="plain")),
+        vm.Filter(column="species", selector=vm.Checklist()),
+    ],
     components=[
         vm.Container(
             layout=vm.Flex(gap="40px"),
@@ -82,8 +87,15 @@ form = vm.Page(
                 TextArea(title="Text Area", placeholder="Enter your multi-line text"),
                 vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Multi-select dropdown"),
                 vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Single-select dropdown", multi=False),
-                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Multi-select inline dropdown", variant="plain"),
-                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Single-select inline dropdown", multi=False, variant="plain"),
+                vm.Dropdown(
+                    options=["Option 1", "Option 2", "Option 3"], title="Multi-select inline dropdown", variant="plain"
+                ),
+                vm.Dropdown(
+                    options=["Option 1", "Option 2", "Option 3"],
+                    title="Single-select inline dropdown",
+                    multi=False,
+                    variant="plain",
+                ),
                 vm.RadioItems(options=["Option 1", "Option 2", "Option 3"], title="Radio Items"),
                 vm.Checklist(options=["Option 1", "Option 2", "Option 3"], title="Checklist"),
             ],
@@ -127,6 +139,14 @@ form = vm.Page(
 
 
                     """
+                ),
+                vm.Graph(
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                    )
                 ),
             ],
         ),
@@ -339,11 +359,18 @@ containers = vm.Page(
 )
 
 
-
 # DASHBOARD -------------------------------------------------------------------
 dashboard = vm.Dashboard(
     title="Charts",
-    pages=[graphs, cards, figure, containers,form],
+    pages=[graphs, cards, figure, containers, form],
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Charts", pages=["Graphs", "Cards", "Figure"]),
+                vm.NavLink(label="Cards", pages=["Containers", "Form"]),
+            ]
+        )
+    ),
 )
 
 if __name__ == "__main__":

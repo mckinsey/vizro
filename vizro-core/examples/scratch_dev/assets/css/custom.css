@@ -9,76 +9,72 @@
 
 
 [data-bs-theme="dark"] {
-    --fill-onsurface-ui-1: #1f222e; /* Same as -fill-onsurface-ui-4*/
-    --fill-onsurface-ui-2: #2b2e39;
-    --fill-onsurface-ui-3: #272a35; /* Used for alert, input, active nevigation*/
-    /*--fill-onsurface-ui-4: #1f222e;*/
-    --surface-primary: #181b26; /* Same as surface-bg-primary*/
-    --surface-secondary: #1b1e2a;  /* Same as surface--bg-secondary, -bs-tertiary-bg, active */
-    --surface-tertiary: #232632; /* Same as surface-tertiary, --bs-secondary-bg*/
-    --surface-accent: #141721; /* Same as surface-accent, bs-body-bg*/ 
-    --stateslayer-overlay-hover: #ffffff14;
-    --border-focus-brand: #00a9f4;
-    --brand-accent: #00A9F4;
-
-    /* Change variables here*/
-    --bs-body-bg: #141721; /* QBDS: --surface-bg-accent, applied to main content area*/
-    --bs-tertiary-bg: #181b26; /* QBDS: --surface-bg-primary, applied to side navigation*/
-    --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3, used for fill colors*/
-    --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover*/
-    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent*/
+    --bs-body-bg: #141721; /* QBDS: --surface-bg-accent, applied to main content area */
+    --bs-tertiary-bg: #181b26; /* QBDS: --surface-bg-primary, applied to side navigation */
+    --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3, used for fill colors */
+    --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover */
+    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent */
     --bs-card-bg: var(--bs-primary-bg-subtle);
-
-    /*
-    --bs-body-bg
-    --bs-secondary-bg
-    --bs-tertiary-bg
-    --bs-highlight-bg
-    --bs-primary-bg-subtle: #cfe2ff;
-    --bs-secondary-bg-subtle: #e2e3e5;
-    --bs-success-bg-subtle: #d1e7dd;
-    --bs-info-bg-subtle: #cff4fc;
-    --bs-warning-bg-subtle: #fff3cd;
-    --bs-danger-bg-subtle: #f8d7da;
-    --bs-light-bg-subtle: #fcfcfd;
-    --bs-dark-bg-subtle: #ced4da;
-    --bs-light-bg-subtle: #fcfcfd;
-    --bs-dark-bg-subtle: #ced4da;
-    */
-  
+    --bs-dropdown-bg: var(--bs-primary-bg-subtle);
   }
-  
+
   [data-bs-theme="light"] {
-    --fill-onsurface-ui-1: #fafafb; /* Same as surface-bg-primary*/
-    --fill-onsurface-ui-2: #f2f3f4;
-    --fill-onsurface-ui-3: #f5f6f6;
-    --fill-onsurface-ui-4: #fff;
-    --surface-primary: #fff;
-    --surface-secondary: #EBEDEE;
-    --surface-tertiary: #E6E8EA;
-    --surface-accent: #F5F6F6;
-    --stateslayer-overlay-hover: #14172114;
-    --border-focus-brand: #00a9f4;
-    --brand-accent: #00A9F4;
-
-
-    --bs-body-bg: #ffffff; /* QBDS: --surface-primary , applied to main content area*/
-    --bs-tertiary-bg: #F5F6F6; /* QBDS: --surface-accent , applied to side navigation*/
-    --bs-primary-bg-subtle: #f5f6f6; /* QBDS: --fill-onsurface-ui-3, used for fill colors*/
-    --bs-highlight-bg: #14172114; /* QBDS: --stateslayer-overlay-hover*/
-    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent*/
+    --bs-body-bg: #ffffff; /* QBDS: --surface-primary , applied to main content area */
+    --bs-tertiary-bg: #F5F6F6; /* QBDS: --surface-accent , applied to side navigation */
+    --bs-primary-bg-subtle: #f5f6f6; /* QBDS: --fill-onsurface-ui-3, used for fill colors */
+    --bs-highlight-bg: #14172114; /* QBDS: --stateslayer-overlay-hover */
+    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent */
     --bs-card-bg: var(--bs-primary-bg-subtle);
+    --bs-dropdown-bg: var(--bs-body-bg);
   }
 
-  /* NEW QBDS - take over to bootstrap*/
+  /* NEW QBDS - take over to bootstrap */
   .form-control {
     box-shadow: none;
   }
 
-  .form-control:hover, .form-control.hover, .input-group-text:hover, .input-group-text.hover {
+  .form-control:focus, .form-control.focus, .input-group-text:focus, .input-group-text.focus {
+    background-color: var(--bs-body-bg);
+  }
+
+  .form-control:hover:not(:focus), .form-control.hover:not(:focus), .input-group-text:hover:not(:focus), .input-group-text.hover:not(:focus) {
     background-color: var(--bs-highlight-bg);
   }
 
   .card {
     background-color: var(--bs-card-bg);
   }
+
+  .accordion-item .nav-link:active, .accordion-item .nav-link.active {
+    background: var(--bs-highlight-bg);
+}
+
+.accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
+    background: var(--bs-highlight-bg);
+}
+
+
+.dash-dropdown {
+    background: var(--bs-dropdown-bg);
+}
+
+.dash-dropdown-content {
+    background: var(--bs-dropdown-bg);
+}
+
+.dash-dropdown:focus, .dash-dropdown.focus {
+    box-shadow: 0 0 0 1px var(--bs-focus-ring-color) inset;
+}
+
+.dropdown-plain:focus, .dropdown-plain.focus {
+    border-bottom: 1px solid var(--bs-focus-ring-color);
+    box-shadow: none;
+}
+
+#right-side .dash-dropdown {
+    background: var(--bs-primary-bg-subtle);
+}
+
+#right-side .dash-dropdown-content {
+    background: var(--bs-primary-bg-subtle);
+}

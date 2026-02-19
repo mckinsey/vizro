@@ -73,16 +73,12 @@
 
 /* Style the count bubble */
 .dash-dropdown-value-count {
-  background: var(--bs-body-bg);
+  background: var(--bs-highlight-bg);
   border-radius: 0;
   border-radius: 4px;
   box-shadow: none;
   font-size: 12px;
   padding: 2px 4px;
-}
-
-.dropdown-plain .dash-dropdown-value-count {
-  background: var(--bs-primary-bg-subtle);
 }
 
 .dash-dropdown-clear {
