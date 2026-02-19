@@ -69,6 +69,17 @@ class TestNavLinkPreBuildMethod:
         nav_link.pre_build()
         assert isinstance(nav_link._nav_selector, vm.Accordion)
         assert nav_link._nav_selector.pages == {group: [page_1_id, page_2_id] for group in pages_as_dict}
+        assert nav_link._nav_position == "left"
+
+    def test_nav_link_icon_with_top_nav_position(self, page_1_id):
+        nav_link = vm.NavLink(pages=[page_1_id], label="Foo", icon="home")
+        nav_link._nav_position = "top"
+
+        with pytest.raises(
+            ValueError,
+            match=r"You cannot use icons with top navigation. Icons are only supported for the left navigation.",
+        ):
+            nav_link.pre_build()
 
 
 @pytest.mark.parametrize("pages", ["pages_as_dict", "pages_as_list"])
@@ -116,3 +127,20 @@ class TestNavLinkBuildMethod:
         )
         assert_component_equal(built_nav_link["nav-link"], expected_button)
         assert "nav-panel" not in built_nav_link
+
+    def test_nav_link_top_position_active(self, pages, request, page_1_id):
+        pages = request.getfixturevalue(pages)
+        nav_link = vm.NavLink(id="nav-link", label="Label", pages=pages)
+        nav_link.pre_build()
+        nav_link._nav_position = "top"
+        built_nav_link = nav_link.build(active_page_id=page_1_id)
+
+        expected_nav_link = dbc.NavLink(
+            children=[
+                html.Span("Label"),
+            ],
+            active=True,
+            href="/",
+            id="nav-link",
+        )
+        assert_component_equal(built_nav_link["nav-link"], expected_nav_link)

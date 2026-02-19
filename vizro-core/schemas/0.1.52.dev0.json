@@ -1309,6 +1309,13 @@
           },
           "title": "Items",
           "type": "array"
+        },
+        "position": {
+          "default": "left",
+          "description": "Position of the navigation bar, either on the left sidebar or top header.",
+          "enum": ["left", "top"],
+          "title": "Position",
+          "type": "string"
         }
       },
       "title": "NavBar",

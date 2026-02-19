@@ -39,6 +39,11 @@ class NavLink(VizroBaseModel):
 
         self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
 
+        if self.icon and self._nav_position == "top":
+            raise ValueError(
+                "You cannot use icons with top navigation. Icons are only supported for the left navigation."
+            )
+
     @_log_call
     def build(self, *, active_page_id=None):
         # _nav_selector is an Accordion, so _nav_selector._pages is guaranteed to be dict[str, list[str]].

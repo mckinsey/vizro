@@ -41,7 +41,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 .nav-link:active, .nav-link.active {
-    color: var(--bs-primary) !important;
+  color: var(--bs-primary) !important;
 }
 
 /* CARDS */
@@ -111,7 +111,6 @@ div.form-check.form-switch {
 .accordion {
   width: 100%;
 }
-
 
 legend {
   font-size: inherit;

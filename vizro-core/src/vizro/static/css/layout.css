@@ -383,3 +383,9 @@ Current logic:
 #header-left .navbar-top .nav-link:hover {
   border-bottom: 1px solid var(--bs-primary) !important;
 }
+
+#header-left .navbar-top .nav-link:active,
+#header-left .navbar-top .nav-link.active {
+  border-bottom: 1px solid var(--bs-primary) !important;
+  color: var(--bs-primary) !important;
+}

@@ -36,8 +36,8 @@ page_three = vm.Page(
 )
 
 navigation = vm.Navigation(
-    pages=["Page One", "Page Two", "Page Three"],
     nav_selector=vm.NavBar(
+        # pages=["Page One", "Page Two", "Page Three"],
         # pages={
         #     "First": ["Page One", "Page Two"],
         #     "Second": ["Page Three"]
@@ -46,12 +46,11 @@ navigation = vm.Navigation(
             vm.NavLink(pages=["Page One", "Page Two"], label="First Tab"),
             vm.NavLink(pages=["Page Three"], label="Second Tab"),
         ],
-        # position="top",
+        position="top",
     ),
 )
 
 dashboard = vm.Dashboard(
-    # pages=[page_1, page_two],
     pages=[page_1, page_two, page_three],
     navigation=navigation,
     title="QB",
