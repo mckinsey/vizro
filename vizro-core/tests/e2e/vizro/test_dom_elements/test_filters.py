@@ -3,6 +3,7 @@ import pytest
 from e2e.vizro.checkers import (
     check_graph_is_empty,
     check_graph_is_loaded,
+    check_graph_y_axis_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -19,7 +20,6 @@ from e2e.vizro.navigation import (
 )
 from e2e.vizro.paths import (
     categorical_components_value_path,
-    graph_axis_value_path,
     kpi_card_path,
     select_all_path,
     switch_path_using_filter_control_id,
@@ -107,11 +107,7 @@ def test_dropdown_persistence_with_all_values(dash_br):
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
-    # Check y axis max value is '1'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.SCATTER_GRAPH_ID, axis_value_number="4", axis_value="1"),
-        "1",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, axis_value_number="4", axis_value="1")
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     check_selected_dropdown(
@@ -361,7 +357,7 @@ def test_dropdown_kpi_indicators_page(dash_br):
     )
 
     # select 'B' value
-    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_KPI_CTRL_ID, value="B")
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE, value="B")
 
     # wait for cards value is loaded and checking its values
     dash_br.wait_for_text_to_equal(kpi_card_path(), "6434")
@@ -434,7 +430,8 @@ def test_switch_active_clicking_on_tooltip(dash_br_driver):
     )
     # switch 'Show inactive accounts' to False by clicking tooltip
     click_element_by_xpath_selenium(
-        dash_br_driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CONTAINER_TOOLTIP_ICON}']"
+        dash_br_driver.driver,
+        f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CONTAINER_TOOLTIP_ICON}']",
     )
     # check that first row for inactive data is loaded
     dash_br_driver.wait_for_text_to_equal(

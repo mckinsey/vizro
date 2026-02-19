@@ -97,7 +97,7 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["versicolor", "virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor",
             },
-            [["versicolor", "virginica"], ["SelectAll", "setosa"]],
+            [["versicolor", "virginica"], ["setosa"]],
             ["versicolor"],
         ),
         (
@@ -138,7 +138,7 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
             },
-            [["virginica"], ["SelectAll", "setosa", "versicolor"]],
+            [["virginica"], ["setosa", "versicolor"]],
             ["setosa"],
         ),
     ],

@@ -16,24 +16,24 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 def click_element_by_xpath_selenium(driver, xpath):
-    WebDriverWait(driver.driver, timeout=cnst.SELENIUM_WAITERS_TIMEOUT).until(
+    WebDriverWait(driver, timeout=cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable((By.XPATH, xpath))
     ).click()
 
 
 def hover_over_element_by_xpath_selenium(driver, xpath):
-    element = driver.driver.find_element(By.XPATH, xpath)
-    ActionChains(driver.driver).move_to_element(element).perform()
+    element = driver.find_element(By.XPATH, xpath)
+    ActionChains(driver).move_to_element(element).perform()
 
 
 def hover_over_element_by_css_selector_selenium(driver, css_selector):
-    element = driver.driver.find_element(By.CSS_SELECTOR, css_selector)
-    ActionChains(driver.driver).move_to_element(element).perform()
+    element = driver.find_element(By.CSS_SELECTOR, css_selector)
+    ActionChains(driver).move_to_element(element).perform()
 
 
 def hover_over_and_click_by_css_selector_selenium(driver, css_selector):
-    element = driver.driver.find_element(By.CSS_SELECTOR, css_selector)
-    ActionChains(driver.driver).move_to_element(element).click().perform()
+    element = driver.find_element(By.CSS_SELECTOR, css_selector)
+    ActionChains(driver).move_to_element(element).click().perform()
 
 
 def modifier_click(dash_br, selector, key):
@@ -44,7 +44,7 @@ def modifier_click(dash_br, selector, key):
 
 def accordion_select(driver, accordion_name):
     """Selecting accordion and checking if it is active."""
-    click_element_by_xpath_selenium(driver, f"//button[text()='{accordion_name}']")
+    click_element_by_xpath_selenium(driver.driver, f"//button[text()='{accordion_name}']")
     check_accordion_active(driver, accordion_name)
     # to let accordion open
     time.sleep(1)

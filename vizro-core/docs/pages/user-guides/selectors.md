@@ -27,7 +27,7 @@ If you have binary data (such as `False`/`True` or `0`/`1`), you might prefer to
 
 ### Styled dropdown
 
-There are two predefined dropdown styles that can be customized using the variant argument. If no `variant` is specified, the default style applied is `variant="filled"`.
+You can customize two predefined dropdown styles that can be customized using the variant argument. If no `variant` is specified, the default style applied is `variant="filled"`.
 
 !!! example "Styled dropdown"
 
@@ -46,7 +46,8 @@ There are two predefined dropdown styles that can be customized using the varian
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
             controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(variant="plain")),
+                vm.Filter(column="species", selector=vm.Dropdown(title="Filled")),
+                vm.Filter(column="species", selector=vm.Dropdown(variant="plain", title="Plain")),
             ],
         )
 
@@ -72,7 +73,13 @@ There are two predefined dropdown styles that can be customized using the varian
               - column: species
                 selector:
                   type: dropdown
+                  title: Plain
                   variant: plain
+                type: filter
+              - column: species
+                selector:
+                  type: dropdown
+                  title: Filled
                 type: filter
             title: Styled dropdown
         ```

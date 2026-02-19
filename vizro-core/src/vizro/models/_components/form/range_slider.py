@@ -7,7 +7,6 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
-    set_default_marks,
     validate_max,
     validate_range_value,
     validate_step,
@@ -42,7 +41,6 @@ class RangeSlider(VizroBaseModel):
     ]
     marks: Annotated[
         dict[float, str] | None,
-        AfterValidator(set_default_marks),
         Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for value field

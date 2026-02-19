@@ -255,7 +255,7 @@ def test_controls_tooltip_and_icon_light_theme(dash_br):
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.DROPDOWN_TOOLTIP_ICON}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.DROPDOWN_TOOLTIP_ICON}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.DROPDOWN_TOOLTIP_TEXT)
 
@@ -292,7 +292,7 @@ def test_controls_tooltip_and_icon_dark_theme(dash_br):
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CHECKLIST_TOOLTIP_ICON}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CHECKLIST_TOOLTIP_ICON}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.CHECKLIST_TOOLTIP_TEXT)
 
@@ -315,11 +315,15 @@ def test_collapsible_containers_grid_switched(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
 
     # close one container and open another
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]'
+    )
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]'
+    )
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -335,11 +339,15 @@ def test_collapsible_containers_flex_switched(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
 
     # close one container and open another
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]'
+    )
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]'
+    )
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -353,7 +361,7 @@ def test_collapsible_subcontainers_flex(dash_br):
     dash_br.multiple_click("#flex_subcontainer_icon", 1)
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -508,7 +516,7 @@ def test_aggrid_click_without_set_control(dash_br):
     dash_br.multiple_click(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=2, col_id="continent"), 1)
 
     # move mouse to different location to see what exactly was selected on aggrid
-    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
 
 
 @pytest.mark.mobile_screenshots

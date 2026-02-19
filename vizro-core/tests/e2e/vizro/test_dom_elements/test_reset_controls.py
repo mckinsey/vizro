@@ -22,7 +22,7 @@ def test_reset_controls_tooltip(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
     # hover over reset controls icon and wait for the tooltip appear
-    hover_over_element_by_xpath_selenium(dash_br, "//*[contains(@id, 'reset-button')]")
+    hover_over_element_by_xpath_selenium(dash_br.driver, "//*[contains(@id, 'reset-button')]")
     dash_br.wait_for_text_to_equal(".tooltip-inner", "Reset all page controls")
 
 
@@ -107,6 +107,8 @@ def test_reset_controls_page(dash_br):
     # change all controls on the page
     # dropdown change from "2007" to "Select All"
     select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID)
+    # close dropdown to avoid errors with checking other controls
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
     # radioitems change from "Europe" to "Africa"
     dash_br.multiple_click(
         categorical_components_value_path(elem_id=cnst.RADIOITEMS_AG_GRID_INTERACTIONS_ID, value=2), 1

@@ -8,6 +8,7 @@ from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
     check_graph_is_empty,
     check_graph_is_loaded,
+    check_graph_y_axis_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -19,7 +20,7 @@ from e2e.vizro.navigation import (
     select_dropdown_value,
     select_slider_value,
 )
-from e2e.vizro.paths import actions_progress_indicator_path, categorical_components_value_path, graph_axis_value_path
+from e2e.vizro.paths import actions_progress_indicator_path, categorical_components_value_path
 from e2e.vizro.waiters import callbacks_finish_waiter
 
 
@@ -125,8 +126,8 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
         page_name=cnst.DYNAMIC_DATA_PAGE,
     )
 
-    # move slider to value '40'
-    select_slider_value(dash_br, elem_id=slider_id, value="40")
+    # move slider to value '30'
+    select_slider_value(dash_br, elem_id=slider_id, value="30")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
@@ -139,8 +140,8 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(second_screen)
 
-    # move slider to value '40'
-    select_slider_value(dash_br, elem_id=slider_id, value="40")
+    # move slider to value '30'
+    select_slider_value(dash_br, elem_id=slider_id, value="30")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
@@ -633,16 +634,11 @@ def test_datepicker_range_filters(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
 
-    # Check y axis min value is '0'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="1", axis_value="0"),
-        "0",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="1", axis_value="0"
     )
-
-    # Check y axis max value is '6'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="4", axis_value="6"),
-        "6",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="4", axis_value="6"
     )
 
     # check current date values
@@ -660,10 +656,8 @@ def test_datepicker_range_filters(dash_br):
     )
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
 
-    # Check y axis max value is '5'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="6", axis_value="5"),
-        "5",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="6", axis_value="5"
     )
 
     # open datepicker calendar and choose dates from 6 to 10 March 2024
@@ -671,12 +665,8 @@ def test_datepicker_range_filters(dash_br):
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
     dash_br.multiple_click('button[aria-label="10 March 2024"]', 1)
-    check_graph_is_loaded(dash_br, cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
-
-    # Check y axis max value is '4'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="5", axis_value="4"),
-        "4",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="5", axis_value="4"
     )
 
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
@@ -709,20 +699,11 @@ def test_datepicker_single_filters(dash_br):
     # check current date value
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
 
-    # Check y axis min value is '0'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="1", axis_value="0"
-        ),
-        "0",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="1", axis_value="0"
     )
-
-    # Check y axis max value is '1'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
-        ),
-        "1",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
     )
 
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
@@ -739,13 +720,8 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis min value is '-1' (empty chart)
     check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
-
-    # Check y axis max value is '4'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="4"
-        ),
-        "4",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="4"
     )
 
     # open datepicker calendar and choose 6 March 2024
@@ -754,12 +730,8 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
 
-    # Check y axis max value is '1'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
-        ),
-        "1",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
     )
 
     # simulate refreshing the page

@@ -108,7 +108,7 @@ def test_export_action(chrome_driver, dash_br):
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, slider_path))
     )
-    hover_over_and_click_by_css_selector_selenium(dash_br, slider_path)
+    hover_over_and_click_by_css_selector_selenium(chrome_driver, slider_path)
     check_graph_is_loading_selenium(chrome_driver, graph_id=cnst.SCATTER_GRAPH_ID)
 
     # export scatter data for the second user without changing anything and check if data is correct

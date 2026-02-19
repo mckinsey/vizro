@@ -106,18 +106,6 @@ def validate_step(step, info: ValidationInfo):
     return step
 
 
-def set_default_marks(marks: dict[float, str] | None, info: ValidationInfo) -> dict[float | int, str] | None:
-    if not marks and info.data.get("step") is None:
-        marks = None
-
-    # Dash has a bug where marks provided as floats that can be converted to integers are not displayed.
-    # So we need to convert the floats to integers if possible.
-    # https://github.com/plotly/dash-core-components/issues/159#issuecomment-380581043
-    if marks:
-        marks = {int(k) if k.is_integer() else k: v for k, v in marks.items()}
-    return marks
-
-
 def validate_date_picker_range(range, info: ValidationInfo):
     if (
         range
