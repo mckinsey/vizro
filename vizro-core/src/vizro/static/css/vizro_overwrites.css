@@ -153,9 +153,9 @@ legend {
 
 
 .accordion-item .nav-link:active, .accordion-item .nav-link.active {
-    background: var(--bs-highlight-bg);
+    background: var(--bs-highlight-bg) !important;
 }
 
 .accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
-    background: var(--bs-highlight-bg);
+    background: var(--bs-highlight-bg) !important;
 }

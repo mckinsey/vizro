@@ -52,3 +52,7 @@ Currently not applied, but we could use it + any component specific bg colors:
 #right-side .dash-dropdown-content {
     background: var(--bs-primary-bg-subtle);
 }
+
+#right-side .dash-dropdown-search-container {
+    background: var(--bs-primary-bg-subtle);
+}
