@@ -19,7 +19,7 @@ def test_filters(dash_br):
     # select 'Africa'
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_AGGRID_FILTER, value=2), 1)
     # select '6000000' as max value
-    select_slider_value(dash_br, elem_id=cnst.RANGESLIDER_TABLE_FILTER, value="6M")
+    select_slider_value(dash_br, elem_id=cnst.RANGESLIDER_AGGRID_FILTER, value="6M")
 
     # check data for the 2nd row
     dash_br.wait_for_text_to_equal(

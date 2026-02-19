@@ -29,7 +29,7 @@ def test_controls_tooltip_and_icon(dash_br, icon, tooltip_text):
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", tooltip_text)
 
@@ -50,7 +50,7 @@ def test_components_tooltip_and_icon(dash_br, icon, tooltip_text):
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", tooltip_text)
 
@@ -72,7 +72,7 @@ def test_components_tooltip_and_icon_tables(dash_br, accordion_name, page_name, 
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", tooltip_text)
 
@@ -87,7 +87,7 @@ def test_components_tooltip_and_icon_tables(dash_br, accordion_name, page_name, 
 def test_dashboard_tooltip_and_icon(dash_br_driver):
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br_driver, "//*[@class='material-symbols-outlined tooltip-icon'][text()='info']"
+        dash_br_driver.driver, "//*[@class='material-symbols-outlined tooltip-icon'][text()='info']"
     )
     dash_br_driver.wait_for_text_to_equal(".tooltip-inner p", "dashboard tooltip")
 
@@ -100,5 +100,7 @@ def test_card_tooltip_icon(dash_br):
         graph_check=False,
     )
     # hover over first card icon and wait for the tooltip appear
-    hover_over_element_by_xpath_selenium(dash_br, "//*[@class='material-symbols-outlined tooltip-icon'][text()='info']")
+    hover_over_element_by_xpath_selenium(
+        dash_br.driver, "//*[@class='material-symbols-outlined tooltip-icon'][text()='info']"
+    )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", "Lorem ipsum dolor sit amet, co")

@@ -1,7 +1,7 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_table_rows_number
+from e2e.vizro.checkers import check_graph_y_axis_value, check_table_rows_number
 from e2e.vizro.navigation import accordion_select, page_select
-from e2e.vizro.paths import graph_axis_value_path, table_cell_value_path
+from e2e.vizro.paths import table_cell_value_path
 
 
 def test_single_date(dash_br):
@@ -46,11 +46,7 @@ def test_date_range(dash_br):
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
     dash_br.multiple_click('button[aria-label="18 May 2016"]', 1)
 
-    # Check x axis max value is '12:00'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_POP_RANGE_ID, axis_value_number="5", axis_value="12:00"),
-        "12:00",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_POP_RANGE_ID, axis_value_number="5", axis_value="12:00")
 
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
 
