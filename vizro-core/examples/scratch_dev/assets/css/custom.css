@@ -24,6 +24,27 @@
     /* Change variables here*/
     --bs-body-bg: #141721; /* QBDS: --surface-bg-accent, applied to main content area*/
     --bs-tertiary-bg: #181b26; /* QBDS: --surface-bg-primary, applied to side navigation*/
+    --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3, used for fill colors*/
+    --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover*/
+    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent*/
+    --bs-card-bg: var(--bs-primary-bg-subtle);
+
+    /*
+    --bs-body-bg
+    --bs-secondary-bg
+    --bs-tertiary-bg
+    --bs-highlight-bg
+    --bs-primary-bg-subtle: #cfe2ff;
+    --bs-secondary-bg-subtle: #e2e3e5;
+    --bs-success-bg-subtle: #d1e7dd;
+    --bs-info-bg-subtle: #cff4fc;
+    --bs-warning-bg-subtle: #fff3cd;
+    --bs-danger-bg-subtle: #f8d7da;
+    --bs-light-bg-subtle: #fcfcfd;
+    --bs-dark-bg-subtle: #ced4da;
+    --bs-light-bg-subtle: #fcfcfd;
+    --bs-dark-bg-subtle: #ced4da;
+    */
   
   }
   
@@ -43,4 +64,21 @@
 
     --bs-body-bg: #ffffff; /* QBDS: --surface-primary , applied to main content area*/
     --bs-tertiary-bg: #F5F6F6; /* QBDS: --surface-accent , applied to side navigation*/
+    --bs-primary-bg-subtle: #f5f6f6; /* QBDS: --fill-onsurface-ui-3, used for fill colors*/
+    --bs-highlight-bg: #14172114; /* QBDS: --stateslayer-overlay-hover*/
+    --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent*/
+    --bs-card-bg: var(--bs-primary-bg-subtle);
+  }
+
+  /* NEW QBDS - take over to bootstrap*/
+  .form-control {
+    box-shadow: none;
+  }
+
+  .form-control:hover, .form-control.hover, .input-group-text:hover, .input-group-text.hover {
+    background-color: var(--bs-highlight-bg);
+  }
+
+  .card {
+    background-color: var(--bs-card-bg);
   }
