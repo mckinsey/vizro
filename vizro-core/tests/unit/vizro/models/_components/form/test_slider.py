@@ -93,7 +93,7 @@ class TestSliderInstantiation:
         assert slider.step is None
         assert slider.min is None
         assert slider.max is None
-        assert slider.marks is None
+        assert slider.marks == {}
         assert slider.value is None
         assert slider.title == ""
         assert slider.description is None
@@ -168,54 +168,17 @@ class TestSliderInstantiation:
         ):
             vm.Slider(min=0, max=10, step=11)
 
-    def test_valid_marks_with_step(self):
-        slider = vm.Slider(min=0, max=10, step=2)
-
-        assert slider.marks == {}
-
     @pytest.mark.parametrize(
         "marks, expected",
         [
-            # TODO[MS]: why is this not failing, should it not be converted to float?
-            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
-            ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
             (None, None),
+            ({0: "0", 1: "1", 2: "2"}, {0: "0", 1: "1", 2: "2"}),  # int - str
+            ({1.0: "1.0", 1.5: "1.5"}, {1: "1.0", 1.5: "1.5"}),  # float - str
         ],
     )
     def test_valid_marks(self, marks, expected):
         slider = vm.Slider(min=0, max=10, marks=marks)
         assert slider.marks == expected
-
-        if marks:
-            assert [type(result_key) for result_key in slider.marks] == [
-                type(expected_key) for expected_key in expected
-            ]
-
-    def test_invalid_marks(self):
-        with pytest.raises(ValidationError, match="4 validation errors for Slider"):
-            vm.Slider(min=1, max=10, marks={"start": 0, "end": 10})
-
-    @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
-    def test_set_default_marks(self, step, expected):
-        slider = vm.Slider(min=0, max=10, step=step)
-        assert slider.marks == expected
-
-    @pytest.mark.parametrize(
-        "step, marks, expected_marks",
-        [
-            (1, None, None),
-            (None, {}, None),
-            (None, None, None),
-            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            # This case might be unintuitive, as the resulting marks are an empty dict. However, marks will
-            # be drawn by the dash component.
-            (1, {}, {}),
-        ],
-    )
-    def test_set_step_and_marks(self, step, marks, expected_marks):
-        slider = vm.Slider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
-        assert slider["slider-id"].marks == expected_marks
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):

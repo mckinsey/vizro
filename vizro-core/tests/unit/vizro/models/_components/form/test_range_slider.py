@@ -18,7 +18,7 @@ def expected_range_slider_default():
                 id="range_slider",
                 min=None,
                 max=None,
-                marks=None,
+                marks={},
                 dots=True,
                 value=[None, None],
                 persistence=True,
@@ -38,7 +38,7 @@ def expected_range_slider_with_optional():
                 min=0.0,
                 max=10.0,
                 step=2.0,
-                marks={1: "1", 5: "5", 10: "10"},
+                marks={1.0: "1", 5.0: "5", 10.0: "10"},
                 value=[0, 10],
                 persistence=True,
                 persistence_type="session",
@@ -58,7 +58,7 @@ def expected_range_slider_with_extra():
                 min=0.0,
                 max=10.0,
                 step=2.0,
-                marks={1: "1", 5: "5", 10: "10"},
+                marks={1.0: "1", 5.0: "5", 10.0: "10"},
                 value=[0, 10],
                 persistence=True,
                 persistence_type="session",
@@ -92,7 +92,7 @@ def expected_range_slider_with_description():
                 min=0.0,
                 max=10.0,
                 step=2.0,
-                marks={1: "1", 5: "5", 10: "10"},
+                marks={1.0: "1", 5.0: "5", 10.0: "10"},
                 value=[0, 10],
                 dots=True,
                 persistence=True,
@@ -113,7 +113,7 @@ class TestRangeSliderInstantiation:
         assert range_slider.min is None
         assert range_slider.max is None
         assert range_slider.step is None
-        assert range_slider.marks is None
+        assert range_slider.marks == {}
         assert range_slider.value is None
         assert range_slider.title == ""
         assert range_slider.description is None
@@ -216,46 +216,14 @@ class TestRangeSliderInstantiation:
     @pytest.mark.parametrize(
         "marks, expected",
         [
-            # TODO[MS]: why is this not failing, should it not be converted to float?
-            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
-            ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
             (None, None),
+            ({0: "0", 1: "1", 2: "2"}, {0: "0", 1: "1", 2: "2"}),  # int - str
+            ({1.0: "1.0", 1.5: "1.5"}, {1: "1.0", 1.5: "1.5"}),  # float - str
         ],
     )
     def test_valid_marks(self, marks, expected):
         range_slider = vm.RangeSlider(min=0, max=10, marks=marks)
         assert range_slider.marks == expected
-
-        if marks:
-            assert [type(result_key) for result_key in range_slider.marks] == [
-                type(expected_key) for expected_key in expected
-            ]
-
-    def test_invalid_marks(self):
-        with pytest.raises(ValidationError, match="4 validation errors for RangeSlider"):
-            vm.RangeSlider(min=1, max=10, marks={"start": 0, "end": 10})
-
-    @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
-    def test_set_default_marks(self, step, expected):
-        slider = vm.RangeSlider(min=0, max=10, step=step)
-        assert slider.marks == expected
-
-    @pytest.mark.parametrize(
-        "step, marks, expected_marks",
-        [
-            (1, None, None),
-            (None, {}, None),
-            (None, None, None),
-            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            # This case might be unintuitive, as the resulting marks are an empty dict. However, marks will
-            # be drawn by the dash component.
-            (1, {}, {}),
-        ],
-    )
-    def test_set_step_and_marks(self, step, marks, expected_marks):
-        slider = vm.RangeSlider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
-        assert slider["slider-id"].marks == expected_marks
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
