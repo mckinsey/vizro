@@ -168,6 +168,7 @@ All the colors that make up the palettes and our color system are available thro
         # Create data with positive and negative values
         data = np.random.randn(20, 20)
         px.imshow(data, color_continuous_scale=palettes.diverging_red_cyan, color_continuous_midpoint=0)
+        ```
 
     === "Single color"
 
@@ -354,8 +355,6 @@ Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some 
     You can [apply the Vizro theme to plotly charts](#charts-outside-a-dashboard) with or without Vizro Bootstrap.
 
     If you want to style your entire Dash app with Vizro Bootstrap and have your plotly figures automatically match then we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples of how to do this in their [documentation on styling plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
-
-
 
 [bootstrapdark]: ../../assets/user_guides/themes/bootstrap_dark.png
 [bootstraplight]: ../../assets/user_guides/themes/bootstrap_light.png
