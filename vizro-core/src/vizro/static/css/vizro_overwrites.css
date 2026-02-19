@@ -65,6 +65,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* CARDS */
 .card {
+  background-color: var(--bs-card-bg);
   margin: 4px;
   overflow: scroll;
   padding: 0.75rem;
@@ -134,4 +135,27 @@ div.form-check.form-switch {
 
 legend {
   font-size: inherit;
+}
+
+
+/* NEW QBDS - take over to bootstrap */
+.form-control {
+  box-shadow: none;
+}
+
+.form-control:focus, .form-control.focus, .input-group-text:focus, .input-group-text.focus {
+  background-color: var(--bs-body-bg);
+}
+
+.form-control:hover:not(:focus), .form-control.hover:not(:focus), .input-group-text:hover:not(:focus), .input-group-text.hover:not(:focus) {
+  background-color: var(--bs-highlight-bg);
+}
+
+
+.accordion-item .nav-link:active, .accordion-item .nav-link.active {
+    background: var(--bs-highlight-bg) !important;
+}
+
+.accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
+    background: var(--bs-highlight-bg) !important;
 }
