@@ -7,8 +7,7 @@ from e2e.vizro.paths import (
     categorical_components_value_name_path,
     categorical_components_value_path,
     dropdown_id_path,
-    graph_x_axis_value_path,
-    graph_y_axis_value_path,
+    graph_axis_value_path,
     select_all_path,
 )
 from e2e.vizro.waiters import graph_load_waiter, graph_load_waiter_selenium
@@ -56,34 +55,37 @@ def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAIT
 
 def check_graph_is_empty(driver, graph_id):
     driver.wait_for_text_to_equal(
-        graph_y_axis_value_path(
+        graph_axis_value_path(
             graph_id=graph_id,
-            axis_value_number="1",
-            axis_value="−1",  # noqa: RUF001
+            axis="y",
+            tick_index="1",
+            value="−1",  # noqa: RUF001
         ),
         "−1",  # noqa: RUF001
     )
 
 
-def check_graph_y_axis_value(driver, graph_id, axis_value_number, axis_value):
+def check_graph_y_axis_value(driver, graph_id, tick_index, value):
     driver.wait_for_text_to_equal(
-        graph_y_axis_value_path(
+        graph_axis_value_path(
             graph_id=graph_id,
-            axis_value_number=axis_value_number,
-            axis_value=axis_value,
+            axis="y",
+            tick_index=tick_index,
+            value=value,
         ),
-        axis_value,
+        value,
     )
 
 
-def check_graph_x_axis_value(driver, graph_id, axis_value_number, axis_value):
+def check_graph_x_axis_value(driver, graph_id, tick_index, value):
     driver.wait_for_text_to_equal(
-        graph_x_axis_value_path(
+        graph_axis_value_path(
             graph_id=graph_id,
-            axis_value_number=axis_value_number,
-            axis_value=axis_value,
+            axis="x",
+            tick_index=tick_index,
+            value=value,
         ),
-        axis_value,
+        value,
     )
 
 

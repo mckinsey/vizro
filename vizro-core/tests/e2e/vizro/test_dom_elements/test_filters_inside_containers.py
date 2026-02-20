@@ -43,7 +43,7 @@ def test_slider(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
     select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="0.6")
-    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, axis_value_number="5", axis_value="6")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="5", value="6")
     check_slider_value(
         dash_br,
         elem_id=cnst.SLIDER_INSIDE_CONTAINERS,
@@ -74,4 +74,4 @@ def test_range_datepicker(dash_br):
     dash_br.multiple_click('button[aria-label="10 January 2024"]', 1)
     dash_br.multiple_click('button[aria-label="26 January 2024"]', 1)
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', "2024/01/10 – 2024/01/26")  # noqa: RUF001
-    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, axis_value_number="7", axis_value="4.9")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="7", value="4.9")

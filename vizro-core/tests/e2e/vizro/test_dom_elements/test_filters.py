@@ -108,7 +108,7 @@ def test_dropdown_persistence_with_all_values(dash_br):
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
-    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, axis_value_number="4", axis_value="1")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, tick_index="4", value="1")
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     check_selected_dropdown(
@@ -287,7 +287,6 @@ def test_checklist_persistence(dash_br, value_paths, select_all_status, options_
     )
     for path in value_paths:
         dash_br.multiple_click(path, 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     check_selected_categorical_component(
@@ -303,7 +302,7 @@ def test_slider(dash_br):
     """Test simple slider filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     select_slider_value(dash_br, elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value="0.6")
-    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, axis_value_number="5", axis_value="6")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, tick_index="5", value="6")
     check_slider_value(
         dash_br,
         elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE,

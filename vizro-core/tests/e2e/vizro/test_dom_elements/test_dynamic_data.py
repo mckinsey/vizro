@@ -634,12 +634,8 @@ def test_datepicker_range_filters(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
 
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="1", axis_value="0"
-    )
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="7", axis_value="6"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="1", value="0")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="7", value="6")
 
     # check current date values
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
@@ -656,18 +652,14 @@ def test_datepicker_range_filters(dash_br):
     )
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
 
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="6", axis_value="5"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="6", value="5")
 
     # open datepicker calendar and select dates from 6 to 10 March 2024
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
     dash_br.multiple_click('button[aria-label="10 March 2024"]', 1)
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="5", axis_value="4"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="5", value="4")
 
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
     page_select(
@@ -699,12 +691,8 @@ def test_datepicker_single_filters(dash_br):
     # check current date value
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
 
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="1", axis_value="0"
-    )
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="1", value="0")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="6", value="1")
 
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
     page_select(
@@ -720,9 +708,7 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis min value is '-1' (empty chart)
     check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="4"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="6", value="4")
 
     # open datepicker calendar and select 6 March 2024
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
@@ -730,9 +716,7 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
 
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="6", value="1")
 
     # simulate refreshing the page
     page_select(
