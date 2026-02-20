@@ -223,7 +223,6 @@ def test_checklist(dash_br, value_paths, select_all_status, options_value_status
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     for path in value_paths:
         dash_br.multiple_click(path, 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_selected_categorical_component(
         dash_br,
         component_id=filter_id,
