@@ -1,7 +1,7 @@
 import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import (
-    check_graph_is_loaded,
+    check_graph_is_empty,
     check_graph_x_axis_value,
     check_slider_value,
 )
@@ -15,26 +15,26 @@ def test_dropdown(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
 
-    # select 'setosa'
     clear_dropdown(dash_br, cnst.DROPDOWN_INSIDE_CONTAINERS)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS, value="setosa")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="5", value="5.2")
 
 
 @pytest.mark.parametrize(
-    "filter_id",
-    [cnst.CHECK_LIST_INSIDE_CONTAINERS, cnst.RADIO_ITEMS_INSIDE_CONTAINERS],
+    "filter_id, filter_value",
+    [(cnst.CHECK_LIST_INSIDE_CONTAINERS, 1), (cnst.RADIO_ITEMS_INSIDE_CONTAINERS, 2)],
     ids=["checklist", "radio_items"],
 )
-def test_categorical_filters(dash_br, filter_id):
+def test_categorical_filters(dash_br, filter_id, filter_value):
     """Test simple checklist and radio_items filters."""
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
 
-    # select 'setosa'
-    dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=2), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
+    # unselect 'setosa'
+    dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=filter_value), 1)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
 
 
 def test_slider(dash_br):
