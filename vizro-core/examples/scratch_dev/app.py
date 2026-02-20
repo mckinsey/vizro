@@ -88,7 +88,7 @@ page_0 = vm.Page(
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
                         vm.Button(
-                            text="Run pipeline data",
+                            text="Run pipeline",
                             actions=vm.Action(
                                 function=random_pipeline(f"{pre}_raise_exc_switch"),
                                 outputs=f"{pre}_text",
@@ -131,7 +131,7 @@ page_1 = vm.Page(
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
                         vm.Button(
-                            text="Run pipeline data",
+                            text="Run pipeline",
                             actions=[
                                 show_notification(
                                     id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."
@@ -193,7 +193,7 @@ page_2 = vm.Page(
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
                         vm.Button(
-                            text="Run pipeline data",
+                            text="Run pipeline",
                             actions=[
                                 show_notification(
                                     id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."
@@ -344,7 +344,7 @@ page_4 = vm.Page(
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
                         vm.Switch(
-                            id=f"{pre}_return_action_notification", value=False, title="Return notification from action"
+                            id=f"{pre}_return_action_notification", value=False, title="Return result from action to notification"
                         ),
                         vm.Button(
                             text="Run pipeline",
