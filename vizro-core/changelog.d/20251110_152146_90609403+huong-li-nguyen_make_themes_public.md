@@ -7,7 +7,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- The `vizro.themes` module is now public, providing direct access to Vizro's carefully designed, colorblind-safe color system and palettes. Users can import individual colors via `vizro.themes.colors` and access pre-configured color scales through `vizro.themes.palettes`, including qualitative, sequential, and diverging palettes. See the [themes user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/themes/#vizro-colors-and-palettes) and [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for details. ([#1482](https://github.com/mckinsey/vizro/pull/1482))
+- Refreshed, colorblind-safe palettes for charts and an interface for acessing them via `vizro.themes`. See the [themes user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/themes/#palettes) and [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for details. ([#1482](https://github.com/mckinsey/vizro/pull/1482))
 
 
 <!--
