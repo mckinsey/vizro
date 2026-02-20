@@ -61,7 +61,7 @@ dynamic_data_df_parameter_page = vm.Page(
                 x="sepal_width",
                 y="sepal_length",
                 color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
+                color_discrete_map={"setosa": "#097DFE", "versicolor": "#6F39E3", "virginica": "#05D0F0"},
             ),
         ),
         vm.Graph(
@@ -71,7 +71,7 @@ dynamic_data_df_parameter_page = vm.Page(
                 x="sepal_width",
                 y="sepal_length",
                 color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
+                color_discrete_map={"setosa": "#097DFE", "versicolor": "#6F39E3", "virginica": "#05D0F0"},
             ),
         ),
     ],
