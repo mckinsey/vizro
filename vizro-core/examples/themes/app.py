@@ -10,6 +10,7 @@ from vizro.models._components.form._text_area import TextArea
 from vizro.models._components.form._user_input import UserInput
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
+from vizro.themes import palettes
 
 iris = px.data.iris()
 tips = px.data.tips()
@@ -67,6 +68,24 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]):
     return fig
 
 
+@capture("graph")
+def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str):
+    """Custom Sankey diagram."""
+    fig = go.Figure(
+        data=[
+            go.Sankey(
+                node={"label": ["A1", "A2", "B1", "B2", "C1", "C2"]},
+                link={
+                    "source": [0, 1, 0, 2, 3, 3],  # indices correspond to labels, eg A1, A2, A1, B1, ...
+                    "target": [2, 3, 3, 4, 4, 5],
+                    "value": [8, 4, 2, 8, 4, 2],
+                },
+            )
+        ]
+    )
+    return fig
+
+
 # PAGES ------------------------------------------------------------------
 
 avg_lifeExp = (gapminder_2007["lifeExp"] * gapminder_2007["pop"]).sum() / gapminder_2007["pop"].sum()
@@ -76,27 +95,31 @@ continuous_color_scales = vm.Page(
     layout=vm.Grid(grid=[[0, 1, 2]]),
     components=[
         vm.Graph(
-            title="Global Life Expectancy Distribution",
-            figure=px.choropleth(gapminder_2007, locations="iso_alpha", color="lifeExp"),
-            footer="Source: Plotly Gapminder data set, 2024",
-        ),
-        vm.Graph(
-            title="Global Life Expectancy Distribution",
+            title="Sequential",
             figure=px.choropleth(
-                gapminder_2007,
-                locations="iso_alpha",
-                color="lifeExp",
-                color_continuous_midpoint=avg_lifeExp,
+                gapminder_2007, locations="iso_alpha", color="lifeExp", color_continuous_scale=palettes.sequential
             ),
             footer="Source: Plotly Gapminder data set, 2024",
         ),
         vm.Graph(
-            title="Global Life Expectancy Distribution",
+            title="Sequential Minus",
             figure=px.choropleth(
                 gapminder_2007,
                 locations="iso_alpha",
                 color="lifeExp",
                 color_continuous_midpoint=avg_lifeExp,
+                color_continuous_scale=palettes.sequential_minus,
+            ),
+            footer="Source: Plotly Gapminder data set, 2024",
+        ),
+        vm.Graph(
+            title="Diverging",
+            figure=px.choropleth(
+                gapminder_2007,
+                locations="iso_alpha",
+                color="lifeExp",
+                color_continuous_midpoint=avg_lifeExp,
+                color_continuous_scale=palettes.diverging,
             ),
             footer="Source: Plotly Gapminder data set, 2024",
         ),
@@ -201,6 +224,17 @@ graphs = vm.Page(
                 y="country",
                 orientation="h",
             )
+        ),
+    ],
+)
+
+sankey_page = vm.Page(
+    title="Sankey",
+    components=[
+        vm.Graph(
+            title="Energy flow",
+            figure=sankey(pd.DataFrame(), source="source", target="target", value="value"),
+            footer="Sample energy flow from sources to sectors.",
         ),
     ],
 )
@@ -441,7 +475,18 @@ tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls
 # DASHBOARD -------------------------------------------------------------------
 dashboard = vm.Dashboard(
     title="Charts",
-    pages=[graphs, continuous_color_scales, ag_grid, cards, figure, containers, collapsible_container, tabs, form],
+    pages=[
+        graphs,
+        sankey_page,
+        continuous_color_scales,
+        ag_grid,
+        cards,
+        figure,
+        containers,
+        collapsible_container,
+        tabs,
+        form,
+    ],
 )
 
 if __name__ == "__main__":

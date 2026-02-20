@@ -10,7 +10,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.managers import data_manager
 
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+SPECIES_COLORS = {"setosa": "#097DFE", "versicolor": "#6F39E3", "virginica": "#05D0F0"}
 BAR_CHART_CONF = {
     "x": "species",
     "color": "species",
