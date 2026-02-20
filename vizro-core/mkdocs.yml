@@ -37,7 +37,7 @@ nav:
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
           - Layout: pages/user-guides/layouts.md
-          - Theme: pages/user-guides/themes.md
+          - Themes and colors: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
           - Custom CSS: pages/user-guides/custom-css.md
       - Data:
@@ -54,6 +54,7 @@ nav:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
       - Actions: pages/API-reference/actions.md
+      - Themes: pages/API-reference/themes.md
       - Table functions: pages/API-reference/table-callables.md
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md
@@ -186,7 +187,7 @@ plugins:
         "HOW TO APPLY VISUAL FORMATTING":
           - pages/user-guides/visual-formatting.md: "Formatting overview"
           - pages/user-guides/layouts.md: "Layouts"
-          - pages/user-guides/themes.md: "Themes"
+          - pages/user-guides/themes.md: "Themes and colors"
           - pages/user-guides/assets.md: "Assets"
           - pages/user-guides/custom-css.md: "Custom CSS"
         "ACTIONS":

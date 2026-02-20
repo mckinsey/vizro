@@ -60,7 +60,7 @@ def test_none_parameter(dash_br):
 
     # check that specific bar has cerulean blue color
     dash_br.wait_for_element(
-        f"div[id='{cnst.BAR_GRAPH_ID}'] g:nth-of-type(3) g:nth-of-type(45) path[style*='(57, 73, 171)'"
+        f"div[id='{cnst.BAR_GRAPH_ID}'] g:nth-of-type(3) g:nth-of-type(45) path[style*='{cnst.COLOR_QUALITATIVE_THIRD}'"
     )
 
 
