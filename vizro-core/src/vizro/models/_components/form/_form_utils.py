@@ -21,6 +21,11 @@ def get_dict_options_and_default(
     return dict_options, default_value  # type: ignore[return-value]
 
 
+# Util for vm.Slider and vm.RangeSlider
+def to_int_if_whole(value: float | int) -> float | int:
+    return int(value) if isinstance(value, float) and value.is_integer() else value
+
+
 # Utils for validators
 def is_value_contained(value: SingleValueType | MultiValueType, options: OptionsType):
     """Checks if value is contained in a list."""

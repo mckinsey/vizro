@@ -7,6 +7,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
+    to_int_if_whole,
     validate_max,
     validate_range_value,
     validate_step,
@@ -100,6 +101,7 @@ underlying component may change in the future.""",
 
     def __call__(self, min, max):
         current_value = self.value or [min, max]
+        marks = self.marks if self.marks != {} else {min: str(to_int_if_whole(min)), max: str(to_int_if_whole(max))}
 
         defaults = {
             "id": self.id,
@@ -107,7 +109,7 @@ underlying component may change in the future.""",
             "max": max,
             # Only include `step` when defined. Passing None prevents dcc.RangeSlider from displaying input values.
             **({"step": self.step} if self.step is not None else {}),
-            "marks": self.marks,
+            "marks": marks,
             "value": current_value,
             "persistence": True,
             "persistence_type": "session",

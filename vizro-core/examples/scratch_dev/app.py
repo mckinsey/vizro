@@ -10,11 +10,11 @@ df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=le
 df["is_setosa"] = df["species"] == "setosa"
 
 data_manager["static_df"] = df
-data_manager["dynamic_df"] = lambda number_of_points=150: df.head(number_of_points)
+data_manager["dynamic_df"] = lambda number_of_points=10: df.head(number_of_points)
 
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
-
+"""
 page_1 = vm.Page(
     title="Single/Multi static DD",
     components=[
@@ -136,7 +136,7 @@ page_4 = vm.Page(
         vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
     ],
 )
-
+"""
 page_5 = vm.Page(
     title="Sliders stress-test",
     components=[
@@ -147,7 +147,7 @@ page_5 = vm.Page(
                 vm.Filter(
                     column="sepal_length", selector=vm.RangeSlider(min=0.13, max=10.13, title="Min-flot/Max-float")
                 ),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=1, title="Step")),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4.3, max=7.9, step=1, title="Step")),
                 vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=0.5, title="Step-float")),
                 vm.Filter(
                     column="sepal_length",
@@ -223,7 +223,7 @@ page_5 = vm.Page(
     controls=[
         vm.Parameter(
             targets=["graph_5.data_frame.number_of_points"],
-            selector=vm.Slider(min=10, max=150, step=20, value=150, title="DataFrame Parameter"),
+            selector=vm.Slider(min=10, max=150, step=10, title="DataFrame Parameter"),
         ),
         vm.Filter(column="sepal_length", selector=vm.Slider(title="No Config")),
         vm.Filter(column="sepal_length", selector=vm.Slider(min=0, max=10, title="Min/Max")),
@@ -282,6 +282,7 @@ page_5 = vm.Page(
     ],
 )
 
+"""
 page_6 = vm.Page(
     title="Dropdown variants",
     components=[
@@ -342,7 +343,13 @@ page_6 = vm.Page(
         ),
     ],
 )
-
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6])
+"""
+dashboard = vm.Dashboard(
+    pages=[
+        # page_1, page_2, page_3, page_4,
+        page_5,
+        # page_6,
+    ]
+)
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
