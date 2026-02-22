@@ -4,12 +4,12 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-
+<!--
 ### Highlights ✨
 
-- Refreshed, colorblind-safe palettes for charts and an interface for accessing them via `vizro.themes`. See the [themes user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/themes/#palettes) and [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for details. ([#1482](https://github.com/mckinsey/vizro/pull/1482))
+- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
+-->
 <!--
 ### Removed
 
@@ -22,12 +22,10 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add support for `dash>=4.0.0`, including the redesigned `Dropdown`, `Slider`, and `RangeSlider` components. ([#1462](https://github.com/mckinsey/vizro/pull/1462))
 
--->
 <!--
 ### Deprecated
 

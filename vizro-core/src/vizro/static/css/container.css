@@ -77,7 +77,7 @@ the lighter shade, both in dark and light theme. */
   flex-wrap: wrap;
   gap: 24px;
   justify-content: start;
-  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
 }
 
 .tab-content .container-controls-panel {

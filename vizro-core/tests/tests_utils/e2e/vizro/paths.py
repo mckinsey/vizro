@@ -25,7 +25,7 @@ def nav_card_link_path(href):
 
 
 def slider_value_path(elem_id, value):
-    return f"div[id='{elem_id}'] div div span:nth-of-type({value})"
+    return f"div[id='{elem_id}'] div div:nth-of-type({value})"
 
 
 def slider_handler_path(elem_id, handler_class="rc-slider-handle"):
@@ -45,12 +45,20 @@ def kpi_card_path():
 
 
 def select_all_path(elem_id):
-    """Select All option path for checklist and dropdown."""
+    """Select All option path for checklist."""
     return f"input[id='{elem_id}_select_all']"
 
 
-def dropdown_arrow_path(dropdown_id):
-    return f"div[id='{dropdown_id}'] .Select-arrow"
+def dropdown_id_path(dropdown_id):
+    return f"button[id='{dropdown_id}']"
+
+
+def dropdown_select_all_path(dropdown_id):
+    return f"{dropdown_id_path(dropdown_id)} + div .dash-dropdown-action-button:nth-of-type(1)"
+
+
+def dropdown_deselect_all_path(dropdown_id):
+    return f"{dropdown_id_path(dropdown_id)} + div .dash-dropdown-action-button:nth-of-type(2)"
 
 
 def button_id_path(btn_id):
@@ -78,9 +86,11 @@ def table_ag_grid_checkbox_path_by_row(table_id, row_index):
     return f"div[id='{table_id}'] div[row-index='{row_index}'] input.ag-checkbox-input"
 
 
-def graph_axis_value_path(graph_id, axis_value_number, axis_value):
-    """Path to x or y axis values of the graph according to axis_value_number."""
-    return f"div[id='{graph_id}'] g:nth-of-type({axis_value_number}) text[data-unformatted='{axis_value}']"
+def graph_axis_value_path(graph_id, axis, tick_index, value):
+    axis = axis.lower()
+    if axis not in {"x", "y"}:
+        raise ValueError("axis must be either 'x' or 'y'")
+    return f"div[id='{graph_id}'] .{axis}axislayer-below g:nth-of-type({tick_index}) text[data-unformatted='{value}']"
 
 
 def actions_progress_indicator_path():

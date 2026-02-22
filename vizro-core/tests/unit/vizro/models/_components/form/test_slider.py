@@ -13,83 +13,57 @@ import vizro.models as vm
 def expected_slider():
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="slider_id_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=1.0,
-                                value=5.0,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
             dcc.Slider(
                 id="slider_id",
                 min=0.0,
                 max=10.0,
                 step=1.0,
-                marks={},
+                marks={0.0: "0", 10.0: "10"},
                 value=5.0,
-                included=False,
                 persistence=True,
                 persistence_type="session",
-                className="slider-track-with-marks",
+                dots=True,
             ),
         ]
     )
 
 
 @pytest.fixture()
-def expected_slider_extra():
+def expected_slider_with_marks_none():
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="slider_id_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=1.0,
-                                value=5.0,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
+            dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
+            dcc.Slider(
+                id="slider_id",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks=None,
+                value=5.0,
+                persistence=True,
+                persistence_type="session",
+                dots=True,
             ),
+        ]
+    )
+
+
+@pytest.fixture()
+def expected_slider_with_extra():
+    return html.Div(
+        [
+            dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
             dcc.Slider(
                 id="overridden_id",
                 min=0.0,
                 max=10.0,
                 step=1.0,
-                marks={},
+                marks={0.0: "0", 10.0: "10"},
                 value=5.0,
-                included=False,
                 persistence=True,
                 persistence_type="session",
-                className="slider-track-with-marks",
+                dots=True,
                 tooltip={"placement": "bottom", "always_visible": True},
             ),
         ]
@@ -109,43 +83,20 @@ def expected_slider_with_description():
     ]
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label(
-                        [html.Span("Title", id="slider_id_title"), *expected_description],
-                        html_for="slider_id",
-                    ),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="slider_id_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=1.0,
-                                value=5.0,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
+            dbc.Label(
+                [html.Span("Title", id="slider_id_title"), *expected_description],
+                html_for="slider_id",
             ),
             dcc.Slider(
                 id="slider_id",
                 min=0.0,
                 max=10.0,
                 step=1.0,
-                marks={},
+                marks={0.0: "0", 10.0: "10"},
                 value=5.0,
-                included=False,
                 persistence=True,
                 persistence_type="session",
-                className="slider-track-with-marks",
+                dots=True,
             ),
         ]
     )
@@ -162,7 +113,7 @@ class TestSliderInstantiation:
         assert slider.step is None
         assert slider.min is None
         assert slider.max is None
-        assert slider.marks is None
+        assert slider.marks == {}
         assert slider.value is None
         assert slider.title == ""
         assert slider.description is None
@@ -237,55 +188,17 @@ class TestSliderInstantiation:
         ):
             vm.Slider(min=0, max=10, step=11)
 
-    def test_valid_marks_with_step(self):
-        slider = vm.Slider(min=0, max=10, step=2)
-
-        assert slider.marks == {}
-
     @pytest.mark.parametrize(
         "marks, expected",
         [
-            # TODO[MS]: why is this not failing, should it not be converted to float?
-            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
-            ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
             (None, None),
+            ({0: "0", 1: "1", 2: "2"}, {0: "0", 1: "1", 2: "2"}),  # int - str
+            ({1.0: "1.0", 1.5: "1.5"}, {1: "1.0", 1.5: "1.5"}),  # float - str
         ],
     )
     def test_valid_marks(self, marks, expected):
         slider = vm.Slider(min=0, max=10, marks=marks)
         assert slider.marks == expected
-
-        if marks:
-            assert [type(result_key) for result_key in slider.marks] == [
-                type(expected_key) for expected_key in expected
-            ]
-
-    def test_invalid_marks(self):
-        with pytest.raises(ValidationError, match="4 validation errors for Slider"):
-            vm.Slider(min=1, max=10, marks={"start": 0, "end": 10})
-
-    @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
-    def test_set_default_marks(self, step, expected):
-        slider = vm.Slider(min=0, max=10, step=step)
-        assert slider.marks == expected
-
-    @pytest.mark.parametrize(
-        "step, marks, expected_marks, expected_class",
-        [
-            (1, None, None, "slider-track-without-marks"),
-            (None, {}, None, "slider-track-without-marks"),
-            (None, None, None, "slider-track-without-marks"),
-            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
-            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
-            # This case might be unintuitive, as the resulting marks are an empty dict. However, marks will
-            # be drawn by the dash component, so we need to check for the className here on top.
-            (1, {}, {}, "slider-track-with-marks"),
-        ],
-    )
-    def test_set_step_and_marks(self, step, marks, expected_marks, expected_class):
-        slider = vm.Slider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
-        assert slider["slider-id"].marks == expected_marks
-        assert slider["slider-id"].className == expected_class
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
@@ -305,7 +218,12 @@ class TestBuildMethod:
 
         assert_component_equal(slider, expected_slider)
 
-    def test_slider_build_with_extra(self, expected_slider_extra):
+    def test_slider_build_with_marks_none(self, expected_slider_with_marks_none):
+        slider = vm.Slider(id="slider_id", min=0, max=10, step=1, value=5, title="Title", marks=None).build()
+
+        assert_component_equal(slider, expected_slider_with_marks_none)
+
+    def test_slider_build_with_extra(self, expected_slider_with_extra):
         """Test that extra arguments correctly override defaults."""
         slider = vm.Slider(
             id="slider_id",
@@ -320,7 +238,7 @@ class TestBuildMethod:
             },
         ).build()
 
-        assert_component_equal(slider, expected_slider_extra)
+        assert_component_equal(slider, expected_slider_with_extra)
 
     def test_slider_build_with_description(self, expected_slider_with_description):
         slider = vm.Slider(

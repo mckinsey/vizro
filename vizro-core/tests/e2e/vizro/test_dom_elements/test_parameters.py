@@ -1,12 +1,18 @@
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
-    check_graph_is_loaded,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
 )
-from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value
-from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, select_all_path, slider_value_path
+from e2e.vizro.navigation import (
+    clear_dropdown,
+    page_select,
+    select_dropdown_deselect_all,
+    select_dropdown_select_all,
+    select_dropdown_value,
+    select_slider_value,
+)
+from e2e.vizro.paths import categorical_components_value_path, select_all_path
 
 
 def test_sliders_state(dash_br):
@@ -17,12 +23,8 @@ def test_sliders_state(dash_br):
         page_name=cnst.PARAMETERS_PAGE,
     )
 
-    # change slider value to '0.4'
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
-    # change range slider max value to '7'
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_PARAMETERS, value=4), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.HISTOGRAM_GRAPH_ID)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, value="7")
 
     # refresh the page
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
@@ -33,7 +35,7 @@ def test_sliders_state(dash_br):
     )
 
     # check that slider value still '0.4'
-    check_slider_value(dash_br, expected_end_value="0.4", elem_id=cnst.SLIDER_PARAMETERS)
+    check_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, expected_end_value="0.4")
     # check that range slider max value still '7'
     check_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, expected_start_value="4", expected_end_value="7")
 
@@ -51,9 +53,8 @@ def test_none_parameter(dash_br):
         f"div[id='{cnst.BAR_GRAPH_ID}'] g:nth-of-type(3) g:nth-of-type(45) path[style*='(0, 0, 255)'"
     )
 
-    # choose NONE parameter
+    # select NONE parameter
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_PARAMETERS_TWO, value="NONE")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
 
     # check that specific bar has cerulean blue color
     dash_br.wait_for_element(
@@ -138,34 +139,28 @@ def test_dropdown_with_two_values(dash_br):
     dash_br.wait_for_element(
         f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='gdpPercap'][class='dash-header column-1 cell--right-last ']"
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_PARAM_MULTI), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_PARAM_MULTI,
-        all_value=False,
         expected_selected_options=["pop", "gdpPercap"],
-        expected_unselected_options=["SelectAll", "country", "continent", "year", "lifeExp", "iso_alpha", "iso_num"],
+        expected_unselected_options=["country", "continent", "year", "lifeExp", "iso_alpha", "iso_num"],
     )
 
 
 def test_dropdown_select_all_value(dash_br):
     """Checks parametrizing with multiple params by selecting columns for the table."""
     page_select(dash_br, page_path=cnst.PARAMETERS_MULTI_PAGE_PATH, page_name=cnst.PARAMETERS_MULTI_PAGE)
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_PARAM_MULTI), 1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_PARAM_MULTI}_select_all", 1)
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_PARAM_MULTI), 1, delay=0.1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_PARAM_MULTI}_select_all", 1)
+    select_dropdown_deselect_all(dash_br, dropdown_id=cnst.DROPDOWN_PARAM_MULTI)
+    select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_PARAM_MULTI)
     # check if table column 'pop' is available
     dash_br.wait_for_element(f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='pop']")
     # check if table column 'iso_num' is available and no other column appears on the right
     dash_br.wait_for_element(
         f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='iso_num'][class='dash-header column-7 cell--right-last ']"
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_PARAM_MULTI), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_PARAM_MULTI,
-        all_value=True,
         expected_selected_options=[
             "country",
             "continent",

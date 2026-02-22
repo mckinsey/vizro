@@ -4,24 +4,23 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-
+<!--
 ### Highlights ✨
 
-- Refreshed, colorblind-safe palettes for charts and an interface for accessing them via `vizro.themes`. See the [themes user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/themes/#palettes) and [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for details. ([#1482](https://github.com/mckinsey/vizro/pull/1482))
+- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
+-->
 <!--
 ### Removed
 
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Enable styling of `vm.Dropdown` with a new argument `variant="plain"/"filled"`. See the [user guide on styled dropdowns](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#styled-dropdown) for more details. (#1581)
 
--->
 <!--
 ### Changed
 

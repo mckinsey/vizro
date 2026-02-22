@@ -1,7 +1,7 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_table_rows_number
+from e2e.vizro.checkers import check_graph_x_axis_value, check_table_rows_number
 from e2e.vizro.navigation import accordion_select, page_select
-from e2e.vizro.paths import graph_axis_value_path, table_cell_value_path
+from e2e.vizro.paths import table_cell_value_path
 
 
 def test_single_date(dash_br):
@@ -12,7 +12,7 @@ def test_single_date(dash_br):
         page_name=cnst.DATEPICKER_PAGE,
     )
 
-    # open datepicker calendar and choose date 17 May 2016
+    # open datepicker calendar and select date 17 May 2016
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
@@ -42,17 +42,13 @@ def test_date_range(dash_br):
         page_name=cnst.DATEPICKER_PAGE,
     )
 
-    # open datepicker calendar and choose dates from 17 to 18 May 2016
+    # open datepicker calendar and select dates from 17 to 18 May 2016
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
     dash_br.multiple_click('button[aria-label="18 May 2016"]', 1)
 
-    # Check x axis max value is '12:00'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_POP_RANGE_ID, axis_value_number="5", axis_value="12:00"),
-        "12:00",
-    )
+    check_graph_x_axis_value(dash_br, graph_id=cnst.BAR_POP_RANGE_ID, tick_index="5", value="12:00")
 
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
 
@@ -83,7 +79,7 @@ def test_single_date_param(dash_br):
     # check that specific bar has blue color
     dash_br.wait_for_element(f"div[id='{cnst.BAR_CUSTOM_ID}'] g:nth-of-type(14) path[style*='(0, 0, 255)'")
 
-    # open datepicker calendar and choose date 2 May 2018
+    # open datepicker calendar and select date 2 May 2018
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_PARAMS_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="2 April 2018"]', 1)

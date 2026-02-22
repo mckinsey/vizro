@@ -2,11 +2,15 @@ import e2e.vizro.constants as cnst
 import pytest
 from e2e.asserts import decode_url_params, encode_url_params, get_url_params, param_to_url
 from e2e.vizro.checkers import check_selected_categorical_component, check_selected_dropdown
-from e2e.vizro.navigation import accordion_select, clear_dropdown, page_select, select_dropdown_value
+from e2e.vizro.navigation import (
+    accordion_select,
+    clear_dropdown,
+    page_select,
+    select_dropdown_value,
+    select_slider_value,
+)
 from e2e.vizro.paths import (
     categorical_components_value_path,
-    dropdown_arrow_path,
-    slider_value_path,
     switch_path_using_filter_control_id,
 )
 from hamcrest import assert_that, equal_to
@@ -93,7 +97,7 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["versicolor", "virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor",
             },
-            [["versicolor", "virginica"], ["SelectAll", "setosa"]],
+            [["versicolor", "virginica"], ["setosa"]],
             ["versicolor"],
         ),
         (
@@ -134,7 +138,7 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
                 cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"],
                 cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "setosa",
             },
-            [["virginica"], ["SelectAll", "setosa", "versicolor"]],
+            [["virginica"], ["setosa", "versicolor"]],
             ["setosa"],
         ),
     ],
@@ -172,7 +176,6 @@ def test_different_url_parameters(dash_br_driver, expected_decoded_map, dropdown
         options_value_status=radio_items_values,
     )
     # check that dropdown control have correct values
-    dash_br_driver.multiple_click(dropdown_arrow_path(cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_selected_dropdown(
         dash_br_driver,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
@@ -184,9 +187,9 @@ def test_different_url_parameters(dash_br_driver, expected_decoded_map, dropdown
 def test_url_params_encoding_and_page_refresh(dash_br):
     """Verifies that URL params for parameters are correctly encoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
-    # select 0.6 for slider and [4, 7] for range_slider
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_PARAMETERS, value=4), 1, delay=0.1)
+    # select 0.4 for slider and [4, 7] for range_slider
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, value="7")
     # check correct urls params
     selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.4, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [4, 7]}
     enc_data = encode_url_params(selected_params, apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
@@ -203,8 +206,8 @@ def test_url_params_decoding_and_navigate_to_page(dash_br):
     """Verifies that URL params for parameters could be correctly decoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
     # select 0.8 for slider and [6, 8] for range_slider
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=5), 1)
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_PARAMETERS, value=3), 1, delay=0.1)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.8")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, value="6")
     # check correct urls params
     selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.8, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [6, 8]}
     url_params_dict = get_url_params(dash_br)
@@ -247,7 +250,7 @@ def test_url_params_encoding_and_page_refresh_datepicker(dash_br):
         dash_br,
         page_name=cnst.DATEPICKER_PAGE,
     )
-    # open datepicker calendar and choose dates from 17 to 18 May 2016
+    # open datepicker calendar and select dates from 17 to 18 May 2016
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)

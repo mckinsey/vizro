@@ -5,12 +5,13 @@ from e2e.vizro.navigation import (
     clear_dropdown,
     hover_over_element_by_xpath_selenium,
     page_select,
+    select_dropdown_select_all,
     select_dropdown_value,
+    select_slider_value,
 )
 from e2e.vizro.paths import (
     categorical_components_value_path,
-    dropdown_arrow_path,
-    slider_value_path,
+    dropdown_id_path,
     switch_path_using_filter_control_id,
 )
 from hamcrest import assert_that, equal_to
@@ -21,7 +22,7 @@ def test_reset_controls_tooltip(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
     # hover over reset controls icon and wait for the tooltip appear
-    hover_over_element_by_xpath_selenium(dash_br, "//*[contains(@id, 'reset-button')]")
+    hover_over_element_by_xpath_selenium(dash_br.driver, "//*[contains(@id, 'reset-button')]")
     dash_br.wait_for_text_to_equal(".tooltip-inner", "Reset all page controls")
 
 
@@ -37,10 +38,10 @@ def test_reset_controls_header(dash_br):
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECK_LIST_INSIDE_CONTAINERS, value=2), 1)
     # radioitems change from "setosa" to "versicolor"
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIO_ITEMS_INSIDE_CONTAINERS, value=2), 1)
-    # slider change from "0.1" to "0.6"
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value=2), 1)
-    # range_slider change from "4.3 - 7.9" to "4 - 7"
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value=4), 1)
+    # slider change from "0.1" to "1.1"
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="1.1")
+    # range_slider change from "4.3 - 7.9" to "4.3 - 7"
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value="7.3")
     # date_picker change from "2024/01/01 - 2024/05/29" to "2024/01/10 - 2024/01/26"
     dash_br.multiple_click(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
@@ -54,15 +55,14 @@ def test_reset_controls_header(dash_br):
 
     # check all controls were reset
     # dropdown
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS), 1)
+    # close dropdown to avoid errors with checking other controls
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS), 1)
     # checklist
     check_selected_categorical_component(
         dash_br,
@@ -105,9 +105,10 @@ def test_reset_controls_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
     )
     # change all controls on the page
-    # dropdown change from "2007" to "SelectAll"
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID}_select_all", 1)
+    # dropdown change from "2007" to "Select All"
+    select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID)
+    # close dropdown to avoid errors with checking other controls
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
     # radioitems change from "Europe" to "Africa"
     dash_br.multiple_click(
         categorical_components_value_path(elem_id=cnst.RADIOITEMS_AG_GRID_INTERACTIONS_ID, value=2), 1
@@ -118,14 +119,11 @@ def test_reset_controls_page(dash_br):
 
     # check all controls were reset
     # dropdown
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID,
-        all_value=False,
         expected_selected_options=["2007"],
         expected_unselected_options=[
-            "SelectAll",
             "1952",
             "1957",
             "1962",
@@ -139,7 +137,8 @@ def test_reset_controls_page(dash_br):
             "2002",
         ],
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+    # close dropdown to avoid errors with checking other controls
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
     # radioitems
     check_selected_categorical_component(
         dash_br,

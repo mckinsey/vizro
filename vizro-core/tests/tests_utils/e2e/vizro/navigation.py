@@ -2,7 +2,12 @@ import time
 
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_accordion_active
-from e2e.vizro.paths import page_title_path, slider_handler_path, slider_value_path
+from e2e.vizro.paths import (
+    dropdown_deselect_all_path,
+    dropdown_id_path,
+    dropdown_select_all_path,
+    page_title_path,
+)
 from e2e.vizro.waiters import graph_load_waiter
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -11,17 +16,24 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 def click_element_by_xpath_selenium(driver, xpath):
-    WebDriverWait(driver.driver, timeout=cnst.SELENIUM_WAITERS_TIMEOUT).until(
+    WebDriverWait(driver, timeout=cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable((By.XPATH, xpath))
     ).click()
 
 
 def hover_over_element_by_xpath_selenium(driver, xpath):
-    ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.XPATH, xpath)).perform()
+    element = driver.find_element(By.XPATH, xpath)
+    ActionChains(driver).move_to_element(element).perform()
 
 
 def hover_over_element_by_css_selector_selenium(driver, css_selector):
-    ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.CSS_SELECTOR, css_selector)).perform()
+    element = driver.find_element(By.CSS_SELECTOR, css_selector)
+    ActionChains(driver).move_to_element(element).perform()
+
+
+def hover_over_and_click_by_css_selector_selenium(driver, css_selector):
+    element = driver.find_element(By.CSS_SELECTOR, css_selector)
+    ActionChains(driver).move_to_element(element).click().perform()
 
 
 def modifier_click(dash_br, selector, key):
@@ -32,7 +44,7 @@ def modifier_click(dash_br, selector, key):
 
 def accordion_select(driver, accordion_name):
     """Selecting accordion and checking if it is active."""
-    click_element_by_xpath_selenium(driver, f"//button[text()='{accordion_name}']")
+    click_element_by_xpath_selenium(driver.driver, f"//button[text()='{accordion_name}']")
     check_accordion_active(driver, accordion_name)
     # to let accordion open
     time.sleep(1)
@@ -64,18 +76,36 @@ def page_select_selenium(driver, page_path, page_name, timeout=cnst.SELENIUM_WAI
         )
 
 
-def select_slider_handler(driver, elem_id, value, handler_class="rc-slider-handle"):
-    driver.multiple_click(slider_value_path(elem_id=elem_id, value=value), 1)
-    driver.multiple_click(slider_handler_path(elem_id=elem_id, handler_class=handler_class), 1)
+def select_slider_value(driver, elem_id, value):
+    slider_values = driver.find_elements(f"div[id='{elem_id}'] div div")
+    for slider_value in slider_values:
+        if slider_value.text == value:
+            driver.click_at_coord_fractions(slider_value, fx=0, fy=0)
 
 
 def clear_dropdown(driver, dropdown_id):
-    selected_options = driver.find_elements(f"div[id='{dropdown_id}'] span[class='Select-value-label']")
-    selected_options_list = ["".join(option.text.split()) for option in selected_options]
-    for option in range(0, len(selected_options_list)):
-        driver.clear_input(f"div[id='{dropdown_id}']")
+    driver.multiple_click(f"{dropdown_id_path(dropdown_id)} .dash-dropdown-clear", 1)
 
 
 def select_dropdown_value(driver, dropdown_id, value):
     """Steps to select value in dropdown."""
-    driver.select_dcc_dropdown(f"div[id='{dropdown_id}']", value)
+    # if dropdown is open, close it to avoid errors with selecting value
+    if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='true']"):
+        driver.multiple_click(dropdown_id_path(dropdown_id), 1)
+    driver.select_dcc_dropdown(dropdown_id_path(dropdown_id), value)
+
+
+def select_dropdown_select_all(driver, dropdown_id):
+    """Steps to select Select All value in dropdown."""
+    # if dropdown is closed, open it to avoid errors with selecting value
+    if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='false']"):
+        driver.multiple_click(dropdown_id_path(dropdown_id), 1)
+    driver.multiple_click(dropdown_select_all_path(dropdown_id), 1)
+
+
+def select_dropdown_deselect_all(driver, dropdown_id):
+    """Steps to select Deselect All value in dropdown."""
+    # if dropdown is open, close it to avoid errors with selecting value
+    if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='false']"):
+        driver.multiple_click(dropdown_id_path(dropdown_id), 1)
+    driver.multiple_click(dropdown_deselect_all_path(dropdown_id), 1)

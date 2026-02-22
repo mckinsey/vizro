@@ -7,7 +7,8 @@ from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
     check_graph_is_empty,
-    check_graph_is_loaded,
+    check_graph_x_axis_value,
+    check_graph_y_axis_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -17,15 +18,9 @@ from e2e.vizro.navigation import (
     clear_dropdown,
     page_select,
     select_dropdown_value,
-    select_slider_handler,
+    select_slider_value,
 )
-from e2e.vizro.paths import (
-    actions_progress_indicator_path,
-    categorical_components_value_path,
-    dropdown_arrow_path,
-    graph_axis_value_path,
-    slider_value_path,
-)
+from e2e.vizro.paths import actions_progress_indicator_path, categorical_components_value_path
 from e2e.vizro.waiters import callbacks_finish_waiter
 
 
@@ -75,13 +70,10 @@ def test_dropdown_values_not_disappear(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa"],
         expected_unselected_options=[],
     )
@@ -89,37 +81,28 @@ def test_dropdown_values_not_disappear(dash_br):
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=10)
     dynamic_filters_data_config_manipulation(key="virginica", set_value=15)
     dash_br.driver.refresh()
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are present and only "setosa" selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=False,
         expected_selected_options=["setosa"],
-        expected_unselected_options=["SelectAll", "versicolor", "virginica"],
+        expected_unselected_options=["versicolor", "virginica"],
     )
-    # Choose "versicolor" and "virginica"
+    # Select "versicolor" and "virginica"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
     dash_br.driver.refresh()
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are still selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
@@ -143,22 +126,22 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
         page_name=cnst.DYNAMIC_DATA_PAGE,
     )
 
-    # move slider to value '20'
-    select_slider_handler(dash_br, elem_id=slider_id, value=2)
+    # move slider to value '30'
+    select_slider_value(dash_br, elem_id=slider_id, value="30")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(first_screen)
 
-    # move slider to value '60'
-    select_slider_handler(dash_br, elem_id=slider_id, value=6)
+    # move slider to value '70'
+    select_slider_value(dash_br, elem_id=slider_id, value="70")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(second_screen)
 
-    # move slider to value '20'
-    select_slider_handler(dash_br, elem_id=slider_id, value=2)
+    # move slider to value '30'
+    select_slider_value(dash_br, elem_id=slider_id, value="30")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
@@ -186,10 +169,9 @@ def test_dropdown_filter_multi(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
 
-    # Choose "versicolor" value and check that graph is reloaded
     clear_dropdown(dash_br, cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID)
+    # Select "versicolor"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -202,14 +184,11 @@ def test_dropdown_filter_multi(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-
-    # open dropdown and check selected and unselected values
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
         expected_selected_options=["versicolor"],
-        expected_unselected_options=["SelectAll", "virginica"],
+        expected_unselected_options=["virginica"],
     )
 
 
@@ -227,23 +206,19 @@ def test_dropdown_filter_select_all_value(dash_br):
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=15)
     dynamic_filters_data_config_manipulation(key="virginica", set_value=10)
     dash_br.driver.refresh()
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
     # -------- END: code block --------
-    # Open dropdown menu
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that all values are selected
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor", "virginica"],
         expected_unselected_options=[],
     )
-    # delete last options 'versicolor' and 'virginica'
-    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
-    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
+    # unselect 'versicolor' and 'virginica'
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="virginica")
     # Remove "versicolor" and "virginica" from the dynamic data
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
     dynamic_filters_data_config_manipulation(key="virginica", set_value=0)
@@ -256,12 +231,10 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that only "setosa" selected and listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa"],
         expected_unselected_options=[],
     )
@@ -275,23 +248,19 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that "setosa" is selected and "versicolor" just listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=False,
         expected_selected_options=["setosa"],
-        expected_unselected_options=["SelectAll", "versicolor"],
+        expected_unselected_options=["versicolor"],
     )
-    # Choose "versicolor"
+    # Select "versicolor"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that only "setosa" and "versicolor" selected and listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=[],
     )
@@ -305,24 +274,21 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that only "setosa" and "versicolor" selected and listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=[],
     )
-    # delete last option 'versicolor'
-    dash_br.clear_input(f"div[id='{cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID}']")
-    # Check that "setosa" is selected and "versicolor" just listed
+    # unselect 'versicolor'
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID, value="versicolor")
+    # check that "setosa" is selected and "versicolor" just listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=False,
         expected_selected_options=["setosa"],
-        expected_unselected_options=["SelectAll", "versicolor"],
+        expected_unselected_options=["versicolor"],
     )
     # Simulate refreshing the page
     page_select(
@@ -333,12 +299,10 @@ def test_dropdown_filter_select_all_value(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1, delay=0.1)
     # Check that only "setosa" selected and listed
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
-        all_value=True,
         expected_selected_options=["setosa"],
         expected_unselected_options=[],
     )
@@ -354,9 +318,8 @@ def test_dropdown_filter(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
 
-    # Choose "versicolor" value and check that graph is reloaded
+    # Select "versicolor"
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID, value="versicolor")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -369,14 +332,11 @@ def test_dropdown_filter(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
-
-    # open dropdown and check selected and unselected values
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID,
         expected_selected_options=["versicolor"],
-        expected_unselected_options=["versicolor", "virginica"],
+        expected_unselected_options=["virginica"],
     )
 
 
@@ -538,11 +498,10 @@ def test_checklist_filter(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
 
-    # Choose "versicolor" value and check that graph is reloaded
+    # Select "versicolor"
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=1), 1)
     # TODO: change value to 3 after fixing https://github.com/McK-Internal/vizro-internal/issues/1356
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=2), 1)
-    check_graph_is_loaded(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -577,9 +536,8 @@ def test_radio_items_filter(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
     )
 
-    # Choose "versicolor" value and check that graph is reloaded
+    # Select "versicolor"
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID, value=2), 1)
-    check_graph_is_loaded(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -625,17 +583,17 @@ def test_numerical_filters(dash_br):
     )
 
     # Check slider value
-    check_slider_value(dash_br, expected_end_value="6", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    check_slider_value(dash_br, elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, expected_end_value="6")
     # Check range slider values
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="6", expected_end_value="7"
     )
 
     # Change "min" slider and range slider values to "5"
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
-    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, value="5")
+    check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value="5")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID, tick_index="9", value="8")
 
     # Check slider value
     check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
@@ -672,17 +630,8 @@ def test_datepicker_range_filters(dash_br):
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
 
-    # Check y axis min value is '0'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="1", axis_value="0"),
-        "0",
-    )
-
-    # Check y axis max value is '6'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="4", axis_value="6"),
-        "6",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="1", value="0")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="7", value="6")
 
     # check current date values
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
@@ -699,24 +648,14 @@ def test_datepicker_range_filters(dash_br):
     )
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
 
-    # Check y axis max value is '5'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="6", axis_value="5"),
-        "5",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="6", value="5")
 
-    # open datepicker calendar and choose dates from 6 to 10 March 2024
+    # open datepicker calendar and select dates from 6 to 10 March 2024
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
     dash_br.multiple_click('button[aria-label="10 March 2024"]', 1)
-    check_graph_is_loaded(dash_br, cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
-
-    # Check y axis max value is '4'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="5", axis_value="4"),
-        "4",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="5", value="4")
 
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
     page_select(
@@ -748,21 +687,8 @@ def test_datepicker_single_filters(dash_br):
     # check current date value
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
 
-    # Check y axis min value is '0'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="1", axis_value="0"
-        ),
-        "0",
-    )
-
-    # Check y axis max value is '1'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
-        ),
-        "1",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="1", value="0")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="6", value="1")
 
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
     page_select(
@@ -778,28 +704,15 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis min value is '-1' (empty chart)
     check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="6", value="4")
 
-    # Check y axis max value is '4'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="4"
-        ),
-        "4",
-    )
-
-    # open datepicker calendar and choose 6 March 2024
+    # open datepicker calendar and select 6 March 2024
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
 
-    # Check y axis max value is '1'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
-        ),
-        "1",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="6", value="1")
 
     # simulate refreshing the page
     page_select(
@@ -839,10 +752,10 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
         f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)"
     )
 
-    # select '10' points for slider which is showing only 'setosa' data and check that scatter graph
+    # select '50' points for slider which is showing only 'setosa' data and check that scatter graph
     # with dynamic data is empty and that scatter graph with static data is the same
-    select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value="50")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_DF_STATIC, tick_index="9", value="3.8")
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
     dash_br.wait_for_element(
         f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='{cnst.COLOR_QUALITATIVE_THIRD}']:nth-of-type(1)"
