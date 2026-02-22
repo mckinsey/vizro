@@ -1,5 +1,5 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_graph_is_loaded, check_table_ag_grid_rows_number
+from e2e.vizro.checkers import check_graph_y_axis_value, check_table_ag_grid_rows_number
 from e2e.vizro.navigation import accordion_select, page_select, select_slider_value
 from e2e.vizro.paths import (
     categorical_components_value_path,
@@ -62,4 +62,4 @@ def test_interactions(dash_br):
         table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_INTERACTIONS_ID, row_index=3, col_id="country"),
         1,
     )
-    check_graph_is_loaded(dash_br, cnst.LINE_AG_GRID_INTERACTIONS_ID)
+    check_graph_y_axis_value(dash_br, graph_id=cnst.LINE_AG_GRID_INTERACTIONS_ID, tick_index="7", value="7000")

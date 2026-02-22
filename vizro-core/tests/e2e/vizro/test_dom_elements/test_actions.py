@@ -97,9 +97,7 @@ def test_set_control_cross_filter_graph(dash_br):
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_CROSS_FILTER_ID, point_number=20), 0, 0
     )
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID, axis_value_number="5", axis_value="1.8"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID, tick_index="5", value="1.8")
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_SET_CONTROL_CROSS_FILTER,
@@ -126,7 +124,7 @@ def test_set_control_cross_filter_ag_grid(dash_br):
         table_ag_grid_cell_path_by_row(cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID, row_index=1, col_id="country"), 1
     )
     check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID, axis_value_number="6", axis_value="50k"
+        dash_br, graph_id=cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID, tick_index="6", value="50k"
     )
 
 
@@ -218,7 +216,7 @@ def test_set_control_filter_button(dash_br):
             {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
-    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_GRAPH_ID, axis_value_number="5", axis_value="1.8")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_GRAPH_ID, tick_index="5", value="1.8")
 
 
 def test_set_control_filter_card(dash_br):
@@ -275,7 +273,7 @@ def test_drill_through_filter_graph(dash_br):
         ],
     )
     check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_TARGET_ID, axis_value_number="5", axis_value="7"
+        dash_br, graph_id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_TARGET_ID, tick_index="5", value="7"
     )
 
 
@@ -344,8 +342,8 @@ def test_drill_through_filter_ag_grid(dash_br):
     check_graph_y_axis_value(
         dash_br,
         graph_id=cnst.SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID,
-        axis_value_number="5",
-        axis_value="7",
+        tick_index="5",
+        value="7",
     )
 
 
@@ -358,7 +356,7 @@ def test_drill_down_graph(dash_br):
 
     # click on the 'versicolor' data in scatter graph
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_DRILL_DOWN_GRAPH_ID, point_number=20), 0, 0)
-    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_DRILL_DOWN_GRAPH_ID, axis_value_number="5", axis_value="7")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_DRILL_DOWN_GRAPH_ID, tick_index="5", value="7")
 
     # check that graph title changed to 'versicolor'
     dash_br.wait_for_text_to_equal(".gtitle", "Graph shows `['versicolor']` species.")
@@ -484,9 +482,7 @@ def test_set_control_clickmode_event_select(dash_br):
     modifier_click(
         dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=22), key=Keys.SHIFT
     )
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, axis_value_number="6", axis_value="2.4"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, tick_index="6", value="2.4")
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
@@ -546,9 +542,7 @@ def test_set_control_clickmode_event(dash_br):
 
     # select virginica - this causes both: checklist and radioitems to be set
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, axis_value_number="6", axis_value="2.4"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, tick_index="6", value="2.4")
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
@@ -970,9 +964,7 @@ def test_self_filtered_graph(dash_br):
 
     # select virginica in scatter graph
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21), 0, 0)
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, axis_value_number="6", axis_value="2.4"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, tick_index="6", value="2.4")
 
     # check selected value in checklist
     check_selected_categorical_component(
@@ -1015,6 +1007,4 @@ def test_self_filtered_graph(dash_br):
             {"value": 3, "selected": True, "value_name": "virginica"},
         ],
     )
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, axis_value_number="6", axis_value="2.5"
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, tick_index="6", value="2.5")

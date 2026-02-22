@@ -1,7 +1,7 @@
 import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import (
-    check_graph_is_loaded,
+    check_graph_is_empty,
     check_graph_x_axis_value,
     check_slider_value,
 )
@@ -15,26 +15,26 @@ def test_dropdown(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
 
-    # select 'setosa'
     clear_dropdown(dash_br, cnst.DROPDOWN_INSIDE_CONTAINERS)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_INSIDE_CONTAINERS, value="setosa")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="5", value="5.2")
 
 
 @pytest.mark.parametrize(
-    "filter_id",
-    [cnst.CHECK_LIST_INSIDE_CONTAINERS, cnst.RADIO_ITEMS_INSIDE_CONTAINERS],
+    "filter_id, filter_value",
+    [(cnst.CHECK_LIST_INSIDE_CONTAINERS, 1), (cnst.RADIO_ITEMS_INSIDE_CONTAINERS, 2)],
     ids=["checklist", "radio_items"],
 )
-def test_categorical_filters(dash_br, filter_id):
+def test_categorical_filters(dash_br, filter_id, filter_value):
     """Test simple checklist and radio_items filters."""
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
 
-    # select 'setosa'
-    dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=2), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
+    # unselect 'setosa'
+    dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=filter_value), 1)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
 
 
 def test_slider(dash_br):
@@ -43,7 +43,7 @@ def test_slider(dash_br):
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
     select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="0.6")
-    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, axis_value_number="5", axis_value="6")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="5", value="6")
     check_slider_value(
         dash_br,
         elem_id=cnst.SLIDER_INSIDE_CONTAINERS,
@@ -56,10 +56,10 @@ def test_range_slider(dash_br):
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
-    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value="7.3")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER)
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value="5.3")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="4", value="6")
     check_slider_value(
-        dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_start_value="4.3", expected_end_value="7"
+        dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_start_value="5", expected_end_value="7.9"
     )
 
 
@@ -74,4 +74,4 @@ def test_range_datepicker(dash_br):
     dash_br.multiple_click('button[aria-label="10 January 2024"]', 1)
     dash_br.multiple_click('button[aria-label="26 January 2024"]', 1)
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', "2024/01/10 – 2024/01/26")  # noqa: RUF001
-    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, axis_value_number="7", axis_value="4.9")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="7", value="4.9")

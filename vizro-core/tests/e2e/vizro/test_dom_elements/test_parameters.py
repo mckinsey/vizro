@@ -1,6 +1,5 @@
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
-    check_graph_is_loaded,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -56,7 +55,6 @@ def test_none_parameter(dash_br):
 
     # select NONE parameter
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_PARAMETERS_TWO, value="NONE")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
 
     # check that specific bar has cerulean blue color
     dash_br.wait_for_element(

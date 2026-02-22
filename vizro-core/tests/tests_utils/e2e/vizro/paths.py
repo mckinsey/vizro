@@ -86,20 +86,11 @@ def table_ag_grid_checkbox_path_by_row(table_id, row_index):
     return f"div[id='{table_id}'] div[row-index='{row_index}'] input.ag-checkbox-input"
 
 
-def graph_y_axis_value_path(graph_id, axis_value_number, axis_value):
-    """Path or y axis values of the graph."""
-    return (
-        f"div[id='{graph_id}'] .yaxislayer-below "
-        f"g:nth-of-type({axis_value_number}) text[data-unformatted='{axis_value}'"
-    )
-
-
-def graph_x_axis_value_path(graph_id, axis_value_number, axis_value):
-    """Path or x axis values of the graph."""
-    return (
-        f"div[id='{graph_id}'] .xaxislayer-below "
-        f"g:nth-of-type({axis_value_number}) text[data-unformatted='{axis_value}'"
-    )
+def graph_axis_value_path(graph_id, axis, tick_index, value):
+    axis = axis.lower()
+    if axis not in {"x", "y"}:
+        raise ValueError("axis must be either 'x' or 'y'")
+    return f"div[id='{graph_id}'] .{axis}axislayer-below g:nth-of-type({tick_index}) text[data-unformatted='{value}']"
 
 
 def actions_progress_indicator_path():

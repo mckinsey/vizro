@@ -48,7 +48,7 @@ def test_date_range(dash_br):
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
     dash_br.multiple_click('button[aria-label="18 May 2016"]', 1)
 
-    check_graph_x_axis_value(dash_br, graph_id=cnst.BAR_POP_RANGE_ID, axis_value_number="5", axis_value="12:00")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.BAR_POP_RANGE_ID, tick_index="5", value="12:00")
 
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
 
