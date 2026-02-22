@@ -10,26 +10,7 @@ import vizro.models as vm
 
 
 @pytest.fixture()
-def expected_range_slider_default():
-    return html.Div(
-        [
-            None,
-            dcc.RangeSlider(
-                id="range_slider",
-                min=None,
-                max=None,
-                marks={},
-                dots=True,
-                value=[None, None],
-                persistence=True,
-                persistence_type="session",
-            ),
-        ]
-    )
-
-
-@pytest.fixture()
-def expected_range_slider_with_optional():
+def expected_range_slider():
     return html.Div(
         [
             dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
@@ -37,8 +18,28 @@ def expected_range_slider_with_optional():
                 id="range_slider",
                 min=0.0,
                 max=10.0,
-                step=2.0,
-                marks={1.0: "1", 5.0: "5", 10.0: "10"},
+                step=1.0,
+                marks={0.0: "0", 10.0: "10"},
+                value=[0.0, 10.0],
+                persistence=True,
+                persistence_type="session",
+                dots=True,
+            ),
+        ]
+    )
+
+
+@pytest.fixture()
+def expected_range_slider_with_marks_none():
+    return html.Div(
+        [
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
+            dcc.RangeSlider(
+                id="range_slider",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks=None,
                 value=[0, 10],
                 persistence=True,
                 persistence_type="session",
@@ -240,21 +241,22 @@ class TestRangeSliderInstantiation:
 class TestRangeSliderBuild:
     """Tests model build method."""
 
-    def test_range_slider_build_default(self, expected_range_slider_default):
-        range_slider = vm.RangeSlider(id="range_slider").build()
-        assert_component_equal(range_slider, expected_range_slider_default)
+    def test_range_slider_build(self, expected_range_slider):
+        range_slider = vm.RangeSlider(id="range_slider", min=0, max=10, step=1, title="Title").build()
 
-    def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
+        assert_component_equal(range_slider, expected_range_slider)
+
+    def test_range_slider_build_with_marks_none(self, expected_range_slider_with_marks_none):
         range_slider = vm.RangeSlider(
             id="range_slider",
             min=0,
             max=10,
-            step=2,
-            marks={1: "1", 5: "5", 10: "10"},
+            step=1,
+            marks=None,
             value=[0, 10],
             title="Title",
         ).build()
-        assert_component_equal(range_slider, expected_range_slider_with_optional)
+        assert_component_equal(range_slider, expected_range_slider_with_marks_none)
 
     def test_range_slider_build_with_extra(self, expected_range_slider_with_extra):
         """Test that extra arguments correctly override defaults."""
