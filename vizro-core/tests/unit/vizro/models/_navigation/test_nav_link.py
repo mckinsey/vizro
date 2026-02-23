@@ -86,7 +86,7 @@ class TestNavLinkPreBuildMethod:
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
-    def test_nav_link_active(self, pages, request, page_1_id):
+    def test_nav_link_left_position_active(self, pages, request, page_1_id):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav-link", label="Label", icon="Icon", pages=pages)
         nav_link.pre_build()
@@ -107,7 +107,7 @@ class TestNavLinkBuildMethod:
         assert_component_equal(built_nav_link["nav-link"], expected_nav_link)
         assert_component_equal(built_nav_link["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
-    def test_nav_link_not_active(self, pages, request):
+    def test_nav_link_left_position_not_active(self, pages, request):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav-link", label="Label", icon="Icon", pages=pages)
         nav_link.pre_build()
