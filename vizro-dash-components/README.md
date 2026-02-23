@@ -12,11 +12,11 @@ pip install vizro-dash-components
 
 ````python
 from dash import Dash
-from vizro_dash_components import Markdown
+from vizro_dash_components as vdc
 
 app = Dash(__name__)
 
-app.layout = Markdown(
+app.layout = vdc.Markdown(
     id="my-markdown",
     children="""
     # Hello World

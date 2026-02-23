@@ -1,7 +1,7 @@
 """Test usage of vizro_dash_components.Markdown with all features."""
 
 import dash
-import vizro_dash_components
+import vizro_dash_components as vdc
 from dash import Input, Output, clientside_callback, html
 
 app = dash.Dash(__name__)
@@ -90,21 +90,21 @@ app.layout = html.Div(
         ),
         html.Hr(),
         html.H2("Basic Markdown"),
-        vizro_dash_components.Markdown(
+        vdc.Markdown(
             id="markdown-basic",
             children=markdown_content,
             link_target="_blank",
         ),
         html.Hr(),
         html.H2("Markdown with Math (mathjax=True)"),
-        vizro_dash_components.Markdown(
+        vdc.Markdown(
             id="markdown-math",
             children=markdown_with_math,
             mathjax=True,
         ),
         html.Hr(),
         html.H2("Markdown with HTML (dangerously_allow_html=True)"),
-        vizro_dash_components.Markdown(
+        vdc.Markdown(
             id="markdown-html",
             children=markdown_with_html,
             dangerously_allow_html=True,

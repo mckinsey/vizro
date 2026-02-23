@@ -13,7 +13,7 @@ installer = "uv"
 
 [envs.default.scripts]
 example = "python usage.py"
-lint = ["hatch run npm:lint", "pre-commit run {args} --all-files"]
+lint = ["npm run lint:js", "pre-commit run {args} --all-files"]
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
   "hatch version release",
@@ -21,7 +21,6 @@ prep-release = [
   "hatch run changelog:add",
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-dash-components $(hatch version)"'
 ]
-npm-build = "npm run build"
-npm-fmt = "npm run fmt:js"
-npm-install = "npm install --legacy-peer-deps"
-npm-lint = "npm run lint:js"
+pypath = "python -c 'import sys; print(sys.executable)'"
+build = "npm run build"
+
