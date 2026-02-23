@@ -1,17 +1,15 @@
-import { CodeHighlight, InlineCodeHighlight } from "@mantine/code-highlight";
-import { MantineProvider } from "@mantine/core";
 import { isNil, mergeDeepRight, pick, type } from "ramda";
-import { Component } from "react";
+import React, { Component, Suspense } from "react";
 import JsxParser from "react-jsx-parser";
 import Markdown from "react-markdown";
 import RemarkMath from "remark-math";
+import {
+  DMCCodeHighlight,
+  DMCInlineCodeHighlight,
+} from "../utils/DMCComponents";
 import LoadingElement from "../utils/LoadingElement";
 import DashMath from "./Math.react";
 import { propTypes } from "../components/Markdown";
-
-// Import Mantine styles
-import "@mantine/core/styles.css";
-import "@mantine/code-highlight/styles.css";
 
 export default class DashMarkdown extends Component {
   constructor(props) {
@@ -132,28 +130,26 @@ export default class DashMarkdown extends Component {
     // DEVIATION FROM ORIGINAL DCC:
     // The original uses highlight.js via manual DOM manipulation in
     // componentDidMount/componentDidUpdate (MarkdownHighlighter).
-    // We use Mantine CodeHighlight as a React component via renderers.code
+    // We use DMC's CodeHighlight via window.dash_mantine_components globals
     // for built-in copy button and to avoid DOM manipulation anti-patterns.
+    // These are loaded via React.lazy from DMCComponents.js.
     const codeRenderer = ({ language, value }) => {
       return (
-        <CodeHighlight
-          code={value}
-          language={language || "text"}
-          withCopyButton={true}
-        />
+        <Suspense fallback={<pre><code>{value}</code></pre>}>
+          <DMCCodeHighlight
+            code={value}
+            language={language || "text"}
+            withCopyButton={true}
+          />
+        </Suspense>
       );
     };
 
-    // DEVIATION FROM ORIGINAL DCC:
-    // MantineProvider is required as a React context ancestor for CodeHighlight.
-    // forceColorScheme prevents the provider from writing to <html>'s
-    // data-mantine-color-scheme attribute. The actual visual theming is handled
-    // entirely by CSS attribute selectors on <html>, so the forced value here
-    // is irrelevant for appearance. The host app (e.g. Vizro) is responsible
-    // for setting data-mantine-color-scheme on <html>.
+    // NOTE: MantineProvider is provided by the host Dash app via DMC.
+    // We no longer need to wrap in our own MantineProvider since we consume
+    // DMC components which already have the required context from the app.
     return (
-      <MantineProvider forceColorScheme="light">
-        <LoadingElement
+      <LoadingElement
           id={id}
           ref={(node) => {
             this.mdContainer = node;
@@ -184,9 +180,11 @@ export default class DashMarkdown extends Component {
               code: codeRenderer,
 
               // DEVIATION FROM ORIGINAL DCC:
-              // Inline code rendering using Mantine InlineCodeHighlight
+              // Inline code rendering using DMC's InlineCodeHighlight via window global
               inlineCode: ({ value }) => (
-                <InlineCodeHighlight code={value} language="text" />
+                <Suspense fallback={<code>{value}</code>}>
+                  <DMCInlineCodeHighlight code={value} language="text" />
+                </Suspense>
               ),
 
               // HTML rendering with JSX parsing support
@@ -204,7 +202,6 @@ export default class DashMarkdown extends Component {
             }}
           />
         </LoadingElement>
-      </MantineProvider>
     );
   }
 }

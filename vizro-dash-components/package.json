@@ -31,10 +31,6 @@
     },
     "dependencies": {
         "@plotly/dash-component-plugins": "^1.2.3",
-        "@mantine/code-highlight": "^7.0.0",
-        "@mantine/core": "^7.0.0",
-        "@mantine/hooks": "^7.0.0",
-        "highlight.js": "^11.9.0",
         "mathjax": "^3.2.2",
         "prop-types": "^15.8.1",
         "ramda": "^0.30.0",

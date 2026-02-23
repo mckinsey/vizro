@@ -7,6 +7,7 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 [envs.default]
 dependencies = [
   "pre-commit",
+  "dash-iconify", # just for the example usage.py
   "dash[dev]>=3.0.0"  # provides dash-generate-components, required by `npm run build`
 ]
 installer = "uv"
