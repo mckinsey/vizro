@@ -20,7 +20,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Initial release of vizro-dash-components with the Markdown component. ([#1571](https://github.com/mckinsey/vizro/pull/1571))
+- Initial release of vizro-dash-components (`vdc`) with `Markdown` component: a clone of `dcc.Markdown` that uses `dmc.CodeHighlight` and `dmc.InlineCodeHighlight`. ([#1571](https://github.com/mckinsey/vizro/pull/1571))
 
 <!--
 ### Changed
