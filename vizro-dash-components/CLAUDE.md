@@ -52,15 +52,9 @@ Each `.tsx` file in `src/ts/components/` becomes a Dash component. Key patterns:
 
 ## Testing with vizro-core
 
-To test `vizro-dash-components` local changes in `vizro-core`:
+`vizro-core` already depends on the released `vizro-dash-components` package. To test local changes:
 
-1. Build the component: `hatch run generate-components` (from `vizro-dash-components/`)
-1. Install into vizro-core's hatch env:
-    ```bash
-    # From vizro-core/, find the env's Python path:
-    hatch run pypath
-    # Then install editable:
-    uv pip install -e ../vizro-dash-components --python "<path from above>"
-    ```
-1. Add the component under test to `vizro-core/scratch_dev/app.py`
-1. Run the vizro-core example: `hatch run example` (from `vizro-core/`)
+1. `vizro-dash-components/`: Build with `hatch run generate-components`
+2. `vizro-core/`: Override the installed package with your local version: `hatch run pip install -e ../vizro-dash-components`
+3. `vizro-core/`: Add the component under test to `scratch_dev/app.py`
+4. `vizro-core/`: Run the example with `hatch run example`
