@@ -73,7 +73,7 @@ class DmcShowcase(VizroBaseModel):
 
 def _card_wrapper(title: str, children, style=None):
     """Wrap content in a Card with a title."""
-    card_style = {"height": "100%"}
+    card_style = {"height": "100%", "backgroundColor": "inherit"}
     if style:
         card_style = {**card_style, **style}
     return dmc.Card(
@@ -84,7 +84,7 @@ def _card_wrapper(title: str, children, style=None):
         withBorder=True,
         padding="md",
         shadow="sm",
-        style=card_style,
+       style=card_style,
     )
 
 
