@@ -10,21 +10,26 @@ pip install vizro-dash-components
 
 ## Usage
 
+The `Markdown` component requires a `dmc.MantineProvider` wrapper for proper styling of code blocks.
+
 ````python
+import dash_mantine_components as dmc
+import vizro_dash_components as vdc
 from dash import Dash
-from vizro_dash_components as vdc
 
 app = Dash(__name__)
 
-app.layout = vdc.Markdown(
-    id="my-markdown",
-    children="""
-    # Hello World
+app.layout = dmc.MantineProvider(
+    vdc.Markdown(
+        id="my-markdown",
+        children="""
+# Hello World
 
-    ```python
-    print("Hello, World!")
-    ```
-    """,
+```python
+print("Hello, World!")
+```
+        """,
+    )
 )
 
 if __name__ == "__main__":

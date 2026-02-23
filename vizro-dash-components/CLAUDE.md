@@ -34,12 +34,13 @@ Vizro Dash Components are used by the Vizro framework but can be used in a pure 
 
 - `src/ts/components/` - Dash component definitions (TypeScript/React). Each file here becomes a Python Dash component
 - `src/ts/fragments/` - Internal React components used by the Dash components (not exported as Dash components)
+- `src/ts/utils/` - Shared utilities (lazy loaders, helper functions)
 - `vizro_dash_components/` - Auto-generated Python package (built artifacts, do not edit manually)
-- `usage.py` - Standalone Dash example app for testing components outside Vizro
+- `usage.py` - Standalone Dash example app for testing components outside Vizro (requires `dmc.MantineProvider` wrapper)
 - `pyproject.toml` - Python package configuration (version sourced from `package.json` via `hatch-nodejs-version`)
 - `package.json` - npm package configuration with build scripts (version must be semver-compatible, e.g. `0.1.0` or `0.1.0-dev.0`)
 - `hatch.toml` - Hatch environment and script configuration
-- `webpack.config.js` - Webpack config. Auto-derives the Python package name from `package.json` name via `.replace(/-/g, "_")`
+- `webpack.config.js` - Webpack config with async chunk splitting for lazy-loaded modules (Markdown, MathJax)
 
 ### Writing Dash components
 
@@ -49,6 +50,12 @@ Each `.tsx` file in `src/ts/components/` becomes a Dash component. Key patterns:
 - Call `setProps({prop: newValue})` to trigger Dash callbacks
 - JSDoc comments on the component and its props become Python docstrings
 - `defaultProps` on the component set Python default values
+
+### Architecture notes
+
+**Lazy loading**: The Markdown component uses `@plotly/dash-component-plugins` `asyncDecorator` for lazy loading. This creates separate webpack chunks (`async-markdown.js`, `async-mathjax.js`) that are loaded on demand.
+
+**DMC integration**: Code highlighting uses `dash-mantine-components` (DMC) components (`CodeHighlight`, `InlineCodeHighlight`) accessed via `window.dash_mantine_components` global. This avoids bundling Mantine twice and ensures consistent theming with the host app's `MantineProvider`. The host Dash app must wrap its layout in `dmc.MantineProvider` for proper styling.
 
 ## Testing with vizro-core
 
