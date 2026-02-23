@@ -115,7 +115,7 @@ app.layout = dmc.MantineProvider(
             vdc.Markdown(
                 id="markdown-math",
                 children=markdown_with_math,
-                mathjax=False,
+                mathjax=True,
             ),
             dmc.Divider(my="md"),
             dmc.Title("Markdown with HTML (dangerously_allow_html=True)", order=2, mb="sm"),
