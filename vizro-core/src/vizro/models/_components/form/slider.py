@@ -102,11 +102,7 @@ underlying component may change in the future.""",
 
     def __call__(self, min, max):
         # Overwrite default marks with min and max boundary marks if marks are not provided.
-        marks = (
-            self.marks
-            if self.marks != {}
-            else {min: str(to_int_if_whole(min)), max: str(to_int_if_whole(max))}
-        )
+        marks = self.marks if self.marks != {} else {min: str(to_int_if_whole(min)), max: str(to_int_if_whole(max))}
 
         defaults = {
             "id": self.id,
