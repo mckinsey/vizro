@@ -1,10 +1,11 @@
 """Test usage of vizro_dash_components.Markdown with all features."""
 
-import dash
+import dash_mantine_components as dmc
 import vizro_dash_components as vdc
-from dash import Input, Output, clientside_callback, html
+from dash import Dash
+from dash_iconify import DashIconify
 
-app = dash.Dash(__name__)
+app = Dash(__name__)
 
 markdown_content = """
 # Hello Vizro Markdown
@@ -86,70 +87,49 @@ When `dangerously_allow_html=True`, you can embed HTML:
 </button>
 """
 
-app.layout = html.Div(
-    [
-        html.Div(
-            [
-                html.H1("Vizro Dash Components Demo"),
-                html.Button("Toggle Dark/Light", id="theme-toggle", n_clicks=0),
-            ],
-            style={"display": "flex", "alignItems": "center", "gap": "20px"},
-        ),
-        html.Hr(),
-        html.H2("Basic Markdown"),
-        vdc.Markdown(
-            id="markdown-basic",
-            children=markdown_content,
-            link_target="_blank",
-        ),
-        html.Hr(),
-        html.H2("Markdown with Math (mathjax=True)"),
-        vdc.Markdown(
-            id="markdown-math",
-            children=markdown_with_math,
-            mathjax=True,
-        ),
-        html.Hr(),
-        html.H2("Markdown with HTML (dangerously_allow_html=True)"),
-        vdc.Markdown(
-            id="markdown-html",
-            children=markdown_with_html,
-            dangerously_allow_html=True,
-        ),
-    ],
-    id="main-container",
-    style={"padding": "20px", "maxWidth": "800px", "margin": "0 auto"},
-)
-
-# Clientside callback to toggle dark/light theme on <html> element.
-# Sets data-mantine-color-scheme which Mantine CSS uses for theming,
-# and also applies basic page-level dark/light styles.
-clientside_callback(
-    """
-    function(n_clicks) {
-        const html = document.documentElement;
-        const current = html.getAttribute('data-mantine-color-scheme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-mantine-color-scheme', next);
-
-        // Basic page styling for dark/light
-        const container = document.getElementById('main-container');
-        if (next === 'dark') {
-            document.body.style.backgroundColor = '#1a1b1e';
-            document.body.style.color = '#c1c2c5';
-            container.style.color = '#c1c2c5';
-        } else {
-            document.body.style.backgroundColor = '#ffffff';
-            document.body.style.color = '#000000';
-            container.style.color = '#000000';
-        }
-        return next;
-    }
-    """,
-    Output("theme-toggle", "children"),
-    Input("theme-toggle", "n_clicks"),
-    prevent_initial_call=True,
+app.layout = dmc.MantineProvider(
+    dmc.Container(
+        [
+            dmc.Group(
+                [
+                    dmc.Title("Vizro Dash Components Demo", order=1),
+                    dmc.ColorSchemeToggle(
+                        lightIcon=DashIconify(icon="radix-icons:sun", width=20),
+                        darkIcon=DashIconify(icon="radix-icons:moon", width=20),
+                        size="lg",
+                    ),
+                ],
+                justify="space-between",
+                align="center",
+                mb="md",
+            ),
+            dmc.Divider(mb="md"),
+            dmc.Title("Basic Markdown", order=2, mb="sm"),
+            vdc.Markdown(
+                id="markdown-basic",
+                children=markdown_content,
+                link_target="_blank",
+            ),
+            dmc.Divider(my="md"),
+            dmc.Title("Markdown with Math (mathjax=True)", order=2, mb="sm"),
+            vdc.Markdown(
+                id="markdown-math",
+                children=markdown_with_math,
+                mathjax=False,
+            ),
+            dmc.Divider(my="md"),
+            dmc.Title("Markdown with HTML (dangerously_allow_html=True)", order=2, mb="sm"),
+            vdc.Markdown(
+                id="markdown-html",
+                children=markdown_with_html,
+                dangerously_allow_html=True,
+            ),
+        ],
+        size="md",
+        py="xl",
+    ),
+    defaultColorScheme="light",
 )
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
