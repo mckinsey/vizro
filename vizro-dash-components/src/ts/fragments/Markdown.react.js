@@ -1,15 +1,16 @@
-import { isNil, mergeDeepRight, pick, type } from "ramda";
+import { mergeDeepRight, pick, type } from "ramda";
 import React, { Component, Suspense } from "react";
 import JsxParser from "react-jsx-parser";
 import Markdown from "react-markdown";
 import RemarkMath from "remark-math";
+import { propTypes } from "../components/Markdown";
+import { DCCLink } from "../utils/DCCComponents";
 import {
   DMCCodeHighlight,
   DMCInlineCodeHighlight,
 } from "../utils/DMCComponents";
 import LoadingElement from "../utils/LoadingElement";
 import DashMath from "./Math.react";
-import { propTypes } from "../components/Markdown";
 
 export default class DashMarkdown extends Component {
   constructor(props) {
@@ -69,39 +70,14 @@ export default class DashMarkdown extends Component {
     const displayText = dedent && textProp ? this.dedent(textProp) : textProp;
 
     const componentTransforms = {
-      // DEVIATION FROM ORIGINAL DCC:
-      // Client-side navigation logic from the original Dash Link component:
-      // https://github.com/plotly/dash/blob/dev/components/dash-core-components/src/components/Link.react.js
-      //
-      // In the original, this uses `import DccLink from '../components/Link.react'`
-      // which is a full Dash component with propTypes, loading state, and URL
-      // sanitization via `window.dash_clientside.clean_url`.
-      //
-      // We inline the core pushState routing logic here instead of importing
-      // DccLink because Link.react is a separate Dash component that doesn't
-      // exist in our package, and creating it as a file in src/ts/components/
-      // would cause dash-generate-components to produce an unwanted Python
-      // `vizro_dash_components.Link` class.
-      dccLink: (props) => {
-        const handleClick = (e) => {
-          const hasModifiers = e.metaKey || e.shiftKey || e.altKey || e.ctrlKey;
-          if (hasModifiers) {
-            return;
-          }
-          if (props.target !== "_self" && !isNil(props.target)) {
-            return;
-          }
-          e.preventDefault();
-          window.history.pushState({}, "", props.href);
-          window.dispatchEvent(new CustomEvent("_dashprivate_pushstate"));
-          window.scrollTo(0, 0);
-        };
-        return (
-          <a href={props.href} onClick={handleClick} {...props}>
-            {isNil(props.children) ? props.href : props.children}
-          </a>
-        );
-      },
+      // Uses the real dcc.Link component loaded from window.dash_core_components
+      // via React.lazy (same pattern as DMC components). This provides full
+      // functionality including URL sanitization and refresh prop support.
+      dccLink: (props) => (
+        <Suspense fallback={<a href={props.href}>{props.children}</a>}>
+          <DCCLink {...props} />
+        </Suspense>
+      ),
       dccMarkdown: (props) => (
         <Markdown
           {...mergeDeepRight(
@@ -115,7 +91,11 @@ export default class DashMarkdown extends Component {
       ),
     };
 
-    // Regex to convert $...$ and $$...$$ math notation to dashMathjax components
+    // DEVIATION FROM ORIGINAL DCC:
+    // Regex to convert $...$ and $$...$$ math notation to dashMathjax components.
+    // Original pattern: /(\${1,2})((?:\\.|[^$])+)\1/g
+    // Fixed pattern avoids catastrophic backtracking (ReDoS) by being explicit
+    // about escaped dollar signs vs other escaped chars vs plain characters.
     const regexMath = (value) => {
       const newValue = value.replace(
         /(\${1,2})((?:\\\$|[^$\\]|\\(?!\$))+)\1/g,
@@ -135,7 +115,13 @@ export default class DashMarkdown extends Component {
     // These are loaded via React.lazy from DMCComponents.js.
     const codeRenderer = ({ language, value }) => {
       return (
-        <Suspense fallback={<pre><code>{value}</code></pre>}>
+        <Suspense
+          fallback={
+            <pre>
+              <code>{value}</code>
+            </pre>
+          }
+        >
           <DMCCodeHighlight
             code={value}
             language={language || "text"}
@@ -150,58 +136,56 @@ export default class DashMarkdown extends Component {
     // DMC components which already have the required context from the app.
     return (
       <LoadingElement
-          id={id}
-          ref={(node) => {
-            this.mdContainer = node;
+        id={id}
+        ref={(node) => {
+          this.mdContainer = node;
+        }}
+        style={style}
+        className={
+          (highlight_config?.theme || className) &&
+          `${className ? className : ""} ${
+            highlight_config?.theme === "dark" ? "hljs-dark" : ""
+          }`
+        }
+      >
+        <Markdown
+          source={displayText}
+          escapeHtml={!dangerously_allow_html}
+          linkTarget={link_target}
+          plugins={mathjax ? [RemarkMath] : []}
+          renderers={{
+            // Math block rendering (when mathjax is enabled)
+            math: (props) => <DashMath tex={props.value} inline={false} />,
+
+            // Inline math rendering (when mathjax is enabled)
+            inlineMath: (props) => <DashMath tex={props.value} inline={true} />,
+
+            // Code block rendering using Mantine CodeHighlight
+            code: codeRenderer,
+
+            // DEVIATION FROM ORIGINAL DCC:
+            // Inline code rendering using DMC's InlineCodeHighlight via window global
+            inlineCode: ({ value }) => (
+              <Suspense fallback={<code>{value}</code>}>
+                <DMCInlineCodeHighlight code={value} language="text" />
+              </Suspense>
+            ),
+
+            // HTML rendering with JSX parsing support
+            // This enables dccLink, dccMarkdown, and dashMathjax in HTML blocks
+            html: (props) =>
+              props.escapeHtml ? (
+                props.value
+              ) : (
+                <JsxParser
+                  jsx={mathjax ? regexMath(props.value) : props.value}
+                  components={componentTransforms}
+                  renderInWrapper={false}
+                />
+              ),
           }}
-          style={style}
-          className={
-            (highlight_config?.theme || className) &&
-            `${className ? className : ""} ${
-              highlight_config?.theme === "dark" ? "hljs-dark" : ""
-            }`
-          }
-        >
-          <Markdown
-            source={displayText}
-            escapeHtml={!dangerously_allow_html}
-            linkTarget={link_target}
-            plugins={mathjax ? [RemarkMath] : []}
-            renderers={{
-              // Math block rendering (when mathjax is enabled)
-              math: (props) => <DashMath tex={props.value} inline={false} />,
-
-              // Inline math rendering (when mathjax is enabled)
-              inlineMath: (props) => (
-                <DashMath tex={props.value} inline={true} />
-              ),
-
-              // Code block rendering using Mantine CodeHighlight
-              code: codeRenderer,
-
-              // DEVIATION FROM ORIGINAL DCC:
-              // Inline code rendering using DMC's InlineCodeHighlight via window global
-              inlineCode: ({ value }) => (
-                <Suspense fallback={<code>{value}</code>}>
-                  <DMCInlineCodeHighlight code={value} language="text" />
-                </Suspense>
-              ),
-
-              // HTML rendering with JSX parsing support
-              // This enables dccLink, dccMarkdown, and dashMathjax in HTML blocks
-              html: (props) =>
-                props.escapeHtml ? (
-                  props.value
-                ) : (
-                  <JsxParser
-                    jsx={mathjax ? regexMath(props.value) : props.value}
-                    components={componentTransforms}
-                    renderInWrapper={false}
-                  />
-                ),
-            }}
-          />
-        </LoadingElement>
+        />
+      </LoadingElement>
     );
   }
 }

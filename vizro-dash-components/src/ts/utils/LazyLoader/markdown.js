@@ -1,4 +1,2 @@
 export default () =>
-  import(
-    /* webpackChunkName: "markdown" */ "../../fragments/Markdown.react"
-  );
+  import(/* webpackChunkName: "markdown" */ "../../fragments/Markdown.react");

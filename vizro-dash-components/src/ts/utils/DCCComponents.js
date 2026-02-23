@@ -1,10 +1,10 @@
 import React from "react";
 
-const createDMCLazyComponent = (componentName) => {
+const createDCCLazyComponent = (componentName) => {
   return React.lazy(() => {
     return new Promise((resolve) => {
       const check = () => {
-        const component = window.dash_mantine_components?.[componentName];
+        const component = window.dash_core_components?.[componentName];
         if (component) {
           resolve({ default: component });
         } else {
@@ -16,7 +16,4 @@ const createDMCLazyComponent = (componentName) => {
   });
 };
 
-export const DMCCodeHighlight = createDMCLazyComponent("CodeHighlight");
-export const DMCInlineCodeHighlight = createDMCLazyComponent(
-  "InlineCodeHighlight",
-);
+export const DCCLink = createDCCLazyComponent("Link");
