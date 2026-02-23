@@ -48,15 +48,19 @@ class DmcShowcase(VizroBaseModel):
                     dmc.Grid(
                         [
                             dmc.GridCol(span=6, children=_sample_components_card()),
+                            dmc.GridCol(span=6, children=_date_picker_card()),
                             dmc.GridCol(span=6, children=_progress_card()),
                             dmc.GridCol(span=6, children=_figures_card()),
-                            dmc.GridCol(span=6, children=_date_picker_card()),
                             dmc.GridCol(span=6, children=_authentication_card()),
                             dmc.GridCol(span=6, children=_stepper_card()),
                             dmc.GridCol(span=6, children=_inputs_card()),
+                            dmc.GridCol(span=6, children=_more_inputs_card()),
+                            dmc.GridCol(span=6, children=_sliders_rating_card()),
+                            dmc.GridCol(span=6, children=_color_card()),
                             dmc.GridCol(span=6, children=_card_paper_card()),
                             dmc.GridCol(span=6, children=_accordion_card()),
                             dmc.GridCol(span=6, children=_tabs_card()),
+                            dmc.GridCol(span=6, children=_display_misc_card()),
                         ],
                         gutter="lg",
                     ),
@@ -67,8 +71,11 @@ class DmcShowcase(VizroBaseModel):
         )
 
 
-def _card_wrapper(title: str, children):
+def _card_wrapper(title: str, children, style=None):
     """Wrap content in a Card with a title."""
+    card_style = {"height": "100%"}
+    if style:
+        card_style = {**card_style, **style}
     return dmc.Card(
         [
             dmc.Text(title, fw=600, size="sm", c="dimmed", mb="xs"),
@@ -77,7 +84,7 @@ def _card_wrapper(title: str, children):
         withBorder=True,
         padding="md",
         shadow="sm",
-        style={"height": "100%"},
+        style=card_style,
     )
 
 
@@ -91,7 +98,12 @@ def _sample_components_card():
                 title="Info",
                 color="blue",
             ),
-            dmc.Group(
+            dmc.Alert(
+                "Success message.",
+                title="Success",
+                color="green",
+            ),
+            dmc.Flex(
                 [
                     dmc.Badge("Default", color="gray"),
                     dmc.Badge("Primary", color="blue"),
@@ -99,8 +111,9 @@ def _sample_components_card():
                     dmc.Badge("Warning", color="yellow"),
                 ],
                 gap="sm",
+                wrap="wrap",
             ),
-            dmc.Group(
+            dmc.Flex(
                 [
                     dmc.Button("Filled", variant="filled"),
                     dmc.Button("Outline", variant="outline"),
@@ -108,6 +121,7 @@ def _sample_components_card():
                     dmc.Button("Subtle", variant="subtle"),
                 ],
                 gap="sm",
+                wrap="wrap",
             ),
             dmc.Loader(size="sm"),
         ],
@@ -139,7 +153,7 @@ def _figures_card():
 
 
 def _date_picker_card():
-    """DatePickerInput."""
+    """DatePickerInput with calendar always visible (dropdown open)."""
     return _card_wrapper(
         "Date picker",
         [
@@ -147,8 +161,10 @@ def _date_picker_card():
                 id="dmc-showcase-date-picker",
                 label="Pick a date",
                 placeholder="Select date",
+                popoverProps={"opened": True},
             ),
         ],
+        style={"minHeight": "400px"},
     )
 
 
@@ -205,6 +221,80 @@ def _inputs_card():
     )
 
 
+def _more_inputs_card():
+    """NumberInput, Textarea, PasswordInput, RadioGroup, SegmentedControl, Chip, MultiSelect."""
+    return _card_wrapper(
+        "More inputs",
+        [
+            dmc.NumberInput(label="Number", value=42, min=0, max=100),
+            dmc.Textarea(label="Text area", placeholder="Multi-line text…", minRows=2),
+            dmc.PasswordInput(label="Password", placeholder="Enter password"),
+            dmc.RadioGroup(
+                label="Radio group",
+                children=[
+                    dmc.Radio("Option A", value="a"),
+                    dmc.Radio("Option B", value="b"),
+                    dmc.Radio("Option C", value="c"),
+                ],
+                value="a",
+            ),
+            dmc.SegmentedControl(
+                data=[{"label": "A", "value": "a"}, {"label": "B", "value": "b"}, {"label": "C", "value": "c"}],
+                value="a",
+            ),
+            dmc.ChipGroup(
+                [
+                    dmc.Chip("Chip 1", value="1", checked=False),
+                    dmc.Chip("Chip 2", value="2", checked=True),
+                    dmc.Chip("Chip 3", value="3", checked=False),
+                ],
+                value=["2"],
+            ),
+            dmc.MultiSelect(
+                label="Multi select",
+                data=["Item 1", "Item 2", "Item 3"],
+                value=["Item 1"],
+                placeholder="Pick items",
+            ),
+        ],
+    )
+
+
+def _sliders_rating_card():
+    """Slider, RangeSlider, Rating."""
+    return _card_wrapper(
+        "Sliders & rating",
+        [
+            dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
+            dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
+            dmc.Rating(id="dmc-showcase-rating", value=3, count=5),
+        ],
+    )
+
+
+def _color_card():
+    """ColorInput, ColorPicker."""
+    return _card_wrapper(
+        "Color",
+        [
+            dmc.ColorInput(
+                id="dmc-showcase-color-input",
+                label="Color input",
+                value="#1a85ff",
+                format="hex",
+            ),
+            dmc.ColorPicker(
+                id="dmc-showcase-color-picker",
+                value="#1a85ff",
+                size="sm",
+                withPicker=False,
+                swatches=["#1a85ff", "#40d86e", "#ffc107", "#f56565", "#6d6f77"],
+                swatchesPerRow=5,
+            ),
+        ],
+    )
+
+
 def _card_paper_card():
     """Card and Paper."""
     return _card_wrapper(
@@ -232,25 +322,42 @@ def _card_paper_card():
 
 
 def _accordion_card():
-    """Accordion."""
+    """Accordion with multiple, variant, default value (see DMC Accordion docs)."""
     return _card_wrapper(
         "Accordion",
         [
             dmc.Accordion(
+                id="dmc-showcase-accordion",
+                value=["customization"],
+                multiple=True,
+                variant="contained",
+                chevronPosition="right",
                 children=[
                     dmc.AccordionItem(
                         [
-                            dmc.AccordionControl("Item 1"),
-                            dmc.AccordionPanel("Content for item 1."),
+                            dmc.AccordionControl("Customization"),
+                            dmc.AccordionPanel(
+                                "Colors, fonts, shadows and many other parts are customizable to fit your design."
+                            ),
                         ],
-                        value="item1",
+                        value="customization",
                     ),
                     dmc.AccordionItem(
                         [
-                            dmc.AccordionControl("Item 2"),
-                            dmc.AccordionPanel("Content for item 2."),
+                            dmc.AccordionControl("Flexibility"),
+                            dmc.AccordionPanel(
+                                "Configure appearance and behavior with a vast amount of settings or overwrite any "
+                                "part of component styles."
+                            ),
                         ],
-                        value="item2",
+                        value="flexibility",
+                    ),
+                    dmc.AccordionItem(
+                        [
+                            dmc.AccordionControl("Item 3 (disabled)", disabled=True),
+                            dmc.AccordionPanel("This panel is not reachable."),
+                        ],
+                        value="item3",
                     ),
                 ],
             ),
@@ -277,6 +384,34 @@ def _tabs_card():
                 value="tab1",
             ),
             dmc.Divider(label="Divider", labelPosition="left"),
+        ],
+    )
+
+
+def _display_misc_card():
+    """ActionIcon, Avatar, Blockquote, Kbd, Tooltip, Skeleton (see DMC Data Display / Feedback)."""
+    return _card_wrapper(
+        "Display & feedback",
+        [
+            dmc.Flex(
+                [
+                    dmc.ActionIcon("⚙", variant="filled", size="lg"),
+                    dmc.ActionIcon("✎", variant="outline", size="md"),
+                    dmc.ActionIcon("🗑", variant="subtle", size="sm"),
+                ],
+                gap="sm",
+            ),
+            dmc.Avatar("AB", radius="xl", color="blue"),
+            dmc.Blockquote(
+                "Use Blockquote to highlight a quote or callout.",
+                cite="— DMC docs",
+            ),
+            dmc.Flex([dmc.Kbd("Ctrl"), dmc.Text("+", mx=4), dmc.Kbd("S")], align="center"),
+            dmc.Tooltip(
+                dmc.Button("Hover me"),
+                label="Tooltip text",
+            ),
+            dmc.Skeleton(height=24, width="60%"),
         ],
     )
 
