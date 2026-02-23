@@ -1,4 +1,4 @@
-import { CodeHighlight } from "@mantine/code-highlight";
+import { CodeHighlight, InlineCodeHighlight } from "@mantine/code-highlight";
 import { MantineProvider } from "@mantine/core";
 import { isNil, mergeDeepRight, pick, type } from "ramda";
 import { Component } from "react";
@@ -181,8 +181,13 @@ export default class DashMarkdown extends Component {
               ),
 
               // Code block rendering using Mantine CodeHighlight
-              // This is the ONLY deviation from original Dash
               code: codeRenderer,
+
+              // DEVIATION FROM ORIGINAL DCC:
+              // Inline code rendering using Mantine InlineCodeHighlight
+              inlineCode: ({ value }) => (
+                <InlineCodeHighlight code={value} language="text" />
+              ),
 
               // HTML rendering with JSX parsing support
               // This enables dccLink, dccMarkdown, and dashMathjax in HTML blocks

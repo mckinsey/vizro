@@ -39,6 +39,13 @@ const add = (a, b) => a + b;
 console.log(add(2, 3));
 ```
 
+And a code block with no language specified:
+
+```
+This is plain text in a code block.
+No syntax highlighting applied.
+```
+
 ## Inline Code
 
 You can also use `inline code` in your markdown.
