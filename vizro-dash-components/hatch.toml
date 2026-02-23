@@ -6,35 +6,22 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 
 [envs.default]
 dependencies = [
-  "pre-commit"
+  "pre-commit",
+  "dash[dev]>=3.0.0"  # provides dash-generate-components, required by `npm run build`
 ]
 installer = "uv"
 
 [envs.default.scripts]
-example = "hatch run examples:example"
+example = "python usage.py"
 lint = ["hatch run npm:lint", "pre-commit run {args} --all-files"]
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
-  "npm version {args} --no-git-tag-version",
+  "hatch version release",
   "hatch run changelog:collect",
   "hatch run changelog:add",
-  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-dash-components"'
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-dash-components $(hatch version)"'
 ]
-
-[envs.examples]
-features = ["dev"]
-installer = "uv"
-
-[envs.examples.scripts]
-example = "python usage.py"
-
-# Detached env for npm commands. Requires dash[dev] on PATH for `npm run build`
-# (install via `pip install -e ".[dev]"`).
-[envs.npm]
-detached = true
-
-[envs.npm.scripts]
-build = "npm run build"
-fmt = "npm run fmt:js"
-install = "npm install --legacy-peer-deps"
-lint = "npm run lint:js"
+npm-build = "npm run build"
+npm-fmt = "npm run fmt:js"
+npm-install = "npm install --legacy-peer-deps"
+npm-lint = "npm run lint:js"

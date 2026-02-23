@@ -1,6 +1,6 @@
 # Vizro Dash Components
 
-Vizro Dash Components is a custom Dash component library that can be used in any Dash app.
+Vizro Dash Components are used by the Vizro framework but can be used in a pure Dash app.
 
 ## Installation
 
