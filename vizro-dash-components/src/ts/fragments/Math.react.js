@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 
-import loadMathJax from "../utils/mathjax";
+import loadMathJax from "../utils/LazyLoader/mathjax";
 
 export default class DashMath extends Component {
   constructor(props) {

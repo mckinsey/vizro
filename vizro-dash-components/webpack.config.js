@@ -1,5 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
+const WebpackDashDynamicImport = require("@plotly/webpack-dash-dynamic-import");
 
 const packagejson = require("./package.json");
 
@@ -11,6 +12,7 @@ module.exports = function (env, argv) {
   const output = {
     path: path.join(__dirname, dashLibraryName),
     filename: `${dashLibraryName}.js`,
+    chunkFilename: "[name].js",
     library: dashLibraryName,
     libraryTarget: "umd",
   };
@@ -99,9 +101,20 @@ module.exports = function (env, argv) {
       ],
     },
     optimization: {
-      splitChunks: false,
+      splitChunks: {
+        cacheGroups: {
+          async: {
+            chunks: "async",
+            minSize: 0,
+            name(module, chunks, cacheGroupKey) {
+              return `async-${chunks[0].name}`;
+            },
+          },
+        },
+      },
     },
     plugins: [
+      new WebpackDashDynamicImport(),
       new webpack.ProvidePlugin({
         process: "process/browser.js",
       }),

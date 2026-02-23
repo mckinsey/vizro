@@ -7,7 +7,7 @@ import Markdown from "react-markdown";
 import RemarkMath from "remark-math";
 import LoadingElement from "../utils/LoadingElement";
 import DashMath from "./Math.react";
-import { propTypes } from "./markdownPropTypes";
+import { propTypes } from "../components/Markdown";
 
 // Import Mantine styles
 import "@mantine/core/styles.css";

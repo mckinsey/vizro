@@ -35,6 +35,15 @@ _js_dist = []
 
 _js_dist.extend(
     [
+        {"relative_package_path": "async-markdown.js", "namespace": package_name, "async": True},
+        {"relative_package_path": "async-markdown.js.map", "namespace": package_name, "dynamic": True},
+        {"relative_package_path": "async-mathjax.js", "namespace": package_name, "async": True},
+        {"relative_package_path": "async-mathjax.js.map", "namespace": package_name, "dynamic": True},
+    ]
+)
+
+_js_dist.extend(
+    [
         {"relative_package_path": "vizro_dash_components.js", "namespace": package_name},
         {"relative_package_path": "vizro_dash_components.js.map", "namespace": package_name, "dynamic": True},
     ]
