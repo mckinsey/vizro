@@ -422,7 +422,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
 
         [![CustomIcons]][customicons]
 
-## Use a horizontal navigation bar
+## Horizontal navigation
 
 For a more compact layout, you can position the navigation bar horizontally at the top of your dashboard.
 
@@ -495,7 +495,7 @@ To create a horizontal navigation bar, set the position argument to `top` in you
 
 ### Grouped pages with horizontal navigation
 
-You can still group multiple pages under a single navigation item in horizontal mode either by specifying `pages` as a dictionary or providing `NavLink` models in `items`.
+You can group multiple pages under a single navigation item in horizontal mode either by specifying `pages` as a dictionary or providing `NavLink` models in `items`.
 
 - By using a dictionary: When you provide pages as a dictionary to the `NavBar` model, the dictionary keys become the horizontal navigation item labels, and the associated pages appear in an accordion in the side panel below:
 - By using `NavLink` items: Alternatively, you can define `NavBar` items using `NavLink`. In this case, the label argument of each `NavLink` becomes the horizontal navigation item text.

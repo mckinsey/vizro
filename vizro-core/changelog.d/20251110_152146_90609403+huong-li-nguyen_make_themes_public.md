@@ -7,7 +7,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Refreshed, colorblind-safe palettes for charts and an interface for acessing them via `vizro.themes`. See the [themes user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/themes/#palettes) and [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for details. ([#1482](https://github.com/mckinsey/vizro/pull/1482))
+- Refreshed, colorblind-safe palettes for charts and an interface for accessing them via `vizro.themes`. See the [themes user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/themes/#palettes) and [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for details. ([#1482](https://github.com/mckinsey/vizro/pull/1482))
 
 
 <!--
