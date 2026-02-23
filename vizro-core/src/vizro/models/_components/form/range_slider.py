@@ -100,8 +100,13 @@ underlying component may change in the future.""",
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, min, max):
-        current_value = self.value or [min, max]
-        marks = self.marks if self.marks != {} else {min: str(to_int_if_whole(min)), max: str(to_int_if_whole(max))}
+        marks = (
+            self.marks
+            if self.marks != {}
+            or isinstance(to_int_if_whole(min), int)
+            or (self.step and isinstance(to_int_if_whole(self.step), float))
+            else {min: str(to_int_if_whole(min)), max: str(to_int_if_whole(max))}
+        )
 
         defaults = {
             "id": self.id,
@@ -110,7 +115,7 @@ underlying component may change in the future.""",
             # Only include `step` when defined. Passing None prevents dcc.RangeSlider from displaying input values.
             **({"step": self.step} if self.step is not None else {}),
             "marks": marks,
-            "value": current_value,
+            "value": self.value or [min, max],
             "persistence": True,
             "persistence_type": "session",
             "dots": True,
