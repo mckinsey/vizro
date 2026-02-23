@@ -39,6 +39,10 @@ interface DashMarkdownProps {
    */
   id?: string;
   /**
+   * Dash-assigned callback that gets fired when the value changes.
+   */
+  setProps?: (props: Record<string, unknown>) => void;
+  /**
    * Class name of the container element
    */
   className?: string;
@@ -90,6 +94,10 @@ DashMarkdown.propTypes = {
    * components in an app.
    */
   id: PropTypes.string,
+  /**
+   * Dash-assigned callback that gets fired when the value changes.
+   */
+  setProps: PropTypes.func,
   /**
    * Class name of the container element
    */
