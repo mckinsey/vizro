@@ -1,449 +1,297 @@
 """Dev app to try things out."""
 
-import pandas as pd
-import plotly.graph_objects as go
-from vizro.themes import palettes
-from vizro import Vizro
-
 import vizro.models as vm
-import vizro.plotly.express as px
-from vizro.figures import kpi_card, kpi_card_reference
-from vizro.models._components.form._text_area import TextArea
-from vizro.models._components.form._user_input import UserInput
-from vizro.models.types import capture
-from vizro.tables import dash_ag_grid
+from vizro import Vizro
+import dash_mantine_components as dmc
+import plotly.graph_objects as go
+from dash import dcc, html
+from typing import Literal
 
-iris = px.data.iris()
-tips = px.data.tips()
-stocks = px.data.stocks(datetimes=True)
-gapminder_2007 = px.data.gapminder().query("year == 2007")
-df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
-
-waterfall_data = pd.DataFrame(
-    {
-        "x": [
-            "Sales",
-            "Consulting",
-            "Net revenue",
-            "Purchases",
-            "Other expenses",
-            "Profit before tax",
-        ],
-        "y": [60, 80, 0, -40, -20, 0],
-        "measure": [
-            "relative",
-            "relative",
-            "total",
-            "relative",
-            "relative",
-            "total",
-        ],
-    }
-)
-
-vm.Container.add_type("components", vm.Dropdown)
-vm.Container.add_type("components", vm.RadioItems)
-vm.Container.add_type("components", vm.Checklist)
-vm.Container.add_type("components", vm.Slider)
-vm.Container.add_type("components", vm.RangeSlider)
-vm.Container.add_type("components", vm.DatePicker)
-vm.Container.add_type("components", vm.Text)
-vm.Container.add_type("components", vm.Card)
-vm.Container.add_type("components", UserInput)
-vm.Container.add_type("components", TextArea)
-vm.Container.add_type("components", vm.Button)
+from vizro.models import VizroBaseModel
+from vizro.models._models_utils import _log_call
 
 
-@capture("graph")
-def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]):
-    """Custom waterfall chart."""
-    fig = go.Figure(
-        data=go.Waterfall(
-            x=data_frame[x],
-            y=data_frame[y],
-            measure=data_frame[measure],
-            showlegend=False,
-        ),
-    )
-    fig.update_layout(showlegend=False)
-    return fig
+class DmcShowcase(VizroBaseModel):
+    """Development-only component that renders a grid of Dash Mantine components.
 
+    Use this to verify how DMC components look inside a Vizro app with vizro-bootstrap theme.
+    """
 
-# PAGES ------------------------------------------------------------------
+    type: Literal["dmc_showcase"] = "dmc_showcase"
 
-avg_lifeExp = (gapminder_2007["lifeExp"] * gapminder_2007["pop"]).sum() / gapminder_2007["pop"].sum()
-
-continuous_color_scales = vm.Page(
-    title="Continuous color scales",
-    layout=vm.Grid(grid=[[0, 1, 2]]),
-    components=[
-        vm.Graph(
-            title="Sequential",
-            figure=px.choropleth(gapminder_2007, locations="iso_alpha", color="lifeExp"),
-            footer="Source: Plotly Gapminder data set, 2024",
-        ),
-        vm.Graph(
-            title="Sequential Minus",
-            figure=px.choropleth(
-                gapminder_2007,
-                locations="iso_alpha",
-                color="lifeExp",
-                color_continuous_scale=palettes.sequential_pink,
-                color_continuous_midpoint=avg_lifeExp,
+    @_log_call
+    def build(self):
+        """Build layout: Container with title, subtitle, action buttons, divider, then Group of cards."""
+        return html.Div(
+            id=self.id,
+            children=dmc.Container(
+                [
+                    dmc.Group(
+                        [
+                            dmc.Title("Dash Mantine Components in Vizro", order=1, mt="lg"),
+                            dmc.Anchor(
+                                "DMC docs",
+                                href="https://www.dash-mantine-components.com",
+                                target="_blank",
+                                size="sm",
+                            ),
+                        ],
+                        justify="space-between",
+                    ),
+                    dmc.Title(
+                        "Components styled with vizro-bootstrap theme (light/dark)",
+                        order=3,
+                        mb="lg",
+                    ),
+                    dmc.Divider(size="md", mt="lg"),
+                    dmc.Space(h=60),
+                    dmc.Grid(
+                        [
+                            dmc.GridCol(span=6, children=_sample_components_card()),
+                            dmc.GridCol(span=6, children=_progress_card()),
+                            dmc.GridCol(span=6, children=_figures_card()),
+                            dmc.GridCol(span=6, children=_date_picker_card()),
+                            dmc.GridCol(span=6, children=_authentication_card()),
+                            dmc.GridCol(span=6, children=_stepper_card()),
+                            dmc.GridCol(span=6, children=_inputs_card()),
+                            dmc.GridCol(span=6, children=_card_paper_card()),
+                            dmc.GridCol(span=6, children=_accordion_card()),
+                            dmc.GridCol(span=6, children=_tabs_card()),
+                        ],
+                        gutter="lg",
+                    ),
+                ],
+                mb="lg",
             ),
-            footer="Source: Plotly Gapminder data set, 2024",
-        ),
-        vm.Graph(
-            title="Diverging",
-            figure=px.choropleth(
-                gapminder_2007,
-                locations="iso_alpha",
-                color="lifeExp",
-            ),
-            footer="Source: Plotly Gapminder data set, 2024",
-        ),
-    ],
-)
-
-
-form = vm.Page(
-    title="Form",
-    layout=vm.Grid(grid=[[0, 1]], col_gap="80px"),
-    components=[
-        vm.Container(
-            layout=vm.Flex(gap="40px"),
-            components=[
-                UserInput(title="User Input", placeholder="Enter your name"),
-                TextArea(title="Text Area", placeholder="Enter your multi-line text"),
-                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Multi-select Dropdown"),
-                vm.Dropdown(options=["Option 1", "Option 2", "Option 3"], title="Single-select Dropdown", multi=False),
-                vm.RadioItems(options=["Option 1", "Option 2", "Option 3"], title="Radio Items"),
-                vm.Checklist(options=["Option 1", "Option 2", "Option 3"], title="Checklist"),
-            ],
-        ),
-        vm.Container(
-            layout=vm.Flex(gap="30px"),
-            components=[
-                vm.Slider(min=0, max=10, step=1, title="Slider"),
-                vm.RangeSlider(min=0, max=10, step=1, title="Range Slider"),
-                vm.DatePicker(title="Date Picker", min="2025-01-01", max="2025-01-31"),
-                vm.Container(
-                    title="Buttons",
-                    layout=vm.Flex(direction="row"),
-                    components=[
-                        vm.Button(text="PRIMARY BUTTON", variant="filled"),
-                        vm.Button(text="SECONDARY BUTTON", variant="outlined"),
-                        vm.Button(text="TERTIARY BUTTON", variant="plain"),
-                    ],
-                ),
-                vm.Card(
-                    text="""
-                    ### Card
-
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
-                    ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
-
-                    """
-                ),
-                vm.Text(
-                    text="""
-
-                    ### Markdown
-
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-                    * Item A
-                        * Sub Item 1
-                        * Sub Item 2
-                    * Item B
-
-
-
-                    """
-                ),
-            ],
-        ),
-    ],
-)
-
-graphs = vm.Page(
-    title="Graphs",
-    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
-    components=[
-        vm.Graph(
-            figure=px.scatter(
-                gapminder_2007,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                size_max=60,
-                color="continent",
-            )
-        ),
-        vm.Graph(figure=px.box(tips, y="total_bill", x="day", color="day")),
-        vm.Graph(figure=px.histogram(tips, x="total_bill")),
-        vm.Graph(
-            figure=px.histogram(
-                tips,
-                y="day",
-                x="total_bill",
-                color="sex",
-                barmode="group",
-                orientation="h",
-            )
-        ),
-        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f")),
-        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="day")),
-        vm.Graph(figure=waterfall(waterfall_data, x="x", y="y", measure="measure")),
-        vm.Graph(figure=px.pie(tips, values="tip", names="day", hole=0.5)),
-        vm.Graph(
-            figure=px.bar(
-                gapminder_2007.query("country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"),
-                x="pop",
-                y="country",
-                orientation="h",
-            )
-        ),
-    ],
-)
-
-ag_grid = vm.Page(
-    title="AG Grid",
-    components=[
-        vm.AgGrid(
-            figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
-            title="Gapminder Data Insights",
-            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
-            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+            className="dmc-showcase-root",
         )
-    ],
-)
-
-cards = vm.Page(
-    title="Cards",
-    components=[
-        vm.Card(
-            text="""
-                # Header level 1 <h1>
-
-                ## Header level 2 <h2>
-
-                ### Header level 3 <h3>
-
-                #### Header level 4 <h4>
-            """
-        ),
-        vm.Card(
-            text="""
-                 ### Paragraphs
-                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
-
-                 Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
-
-                 Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-
-                 Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-            """
-        ),
-        vm.Card(
-            text="""
-                ### Block Quotes
-
-                >
-                > A block quote is a long quotation, indented to create a separate block of text.
-                >
-            """
-        ),
-        vm.Card(
-            text="""
-                ### Lists
-
-                * Item A
-                    * Sub Item 1
-                    * Sub Item 2
-                * Item B
-            """
-        ),
-        vm.Card(
-            text="""
-                ### Emphasis
-
-                This word will be *italic*
-
-                This word will be **bold**
-
-                This word will be _**bold and italic**_
-            """
-        ),
-    ],
-)
-
-example_cards = [
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with formatting",
-        value_format="${value:.2f}",
-    ),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with icon",
-        icon="shopping_cart",
-    ),
-]
-
-example_reference_cards = [
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference (pos)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        agg_func="median",
-        title="KPI reference (neg)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with formatting",
-        value_format="{value:.2f}$",
-        reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with icon",
-        icon="shopping_cart",
-    ),
-]
-
-figure = vm.Page(
-    title="Figure",
-    layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
-    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
-    controls=[vm.Filter(column="Category")],
-)
 
 
-containers = vm.Page(
-    title="Containers",
-    components=[
-        vm.Container(
-            title="Container I",
-            layout=vm.Grid(grid=[[0, 1]]),
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris,
-                        x="sepal_length",
-                        y="petal_width",
-                        color="species",
-                        title="Container I - Scatter",
-                    )
-                ),
-                vm.Graph(
-                    figure=px.bar(
-                        iris,
-                        x="sepal_length",
-                        y="sepal_width",
-                        color="species",
-                        title="Container I - Bar",
-                    )
-                ),
-            ],
-        ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris,
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        marginal_y="violin",
-                        marginal_x="box",
-                        title="Container II - Scatter",
-                    )
-                )
-            ],
-        ),
-    ],
-)
+def _card_wrapper(title: str, children):
+    """Wrap content in a Card with a title."""
+    return dmc.Card(
+        [
+            dmc.Text(title, fw=600, size="sm", c="dimmed", mb="xs"),
+            dmc.Stack(children, gap="sm"),
+        ],
+        withBorder=True,
+        padding="md",
+        shadow="sm",
+        style={"height": "100%"},
+    )
 
-collapsible_container = vm.Page(
-    title="Collapsible containers",
-    layout=vm.Flex(),
-    components=[
-        vm.Container(
-            title="Initially collapsed container",
-            components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-            collapsed=True,
-        ),
-        vm.Container(
-            title="Initially expanded container",
-            components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-            collapsed=False,
-        ),
-    ],
-)
 
-tab_1 = vm.Container(
-    title="Tab I",
-    components=[
-        vm.Graph(
-            figure=px.histogram(
-                gapminder_2007,
-                title="Graph 1",
-                x="continent",
-                y="lifeExp",
-                color="continent",
+def _sample_components_card():
+    """Alert, Badge, Buttons, Loader."""
+    return _card_wrapper(
+        "Sample components",
+        [
+            dmc.Alert(
+                "This is an Alert. It uses theme colors.",
+                title="Info",
+                color="blue",
             ),
-        ),
-        vm.Graph(
-            figure=px.box(
-                gapminder_2007,
-                title="Graph 2",
-                x="continent",
-                y="lifeExp",
-                color="continent",
+            dmc.Group(
+                [
+                    dmc.Badge("Default", color="gray"),
+                    dmc.Badge("Primary", color="blue"),
+                    dmc.Badge("Success", color="green"),
+                    dmc.Badge("Warning", color="yellow"),
+                ],
+                gap="sm",
             ),
-        ),
-    ],
+            dmc.Group(
+                [
+                    dmc.Button("Filled", variant="filled"),
+                    dmc.Button("Outline", variant="outline"),
+                    dmc.Button("Light", variant="light"),
+                    dmc.Button("Subtle", variant="subtle"),
+                ],
+                gap="sm",
+            ),
+            dmc.Loader(size="sm"),
+        ],
+    )
+
+
+def _progress_card():
+    """Progress bar and RingProgress."""
+    return _card_wrapper(
+        "Progress",
+        [
+            dmc.Progress(value=45, size="md"),
+            dmc.RingProgress(
+                label="65%",
+                sections=[{"value": 65, "color": "blue"}],
+            ),
+        ],
+    )
+
+
+def _figures_card():
+    """Simple Plotly graph."""
+    fig = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[2, 1, 4], mode="lines+markers")])
+    fig.update_layout(margin=dict(l=20, r=20, t=30, b=20), height=180)
+    return _card_wrapper(
+        "Figures",
+        [dcc.Graph(figure=fig, config={"displayModeBar": False})],
+    )
+
+
+def _date_picker_card():
+    """DatePickerInput."""
+    return _card_wrapper(
+        "Date picker",
+        [
+            dmc.DatePickerInput(
+                id="dmc-showcase-date-picker",
+                label="Pick a date",
+                placeholder="Select date",
+            ),
+        ],
+    )
+
+
+def _authentication_card():
+    """Login-style form: email, password, button."""
+    return _card_wrapper(
+        "Authentication",
+        [
+            dmc.TextInput(
+                label="Email",
+                placeholder="your@email.com",
+            ),
+            dmc.TextInput(
+                label="Password",
+                placeholder="Password",
+            ),
+            dmc.Button("Sign in", variant="filled"),
+        ],
+    )
+
+
+def _stepper_card():
+    """Stepper with steps."""
+    return _card_wrapper(
+        "Stepper",
+        [
+            dmc.Stepper(
+                id="dmc-showcase-stepper",
+                active=1,
+                children=[
+                    dmc.StepperStep(label="First", description="First step"),
+                    dmc.StepperStep(label="Second", description="Second step"),
+                    dmc.StepperStep(label="Third", description="Third step"),
+                ],
+            ),
+        ],
+    )
+
+
+def _inputs_card():
+    """TextInput, Select, Checkbox, Switch."""
+    return _card_wrapper(
+        "Inputs",
+        [
+            dmc.TextInput(label="Text input", placeholder="Placeholder"),
+            dmc.Select(
+                label="Select",
+                data=["Option 1", "Option 2", "Option 3"],
+                value="Option 1",
+            ),
+            dmc.Checkbox(label="Checkbox", checked=False),
+            dmc.Switch(label="Switch", checked=False),
+        ],
+    )
+
+
+def _card_paper_card():
+    """Card and Paper."""
+    return _card_wrapper(
+        "Card & Paper",
+        [
+            dmc.Card(
+                children=[
+                    dmc.Text("Card title", fw=500, size="lg"),
+                    dmc.Text(
+                        "Card description. Uses theme background and border.",
+                        c="dimmed",
+                        size="sm",
+                    ),
+                ],
+                withBorder=True,
+                padding="md",
+            ),
+            dmc.Paper(
+                "Paper component with padding.",
+                withBorder=True,
+                p="md",
+            ),
+        ],
+    )
+
+
+def _accordion_card():
+    """Accordion."""
+    return _card_wrapper(
+        "Accordion",
+        [
+            dmc.Accordion(
+                children=[
+                    dmc.AccordionItem(
+                        [
+                            dmc.AccordionControl("Item 1"),
+                            dmc.AccordionPanel("Content for item 1."),
+                        ],
+                        value="item1",
+                    ),
+                    dmc.AccordionItem(
+                        [
+                            dmc.AccordionControl("Item 2"),
+                            dmc.AccordionPanel("Content for item 2."),
+                        ],
+                        value="item2",
+                    ),
+                ],
+            ),
+        ],
+    )
+
+
+def _tabs_card():
+    """Tabs and Divider."""
+    return _card_wrapper(
+        "Tabs & Divider",
+        [
+            dmc.Tabs(
+                [
+                    dmc.TabsList(
+                        [
+                            dmc.TabsTab("Tab 1", value="tab1"),
+                            dmc.TabsTab("Tab 2", value="tab2"),
+                        ]
+                    ),
+                    dmc.TabsPanel("Tab 1 content.", value="tab1"),
+                    dmc.TabsPanel("Tab 2 content.", value="tab2"),
+                ],
+                value="tab1",
+            ),
+            dmc.Divider(label="Divider", labelPosition="left"),
+        ],
+    )
+
+
+vm.Page.add_type("components", DmcShowcase)
+
+dmc_page = vm.Page(
+    title="DMC Showcase",
+    components=[DmcShowcase()],
 )
 
-tab_2 = vm.Container(
-    title="Tab II",
-    components=[
-        vm.Graph(
-            figure=px.scatter(
-                gapminder_2007,
-                title="Graph 3",
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
-    ],
-)
-
-tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls=[vm.Filter(column="continent")])
-
-
-# DASHBOARD -------------------------------------------------------------------
 dashboard = vm.Dashboard(
-    title="Charts",
-    pages=[graphs, continuous_color_scales, ag_grid, cards, figure, containers, collapsible_container, tabs, form],
+    title="DMC in Vizro",
+    theme="vizro_light",
+    pages=[dmc_page],
 )
 
 if __name__ == "__main__":

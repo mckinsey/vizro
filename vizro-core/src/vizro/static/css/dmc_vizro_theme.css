@@ -1,0 +1,58 @@
+/*
+ * DMC (Dash Mantine Components) theme overrides for Vizro.
+ * Maps Mantine CSS variables to vizro-bootstrap variables so DMC components
+ * align with the Vizro theme (light/dark, primary, surfaces, borders).
+ * Reference: https://www.dash-mantine-components.com/styles-overview
+ *            https://www.dash-mantine-components.com/theme-object
+ *
+ * Use !important so overrides apply after MantineProvider injects its theme.
+ */
+:root[data-bs-theme="dark"],
+:root[data-bs-theme="light"] {
+  /* Body and text (also set in vizro_overwrites.css; repeated here for completeness) */
+  --mantine-color-body: var(--bs-body-bg) !important;
+  --mantine-color-text: var(--bs-body-color) !important;
+
+  /* Dimmed / secondary text */
+  --mantine-color-dimmed: var(--bs-secondary-color) !important;
+
+  /* Default border (inputs, cards, dividers) */
+  --mantine-color-default-border: var(--bs-border-color) !important;
+  --mantine-color-default-border-hover: var(--bs-border-color) !important;
+
+  /* Default background (inputs, dropdowns, etc.) */
+  --mantine-color-default: var(--input-field-bg) !important;
+  --mantine-color-default-hover: var(--hover-bg-subtle) !important;
+
+  /* Primary color (buttons, links, focus, progress) */
+  --mantine-primary-color-filled: var(--bs-primary) !important;
+  --mantine-primary-color-filled-hover: var(--bs-primary-text-emphasis) !important;
+  --mantine-primary-color-contrast: var(--text-primary-inverted) !important;
+  --mantine-primary-color-light: var(--bs-primary-bg-subtle) !important;
+  --mantine-primary-color-light-hover: var(--hover-bg-subtle) !important;
+
+  /* White (used for text on primary, e.g. buttons) */
+  --mantine-color-white: var(--text-primary-inverted) !important;
+
+  /* Gray scale used by Mantine for surfaces and hover (light theme) */
+  --mantine-color-gray-0: var(--bs-body-bg) !important;
+  --mantine-color-gray-1: var(--bs-primary-bg-subtle) !important;
+  --mantine-color-gray-2: var(--bs-secondary-bg) !important;
+  --mantine-color-gray-3: var(--bs-border-color) !important;
+  --mantine-color-gray-4: var(--bs-border-color) !important;
+  --mantine-color-gray-5: var(--bs-secondary-color) !important;
+  --mantine-color-gray-6: var(--bs-secondary-color) !important;
+  --mantine-color-gray-7: var(--bs-body-color) !important;
+  --mantine-color-gray-8: var(--bs-body-color) !important;
+  --mantine-color-gray-9: var(--bs-body-color) !important;
+
+  /* Dark scale (dark theme surfaces) */
+  --mantine-color-dark-0: var(--bs-body-color) !important;
+  --mantine-color-dark-1: var(--bs-secondary-color) !important;
+  --mantine-color-dark-2: var(--bs-secondary-color) !important;
+  --mantine-color-dark-3: var(--bs-border-color) !important;
+  --mantine-color-dark-4: var(--bs-border-color) !important;
+  --mantine-color-dark-5: var(--bs-secondary-bg) !important;
+  --mantine-color-dark-6: var(--bs-primary-bg-subtle) !important;
+  --mantine-color-dark-7: var(--bs-body-bg) !important;
+}
