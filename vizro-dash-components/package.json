@@ -4,11 +4,10 @@
     "description": "Vizro Dash Components are used by the Vizro framework but can be used in a pure Dash app",
     "main": "index.ts",
     "scripts": {
-        "build:js:dev": "webpack --mode development",
         "build:js": "webpack",
         "build:backends": "dash-generate-components ./src/ts/components vizro_dash_components -p package-info.json  --ignore \\.test\\.",
         "build": "npm run build:js && npm run build:backends",
-        "watch": "npm run build:js:dev -- --watch",
+        "watch": "webpack --mode development -- --watch",
         "lint:js": "npx @biomejs/biome check src/",
         "fmt:js": "npx @biomejs/biome check --write src/"
     },
