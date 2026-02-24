@@ -11,7 +11,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
 # Shared layout constants
-GAP = "12px"
+GAP = "20px"
 CARD_TITLE_SIZE = "md"
 SECTION_LABEL_SIZE = "sm"
 
@@ -66,7 +66,6 @@ def _card_wrapper(title: str, children, style=None):
         ],
         withBorder=True,
         padding="md",
-        shadow="sm",
         style=card_style,
     )
 
@@ -118,6 +117,14 @@ def _sample_components_card():
                         gap="sm",
                         wrap="wrap",
                     ),
+                    dmc.Flex(
+                        [
+                            dmc.ActionIcon("✎", variant="filled", size="lg"),
+                            dmc.ActionIcon("✎", variant="outline", size="md"),
+                            dmc.ActionIcon("✎", variant="subtle", size="sm"),
+                        ],
+                        gap="sm",
+                    ),
                 ],
                 style={"gap": GAP},
             ),
@@ -141,6 +148,7 @@ def _navigation_card():
                         ],
                         gap="sm",
                     ),
+                    dmc.Divider(variant="solid"),
                     _section_label("Breadcrumbs"),
                     dmc.Breadcrumbs(
                         children=[
@@ -150,11 +158,14 @@ def _navigation_card():
                         ],
                         separator="/",
                     ),
+                    dmc.Divider(variant="solid"),
                     _section_label("NavLink"),
                     dmc.NavLink(label="Dashboard", href="#"),
                     dmc.NavLink(label="Settings", href="#", active=True),
+                    dmc.Divider(variant="solid"),
                     _section_label("Pagination"),
                     dmc.Pagination(total=10, value=1, id="dmc-showcase-pagination"),
+                    dmc.Divider(variant="solid"),
                     _section_label("Stepper"),
                     dmc.Stepper(
                         orientation="vertical",
@@ -166,6 +177,7 @@ def _navigation_card():
                             dmc.StepperStep(label="Third", description="Third step"),
                         ],
                     ),
+                    dmc.Divider(variant="solid"),
                     _section_label("Timeline"),
                     dmc.Timeline(
                         id="dmc-showcase-timeline",
@@ -188,6 +200,7 @@ def _navigation_card():
                             ),
                         ],
                     ),
+                    dmc.Divider(variant="solid"),
                     _section_label("Tabs"),
                     dmc.Tabs(
                         [
@@ -202,6 +215,7 @@ def _navigation_card():
                         ],
                         value="tab1",
                     ),
+                    dmc.Divider(variant="solid"),
                     _section_label("Accordion"),
                     dmc.Accordion(
                         id="dmc-showcase-accordion",
@@ -254,8 +268,6 @@ def _progress_sliders_card():
                 [
                     dmc.Progress(value=45),
                     dmc.RingProgress(label="65%", sections=[{"value": 65, "color": "blue"}]),
-                    dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
-                    dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
                     dmc.Rating(id="dmc-showcase-rating", value=3, count=5),
                     dmc.Loader(),
                 ],
@@ -266,20 +278,17 @@ def _progress_sliders_card():
 
 
 def _pickers_card():
-    """Date picker."""
+    """Date range picker."""
     return _card_wrapper(
         "Pickers",
         [
-            dmc.Stack(
-                [
-                    dmc.DatePickerInput(
-                        id="dmc-showcase-date-picker",
-                        label="Pick a date",
-                        placeholder="Select date",
-                        popoverProps={"opened": True},
-                    ),
-                ],
-                style={"gap": GAP},
+            dmc.DatePickerInput(
+                id="dmc-showcase-date-picker",
+                type="range",
+                label="Pick a date range",
+                placeholder="Pick start and end date",
+                popoverProps={"opened": True},
+                value=["2024-01-01", "2024-01-15"],
             ),
         ],
         style={"minHeight": "320px"},
@@ -302,22 +311,8 @@ def _containers_display_card():
                                 size="sm",
                             ),
                         ],
-                        withBorder=True,
-                        padding="md",
                     ),
-                    dmc.Paper(
-                        "Paper component with padding.",
-                        withBorder=True,
-                        p="md",
-                    ),
-                    dmc.Flex(
-                        [
-                            dmc.ActionIcon("⚙", variant="filled", size="lg"),
-                            dmc.ActionIcon("✎", variant="outline", size="md"),
-                            dmc.ActionIcon("🗑", variant="subtle", size="sm"),
-                        ],
-                        gap="sm",
-                    ),
+                    dmc.Paper("Paper component with padding.",),
                     dmc.Avatar("AB", radius="xl", color="blue"),
                     dmc.Blockquote(
                         "Use Blockquote to highlight a quote or callout.",
@@ -357,6 +352,7 @@ def _form_card():
                         placeholder="Pick items",
                     ),
                     dmc.Textarea(label="Text area", placeholder="Multi-line text…", minRows=4),
+                    dmc.Divider(variant="solid"),
                     dmc.RadioGroup(
                         label="Radio group",
                         children=[
@@ -366,10 +362,15 @@ def _form_card():
                         ],
                         value="a",
                     ),
+                    dmc.Divider(variant="solid"),
                     dmc.SegmentedControl(
                         data=[{"label": "A", "value": "a"}, {"label": "B", "value": "b"}, {"label": "C", "value": "c"}],
                         value="a",
                     ),
+                    dmc.Divider(variant="solid"),
+                    dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
+                    dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
+                    dmc.Divider(variant="solid"),
                     dmc.ChipGroup(
                         [
                             dmc.Chip("Chip 1", value="1", checked=False),
@@ -378,7 +379,10 @@ def _form_card():
                         ],
                         value=["2"],
                     ),
+                    dmc.Divider(variant="solid"),
                     dmc.Checkbox(label="Checkbox", checked=False),
+                    dmc.Checkbox(label="Checkbox", checked=True),
+                    dmc.Divider(variant="solid"),
                     dmc.Switch(label="Switch", checked=False),
                     dmc.Button("Sign in", variant="filled"),
                 ],
