@@ -856,6 +856,13 @@
           "title": "Title",
           "type": "string"
         },
+        "variant": {
+          "default": "filled",
+          "description": "Predefined styles to choose from. Options are `filled` or `plain`.",
+          "enum": ["plain", "filled"],
+          "title": "Variant",
+          "type": "string"
+        },
         "description": {
           "anyOf": [
             {
@@ -1309,13 +1316,6 @@
           },
           "title": "Items",
           "type": "array"
-        },
-        "position": {
-          "default": "left",
-          "description": "Position of the navigation bar, either on the left sidebar or top header.",
-          "enum": ["left", "top"],
-          "title": "Position",
-          "type": "string"
         }
       },
       "title": "NavBar",

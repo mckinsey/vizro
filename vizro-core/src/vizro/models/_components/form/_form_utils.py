@@ -21,6 +21,11 @@ def get_dict_options_and_default(
     return dict_options, default_value  # type: ignore[return-value]
 
 
+# Util for vm.Slider and vm.RangeSlider
+def to_int_if_whole(value: float | int) -> float | int:
+    return int(value) if isinstance(value, float) and value.is_integer() else value
+
+
 # Utils for validators
 def is_value_contained(value: SingleValueType | MultiValueType, options: OptionsType):
     """Checks if value is contained in a list."""
@@ -104,18 +109,6 @@ def validate_step(step, info: ValidationInfo):
             "The step value of the slider must be less than or equal to the difference between max and min."
         )
     return step
-
-
-def set_default_marks(marks: dict[float, str] | None, info: ValidationInfo) -> dict[float | int, str] | None:
-    if not marks and info.data.get("step") is None:
-        marks = None
-
-    # Dash has a bug where marks provided as floats that can be converted to integers are not displayed.
-    # So we need to convert the floats to integers if possible.
-    # https://github.com/plotly/dash-core-components/issues/159#issuecomment-380581043
-    if marks:
-        marks = {int(k) if k.is_integer() else k: v for k, v in marks.items()}
-    return marks
 
 
 def validate_date_picker_range(range, info: ValidationInfo):
