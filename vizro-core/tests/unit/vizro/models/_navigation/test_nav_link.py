@@ -136,9 +136,7 @@ class TestNavLinkBuildMethod:
         built_nav_link = nav_link.build(active_page_id=page_1_id)
 
         expected_nav_link = dbc.NavLink(
-            children=[
-                html.Span("Label"),
-            ],
+            children=[html.Span("Label")],
             active=True,
             href="/",
             id="nav-link",

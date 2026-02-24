@@ -82,8 +82,8 @@ class TestNavBarPreBuildMethod:
         nav_bar = vm.NavBar(pages=pages_as_dict, position="top")
         nav_bar.pre_build()
         assert all(isinstance(item, vm.NavLink) for item in nav_bar.items)
-        assert all(item.icon == "" for position, item in enumerate(nav_bar.items, 1))
-        assert all(item._nav_position == "top" for position, item in enumerate(nav_bar.items, 1))
+        assert all(item.icon == "" for item in nav_bar.items)
+        assert all(item._nav_position == "top" for item in nav_bar.items)
 
 
 class TestNavBarBuildMethod:
@@ -224,9 +224,7 @@ class TestNavBarBuildMethod:
         expected_navigation = dbc.Navbar(
             children=[
                 dbc.NavLink(
-                    children=[
-                        html.Span("Group"),
-                    ],
+                    children=[html.Span("Group")],
                     active=True,
                     href="/",
                 )
@@ -243,16 +241,12 @@ class TestNavBarBuildMethod:
         expected_navigation = dbc.Navbar(
             children=[
                 dbc.NavLink(
-                    children=[
-                        html.Span("Page 1"),
-                    ],
+                    children=[html.Span("Page 1")],
                     active=True,
                     href="/",
                 ),
                 dbc.NavLink(
-                    children=[
-                        html.Span("Page 2"),
-                    ],
+                    children=[html.Span("Page 2")],
                     active=False,
                     href="/page_2",
                 ),

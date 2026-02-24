@@ -125,10 +125,7 @@ class Dashboard(VizroBaseModel):
 
         nav_selector = self.navigation.nav_selector
 
-        if nav_selector is None or isinstance(nav_selector, Accordion):
-            return True
-
-        return nav_selector.position == "left"
+        return nav_selector is None or isinstance(nav_selector, Accordion) or nav_selector.position == "left"
 
     @_log_call
     def pre_build(self):
@@ -422,15 +419,11 @@ class Dashboard(VizroBaseModel):
             id="collapse-icon-outer",
             hidden=_all_hidden([nav_control_panel]),
         )
-        left_hidden = _all_hidden([header_left])
-        right_hidden = _all_hidden([header_right])
-        both_hidden = left_hidden and right_hidden
-
         header = html.Div(
             id="header",
             children=[header_left, header_right],
-            hidden=both_hidden,
-            className="no-left" if left_hidden else "",
+            hidden=_all_hidden([header_left, header_right]),
+            className="no-left" if _all_hidden(header_left) else "",
         )
 
         return html.Div(
@@ -460,14 +453,11 @@ class Dashboard(VizroBaseModel):
         # Build header
         header = outer_page["header"]
 
-        page_main_children = (
-            [nav_bar, collapse_left_side, collapse_icon_outer, right_side]
-            if self._is_left_navigation
-            else [collapse_left_side, collapse_icon_outer, right_side]
-        )
         page_main = html.Div(
             id="page-main",
-            children=page_main_children,
+            children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side]
+            if self._is_left_navigation
+            else [collapse_left_side, collapse_icon_outer, right_side],
         )
 
         page_main_outer = html.Div(

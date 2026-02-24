@@ -66,9 +66,7 @@ class NavLink(VizroBaseModel):
                 ),
             ]
             if self._nav_position == "left"
-            else [
-                html.Span(self.label),
-            ]
+            else [html.Span(self.label)]
         )
         nav_link = dbc.NavLink(
             nav_link_children,
