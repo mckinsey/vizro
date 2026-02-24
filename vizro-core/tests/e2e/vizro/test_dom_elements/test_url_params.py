@@ -188,8 +188,8 @@ def test_url_params_encoding_and_page_refresh(dash_br):
     """Verifies that URL params for parameters are correctly encoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
     # select 0.4 for slider and [4, 7] for range_slider
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
-    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, value="7")
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, max_value="0.4")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, max_value="7")
     # check correct urls params
     selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.4, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [4, 7]}
     enc_data = encode_url_params(selected_params, apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
@@ -206,8 +206,8 @@ def test_url_params_decoding_and_navigate_to_page(dash_br):
     """Verifies that URL params for parameters could be correctly decoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
     # select 0.8 for slider and [6, 8] for range_slider
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.8")
-    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, value="6")
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, max_value="0.8")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, min_value="6")
     # check correct urls params
     selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.8, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [6, 8]}
     url_params_dict = get_url_params(dash_br)

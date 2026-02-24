@@ -83,14 +83,15 @@ def check_graph_x_axis_value(driver, graph_id, tick_index, value):
     )
 
 
-def check_slider_value(driver, elem_id, expected_end_value, expected_start_value=None):
-    driver.wait_for_element(
-        f"div[id='{elem_id}'] input[class$='dash-range-slider-max-input'][value='{expected_end_value}']"
-    )
-    if expected_start_value:
-        driver.wait_for_element(
-            f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input'][value='{expected_start_value}']"
-        )
+def check_slider_value(driver, elem_id, expected_max_value):
+    driver.wait_for_element(f"div[id='{elem_id}'] span[aria-valuenow='{expected_max_value}']")
+
+
+def check_range_slider_value(driver, elem_id, expected_min_value=None, expected_max_value=None):
+    if expected_min_value:
+        driver.wait_for_element(f"div[id='{elem_id}'] span[aria-valuenow='{expected_min_value}'][aria-label='Minimum']")
+    else:
+        driver.wait_for_element(f"div[id='{elem_id}'] span[aria-valuenow='{expected_max_value}'][aria-label='Maximum']")
 
 
 def check_accordion_active(driver, accordion_name):

@@ -2,8 +2,8 @@ import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import (
     check_graph_x_axis_value,
     check_graph_y_axis_value,
+    check_range_slider_value,
     check_selected_dropdown,
-    check_slider_value,
 )
 from e2e.vizro.navigation import page_select, select_dropdown_value, select_slider_value
 
@@ -31,6 +31,8 @@ def test_custom_range_slider(dash_br):
         dash_br,
         page_name=cnst.CUSTOM_COMPONENTS_PAGE,
     )
-    select_slider_value(dash_br, elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, value="5.3")
+    select_slider_value(dash_br, elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, max_value="5.3")
     check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID, tick_index="1", value="5")
-    check_slider_value(dash_br, elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, expected_start_value="5", expected_end_value="7.9")
+    check_range_slider_value(
+        dash_br, elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, expected_min_value="5", expected_max_value="7.9"
+    )

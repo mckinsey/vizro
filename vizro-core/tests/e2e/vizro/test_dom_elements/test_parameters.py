@@ -1,5 +1,6 @@
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
+    check_range_slider_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -23,8 +24,8 @@ def test_sliders_state(dash_br):
         page_name=cnst.PARAMETERS_PAGE,
     )
 
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
-    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, value="7")
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, min_value="0.4")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, max_value="7")
 
     # refresh the page
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
@@ -35,9 +36,11 @@ def test_sliders_state(dash_br):
     )
 
     # check that slider value still '0.4'
-    check_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, expected_end_value="0.4")
+    check_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, expected_max_value="0.4")
     # check that range slider max value still '7'
-    check_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, expected_start_value="4", expected_end_value="7")
+    check_range_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, expected_min_value="4", expected_max_value="7"
+    )
 
 
 def test_none_parameter(dash_br):

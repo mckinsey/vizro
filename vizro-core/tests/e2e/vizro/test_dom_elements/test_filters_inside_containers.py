@@ -3,6 +3,7 @@ import pytest
 from e2e.vizro.checkers import (
     check_graph_is_empty,
     check_graph_x_axis_value,
+    check_range_slider_value,
     check_slider_value,
 )
 from e2e.vizro.navigation import clear_dropdown, page_select, select_dropdown_value, select_slider_value
@@ -42,12 +43,12 @@ def test_slider(dash_br):
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="0.6")
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, max_value="0.6")
     check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="5", value="6")
     check_slider_value(
         dash_br,
         elem_id=cnst.SLIDER_INSIDE_CONTAINERS,
-        expected_end_value="0.6",
+        expected_max_value="0.6",
     )
 
 
@@ -56,10 +57,10 @@ def test_range_slider(dash_br):
     page_select(
         dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
     )
-    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value="5.3")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, min_value="5.3")
     check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="4", value="6")
-    check_slider_value(
-        dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_start_value="5", expected_end_value="7.9"
+    check_range_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_min_value="5", expected_max_value="7.9"
     )
 
 

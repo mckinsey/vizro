@@ -9,6 +9,7 @@ from e2e.vizro.checkers import (
     check_graph_is_empty,
     check_graph_x_axis_value,
     check_graph_y_axis_value,
+    check_range_slider_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -127,21 +128,21 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     )
 
     # move slider to value '30'
-    select_slider_value(dash_br, elem_id=slider_id, value="30")
+    select_slider_value(dash_br, elem_id=slider_id, max_value="30")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(first_screen)
 
     # move slider to value '70'
-    select_slider_value(dash_br, elem_id=slider_id, value="70")
+    select_slider_value(dash_br, elem_id=slider_id, max_value="70")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
     dash_br.driver.save_screenshot(second_screen)
 
     # move slider to value '30'
-    select_slider_value(dash_br, elem_id=slider_id, value="30")
+    select_slider_value(dash_br, elem_id=slider_id, max_value="30")
     callbacks_finish_waiter(dash_br)
     # wait till actions will be finished ad no progress indicator will be visible on the screenshots
     dash_br.wait_for_no_elements(actions_progress_indicator_path())
@@ -583,23 +584,23 @@ def test_numerical_filters(dash_br):
     )
 
     # Check slider value
-    check_slider_value(dash_br, elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, expected_end_value="6")
+    check_slider_value(dash_br, elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, expected_max_value="6")
     # Check range slider values
-    check_slider_value(
-        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="6", expected_end_value="7"
+    check_range_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_min_value="6", expected_max_value="7"
     )
 
-    # Change "min" slider and range slider values to "5"
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, value="5")
+    # Change slider and range slider values to "5"
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, max_value="5")
     check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
-    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value="5")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, min_value="5")
     check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID, tick_index="9", value="8")
 
     # Check slider value
-    check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    check_slider_value(dash_br, expected_max_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
     # Check range slider values
-    check_slider_value(
-        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="5", expected_end_value="7"
+    check_range_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_min_value="5", expected_max_value="7"
     )
 
     # Set "min" option to "6" for the dynamic data and simulate refreshing the page
@@ -614,10 +615,10 @@ def test_numerical_filters(dash_br):
     )
 
     # Check slider value
-    check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    check_slider_value(dash_br, expected_max_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
     # Check range slider values
-    check_slider_value(
-        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="5", expected_end_value="7"
+    check_range_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_min_value="5", expected_max_value="7"
     )
 
 
@@ -754,7 +755,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
 
     # select '50' points for slider which is showing only 'setosa' data and check that scatter graph
     # with dynamic data is empty and that scatter graph with static data is the same
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value="50")
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, max_value="50")
     check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_DF_STATIC, tick_index="9", value="3.8")
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
     dash_br.wait_for_element(
