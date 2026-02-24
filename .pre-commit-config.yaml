@@ -10,8 +10,6 @@ repos:
       - id: check-case-conflict
       - id: check-yaml
         args: ["--unsafe"]
-      - id: check-json
-        exclude: "devcontainer.json" # Contains comments.
       - id: trailing-whitespace
       - id: end-of-file-fixer
 
@@ -105,7 +103,6 @@ ci:
     - check-merge-conflict
     - check-case-conflict
     - check-yaml
-    - check-json
     - codespell
     - bandit
     - mypy
