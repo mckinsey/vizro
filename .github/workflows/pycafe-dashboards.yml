@@ -1,7 +1,7 @@
 name: PyCafe Playground Links
 
 permissions:
-  contents: read
+  contents: write
   statuses: write
 
 on:
