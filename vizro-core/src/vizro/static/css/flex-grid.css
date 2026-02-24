@@ -16,8 +16,9 @@ as it may result in unexpected layouts.
 */
 
 /* To allow stretching of cards in flex items */
-.flex-item {display: flex}
-.flex-item .card-wrapper {display: flex;}
+.flex-item:has(.card-wrapper), .flex-item .card-wrapper {
+  display: flex;
+}
 
 .grid-item > :is(.card, .card-wrapper, .card-wrapper-actions),
 .grid-item > :is(.card-wrapper, .card-wrapper-actions) > .card {

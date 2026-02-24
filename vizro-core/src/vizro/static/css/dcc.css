@@ -1,0 +1,202 @@
+/* DROPDOWN  ------------------------------------------------------------ */
+.dash-dropdown {
+  background: var(--bs-dropdown-bg);
+  border: 0;
+  border-radius: var(--bs-border-radius);
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.dash-dropdown:focus-within {
+  border: none;
+  outline: none;
+}
+
+.dash-dropdown:focus, .dash-dropdown.focus {
+  box-shadow: 0 0 0 1px var(--bs-focus-ring-color) inset;
+}
+
+.dash-dropdown-search-container {
+  background: var(--bs-dropdown-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  margin: 4px 8px;
+  padding: 2px 4px;
+}
+
+.dash-dropdown-search-container:focus-within {
+  border-color: var(--bs-focus-ring-color);
+  outline: none;
+}
+
+/* Dropdown menu */
+.dash-dropdown-content {
+  background: var(--bs-dropdown-bg);
+  border-radius: var(--bs-border-radius);
+  box-shadow: none;
+  padding-bottom: 4px;
+}
+
+/* Dropdown Checkboxes */
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox {
+  appearance: none;
+  background: none;
+  background-color: transparent;
+  border: 1px solid var(--bs-secondary);
+  border-radius: 0;
+  cursor: pointer;
+  height: 16px;
+  margin: 0;
+  outline-color: var(--bs-secondary);
+  width: 16px;
+}
+
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox:checked {
+  background: none;
+  background-color: transparent;
+  border-color: var(--bs-secondary);
+}
+
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox:checked::before {
+  color: var(--bs-secondary);
+  content: "✓";
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
+}
+
+.dash-options-list-option-text {
+  color: var(--bs-body-color);
+}
+
+.dash-options-list-option-text:hover {
+  color: var(--bs-primary-text-emphasis);
+}
+
+/* Style the count bubble */
+.dash-dropdown-value-count {
+  background: var(--bs-highlight-bg);
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 12px;
+  padding: 2px 4px;
+}
+
+.dash-dropdown-clear {
+  height: 8px;
+  width: 8px;
+}
+
+.dash-dropdown-trigger {
+  padding: 0 8px;
+}
+
+.dash-dropdown-option {
+  align-items: center;
+  box-shadow: none;
+  display: flex;
+  gap: 4px;
+  min-height: 32px;
+  padding: 6px 8px;
+}
+
+.dash-dropdown-actions {
+    border-bottom: 1px solid var(--bs-border-color);
+    display: flex;
+    gap: 16px;
+    padding: 8px;
+}
+
+.dash-dropdown-trigger-icon, .dash-dropdown-clear {
+  color: var(--bs-secondary);
+}
+
+
+.dash-dropdown-trigger-icon:hover, .dash-dropdown-clear:hover {
+  color: var(--bs-primary);
+}
+
+
+.dropdown-plain {
+  background: inherit !important;
+  border-bottom: 1px solid var(--bs-border-color);
+  box-shadow: none;
+}
+
+.dropdown-plain:hover {
+  border-bottom-color: var(--bs-border-color-translucent);
+}
+
+.dropdown-plain:focus, .dropdown-plain.focus {
+  border-bottom: 1px solid var(--bs-focus-ring-color);
+  box-shadow: none;
+}
+
+
+#right-side .dash-dropdown {
+  background: var(--bs-primary-bg-subtle);
+}
+
+#right-side .dash-dropdown-content {
+  background: var(--bs-primary-bg-subtle);
+}
+
+#right-side .dash-dropdown-search-container {
+  background: var(--bs-primary-bg-subtle);
+}
+
+
+/* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */
+.dash-slider-track {
+  height: 2px;
+}
+
+.dash-slider-container{
+  align-items: start;
+  gap: 4px !important;
+  min-width: 240px;
+}
+
+.dash-input-container {
+  background: none;
+  border: none;
+  color: var(--bs-primary);
+
+  /* Required to override the default hiding of the input value elements when sliders width is less than 300px */
+  display: block !important;
+  padding:0;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: var(--bs-border-color-translucent);
+}
+
+.dash-range-slider-max-input {
+  text-align: right;
+}
+
+.dash-slider-container:has(.has-marks) .dash-range-slider-max-input,
+.dash-slider-container:has(.has-marks) .dash-range-slider-min-input  {
+  margin-top: -10px;
+}
+
+.dash-slider-thumb {
+  background-color: var(--text-primary-inverted);
+  border-color: var(--bs-primary);
+  border-width: 4px;
+  height: 12px;
+  width: 12px;
+}
+
+.dash-slider-mark-outside-selection {
+  color: var(--bs-body-color);
+}
+
+.dash-slider-thumb:focus {
+  outline: none;
+}
+
+.dash-slider-dot {
+  height: 6px;
+  width: 6px;
+}
