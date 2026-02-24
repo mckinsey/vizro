@@ -272,14 +272,12 @@ def _progress_containers_card():
         {"date": "Wed", "X": 70, "Y": 80, "Z": 50, "W": 45},
     ]
     return _card_wrapper(
-        "Progress, sliders & display",
+        "Progress & display",
         [
             dmc.Stack(
                 [
                     _section_label("Progress & sliders"),
                     dmc.Progress(value=45),
-                    dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
-                    dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
                     dmc.Rating(id="dmc-showcase-rating", value=3, count=5),
                     dmc.Loader(),
                     _section_label("RingProgress"),
@@ -513,16 +511,27 @@ def _form_card():
                     ),
                     dmc.Textarea(label="Text area", placeholder="Multi-line text…", minRows=4),
                     dmc.Divider(variant="solid"),
-                    dmc.RadioGroup(
-                        label="Radio group",
+                    _section_label("Checkboxes"),
+                    dmc.Group(
                         children=[
-                            dmc.Radio("Option A", value="a"),
-                            dmc.Radio("Option B", value="b"),
-                            dmc.Radio("Option C", value="c"),
+                            dmc.RadioIndicator(),
+                            dmc.RadioIndicator(checked=True),
+                            dmc.RadioIndicator(disabled=True),
+                            dmc.RadioIndicator(disabled=True, checked=True),
                         ],
-                        value="a",
+                    ),
+                    dmc.Group(
+                        children=[
+                            dmc.Checkbox(label="Check", checked=False),
+                            dmc.Checkbox(label="Check", checked=True),
+                            dmc.Checkbox(label="Check", disabled=True),
+                            dmc.Checkbox(label="Check", disabled=True, checked=True),
+                        ],
                     ),
                     dmc.Divider(variant="solid"),
+                     _section_label("Mixed"),
+                    dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
+                    dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
                     dmc.SegmentedControl(
                         orientation="horizontal",
                         data=[
@@ -532,7 +541,6 @@ def _form_card():
                         ],
                         value="a",
                     ),
-                    dmc.Divider(variant="solid"),
                     dmc.Flex(
                         [
                             dmc.ChipGroup(
@@ -548,10 +556,6 @@ def _form_card():
                         gap="sm",
                         wrap="nowrap",
                     ),
-                    dmc.Divider(variant="solid"),
-                    dmc.Checkbox(label="Checkbox", checked=False),
-                    dmc.Checkbox(label="Checkbox", checked=True),
-                    dmc.Divider(variant="solid"),
                     dmc.Switch(label="Switch", checked=False),
                     dmc.Button("Sign in", variant="filled"),
                 ],
