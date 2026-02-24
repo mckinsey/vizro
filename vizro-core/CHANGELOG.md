@@ -25,7 +25,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Export png button in modebar inside `Graph`. ([#1566](https://github.com/mckinsey/vizro/pull/1566))
 
-- Enable styling of `vm.Dropdown` with a new argument `variant="plain"/"filled"`. See the [user guide on styled dropdowns](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#styled-dropdown) for more details. (#1581)
+- Enable styling of `vm.Dropdown` with a new argument `variant="plain"/"filled"`. See the [user guide on styled dropdowns](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#styled-dropdown) for more details. ([#1581](https://github.com/mckinsey/vizro/pull/1581))
 
 ## Changed
 
