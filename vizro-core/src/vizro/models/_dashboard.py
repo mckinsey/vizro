@@ -207,6 +207,7 @@ class Dashboard(VizroBaseModel):
             theme={
                 "primaryColor": "gray",
                 "defaultRadius": 0,
+                "font-family": "var(--bs-body-font-family)",
                 "components": {
                     "Card": {
                         "styles": {
@@ -222,6 +223,22 @@ class Dashboard(VizroBaseModel):
                                 "backgroundColor": "var(--surfaces-bg-card)",
                                 "boxShadow": "var(--bs-box-shadow)",
                                 "border": "1px solid var(--bs-border-color)",
+                            }
+                        }
+                    },
+                    "Progress": {
+                        "styles": {
+                            "section": {
+                                "backgroundColor": "var(--bs-secondary)",
+                            }
+                        }
+                    },
+                    "Stepper": {
+                        "styles": {
+                            "stepIcon": {
+                                "backgroundColor": "var(--bs-primary-bg-subtle)",
+                                "color": "var(--bs-secondary)",
+                                "borderColor": "var(--bs-border-color)",
                             }
                         }
                     },

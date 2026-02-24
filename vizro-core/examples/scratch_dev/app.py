@@ -26,25 +26,6 @@ class DmcShowcase(VizroBaseModel):
             id=self.id,
             children=dmc.Container(
                 [
-                    dmc.Group(
-                        [
-                            dmc.Title("Dash Mantine Components in Vizro", order=1, mt="lg"),
-                            dmc.Anchor(
-                                "DMC docs",
-                                href="https://www.dash-mantine-components.com",
-                                target="_blank",
-                                size="sm",
-                            ),
-                        ],
-                        justify="space-between",
-                    ),
-                    dmc.Title(
-                        "Components styled with vizro-bootstrap theme (light/dark)",
-                        order=3,
-                        mb="lg",
-                    ),
-                    dmc.Divider(size="md", mt="lg"),
-                    dmc.Space(h=60),
                     dmc.Grid(
                         [
                             dmc.GridCol(span=6, children=_sample_components_card()),
@@ -192,6 +173,7 @@ def _stepper_card():
         "Stepper",
         [
             dmc.Stepper(
+                orientation="vertical",
                 id="dmc-showcase-stepper",
                 active=1,
                 children=[

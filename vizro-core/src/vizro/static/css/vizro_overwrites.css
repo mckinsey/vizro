@@ -16,12 +16,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-primary-bg-subtle: #FAFAFB;
 }
 
-/* Override Mantine's default CSS variables with Bootstrap's here */
-:root[data-bs-theme="dark"], :root[data-bs-theme="light"] {
-  --mantine-color-body: var(--bs-body-bg);
-  --mantine-color-text: var(--bs-body-color);
-}
-
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
@@ -110,4 +104,124 @@ div.form-check.form-switch {
 
 legend {
   font-size: inherit;
+}
+
+
+:root[data-mantine-color-scheme='dark'], :root[data-mantine-color-scheme='light'] {
+ --mantine-color-body: var(--bs-body-color);
+ --mantine-color-dimmed: var(--bs-body-color);
+ --mantine-color-text: var(--bs-body-color);
+ --mantine-color-placeholder: var(--bs-tertiary-color);
+
+
+--mantine-primary-color-filled: var(--bs-primary);
+--mantine-primary-color-filled-hover: var(--bs-primary-text-emphasis);
+
+  /* Colors*/
+  --mantine-color-dark-0: #373A44;
+  --mantine-color-dark-1: #333640;
+  --mantine-color-dark-2: #2F323C;
+  --mantine-color-dark-3: #2B2E39;
+  --mantine-color-dark-4: #272A35;
+  --mantine-color-dark-5: #232632;
+  --mantine-color-dark-6: #1F222E;
+  --mantine-color-dark-7: #1B1E2A;
+  --mantine-color-dark-8: #181B26;
+  --mantine-color-dark-9: #141721;
+  --mantine-color-gray-0: #FAFAF9;
+  --mantine-color-gray-1: #F5F5F4;
+  --mantine-color-gray-2: #E7E5E4;
+  --mantine-color-gray-3: #D6D3D1;
+  --mantine-color-gray-4: #A8A29E;
+  --mantine-color-gray-5: #78716C;
+  --mantine-color-gray-6: #57534E;
+  --mantine-color-gray-7: #44403C;
+  --mantine-color-gray-8: #292524;
+  --mantine-color-gray-9: #1C1917;
+  --mantine-color-red-0: #FEF2F2;
+  --mantine-color-red-1: #FEE2E2;
+  --mantine-color-red-2: #FECACA;
+  --mantine-color-red-3: #FCA5A5;
+  --mantine-color-red-4: #F87171;
+  --mantine-color-red-5: #EF4444;
+  --mantine-color-red-6: #DC2626;
+  --mantine-color-red-7: #B91C1C;
+  --mantine-color-red-8: #991B1B;
+  --mantine-color-red-9: #7F1D1D;
+  --mantine-color-pink-0: #FDF2F8;
+  --mantine-color-pink-1: #FCE8F3;
+  --mantine-color-pink-2: #FBCFE8;
+  --mantine-color-pink-3: #F9A8D4;
+  --mantine-color-pink-4: #F472B6;
+  --mantine-color-pink-5: #EC4899;
+  --mantine-color-pink-6: #DB2777;
+  --mantine-color-pink-7: #BE185D;
+  --mantine-color-pink-8: #9D174D;
+  --mantine-color-pink-9: #831843;
+  --mantine-color-grape-0: #FDF4FF;
+  --mantine-color-grape-1: #FAE8FF;
+  --mantine-color-grape-2: #F5D0FE;
+  --mantine-color-grape-3: #F0B1FC;
+  --mantine-color-grape-4: #E879F9;
+  --mantine-color-grape-5: #D956E5;
+  --mantine-color-grape-6: #C035C1;
+  --mantine-color-grape-7: #A21CAF;
+  --mantine-color-grape-8: #86198F;
+  --mantine-color-grape-9: #701A75;
+  --mantine-color-violet-0: #FAF5FF;
+  --mantine-color-violet-1: #F3E8FF;
+  --mantine-color-violet-2: #E9D5FF;
+  --mantine-color-violet-3: #D8B4FE;
+  --mantine-color-violet-4: #C084FC;
+  --mantine-color-violet-5: #A855F7;
+  --mantine-color-violet-6: #9333EA;
+  --mantine-color-violet-7: #7E22CE;
+  --mantine-color-violet-8: #6B21A8;
+  --mantine-color-violet-9: #581C87;
+  --mantine-color-indigo-0: #EEF2FF;
+  --mantine-color-indigo-1: #E0E7FF;
+  --mantine-color-indigo-2: #C7D2FE;
+  --mantine-color-indigo-3: #A5B4FC;
+  --mantine-color-indigo-4: #818CF8;
+  --mantine-color-indigo-5: #6366F1;
+  --mantine-color-indigo-6: #4F46E5;
+  --mantine-color-indigo-7: #4338CA;
+  --mantine-color-indigo-8: #3730A3;
+  --mantine-color-indigo-9: #312E81;
+  --mantine-color-blue-0: #EFF6FF;
+  --mantine-color-blue-1: #DBEAFE;
+  --mantine-color-blue-2: #BFDBFE;
+  --mantine-color-blue-3: #93C5FD;
+  --mantine-color-blue-4: #60A5FA;
+  --mantine-color-blue-5: #3B82F6;
+  --mantine-color-blue-6: #2563EB;
+  --mantine-color-blue-7: #1D4ED8;
+  --mantine-color-blue-8: #1E40AF;
+  --mantine-color-blue-9: #1E3A8A;
+  --mantine-color-cyan-0: #ECFEFF;
+  --mantine-color-cyan-1: #CFFAFE;
+  --mantine-color-cyan-2: #A5F3FC;
+  --mantine-color-cyan-3: #67E8F9;
+  --mantine-color-cyan-4: #22D3EB;
+  --mantine-color-cyan-5: #06B6D4;
+  --mantine-color-cyan-6: #0891B2;
+  --mantine-color-cyan-7: #0E7490;
+  --mantine-color-cyan-8: #155E75;
+  --mantine-color-cyan-9: #164E63;
+}
+
+/* Button - variant specific */
+button[data-variant="filled"], badge[data-variant="filled"] {
+  background-color: var(--bs-primary) !important;
+  color: var(--text-primary-inverted) !important;
+}
+
+/* Input fields */
+[data-mantine-color-scheme='dark'] .m_6c018570[data-variant='default'],
+[data-mantine-color-scheme='light'] .m_6c018570[data-variant='default'] {
+  --input-bd: var(--bs-primary-bg-subtle);
+  --input-bg: var(--bs-primary-bg-subtle);
+  --input-bd-focus: var(--bs-focus-ring-color);
+  box-shadow: var(--bs-box-shadow-sm);
+  color: var(--bs-primary);
 }
