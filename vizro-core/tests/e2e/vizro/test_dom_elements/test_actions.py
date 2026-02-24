@@ -4,6 +4,7 @@ from e2e.asserts import assert_files_equal
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
     check_exported_file_exists,
+    check_graph_y_axis_value,
     check_selected_categorical_component,
     check_selected_dropdown,
 )
@@ -16,8 +17,6 @@ from e2e.vizro.navigation import (
 from e2e.vizro.paths import (
     button_id_path,
     categorical_components_value_path,
-    dropdown_arrow_path,
-    graph_axis_value_path,
     kpi_card_path,
     page_title_path,
     scatter_point_path,
@@ -98,21 +97,12 @@ def test_set_control_cross_filter_graph(dash_br):
     dash_br.click_at_coord_fractions(
         scatter_point_path(cnst.SCATTER_SET_CONTROL_CROSS_FILTER_ID, point_number=20), 0, 0
     )
-
-    # Check y axis max value is '1.8'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID, axis_value_number="5", axis_value="1.8"),
-        "1.8",
-    )
-
-    # open dropdown and check values
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_SET_CONTROL_CROSS_FILTER), 1)
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID, tick_index="5", value="1.8")
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_SET_CONTROL_CROSS_FILTER,
-        all_value=False,
         expected_selected_options=["versicolor"],
-        expected_unselected_options=["SelectAll", "setosa", "virginica"],
+        expected_unselected_options=["setosa", "virginica"],
     )
 
 
@@ -133,13 +123,8 @@ def test_set_control_cross_filter_ag_grid(dash_br):
     dash_br.multiple_click(
         table_ag_grid_cell_path_by_row(cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID, row_index=1, col_id="country"), 1
     )
-
-    # Check y axis max value is '50k'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID, axis_value_number="6", axis_value="50k"
-        ),
-        "50k",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID, tick_index="6", value="50k"
     )
 
 
@@ -151,13 +136,11 @@ def test_set_control_filter_kpi_card(dash_br):
     dash_br.multiple_click(f"#{cnst.CLICKABLE_KPI_CARD_REFERENCE_ID}", 1, delay=0.1)
 
     # check dropdown filter value
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE,
-        all_value=False,
         expected_selected_options=["C"],
-        expected_unselected_options=["A", "B", "C"],
+        expected_unselected_options=["A", "B"],
     )
 
     # check kpi_card values
@@ -186,13 +169,11 @@ def test_set_control_filter_kpi_card(dash_br):
     dash_br.multiple_click(f"#{cnst.CLICKABLE_KPI_CARD_ID}", 1, delay=0.1)
 
     # check dropdown filter value
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE,
-        all_value=False,
         expected_selected_options=["B"],
-        expected_unselected_options=["A", "B", "C"],
+        expected_unselected_options=["A", "C"],
     )
 
     # check kpi_card values
@@ -235,12 +216,7 @@ def test_set_control_filter_button(dash_br):
             {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
-
-    # check y axis for box graph has max value is '1.8'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.BOX_GRAPH_ID, axis_value_number="5", axis_value="1.8"),
-        "1.8",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_GRAPH_ID, tick_index="5", value="1.8")
 
 
 def test_set_control_filter_card(dash_br):
@@ -296,13 +272,8 @@ def test_drill_through_filter_graph(dash_br):
             {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
-
-    # Check y axis max value is '7'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_TARGET_ID, axis_value_number="5", axis_value="7"
-        ),
-        "7",
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_TARGET_ID, tick_index="5", value="7"
     )
 
 
@@ -368,13 +339,11 @@ def test_drill_through_filter_ag_grid(dash_br):
             {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
-
-    # Check y axis max value is '7'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID, axis_value_number="5", axis_value="7"
-        ),
-        "7",
+    check_graph_y_axis_value(
+        dash_br,
+        graph_id=cnst.SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID,
+        tick_index="5",
+        value="7",
     )
 
 
@@ -387,12 +356,7 @@ def test_drill_down_graph(dash_br):
 
     # click on the 'versicolor' data in scatter graph
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_DRILL_DOWN_GRAPH_ID, point_number=20), 0, 0)
-
-    # Check y axis max value is '7'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.SCATTER_DRILL_DOWN_GRAPH_ID, axis_value_number="5", axis_value="7"),
-        "7",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_DRILL_DOWN_GRAPH_ID, tick_index="5", value="7")
 
     # check that graph title changed to 'versicolor'
     dash_br.wait_for_text_to_equal(".gtitle", "Graph shows `['versicolor']` species.")
@@ -434,11 +398,15 @@ def test_action_properties_shortcut_title_description_header_footer(dash_br):
 
     # check that description for the graph and ag_grid were changed
     # hover over info icon and wait for the tooltip appear for graph
-    hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}_title + span")
+    hover_over_element_by_css_selector_selenium(
+        dash_br.driver, f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_GRAPH_ID}_title + span"
+    )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT)
 
     # hover over info icon and wait for the tooltip appear for ag_grid
-    hover_over_element_by_css_selector_selenium(dash_br, f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}_title + span")
+    hover_over_element_by_css_selector_selenium(
+        dash_br.driver, f"#{cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID}_title + span"
+    )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.ACTION_MODEL_FIELD_BUTTON_CLICKED_FIGURE_TEXT)
 
 
@@ -479,7 +447,7 @@ def test_default_property_controls(dash_br):
         page_name=cnst.ACTION_CONTROL_SHORTCUT_PAGE,
     )
 
-    # choose 'petal_length' for filter
+    # select 'petal_length'
     dash_br.multiple_click(
         categorical_components_value_path(elem_id=cnst.ACTION_CONTROL_SHORTCUT_FILTER_ID, value=2), 1, delay=0.1
     )
@@ -514,14 +482,7 @@ def test_set_control_clickmode_event_select(dash_br):
     modifier_click(
         dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=22), key=Keys.SHIFT
     )
-
-    # Check filters target graph is correct - y axis max value is '2.4'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, axis_value_number="6", axis_value="2.4"
-        ),
-        "2.4",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, tick_index="6", value="2.4")
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
@@ -581,14 +542,7 @@ def test_set_control_clickmode_event(dash_br):
 
     # select virginica - this causes both: checklist and radioitems to be set
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
-
-    # Check target graph is correct - y axis max value is '2.4'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(
-            graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, axis_value_number="6", axis_value="2.4"
-        ),
-        "2.4",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, tick_index="6", value="2.4")
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
@@ -1010,12 +964,7 @@ def test_self_filtered_graph(dash_br):
 
     # select virginica in scatter graph
     dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21), 0, 0)
-
-    # Check y axis max value is '2.4'
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, axis_value_number="6", axis_value="2.4"),
-        "2.4",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, tick_index="6", value="2.4")
 
     # check selected value in checklist
     check_selected_categorical_component(
@@ -1058,9 +1007,4 @@ def test_self_filtered_graph(dash_br):
             {"value": 3, "selected": True, "value_name": "virginica"},
         ],
     )
-
-    # Check y axis max value is '2.5' (original)
-    dash_br.wait_for_text_to_equal(
-        graph_axis_value_path(graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, axis_value_number="6", axis_value="2.5"),
-        "2.5",
-    )
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, tick_index="6", value="2.5")

@@ -10,110 +10,40 @@ import vizro.models as vm
 
 
 @pytest.fixture()
-def expected_range_slider_default():
+def expected_range_slider():
     return html.Div(
         [
-            html.Div(
-                [
-                    None,
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="range_slider_start_value",
-                                type="number",
-                                placeholder="min",
-                                min=None,
-                                max=None,
-                                step=None,
-                                value=None,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                            html.Span("-", className="slider-text-input-range-separator"),
-                            dcc.Input(
-                                id="range_slider_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=None,
-                                max=None,
-                                step=None,
-                                value=None,
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
             dcc.RangeSlider(
                 id="range_slider",
-                min=None,
-                max=None,
-                step=None,
-                marks=None,
-                value=[None, None],
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks={0.0: "0", 10.0: "10"},
+                value=[0.0, 10.0],
                 persistence=True,
                 persistence_type="session",
-                className="slider-track-without-marks",
+                dots=True,
             ),
         ]
     )
 
 
 @pytest.fixture()
-def expected_range_slider_with_optional():
+def expected_range_slider_with_marks_none():
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="range_slider_start_value",
-                                type="number",
-                                placeholder="min",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][0],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                            html.Span("-", className="slider-text-input-range-separator"),
-                            dcc.Input(
-                                id="range_slider_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][1],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
             dcc.RangeSlider(
                 id="range_slider",
                 min=0.0,
                 max=10.0,
-                step=2.0,
-                marks={1: "1", 5: "5", 10: "10"},
+                step=1.0,
+                marks=None,
                 value=[0, 10],
                 persistence=True,
                 persistence_type="session",
-                className="slider-track-with-marks",
+                dots=True,
             ),
         ]
     )
@@ -123,52 +53,17 @@ def expected_range_slider_with_optional():
 def expected_range_slider_with_extra():
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="range_slider_start_value",
-                                type="number",
-                                placeholder="min",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][0],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                            html.Span("-", className="slider-text-input-range-separator"),
-                            dcc.Input(
-                                id="range_slider_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][1],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
-            ),
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
             dcc.RangeSlider(
                 id="overridden_id",
                 min=0.0,
                 max=10.0,
                 step=2.0,
-                marks={1: "1", 5: "5", 10: "10"},
+                marks={1.0: "1", 5.0: "5", 10.0: "10"},
                 value=[0, 10],
                 persistence=True,
                 persistence_type="session",
-                className="slider-track-with-marks",
+                dots=True,
                 tooltip={"placement": "bottom", "always_visible": True},
                 pushable=20,
             ),
@@ -189,55 +84,20 @@ def expected_range_slider_with_description():
     ]
     return html.Div(
         [
-            html.Div(
-                [
-                    dbc.Label(
-                        [html.Span("Title", id="range_slider_title"), *expected_description],
-                        html_for="range_slider",
-                    ),
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id="range_slider_start_value",
-                                type="number",
-                                placeholder="min",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][0],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                            html.Span("-", className="slider-text-input-range-separator"),
-                            dcc.Input(
-                                id="range_slider_end_value",
-                                type="number",
-                                placeholder="max",
-                                min=0.0,
-                                max=10.0,
-                                step=2.0,
-                                value=[0, 10][1],
-                                persistence=True,
-                                persistence_type="session",
-                                className="slider-text-input-field",
-                            ),
-                        ],
-                        className="slider-text-input-container",
-                    ),
-                ],
-                className="slider-label-input",
+            dbc.Label(
+                [html.Span("Title", id="range_slider_title"), *expected_description],
+                html_for="range_slider",
             ),
             dcc.RangeSlider(
                 id="range_slider",
                 min=0.0,
                 max=10.0,
                 step=2.0,
-                marks={1: "1", 5: "5", 10: "10"},
+                marks={1.0: "1", 5.0: "5", 10.0: "10"},
                 value=[0, 10],
+                dots=True,
                 persistence=True,
                 persistence_type="session",
-                className="slider-track-with-marks",
             ),
         ]
     )
@@ -254,7 +114,7 @@ class TestRangeSliderInstantiation:
         assert range_slider.min is None
         assert range_slider.max is None
         assert range_slider.step is None
-        assert range_slider.marks is None
+        assert range_slider.marks == {}
         assert range_slider.value is None
         assert range_slider.title == ""
         assert range_slider.description is None
@@ -357,47 +217,14 @@ class TestRangeSliderInstantiation:
     @pytest.mark.parametrize(
         "marks, expected",
         [
-            # TODO[MS]: why is this not failing, should it not be converted to float?
-            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
-            ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
             (None, None),
+            ({0: "0", 1: "1", 2: "2"}, {0: "0", 1: "1", 2: "2"}),  # int - str
+            ({1.0: "1.0", 1.5: "1.5"}, {1: "1.0", 1.5: "1.5"}),  # float - str
         ],
     )
     def test_valid_marks(self, marks, expected):
         range_slider = vm.RangeSlider(min=0, max=10, marks=marks)
         assert range_slider.marks == expected
-
-        if marks:
-            assert [type(result_key) for result_key in range_slider.marks] == [
-                type(expected_key) for expected_key in expected
-            ]
-
-    def test_invalid_marks(self):
-        with pytest.raises(ValidationError, match="4 validation errors for RangeSlider"):
-            vm.RangeSlider(min=1, max=10, marks={"start": 0, "end": 10})
-
-    @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
-    def test_set_default_marks(self, step, expected):
-        slider = vm.RangeSlider(min=0, max=10, step=step)
-        assert slider.marks == expected
-
-    @pytest.mark.parametrize(
-        "step, marks, expected_marks, expected_class",
-        [
-            (1, None, None, "slider-track-without-marks"),
-            (None, {}, None, "slider-track-without-marks"),
-            (None, None, None, "slider-track-without-marks"),
-            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
-            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
-            # This case might be unintuitive, as the resulting marks are an empty dict. However, marks will
-            # be drawn by the dash component, so we need to check for the className here on top.
-            (1, {}, {}, "slider-track-with-marks"),
-        ],
-    )
-    def test_set_step_and_marks(self, step, marks, expected_marks, expected_class):
-        slider = vm.RangeSlider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
-        assert slider["slider-id"].marks == expected_marks
-        assert slider["slider-id"].className == expected_class
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
@@ -414,21 +241,22 @@ class TestRangeSliderInstantiation:
 class TestRangeSliderBuild:
     """Tests model build method."""
 
-    def test_range_slider_build_default(self, expected_range_slider_default):
-        range_slider = vm.RangeSlider(id="range_slider").build()
-        assert_component_equal(range_slider, expected_range_slider_default)
+    def test_range_slider_build(self, expected_range_slider):
+        range_slider = vm.RangeSlider(id="range_slider", min=0, max=10, step=1, title="Title").build()
 
-    def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
+        assert_component_equal(range_slider, expected_range_slider)
+
+    def test_range_slider_build_with_marks_none(self, expected_range_slider_with_marks_none):
         range_slider = vm.RangeSlider(
             id="range_slider",
             min=0,
             max=10,
-            step=2,
-            marks={1: "1", 5: "5", 10: "10"},
+            step=1,
+            marks=None,
             value=[0, 10],
             title="Title",
         ).build()
-        assert_component_equal(range_slider, expected_range_slider_with_optional)
+        assert_component_equal(range_slider, expected_range_slider_with_marks_none)
 
     def test_range_slider_build_with_extra(self, expected_range_slider_with_extra):
         """Test that extra arguments correctly override defaults."""
