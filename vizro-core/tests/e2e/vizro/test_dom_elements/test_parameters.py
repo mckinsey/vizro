@@ -24,7 +24,7 @@ def test_sliders_state(dash_br):
         page_name=cnst.PARAMETERS_PAGE,
     )
 
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, min_value="0.4")
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, max_value="0.4")
     select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, max_value="7")
 
     # refresh the page
