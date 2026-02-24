@@ -82,6 +82,7 @@ def select_slider_value(driver, elem_id, min_value=None, max_value=None):
         driver.clear_input(min_value_elem)
         min_value_elem.send_keys(str(min_value))
         min_value_elem.send_keys(Keys.TAB)
+    # set `max_value` for setting single vm.Slider value
     else:
         max_value_elem = driver.find_element(f"div[id='{elem_id}'] input[class$='dash-range-slider-max-input']")
         driver.clear_input(max_value_elem)
