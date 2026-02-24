@@ -8,9 +8,7 @@
     "jest-environment-jsdom": "^29.7.0"
   },
   "scripts": {
-    "test": "jest",
-    "lint:js": "npx @biomejs/biome check src/",
-    "fmt:js": "npx @biomejs/biome check --write src/"
+    "test": "jest"
   },
   "jest": {
     "testMatch": [
