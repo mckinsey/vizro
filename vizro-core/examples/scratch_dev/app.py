@@ -29,11 +29,11 @@ class DmcShowcase(VizroBaseModel):
                     dmc.Grid(
                         [
                             dmc.GridCol(span=6, children=_sample_components_card()),
-                            dmc.GridCol(span=6, children=_progress_sliders_card()),
+                            dmc.GridCol(span=6, children=_pickers_card()),
                             dmc.GridCol(span=6, children=_form_card()),
                             dmc.GridCol(span=6, children=_navigation_card()),
-                            dmc.GridCol(span=6, children=_pickers_card()),
-                            dmc.GridCol(span=12, children=_containers_display_card()),
+                            dmc.GridCol(span=6, children=_progress_sliders_card()),
+                            dmc.GridCol(span=6, children=_containers_display_card()),
                         ],
                         gutter="lg",
                     ),
@@ -66,105 +66,147 @@ def _sample_components_card():
     return _card_wrapper(
         "Sample components",
         [
-            dmc.Alert(
-                "This is an Alert. It uses theme colors.",
-                title="Info",
-                color="blue",
-            ),
-            dmc.Alert(
-                "Success message.",
-                title="Success",
-                color="green",
-            ),
-            dmc.Flex(
+            dmc.Stack(
                 [
-                    dmc.Badge("Default", color="gray"),
-                    dmc.Badge("Primary", color="blue"),
-                    dmc.Badge("Success", color="green"),
-                    dmc.Badge("Warning", color="yellow"),
+                    dmc.Alert(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                        title="Info",
+                        color="blue",
+                    ),
+                    dmc.Alert(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                        title="Success",
+                        color="green",
+                    ),
+                    dmc.Alert(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                        title="Danger",
+                        color="red",
+                    ),
+                    dmc.Alert(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                        title="Warning",
+                        color="yellow",
+                    ),
+                    dmc.Flex(
+                        [
+                            dmc.Badge("Default", color="gray"),
+                            dmc.Badge("Primary", color="blue"),
+                            dmc.Badge("Success", color="green"),
+                            dmc.Badge("Warning", color="yellow"),
+                        ],
+                        gap="sm",
+                        wrap="wrap",
+                    ),
+                    dmc.Flex(
+                        [
+                            dmc.Button("Filled", variant="filled"),
+                            dmc.Button("Outline", variant="outline"),
+                            dmc.Button("Light", variant="light"),
+                            dmc.Button("Subtle", variant="subtle"),
+                        ],
+                        gap="sm",
+                        wrap="wrap",
+                    ),
                 ],
-                gap="sm",
-                wrap="wrap",
+                gap="md",
             ),
-            dmc.Flex(
-                [
-                    dmc.Button("Filled", variant="filled"),
-                    dmc.Button("Outline", variant="outline"),
-                    dmc.Button("Light", variant="light"),
-                    dmc.Button("Subtle", variant="subtle"),
-                ],
-                gap="sm",
-                wrap="wrap",
-            ),
-            dmc.Loader(size="sm"),
         ],
     )
 
 
 def _navigation_card():
-    """Stepper, Tabs, Accordion, Divider — navigation and flow."""
+    """Anchor, Breadcrumbs, Burger, NavLink, Pagination, Stepper, Tabs, Accordion, TableOfContents, Divider."""
+    gap_px = "10px"  # 8–12px between each component
     return _card_wrapper(
         "Navigation",
         [
-            dmc.Stepper(
-                orientation="vertical",
-                id="dmc-showcase-stepper",
-                active=1,
-                children=[
-                    dmc.StepperStep(label="First", description="First step"),
-                    dmc.StepperStep(label="Second", description="Second step"),
-                    dmc.StepperStep(label="Third", description="Third step"),
-                ],
-            ),
-            dmc.Tabs(
+            dmc.Stack(
                 [
-                    dmc.TabsList(
+                    dmc.Text("Anchor", size="xs", fw=600, c="dimmed", mb=4),
+                    dmc.Group(
                         [
-                            dmc.TabsTab("Tab 1", value="tab1"),
-                            dmc.TabsTab("Tab 2", value="tab2"),
-                        ]
+                            dmc.Anchor("Underline always", href="#", underline="always"),
+                            dmc.Anchor("Hover", href="#", underline="hover"),
+                            dmc.Anchor("Never", href="#", underline="never"),
+                        ],
+                        gap="sm",
                     ),
-                    dmc.TabsPanel("Tab 1 content.", value="tab1"),
-                    dmc.TabsPanel("Tab 2 content.", value="tab2"),
-                ],
-                value="tab1",
-            ),
-            dmc.Accordion(
-                id="dmc-showcase-accordion",
-                value=["customization"],
-                multiple=True,
-                variant="contained",
-                chevronPosition="right",
-                children=[
-                    dmc.AccordionItem(
+                    dmc.Text("Breadcrumbs", size="xs", fw=600, c="dimmed", mb=4),
+                    dmc.Breadcrumbs(
+                        children=[
+                            dmc.Anchor("Home", href="#"),
+                            dmc.Anchor("Docs", href="#"),
+                            dmc.Anchor("Anchor", href="#"),
+                        ],
+                        separator="/",
+                    ),
+                    dmc.Text("NavLink", size="xs", fw=600, c="dimmed", mb=4),
+                    dmc.NavLink(label="Dashboard", href="#"),
+                    dmc.NavLink(label="Settings", href="#", active=True),
+                    dmc.Text("Pagination", size="xs", fw=600, c="dimmed", mb=4),
+                    dmc.Pagination(total=10, value=1, id="dmc-showcase-pagination"),
+                    dmc.Stepper(
+                        orientation="vertical",
+                        id="dmc-showcase-stepper",
+                        active=1,
+                        children=[
+                            dmc.StepperStep(label="First", description="First step"),
+                            dmc.StepperStep(label="Second", description="Second step"),
+                            dmc.StepperStep(label="Third", description="Third step"),
+                        ],
+                    ),
+                    dmc.Tabs(
                         [
-                            dmc.AccordionControl("Customization"),
-                            dmc.AccordionPanel(
-                                "Colors, fonts, shadows and many other parts are customizable to fit your design."
+                            dmc.TabsList(
+                                [
+                                    dmc.TabsTab("Tab 1", value="tab1"),
+                                    dmc.TabsTab("Tab 2", value="tab2"),
+                                ]
+                            ),
+                            dmc.TabsPanel("Tab 1 content.", value="tab1"),
+                            dmc.TabsPanel("Tab 2 content.", value="tab2"),
+                        ],
+                        value="tab1",
+                    ),
+                    dmc.Accordion(
+                        id="dmc-showcase-accordion",
+                        value=["customization"],
+                        multiple=True,
+                        variant="contained",
+                        chevronPosition="right",
+                        children=[
+                            dmc.AccordionItem(
+                                [
+                                    dmc.AccordionControl("Customization"),
+                                    dmc.AccordionPanel(
+                                        "Colors, fonts, shadows and many other parts are customizable to fit your design."
+                                    ),
+                                ],
+                                value="customization",
+                            ),
+                            dmc.AccordionItem(
+                                [
+                                    dmc.AccordionControl("Flexibility"),
+                                    dmc.AccordionPanel(
+                                        "Configure appearance and behavior with a vast amount of settings or overwrite any "
+                                        "part of component styles."
+                                    ),
+                                ],
+                                value="flexibility",
+                            ),
+                            dmc.AccordionItem(
+                                [
+                                    dmc.AccordionControl("Item 3 (disabled)", disabled=True),
+                                    dmc.AccordionPanel("This panel is not reachable."),
+                                ],
+                                value="item3",
                             ),
                         ],
-                        value="customization",
-                    ),
-                    dmc.AccordionItem(
-                        [
-                            dmc.AccordionControl("Flexibility"),
-                            dmc.AccordionPanel(
-                                "Configure appearance and behavior with a vast amount of settings or overwrite any "
-                                "part of component styles."
-                            ),
-                        ],
-                        value="flexibility",
-                    ),
-                    dmc.AccordionItem(
-                        [
-                            dmc.AccordionControl("Item 3 (disabled)", disabled=True),
-                            dmc.AccordionPanel("This panel is not reachable."),
-                        ],
-                        value="item3",
                     ),
                 ],
+                gap="md",
             ),
-            dmc.Divider(label="Divider", labelPosition="left"),
         ],
     )
 
@@ -173,13 +215,17 @@ def _progress_sliders_card():
     """Progress, RingProgress, Slider, RangeSlider, Rating."""
     return _card_wrapper(
         "Progress & sliders",
-        [
-            dmc.Progress(value=45, size="md"),
+        dmc.Stack(
+            [
+            dmc.Progress(value=45),
             dmc.RingProgress(label="65%", sections=[{"value": 65, "color": "blue"}]),
             dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
             dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
             dmc.Rating(id="dmc-showcase-rating", value=3, count=5),
+            dmc.Loader(),
         ],
+        gap="md",
+    )
     )
 
 
@@ -193,20 +239,6 @@ def _pickers_card():
                 label="Pick a date",
                 placeholder="Select date",
                 popoverProps={"opened": True},
-            ),
-            dmc.ColorInput(
-                id="dmc-showcase-color-input",
-                label="Color input",
-                value="#1a85ff",
-                format="hex",
-            ),
-            dmc.ColorPicker(
-                id="dmc-showcase-color-picker",
-                value="#1a85ff",
-                size="sm",
-                withPicker=False,
-                swatches=["#1a85ff", "#40d86e", "#ffc107", "#f56565", "#6d6f77"],
-                swatchesPerRow=5,
             ),
         ],
         style={"minHeight": "320px"},
