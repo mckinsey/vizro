@@ -14,7 +14,7 @@ data_manager["dynamic_df"] = lambda number_of_points=10: df.head(number_of_point
 
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
-"""
+
 page_1 = vm.Page(
     title="Single/Multi static DD",
     components=[
@@ -136,7 +136,7 @@ page_4 = vm.Page(
         vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
     ],
 )
-"""
+
 page_5 = vm.Page(
     title="Sliders stress-test",
     components=[
@@ -282,7 +282,7 @@ page_5 = vm.Page(
     ],
 )
 
-"""
+
 page_6 = vm.Page(
     title="Dropdown variants",
     components=[
@@ -343,13 +343,7 @@ page_6 = vm.Page(
         ),
     ],
 )
-"""
-dashboard = vm.Dashboard(
-    pages=[
-        # page_1, page_2, page_3, page_4,
-        page_5,
-        # page_6,
-    ]
-)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6])
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
