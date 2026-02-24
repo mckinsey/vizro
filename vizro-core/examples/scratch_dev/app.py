@@ -10,6 +10,16 @@ from typing import Literal
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
+# Shared layout constants
+GAP = "12px"
+CARD_TITLE_SIZE = "md"
+SECTION_LABEL_SIZE = "sm"
+
+
+def _section_label(text: str):
+    """Section heading inside a card (e.g. 'Anchor', 'Breadcrumbs')."""
+    return dmc.Text(text, size=SECTION_LABEL_SIZE, fw=600, c="dimmed", mb="xs")
+
 
 class DmcShowcase(VizroBaseModel):
     """Development-only component that renders a grid of Dash Mantine components.
@@ -51,8 +61,8 @@ def _card_wrapper(title: str, children, style=None):
         card_style = {**card_style, **style}
     return dmc.Card(
         [
-            dmc.Text(title, fw=600, size="sm", c="dimmed", mb="xs"),
-            dmc.Stack(children, gap="sm"),
+            dmc.Text(title, fw=600, size=CARD_TITLE_SIZE, c="dimmed", mb="sm"),
+            dmc.Stack(children, style={"gap": GAP}),
         ],
         withBorder=True,
         padding="md",
@@ -62,7 +72,7 @@ def _card_wrapper(title: str, children, style=None):
 
 
 def _sample_components_card():
-    """Alert, Badge, Buttons, Loader."""
+    """Alert, Badge, Buttons."""
     return _card_wrapper(
         "Sample components",
         [
@@ -109,21 +119,20 @@ def _sample_components_card():
                         wrap="wrap",
                     ),
                 ],
-                gap="md",
+                style={"gap": GAP},
             ),
         ],
     )
 
 
 def _navigation_card():
-    """Anchor, Breadcrumbs, Burger, NavLink, Pagination, Stepper, Tabs, Accordion, TableOfContents, Divider."""
-    gap_px = "10px"  # 8–12px between each component
+    """Anchor, Breadcrumbs, NavLink, Pagination, Stepper, Timeline, Tabs, Accordion."""
     return _card_wrapper(
         "Navigation",
         [
             dmc.Stack(
                 [
-                    dmc.Text("Anchor", size="xs", fw=600, c="dimmed", mb=4),
+                    _section_label("Anchor"),
                     dmc.Group(
                         [
                             dmc.Anchor("Underline always", href="#", underline="always"),
@@ -132,7 +141,7 @@ def _navigation_card():
                         ],
                         gap="sm",
                     ),
-                    dmc.Text("Breadcrumbs", size="xs", fw=600, c="dimmed", mb=4),
+                    _section_label("Breadcrumbs"),
                     dmc.Breadcrumbs(
                         children=[
                             dmc.Anchor("Home", href="#"),
@@ -141,11 +150,12 @@ def _navigation_card():
                         ],
                         separator="/",
                     ),
-                    dmc.Text("NavLink", size="xs", fw=600, c="dimmed", mb=4),
+                    _section_label("NavLink"),
                     dmc.NavLink(label="Dashboard", href="#"),
                     dmc.NavLink(label="Settings", href="#", active=True),
-                    dmc.Text("Pagination", size="xs", fw=600, c="dimmed", mb=4),
+                    _section_label("Pagination"),
                     dmc.Pagination(total=10, value=1, id="dmc-showcase-pagination"),
+                    _section_label("Stepper"),
                     dmc.Stepper(
                         orientation="vertical",
                         id="dmc-showcase-stepper",
@@ -156,6 +166,29 @@ def _navigation_card():
                             dmc.StepperStep(label="Third", description="Third step"),
                         ],
                     ),
+                    _section_label("Timeline"),
+                    dmc.Timeline(
+                        id="dmc-showcase-timeline",
+                        active=1,
+                        bulletSize=15,
+                        lineWidth=2,
+                        children=[
+                            dmc.TimelineItem(
+                                title="Step one",
+                                children=dmc.Text("First event description.", c="dimmed", size="sm"),
+                            ),
+                            dmc.TimelineItem(
+                                title="Step two",
+                                children=dmc.Text("Second event description.", c="dimmed", size="sm"),
+                            ),
+                            dmc.TimelineItem(
+                                title="Step three",
+                                lineVariant="dashed",
+                                children=dmc.Text("Third event (dashed line).", c="dimmed", size="sm"),
+                            ),
+                        ],
+                    ),
+                    _section_label("Tabs"),
                     dmc.Tabs(
                         [
                             dmc.TabsList(
@@ -169,6 +202,7 @@ def _navigation_card():
                         ],
                         value="tab1",
                     ),
+                    _section_label("Accordion"),
                     dmc.Accordion(
                         id="dmc-showcase-accordion",
                         value=["customization"],
@@ -205,40 +239,47 @@ def _navigation_card():
                         ],
                     ),
                 ],
-                gap="md",
+                style={"gap": GAP},
             ),
         ],
     )
 
 
 def _progress_sliders_card():
-    """Progress, RingProgress, Slider, RangeSlider, Rating."""
+    """Progress, RingProgress, Slider, RangeSlider, Rating, Loader."""
     return _card_wrapper(
         "Progress & sliders",
-        dmc.Stack(
-            [
-            dmc.Progress(value=45),
-            dmc.RingProgress(label="65%", sections=[{"value": 65, "color": "blue"}]),
-            dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
-            dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
-            dmc.Rating(id="dmc-showcase-rating", value=3, count=5),
-            dmc.Loader(),
+        [
+            dmc.Stack(
+                [
+                    dmc.Progress(value=45),
+                    dmc.RingProgress(label="65%", sections=[{"value": 65, "color": "blue"}]),
+                    dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
+                    dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
+                    dmc.Rating(id="dmc-showcase-rating", value=3, count=5),
+                    dmc.Loader(),
+                ],
+                style={"gap": GAP},
+            ),
         ],
-        gap="md",
-    )
     )
 
 
 def _pickers_card():
-    """Date picker and color pickers."""
+    """Date picker."""
     return _card_wrapper(
         "Pickers",
         [
-            dmc.DatePickerInput(
-                id="dmc-showcase-date-picker",
-                label="Pick a date",
-                placeholder="Select date",
-                popoverProps={"opened": True},
+            dmc.Stack(
+                [
+                    dmc.DatePickerInput(
+                        id="dmc-showcase-date-picker",
+                        label="Pick a date",
+                        placeholder="Select date",
+                        popoverProps={"opened": True},
+                    ),
+                ],
+                style={"gap": GAP},
             ),
         ],
         style={"minHeight": "320px"},
@@ -246,95 +287,103 @@ def _pickers_card():
 
 
 def _containers_display_card():
-    """Card, Paper, ActionIcon, Avatar, Blockquote, Kbd, Tooltip, Skeleton."""
+    """Card, Paper, ActionIcon, Avatar, Blockquote, Tooltip."""
     return _card_wrapper(
         "Containers & display",
         [
-            dmc.Card(
-                children=[
-                    dmc.Text("Card title", fw=500, size="lg"),
-                    dmc.Text(
-                        "Card description. Uses theme background and border.",
-                        c="dimmed",
-                        size="sm",
+            dmc.Stack(
+                [
+                    dmc.Card(
+                        children=[
+                            dmc.Text("Card title", fw=500, size="lg"),
+                            dmc.Text(
+                                "Card description. Uses theme background and border.",
+                                c="dimmed",
+                                size="sm",
+                            ),
+                        ],
+                        withBorder=True,
+                        padding="md",
+                    ),
+                    dmc.Paper(
+                        "Paper component with padding.",
+                        withBorder=True,
+                        p="md",
+                    ),
+                    dmc.Flex(
+                        [
+                            dmc.ActionIcon("⚙", variant="filled", size="lg"),
+                            dmc.ActionIcon("✎", variant="outline", size="md"),
+                            dmc.ActionIcon("🗑", variant="subtle", size="sm"),
+                        ],
+                        gap="sm",
+                    ),
+                    dmc.Avatar("AB", radius="xl", color="blue"),
+                    dmc.Blockquote(
+                        "Use Blockquote to highlight a quote or callout.",
+                        cite="— DMC docs",
+                    ),
+                    dmc.Tooltip(
+                        dmc.Button("Hover me"),
+                        label="Tooltip text",
                     ),
                 ],
-                withBorder=True,
-                padding="md",
+                style={"gap": GAP},
             ),
-            dmc.Paper(
-                "Paper component with padding.",
-                withBorder=True,
-                p="md",
-            ),
-            dmc.Flex(
-                [
-                    dmc.ActionIcon("⚙", variant="filled", size="lg"),
-                    dmc.ActionIcon("✎", variant="outline", size="md"),
-                    dmc.ActionIcon("🗑", variant="subtle", size="sm"),
-                ],
-                gap="sm",
-            ),
-            dmc.Avatar("AB", radius="xl", color="blue"),
-            dmc.Blockquote(
-                "Use Blockquote to highlight a quote or callout.",
-                cite="— DMC docs",
-            ),
-            dmc.Flex([dmc.Kbd("Ctrl"), dmc.Text("+", mx=4), dmc.Kbd("S")], align="center"),
-            dmc.Tooltip(
-                dmc.Button("Hover me"),
-                label="Tooltip text",
-            ),
-            dmc.Skeleton(height=24, width="60%"),
         ],
     )
 
 
 def _form_card():
-    """Combined form: email, password, text, select, number, textarea, checkbox, switch, radio, segmented, chips, multiselect, submit."""
+    """Form inputs and submit."""
     return _card_wrapper(
         "Form",
         [
-            dmc.TextInput(label="Email", placeholder="your@email.com"),
-            dmc.PasswordInput(label="Password", placeholder="Enter password"),
-            dmc.TextInput(label="Text", placeholder="Placeholder"),
-            dmc.NumberInput(label="Number", value=42, min=0, max=100),
-            dmc.Select(
-                label="Select",
-                data=["Option 1", "Option 2", "Option 3"],
-                value="Option 1",
-            ),
-            dmc.MultiSelect(
-                label="Multi select",
-                data=["Item 1", "Item 2", "Item 3"],
-                value=["Item 1"],
-                placeholder="Pick items",
-            ),
-            dmc.Textarea(label="Text area", placeholder="Multi-line text…", minRows=4),
-            dmc.RadioGroup(
-                label="Radio group",
-                children=[
-                    dmc.Radio("Option A", value="a"),
-                    dmc.Radio("Option B", value="b"),
-                    dmc.Radio("Option C", value="c"),
-                ],
-                value="a",
-            ),
-            dmc.SegmentedControl(
-                data=[{"label": "A", "value": "a"}, {"label": "B", "value": "b"}, {"label": "C", "value": "c"}],
-                value="a",
-            ),
-            dmc.ChipGroup(
+            dmc.Stack(
                 [
-                    dmc.Chip("Chip 1", value="1", checked=False),
-                    dmc.Chip("Chip 2", value="2", checked=True),
-                    dmc.Chip("Chip 3", value="3", checked=False),
+                    dmc.TextInput(label="Email", placeholder="your@email.com"),
+                    dmc.PasswordInput(label="Password", placeholder="Enter password"),
+                    dmc.TextInput(label="Text", placeholder="Placeholder"),
+                    dmc.NumberInput(label="Number", value=42, min=0, max=100),
+                    dmc.Select(
+                        label="Select",
+                        data=["Option 1", "Option 2", "Option 3"],
+                        value="Option 1",
+                    ),
+                    dmc.MultiSelect(
+                        label="Multi select",
+                        data=["Item 1", "Item 2", "Item 3"],
+                        value=["Item 1"],
+                        placeholder="Pick items",
+                    ),
+                    dmc.Textarea(label="Text area", placeholder="Multi-line text…", minRows=4),
+                    dmc.RadioGroup(
+                        label="Radio group",
+                        children=[
+                            dmc.Radio("Option A", value="a"),
+                            dmc.Radio("Option B", value="b"),
+                            dmc.Radio("Option C", value="c"),
+                        ],
+                        value="a",
+                    ),
+                    dmc.SegmentedControl(
+                        data=[{"label": "A", "value": "a"}, {"label": "B", "value": "b"}, {"label": "C", "value": "c"}],
+                        value="a",
+                    ),
+                    dmc.ChipGroup(
+                        [
+                            dmc.Chip("Chip 1", value="1", checked=False),
+                            dmc.Chip("Chip 2", value="2", checked=True),
+                            dmc.Chip("Chip 3", value="3", checked=False),
+                        ],
+                        value=["2"],
+                    ),
+                    dmc.Checkbox(label="Checkbox", checked=False),
+                    dmc.Switch(label="Switch", checked=False),
+                    dmc.Button("Sign in", variant="filled"),
                 ],
-                value=["2"],
+                style={"gap": GAP},
             ),
-            dmc.Checkbox(label="Checkbox", checked=False),
-            dmc.Switch(label="Switch", checked=False),
-            dmc.Button("Sign in", variant="filled"),
         ],
     )
 
