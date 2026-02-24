@@ -51,8 +51,6 @@ class NavLink(VizroBaseModel):
         # from homepage to a page within the Accordion and there are several Accordions within the page.
         from vizro.models import Page
 
-        is_left_nav = self._nav_position == "left"
-
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
@@ -67,7 +65,7 @@ class NavLink(VizroBaseModel):
                     target=f"{self.id}-tooltip-target",
                 ),
             ]
-            if is_left_nav
+            if self._nav_position == "left"
             else [
                 html.Span(self.label),
             ]

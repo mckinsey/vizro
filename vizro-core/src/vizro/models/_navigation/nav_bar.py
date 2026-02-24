@@ -48,9 +48,9 @@ class NavBar(VizroBaseModel):
         for nav_link in self.items:
             nav_link._nav_position = self.position
 
-        for position, item in enumerate(self.items, 1):
-            # The default icons are added only when position == "left"
-            if self.position == "left":
+        # The default icons are added only when position == "left"
+        if self.position == "left":
+            for position, item in enumerate(self.items, 1):
                 # The default icons are named filter_1, filter_2, etc. up to filter_9.
                 # If there are more than 9 items, then the 10th and all subsequent items are named filter_9+.
                 icon_default = f"filter_{position}" if position <= 9 else "filter_9+"  # noqa: PLR2004
