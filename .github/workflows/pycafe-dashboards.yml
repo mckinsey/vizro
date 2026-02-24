@@ -2,6 +2,8 @@ name: PyCafe Playground Links
 
 permissions:
   contents: read
+  statuses: write
+  issues: write
 
 on:
   workflow_run:
