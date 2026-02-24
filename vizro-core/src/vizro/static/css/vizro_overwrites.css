@@ -112,12 +112,10 @@ legend {
  --mantine-color-dimmed: var(--bs-body-color);
  --mantine-color-text: var(--bs-body-color);
  --mantine-color-placeholder: var(--bs-tertiary-color);
-
-
 --mantine-primary-color-filled: var(--bs-primary);
 --mantine-primary-color-filled-hover: var(--bs-primary-text-emphasis);
 
-  /* Colors*/
+  /* Colors */
   --mantine-color-dark-0: #373A44;
   --mantine-color-dark-1: #333640;
   --mantine-color-dark-2: #2F323C;
@@ -222,6 +220,7 @@ button[data-variant="filled"], badge[data-variant="filled"] {
   --input-bd: var(--bs-primary-bg-subtle);
   --input-bg: var(--bs-primary-bg-subtle);
   --input-bd-focus: var(--bs-focus-ring-color);
+
   box-shadow: var(--bs-box-shadow-sm);
   color: var(--bs-primary);
 }

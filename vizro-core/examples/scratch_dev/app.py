@@ -1,12 +1,11 @@
 """Dev app to try things out."""
 
-import vizro.models as vm
-from vizro import Vizro
-import dash_mantine_components as dmc
-import plotly.graph_objects as go
-from dash import dcc, html
 from typing import Literal
 
+from dash import html
+import dash_mantine_components as dmc
+import vizro.models as vm
+from vizro import Vizro
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
@@ -31,7 +30,7 @@ class DmcShowcase(VizroBaseModel):
 
     @_log_call
     def build(self):
-        """Build layout: Container with title, subtitle, action buttons, divider, then Group of cards."""
+        """Build layout: container with a grid of DMC showcase cards."""
         return html.Div(
             id=self.id,
             children=dmc.Container(
@@ -40,10 +39,10 @@ class DmcShowcase(VizroBaseModel):
                         [
                             dmc.GridCol(span=6, children=_sample_components_card()),
                             dmc.GridCol(span=6, children=_pickers_card()),
-                            dmc.GridCol(span=6, children=_form_card()),
+                            dmc.GridCol(span=6, children=_typography_card()),
                             dmc.GridCol(span=6, children=_navigation_card()),
-                            dmc.GridCol(span=6, children=_progress_sliders_card()),
-                            dmc.GridCol(span=6, children=_containers_display_card()),
+                            dmc.GridCol(span=6, children=_form_card()),
+                            dmc.GridCol(span=6, children=_progress_containers_card()),
                         ],
                         gutter="lg",
                     ),
@@ -66,6 +65,7 @@ def _card_wrapper(title: str, children, style=None):
         ],
         withBorder=True,
         padding="md",
+        shadow="sm",
         style=card_style,
     )
 
@@ -208,7 +208,7 @@ def _navigation_card():
                                 [
                                     dmc.TabsTab("Tab 1", value="tab1"),
                                     dmc.TabsTab("Tab 2", value="tab2"),
-                                ]
+                                ],
                             ),
                             dmc.TabsPanel("Tab 1 content.", value="tab1"),
                             dmc.TabsPanel("Tab 2 content.", value="tab2"),
@@ -259,17 +259,99 @@ def _navigation_card():
     )
 
 
-def _progress_sliders_card():
-    """Progress, RingProgress, Slider, RangeSlider, Rating, Loader."""
+def _progress_containers_card():
+    """Progress, RingProgress, SemiCircleProgress, Sliders, Rating, Loader, BarChart, AreaChart."""
+    _bar_data = [
+        {"month": "Jan", "A": 120, "B": 80, "C": 60, "D": 40},
+        {"month": "Feb", "A": 190, "B": 120, "C": 90, "D": 70},
+        {"month": "Mar", "A": 90, "B": 150, "C": 110, "D": 85},
+    ]
+    _area_data = [
+        {"date": "Mon", "X": 40, "Y": 60, "Z": 30, "W": 50},
+        {"date": "Tue", "X": 55, "Y": 45, "Z": 65, "W": 35},
+        {"date": "Wed", "X": 70, "Y": 80, "Z": 50, "W": 45},
+    ]
     return _card_wrapper(
-        "Progress & sliders",
+        "Progress, sliders & display",
         [
             dmc.Stack(
                 [
+                    _section_label("Progress & sliders"),
                     dmc.Progress(value=45),
-                    dmc.RingProgress(label="65%", sections=[{"value": 65, "color": "blue"}]),
+                    dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
+                    dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
                     dmc.Rating(id="dmc-showcase-rating", value=3, count=5),
                     dmc.Loader(),
+                    _section_label("RingProgress"),
+                    dmc.Group(
+                        [
+                            dmc.RingProgress(
+                                label="65%",
+                                sections=[{"value": 65, "color": "blue"}],
+                            ),
+                            dmc.RingProgress(
+                                sections=[
+                                    {"value": 40, "color": "cyan"},
+                                    {"value": 30, "color": "orange"},
+                                    {"value": 20, "color": "grape"},
+                                ],
+                            ),
+                            dmc.RingProgress(
+                                sections=[{"value": 40, "color": "yellow"}],
+                                rootColor="gray",
+                            ),
+                        ],
+                        gap="md",
+                    ),
+                    _section_label("SemiCircleProgress"),
+                    dmc.Group(
+                        [
+                            dmc.SemiCircleProgress(
+                                value=40,
+                                size=100,
+                                thickness=10,
+                                label="40%",
+                            ),
+                            dmc.SemiCircleProgress(
+                                value=70,
+                                size=100,
+                                thickness=10,
+                                label="70%",
+                                labelPosition="center",
+                            ),
+                        ],
+                        gap="lg",
+                    ),
+                    _section_label("BarChart"),
+                    dmc.BarChart(
+                        h=180,
+                        dataKey="month",
+                        data=_bar_data,
+                        series=[
+                            {"name": "A", "color": "violet.6"},
+                            {"name": "B", "color": "teal.6"},
+                            {"name": "C", "color": "orange.6"},
+                            {"name": "D", "color": "grape.6"},
+                        ],
+                        tickLine="y",
+                        withXAxis=True,
+                        withYAxis=True,
+                    ),
+                    _section_label("AreaChart"),
+                    dmc.AreaChart(
+                        h=180,
+                        dataKey="date",
+                        data=_area_data,
+                        type="stacked",
+                        series=[
+                            {"name": "X", "color": "indigo.6"},
+                            {"name": "Y", "color": "blue.6"},
+                            {"name": "Z", "color": "cyan.6"},
+                            {"name": "W", "color": "lime.6"},
+                        ],
+                        withXAxis=True,
+                        withYAxis=True,
+                    ),
                 ],
                 style={"gap": GAP},
             ),
@@ -278,27 +360,9 @@ def _progress_sliders_card():
 
 
 def _pickers_card():
-    """Date range picker."""
+    """Card and date range picker together in one card."""
     return _card_wrapper(
-        "Pickers",
-        [
-            dmc.DatePickerInput(
-                id="dmc-showcase-date-picker",
-                type="range",
-                label="Pick a date range",
-                placeholder="Pick start and end date",
-                popoverProps={"opened": True},
-                value=["2024-01-01", "2024-01-15"],
-            ),
-        ],
-        style={"minHeight": "320px"},
-    )
-
-
-def _containers_display_card():
-    """Card, Paper, ActionIcon, Avatar, Blockquote, Tooltip."""
-    return _card_wrapper(
-        "Containers & display",
+        "Card & pickers",
         [
             dmc.Stack(
                 [
@@ -311,16 +375,113 @@ def _containers_display_card():
                                 size="sm",
                             ),
                         ],
+                        withBorder=True,
+                        padding="md",
                     ),
-                    dmc.Paper("Paper component with padding.",),
-                    dmc.Avatar("AB", radius="xl", color="blue"),
+                    dmc.Divider(variant="solid"),
+                    dmc.DatePickerInput(
+                        id="dmc-showcase-date-picker",
+                        type="range",
+                        label="Pick a date range",
+                        placeholder="Pick start and end date",
+                        popoverProps={"opened": True},
+                        value=["2024-01-01", "2024-01-15"],
+                    ),
+                ],
+                style={"gap": GAP},
+            ),
+        ],
+        style={"minHeight": "320px"},
+    )
+
+
+def _typography_card():
+    """Title, Text, Highlight, List, Blockquote, CodeHighlight — typography components."""
+    return _card_wrapper(
+        "Typography",
+        [
+            dmc.Stack(
+                [
+                    _section_label("Title"),
+                    dmc.Title("Title order 1", order=1),
+                    dmc.Title("Title order 2", order=2),
+                    dmc.Title("Title order 3", order=3),
+                    _section_label("Text"),
+                    html.Div(
+                        [
+                            dmc.Text("Extra small text", size="xs"),
+                            dmc.Text("Small text", size="sm"),
+                            dmc.Text("Default text", size="md"),
+                            dmc.Text("Large text", size="lg"),
+                            dmc.Text("Extra large text", size="xl"),
+                            dmc.Text("Semi bold", fw=500),
+                            dmc.Text("Bold", fw=700),
+                            dmc.Text("Underlined", td="underline"),
+                            dmc.Text("Red text", c="red"),
+                            dmc.Text("Blue text", c="blue"),
+                            dmc.Text("Gray text", c="gray"),
+                            dmc.Text("Uppercase", tt="uppercase"),
+                            dmc.Text("capitalized text", tt="capitalize"),
+                            dmc.Text("Aligned to center", ta="center"),
+                            dmc.Text("Aligned to right", ta="right"),
+                        ],
+                        style={"display": "flex", "flexDirection": "column", "gap": "4px"},
+                    ),
+                    _section_label("Highlight"),
+                    dmc.Highlight(
+                        "Highlight this, definitely this and also this!",
+                        highlight="this",
+                    ),
+                    dmc.Highlight(
+                        "Highlight this, definitely this and also that!",
+                        highlight=["this", "that"],
+                        color="lime",
+                    ),
+                    _section_label("List"),
+                    dmc.List(
+                        [
+                            dmc.ListItem(
+                                dmc.Text(
+                                    [
+                                        "Join our ",
+                                        dmc.Anchor(
+                                            "Discord",
+                                            href="https://discord.gg/KuJkh4Pyq5",
+                                            underline=False,
+                                        ),
+                                        " Community.",
+                                    ]
+                                ),
+                            ),
+                            dmc.ListItem("Install python virtual environment."),
+                            dmc.ListItem("Add your component to the showcase."),
+                        ],
+                    ),
+                    dmc.List(
+                        type="ordered",
+                        children=[
+                            dmc.ListItem("First ordered item"),
+                            dmc.ListItem("Second ordered item"),
+                            dmc.ListItem("Third ordered item"),
+                        ],
+                    ),
+                    _section_label("Blockquote"),
                     dmc.Blockquote(
-                        "Use Blockquote to highlight a quote or callout.",
-                        cite="— DMC docs",
+                        "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.",
+                        cite="— Marcus Aurelius, Meditations",
                     ),
-                    dmc.Tooltip(
-                        dmc.Button("Hover me"),
-                        label="Tooltip text",
+                    _section_label("CodeHighlight"),
+                    dmc.CodeHighlight(
+                        language="python",
+                        code="""# Kadane's Algorithm
+
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        curr, summ = nums[0], nums[0]
+        for n in nums[1:]:
+            curr = max(n, curr + n)
+            summ = max(summ, curr)
+        return summ""",
                     ),
                 ],
                 style={"gap": GAP},
@@ -338,7 +499,6 @@ def _form_card():
                 [
                     dmc.TextInput(label="Email", placeholder="your@email.com"),
                     dmc.PasswordInput(label="Password", placeholder="Enter password"),
-                    dmc.TextInput(label="Text", placeholder="Placeholder"),
                     dmc.NumberInput(label="Number", value=42, min=0, max=100),
                     dmc.Select(
                         label="Select",
@@ -364,20 +524,29 @@ def _form_card():
                     ),
                     dmc.Divider(variant="solid"),
                     dmc.SegmentedControl(
-                        data=[{"label": "A", "value": "a"}, {"label": "B", "value": "b"}, {"label": "C", "value": "c"}],
+                        orientation="horizontal",
+                        data=[
+                            {"label": "A", "value": "a"},
+                            {"label": "B", "value": "b"},
+                            {"label": "C", "value": "c"},
+                        ],
                         value="a",
                     ),
                     dmc.Divider(variant="solid"),
-                    dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
-                    dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
-                    dmc.Divider(variant="solid"),
-                    dmc.ChipGroup(
+                    dmc.Flex(
                         [
-                            dmc.Chip("Chip 1", value="1", checked=False),
-                            dmc.Chip("Chip 2", value="2", checked=True),
-                            dmc.Chip("Chip 3", value="3", checked=False),
+                            dmc.ChipGroup(
+                                multiple=False,
+                                children=[
+                                    dmc.Chip("Chip 1", value="1", checked=False),
+                                    dmc.Chip("Chip 2", value="2", checked=True),
+                                    dmc.Chip("Chip 3", value="3", checked=False),
+                                ],
+                                value=["2"],
+                            ),
                         ],
-                        value=["2"],
+                        gap="sm",
+                        wrap="nowrap",
                     ),
                     dmc.Divider(variant="solid"),
                     dmc.Checkbox(label="Checkbox", checked=False),
