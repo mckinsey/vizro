@@ -2,12 +2,15 @@
   "devDependencies": {
     "@babel/core": "^7.22.20",
     "@babel/preset-env": "^7.22.20",
+    "@biomejs/biome": "2.4.3",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint:js": "npx @biomejs/biome check src/",
+    "fmt:js": "npx @biomejs/biome check --write src/"
   },
   "jest": {
     "testMatch": [

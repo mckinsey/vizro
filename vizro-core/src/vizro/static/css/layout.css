@@ -355,7 +355,7 @@ Current logic:
 }
 
 .card-wrapper-actions > .card {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .card-wrapper-actions > .card:hover {

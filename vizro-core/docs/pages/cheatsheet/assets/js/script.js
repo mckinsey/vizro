@@ -1,3 +1,4 @@
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
 function copyCode(button) {
   // Find the code block next to this button
   const codeBlock = button.parentElement.querySelector(".code-block");
@@ -8,19 +9,19 @@ function copyCode(button) {
   // Copy to clipboard
   navigator.clipboard
     .writeText(codeText)
-    .then(function () {
+    .then(() => {
       // Change button text and style to show success
       const originalText = button.textContent;
       button.textContent = "Copied!";
       button.classList.add("copied");
 
       // Reset button after 2 seconds
-      setTimeout(function () {
+      setTimeout(() => {
         button.textContent = originalText;
         button.classList.remove("copied");
       }, 2000);
     })
-    .catch(function (err) {
+    .catch(() => {
       // Fallback for older browsers
       const textArea = document.createElement("textarea");
       textArea.value = codeText;
@@ -34,7 +35,7 @@ function copyCode(button) {
       button.textContent = "Copied!";
       button.classList.add("copied");
 
-      setTimeout(function () {
+      setTimeout(() => {
         button.textContent = originalText;
         button.classList.remove("copied");
       }, 2000);
