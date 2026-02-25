@@ -92,7 +92,7 @@ def _get_vizro_requirement(config: PyCafeConfig, use_latest_release: bool = Fals
     if use_latest_release:
         return "vizro"
     return (
-        f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
+        f"vizro@{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
         f"pip/vizro-{config.vizro_version}-py3-none-any.whl"
     )
 
@@ -102,7 +102,7 @@ def _get_vizro_ai_requirement(config: PyCafeConfig, use_latest_release: bool = F
     if use_latest_release:
         return "vizro-ai"
     return (
-        f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
+        f"vizro-ai@{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
         f"pip2/vizro_ai-{config.vizro_ai_version}-py3-none-any.whl"
     )
 

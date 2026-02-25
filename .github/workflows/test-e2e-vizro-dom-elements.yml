@@ -1,5 +1,8 @@
 name: e2e vizro dom elements tests for Vizro
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: vizro-core

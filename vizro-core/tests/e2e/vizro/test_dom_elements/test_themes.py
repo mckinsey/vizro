@@ -24,31 +24,31 @@ def test_themes(dash_br_driver, dashboard_id):
 
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
         # dashboard loaded with light theme
-        check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+        check_graph_color(dash_br_driver, style_background=cnst.STYLE_LIGHT, color=cnst.RGBA_LIGHT)
         check_theme_color(dash_br_driver, color=cnst.THEME_LIGHT)
 
         # switch theme to dark
         dash_br_driver.multiple_click(theme_toggle_path(), 1)
-        check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+        check_graph_color(dash_br_driver, style_background=cnst.STYLE_DARK, color=cnst.RGBA_DARK)
         check_theme_color(dash_br_driver, color=cnst.THEME_DARK)
 
         # switch theme back to light
         dash_br_driver.multiple_click(theme_toggle_path(), 1)
-        check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+        check_graph_color(dash_br_driver, style_background=cnst.STYLE_LIGHT, color=cnst.RGBA_LIGHT)
         check_theme_color(dash_br_driver, color=cnst.THEME_LIGHT)
     else:
         # dashboard loaded with dark theme
-        check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+        check_graph_color(dash_br_driver, style_background=cnst.STYLE_DARK, color=cnst.RGBA_DARK)
         check_theme_color(dash_br_driver, color=cnst.THEME_DARK)
 
         # switch theme to light
         dash_br_driver.multiple_click(theme_toggle_path(), 1)
-        check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+        check_graph_color(dash_br_driver, style_background=cnst.STYLE_LIGHT, color=cnst.RGBA_LIGHT)
         check_theme_color(dash_br_driver, color=cnst.THEME_LIGHT)
 
         # switch theme back to dark
         dash_br_driver.multiple_click(theme_toggle_path(), 1)
-        check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+        check_graph_color(dash_br_driver, style_background=cnst.STYLE_DARK, color=cnst.RGBA_DARK)
         check_theme_color(dash_br_driver, color=cnst.THEME_DARK)
 
 
@@ -134,8 +134,8 @@ def test_themes_page_change(dash_br_driver, dashboard_id):
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
         # dashboard switched to dark theme
         dash_br_driver.multiple_click(theme_toggle_path(), 1)
-        _logic(style_background=cnst.STYLE_TRANSPARENT, graph_color=cnst.RGBA_TRANSPARENT, theme_color=cnst.THEME_DARK)
+        _logic(style_background=cnst.STYLE_DARK, graph_color=cnst.RGBA_DARK, theme_color=cnst.THEME_DARK)
     else:
         # dashboard switched to light theme
         dash_br_driver.multiple_click(theme_toggle_path(), 1)
-        _logic(style_background=cnst.STYLE_TRANSPARENT, graph_color=cnst.RGBA_TRANSPARENT, theme_color=cnst.THEME_LIGHT)
+        _logic(style_background=cnst.STYLE_LIGHT, graph_color=cnst.RGBA_LIGHT, theme_color=cnst.THEME_LIGHT)

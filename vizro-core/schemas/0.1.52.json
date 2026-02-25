@@ -856,6 +856,13 @@
           "title": "Title",
           "type": "string"
         },
+        "variant": {
+          "default": "filled",
+          "description": "Predefined styles to choose from. Options are `filled` or `plain`.",
+          "enum": ["plain", "filled"],
+          "title": "Variant",
+          "type": "string"
+        },
         "description": {
           "anyOf": [
             {

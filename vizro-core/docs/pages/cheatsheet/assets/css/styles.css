@@ -11,8 +11,8 @@
   --bg-light-alt: #f1f3f4;
   --border-color: #e1e5e9;
   --text-muted: #5f6368;
-  --font-code: 'Courier New', monospace;
-  --font-base: 'Segoe UI', tahoma, geneva, verdana, sans-serif;
+  --font-code: "Courier New", monospace;
+  --font-base: "Segoe UI", tahoma, geneva, verdana, sans-serif;
   --font-size: 14px;
   --font-color: #3d56c0;
 }
@@ -78,8 +78,9 @@ body {
 }
 
 .header::before {
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-  content: '';
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+    repeat;
+  content: "";
   inset: 0;
   position: absolute;
 }
@@ -261,7 +262,6 @@ body {
   margin-bottom: 20px;
 }
 
-
 .two-column-grid {
   grid-template-columns: repeat(2, 1fr);
 }
@@ -269,7 +269,6 @@ body {
 .three-column-grid {
   grid-template-columns: repeat(3, 1fr);
 }
-
 
 .components-second-row {
   grid-template-columns: repeat(4, 1fr);
@@ -291,7 +290,9 @@ body {
   border-radius: 12px;
   border-style: solid;
   border-width: 4px 1px 1px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 1rem;
   position: relative;
   transition: all 0.3s ease;
@@ -299,7 +300,7 @@ body {
 
 .card::before {
   background: inherit;
-  content: '';
+  content: "";
   height: 2px;
   left: 0;
   opacity: 0;
@@ -399,8 +400,6 @@ body {
   position: relative;
 }
 
-
-
 .code-inline {
   color: #d73027;
   cursor: text;
@@ -450,9 +449,7 @@ body {
   display: flex;
   flex-direction: row;
   gap: 20px;
-
 }
-
 
 /* Media Queries */
 @media (width <= 768px) {

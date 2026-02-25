@@ -1,4 +1,4 @@
-# How to use themes
+# How to use themes and colors
 
 This guide shows you how to use themes. Themes are pre-designed collections of stylings that are applied to entire charts and dashboards. The themes provided by Vizro are infused with our design best practices that make charts and dashboards look visually consistent and professional.
 
@@ -117,6 +117,68 @@ Vizro is primarily built out of [Dash Bootstrap components](https://www.dash-boo
 ## Vizro themes for plotly charts
 
 Vizro registers two new [plotly themes](https://plotly.com/python/templates/), `vizro_dark` and `vizro_light`, that are used in a Vizro dashboard. You can [modify these themes](#modify-vizro-plotly-themes) globally or for individual charts. The themes can also be [used outside a Vizro dashboard](#charts-outside-a-dashboard) for standalone charts.
+
+### Palettes
+
+Vizro's plotly themes define their own default [qualitative](https://plotly.com/python/discrete-color/) and [continuous](https://plotly.com/python/colorscales/) palettes. These are used automatically in a Vizro dashboard or when using the Vizro themes outside a dashboard.
+
+[`vizro.themes`][vizro.themes] provides direct access to these palettes, alternatives, and the underlying color system. Each color has been carefully selected to ensure visual consistency, professional aesthetics, and accessibility. All our color palettes are colorblind-safe.
+
+The [API reference][vizro.themes.palettes] shows all the available palettes, split into three categories:
+
+- Qualitative (`palettes.qualitative`): 10 discrete colors for representing categorical data.
+- Sequential (`palettes.sequential_*`): gradual color progressions for ordered or continuous data.
+- Diverging (`palettes.diverging_*`): two-tone color scales designed for data with a meaningful center point.
+
+All the colors that make up the palettes and our color system are available through [`vizro.themes.colors`][vizro.themes.colors].
+
+!!! note "Default palette behavior"
+
+    Plotly charts automatically apply `palettes.qualitative` to categorical data and `palettes.sequential` to continuous numerical data. Override these defaults by explicitly setting `color_discrete_sequence` or `color_continuous_scale` parameters in your chart function.
+
+!!! example "Use Vizro palettes"
+
+    === "Qualitative palette"
+
+        ```python
+        from vizro.themes import palettes
+        import vizro.plotly.express as px
+
+        df = px.data.iris()
+        px.scatter(df, x="sepal_length", y="petal_width", color="species", color_discrete_sequence=palettes.qualitative)
+        ```
+
+    === "Sequential palette"
+
+        ```python
+        from vizro.themes import palettes
+        import vizro.plotly.express as px
+
+        df = px.data.tips()
+        px.density_heatmap(df, x="total_bill", y="tip", color_continuous_scale=palettes.sequential_red)
+        ```
+
+    === "Diverging palette"
+
+        ```python
+        from vizro.themes import palettes
+        import vizro.plotly.express as px
+        import numpy as np
+
+        # Create data with positive and negative values
+        data = np.random.randn(20, 20)
+        px.imshow(data, color_continuous_scale=palettes.diverging_red_cyan, color_continuous_midpoint=0)
+        ```
+
+    === "Single color"
+
+        ```python
+        from vizro.themes import colors
+        import vizro.plotly.express as px
+
+        df = px.data.gapminder().query("year == 2007")
+        px.bar(df.nlargest(10, "pop"), x="country", y="pop", color_discrete_sequence=[colors.dark_purple])
+        ```
 
 ### Modify Vizro plotly themes
 
