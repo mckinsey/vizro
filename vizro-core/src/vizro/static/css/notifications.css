@@ -4,7 +4,10 @@
   gap: 12px;
 }
 
-.alert-info, .alert-success, .alert-warning, .alert-error {
+.alert-info,
+.alert-success,
+.alert-warning,
+.alert-error {
   align-items: flex-start;
   background: var(--surfaces-bg-card-inverted);
   box-shadow: var(--bs-box-shadow);
@@ -82,7 +85,6 @@
 
   margin-inline-end: 8px;
 }
-
 
 .mantine-Notification-body {
   margin: auto;
