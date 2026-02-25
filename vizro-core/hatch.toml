@@ -160,7 +160,7 @@ dependencies = [
   "plotly==6.0.0"  # to leverage new MapLibre features in visual-vocabulary,
 ]
 installer = "uv"
-scripts = {example = "cd examples/{args:scratch_dev}; python app.py", pip = '"{env:HATCH_UV}" pip {args}'}
+scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
 # This environment doesn't inherit from default but does install Vizro.
 template = "examples"
 

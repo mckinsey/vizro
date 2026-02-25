@@ -59,17 +59,6 @@ Vizro().build(dashboard).run()
 - Examples: `examples/`
 - Changelog: `changelog.d/` and `CHANGELOG.md`
 
-## Developing with local vizro-dash-components
-
-`vizro-core` already depends on the released `vizro-dash-components` package. To test local changes:
-
-1. `vizro-dash-components/`: Build with `hatch run generate-components`
-1. `vizro-core/`: Override the installed package with your local version: `hatch run examples:pip install -e ../vizro-dash-components`
-1. `vizro-core/`: Add the component under test to `scratch_dev/app.py`
-1. `vizro-core/`: Run the example with `hatch run example`
-
-After modifying JS/TS source in `vizro-dash-components/`, rebuild (`hatch run npm:build` there) and restart the Vizro app.
-
 ## Workspace structure
 
 - `pyproject.toml`: Package configuration for vizro-core with dependencies
