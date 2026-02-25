@@ -237,7 +237,7 @@ class Dashboard(VizroBaseModel):
                     "Progress": {
                         "styles": {
                             "section": {
-                                "backgroundColor": "var(--bs-secondary)",
+                                "backgroundColor": "var(--bs-primary)",
                             }
                         }
                     },
@@ -289,6 +289,12 @@ class Dashboard(VizroBaseModel):
                             "lineWidth": 2,
                             "bulletSize": 16,
                         }
+                    },
+                    "RadioIndicator": {
+                        "defaultProps": {"size": "xs"},
+                    },
+                    "Checkbox": {
+                        "defaultProps": {"size": "xs"},
                     },
                 },
             },
