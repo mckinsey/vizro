@@ -248,7 +248,8 @@ def _navigation_card():
                                 [
                                     dmc.AccordionControl("Customization"),
                                     dmc.AccordionPanel(
-                                        "Colors, fonts, shadows and many other parts are customizable to fit your design."
+                                        "Colors, fonts, shadows and many other parts are customizable to fit "
+                                        "your design."
                                     ),
                                 ],
                                 value="customization",
@@ -257,8 +258,8 @@ def _navigation_card():
                                 [
                                     dmc.AccordionControl("Flexibility"),
                                     dmc.AccordionPanel(
-                                        "Configure appearance and behavior with a vast amount of settings or overwrite any "
-                                        "part of component styles."
+                                        "Configure appearance and behavior with a vast amount of settings or "
+                                        "overwrite any part of component styles."
                                     ),
                                 ],
                                 value="flexibility",
@@ -472,7 +473,8 @@ def _typography_card():
                     ),
                     _section_label("Blockquote"),
                     dmc.Blockquote(
-                        "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.",
+                        "Everything we hear is an opinion, not a fact. Everything we see is a perspective, "
+                        "not the truth.",
                         cite="— Marcus Aurelius, Meditations",
                     ),
                     _section_label("CodeHighlight"),
