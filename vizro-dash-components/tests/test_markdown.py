@@ -4,7 +4,6 @@ import time
 
 import dash_mantine_components as dmc
 from dash import Dash, html
-
 from vizro_dash_components import Markdown
 
 
@@ -20,9 +19,7 @@ def test_markdown_renders(dash_duo):
 def test_markdown_with_code(dash_duo):
     """Markdown component renders code blocks without errors."""
     app = Dash(__name__)
-    app.layout = dmc.MantineProvider(
-        html.Div([Markdown("```python\nprint('hello')\n```", id="markdown")])
-    )
+    app.layout = dmc.MantineProvider(html.Div([Markdown("```python\nprint('hello')\n```", id="markdown")]))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#markdown pre")
     assert dash_duo.get_logs() == []
@@ -31,9 +28,7 @@ def test_markdown_with_code(dash_duo):
 def test_markdown_with_mathjax(dash_duo):
     """Markdown component renders math with mathjax enabled."""
     app = Dash(__name__)
-    app.layout = dmc.MantineProvider(
-        html.Div([Markdown("$E = mc^2$", mathjax=True, id="markdown")])
-    )
+    app.layout = dmc.MantineProvider(html.Div([Markdown("$E = mc^2$", mathjax=True, id="markdown")]))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#markdown")
     assert dash_duo.get_logs() == []
@@ -63,14 +58,9 @@ def test_markdown_link(dash_duo):
 def test_markdown_code_without_mantine_provider(dash_duo):
     """Markdown component with code block produces console errors when MantineProvider is missing."""
     app = Dash(__name__)
-    app.layout = html.Div(
-        [Markdown("```python\nprint('hello')\n```", id="markdown")]
-    )
+    app.layout = html.Div([Markdown("```python\nprint('hello')\n```", id="markdown")])
     dash_duo.start_server(app)
     # Give React time to attempt rendering and fail.
     time.sleep(3)
     logs = dash_duo.get_logs()
-    assert any(
-        "MantineProvider was not found in component tree" in log["message"]
-        for log in logs
-    )
+    assert any("MantineProvider was not found in component tree" in log["message"] for log in logs)

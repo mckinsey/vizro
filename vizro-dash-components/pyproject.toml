@@ -37,5 +37,5 @@ addopts = ["--import-mode=importlib"]
 filterwarnings = [
   "error",
   # Selenium's internal use of deprecated urllib3 API.
-  "ignore:HTTPResponse.getheader:DeprecationWarning",
+  "ignore:HTTPResponse.getheader:DeprecationWarning"
 ]
