@@ -401,14 +401,14 @@ legend {
 
 .mantine-Input-input .mantine-Pill-root[data-variant="default"] {
   background-color: var(--bs-body-bg);
-  color: var(--bs-primary);
   border-radius: 0;
+  color: var(--bs-primary);
 }
 
 .mantine-RadioIndicator-indicator, .mantine-RadioIndicator-indicator[data-checked="true"],
 .mantine-Checkbox-input, .mantine-Checkbox-input:checked {
-  border-color: var(--bs-secondary);
   background-color: transparent;
+  border-color: var(--bs-secondary);
 
 }
 
