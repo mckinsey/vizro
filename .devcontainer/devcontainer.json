@@ -5,10 +5,7 @@
       "extensions": ["ms-python.python"]
     }
   },
-  // Suppress the "Install Python" popup from the Python extension since Python installation
-  // is handled by hatch when user first runs hatch command.
   "settings": {
-    "python.disableInstallationCheck": true,
     "terminal.integrated.cwd": "${workspaceFolder}/vizro-core"
   },
   "build": {
