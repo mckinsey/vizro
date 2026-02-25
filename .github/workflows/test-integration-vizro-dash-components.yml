@@ -1,4 +1,4 @@
-name: Unit tests for vizro-dash-components
+name: Integration tests for Vizro Dash Components
 
 permissions:
   contents: read
