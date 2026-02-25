@@ -12,6 +12,7 @@ from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro import Vizro
+from vizro.models._dashboard import MANTINE_THEME
 from vizro.models._models_utils import _all_hidden
 
 
@@ -362,20 +363,7 @@ class TestDashboardBuild:
                     ],
                 ),
             ],
-            theme={
-                "primaryColor": "gray",
-                "defaultRadius": 0,
-                "components": {
-                    "Card": {
-                        "styles": {
-                            "root": {
-                                "backgroundColor": "var(--surfaces-bg-card)",
-                                "boxShadow": "var(--bs-box-shadow)",
-                            }
-                        }
-                    },
-                },
-            },
+            theme=MANTINE_THEME,
         )
         assert_component_equal(dashboard.build(), expected_dashboard_container)
 
