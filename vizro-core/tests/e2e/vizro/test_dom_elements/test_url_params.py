@@ -35,7 +35,7 @@ def test_url_filters_encoding_and_page_refresh_dropdown_radioitems(dash_br):
     wait_until_equal(lambda: get_url_params(dash_br), enc_data)
 
 
-def test_url_filters_decoding_and_navigate_to_page(dash_br):
+def test_url_filters_decoding_and_navigate_to_page_dropdown_radioitems(dash_br):
     """Verifies that URL params for filters could be correctly decoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     # select 'virginica' for dropdown and 'versicolor' for radio_items
@@ -46,15 +46,16 @@ def test_url_filters_decoding_and_navigate_to_page(dash_br):
     )
     # check correct urls params
     selected_params = {cnst.DROPDOWN_FILTER_CONTROL_ID: ["virginica"], cnst.RADIO_ITEMS_FILTER_CONTROL_ID: "versicolor"}
-    url_params_dict = get_url_params(dash_br)
-    dec_data = decode_url_params(url_params_dict, apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)
+    wait_until_equal(lambda: get_url_params(dash_br), enc_data)
+    dec_data = decode_url_params(get_url_params(dash_br), apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)
     assert_that(dec_data, equal_to(selected_params))
     # navigate to another page and back
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     # check url params still the same
-    url_params_dict = get_url_params(dash_br)
-    dec_data = decode_url_params(url_params_dict, apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)
+    wait_until_equal(lambda: get_url_params(dash_br), enc_data)
+    dec_data = decode_url_params(get_url_params(dash_br), apply_on_keys=cnst.FILTERS_PAGE_APPLY_ON_KEYS)
     assert_that(dec_data, equal_to(selected_params))
 
 
@@ -198,7 +199,7 @@ def test_url_params_encoding_and_page_refresh_sliders(dash_br):
     wait_until_equal(lambda: get_url_params(dash_br), enc_data)
 
 
-def test_url_params_decoding_and_navigate_to_page(dash_br):
+def test_url_params_decoding_and_navigate_to_page_sliders(dash_br):
     """Verifies that URL params for parameters could be correctly decoded and restored after a page refresh."""
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
     # select 0.8 for slider and [6, 8] for range_slider
@@ -206,15 +207,16 @@ def test_url_params_decoding_and_navigate_to_page(dash_br):
     select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, min_value="6")
     # check correct urls params
     selected_params = {cnst.SLIDER_PARAM_CONTROL_ID: 0.8, cnst.RANGE_SLIDER_PARAM_CONTROL_ID: [6, 8]}
-    url_params_dict = get_url_params(dash_br)
-    dec_data = decode_url_params(url_params_dict, apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
+    wait_until_equal(lambda: get_url_params(dash_br), enc_data)
+    dec_data = decode_url_params(get_url_params(dash_br), apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
     assert_that(dec_data, equal_to(selected_params))
     # navigate to another page and back
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     page_select(dash_br, page_path=cnst.PARAMETERS_PAGE_PATH, page_name=cnst.PARAMETERS_PAGE)
     # check url params still the same
-    url_params_dict = get_url_params(dash_br)
-    dec_data = decode_url_params(url_params_dict, apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
+    wait_until_equal(lambda: get_url_params(dash_br), enc_data)
+    dec_data = decode_url_params(get_url_params(dash_br), apply_on_keys=cnst.PARAMS_PAGE_APPLY_ON_KEYS)
     assert_that(dec_data, equal_to(selected_params))
 
 
