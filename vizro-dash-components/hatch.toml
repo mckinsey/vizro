@@ -8,12 +8,16 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 dependencies = [
   "pre-commit",
   "dash-iconify", # just for the example usage.py
-  "dash[dev]>=3.0.0"  # provides dash-generate-components, required by `npm run build`
+  "dash[dev,testing]>=4,<5",  # provides dash-generate-components + dash_duo fixture
+  "chromedriver-autoinstaller>=0.6.4",
+  "pytest",
+  "vizro",
 ]
 installer = "uv"
 
 [envs.default.scripts]
 example = "python usage.py"
+generate-components = "npm run build"
 lint = ["npm run lint:js", "pre-commit run {args} --all-files"]
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
@@ -23,5 +27,6 @@ prep-release = [
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-dash-components $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
-generate-components = "npm run build"
+test = "pytest tests --headless {args}"
+test-unit = "pytest tests --headless {args}"
 
