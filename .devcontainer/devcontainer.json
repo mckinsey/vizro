@@ -13,6 +13,5 @@
   },
   "build": {
     "dockerfile": "Dockerfile"
-  },
-
+  }
 }
