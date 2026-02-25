@@ -415,3 +415,7 @@ legend {
 .mantine-Checkbox-icon {
   width: 50%;
 }
+
+.m_bf2d988c:where([data-variant='filled']){
+  --checkbox-icon-color: var(--bs-primary) !important;
+}

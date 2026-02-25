@@ -220,7 +220,7 @@ class Dashboard(VizroBaseModel):
                     "Card": {
                         "styles": {
                             "root": {
-                                "backgroundColor": "var(--surfaces-bg-card)",
+                                "backgroundColor": "var(--bs-card-bg)",
                                 "boxShadow": "var(--bs-box-shadow)",
                             }
                         }
@@ -228,7 +228,7 @@ class Dashboard(VizroBaseModel):
                     "Paper": {
                         "styles": {
                             "root": {
-                                "backgroundColor": "var(--surfaces-bg-card)",
+                                "backgroundColor": "var(--bs-card-bg)",
                                 "boxShadow": "var(--bs-box-shadow)",
                                 "border": "1px solid var(--bs-border-color)",
                             }
@@ -292,9 +292,31 @@ class Dashboard(VizroBaseModel):
                     },
                     "RadioIndicator": {
                         "defaultProps": {"size": "xs"},
+                        "styles": {
+                            "indicator": {
+                                "--radio-icon-color": "var(--bs-primary)"
+                            }
+                        }
                     },
                     "Checkbox": {
                         "defaultProps": {"size": "xs"},
+                    },
+                    "Slider": {
+                        "defaultProps": {"size": "xs"},
+                    },
+                    "RangeSlider": {
+                        "defaultProps": {"size": "xs"},
+                    },
+                    "Chip": {
+                        "defaultProps": {"color": "primary"},
+                        "styles": {
+                            "label": {
+                                "--chip-bg": "var(--bs-primary)",
+                                "--chip-color": "var(--text-primary-inverted)",
+                                "--chip-icon-color": "var(--text-primary-inverted)",
+                                "--chip-hover": "var(--bs-primary-text-emphasis)"
+                            }
+                        }
                     },
                 },
             },
