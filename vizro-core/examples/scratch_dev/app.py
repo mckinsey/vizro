@@ -119,9 +119,9 @@ def _sample_components_card():
                     ),
                     dmc.Flex(
                         [
-                            dmc.ActionIcon("✎", variant="filled", size="lg"),
-                            dmc.ActionIcon("✎", variant="outline", size="md"),
-                            dmc.ActionIcon("✎", variant="subtle", size="sm"),
+                            dmc.ActionIcon("✎", variant="filled"),
+                            dmc.ActionIcon("✎", variant="outline"),
+                            dmc.ActionIcon("✎", variant="subtle"),
                         ],
                         gap="sm",
                     ),
@@ -182,8 +182,6 @@ def _navigation_card():
                     dmc.Timeline(
                         id="dmc-showcase-timeline",
                         active=1,
-                        bulletSize=15,
-                        lineWidth=2,
                         children=[
                             dmc.TimelineItem(
                                 title="Step one",
@@ -304,16 +302,9 @@ def _progress_containers_card():
                     _section_label("SemiCircleProgress"),
                     dmc.Group(
                         [
-                            dmc.SemiCircleProgress(
-                                value=40,
-                                size=100,
-                                thickness=10,
-                                label="40%",
-                            ),
+                            dmc.SemiCircleProgress(value=40, label="40%"),
                             dmc.SemiCircleProgress(
                                 value=70,
-                                size=100,
-                                thickness=10,
                                 label="70%",
                                 labelPosition="center",
                             ),
@@ -567,15 +558,9 @@ def _form_card():
 
 vm.Page.add_type("components", DmcShowcase)
 
-dmc_page = vm.Page(
-    title="DMC Showcase",
-    components=[DmcShowcase()],
-)
-
 dashboard = vm.Dashboard(
     title="DMC in Vizro",
-    theme="vizro_light",
-    pages=[dmc_page],
+    pages=[vm.Page(title="DMC Showcase", components=[DmcShowcase()])],
 )
 
 if __name__ == "__main__":
