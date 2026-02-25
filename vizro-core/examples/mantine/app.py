@@ -11,7 +11,7 @@ from vizro.models._models_utils import _log_call
 
 # Shared layout constants
 GAP = "20px"
-CARD_TITLE_SIZE = "md"
+CARD_TITLE_SIZE = "lg"
 SECTION_LABEL_SIZE = "sm"
 
 
@@ -62,7 +62,8 @@ def _card_wrapper(title: str, children, style=None):
         card_style = {**card_style, **style}
     return dmc.Card(
         [
-            dmc.Text(title, fw=600, size=CARD_TITLE_SIZE, c="dimmed", mb="sm"),
+            dmc.Text(title, fw=600, size=CARD_TITLE_SIZE),
+            dmc.Space(h="sm"),
             dmc.Stack(children, style={"gap": GAP}),
         ],
         withBorder=True,
@@ -101,10 +102,21 @@ def _sample_components_card():
                     ),
                     dmc.Flex(
                         [
-                            dmc.Badge("Default", color="gray"),
-                            dmc.Badge("Primary", color="blue"),
-                            dmc.Badge("Success", color="green"),
-                            dmc.Badge("Warning", color="yellow"),
+                            dmc.Badge("Default"),
+                            dmc.Badge("Gray", color="gray"),
+                            dmc.Badge("Blue", color="blue"),
+                            dmc.Badge("Cyan", color="cyan"),
+                            dmc.Badge("Green", color="green"),
+                            dmc.Badge("Yellow", color="yellow"),
+                            dmc.Badge("Red", color="red"),
+                            dmc.Badge("Orange", color="orange"),
+                            dmc.Badge("Purple", color="purple"),
+                            dmc.Badge("Pink", color="pink"),
+                            dmc.Badge("Brown", color="brown"),
+                            dmc.Badge("Gray", color="gray"),
+                            dmc.Badge("White", color="white"),
+                            dmc.Badge("Black", color="black"),
+
                         ],
                         gap="sm",
                         wrap="wrap",
