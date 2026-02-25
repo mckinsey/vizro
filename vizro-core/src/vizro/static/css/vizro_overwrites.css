@@ -38,7 +38,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 [data-bs-theme="light"] {
   --bs-body-bg: #ffffff;
-  --bs-tertiary-bg: #F5F6F6;
+  --bs-tertiary-bg: #f5f6f6;
   --bs-primary-bg-subtle: #f5f6f6;
   --bs-highlight-bg: #14172114;
   --bs-focus-ring-color: #00a9f4;
@@ -54,11 +54,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 /* Override Mantine's default CSS variables with Bootstrap's here */
-:root[data-bs-theme="dark"], :root[data-bs-theme="light"] {
+:root[data-bs-theme="dark"],
+:root[data-bs-theme="light"] {
   --mantine-color-body: var(--bs-body-bg);
   --mantine-color-text: var(--bs-body-color);
 }
-
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
@@ -69,11 +69,12 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 .nav-link {
-   color: var(--bs-body-color) !important;
+  color: var(--bs-body-color) !important;
 }
 
-.nav-link:active, .nav-link.active {
-    color: var(--bs-primary) !important;
+.nav-link:active,
+.nav-link.active {
+  color: var(--bs-primary) !important;
 }
 
 /* CARDS */
@@ -95,7 +96,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* FORM ELEMENTS */
 .form-check {
-    height: 16px;
+  height: 16px;
 }
 
 .form-check:last-of-type {
@@ -128,8 +129,8 @@ div.form-check.form-switch {
   gap: 8px;
 }
 
-
-.card-nav:hover, .card-nav.hover {
+.card-nav:hover,
+.card-nav.hover {
   background: var(--bs-secondary-bg);
   border: 1px solid var(--bs-border-color);
 }
@@ -145,30 +146,35 @@ div.form-check.form-switch {
   width: 100%;
 }
 
-
 legend {
   font-size: inherit;
 }
-
 
 /* NEW QBDS - take over to bootstrap */
 .form-control {
   box-shadow: none;
 }
 
-.form-control:focus, .form-control.focus, .input-group-text:focus, .input-group-text.focus {
+.form-control:focus,
+.form-control.focus,
+.input-group-text:focus,
+.input-group-text.focus {
   background-color: var(--bs-body-bg);
 }
 
-.form-control:hover:not(:focus), .form-control.hover:not(:focus), .input-group-text:hover:not(:focus), .input-group-text.hover:not(:focus) {
+.form-control:hover:not(:focus),
+.form-control.hover:not(:focus),
+.input-group-text:hover:not(:focus),
+.input-group-text.hover:not(:focus) {
   background-color: var(--bs-highlight-bg);
 }
 
-
-.accordion-item .nav-link:active, .accordion-item .nav-link.active {
-    background: var(--bs-highlight-bg) !important;
+.accordion-item .nav-link:active,
+.accordion-item .nav-link.active {
+  background: var(--bs-highlight-bg) !important;
 }
 
-.accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
-    background: var(--bs-highlight-bg) !important;
+.accordion-item .nav-link:hover,
+.accordion-item .nav-link.hover {
+  background: var(--bs-highlight-bg) !important;
 }
