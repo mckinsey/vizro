@@ -242,6 +242,14 @@ class Dashboard(VizroBaseModel):
                             }
                         }
                     },
+                    "Alert": {
+                        "styles": {
+                            "root": {
+                                "backgroundColor": "var(--bs-primary-bg-subtle)",
+                                "borderLeft": "4px solid var(--alert-color)",
+                            }
+                        }
+                    },
                 },
             },
         )
