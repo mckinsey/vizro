@@ -2,9 +2,9 @@
 
 from typing import Literal
 
-from dash import html
 import dash_mantine_components as dmc
 import vizro.models as vm
+from dash import html
 from vizro import Vizro
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -116,7 +116,6 @@ def _sample_components_card():
                             dmc.Badge("Gray", color="gray"),
                             dmc.Badge("White", color="white"),
                             dmc.Badge("Black", color="black"),
-
                         ],
                         gap="sm",
                         wrap="wrap",
@@ -380,15 +379,16 @@ def _pickers_card():
                 [
                     dmc.Card(
                         children=[
-                            dmc.Text("Card title", fw=500, size="lg"),
+                            dmc.Title("Card title", order=3),
                             dmc.Text(
-                                "Card description. Uses theme background and border.",
-                                c="dimmed",
-                                size="sm",
+                                """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+                                reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                                """
                             ),
                         ],
-                        withBorder=True,
-                        padding="md",
                     ),
                     dmc.Divider(variant="solid"),
                     dmc.DatePickerInput(
@@ -417,7 +417,6 @@ def _typography_card():
                     dmc.Title("Title order 1", order=1),
                     dmc.Title("Title order 2", order=2),
                     dmc.Title("Title order 3", order=3),
-                    _section_label("Text"),
                     html.Div(
                         [
                             dmc.Text("Extra small text", size="xs"),
@@ -434,7 +433,6 @@ def _typography_card():
                         ],
                         style={"display": "flex", "flexDirection": "column", "gap": "4px"},
                     ),
-                    _section_label("Highlight"),
                     dmc.Highlight(
                         "Highlight this, definitely this and also this!",
                         highlight="this",
@@ -538,7 +536,7 @@ def _form_card():
                         ],
                     ),
                     dmc.Divider(variant="solid"),
-                     _section_label("Mixed"),
+                    _section_label("Mixed"),
                     dmc.Slider(id="dmc-showcase-slider", value=50, min=0, max=100, labelAlwaysOn=True),
                     dmc.RangeSlider(id="dmc-showcase-range", value=[25, 75], min=0, max=100),
                     dmc.SegmentedControl(

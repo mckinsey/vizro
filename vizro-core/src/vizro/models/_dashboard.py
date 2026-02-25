@@ -208,6 +208,14 @@ class Dashboard(VizroBaseModel):
                 "primaryColor": "gray",
                 "defaultRadius": 0,
                 "font-family": "var(--bs-body-font-family)",
+                "headings": {
+                    "sizes": {
+                        "h1": {"fontSize": "2rem"},
+                        "h2": {"fontSize": "1.5rem"},
+                        "h3": {"fontSize": "1.25rem"},
+                        "h4": {"fontSize": "1rem"},
+                    }
+                },
                 "components": {
                     "Card": {
                         "styles": {
@@ -261,6 +269,25 @@ class Dashboard(VizroBaseModel):
                                 "backgroundColor": "var(--bs-primary-bg-subtle)",
                                 "borderLeft": "4px solid var(--bs-secondary)",
                             }
+                        }
+                    },
+                    "Accordion": {
+                        "styles": {
+                            "item": {
+                                "--item-filled-color": "var(--bs-primary-bg-subtle)",
+                                "--item-border-color": "var(--bs-border-color)",
+                            }
+                        }
+                    },
+                    "Tabs": {
+                        "styles": {
+                            "root": {"--tab-hover-color": "var(--bs-highlight-bg)", "--tabs-color": "var(--bs-primary)"}
+                        }
+                    },
+                    "Timeline": {
+                        "defaultProps": {
+                            "lineWidth": 2,
+                            "bulletSize": 16,
                         }
                     },
                 },

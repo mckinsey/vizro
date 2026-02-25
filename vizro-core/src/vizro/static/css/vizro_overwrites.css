@@ -24,6 +24,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 
   /* Mantine colors: QB-DS Value.tokens.json (Figma). */
+
   /* Slate (dark) */
   --mantine-color-dark-0: #373A44;
   --mantine-color-dark-1: #333640;
@@ -35,6 +36,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-dark-7: #1B1E2A;
   --mantine-color-dark-8: #181B26;
   --mantine-color-dark-9: #141721;
+
   /* Stone (gray) */
   --mantine-color-gray-0: #FAFAF9;
   --mantine-color-gray-1: #F5F5F4;
@@ -46,6 +48,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-gray-7: #44403C;
   --mantine-color-gray-8: #292524;
   --mantine-color-gray-9: #1C1917;
+
   /* red */
   --mantine-color-red-0: #FEF2F2;
   --mantine-color-red-1: #FEE2E2;
@@ -57,6 +60,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-red-7: #B91C1C;
   --mantine-color-red-8: #991B1B;
   --mantine-color-red-9: #7F1D1D;
+
   /* pink */
   --mantine-color-pink-0: #FDF2F8;
   --mantine-color-pink-1: #FCE7F3;
@@ -68,6 +72,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-pink-7: #BE185D;
   --mantine-color-pink-8: #9D174D;
   --mantine-color-pink-9: #831843;
+
   /* Fuchsia (grape) */
   --mantine-color-grape-0: #FDF4FF;
   --mantine-color-grape-1: #FAE8FF;
@@ -79,6 +84,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-grape-7: #A21CAF;
   --mantine-color-grape-8: #86198F;
   --mantine-color-grape-9: #701A75;
+
   /* violet */
   --mantine-color-violet-0: #F5F3FF;
   --mantine-color-violet-1: #EDE9FE;
@@ -90,6 +96,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-violet-7: #6D28D9;
   --mantine-color-violet-8: #5B21B6;
   --mantine-color-violet-9: #4C1D95;
+
   /* indigo */
   --mantine-color-indigo-0: #EEF2FF;
   --mantine-color-indigo-1: #E0E7FF;
@@ -101,6 +108,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-indigo-7: #4338CA;
   --mantine-color-indigo-8: #3730A3;
   --mantine-color-indigo-9: #312E81;
+
   /* blue */
   --mantine-color-blue-0: #EFF6FF;
   --mantine-color-blue-1: #DBEAFE;
@@ -112,6 +120,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-blue-7: #1D4ED8;
   --mantine-color-blue-8: #1E40AF;
   --mantine-color-blue-9: #1E3A8A;
+
   /* cyan */
   --mantine-color-cyan-0: #ECFEFF;
   --mantine-color-cyan-1: #CFFAFE;
@@ -123,6 +132,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-cyan-7: #0E7490;
   --mantine-color-cyan-8: #155E75;
   --mantine-color-cyan-9: #164E63;
+
   /* teal */
   --mantine-color-teal-0: #F0FDFA;
   --mantine-color-teal-1: #CCFBF1;
@@ -134,6 +144,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-teal-7: #0F766E;
   --mantine-color-teal-8: #115E59;
   --mantine-color-teal-9: #134E4A;
+
   /* green */
   --mantine-color-green-0: #F0FDF4;
   --mantine-color-green-1: #DCFCE7;
@@ -145,6 +156,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-green-7: #15803D;
   --mantine-color-green-8: #166534;
   --mantine-color-green-9: #14532D;
+
   /* lime */
   --mantine-color-lime-0: #F7FEE7;
   --mantine-color-lime-1: #ECFCCB;
@@ -156,6 +168,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-lime-7: #4D7C0F;
   --mantine-color-lime-8: #3F6212;
   --mantine-color-lime-9: #365314;
+
   /* yellow */
   --mantine-color-yellow-0: #FEFCE8;
   --mantine-color-yellow-1: #FEF9C3;
@@ -167,6 +180,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-yellow-7: #A16207;
   --mantine-color-yellow-8: #854D0E;
   --mantine-color-yellow-9: #713F12;
+
   /* amber (orange) */
   --mantine-color-orange-0: #FFFBEB;
   --mantine-color-orange-1: #FEF3C7;
@@ -302,46 +316,6 @@ legend {
   font-size: inherit;
 }
 
-
-:root[data-mantine-color-scheme='dark'], :root[data-mantine-color-scheme='light'] {
- --mantine-color-body: var(--bs-body-color);
- --mantine-color-dimmed: var(--bs-body-color);
- --mantine-color-text: var(--bs-body-color);
- --mantine-color-placeholder: var(--bs-tertiary-color);
- --mantine-primary-color-filled: var(--bs-primary);
-}
-
-/* Component specific overwrites that can't be done globally as they otherwise affect variants. */
-.mantine-Button-root[data-variant="filled"], 
-.mantine-Button-root[data-variant="default"], 
-.mantine-ActionIcon-root[data-variant="default"],
-.mantine-ActionIcon-root[data-variant="filled"] {
-  background-color: var(--bs-primary) !important;
-  color: var(--text-primary-inverted) !important;
-}
-
-.mantine-Badge-root[style*="--badge-bg: white"] .mantine-Badge-label, .mantine-Badge-root:not([style]) .mantine-Badge-label {
-  color: var(--text-primary-inverted);
-}
-
-/* Blockquote (Mantine + markdown blockquote) */
-blockquote,
-.mantine-Blockquote-root {
-  background-color: var(--bs-primary-bg-subtle);
-  border-left: 4px solid var(--bs-secondary);
-}
-
-/* Input fields */
-[data-mantine-color-scheme='dark'] .m_6c018570[data-variant='default'],
-[data-mantine-color-scheme='light'] .m_6c018570[data-variant='default'] {
-  --input-bd: var(--bs-primary-bg-subtle);
-  --input-bg: var(--bs-primary-bg-subtle);
-  --input-bd-focus: var(--bs-focus-ring-color);
-
-  box-shadow: var(--bs-box-shadow-sm);
-  color: var(--bs-primary);
-}
-
 /* NEW QBDS - take over to bootstrap */
 .form-control {
   box-shadow: none;
@@ -363,3 +337,60 @@ blockquote,
 .accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
     background: var(--bs-highlight-bg) !important;
 }
+
+
+:root[data-mantine-color-scheme='dark'], :root[data-mantine-color-scheme='light'] {
+ --mantine-color-body: var(--bs-body-color);
+ --mantine-color-dimmed: var(--bs-body-color);
+ --mantine-color-text: var(--bs-body-color);
+ --mantine-color-placeholder: var(--bs-tertiary-color);
+ --mantine-primary-color-filled: var(--bs-primary);
+ --mantine-primary-color-light: var(--bs-highlight-bg);
+ --mantine-primary-color-light-hover: var(--bs-highlight-bg);
+}
+
+/* Component specific overwrites that can't be done globally as they otherwise affect variants. */
+.mantine-Button-root[data-variant="filled"],
+.mantine-Button-root[data-variant="default"],
+.mantine-ActionIcon-root[data-variant="default"],
+.mantine-ActionIcon-root[data-variant="filled"] {
+  background-color: var(--bs-primary) !important;
+  color: var(--text-primary-inverted) !important;
+}
+
+.mantine-Badge-root[style*="--badge-bg: white"] {
+  color: black;
+}
+
+.mantine-Badge-root:not([style]) .mantine-Badge-label {
+  color: var(--text-primary-inverted);
+}
+
+.mantine-Pagination-control[data-active="true"] {
+  color: var(--text-primary-inverted) !important;
+}
+
+.mantine-Stepper-stepCompletedIcon svg {
+  color: var(--bs-primary) !important;
+  width: 40% !important;
+}
+
+mantine-Blockquote-root {
+  background-color: var(--bs-primary-bg-subtle);
+  border-left: 4px solid var(--bs-secondary);
+}
+
+.mantine-Timeline-itemBullet[data-active],
+.mantine-Timeline-root [data-active] {
+  background-color: var(--bs-body-bg) !important;
+}
+
+.mantine-Input-input {
+  --input-bd: var(--bs-primary-bg-subtle);
+  --input-bg: var(--bs-primary-bg-subtle);
+  --input-bd-focus: var(--bs-focus-ring-color);
+
+  box-shadow: var(--bs-box-shadow-sm);
+  color: var(--bs-primary);
+}
+
