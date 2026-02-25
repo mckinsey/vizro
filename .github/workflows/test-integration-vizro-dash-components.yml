@@ -23,7 +23,7 @@ env:
   PYTHON_VERSION: "3.13"
 
 jobs:
-  test-unit-vizro-dash-components:
+  test-integration-vizro-dash-components:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
