@@ -400,7 +400,6 @@ legend {
   --input-bd-focus: var(--bs-focus-ring-color);
 
   box-shadow: var(--bs-box-shadow-sm);
-  color: var(--bs-primary);
 }
 
 .mantine-Input-input .mantine-Pill-root[data-variant="default"] {
