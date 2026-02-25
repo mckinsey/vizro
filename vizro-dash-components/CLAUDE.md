@@ -24,7 +24,8 @@ Vizro Dash Components are used by the Vizro framework but can be used in a pure 
 ### Hatch commands (require Python)
 
 - `hatch run generate-components` - Full build: compile JS/CSS via webpack + generate Python component classes via `dash-generate-components`
-- `hatch run lint` - Run all linters (Biome for JS/TS + pre-commit for everything else)
+- `hatch run lint` - Run all linters via pre-commit (includes Biome for JS/TS)
+- `hatch run test` - Run integration tests (requires Chrome; uses `dash_duo` for browser-based testing)
 - `hatch run example` - Run the usage.py example app on port 8050
 - `hatch run changelog:add` - Create a changelog fragment (required for PRs)
 
@@ -38,7 +39,7 @@ Vizro Dash Components are used by the Vizro framework but can be used in a pure 
 - `vizro_dash_components/` - Auto-generated Python package (built artifacts, do not edit manually)
 - `usage.py` - Standalone Dash example app for testing components outside Vizro (requires `dmc.MantineProvider` wrapper)
 - `pyproject.toml` - Python package configuration (version sourced from `package.json` via `hatch-nodejs-version`)
-- `package.json` - npm package configuration with build scripts (version must be semver-compatible, e.g. `0.1.0` or `0.1.0-dev.0`)
+- `package.json` - npm package configuration with build scripts (version must be semver-compatible, e.g. `0.1.0` or `0.1.0-dev0`)
 - `hatch.toml` - Hatch environment and script configuration
 - `webpack.config.js` - Webpack config with async chunk splitting for lazy-loaded modules (Markdown, MathJax)
 
