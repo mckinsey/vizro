@@ -1,26 +1,18 @@
 {
   // Prepare environment to run examples.
-  "postCreateCommand": "cd vizro-core && hatch env create examples",
-  // To avoid creating default environment and then examples environment we use the
-  // full `hr examples:example` rather than just `hr example` shortcut.
-  "postAttachCommand": "cd vizro-core && hr examples:example",
   "customizations": {
     "vscode": {
       "extensions": ["ms-python.python"]
     }
   },
+  // Suppress the "Install Python" popup from the Python extension since Python installation
+  // is handled by hatch when user first runs hatch command.
+  "settings": {
+    "python.disableInstallationCheck": true,
+    "terminal.integrated.cwd": "${workspaceFolder}/vizro-core"
+  },
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "portsAttributes": {
-    "8050": {
-      "label": "scratch_dev example"
-    }
-  }
-  // It would be nice if the Python interpreter were automatically set in codespaces.
-  // In theory this should work automatically but it doesn't seem to - maybe an issue with codespaces?
-  // https://code.visualstudio.com/updates/v1_88#_hatch-environment-discovery
-  // https://github.com/pypa/hatch/issues/600
-  // Doing it programmatically is also possible but not very simple:
-  // https://github.com/microsoft/vscode-python/issues/21783
+
 }

@@ -25,7 +25,7 @@ There is no need to manually create a fork of the Vizro code if you use GitHub C
 
 To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow the below steps:
 
-1. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. It should take 1-2 minutes to fully launch and automatically start an example dashboard on port 8050. In the rare event that the codespace fails to start correctly and enters recovery mode, you should [rebuild the container](https://docs.github.com/en/codespaces/developing-in-a-codespace/rebuilding-the-container-in-a-codespace#rebuilding-a-container) or start a whole new codespace.
+1. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. It should take less than a minute to launch. In the rare event that the codespace fails to start correctly and enters recovery mode, you should [rebuild the container](https://docs.github.com/en/codespaces/developing-in-a-codespace/rebuilding-the-container-in-a-codespace#rebuilding-a-container) or start a whole new codespace.
 1. Make changes to Vizro code in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
 1. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
 1. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
@@ -45,7 +45,7 @@ Regardless of whether you are developing locally or in a codespace, everything y
 The Hatch commands you need most commonly are as follows. These must be executed with `vizro-core` as your current working directory:
 
 - [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpreter.
-- [`hatch run example`](#hatch-run-example) runs an example dashboard on port 8050 that hot-reloads while you edit it. On GitHub Codespaces, this runs automatically on startup.
+- [`hatch run example`](#hatch-run-example) runs an example dashboard on port 8050 that hot-reloads while you edit it.
 - [`hatch run lint`](#hatch-run-lint) checks and fixes code quality and formatting. This is included in CI checks.
 - [`hatch run changelog:add`](#hatch-run-changelogadd) generates a new changelog fragment. Changelog inclusion is checked by CI and required for all changes to source code.
 - [`hatch run test-unit`](#hatch-run-test-unit) runs the test suite. This is included in CI checks.
@@ -75,9 +75,9 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 ### `hatch run example`
 
-`hatch run example` runs an example dashboard on port 8050 that hot-reloads while you edit it. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labeled as `scratch_dev example`. On your local machine, you can access the dashboard by pointing your browser to [http://127.0.0.1:8050](http://127.0.0.1:8050).
+`hatch run example` runs an example dashboard on port 8050 that hot-reloads while you edit it. You can access the dashboard by pointing your browser to [http://127.0.0.1:8050](http://127.0.0.1:8050).
 
-By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. Since it is opened automatically in GitHub Codespaces, it's the perfect place to show, or test out, a new feature you're developing. PR reviewers can then immediately see exactly what your changes do by opening a codespace on your branch.
+By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. It's the perfect place to show, or test out, a new feature you're developing.
 
 You can run any example in `vizro-core/examples` or its subdirectories by running `hatch run example <example_path>`, where `<example_path>` is the path to the directory containing the `app.py` file relative to `vizro-core/examples`. For example, `hatch run example dev` runs a dashboard located at `vizro-core/examples/dev/app.py`. This dashboard demonstrates a full set of Vizro features and is also [hosted on Hugging Face](https://huggingface.co/spaces/vizro/demo-features).
 
