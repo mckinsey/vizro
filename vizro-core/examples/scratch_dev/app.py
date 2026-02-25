@@ -2,23 +2,11 @@
 
 from typing import Literal
 
-from dash import html
 import dash_mantine_components as dmc
 import vizro.models as vm
 from vizro import Vizro
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-
-# Shared layout constants
-GAP = "20px"
-CARD_TITLE_SIZE = "md"
-SECTION_LABEL_SIZE = "sm"
-
-
-def _section_label(text: str):
-    """Section heading inside a card (e.g. 'Anchor', 'Breadcrumbs')."""
-    return dmc.Text(text, size=SECTION_LABEL_SIZE, fw=600, c="dimmed", mb="xs")
-
 
 class Timeline(VizroBaseModel):
     """Based on dmc.Timeline component."""
