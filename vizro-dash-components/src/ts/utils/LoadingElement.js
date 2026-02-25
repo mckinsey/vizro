@@ -9,7 +9,9 @@ import React from "react";
  */
 // eslint-disable-next-line react/prop-types
 function LoadingElement({ elementType = "div", ...props }, ref) {
+  // biome-ignore lint/correctness/useHookAtTopLevel: this is a forwardRef component, hooks are valid here
   const ctx = window.dash_component_api.useDashContext();
+  // biome-ignore lint/correctness/useHookAtTopLevel: this is a forwardRef component, hooks are valid here
   const loading = ctx.useLoading();
 
   const givenProps = {

@@ -1,4 +1,5 @@
 import { mergeDeepRight, pick, type } from "ramda";
+// biome-ignore lint/correctness/noUnusedImports: React must be in scope for classic JSX transform ("jsx": "react" in tsconfig)
 import React, { Component, Suspense } from "react";
 import JsxParser from "react-jsx-parser";
 import Markdown from "react-markdown";

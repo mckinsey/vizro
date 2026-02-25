@@ -1,5 +1,6 @@
 import { asyncDecorator } from "@plotly/dash-component-plugins";
 import PropTypes from "prop-types";
+// biome-ignore lint/correctness/noUnusedImports: React must be in scope for classic JSX transform ("jsx": "react" in tsconfig)
 import React, { Component, Suspense } from "react";
 import markdown from "../utils/LazyLoader/markdown";
 import lazyLoadMathJax from "../utils/LazyLoader/mathjax";
