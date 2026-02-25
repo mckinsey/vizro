@@ -123,19 +123,28 @@ def _sample_components_card():
                     ),
                     dmc.Flex(
                         [
+                            dmc.Button("Default", variant="default"),
                             dmc.Button("Filled", variant="filled"),
                             dmc.Button("Outline", variant="outline"),
                             dmc.Button("Light", variant="light"),
+                            dmc.Button("Gradient", variant="gradient"),
                             dmc.Button("Subtle", variant="subtle"),
+                            dmc.Button("Transparent", variant="transparent"),
+                            dmc.Button("White", variant="white"),
                         ],
                         gap="sm",
                         wrap="wrap",
                     ),
                     dmc.Flex(
                         [
+                            dmc.ActionIcon("✎", variant="default"),
                             dmc.ActionIcon("✎", variant="filled"),
                             dmc.ActionIcon("✎", variant="outline"),
+                            dmc.ActionIcon("✎", variant="light"),
+                            dmc.ActionIcon("✎", variant="gradient"),
                             dmc.ActionIcon("✎", variant="subtle"),
+                            dmc.ActionIcon("✎", variant="transparent"),
+                            dmc.ActionIcon("✎", variant="white"),
                         ],
                         gap="sm",
                     ),
@@ -405,7 +414,6 @@ def _typography_card():
         [
             dmc.Stack(
                 [
-                    _section_label("Title"),
                     dmc.Title("Title order 1", order=1),
                     dmc.Title("Title order 2", order=2),
                     dmc.Title("Title order 3", order=3),
@@ -423,10 +431,6 @@ def _typography_card():
                             dmc.Text("Red text", c="red"),
                             dmc.Text("Blue text", c="blue"),
                             dmc.Text("Gray text", c="gray"),
-                            dmc.Text("Uppercase", tt="uppercase"),
-                            dmc.Text("capitalized text", tt="capitalize"),
-                            dmc.Text("Aligned to center", ta="center"),
-                            dmc.Text("Aligned to right", ta="right"),
                         ],
                         style={"display": "flex", "flexDirection": "column", "gap": "4px"},
                     ),

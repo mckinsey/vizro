@@ -250,6 +250,19 @@ class Dashboard(VizroBaseModel):
                             }
                         }
                     },
+                    "Highlight": {
+                        "defaultProps": {
+                            "color": "cyan",
+                        }
+                    },
+                    "Blockquote": {
+                        "styles": {
+                            "root": {
+                                "backgroundColor": "var(--bs-primary-bg-subtle)",
+                                "borderLeft": "4px solid var(--bs-secondary)",
+                            }
+                        }
+                    },
                 },
             },
         )
