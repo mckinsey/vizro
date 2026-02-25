@@ -247,7 +247,7 @@ legend {
 }
 
 /* Button - variant specific */
-button[data-variant="filled"], button[data-variant="filled"] {
+button[data-variant="filled"] {
   background-color: var(--bs-primary) !important;
   color: var(--text-primary-inverted) !important;
 }

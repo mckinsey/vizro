@@ -8,6 +8,7 @@ from vizro import Vizro
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
+
 class Timeline(VizroBaseModel):
     """Based on dmc.Timeline component."""
 
