@@ -38,7 +38,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
-        run: pip install hatch
+        run: pip install hatch 'virtualenv!=21.0.0'
 
       - name: Show dependency tree
         run: hatch run pip tree
