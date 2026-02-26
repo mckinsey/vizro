@@ -10,7 +10,7 @@ build:
   tools:
     python: "3.13"
   commands:
-    - pip install hatch
+    - pip install hatch 'virtualenv!=21.0.0'
     - cd vizro-core/ && hatch run docs:pip tree
     - cd vizro-core/ && hatch run docs:build
     - cd vizro-core/ && hatch run docs:logo-check
