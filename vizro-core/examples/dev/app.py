@@ -1243,6 +1243,15 @@ dashboard = vm.Dashboard(
                         ],
                     },
                     icon="Library Add",
+                    accordion=vm.Accordion(
+                        icons={
+                            "Components": "widgets",
+                            "Controls": "tune",
+                            "Layout": "dashboard",
+                            "Actions": "bolt",
+                            "Extensions": "extension",
+                        }
+                    ),
                 ),
             ]
         )

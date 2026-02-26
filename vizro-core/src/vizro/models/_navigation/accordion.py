@@ -2,15 +2,28 @@ import itertools
 from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
-from dash import get_relative_path
-from pydantic import AfterValidator, BeforeValidator, Field
+from dash import get_relative_path, html
+from pydantic import AfterValidator, BeforeValidator, Field, model_validator
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, validate_icon
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models.types import ModelID
+
+
+def _validate_icons(icons: dict[str, str]) -> dict[str, str]:
+    """Validate and normalize each icon name in the mapping."""
+    result = {}
+    for k, v in icons.items():
+        normalized = validate_icon(v)
+        if not normalized:
+            raise ValueError(
+                f"Accordion 'icons' values must be non-empty Material icon names. Got empty value for group '{k}'."
+            )
+        result[k] = normalized
+    return result
 
 
 def coerce_pages_type(pages: Any) -> dict[Any, Any]:
@@ -20,7 +33,8 @@ def coerce_pages_type(pages: Any) -> dict[Any, Any]:
 
 
 class Accordion(VizroBaseModel):
-    """Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation].
+    """Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation]
+    or as the nested accordion in a [`NavLink`][vizro.models.NavLink] (when pages is a dict).
 
     Abstract: Usage documentation
         [How to use an accordion](../user-guides/navigation.md/#group-pages)
@@ -37,10 +51,33 @@ class Accordion(VizroBaseModel):
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
+    icons: Annotated[
+        dict[str, str],
+        AfterValidator(_validate_icons),
+        Field(
+            default_factory=dict,
+            description="Optional mapping from group name to Material icon name. Renders icon + title on each header.",
+        ),
+    ]
+
+    @model_validator(mode="after")
+    def _icons_keys_must_be_page_groups(self):
+        """Ensure every icons key is a valid page group (key in pages). Skipped when pages is empty (e.g. NavLink)."""
+        if not self.pages or not self.icons:
+            return self
+        page_groups = set(self.pages)
+        invalid = set(self.icons) - page_groups
+        if invalid:
+            raise ValueError(
+                f"Accordion 'icons' keys must be page group names. Unknown group(s): {sorted(invalid)}. "
+                f"Valid groups: {sorted(page_groups)}."
+            )
+        return self
 
     @_log_call
     def build(self, *, active_page_id=None):
-        # Note build does not return _NavBuildType but just a single html.Div with id="nav-panel".
+        # Build contract: return a single component with id="nav-panel" (Navigation wraps with nav-bar placeholder).
+        # UI is implemented with dbc; the Accordion model API (pages, icons) is stable for a future dmc swap.
         # Hide navigation panel if there is only one page
         if len(list(itertools.chain(*self.pages.values()))) == 1:
             return dbc.Nav(id="nav-panel", className="d-none invisible")
@@ -48,10 +85,16 @@ class Accordion(VizroBaseModel):
         accordion_items = []
         for page_group, page_members in self.pages.items():
             nav_links = self._create_nav_links(pages=page_members)
+            icon_name = self.icons.get(page_group)
+            title_content: str | list = (
+                [html.Span(icon_name, className="material-symbols-outlined accordion-item-icon"), " ", page_group]
+                if icon_name
+                else page_group
+            )
             accordion_items.append(
                 dbc.AccordionItem(
                     children=nav_links,
-                    title=page_group,
+                    title=title_content,
                     class_name="accordion-item-header",
                     item_id=page_group,
                 )

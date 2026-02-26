@@ -309,6 +309,14 @@ div.form-check.form-switch {
   width: 100%;
 }
 
+.accordion-item-header .accordion-button {
+  gap: 0.25rem;
+}
+
+.accordion-item-header .accordion-item-icon {
+  font-size: 1rem;
+}
+
 legend {
   font-size: inherit;
 }

@@ -28,15 +28,29 @@ class NavLink(VizroBaseModel):
     icon: Annotated[
         str,
         AfterValidator(validate_icon),
-        Field(default="", description="Icon name from Google Material icons library."),
+        Field(default="", description="Icon name from Google Material icons library (nav bar item)."),
     ]
+    accordion: Accordion | None = Field(
+        default=None,
+        description="When pages is a dict (grouped), optional Accordion to customize the nested accordion (e.g. icons). Pages are taken from this NavLink.",
+    )
     _nav_selector: Accordion = PrivateAttr()
 
     @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        self._nav_selector = self.accordion if self.accordion is not None else Accordion()
+        self._nav_selector.pages = self.pages  # type: ignore[assignment]
+        # Validate accordion icons against page groups after sync (Accordion validator skips when pages was empty)
+        if self._nav_selector.pages and self._nav_selector.icons:
+            page_groups = set(self._nav_selector.pages)
+            invalid = set(self._nav_selector.icons) - page_groups
+            if invalid:
+                raise ValueError(
+                    f"Accordion 'icons' keys must be page group names. Unknown group(s): {sorted(invalid)}. "
+                    f"Valid groups: {sorted(page_groups)}."
+                )
 
     @_log_call
     def build(self, *, active_page_id=None):
