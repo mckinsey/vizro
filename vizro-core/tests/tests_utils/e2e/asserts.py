@@ -128,13 +128,8 @@ def param_to_url(decoded_map, apply_on_keys):
 
 def wait_until_equal(get_actual, expected, timeout=5, interval=0.1):
     """Waits until get_actual() == expected or timeout is reached. Raises AssertionError if not equal after timeout."""
-    start = time.time()
-    while time.time() - start < timeout:
-        actual = get_actual()
-        if actual == expected:
-            assert_that(actual, equal_to(expected))
-            return
+    end = time.time() + timeout
+    while time.time() < end and get_actual() != expected:
         time.sleep(interval)
     # Final check and assertion
-    actual = get_actual()
-    assert_that(actual, equal_to(expected))
+    assert_that(get_actual(), equal_to(expected))
