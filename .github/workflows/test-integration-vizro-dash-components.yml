@@ -44,7 +44,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Install Hatch
-        run: pip install hatch
+        run: pip install hatch 'virtualenv!=21.0.0'
 
       - name: Generate Python components from TypeScript source
         # Generated Python code and JS bundles are gitignored, so we must rebuild before testing.
