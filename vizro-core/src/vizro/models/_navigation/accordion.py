@@ -33,7 +33,7 @@ def coerce_pages_type(pages: Any) -> dict[Any, Any]:
 
 
 class Accordion(VizroBaseModel):
-    """Accordion as nav_selector in Navigation or nested in NavLink (when pages is a dict).
+    """Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation] or nested in [`NavLink`][vizro.models.NavLink].
 
     Abstract: Usage documentation
         [How to use an accordion](../user-guides/navigation.md/#group-pages)
@@ -83,7 +83,7 @@ class Accordion(VizroBaseModel):
             nav_links = self._create_nav_links(pages=page_members)
             icon_name = self.icons.get(page_group)
             title_content: str | list[Any] = (
-                [html.Span(icon_name, className="material-symbols-outlined accordion-item-icon"), " ", page_group]
+                [html.Span(icon_name, className="material-symbols-outlined accordion-item-icon"), page_group]
                 if icon_name
                 else page_group
             )

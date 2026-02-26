@@ -2,7 +2,7 @@
   "$defs": {
     "Accordion": {
       "additionalProperties": false,
-      "description": "Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation].\n\nAbstract: Usage documentation\n    [How to use an accordion](../user-guides/navigation.md/#group-pages)",
+      "description": "Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation] or nested in [`NavLink`][vizro.models.NavLink].\n\nAbstract: Usage documentation\n    [How to use an accordion](../user-guides/navigation.md/#group-pages)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -25,6 +25,14 @@
           "default": {},
           "description": "Mapping from name of a pages group to a list of page IDs/titles.",
           "title": "Pages",
+          "type": "object"
+        },
+        "icons": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional mapping from group name to Material icon name. Renders icon + title on each header.",
+          "title": "Icons",
           "type": "object"
         }
       },
@@ -1358,9 +1366,21 @@
         },
         "icon": {
           "default": "",
-          "description": "Icon name from Google Material icons library.",
+          "description": "Icon name from Google Material icons library (nav bar item).",
           "title": "Icon",
           "type": "string"
+        },
+        "accordion": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Accordion"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When pages is a dict (grouped), optional Accordion to customize nested accordion (e.g. icons)."
         }
       },
       "required": ["label"],
