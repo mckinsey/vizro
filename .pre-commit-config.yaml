@@ -10,8 +10,6 @@ repos:
       - id: check-case-conflict
       - id: check-yaml
         args: ["--unsafe"]
-      - id: check-json
-        exclude: "devcontainer.json" # Contains comments.
       - id: trailing-whitespace
       - id: end-of-file-fixer
 
@@ -27,12 +25,17 @@ repos:
     hooks:
       - id: prettier
         name: prettier
-        description: Linter for json, yaml, md, css and more
+        description: Formatter for yaml
         entry: prettier --write --ignore-unknown
         language: node
-        types: [text]
+        types: [yaml]
         additional_dependencies: ["prettier@3.3.3"]
-        exclude_types: [markdown, css]
+
+  - repo: https://github.com/biomejs/pre-commit
+    rev: "v2.4.3"
+    hooks:
+      - id: biome-check
+        additional_dependencies: ["@biomejs/biome@2.4.3"]
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.16.0
@@ -100,7 +103,6 @@ ci:
     - check-merge-conflict
     - check-case-conflict
     - check-yaml
-    - check-json
     - codespell
     - bandit
     - mypy

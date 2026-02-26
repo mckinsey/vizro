@@ -3,12 +3,14 @@
   width: 4px;
 }
 
-::-webkit-scrollbar-thumb, .ag-root ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb,
+.ag-root ::-webkit-scrollbar-thumb {
   background: var(--bs-tertiary-color);
   border: none;
 }
 
-::-webkit-scrollbar-thumb:hover, .ag-root ::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover,
+.ag-root ::-webkit-scrollbar-thumb:hover {
   background: var(--bs-secondary);
 }
 
