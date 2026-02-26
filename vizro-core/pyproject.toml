@@ -31,7 +31,7 @@ dependencies = [
   "autoflake",
   "packaging",
   "python-box",
-  "virtualenv!=21.0.0",
+  "virtualenv!=21.0.0"
 ]
 description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
